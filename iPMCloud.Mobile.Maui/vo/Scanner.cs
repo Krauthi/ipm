@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using Xamarin.Essentials;
-using Xamarin.Forms;
+using Microsoft.Maui.Storage;
+using Microsoft.Maui.Devices;
+using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui.Controls;
 using ZXing.Net.Mobile.Forms;
 
 namespace iPMCloud.Mobile.vo
@@ -48,7 +50,7 @@ namespace iPMCloud.Mobile.vo
                 };
                 zxing.Options = opts;
                 zxing.OnScanResult += (result) =>
-                    Device.BeginInvokeOnMainThread(async () =>
+                    MainThread.BeginInvokeOnMainThread(async () =>
                     {
                         if (!displayIsOpen)
                         {
@@ -160,7 +162,7 @@ namespace iPMCloud.Mobile.vo
                 };
                 zxing.Options = opts;
                 zxing.OnScanResult += (result) =>
-                    Device.BeginInvokeOnMainThread(async () =>
+                    MainThread.BeginInvokeOnMainThread(async () =>
                     {
                         if (!displayIsOpen)
                         {
@@ -284,7 +286,7 @@ namespace iPMCloud.Mobile.vo
                 };
                 zxing.Options = opts;
                 zxing.OnScanResult += (result) =>
-                    Device.BeginInvokeOnMainThread(async () =>
+                    MainThread.BeginInvokeOnMainThread(async () =>
                     {
                         if (!displayIsOpen)
                         {
@@ -383,7 +385,7 @@ namespace iPMCloud.Mobile.vo
                 };
                 zxing.Options = opts;
                 zxing.OnScanResult += (result) =>
-                    Device.BeginInvokeOnMainThread(async () =>
+                    MainThread.BeginInvokeOnMainThread(async () =>
                     {
                         if (!displayIsOpen)
                         {

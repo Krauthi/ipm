@@ -3,7 +3,7 @@ using System.IO;
 using System.Reflection;
 using NLog;
 using NLog.Config;
-using Xamarin.Forms;
+using Microsoft.Maui.Controls;
 
 namespace iPMCloud.Mobile
 {
@@ -13,9 +13,9 @@ namespace iPMCloud.Mobile
         {
             string resourcePrefix;
 
-            if (Device.RuntimePlatform == Device.iOS)
+            if (DeviceInfo.Platform == DevicePlatform.iOS)
                 resourcePrefix = "iPMCloud.Mobile.iOS";
-            else if (Device.RuntimePlatform == Device.Android)
+            else if (DeviceInfo.Platform == DevicePlatform.Android)
                 resourcePrefix = "iPMCloud.Mobile.Droid";
             else
                 throw new Exception("Could not initialize Logger: Unknonw Platform");

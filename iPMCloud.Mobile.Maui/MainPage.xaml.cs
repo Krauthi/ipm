@@ -14,11 +14,15 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Xamarin.Essentials;
-using Xamarin.Forms;
+using Microsoft.Maui.Storage;
+using Microsoft.Maui.Devices;
+using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui.Controls;
 using Xamarin.RangeSlider.Forms;
 
-//using Xamarin.Essentials;
+//using Microsoft.Maui.Storage;
+using Microsoft.Maui.Devices;
+using Microsoft.Maui.ApplicationModel;
 //https://docs.microsoft.com/de-de/xamarin/essentials/preferences?tabs=android
 
 namespace iPMCloud.Mobile
@@ -1133,7 +1137,7 @@ namespace iPMCloud.Mobile
             //______System.Timers.Timer runonce = new System.Timers.Timer(2000);
             //runonce.Elapsed += (s, e) =>
             //{
-            //    Device.BeginInvokeOnMainThread(() =>
+            //    MainThread.BeginInvokeOnMainThread(() =>
             //    {
             //        SetAllSync();
             //    });

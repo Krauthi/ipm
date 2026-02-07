@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.ipmcloud.ipm.mobile" android:installLocation="internalOnly" android:versionCode="2201210" android:versionName="2.1.210">
-	<uses-sdk android:minSdkVersion="27" android:targetSdkVersion="35" />
+	<uses-sdk android:minSdkVersion="21" android:targetSdkVersion="35" />
 	<permission android:name="com.ipmcloud.ipm.mobile.permission.C2D_MESSAGE" android:protectionLevel="signature" />
 	<uses-feature android:name="android.hardware.location" android:required="false" />
 	<uses-feature android:name="android.hardware.location.gps" android:required="false" />

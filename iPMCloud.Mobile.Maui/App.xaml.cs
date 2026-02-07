@@ -362,7 +362,7 @@ namespace iPMCloud.Mobile
                     {
                         //mPage.Navigation.PushAsync(new ContentPage()
                         //{
-                        //    BackgroundColor = Color.FromHex($"{p.Data["color"]}")
+                        //    BackgroundColor = Color.FromArgb($"{p.Data["color"]}")
 
                         //});
                     });

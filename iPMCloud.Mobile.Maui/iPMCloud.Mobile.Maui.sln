@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 18
+VisualStudioVersion = 18.2.11415.280 d18.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iPMCloud.Mobile.Maui", "iPMCloud.Mobile.Maui.csproj", "{9BFDF839-5133-83C1-5F0D-D1C65077D89B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9BFDF839-5133-83C1-5F0D-D1C65077D89B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9BFDF839-5133-83C1-5F0D-D1C65077D89B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9BFDF839-5133-83C1-5F0D-D1C65077D89B}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{9BFDF839-5133-83C1-5F0D-D1C65077D89B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9BFDF839-5133-83C1-5F0D-D1C65077D89B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8ED5DA92-139E-4B46-AE2D-084872C1EBD2}
+	EndGlobalSection
+EndGlobal

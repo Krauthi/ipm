@@ -9,7 +9,7 @@ namespace iPMCloud.Mobile.vo
     {
         public static readonly BindableProperty BorderColorProperty =
         BindableProperty.Create(nameof(BorderColor),
-            typeof(Color), typeof(CustomEntry), Color.Gray);
+            typeof(Color), typeof(CustomEntry), Colors.Gray);
         // Gets or sets BorderColor value  
 
         public Color BorderColor
@@ -53,7 +53,7 @@ namespace iPMCloud.Mobile.vo
     {
         public static readonly BindableProperty BorderColorProperty =
         BindableProperty.Create(nameof(BorderColor),
-            typeof(Color), typeof(CustomEntry), Color.Gray);
+            typeof(Color), typeof(CustomEntry), Colors.Gray);
         // Gets or sets BorderColor value  
         public Color BorderColor
         {

@@ -81,47 +81,47 @@ namespace iPMCloud.Mobile
             var day = new Label()
             {
                 Text = pt.tag + " " + pt.tagname,
-                TextColor = Color.FromHex("#cccccc"),
+                TextColor = Color.FromArgb("#cccccc"),
                 Margin = new Thickness(5, 0, 0, 0),
                 FontSize = 12,
                 WidthRequest = w * 0.21,
                 LineBreakMode = LineBreakMode.TailTruncation,
-                HorizontalTextAlignment = Xamarin.Forms.TextAlignment.Start,
+                HorizontalTextAlignment = TextAlignment.Start,
             };
             var times = new Label
             {
                 Text = isgleich || (!String.IsNullOrWhiteSpace(pt.grund) && pt.grund != "L" && pt.grund != "G") ? "--:--" : (pt.start + " - " + pt.end),
-                TextColor = Color.FromHex("#cccccc"),
+                TextColor = Color.FromArgb("#cccccc"),
                 Margin = new Thickness(5, 0, 0, 0),
                 FontSize = 12,
                 LineBreakMode = LineBreakMode.TailTruncation,
-                HorizontalTextAlignment = Xamarin.Forms.TextAlignment.Start,
+                HorizontalTextAlignment = TextAlignment.Start,
                 WidthRequest = w * 0.25,
             };
             var pause = new Label
             {
                 Text = pt.pause.Contains("00:00") || pt.pause.Contains("--:--") ? "--:--" : ("-" + pt.pause),
-                TextColor = pt.pause.Contains("00:00") || pt.pause.Contains("--:--") ? Color.FromHex("#cccccc") : Color.FromHex("#ff7777"),
+                TextColor = pt.pause.Contains("00:00") || pt.pause.Contains("--:--") ? Color.FromArgb("#cccccc") : Color.FromArgb("#ff7777"),
                 Margin = new Thickness(5, 0, 0, 0),
                 FontSize = 12,
                 LineBreakMode = LineBreakMode.TailTruncation,
-                HorizontalTextAlignment = Xamarin.Forms.TextAlignment.Start,
+                HorizontalTextAlignment = TextAlignment.Start,
                 WidthRequest = w * 0.18,
             };
             var updown = new Label
             {
                 Text = isZero ? "--:--" : ((isMinus ? "" : "+") + pt.top.Replace(" ", "")),
-                TextColor = isZero ? Color.FromHex("#cccccc") : (isMinus ? Color.FromHex("#ff7777") : Color.FromHex("#77cc77")),
+                TextColor = isZero ? Color.FromArgb("#cccccc") : (isMinus ? Color.FromArgb("#ff7777") : Color.FromArgb("#77cc77")),
                 Margin = new Thickness(5, 0, 0, 0),
                 FontSize = 12,
                 LineBreakMode = LineBreakMode.TailTruncation,
-                HorizontalTextAlignment = Xamarin.Forms.TextAlignment.Start,
+                HorizontalTextAlignment = TextAlignment.Start,
                 WidthRequest = w * 0.18,
             };
             var summe = new Label
             {
                 Text = pt.dauer,
-                TextColor = pt.dauer.Contains("-") ? Color.FromHex("#ff7777") : Color.FromHex("#ffffff"),
+                TextColor = pt.dauer.Contains("-") ? Color.FromArgb("#ff7777") : Color.FromArgb("#ffffff"),
                 Margin = new Thickness(5, 0, 0, 0),
                 FontSize = 12,
                 LineBreakMode = LineBreakMode.TailTruncation,
@@ -135,7 +135,7 @@ namespace iPMCloud.Mobile
                 Spacing = 0,
                 Orientation = StackOrientation.Horizontal,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                BackgroundColor = Color.FromHex("#aa042d53"),
+                BackgroundColor = Color.FromArgb("#aa042d53"),
             };
             h.Children.Add(day);
             h.Children.Add(times);
@@ -151,17 +151,17 @@ namespace iPMCloud.Mobile
             var day = new Label()
             {
                 Text = "Tag",
-                TextColor = Color.FromHex("#cccccc"),
+                TextColor = Color.FromArgb("#cccccc"),
                 Margin = new Thickness(5, 0, 0, 0),
                 FontSize = 12,
                 WidthRequest = w * 0.21,
                 LineBreakMode = LineBreakMode.TailTruncation,
-                HorizontalTextAlignment = Xamarin.Forms.TextAlignment.Start,
+                HorizontalTextAlignment = TextAlignment.Start,
             };
             var times = new Label
             {
                 Text = "Zeiten",
-                TextColor = Color.FromHex("#cccccc"),
+                TextColor = Color.FromArgb("#cccccc"),
                 Margin = new Thickness(5, 0, 0, 0),
                 FontSize = 12,
                 LineBreakMode = LineBreakMode.TailTruncation,
@@ -170,7 +170,7 @@ namespace iPMCloud.Mobile
             var pause = new Label
             {
                 Text = "Pause",
-                TextColor = Color.FromHex("#cccccc"),
+                TextColor = Color.FromArgb("#cccccc"),
                 Margin = new Thickness(5, 0, 0, 0),
                 FontSize = 12,
                 LineBreakMode = LineBreakMode.TailTruncation,
@@ -179,7 +179,7 @@ namespace iPMCloud.Mobile
             var fahrzeit = new Label
             {
                 Text = "+/-",
-                TextColor = Color.FromHex("#cccccc"),
+                TextColor = Color.FromArgb("#cccccc"),
                 Margin = new Thickness(5, 0, 0, 0),
                 FontSize = 12,
                 LineBreakMode = LineBreakMode.TailTruncation,
@@ -188,7 +188,7 @@ namespace iPMCloud.Mobile
             var summe = new Label
             {
                 Text = "Gesamt",
-                TextColor = Color.FromHex("#cccccc"),
+                TextColor = Color.FromArgb("#cccccc"),
                 Margin = new Thickness(5, 0, 0, 0),
                 FontSize = 12,
                 LineBreakMode = LineBreakMode.TailTruncation,
@@ -202,7 +202,7 @@ namespace iPMCloud.Mobile
                 Spacing = 0,
                 Orientation = StackOrientation.Horizontal,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                BackgroundColor = Color.FromHex("#aa042d53"),
+                BackgroundColor = Color.FromArgb("#aa042d53"),
             };
             h.Children.Add(day);
             h.Children.Add(times);
@@ -218,7 +218,7 @@ namespace iPMCloud.Mobile
             var day = new Label()
             {
                 Text = pt.monatname + " " + pt.jahr,
-                TextColor = Color.FromHex("#cccccc"),
+                TextColor = Color.FromArgb("#cccccc"),
                 Margin = new Thickness(5, 0, 5, 0),
                 FontSize = 12,
                 HorizontalOptions = LayoutOptions.StartAndExpand,
@@ -227,7 +227,7 @@ namespace iPMCloud.Mobile
             var times = new Label
             {
                 Text = pt.all,
-                TextColor = Color.FromHex("#ffffff"),
+                TextColor = Color.FromArgb("#ffffff"),
                 Margin = new Thickness(5, 0, 0, 0),
                 FontSize = 12,
                 LineBreakMode = LineBreakMode.TailTruncation,
@@ -240,7 +240,7 @@ namespace iPMCloud.Mobile
                 Spacing = 0,
                 Orientation = StackOrientation.Horizontal,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                BackgroundColor = Color.FromHex("#aa042d53"),
+                BackgroundColor = Color.FromArgb("#aa042d53"),
             };
             h.Children.Add(day);
             h.Children.Add(times);
@@ -252,7 +252,7 @@ namespace iPMCloud.Mobile
             var day = new Label()
             {
                 Text = "Es konnten keine Zeiten abgerufen werden!",
-                TextColor = Color.FromHex("#cccccc"),
+                TextColor = Color.FromArgb("#cccccc"),
                 Margin = new Thickness(5, 0, 5, 1),
                 FontSize = 14,
                 HorizontalOptions = LayoutOptions.StartAndExpand,
@@ -265,7 +265,7 @@ namespace iPMCloud.Mobile
                 Spacing = 0,
                 Orientation = StackOrientation.Horizontal,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                BackgroundColor = Color.FromHex("#aa042d53"),
+                BackgroundColor = Color.FromArgb("#aa042d53"),
             };
             h.Children.Add(day);
             return h;

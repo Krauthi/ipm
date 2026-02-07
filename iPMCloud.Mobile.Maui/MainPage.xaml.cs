@@ -1776,7 +1776,7 @@ namespace iPMCloud.Mobile
                     VerticalOptions = LayoutOptions.Center,
                     HorizontalOptions = LayoutOptions.FillAndExpand,
                     FontSize = 16,
-                    TextColor = Color.White,
+                    TextColor = Colors.White,
                     HorizontalTextAlignment = TextAlignment.Start,
                     Margin = new Thickness(0, 0, 0, 0),
                     Padding = new Thickness(0, 0, 0, 0)
@@ -1787,7 +1787,7 @@ namespace iPMCloud.Mobile
                     VerticalOptions = LayoutOptions.Center,
                     HorizontalOptions = LayoutOptions.FillAndExpand,
                     FontSize = 14,
-                    TextColor = Color.Yellow,
+                    TextColor = Colors.Yellow,
                     HorizontalTextAlignment = TextAlignment.Start,
                     Margin = new Thickness(0, 0, 0, 0),
                     Padding = new Thickness(0, 0, 0, 0)
@@ -1798,7 +1798,7 @@ namespace iPMCloud.Mobile
                     VerticalOptions = LayoutOptions.Center,
                     HorizontalOptions = LayoutOptions.FillAndExpand,
                     FontSize = 16,
-                    TextColor = Color.White,
+                    TextColor = Colors.White,
                     HorizontalTextAlignment = TextAlignment.Start,
                     Margin = new Thickness(0, 0, 0, 0),
                     Padding = new Thickness(0, 0, 0, 0)
@@ -1809,7 +1809,7 @@ namespace iPMCloud.Mobile
                     VerticalOptions = LayoutOptions.Center,
                     HorizontalOptions = LayoutOptions.FillAndExpand,
                     FontSize = 14,
-                    TextColor = Color.White,
+                    TextColor = Colors.White,
                     HorizontalTextAlignment = TextAlignment.Start,
                     Margin = new Thickness(0, 0, 0, 0),
                     Padding = new Thickness(0, 0, 0, 0)
@@ -1820,7 +1820,7 @@ namespace iPMCloud.Mobile
                     VerticalOptions = LayoutOptions.Center,
                     HorizontalOptions = LayoutOptions.FillAndExpand,
                     FontSize = 16,
-                    TextColor = Color.Yellow,
+                    TextColor = Colors.Yellow,
                     HorizontalTextAlignment = TextAlignment.Start,
                     Margin = new Thickness(0, 0, 0, 0),
                     Padding = new Thickness(0, 0, 0, 0)
@@ -1857,7 +1857,7 @@ namespace iPMCloud.Mobile
                     Orientation = StackOrientation.Horizontal,
                     HorizontalOptions = LayoutOptions.FillAndExpand,
                     VerticalOptions = LayoutOptions.CenterAndExpand,
-                    BackgroundColor = Color.FromHex("#042d53"),
+                    BackgroundColor = Color.FromArgb("#042d53"),
                     Spacing = 0,
                     Margin = new Thickness(0, 0, 0, 1),
                     Padding = new Thickness(5),
@@ -1869,7 +1869,7 @@ namespace iPMCloud.Mobile
                             FontSize = 14,
                             Margin = new Thickness(0),
                             Padding = new Thickness(0),
-                            TextColor = Color.FromHex("#ffffff"),
+                            TextColor = Color.FromArgb("#ffffff"),
                         }
                     }
                 });
@@ -2358,15 +2358,15 @@ namespace iPMCloud.Mobile
         {
             scroll_ObjectValuesStack.IsVisible = true;
             scroll_ObjectValuesStackChangedToday.IsVisible = false;
-            btn_objectValuesNow.BackgroundColor = Color.FromHex("#999999");
-            btn_objectValuesToday.BackgroundColor = Color.FromHex("#042d53");
+            btn_objectValuesNow.BackgroundColor = Color.FromArgb("#999999");
+            btn_objectValuesToday.BackgroundColor = Color.FromArgb("#042d53");
         }
         public async void btn_objectValuesTodayTapped(object sender, EventArgs e)
         {
             scroll_ObjectValuesStack.IsVisible = false;
             scroll_ObjectValuesStackChangedToday.IsVisible = true;
-            btn_objectValuesNow.BackgroundColor = Color.FromHex("#042d53");
-            btn_objectValuesToday.BackgroundColor = Color.FromHex("#999999");
+            btn_objectValuesNow.BackgroundColor = Color.FromArgb("#042d53");
+            btn_objectValuesToday.BackgroundColor = Color.FromArgb("#999999");
         }
 
         public async void TapObjektData(ObjektDataWSO od)
@@ -2584,7 +2584,7 @@ namespace iPMCloud.Mobile
                     Margin = new Thickness(0),
                     Padding = new Thickness(0, 7, 0, 7),
                     FontSize = 18,
-                    TextColor = Color.FromHex("#cccccc"),
+                    TextColor = Color.FromArgb("#cccccc"),
                     HorizontalOptions = LayoutOptions.FillAndExpand,
                     ClassId = "" + i,
                 };
@@ -2596,7 +2596,7 @@ namespace iPMCloud.Mobile
                 daypicker_items.Children.Add(lb_day);
                 var bv = new BoxView
                 {
-                    BackgroundColor = Color.Gray,
+                    BackgroundColor = Colors.Gray,
                     HeightRequest = 1,
                     VerticalOptions = LayoutOptions.Start,
                     HorizontalOptions = LayoutOptions.FillAndExpand,
@@ -2797,10 +2797,10 @@ namespace iPMCloud.Mobile
 
                     frame_planConA_reload_text.Text = "Mein Plan";
                     frame_planConA_reload2_text.Text = "Mein Plan";
-                    frame_planConA_reload_text.TextColor = Color.Yellow;
-                    frame_planConA_reload2_text.TextColor = Color.Yellow;
-                    frame_planConA_otherperson_name2.TextColor = Color.Yellow;
-                    frame_planConA_otherperson_name.TextColor = Color.Yellow;
+                    frame_planConA_reload_text.TextColor = Colors.Yellow;
+                    frame_planConA_reload2_text.TextColor = Colors.Yellow;
+                    frame_planConA_otherperson_name2.TextColor = Colors.Yellow;
+                    frame_planConA_otherperson_name.TextColor = Colors.Yellow;
                     frame_planConA_otherperson_name.Text = p.name.Length > 9 ? p.name.Substring(0, 10) + "..." : p.name;
                     frame_planConA_otherperson_name2.Text = p.name.Length > 12 ? p.name.Substring(0, 13) + "..." : p.name;
                 }
@@ -2811,13 +2811,13 @@ namespace iPMCloud.Mobile
 
                 if (AppModel.Instance.PlanOthePersonResponse != null && AppModel.Instance.PlanOthePersonResponse.lastCall != null)
                 {
-                    ObjektPlanWeekMobil_Stack_ABC_text.TextColor = Color.FromHex("#aaaaaa");
+                    ObjektPlanWeekMobil_Stack_ABC_text.TextColor = Color.FromArgb("#aaaaaa");
                     ObjektPlanWeekMobil_Stack_ABC_text.Text =
                         "Andere Planliste: " + AppModel.Instance.PlanOthePersonResponse.lastCall.Value.ToString("dd.MM.yyyy - HH:mm");
                 }
                 else
                 {
-                    ObjektPlanWeekMobil_Stack_ABC_text.TextColor = Color.Yellow;
+                    ObjektPlanWeekMobil_Stack_ABC_text.TextColor = Colors.Yellow;
                     ObjektPlanWeekMobil_Stack_ABC_text.Text = "Andere Planliste: - Konnte nicht geladen werden!";
                 }
             }
@@ -2871,10 +2871,10 @@ namespace iPMCloud.Mobile
             frame_planConA_reload2_text.Text = "Neu laden";
             frame_planConA_otherperson_name.Text = "Arbeiter";
             frame_planConA_otherperson_name2.Text = "Arbeiter";
-            frame_planConA_reload_text.TextColor = Color.White;
-            frame_planConA_reload2_text.TextColor = Color.White;
-            frame_planConA_otherperson_name2.TextColor = Color.White;
-            frame_planConA_otherperson_name.TextColor = Color.White;
+            frame_planConA_reload_text.TextColor = Colors.White;
+            frame_planConA_reload2_text.TextColor = Colors.White;
+            frame_planConA_otherperson_name2.TextColor = Colors.White;
+            frame_planConA_otherperson_name.TextColor = Colors.White;
             model.PlanResponse.selectedPerson = null;
 
             if (reloadOr)
@@ -2898,13 +2898,13 @@ namespace iPMCloud.Mobile
             {
                 if (AppModel.Instance.PlanResponse.lastCall != null)
                 {
-                    ObjektPlanWeekMobil_Stack_ABC_text.TextColor = Color.FromHex("#aaaaaa");
+                    ObjektPlanWeekMobil_Stack_ABC_text.TextColor = Color.FromArgb("#aaaaaa");
                     ObjektPlanWeekMobil_Stack_ABC_text.Text =
                         "Meine Planliste: " + AppModel.Instance.PlanResponse.lastCall.Value.ToString("dd.MM.yyyy - HH:mm");
                 }
                 else
                 {
-                    ObjektPlanWeekMobil_Stack_ABC_text.TextColor = Color.Yellow;
+                    ObjektPlanWeekMobil_Stack_ABC_text.TextColor = Colors.Yellow;
                     ObjektPlanWeekMobil_Stack_ABC_text.Text = "Meine Planliste: - Konnte noch nicht neu geladen werden!";
                 }
                 //ObjektPlanWeekMobile.Save(AppModel.Instance, AppModel.Instance.PlanResponse);
@@ -2921,7 +2921,7 @@ namespace iPMCloud.Mobile
                 {
                     AppModel.Instance.PlanResponse = resp;
                 }
-                ObjektPlanWeekMobil_Stack_ABC_text.TextColor = Color.Yellow;
+                ObjektPlanWeekMobil_Stack_ABC_text.TextColor = Colors.Yellow;
                 if (AppModel.Instance.PlanResponse.lastCall != null)
                 {
                     ObjektPlanWeekMobil_Stack_ABC_text.Text = "Meine Planliste: (" + AppModel.Instance.PlanResponse.lastCall.Value.ToString("dd.MM. - HH:mm") + ") - vom Cache geholt!";
@@ -3172,11 +3172,11 @@ namespace iPMCloud.Mobile
                                     Spacing = 0,
                                     Orientation = StackOrientation.Horizontal,
                                     HorizontalOptions = LayoutOptions.FillAndExpand,
-                                    BackgroundColor = Color.Transparent,
+                                    BackgroundColor = Colors.Transparent,
                                     Children = {
                                     new Label() {
                                         Text = Utils.DaysInUtils[ii] + (ii == today ? " (Heute)" : ""),
-                                        TextColor = Color.FromHex("#ffcc00"),
+                                        TextColor = Color.FromArgb("#ffcc00"),
                                         Margin = new Thickness(3, 0, 5, 1),
                                         FontSize = 18,
                                         HorizontalOptions = LayoutOptions.StartAndExpand,
@@ -3293,7 +3293,7 @@ namespace iPMCloud.Mobile
                                 Spacing = 0,
                                 Orientation = StackOrientation.Horizontal,
                                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                                BackgroundColor = Color.Transparent,
+                                BackgroundColor = Colors.Transparent,
                                 Children = {
                                 new Image
                                 {
@@ -3307,7 +3307,7 @@ namespace iPMCloud.Mobile
                                 new Label()
                                 {
                                     Text = lkWinter[kza][0].katname,
-                                    TextColor = Color.FromHex("#ffcc00"),
+                                    TextColor = Color.FromArgb("#ffcc00"),
                                     Margin = new Thickness(4, 10, 5, 1),
                                     FontSize = 18,
                                     HorizontalOptions = LayoutOptions.StartAndExpand,
@@ -3364,12 +3364,12 @@ namespace iPMCloud.Mobile
                                 Spacing = 0,
                                 Orientation = StackOrientation.Horizontal,
                                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                                BackgroundColor = Color.Transparent,
+                                BackgroundColor = Colors.Transparent,
                                 Children = {
                                 new Label()
                                 {
                                     Text = lk[kz][0].katname,
-                                    TextColor = Color.FromHex("#ffcc00"),
+                                    TextColor = Color.FromArgb("#ffcc00"),
                                     Margin = new Thickness(5, 10, 5, 1),
                                     FontSize = 18,
                                     HorizontalOptions = LayoutOptions.StartAndExpand,
@@ -3436,7 +3436,7 @@ namespace iPMCloud.Mobile
 
                     }
 
-                    frame_plantabC_badge_col.BackgroundColor = Color.FromHex("#009900");
+                    frame_plantabC_badge_col.BackgroundColor = Color.FromArgb("#009900");
                     frame_plantabC_badge_count.Text = "0";
                     frame_plantabC_badge.IsVisible = true;
 
@@ -4320,7 +4320,7 @@ namespace iPMCloud.Mobile
             obj.img.Source = obj.pos.inout.inout == 0 ? model.imagesBase.Muell_OutTonne : model.imagesBase.Muell_In;
             obj.img2.Source = obj.pos.inout.inout == 0 ? model.imagesBase.Muell_Out : model.imagesBase.Muell_InTonne;
             obj.lb.Text = obj.pos.inout.inout == 0 ? "Ich werde RAUSSTELLEN" : "Ich werde REINSTELLEN";
-            obj.lb.TextColor = Color.FromHex(obj.pos.inout.inout == 0 ? "#dd0000" : "#00aa00");
+            obj.lb.TextColor = Color.FromArgb(obj.pos.inout.inout == 0 ? "#dd0000" : "#00aa00");
 
             popupContainer_quest_changemuellpos.IsVisible = false;
         }
@@ -6113,9 +6113,9 @@ namespace iPMCloud.Mobile
             list_worker.IsVisible = false;
             entry_workersearch_container.IsVisible = false;
             workerSelectedViewIndex = 1;
-            btn_workercategorysearch.BackgroundColor = Color.FromHex("#999999");
-            btn_workernamesearch.BackgroundColor = Color.FromHex("#042d53");
-            btn_workerbuildingsearch.BackgroundColor = Color.FromHex("#042d53");
+            btn_workercategorysearch.BackgroundColor = Color.FromArgb("#999999");
+            btn_workernamesearch.BackgroundColor = Color.FromArgb("#042d53");
+            btn_workerbuildingsearch.BackgroundColor = Color.FromArgb("#042d53");
             list_worker_scroll.ScrollToAsync(0, 0, false);
             await Task.Delay(1);
             list_worker.Children.Clear();
@@ -6231,9 +6231,9 @@ namespace iPMCloud.Mobile
             overlay.IsVisible = true;
             list_worker.IsVisible = false;
             workerSelectedViewIndex = 2;
-            btn_workercategorysearch.BackgroundColor = Color.FromHex("#042d53");
-            btn_workernamesearch.BackgroundColor = Color.FromHex("#999999");
-            btn_workerbuildingsearch.BackgroundColor = Color.FromHex("#042d53");
+            btn_workercategorysearch.BackgroundColor = Color.FromArgb("#042d53");
+            btn_workernamesearch.BackgroundColor = Color.FromArgb("#999999");
+            btn_workerbuildingsearch.BackgroundColor = Color.FromArgb("#042d53");
             lb_workerbuildingsearche.Text = "Handwerker suchen:";
             entry_workersearch.Text = "";
             await Task.Delay(1);
@@ -6272,7 +6272,7 @@ namespace iPMCloud.Mobile
                     HorizontalOptions = LayoutOptions.FillAndExpand,
                     IsVisible = false,
                     ClassId = "" + item.Value.id,
-                    BackgroundColor = Color.FromHex("#144d73"),
+                    BackgroundColor = Color.FromArgb("#144d73"),
                 };
 
                 var tapGestureRecognizer = new TapGestureRecognizer();
@@ -6337,9 +6337,9 @@ namespace iPMCloud.Mobile
             list_worker.IsVisible = false;
             workerSelectedViewIndex = 3;
             lb_workerbuildingsearche.Text = "Objekt suchen:";
-            btn_workercategorysearch.BackgroundColor = Color.FromHex("#042d53");
-            btn_workernamesearch.BackgroundColor = Color.FromHex("#042d53");
-            btn_workerbuildingsearch.BackgroundColor = Color.FromHex("#999999");
+            btn_workercategorysearch.BackgroundColor = Color.FromArgb("#042d53");
+            btn_workernamesearch.BackgroundColor = Color.FromArgb("#042d53");
+            btn_workerbuildingsearch.BackgroundColor = Color.FromArgb("#999999");
             entry_workersearch.Text = "";
             await Task.Delay(1);
             list_worker.Children.Clear();
@@ -6616,9 +6616,9 @@ namespace iPMCloud.Mobile
             entry_todosearch_lbb.Text = "";
             entry_todosearch_container.IsVisible = true;
             entry_todosearch_stepcontainer.IsVisible = true;
-            btn_todo_faellig.BackgroundColor = Color.FromHex("#53042d");
-            btn_todo_all.BackgroundColor = Color.FromHex("#999999");
-            btn_todo_inout.BackgroundColor = Color.FromHex("#04532d");
+            btn_todo_faellig.BackgroundColor = Color.FromArgb("#53042d");
+            btn_todo_all.BackgroundColor = Color.FromArgb("#999999");
+            btn_todo_inout.BackgroundColor = Color.FromArgb("#04532d");
             await Task.Delay(1);
             list_todo.Children.Clear();
             await list_todo_scroll.ScrollToAsync(0, 0, false);
@@ -6635,9 +6635,9 @@ namespace iPMCloud.Mobile
             entry_todosearch_stepcontainer.IsVisible = true;
             entry_todosearch_container.IsVisible = true;
             Update_Todopaging(_holdLastTodoPage, _holdLastTodoPageMax);
-            btn_todo_faellig.BackgroundColor = Color.FromHex("#999999");
-            btn_todo_all.BackgroundColor = Color.FromHex("#042d53");
-            btn_todo_inout.BackgroundColor = Color.FromHex("#04532d");
+            btn_todo_faellig.BackgroundColor = Color.FromArgb("#999999");
+            btn_todo_all.BackgroundColor = Color.FromArgb("#042d53");
+            btn_todo_inout.BackgroundColor = Color.FromArgb("#04532d");
             await Task.Delay(1);
             list_todo.Children.Clear();
             await list_todo_scroll.ScrollToAsync(0, 0, false);
@@ -6675,9 +6675,9 @@ namespace iPMCloud.Mobile
             entry_todosearch_lbb.Text = "";
             entry_todosearch_container.IsVisible = true;
             entry_todosearch_stepcontainer.IsVisible = true;
-            btn_todo_faellig.BackgroundColor = Color.FromHex("#53042d");
-            btn_todo_all.BackgroundColor = Color.FromHex("#042d53");
-            btn_todo_inout.BackgroundColor = Color.FromHex("#999999");
+            btn_todo_faellig.BackgroundColor = Color.FromArgb("#53042d");
+            btn_todo_all.BackgroundColor = Color.FromArgb("#042d53");
+            btn_todo_inout.BackgroundColor = Color.FromArgb("#999999");
             await Task.Delay(1);
             list_todo.Children.Clear();
             list_todo_scroll.ScrollToAsync(0, 0, false);
@@ -6728,8 +6728,8 @@ namespace iPMCloud.Mobile
             overlay.IsVisible = true;
             model.LastSelectedCategoryAgain = null;
             model.LastSelectedPositionAgain = null;
-            btn_nachbuchen_Pos.BackgroundColor = pos == 0 ? Color.FromHex("#042d53") : Color.FromHex("#999999");
-            btn_nachbuchen_Produkte.BackgroundColor = pos == 0 ? Color.FromHex("#999999") : Color.FromHex("#042d53");
+            btn_nachbuchen_Pos.BackgroundColor = pos == 0 ? Color.FromArgb("#042d53") : Color.FromArgb("#999999");
+            btn_nachbuchen_Produkte.BackgroundColor = pos == 0 ? Color.FromArgb("#999999") : Color.FromArgb("#042d53");
             await Task.Delay(1);
             buildingorderlist_category_scroll_Again.ScrollToAsync(0, 0, false);
             BuildNachbuchenList();

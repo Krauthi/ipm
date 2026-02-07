@@ -201,7 +201,7 @@ namespace iPMCloud.Mobile
             {
                 imgInfo.GestureRecognizers.Clear();
                 var t_btn_objektinfo = new TapGestureRecognizer();
-                t_btn_objektinfo.Tapped += (object ooo, EventArgs ev) => { AppModel._Instance.MainPage.OpenObjektInfoDialogB(obj.notiz); };
+                t_btn_objektinfo.Tapped += (object ooo, TappedEventArgs ev) => { AppModel._Instance.MainPage.OpenObjektInfoDialogB(obj.notiz); };
                 imgInfo.GestureRecognizers.Add(t_btn_objektinfo);
             }
 
@@ -213,7 +213,7 @@ namespace iPMCloud.Mobile
                 Orientation = StackOrientation.Horizontal,
                 VerticalOptions = LayoutOptions.FillAndExpand,
                 HorizontalOptions = LayoutOptions.End,
-                BackgroundColor = Color.FromHex("#04532d"),
+                BackgroundColor = Color.FromArgb("#04532d"),
                 WidthRequest = 100,
                 Children = {
                     new Label {
@@ -222,7 +222,7 @@ namespace iPMCloud.Mobile
                         HorizontalOptions = LayoutOptions.FillAndExpand,
                         VerticalTextAlignment = TextAlignment.Center,
                         FontSize = 14,
-                        TextColor = Color.White,
+                        TextColor = Colors.White,
                         HorizontalTextAlignment = TextAlignment.Center,
                         Margin = new Thickness(0),
                         Padding = new Thickness(5)
@@ -237,7 +237,7 @@ namespace iPMCloud.Mobile
                 Spacing = 0,
                 Orientation = StackOrientation.Vertical,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                BackgroundColor = Color.FromHex("#77042d53"),//#90144d73"),
+                BackgroundColor = Color.FromArgb("#77042d53"),//#90144d73"),
                 Children = {
                     new StackLayout
                     {
@@ -252,7 +252,7 @@ namespace iPMCloud.Mobile
                                 VerticalOptions = LayoutOptions.StartAndExpand,
                                 HorizontalOptions = LayoutOptions.FillAndExpand,
                                 FontSize = 16,
-                                TextColor = Color.White,
+                                TextColor = Colors.White,
                                 HorizontalTextAlignment = TextAlignment.Start,
                                 Margin = new Thickness(10,0,0,0),
                                 Padding = new Thickness(0)
@@ -308,7 +308,7 @@ namespace iPMCloud.Mobile
                         FontSize = 14,
                         Text = "Objekte: ",
                         HorizontalOptions = LayoutOptions.Start, HorizontalTextAlignment = TextAlignment.Start,
-                        TextColor = Color.FromHex("#999999"),
+                        TextColor = Color.FromArgb("#999999"),
                         Margin = new Thickness(0, 0, 0, 0),
                         Padding = new Thickness(0, 0, 0, 0),
                     },
@@ -317,7 +317,7 @@ namespace iPMCloud.Mobile
                         FontSize = 14,
                         Text = ""+model.AllBuildings.Count,
                         HorizontalOptions = LayoutOptions.Start, HorizontalTextAlignment = TextAlignment.Start,
-                        TextColor = Color.FromHex("#cccccc"),
+                        TextColor = Color.FromArgb("#cccccc"),
                         Margin = new Thickness(0, 0, 0, 0),
                         Padding = new Thickness(0, 0, 0, 0),
                     },
@@ -326,7 +326,7 @@ namespace iPMCloud.Mobile
                         FontSize = 14,
                         Text = " - Stand vom: ",
                         HorizontalOptions = LayoutOptions.Start, HorizontalTextAlignment = TextAlignment.Start,
-                        TextColor = Color.FromHex("#999999"),
+                        TextColor = Color.FromArgb("#999999"),
                         Margin = new Thickness(0, 0, 0, 0),
                         Padding = new Thickness(0, 0, 0, 0),
                     },
@@ -335,7 +335,7 @@ namespace iPMCloud.Mobile
                         FontSize = 14,
                         Text = lastsyncdate.ToString("dd.MM.yyyy - HH:mm"),
                         HorizontalOptions = LayoutOptions.StartAndExpand, HorizontalTextAlignment = TextAlignment.Start,
-                        TextColor = Color.FromHex("#cccccc"),
+                        TextColor = Color.FromArgb("#cccccc"),
                         Margin = new Thickness(0, 0, 0, 0),
                         Padding = new Thickness(0, 0, 0, 0),
                     }
@@ -353,7 +353,7 @@ namespace iPMCloud.Mobile
                 Spacing = 0,
                 Orientation = StackOrientation.Vertical,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                BackgroundColor = Color.FromHex("#55042d53"),//#90144d73"),
+                BackgroundColor = Color.FromArgb("#55042d53"),//#90144d73"),
                 Children = {
                     new StackLayout
                     {
@@ -370,7 +370,7 @@ namespace iPMCloud.Mobile
                                 VerticalOptions = LayoutOptions.StartAndExpand,
                                 HorizontalOptions = LayoutOptions.FillAndExpand,
                                 FontSize = 14,
-                                TextColor = Color.White,
+                                TextColor = Colors.White,
                                 HorizontalTextAlignment = TextAlignment.Start,
                                 Margin = new Thickness(0),
                                 Padding = new Thickness(0)
@@ -459,7 +459,7 @@ namespace iPMCloud.Mobile
             {
                 imgInfo.GestureRecognizers.Clear();
                 var t_btn_objektinfo = new TapGestureRecognizer();
-                t_btn_objektinfo.Tapped += (object ooo, EventArgs ev) => { AppModel._Instance.MainPage.OpenObjektInfoDialogB(obj.notiz); };
+                t_btn_objektinfo.Tapped += (object ooo, TappedEventArgs ev) => { AppModel._Instance.MainPage.OpenObjektInfoDialogB(obj.notiz); };
                 imgInfo.GestureRecognizers.Add(t_btn_objektinfo);
             }
 
@@ -478,7 +478,7 @@ namespace iPMCloud.Mobile
                 Spacing = 0,
                 Orientation = StackOrientation.Vertical,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                BackgroundColor = Color.FromHex("#77042d53"),//#90144d73"),
+                BackgroundColor = Color.FromArgb("#77042d53"),//#90144d73"),
                 Children = {
                     new StackLayout
                     {
@@ -494,7 +494,7 @@ namespace iPMCloud.Mobile
                                 VerticalOptions = LayoutOptions.StartAndExpand,
                                 HorizontalOptions = LayoutOptions.FillAndExpand,
                                 FontSize = 16,
-                                TextColor = Color.White,
+                                TextColor = Colors.White,
                                 HorizontalTextAlignment = TextAlignment.Start,
                                 Margin = new Thickness(10,0,0,0),
                                 Padding = new Thickness(0)

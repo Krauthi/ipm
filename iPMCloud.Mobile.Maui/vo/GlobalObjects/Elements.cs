@@ -21,14 +21,14 @@ namespace iPMCloud.Mobile.vo
                 Padding = new Thickness(1, 1, 1, 1),
                 Margin = new Thickness(2, 2, 2, 2),
                 HasShadow = true,
-                BackgroundColor = Color.FromHex("#666666"),
+                BackgroundColor = Color.FromArgb("#666666"),
                 Content = new StackLayout()
                 {
                     GestureRecognizers = { tapGestureRecognizer },
                     Padding = new Thickness(0, 0, 0, 0),
                     Margin = new Thickness(0, 0, 0, 0),
                     Spacing = 0,
-                    BackgroundColor = Color.FromHex("#777777"),
+                    BackgroundColor = Color.FromArgb("#777777"),
                     VerticalOptions = LayoutOptions.CenterAndExpand,
                     HorizontalOptions = LayoutOptions.CenterAndExpand,
                     WidthRequest = 38,
@@ -53,14 +53,14 @@ namespace iPMCloud.Mobile.vo
                 Padding = new Thickness(1, 1, 1, 1),
                 Margin = new Thickness(2, 2, 2, 2),
                 HasShadow = true,
-                BackgroundColor = Color.FromHex("#041d43"),
+                BackgroundColor = Color.FromArgb("#041d43"),
                 Content = new StackLayout()
                 {
                     GestureRecognizers = { tapGestureRecognizer },
                     Padding = new Thickness(0, 0, 0, 0),
                     Margin = new Thickness(0, 0, 0, 0),
                     Spacing = 0,
-                    BackgroundColor = Color.FromHex("#042d53"),
+                    BackgroundColor = Color.FromArgb("#042d53"),
                     VerticalOptions = LayoutOptions.CenterAndExpand,
                     HorizontalOptions = LayoutOptions.CenterAndExpand,
                     WidthRequest = 38,
@@ -92,7 +92,7 @@ namespace iPMCloud.Mobile.vo
             var lb = new Label()
             {
                 Text = category,
-                TextColor = Color.FromHex("#ffffff"),
+                TextColor = Color.FromArgb("#ffffff"),
                 Margin = new Thickness(0, 3, 0, 3),
                 FontSize = 18,
                 HorizontalOptions = LayoutOptions.StartAndExpand,
@@ -101,7 +101,7 @@ namespace iPMCloud.Mobile.vo
             var lbCount = new Label()
             {
                 Text = "(" + count + ")",
-                TextColor = Color.FromHex("#ffcc00"),
+                TextColor = Color.FromArgb("#ffcc00"),
                 Margin = new Thickness(8, 3, 0, 3),
                 FontSize = 16,
                 HorizontalOptions = LayoutOptions.End,
@@ -126,7 +126,7 @@ namespace iPMCloud.Mobile.vo
                 Spacing = 0,
                 Orientation = StackOrientation.Vertical,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                BackgroundColor = Color.FromHex("#042d53")
+                BackgroundColor = Color.FromArgb("#042d53")
             };
             if(command != null) {
                 mainStack.GestureRecognizers.Clear();
@@ -139,7 +139,7 @@ namespace iPMCloud.Mobile.vo
                 Padding = new Thickness(0,0,0,0),
                 Margin = new Thickness(5, 5, 5, 5),
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                BackgroundColor = Color.FromHex("#041d43"),
+                BackgroundColor = Color.FromArgb("#041d43"),
                 Content = mainStack, 
                 CornerRadius = 0,
                 HasShadow = true,
@@ -161,7 +161,7 @@ namespace iPMCloud.Mobile.vo
             var lb = new Label()
             {
                 Text = p.firma,
-                TextColor = Color.FromHex("#ffffff"),
+                TextColor = Color.FromArgb("#ffffff"),
                 Margin = new Thickness(0, 0, 0, 0),
                 FontSize = 16,
                 LineBreakMode = LineBreakMode.TailTruncation,
@@ -169,7 +169,7 @@ namespace iPMCloud.Mobile.vo
             var lbcategory= new Label()
             {
                 Text = p.kategorie,
-                TextColor = Color.FromHex("#ffcc00"),
+                TextColor = Color.FromArgb("#ffcc00"),
                 Margin = new Thickness(0, 0, 0, 0),
                 FontSize = 10,
                 LineBreakMode = LineBreakMode.NoWrap,
@@ -193,7 +193,7 @@ namespace iPMCloud.Mobile.vo
             var lbaddress = new Label()
             {
                 Text = p.strasse + " " + p.hsnr + " - " + (String.IsNullOrWhiteSpace(p.land) ? "" : p.land.Substring(0, 2).ToUpper() + " ") + p.plz + " " + p.ort,
-                TextColor = Color.FromHex("#cccccc"),
+                TextColor = Color.FromArgb("#cccccc"),
                 Padding = new Thickness(33, 0, 10, 0),
                 Margin = new Thickness(0, 0, -3, 8),
                 FontSize = 14,
@@ -229,11 +229,11 @@ namespace iPMCloud.Mobile.vo
                 Spacing = 0,
                 Orientation = StackOrientation.Vertical,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                BackgroundColor = Color.FromHex("#144d73"),
+                BackgroundColor = Color.FromArgb("#144d73"),
             };
             mainStack.Children.Add(headerStackVertical);
             mainStack.Children.Add(moreDetailStackVertical);
-            mainStack.Children.Add(new BoxView() { ClassId = "", Margin = new Thickness(0, 8, 0, 0), HeightRequest = 1, BackgroundColor = Color.FromHex("#041d43") });
+            mainStack.Children.Add(new BoxView() { ClassId = "", Margin = new Thickness(0, 8, 0, 0), HeightRequest = 1, BackgroundColor = Color.FromArgb("#041d43") });
             return mainStack;
         }
         public static StackLayout GetWorkerDetailsTreeItem(PersonWSO p, ImageSource imageLeftSource, ImageSource imageRightSource, ICommand command)
@@ -249,7 +249,7 @@ namespace iPMCloud.Mobile.vo
                 HorizontalOptions = LayoutOptions.Fill,
                 Children = { new Label{
                         Text = "Telefon: " + p.telefon,
-                        TextColor = Color.FromHex("#cccccc"),
+                        TextColor = Color.FromArgb("#cccccc"),
                         Margin = new Thickness(0, 0, 0, 0),
                         FontSize = 14,
                         LineBreakMode = LineBreakMode.TailTruncation,
@@ -257,7 +257,7 @@ namespace iPMCloud.Mobile.vo
                     },
                     new Label{
                         Text = "ANRUFEN",
-                        TextColor = Color.FromHex("#ffffff"),
+                        TextColor = Color.FromArgb("#ffffff"),
                         Margin = new Thickness(0, 0, 0, 0),
                         FontSize = 12,
                         LineBreakMode = LineBreakMode.NoWrap,
@@ -278,7 +278,7 @@ namespace iPMCloud.Mobile.vo
                 HorizontalOptions = LayoutOptions.Fill,
                 Children = { new Label{
                         Text = "Mobile: " + p.mobile,
-                        TextColor = Color.FromHex("#cccccc"),
+                        TextColor = Color.FromArgb("#cccccc"),
                         Margin = new Thickness(0, 0, 0, 0),
                         FontSize = 14,
                         LineBreakMode = LineBreakMode.TailTruncation,
@@ -286,7 +286,7 @@ namespace iPMCloud.Mobile.vo
                     },
                     new Label{
                         Text = "ANRUFEN",
-                        TextColor = Color.FromHex("#ffffff"),
+                        TextColor = Color.FromArgb("#ffffff"),
                         Margin = new Thickness(0, 0, 0, 0),
                         FontSize = 12,
                         LineBreakMode = LineBreakMode.NoWrap,
@@ -306,7 +306,7 @@ namespace iPMCloud.Mobile.vo
                 HorizontalOptions = LayoutOptions.Fill,
                 Children = { new Label{
                         Text = "E-Mail: " + p.mail,
-                        TextColor = Color.FromHex("#cccccc"),
+                        TextColor = Color.FromArgb("#cccccc"),
                         Margin = new Thickness(0, 0, 0, 0),
                         FontSize = 14,
                         LineBreakMode = LineBreakMode.TailTruncation,
@@ -314,7 +314,7 @@ namespace iPMCloud.Mobile.vo
                     },
                     new Label{
                         Text = "SENDEN",
-                        TextColor = Color.FromHex("#ffffff"),
+                        TextColor = Color.FromArgb("#ffffff"),
                         Margin = new Thickness(0, 0, 0, 0),
                         FontSize = 12,
                         LineBreakMode = LineBreakMode.NoWrap,
@@ -351,7 +351,7 @@ namespace iPMCloud.Mobile.vo
             var lb = new Label()
             {
                 Text = String.IsNullOrEmpty(p.firma) ? p.name : p.firma,
-                TextColor = Color.FromHex("#ffffff"),
+                TextColor = Color.FromArgb("#ffffff"),
                 Margin = new Thickness(2, 0, 0, 1),
                 FontSize = 18,
                 HorizontalOptions = LayoutOptions.StartAndExpand,
@@ -360,7 +360,7 @@ namespace iPMCloud.Mobile.vo
             var lbCount = new Label()
             {
                 Text = p.kategorie,
-                TextColor = Color.FromHex("#ffcc00"),
+                TextColor = Color.FromArgb("#ffcc00"),
                 Margin = new Thickness(0, 0, 3, 0),
                 FontSize = 12,
                 HorizontalOptions = LayoutOptions.EndAndExpand,
@@ -369,7 +369,7 @@ namespace iPMCloud.Mobile.vo
             var more = new Label
             {
                 Text = "MEHR",
-                TextColor = Color.FromHex("#ffffff"),
+                TextColor = Color.FromArgb("#ffffff"),
                 Margin = new Thickness(0, 30, 0, 0),
                 FontSize = 12,
                 LineBreakMode = LineBreakMode.NoWrap,
@@ -398,7 +398,7 @@ namespace iPMCloud.Mobile.vo
                 Spacing = 0,
                 Orientation = StackOrientation.Vertical,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                BackgroundColor = Color.FromHex("#042d53")
+                BackgroundColor = Color.FromArgb("#042d53")
             };
             if (command != null)
             {
@@ -409,7 +409,7 @@ namespace iPMCloud.Mobile.vo
             var lbaddress = new Label()
             {
                 Text = p.strasse + " " + p.hsnr + " - " + (String.IsNullOrWhiteSpace(p.land) ? "" : p.land.Substring(0, 2).ToUpper() + " ") + p.plz + " " + p.ort,
-                TextColor = Color.FromHex("#cccccc"),
+                TextColor = Color.FromArgb("#cccccc"),
                 Padding = new Thickness(38, 0, 0, 0),
                 Margin = new Thickness(0, -18, 33, 5),
                 FontSize = 14,
@@ -425,7 +425,7 @@ namespace iPMCloud.Mobile.vo
                 Padding = new Thickness(0, 0, 0, 0),
                 Margin = new Thickness(5, 5, 5, 5),
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                BackgroundColor = Color.FromHex("#041d43"),
+                BackgroundColor = Color.FromArgb("#041d43"),
                 Content = mainStack,
                 CornerRadius = 0,
                 HasShadow = true,
@@ -448,7 +448,7 @@ namespace iPMCloud.Mobile.vo
             var lb = new Label()
             {
                 Text = b.plz + " " + b.ort,
-                TextColor = Color.FromHex("#cccccc"),
+                TextColor = Color.FromArgb("#cccccc"),
                 Margin = new Thickness(2, 0, 0, 1),
                 FontSize = 16,
                 HorizontalOptions = LayoutOptions.StartAndExpand,
@@ -457,7 +457,7 @@ namespace iPMCloud.Mobile.vo
             var more = new Label
             {
                 Text = "(" + b.ArrayOfHandwerker.Count+ ")", 
-                TextColor = Color.FromHex("#ffcc00"),
+                TextColor = Color.FromArgb("#ffcc00"),
                 Margin = new Thickness(0, 0, 0, 0),
                 FontSize = 16,
                 LineBreakMode = LineBreakMode.NoWrap,
@@ -481,7 +481,7 @@ namespace iPMCloud.Mobile.vo
             var lbaddress = new Label()
             {
                 Text = b.strasse + " " + b.hsnr,
-                TextColor = Color.FromHex("#ffffff"),
+                TextColor = Color.FromArgb("#ffffff"),
                 Margin = new Thickness(40, 0, 0, 1),
                 FontSize = 18,
                 HorizontalOptions = LayoutOptions.StartAndExpand,
@@ -495,7 +495,7 @@ namespace iPMCloud.Mobile.vo
                 Spacing = 0,
                 Orientation = StackOrientation.Vertical,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                BackgroundColor = Color.FromHex("#042d53")
+                BackgroundColor = Color.FromArgb("#042d53")
             };
             if (command != null)
             {
@@ -511,7 +511,7 @@ namespace iPMCloud.Mobile.vo
                 Padding = new Thickness(0, 0, 0, 0),
                 Margin = new Thickness(5, 5, 0, 5),
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                BackgroundColor = Color.Transparent,//Color.FromHex("#041d43"),
+                BackgroundColor = Colors.Transparent,//Color.FromArgb("#041d43"),
                 Content = mainStack,
                 CornerRadius = 0,
                 HasShadow = true,
@@ -529,7 +529,7 @@ namespace iPMCloud.Mobile.vo
                 Spacing = 0,
                 Orientation = StackOrientation.Horizontal,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                BackgroundColor = Color.Transparent,
+                BackgroundColor = Colors.Transparent,
             };
             var mainStack = new StackLayout()
             {
@@ -538,7 +538,7 @@ namespace iPMCloud.Mobile.vo
                 Spacing = 0,
                 Orientation = StackOrientation.Vertical,
                 HorizontalOptions = LayoutOptions.End,
-                BackgroundColor = Color.FromHex("#042d53"),
+                BackgroundColor = Color.FromArgb("#042d53"),
                 IsVisible = !String.IsNullOrWhiteSpace(b.notiz),
                 Children = { new Image {
                     Margin = new Thickness(2),
@@ -561,7 +561,7 @@ namespace iPMCloud.Mobile.vo
                 Padding = new Thickness(0),
                 Margin = new Thickness(0),
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                BackgroundColor = Color.Transparent,//Color.FromHex("#041d43"),
+                BackgroundColor = Colors.Transparent,//Color.FromArgb("#041d43"),
                 Content = horiStack,
                 CornerRadius = 0,
                 HasShadow = false,
@@ -586,7 +586,7 @@ namespace iPMCloud.Mobile.vo
             var lb = new Label()
             {
                 Text = c.CustomerName,
-                TextColor = Color.FromHex("#cccccc"),
+                TextColor = Color.FromArgb("#cccccc"),
                 Margin = new Thickness(5, 0, 5, 1),
                 FontSize = 16,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
@@ -595,7 +595,7 @@ namespace iPMCloud.Mobile.vo
             var more = new Label
             {
                 Text = "Unternehmens-Nr.: " + c.CustomerNumber,
-                TextColor = Color.FromHex("#999999"),
+                TextColor = Color.FromArgb("#999999"),
                 Margin = new Thickness(5, 0, 0, 0),
                 FontSize = 12,
                 LineBreakMode = LineBreakMode.TailTruncation,
@@ -609,7 +609,7 @@ namespace iPMCloud.Mobile.vo
                 Orientation = StackOrientation.Horizontal,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 ClassId = c.CustomerNumber,
-                BackgroundColor = isSelected ? Color.FromRgba(4,45,83,1):Color.FromHex("#042d53"),
+                BackgroundColor = isSelected ? Color.FromRgba(4,45,83,1):Color.FromArgb("#042d53"),
             };
             var headerStackVertical = new StackLayout()
             {
@@ -630,7 +630,7 @@ namespace iPMCloud.Mobile.vo
                 Padding = new Thickness(1,1,1,1),
                 Margin = new Thickness(0, 15, isSelected ? 0:10, 5),
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                BackgroundColor = isSelected ? Color.FromHex("#70144d73") : Color.FromHex("#041d43"),
+                BackgroundColor = isSelected ? Color.FromArgb("#70144d73") : Color.FromArgb("#041d43"),
                 Content = headerStackHorizontal,
                 CornerRadius = 0,
                 HasShadow = true,
@@ -654,7 +654,7 @@ namespace iPMCloud.Mobile.vo
                 Padding = new Thickness(5, 5, 5, 5),
                 Margin = new Thickness(0, 0, 0, 0),
                 Spacing = 0,
-                BackgroundColor = Color.FromHex("#042d53"),
+                BackgroundColor = Color.FromArgb("#042d53"),
                 HorizontalOptions = LayoutOptions.Center,
                 VerticalOptions = LayoutOptions.Center,
                 ClassId = c.CustomerNumber,
@@ -671,7 +671,7 @@ namespace iPMCloud.Mobile.vo
                 Margin = new Thickness(0, 15, 0, 5),
                 HorizontalOptions = LayoutOptions.End,
                 VerticalOptions = LayoutOptions.Start,
-                BackgroundColor = Color.FromHex("#041d43"),
+                BackgroundColor = Color.FromArgb("#041d43"),
                 Content = headerStackHorizontal,
                 CornerRadius = 0,
                 HasShadow = true, IsVisible = !isSelected,
@@ -685,11 +685,11 @@ namespace iPMCloud.Mobile.vo
 
         public static BoxView GetBoxViewLine()
         {
-            return new BoxView() { Margin = new Thickness(0, 0, 0, 0), HeightRequest = 1, BackgroundColor = Color.Gray };
+            return new BoxView() { Margin = new Thickness(0, 0, 0, 0), HeightRequest = 1, BackgroundColor = Colors.Gray };
         }
         public static BoxView GetHeightSpacer(double height = 5)
         {
-            return new BoxView() { Margin = new Thickness(0, 0, 0, 0), HeightRequest = height, BackgroundColor = Color.Transparent };
+            return new BoxView() { Margin = new Thickness(0, 0, 0, 0), HeightRequest = height, BackgroundColor = Colors.Transparent };
         }
 
     }

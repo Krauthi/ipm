@@ -113,14 +113,14 @@ namespace iPMCloud.Mobile
         }
         public void Tap_SetAllGuis_a0()
         {
-            frame_Yes.BorderColor = isReady && a0 == 2 ? Color.White : Color.Transparent;
-            frame_Yes.BackgroundColor = isReady && a0 != 2 ? Color.FromHex("#666666") : Color.FromHex("#04732d");
+            frame_Yes.BorderColor = isReady && a0 == 2 ? Colors.White : Colors.Transparent;
+            frame_Yes.BackgroundColor = isReady && a0 != 2 ? Color.FromArgb("#666666") : Color.FromArgb("#04732d");
             frame_Yes.Opacity = isReady && a0 != 2 ? 0.5 : 1;
-            frame_No.BorderColor = isReady && a0 == 1 ? Color.White : Color.Transparent;
-            frame_No.BackgroundColor = isReady && a0 != 1 ? Color.FromHex("#666666") : Color.FromHex("#73042d");
+            frame_No.BorderColor = isReady && a0 == 1 ? Colors.White : Colors.Transparent;
+            frame_No.BackgroundColor = isReady && a0 != 1 ? Color.FromArgb("#666666") : Color.FromArgb("#73042d");
             frame_No.Opacity = isReady && a0 != 1 ? 0.5 : 1;
-            frame_None.BorderColor = none ? Color.White : Color.Transparent;
-            frame_None.BackgroundColor = !none ? Color.FromHex("#666666") : Color.FromHex("#938302");
+            frame_None.BorderColor = none ? Colors.White : Colors.Transparent;
+            frame_None.BackgroundColor = !none ? Color.FromArgb("#666666") : Color.FromArgb("#938302");
             frame_None.Opacity = !none ? 0.5 : 1;
             frame_Reset.IsVisible = isReady;
 
@@ -130,7 +130,7 @@ namespace iPMCloud.Mobile
             lb_quest.LineBreakMode = isReady ? LineBreakMode.TailTruncation : LineBreakMode.WordWrap;
             lb_notiz.LineBreakMode = isReady ? LineBreakMode.TailTruncation : LineBreakMode.WordWrap;
 
-            mainFrame.BackgroundColor = isReady ? Color.FromHex("#66cccccc") : Color.FromHex("#99042d53");
+            mainFrame.BackgroundColor = isReady ? Color.FromArgb("#66cccccc") : Color.FromArgb("#99042d53");
             AppModel.Instance.MainPage.UpdateCheckAState();
         }
         public void Tap_a0_Reset()
@@ -199,14 +199,14 @@ namespace iPMCloud.Mobile
             lb_required.IsVisible = required == 1 && !isReady;
             img_ready.IsVisible = isReady;
 
-            frame_None.BorderColor = none ? Color.White : Color.Transparent;
-            frame_None.BackgroundColor = !none ? Color.FromHex("#666666") : Color.FromHex("#938302");
+            frame_None.BorderColor = none ? Colors.White : Colors.Transparent;
+            frame_None.BackgroundColor = !none ? Color.FromArgb("#666666") : Color.FromArgb("#938302");
             frame_None.Opacity = !none ? 0.5 : 1;
 
             lb_quest.LineBreakMode = isReady ? LineBreakMode.TailTruncation : LineBreakMode.WordWrap;
             lb_notiz.LineBreakMode = isReady ? LineBreakMode.TailTruncation : LineBreakMode.WordWrap;
 
-            mainFrame.BackgroundColor = isReady ? Color.FromHex("#66cccccc") : Color.FromHex("#99042d53");
+            mainFrame.BackgroundColor = isReady ? Color.FromArgb("#66cccccc") : Color.FromArgb("#99042d53");
 
             textEditor.HeightRequest = isReady ? 40 : -1;
 
@@ -266,14 +266,14 @@ namespace iPMCloud.Mobile
             lb_required.IsVisible = required == 1 && !isReady;
             img_ready.IsVisible = isReady;
 
-            frame_None.BorderColor = none ? Color.White : Color.Transparent;
-            frame_None.BackgroundColor = !none ? Color.FromHex("#666666") : Color.FromHex("#938302");
+            frame_None.BorderColor = none ? Colors.White : Colors.Transparent;
+            frame_None.BackgroundColor = !none ? Color.FromArgb("#666666") : Color.FromArgb("#938302");
             frame_None.Opacity = !none ? 0.5 : 1;
 
             lb_quest.LineBreakMode = isReady ? LineBreakMode.TailTruncation : LineBreakMode.WordWrap;
             lb_notiz.LineBreakMode = isReady ? LineBreakMode.TailTruncation : LineBreakMode.WordWrap;
 
-            mainFrame.BackgroundColor = isReady ? Color.FromHex("#66cccccc") : Color.FromHex("#99042d53");
+            mainFrame.BackgroundColor = isReady ? Color.FromArgb("#66cccccc") : Color.FromArgb("#99042d53");
 
             AppModel.Instance.MainPage.UpdateCheckAState();
         }
@@ -302,8 +302,8 @@ namespace iPMCloud.Mobile
         }
         public async void Tap_SetAllGuis_a3()
         {
-            frame_None.BorderColor = none ? Color.White : Color.Transparent;
-            frame_None.BackgroundColor = !none ? Color.FromHex("#666666") : Color.FromHex("#938302");
+            frame_None.BorderColor = none ? Colors.White : Colors.Transparent;
+            frame_None.BackgroundColor = !none ? Color.FromArgb("#666666") : Color.FromArgb("#938302");
             frame_None.Opacity = !none ? 0.5 : 1;
 
             frame_Reset.IsVisible = isReady;
@@ -325,7 +325,7 @@ namespace iPMCloud.Mobile
                 );
 
 
-            mainFrame.BackgroundColor = isReady ? Color.FromHex("#66cccccc") : Color.FromHex("#99042d53");
+            mainFrame.BackgroundColor = isReady ? Color.FromArgb("#66cccccc") : Color.FromArgb("#99042d53");
             AppModel.Instance.MainPage.UpdateCheckAState();
         }
         public void Tap_a3_Pic()
@@ -382,14 +382,14 @@ namespace iPMCloud.Mobile
                 ants.Remove(img.ClassId);
                 img.Source = AppModel.Instance.imagesBase.No;
                 img.Opacity = 0.5;
-                foreach (var item in frame_ants) { if (item.ClassId == img.ClassId) item.BorderColor = Color.Transparent; };
+                foreach (var item in frame_ants) { if (item.ClassId == img.ClassId) item.BorderColor = Colors.Transparent; };
             }
             else
             {
                 ants.Add(img.ClassId);
                 img.Source = AppModel.Instance.imagesBase.Yes;
                 img.Opacity = 1;
-                foreach (var item in frame_ants) { if (item.ClassId == img.ClassId) item.BorderColor = Color.White; };
+                foreach (var item in frame_ants) { if (item.ClassId == img.ClassId) item.BorderColor = Colors.White; };
             }
             a4 = Utils.ConvertStringListToString(ants, ";");
             CheckIsReadyAndSet_a4a();
@@ -400,7 +400,7 @@ namespace iPMCloud.Mobile
             a4 = "";
             foreach (var item in frame_ants)
             {
-                item.BorderColor = Color.Transparent;
+                item.BorderColor = Colors.Transparent;
                 var img = (item.Content as StackLayout).Children[1] as Image;
                 img.Source = AppModel.Instance.imagesBase.No;
                 img.Opacity = 0.5;
@@ -421,14 +421,14 @@ namespace iPMCloud.Mobile
             lb_required.IsVisible = required == 1 && !isReady;
             img_ready.IsVisible = isReady;
 
-            frame_None.BorderColor = none ? Color.White : Color.Transparent;
-            frame_None.BackgroundColor = !none ? Color.FromHex("#666666") : Color.FromHex("#938302");
+            frame_None.BorderColor = none ? Colors.White : Colors.Transparent;
+            frame_None.BackgroundColor = !none ? Color.FromArgb("#666666") : Color.FromArgb("#938302");
             frame_None.Opacity = !none ? 0.5 : 1;
 
             lb_quest.LineBreakMode = isReady ? LineBreakMode.TailTruncation : LineBreakMode.WordWrap;
             lb_notiz.LineBreakMode = isReady ? LineBreakMode.TailTruncation : LineBreakMode.WordWrap;
 
-            mainFrame.BackgroundColor = isReady ? Color.FromHex("#66cccccc") : Color.FromHex("#99042d53");
+            mainFrame.BackgroundColor = isReady ? Color.FromArgb("#66cccccc") : Color.FromArgb("#99042d53");
 
             AppModel.Instance.MainPage.UpdateCheckAState();
         }
@@ -461,7 +461,7 @@ namespace iPMCloud.Mobile
                 wasSet = true;
                 foreach (var item in frame_ants)
                 {
-                    if (item.ClassId == img.ClassId) { item.BorderColor = Color.Transparent; }
+                    if (item.ClassId == img.ClassId) { item.BorderColor = Colors.Transparent; }
                 };
             }
             else
@@ -471,7 +471,7 @@ namespace iPMCloud.Mobile
                 img.Opacity = 1;
                 foreach (var item in frame_ants)
                 {
-                    if (item.ClassId == img.ClassId) { item.BorderColor = Color.White; }
+                    if (item.ClassId == img.ClassId) { item.BorderColor = Colors.White; }
                 };
             }
             foreach (var item in frame_ants)
@@ -492,7 +492,7 @@ namespace iPMCloud.Mobile
             foreach (var item in frame_ants)
             {
                 item.IsVisible = true;
-                item.BorderColor = Color.Transparent;
+                item.BorderColor = Colors.Transparent;
                 var img = (item.Content as StackLayout).Children[1] as Image;
                 img.Source = AppModel.Instance.imagesBase.No_Round;
                 img.Opacity = 0.5;
@@ -517,14 +517,14 @@ namespace iPMCloud.Mobile
             lb_required.IsVisible = required == 1 && !isReady;
             img_ready.IsVisible = isReady;
 
-            frame_None.BorderColor = none ? Color.White : Color.Transparent;
-            frame_None.BackgroundColor = !none ? Color.FromHex("#666666") : Color.FromHex("#938302");
+            frame_None.BorderColor = none ? Colors.White : Colors.Transparent;
+            frame_None.BackgroundColor = !none ? Color.FromArgb("#666666") : Color.FromArgb("#938302");
             frame_None.Opacity = !none ? 0.5 : 1;
 
             lb_quest.LineBreakMode = isReady ? LineBreakMode.TailTruncation : LineBreakMode.WordWrap;
             lb_notiz.LineBreakMode = isReady ? LineBreakMode.TailTruncation : LineBreakMode.WordWrap;
 
-            mainFrame.BackgroundColor = isReady ? Color.FromHex("#66cccccc") : Color.FromHex("#99042d53");
+            mainFrame.BackgroundColor = isReady ? Color.FromArgb("#66cccccc") : Color.FromArgb("#99042d53");
 
             AppModel.Instance.MainPage.UpdateCheckAState();
         }
@@ -552,8 +552,8 @@ namespace iPMCloud.Mobile
         }
         public void Tap_SetAllGuis_a7()
         {
-            frame_None.BorderColor = none ? Color.White : Color.Transparent;
-            frame_None.BackgroundColor = !none ? Color.FromHex("#666666") : Color.FromHex("#938302");
+            frame_None.BorderColor = none ? Colors.White : Colors.Transparent;
+            frame_None.BackgroundColor = !none ? Color.FromArgb("#666666") : Color.FromArgb("#938302");
             frame_None.Opacity = !none ? 0.5 : 1;
 
             frame_Reset.IsVisible = isReady;
@@ -571,7 +571,7 @@ namespace iPMCloud.Mobile
                 AppModel.Instance.imagesBase.SignPad :
                 ImageSource.FromStream(() => new MemoryStream(Convert.FromBase64String(a7)));
 
-            mainFrame.BackgroundColor = isReady ? Color.FromHex("#66cccccc") : Color.FromHex("#99042d53");
+            mainFrame.BackgroundColor = isReady ? Color.FromArgb("#66cccccc") : Color.FromArgb("#99042d53");
             AppModel.Instance.MainPage.UpdateCheckAState();
         }
         public void Tap_a7_Reset()

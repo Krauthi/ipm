@@ -248,13 +248,13 @@ namespace iPMCloud.Mobile
                         VerticalOptions = LayoutOptions.End,
                         WidthRequest = checkInfo.lastStateOfCheck_a == "Offen" ? 76 : 56,
                         MinimumWidthRequest = checkInfo.lastStateOfCheck_a == "Offen" ? 76 : 56,
-                        BackgroundColor = checkInfo.lastStateOfCheck_a == "Offen" ? Color.FromHex("#73042d") : Color.FromHex("#04732d"),
+                        BackgroundColor = checkInfo.lastStateOfCheck_a == "Offen" ? Color.FromArgb("#73042d") : Color.FromArgb("#04732d"),
                     };
                     sth_btn.Children.Add(new Label()
                     {
                         Padding = new Thickness(0),
                         Text = checkInfo.lastStateOfCheck_a == "Offen" ? "BEARBEITEN" : "STARTEN",
-                        TextColor = Color.FromHex("#ffffff"),
+                        TextColor = Color.FromArgb("#ffffff"),
                         Margin = new Thickness(0),
                         FontSize = 13,
                         HorizontalOptions = LayoutOptions.Center,
@@ -280,7 +280,7 @@ namespace iPMCloud.Mobile
                         {
                             Padding = new Thickness(0),
                             Text = b.plz + " " + b.ort + " - " + b.strasse + " " + b.hsnr,
-                            TextColor = Color.FromHex("#ffffff"),
+                            TextColor = Color.FromArgb("#ffffff"),
                             Margin = new Thickness(3, 3, 5, 3),
                             FontSize = 13,
                             HorizontalOptions = LayoutOptions.StartAndExpand,
@@ -318,8 +318,8 @@ namespace iPMCloud.Mobile
                         };
                         pinBtn.GestureRecognizers.Clear();
                         var tgr_imgPin = new TapGestureRecognizer();
-                        tgr_imgPin.Tapped -= (object o, EventArgs ev) => { BuildingWSO.btn_MapTapped(b); };
-                        tgr_imgPin.Tapped += (object o, EventArgs ev) => { BuildingWSO.btn_MapTapped(b); };
+                        tgr_imgPin.Tapped -= (object o, TappedEventArgs ev) => { BuildingWSO.btn_MapTapped(b); };
+                        tgr_imgPin.Tapped += (object o, TappedEventArgs ev) => { BuildingWSO.btn_MapTapped(b); };
                         pinBtn.GestureRecognizers.Add(tgr_imgPin);
 
                         //b.notiz = "ksjkskl sdkljsdkjlsd sdklj sd kl";
@@ -356,7 +356,7 @@ namespace iPMCloud.Mobile
                         {
                             infoBtn.GestureRecognizers.Clear();
                             var t_btn_objektinfo = new TapGestureRecognizer();
-                            t_btn_objektinfo.Tapped += (object ooo, EventArgs ev) => { AppModel._Instance.MainPage.OpenObjektInfoDialogB(b.notiz); };
+                            t_btn_objektinfo.Tapped += (object ooo, TappedEventArgs ev) => { AppModel._Instance.MainPage.OpenObjektInfoDialogB(b.notiz); };
                             infoBtn.GestureRecognizers.Add(t_btn_objektinfo);
                         }
 
@@ -373,7 +373,7 @@ namespace iPMCloud.Mobile
                         {
                             Padding = new Thickness(0),
                             Text = "Nicht gefunden! (" + checkInfo.objektid + ")(Synchronisieren)",
-                            TextColor = Color.FromHex("#ffcc00"),
+                            TextColor = Color.FromArgb("#ffcc00"),
                             Margin = new Thickness(3),
                             FontSize = 13,
                             HorizontalOptions = LayoutOptions.Start,
@@ -386,7 +386,7 @@ namespace iPMCloud.Mobile
                     {
                         Padding = new Thickness(0),
                         Text = checkInfo.bezeichnung,
-                        TextColor = Color.FromHex("#ffffff"),
+                        TextColor = Color.FromArgb("#ffffff"),
                         Margin = new Thickness(3),
                         FontSize = 13,
                         HorizontalOptions = LayoutOptions.StartAndExpand,
@@ -418,7 +418,7 @@ namespace iPMCloud.Mobile
                         //VerticalOptions = LayoutOptions.FillAndExpand,
                         HorizontalOptions = LayoutOptions.FillAndExpand,
                         WidthRequest = width,
-                        BackgroundColor = Color.FromHex("#55042d53"),
+                        BackgroundColor = Color.FromArgb("#55042d53"),
                     };
                     mainH.Children.Add(stv);
 
@@ -435,8 +435,8 @@ namespace iPMCloud.Mobile
                     //    VerticalOptions = LayoutOptions.FillAndExpand,
                     //    HorizontalOptions = LayoutOptions.FillAndExpand,
                     //    WidthRequest = width,
-                    //    BackgroundColor = Color.FromHex("#55fff0000"),
-                    //    BorderColor = Color.FromHex("#55ffffff"),
+                    //    BackgroundColor = Color.FromArgb("#55fff0000"),
+                    //    BorderColor = Color.FromArgb("#55ffffff"),
                     //    CornerRadius = 10,
                     //    Content = new Label
                     //    {
@@ -463,7 +463,7 @@ namespace iPMCloud.Mobile
 
             return new Frame
             {
-                BackgroundColor = Color.FromHex(value < 0 ? "#ff0000" : (value < 1 ? "#ffcc00" : "#009900")),
+                BackgroundColor = Color.FromArgb(value < 0 ? "#ff0000" : (value < 1 ? "#ffcc00" : "#009900")),
                 IsClippedToBounds = true,
                 HasShadow = true,
                 HorizontalOptions = LayoutOptions.Start,
@@ -479,7 +479,7 @@ namespace iPMCloud.Mobile
                     HorizontalOptions = LayoutOptions.Center,
                     VerticalOptions = LayoutOptions.Center,
                     FontSize = 11,
-                    TextColor = Color.White,
+                    TextColor = Colors.White,
                     FontAttributes = FontAttributes.Bold,
                     MinimumWidthRequest = 50,
                     LineBreakMode = LineBreakMode.NoWrap,
@@ -492,7 +492,7 @@ namespace iPMCloud.Mobile
 
             return new Frame
             {
-                BackgroundColor = Color.FromHex("#338dca"),
+                BackgroundColor = Color.FromArgb("#338dca"),
                 IsClippedToBounds = true,
                 HasShadow = true,
                 HorizontalOptions = LayoutOptions.Start,
@@ -508,7 +508,7 @@ namespace iPMCloud.Mobile
                     HorizontalOptions = LayoutOptions.Center,
                     VerticalOptions = LayoutOptions.Center,
                     FontSize = 11,
-                    TextColor = Color.White,
+                    TextColor = Colors.White,
                     FontAttributes = FontAttributes.Bold,
                     MinimumWidthRequest = 50,
                     LineBreakMode = LineBreakMode.NoWrap,
@@ -523,7 +523,7 @@ namespace iPMCloud.Mobile
 
             return new Frame
             {
-                BackgroundColor = Color.FromHex(isRed ? "#ff0000" : (isGray ? "#999999" : "#009900")),
+                BackgroundColor = Color.FromArgb(isRed ? "#ff0000" : (isGray ? "#999999" : "#009900")),
                 IsClippedToBounds = true,
                 HasShadow = true,
                 HorizontalOptions = LayoutOptions.Start,
@@ -539,7 +539,7 @@ namespace iPMCloud.Mobile
                     HorizontalOptions = LayoutOptions.Center,
                     VerticalOptions = LayoutOptions.Center,
                     FontSize = 11,
-                    TextColor = Color.White,
+                    TextColor = Colors.White,
                     FontAttributes = FontAttributes.Bold,
                     MinimumWidthRequest = 50,
                     LineBreakMode = LineBreakMode.NoWrap,
@@ -554,7 +554,7 @@ namespace iPMCloud.Mobile
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(1, 30, 1, 0),
-                BackgroundColor = Color.FromHex("#66042d53"),
+                BackgroundColor = Color.FromArgb("#66042d53"),
                 HasShadow = true,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 CornerRadius = 10,
@@ -570,7 +570,7 @@ namespace iPMCloud.Mobile
                             Text = title,
                             HorizontalOptions = LayoutOptions.FillAndExpand,
                             FontSize = 16,
-                            TextColor = Color.FromHex("#ffffff"),
+                            TextColor = Color.FromArgb("#ffffff"),
                             HorizontalTextAlignment = TextAlignment.Start,
                             Margin = new Thickness(0),
                             Padding = new Thickness(10,0,10,0)
@@ -584,26 +584,26 @@ namespace iPMCloud.Mobile
         public static Frame GetQuestMain_0(CheckLeistungAntwort quest)
         {
             var tapYes = new TapGestureRecognizer();
-            tapYes.Tapped -= (object o, EventArgs ev) => { quest.Tap_a0_Yes(); };
-            tapYes.Tapped += (object o, EventArgs ev) => { quest.Tap_a0_Yes(); };
+            tapYes.Tapped -= (object o, TappedEventArgs ev) => { quest.Tap_a0_Yes(); };
+            tapYes.Tapped += (object o, TappedEventArgs ev) => { quest.Tap_a0_Yes(); };
             var tapNo = new TapGestureRecognizer();
-            tapNo.Tapped -= (object o, EventArgs ev) => { quest.Tap_a0_No(); };
-            tapNo.Tapped += (object o, EventArgs ev) => { quest.Tap_a0_No(); };
+            tapNo.Tapped -= (object o, TappedEventArgs ev) => { quest.Tap_a0_No(); };
+            tapNo.Tapped += (object o, TappedEventArgs ev) => { quest.Tap_a0_No(); };
             var tapNone = new TapGestureRecognizer();
-            tapNone.Tapped -= (object o, EventArgs ev) => { quest.Tap_a0_None(); };
-            tapNone.Tapped += (object o, EventArgs ev) => { quest.Tap_a0_None(); };
+            tapNone.Tapped -= (object o, TappedEventArgs ev) => { quest.Tap_a0_None(); };
+            tapNone.Tapped += (object o, TappedEventArgs ev) => { quest.Tap_a0_None(); };
             var tapReset = new TapGestureRecognizer();
-            tapReset.Tapped -= (object o, EventArgs ev) => { quest.Tap_a0_Reset(); };
-            tapReset.Tapped += (object o, EventArgs ev) => { quest.Tap_a0_Reset(); };
+            tapReset.Tapped -= (object o, TappedEventArgs ev) => { quest.Tap_a0_Reset(); };
+            tapReset.Tapped += (object o, TappedEventArgs ev) => { quest.Tap_a0_Reset(); };
             var tapBem = new TapGestureRecognizer();
-            tapBem.Tapped -= (object o, EventArgs ev) => { quest.Tap_a_Bem(); };
-            tapBem.Tapped += (object o, EventArgs ev) => { quest.Tap_a_Bem(); };
+            tapBem.Tapped -= (object o, TappedEventArgs ev) => { quest.Tap_a_Bem(); };
+            tapBem.Tapped += (object o, TappedEventArgs ev) => { quest.Tap_a_Bem(); };
 
             quest.frame_Bem = new Frame
             {
                 Padding = new Thickness(5),
                 Margin = new Thickness(0, 5, 0, 0),
-                BackgroundColor = Color.FromHex("#042d53"),
+                BackgroundColor = Color.FromArgb("#042d53"),
                 HasShadow = true,
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
@@ -639,18 +639,18 @@ namespace iPMCloud.Mobile
                 Padding = new Thickness(10, 5),
                 Margin = new Thickness(0),
                 Opacity = quest.isReady && quest.a0 != 2 ? 0.5 : 1,
-                BackgroundColor = quest.isReady && quest.a0 != 2 ? Color.FromHex("#666666") : Color.FromHex("#73042d"),// #666666
+                BackgroundColor = quest.isReady && quest.a0 != 2 ? Color.FromArgb("#666666") : Color.FromArgb("#73042d"),// #666666
                 HasShadow = true,
                 HorizontalOptions = quest.required != 1 ? LayoutOptions.End : LayoutOptions.EndAndExpand,
                 VerticalOptions = LayoutOptions.Center,
-                BorderColor = quest.isReady && quest.a0 != 2 ? Color.White : Color.Transparent,
+                BorderColor = quest.isReady && quest.a0 != 2 ? Colors.White : Colors.Transparent,
                 Content = new Label
                 {
                     Text = "NEIN",
                     FontSize = 16,
                     HorizontalOptions = LayoutOptions.Center,
                     VerticalOptions = LayoutOptions.Center,
-                    TextColor = Color.FromHex("#ffffff"),
+                    TextColor = Color.FromArgb("#ffffff"),
                     Margin = new Thickness(0),
                     Padding = new Thickness(0)
                 },
@@ -661,18 +661,18 @@ namespace iPMCloud.Mobile
                 Padding = new Thickness(10, 5),
                 Margin = new Thickness(0),
                 Opacity = quest.isReady && quest.a0 != 1 ? 0.5 : 1,
-                BackgroundColor = quest.isReady && quest.a0 != 1 ? Color.FromHex("#666666") : Color.FromHex("#04732d"),// #666666
+                BackgroundColor = quest.isReady && quest.a0 != 1 ? Color.FromArgb("#666666") : Color.FromArgb("#04732d"),// #666666
                 HasShadow = true,
                 HorizontalOptions = LayoutOptions.End,
                 VerticalOptions = LayoutOptions.Center,
-                BorderColor = quest.isReady && quest.a0 != 1 ? Color.White : Color.Transparent,
+                BorderColor = quest.isReady && quest.a0 != 1 ? Colors.White : Colors.Transparent,
                 Content = new Label
                 {
                     Text = "JA",
                     FontSize = 16,
                     HorizontalOptions = LayoutOptions.Center,
                     VerticalOptions = LayoutOptions.Center,
-                    TextColor = Color.FromHex("#ffffff"),
+                    TextColor = Color.FromArgb("#ffffff"),
                     Margin = new Thickness(0),
                     Padding = new Thickness(0)
                 },
@@ -684,18 +684,18 @@ namespace iPMCloud.Mobile
                 Padding = new Thickness(5, 5),
                 Margin = new Thickness(0),
                 Opacity = quest.isReady && quest.a0 != 0 ? 0.5 : 1,
-                BackgroundColor = quest.isReady && quest.a0 != 0 ? Color.FromHex("#666666") : Color.FromHex("#938302"),// #666666
+                BackgroundColor = quest.isReady && quest.a0 != 0 ? Color.FromArgb("#666666") : Color.FromArgb("#938302"),// #666666
                 HasShadow = true,
                 HorizontalOptions = LayoutOptions.EndAndExpand,
                 VerticalOptions = LayoutOptions.Center,
-                BorderColor = quest.isReady && quest.a0 != 0 ? Color.White : Color.Transparent,
+                BorderColor = quest.isReady && quest.a0 != 0 ? Colors.White : Colors.Transparent,
                 Content = new Label
                 {
                     Text = "KEINE",
                     FontSize = 16,
                     HorizontalOptions = LayoutOptions.Center,
                     VerticalOptions = LayoutOptions.Center,
-                    TextColor = Color.FromHex("#ffffff"),
+                    TextColor = Color.FromArgb("#ffffff"),
                     Margin = new Thickness(0),
                     Padding = new Thickness(0)
                 },
@@ -706,7 +706,7 @@ namespace iPMCloud.Mobile
                 IsVisible = quest.isReady,
                 Padding = new Thickness(5),
                 Margin = new Thickness(0, 5, 0, 0),
-                BackgroundColor = Color.FromHex("#042d53"),
+                BackgroundColor = Color.FromArgb("#042d53"),
                 HasShadow = true,
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
@@ -726,7 +726,7 @@ namespace iPMCloud.Mobile
                 Text = quest.frage,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 FontSize = 16,
-                TextColor = Color.White,
+                TextColor = Colors.White,
                 Margin = new Thickness(0),
                 Padding = new Thickness(10, (quest.required == 1 ? 0 : 5), 10, 0),
                 LineBreakMode = quest.isReady ? LineBreakMode.TailTruncation : LineBreakMode.WordWrap,
@@ -738,7 +738,7 @@ namespace iPMCloud.Mobile
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 FontSize = 13,
                 FontAttributes = FontAttributes.Italic,
-                TextColor = Color.FromHex("#cccccc"),
+                TextColor = Color.FromArgb("#cccccc"),
                 Margin = new Thickness(0, 5),
                 Padding = new Thickness(10, 0),
                 LineBreakMode = quest.isReady ? LineBreakMode.TailTruncation : LineBreakMode.WordWrap,
@@ -749,7 +749,7 @@ namespace iPMCloud.Mobile
                 Text = "*PFLICHTANTWORT",
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 FontSize = 12,
-                TextColor = quest.required == 1 ? Color.FromHex("#ffcc00") : Color.Transparent,
+                TextColor = quest.required == 1 ? Color.FromArgb("#ffcc00") : Colors.Transparent,
                 HorizontalTextAlignment = TextAlignment.End,
                 Margin = new Thickness(0),
                 Padding = new Thickness(0, -3, 0, 0)
@@ -768,7 +768,7 @@ namespace iPMCloud.Mobile
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(15, 8, 15, 0),
-                BackgroundColor = Color.FromHex("#99042d53"),
+                BackgroundColor = Color.FromArgb("#99042d53"),
                 HasShadow = true,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 CornerRadius = 10,
@@ -813,22 +813,22 @@ namespace iPMCloud.Mobile
         public static Frame GetQuestMain_1(CheckLeistungAntwort quest)
         {
             var tapReset = new TapGestureRecognizer();
-            tapReset.Tapped -= (object o, EventArgs ev) => { quest.Tap_a1_Reset(); };
-            tapReset.Tapped += (object o, EventArgs ev) => { quest.Tap_a1_Reset(); };
+            tapReset.Tapped -= (object o, TappedEventArgs ev) => { quest.Tap_a1_Reset(); };
+            tapReset.Tapped += (object o, TappedEventArgs ev) => { quest.Tap_a1_Reset(); };
 
             var tapNone = new TapGestureRecognizer();
-            tapNone.Tapped -= (object o, EventArgs ev) => { quest.Tap_a1_None(); };
-            tapNone.Tapped += (object o, EventArgs ev) => { quest.Tap_a1_None(); };
+            tapNone.Tapped -= (object o, TappedEventArgs ev) => { quest.Tap_a1_None(); };
+            tapNone.Tapped += (object o, TappedEventArgs ev) => { quest.Tap_a1_None(); };
 
             var tapBem = new TapGestureRecognizer();
-            tapBem.Tapped -= (object o, EventArgs ev) => { quest.Tap_a_Bem(); };
-            tapBem.Tapped += (object o, EventArgs ev) => { quest.Tap_a_Bem(); };
+            tapBem.Tapped -= (object o, TappedEventArgs ev) => { quest.Tap_a_Bem(); };
+            tapBem.Tapped += (object o, TappedEventArgs ev) => { quest.Tap_a_Bem(); };
 
             quest.frame_Bem = new Frame
             {
                 Padding = new Thickness(5),
                 Margin = new Thickness(0, 5, 0, 0),
-                BackgroundColor = Color.FromHex("#042d53"),
+                BackgroundColor = Color.FromArgb("#042d53"),
                 HasShadow = true,
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
@@ -862,9 +862,9 @@ namespace iPMCloud.Mobile
                 Text = quest.a1,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 Margin = new Thickness(0),
-                BackgroundColor = Color.FromHex("#ffffff"),
+                BackgroundColor = Color.FromArgb("#ffffff"),
                 FontSize = 12,
-                TextColor = Color.Black,
+                TextColor = Colors.Black,
                 MaxLength = 499,
                 HeightRequest = quest.isReady ? 40 : -1,
                 AutoSize = EditorAutoSizeOption.TextChanges,
@@ -882,16 +882,16 @@ namespace iPMCloud.Mobile
                 Padding = new Thickness(8, 5),
                 Margin = new Thickness(0, 5, 10, 0),
                 Opacity = quest.none ? 0.5 : 1,
-                BackgroundColor = !quest.none ? Color.FromHex("#666666") : Color.FromHex("#938302"),// #666666
+                BackgroundColor = !quest.none ? Color.FromArgb("#666666") : Color.FromArgb("#938302"),// #666666
                 HasShadow = true,
                 HorizontalOptions = LayoutOptions.End,
                 VerticalOptions = LayoutOptions.Center,
-                BorderColor = quest.none ? Color.White : Color.Transparent,
+                BorderColor = quest.none ? Colors.White : Colors.Transparent,
                 Content = new Label
                 {
                     Text = "KEINE",
                     FontSize = 16,
-                    TextColor = Color.FromHex("#ffffff"),
+                    TextColor = Color.FromArgb("#ffffff"),
                     Margin = new Thickness(0),
                     Padding = new Thickness(0)
                 },
@@ -902,7 +902,7 @@ namespace iPMCloud.Mobile
                 IsVisible = quest.isReady,
                 Padding = new Thickness(5),
                 Margin = new Thickness(0, 5, 0, 0),
-                BackgroundColor = Color.FromHex("#042d53"),
+                BackgroundColor = Color.FromArgb("#042d53"),
                 HasShadow = true,
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
@@ -920,7 +920,7 @@ namespace iPMCloud.Mobile
                 Text = quest.frage,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 FontSize = 16,
-                TextColor = Color.White,
+                TextColor = Colors.White,
                 Margin = new Thickness(0),
                 Padding = new Thickness(10, (quest.required == 1 ? 0 : 5), 10, 0),
                 LineBreakMode = quest.isReady ? LineBreakMode.TailTruncation : LineBreakMode.WordWrap,
@@ -932,7 +932,7 @@ namespace iPMCloud.Mobile
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 FontSize = 13,
                 FontAttributes = FontAttributes.Italic,
-                TextColor = Color.FromHex("#cccccc"),
+                TextColor = Color.FromArgb("#cccccc"),
                 Margin = new Thickness(0, 5),
                 Padding = new Thickness(10, 0),
                 LineBreakMode = quest.isReady ? LineBreakMode.TailTruncation : LineBreakMode.WordWrap,
@@ -943,7 +943,7 @@ namespace iPMCloud.Mobile
                 Text = "*PFLICHTANTWORT",
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 FontSize = 12,
-                TextColor = quest.required == 1 ? Color.FromHex("#ffcc00") : Color.Transparent,
+                TextColor = quest.required == 1 ? Color.FromArgb("#ffcc00") : Colors.Transparent,
                 HorizontalTextAlignment = TextAlignment.End,
                 Margin = new Thickness(0),
                 Padding = new Thickness(0, -3, 0, 0)
@@ -962,7 +962,7 @@ namespace iPMCloud.Mobile
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(15, 8, 15, 0),
-                BackgroundColor = Color.FromHex("#99042d53"),
+                BackgroundColor = Color.FromArgb("#99042d53"),
                 HasShadow = true,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 CornerRadius = 10,
@@ -990,7 +990,7 @@ namespace iPMCloud.Mobile
                                 {
                                     Padding = new Thickness(0),
                                     Margin = new Thickness(0),
-                                    BackgroundColor = Color.FromHex("#99ffffff"),
+                                    BackgroundColor = Color.FromArgb("#99ffffff"),
                                     HasShadow = true,
                                     HorizontalOptions = LayoutOptions.FillAndExpand,
                                     CornerRadius = 10,
@@ -1024,21 +1024,21 @@ namespace iPMCloud.Mobile
         public static Frame GetQuestMain_2(CheckLeistungAntwort quest)
         {
             var tapReset = new TapGestureRecognizer();
-            tapReset.Tapped -= (object o, EventArgs ev) => { quest.Tap_a2_Reset(); };
-            tapReset.Tapped += (object o, EventArgs ev) => { quest.Tap_a2_Reset(); };
+            tapReset.Tapped -= (object o, TappedEventArgs ev) => { quest.Tap_a2_Reset(); };
+            tapReset.Tapped += (object o, TappedEventArgs ev) => { quest.Tap_a2_Reset(); };
 
             var tapNone = new TapGestureRecognizer();
-            tapNone.Tapped -= (object o, EventArgs ev) => { quest.Tap_a2_None(); };
-            tapNone.Tapped += (object o, EventArgs ev) => { quest.Tap_a2_None(); };
+            tapNone.Tapped -= (object o, TappedEventArgs ev) => { quest.Tap_a2_None(); };
+            tapNone.Tapped += (object o, TappedEventArgs ev) => { quest.Tap_a2_None(); };
             var tapBem = new TapGestureRecognizer();
-            tapBem.Tapped -= (object o, EventArgs ev) => { quest.Tap_a_Bem(); };
-            tapBem.Tapped += (object o, EventArgs ev) => { quest.Tap_a_Bem(); };
+            tapBem.Tapped -= (object o, TappedEventArgs ev) => { quest.Tap_a_Bem(); };
+            tapBem.Tapped += (object o, TappedEventArgs ev) => { quest.Tap_a_Bem(); };
 
             quest.frame_Bem = new Frame
             {
                 Padding = new Thickness(5),
                 Margin = new Thickness(0, 5, 0, 0),
-                BackgroundColor = Color.FromHex("#042d53"),
+                BackgroundColor = Color.FromArgb("#042d53"),
                 HasShadow = true,
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
@@ -1072,10 +1072,10 @@ namespace iPMCloud.Mobile
                 Text = quest.a2,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 Margin = new Thickness(0),
-                BackgroundColor = Color.FromHex("#ffffff"),
+                BackgroundColor = Color.FromArgb("#ffffff"),
                 HorizontalTextAlignment = TextAlignment.End,
                 FontSize = 12,
-                TextColor = Color.Black,
+                TextColor = Colors.Black,
                 MaxLength = 499,
                 HeightRequest = 40,
                 Keyboard = Keyboard.Numeric,
@@ -1093,18 +1093,18 @@ namespace iPMCloud.Mobile
                 Padding = new Thickness(8, 5),
                 Margin = new Thickness(0, 5, 10, 0),
                 Opacity = quest.none ? 0.5 : 1,
-                BackgroundColor = quest.none ? Color.FromHex("#666666") : Color.FromHex("#938302"),// #666666
+                BackgroundColor = quest.none ? Color.FromArgb("#666666") : Color.FromArgb("#938302"),// #666666
                 HasShadow = true,
                 HorizontalOptions = LayoutOptions.End,
                 VerticalOptions = LayoutOptions.Center,
-                BorderColor = quest.none ? Color.White : Color.Transparent,
+                BorderColor = quest.none ? Colors.White : Colors.Transparent,
                 Content = new Label
                 {
                     Text = "KEINE",
                     FontSize = 16,
                     HorizontalOptions = LayoutOptions.Center,
                     VerticalOptions = LayoutOptions.Center,
-                    TextColor = Color.FromHex("#ffffff"),
+                    TextColor = Color.FromArgb("#ffffff"),
                     Margin = new Thickness(0),
                     Padding = new Thickness(0)
                 },
@@ -1115,7 +1115,7 @@ namespace iPMCloud.Mobile
                 IsVisible = quest.isReady,
                 Padding = new Thickness(5),
                 Margin = new Thickness(0, 5, 0, 0),
-                BackgroundColor = Color.FromHex("#042d53"),
+                BackgroundColor = Color.FromArgb("#042d53"),
                 HasShadow = true,
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
@@ -1135,7 +1135,7 @@ namespace iPMCloud.Mobile
                 Text = quest.frage,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 FontSize = 16,
-                TextColor = Color.White,
+                TextColor = Colors.White,
                 Margin = new Thickness(0),
                 Padding = new Thickness(10, (quest.required == 1 ? 0 : 5), 10, 0),
                 LineBreakMode = quest.isReady ? LineBreakMode.TailTruncation : LineBreakMode.WordWrap,
@@ -1147,7 +1147,7 @@ namespace iPMCloud.Mobile
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 FontSize = 13,
                 FontAttributes = FontAttributes.Italic,
-                TextColor = Color.FromHex("#cccccc"),
+                TextColor = Color.FromArgb("#cccccc"),
                 Margin = new Thickness(0, 5),
                 Padding = new Thickness(10, 0),
                 LineBreakMode = quest.isReady ? LineBreakMode.TailTruncation : LineBreakMode.WordWrap,
@@ -1158,7 +1158,7 @@ namespace iPMCloud.Mobile
                 Text = "*PFLICHTANTWORT",
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 FontSize = 12,
-                TextColor = quest.required == 1 ? Color.FromHex("#ffcc00") : Color.Transparent,
+                TextColor = quest.required == 1 ? Color.FromArgb("#ffcc00") : Colors.Transparent,
                 HorizontalTextAlignment = TextAlignment.End,
                 Margin = new Thickness(0),
                 Padding = new Thickness(0, -3, 0, 0)
@@ -1177,7 +1177,7 @@ namespace iPMCloud.Mobile
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(15, 8, 15, 0),
-                BackgroundColor = Color.FromHex("#99042d53"),
+                BackgroundColor = Color.FromArgb("#99042d53"),
                 HasShadow = true,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 CornerRadius = 10,
@@ -1219,7 +1219,7 @@ namespace iPMCloud.Mobile
                                 {
                                     Padding = new Thickness(0),
                                     Margin = new Thickness(0),
-                                    BackgroundColor = Color.FromHex("#99ffffff"),
+                                    BackgroundColor = Color.FromArgb("#99ffffff"),
                                     HasShadow = true,
                                     HorizontalOptions = LayoutOptions.FillAndExpand,
                                     CornerRadius = 10,
@@ -1239,17 +1239,17 @@ namespace iPMCloud.Mobile
         public static Frame GetQuestMain_3(CheckLeistungAntwort quest)
         {
             var tapNone = new TapGestureRecognizer();
-            tapNone.Tapped -= (object o, EventArgs ev) => { quest.Tap_a3_None(); };
-            tapNone.Tapped += (object o, EventArgs ev) => { quest.Tap_a3_None(); };
+            tapNone.Tapped -= (object o, TappedEventArgs ev) => { quest.Tap_a3_None(); };
+            tapNone.Tapped += (object o, TappedEventArgs ev) => { quest.Tap_a3_None(); };
             var tapReset = new TapGestureRecognizer();
-            tapReset.Tapped -= (object o, EventArgs ev) => { quest.Tap_a3_Reset(); };
-            tapReset.Tapped += (object o, EventArgs ev) => { quest.Tap_a3_Reset(); };
+            tapReset.Tapped -= (object o, TappedEventArgs ev) => { quest.Tap_a3_Reset(); };
+            tapReset.Tapped += (object o, TappedEventArgs ev) => { quest.Tap_a3_Reset(); };
             var tapBem = new TapGestureRecognizer();
-            tapBem.Tapped -= (object o, EventArgs ev) => { quest.Tap_a_Bem(); };
-            tapBem.Tapped += (object o, EventArgs ev) => { quest.Tap_a_Bem(); };
+            tapBem.Tapped -= (object o, TappedEventArgs ev) => { quest.Tap_a_Bem(); };
+            tapBem.Tapped += (object o, TappedEventArgs ev) => { quest.Tap_a_Bem(); };
             var tapPic = new TapGestureRecognizer();
-            tapPic.Tapped -= (object o, EventArgs ev) => { quest.Tap_a3_Pic(); };
-            tapPic.Tapped += (object o, EventArgs ev) => { quest.Tap_a3_Pic(); };
+            tapPic.Tapped -= (object o, TappedEventArgs ev) => { quest.Tap_a3_Pic(); };
+            tapPic.Tapped += (object o, TappedEventArgs ev) => { quest.Tap_a3_Pic(); };
 
             //var pics = quest.a3.Split(new String[] { "[##]" }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -1259,16 +1259,16 @@ namespace iPMCloud.Mobile
                 Padding = new Thickness(5, 5),
                 Margin = new Thickness(0),
                 Opacity = quest.isReady && quest.a0 != 0 ? 0.5 : 1,
-                BackgroundColor = !quest.none ? Color.FromHex("#666666") : Color.FromHex("#938302"),
+                BackgroundColor = !quest.none ? Color.FromArgb("#666666") : Color.FromArgb("#938302"),
                 HasShadow = true,
                 HorizontalOptions = LayoutOptions.EndAndExpand,
                 VerticalOptions = LayoutOptions.Start,
-                BorderColor = quest.isReady && quest.a0 != 0 ? Color.White : Color.Transparent,
+                BorderColor = quest.isReady && quest.a0 != 0 ? Colors.White : Colors.Transparent,
                 Content = new Label
                 {
                     Text = "KEINE",
                     FontSize = 15,
-                    TextColor = Color.FromHex("#ffffff"),
+                    TextColor = Color.FromArgb("#ffffff"),
                     Margin = new Thickness(0),
                     Padding = new Thickness(0)
                 },
@@ -1279,7 +1279,7 @@ namespace iPMCloud.Mobile
                 Padding = new Thickness(5, 5),
                 Margin = new Thickness(0),
                 Opacity = quest.none ? 0.75 : 1,
-                BackgroundColor = Color.FromHex("#935302"),
+                BackgroundColor = Color.FromArgb("#935302"),
                 HasShadow = true,
                 HorizontalOptions = quest.required != 1 ? LayoutOptions.End : LayoutOptions.EndAndExpand,
                 VerticalOptions = LayoutOptions.Start,
@@ -1287,7 +1287,7 @@ namespace iPMCloud.Mobile
                 {
                     Text = "BILDER HINZUFÜGEN",
                     FontSize = 15,
-                    TextColor = Color.FromHex("#ffffff"),
+                    TextColor = Color.FromArgb("#ffffff"),
                     Margin = new Thickness(0),
                     Padding = new Thickness(0, 0, 10, 0)
                 },
@@ -1297,7 +1297,7 @@ namespace iPMCloud.Mobile
             {
                 Padding = new Thickness(5),
                 Margin = new Thickness(0),
-                BackgroundColor = Color.FromHex("#042d53"),
+                BackgroundColor = Color.FromArgb("#042d53"),
                 HasShadow = true,
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
@@ -1315,7 +1315,7 @@ namespace iPMCloud.Mobile
                 IsVisible = quest.isReady || true,
                 Padding = new Thickness(5),
                 Margin = new Thickness(0),
-                BackgroundColor = Color.FromHex("#042d53"),
+                BackgroundColor = Color.FromArgb("#042d53"),
                 HasShadow = true,
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
@@ -1333,7 +1333,7 @@ namespace iPMCloud.Mobile
                 Text = quest.frage,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 FontSize = 16,
-                TextColor = Color.White,
+                TextColor = Colors.White,
                 Margin = new Thickness(0),
                 Padding = new Thickness(10, (quest.required == 1 ? 0 : 5), 10, 0),
                 LineBreakMode = quest.isReady ? LineBreakMode.TailTruncation : LineBreakMode.WordWrap,
@@ -1345,7 +1345,7 @@ namespace iPMCloud.Mobile
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 FontSize = 13,
                 FontAttributes = FontAttributes.Italic,
-                TextColor = Color.FromHex("#cccccc"),
+                TextColor = Color.FromArgb("#cccccc"),
                 Margin = new Thickness(0, 5),
                 Padding = new Thickness(10, 0),
                 LineBreakMode = quest.isReady ? LineBreakMode.TailTruncation : LineBreakMode.WordWrap,
@@ -1356,7 +1356,7 @@ namespace iPMCloud.Mobile
                 Text = "*PFLICHTANTWORT",
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 FontSize = 12,
-                TextColor = quest.required == 1 ? Color.FromHex("#ffcc00") : Color.Transparent,
+                TextColor = quest.required == 1 ? Color.FromArgb("#ffcc00") : Colors.Transparent,
                 HorizontalTextAlignment = TextAlignment.End,
                 Margin = new Thickness(0),
                 Padding = new Thickness(0, -3, 0, 0)
@@ -1390,7 +1390,7 @@ namespace iPMCloud.Mobile
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(15, 8, 15, 0),
-                BackgroundColor = Color.FromHex("#99042d53"),
+                BackgroundColor = Color.FromArgb("#99042d53"),
                 HasShadow = true,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 CornerRadius = 10,
@@ -1434,7 +1434,7 @@ namespace iPMCloud.Mobile
                 Text = "" + quest.frage,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 FontSize = 16,
-                TextColor = Color.White,
+                TextColor = Colors.White,
                 Margin = new Thickness(0),
                 Padding = new Thickness(5, (quest.required == 1 ? 0 : 5), 5, 0),
                 LineBreakMode = LineBreakMode.WordWrap,
@@ -1446,7 +1446,7 @@ namespace iPMCloud.Mobile
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 FontSize = 13,
                 FontAttributes = FontAttributes.Italic,
-                TextColor = Color.FromHex("#cccccc"),
+                TextColor = Color.FromArgb("#cccccc"),
                 Margin = new Thickness(0, 5),
                 Padding = new Thickness(5, 0),
                 LineBreakMode = LineBreakMode.TailTruncation,
@@ -1457,7 +1457,7 @@ namespace iPMCloud.Mobile
                 Text = "*PFLICHTANTWORT",
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 FontSize = 12,
-                TextColor = quest.required == 1 ? Color.FromHex("#ffcc00") : Color.Transparent,
+                TextColor = quest.required == 1 ? Color.FromArgb("#ffcc00") : Colors.Transparent,
                 HorizontalTextAlignment = TextAlignment.End,
                 Margin = new Thickness(0),
                 Padding = new Thickness(0, -3, 0, 0)
@@ -1467,7 +1467,7 @@ namespace iPMCloud.Mobile
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(0),
-                BackgroundColor = Color.FromHex("#aa042d53"),
+                BackgroundColor = Color.FromArgb("#aa042d53"),
                 HasShadow = true,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 CornerRadius = 10,
@@ -1513,20 +1513,20 @@ namespace iPMCloud.Mobile
                     VerticalOptions = LayoutOptions.CenterAndExpand,
                 };
                 var tapAnt = new TapGestureRecognizer();
-                tapAnt.Tapped -= (object o, EventArgs ev) => { quest.Tap_a4a_Ant(img); };
-                tapAnt.Tapped += (object o, EventArgs ev) => { quest.Tap_a4a_Ant(img); };
+                tapAnt.Tapped -= (object o, TappedEventArgs ev) => { quest.Tap_a4a_Ant(img); };
+                tapAnt.Tapped += (object o, TappedEventArgs ev) => { quest.Tap_a4a_Ant(img); };
                 img.GestureRecognizers.Add(tapAnt);
 
                 quest.frame_ants.Add(new Frame
                 {
                     Padding = new Thickness(5, 5),
                     Margin = new Thickness(0, 3),
-                    BackgroundColor = Color.FromHex("#33ffffff"),
+                    BackgroundColor = Color.FromArgb("#33ffffff"),
                     HasShadow = true,
                     CornerRadius = 10,
                     ClassId = "" + z,
                     HorizontalOptions = LayoutOptions.FillAndExpand,
-                    BorderColor = ants.Contains(z.ToString()) ? Color.White : Color.Transparent,
+                    BorderColor = ants.Contains(z.ToString()) ? Colors.White : Colors.Transparent,
                     Content = new StackLayout
                     {
                         Padding = new Thickness(0),
@@ -1541,7 +1541,7 @@ namespace iPMCloud.Mobile
                                 HorizontalOptions = LayoutOptions.StartAndExpand,
                                 VerticalOptions = LayoutOptions.CenterAndExpand,
                                 FontSize = 14,
-                                TextColor = Color.White,
+                                TextColor = Colors.White,
                                 Margin = new Thickness(0),
                                 Padding = new Thickness(0),
                                 LineBreakMode = LineBreakMode.WordWrap,
@@ -1567,21 +1567,21 @@ namespace iPMCloud.Mobile
 
 
             var tapNone = new TapGestureRecognizer();
-            tapNone.Tapped -= (object o, EventArgs ev) => { quest.Tap_a4a_None(); };
-            tapNone.Tapped += (object o, EventArgs ev) => { quest.Tap_a4a_None(); };
+            tapNone.Tapped -= (object o, TappedEventArgs ev) => { quest.Tap_a4a_None(); };
+            tapNone.Tapped += (object o, TappedEventArgs ev) => { quest.Tap_a4a_None(); };
 
             var tapReset = new TapGestureRecognizer();
-            tapReset.Tapped -= (object o, EventArgs ev) => { quest.Tap_a4a_Reset(); };
-            tapReset.Tapped += (object o, EventArgs ev) => { quest.Tap_a4a_Reset(); };
+            tapReset.Tapped -= (object o, TappedEventArgs ev) => { quest.Tap_a4a_Reset(); };
+            tapReset.Tapped += (object o, TappedEventArgs ev) => { quest.Tap_a4a_Reset(); };
             var tapBem = new TapGestureRecognizer();
-            tapBem.Tapped -= (object o, EventArgs ev) => { quest.Tap_a_Bem(); };
-            tapBem.Tapped += (object o, EventArgs ev) => { quest.Tap_a_Bem(); };
+            tapBem.Tapped -= (object o, TappedEventArgs ev) => { quest.Tap_a_Bem(); };
+            tapBem.Tapped += (object o, TappedEventArgs ev) => { quest.Tap_a_Bem(); };
 
             quest.frame_Bem = new Frame
             {
                 Padding = new Thickness(5),
                 Margin = new Thickness(0),
-                BackgroundColor = Color.FromHex("#042d53"),
+                BackgroundColor = Color.FromArgb("#042d53"),
                 HasShadow = true,
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
@@ -1618,16 +1618,16 @@ namespace iPMCloud.Mobile
                 Padding = new Thickness(10, 5),
                 Margin = new Thickness(0),
                 Opacity = quest.none ? 0.5 : 1,
-                BackgroundColor = quest.none ? Color.FromHex("#666666") : Color.FromHex("#938302"),// #666666
+                BackgroundColor = quest.none ? Color.FromArgb("#666666") : Color.FromArgb("#938302"),// #666666
                 HasShadow = true,
                 HorizontalOptions = LayoutOptions.EndAndExpand,
                 VerticalOptions = LayoutOptions.Center,
-                BorderColor = quest.none ? Color.White : Color.Transparent,
+                BorderColor = quest.none ? Colors.White : Colors.Transparent,
                 Content = new Label
                 {
                     Text = "KEINE",
                     FontSize = 16,
-                    TextColor = Color.FromHex("#ffffff"),
+                    TextColor = Color.FromArgb("#ffffff"),
                     Margin = new Thickness(0),
                     Padding = new Thickness(0)
                 },
@@ -1638,7 +1638,7 @@ namespace iPMCloud.Mobile
                 IsVisible = quest.isReady,
                 Padding = new Thickness(5),
                 Margin = new Thickness(0),
-                BackgroundColor = Color.FromHex("#042d53"),
+                BackgroundColor = Color.FromArgb("#042d53"),
                 HasShadow = true,
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
@@ -1658,7 +1658,7 @@ namespace iPMCloud.Mobile
                 Text = quest.frage,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 FontSize = 16,
-                TextColor = Color.White,
+                TextColor = Colors.White,
                 Margin = new Thickness(0),
                 Padding = new Thickness(10, (quest.required == 1 ? 0 : 5), 10, 0),
                 LineBreakMode = quest.isReady ? LineBreakMode.TailTruncation : LineBreakMode.WordWrap,
@@ -1670,7 +1670,7 @@ namespace iPMCloud.Mobile
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 FontSize = 13,
                 FontAttributes = FontAttributes.Italic,
-                TextColor = Color.FromHex("#cccccc"),
+                TextColor = Color.FromArgb("#cccccc"),
                 Margin = new Thickness(0, 5),
                 Padding = new Thickness(10, 0),
                 LineBreakMode = quest.isReady ? LineBreakMode.TailTruncation : LineBreakMode.WordWrap,
@@ -1681,7 +1681,7 @@ namespace iPMCloud.Mobile
                 Text = "*PFLICHTANTWORT",
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 FontSize = 12,
-                TextColor = quest.required == 1 ? Color.FromHex("#ffcc00") : Color.Transparent,
+                TextColor = quest.required == 1 ? Color.FromArgb("#ffcc00") : Colors.Transparent,
                 HorizontalTextAlignment = TextAlignment.End,
                 Margin = new Thickness(0),
                 Padding = new Thickness(0, -3, 0, 0)
@@ -1700,7 +1700,7 @@ namespace iPMCloud.Mobile
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(15, 8, 15, 0),
-                BackgroundColor = Color.FromHex("#99042d53"),
+                BackgroundColor = Color.FromArgb("#99042d53"),
                 HasShadow = true,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 CornerRadius = 10,
@@ -1721,7 +1721,7 @@ namespace iPMCloud.Mobile
                             Text = "Mehrere Antworten sind möglich!",
                             HorizontalOptions = LayoutOptions.FillAndExpand,
                             FontSize = 12,
-                            TextColor = Color.Yellow,
+                            TextColor = Colors.Yellow,
                             Margin = new Thickness(10,0,0,0),
                             Padding = new Thickness(0)
                         },
@@ -1770,8 +1770,8 @@ namespace iPMCloud.Mobile
                     VerticalOptions = LayoutOptions.CenterAndExpand,
                 };
                 var tapAnt = new TapGestureRecognizer();
-                tapAnt.Tapped -= (object o, EventArgs ev) => { quest.Tap_a4b_Ant(img); };
-                tapAnt.Tapped += (object o, EventArgs ev) => { quest.Tap_a4b_Ant(img); };
+                tapAnt.Tapped -= (object o, TappedEventArgs ev) => { quest.Tap_a4b_Ant(img); };
+                tapAnt.Tapped += (object o, TappedEventArgs ev) => { quest.Tap_a4b_Ant(img); };
                 img.GestureRecognizers.Add(tapAnt);
 
                 quest.frame_ants.Add(new Frame
@@ -1779,12 +1779,12 @@ namespace iPMCloud.Mobile
                     IsVisible = !quest.none && (ants.Length == 0 || ants.Contains(z.ToString())),
                     Padding = new Thickness(5, 5),
                     Margin = new Thickness(0, 3),
-                    BackgroundColor = Color.FromHex("#33ffffff"),
+                    BackgroundColor = Color.FromArgb("#33ffffff"),
                     HasShadow = true,
                     CornerRadius = 10,
                     ClassId = "" + z,
                     HorizontalOptions = LayoutOptions.FillAndExpand,
-                    BorderColor = ants.Contains(z.ToString()) ? Color.White : Color.Transparent,
+                    BorderColor = ants.Contains(z.ToString()) ? Colors.White : Colors.Transparent,
                     Content = new StackLayout
                     {
                         Padding = new Thickness(0),
@@ -1799,7 +1799,7 @@ namespace iPMCloud.Mobile
                                 HorizontalOptions = LayoutOptions.StartAndExpand,
                                 VerticalOptions = LayoutOptions.CenterAndExpand,
                                 FontSize = 14,
-                                TextColor = Color.White,
+                                TextColor = Colors.White,
                                 Margin = new Thickness(0),
                                 Padding = new Thickness(0),
                                 LineBreakMode = LineBreakMode.WordWrap,
@@ -1825,21 +1825,21 @@ namespace iPMCloud.Mobile
 
 
             var tapNone = new TapGestureRecognizer();
-            tapNone.Tapped -= (object o, EventArgs ev) => { quest.Tap_a4b_None(); };
-            tapNone.Tapped += (object o, EventArgs ev) => { quest.Tap_a4b_None(); };
+            tapNone.Tapped -= (object o, TappedEventArgs ev) => { quest.Tap_a4b_None(); };
+            tapNone.Tapped += (object o, TappedEventArgs ev) => { quest.Tap_a4b_None(); };
 
             var tapReset = new TapGestureRecognizer();
-            tapReset.Tapped -= (object o, EventArgs ev) => { quest.Tap_a4b_Reset(); };
-            tapReset.Tapped += (object o, EventArgs ev) => { quest.Tap_a4b_Reset(); };
+            tapReset.Tapped -= (object o, TappedEventArgs ev) => { quest.Tap_a4b_Reset(); };
+            tapReset.Tapped += (object o, TappedEventArgs ev) => { quest.Tap_a4b_Reset(); };
             var tapBem = new TapGestureRecognizer();
-            tapBem.Tapped -= (object o, EventArgs ev) => { quest.Tap_a_Bem(); };
-            tapBem.Tapped += (object o, EventArgs ev) => { quest.Tap_a_Bem(); };
+            tapBem.Tapped -= (object o, TappedEventArgs ev) => { quest.Tap_a_Bem(); };
+            tapBem.Tapped += (object o, TappedEventArgs ev) => { quest.Tap_a_Bem(); };
 
             quest.frame_Bem = new Frame
             {
                 Padding = new Thickness(5),
                 Margin = new Thickness(0, 5, 0, 0),
-                BackgroundColor = Color.FromHex("#042d53"),
+                BackgroundColor = Color.FromArgb("#042d53"),
                 HasShadow = true,
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
@@ -1876,18 +1876,18 @@ namespace iPMCloud.Mobile
                 Padding = new Thickness(5, 5),
                 Margin = new Thickness(0),
                 Opacity = quest.none ? 0.5 : 1,
-                BackgroundColor = quest.none ? Color.FromHex("#666666") : Color.FromHex("#938302"),// #666666
+                BackgroundColor = quest.none ? Color.FromArgb("#666666") : Color.FromArgb("#938302"),// #666666
                 HasShadow = true,
                 HorizontalOptions = LayoutOptions.EndAndExpand,
                 VerticalOptions = LayoutOptions.Center,
-                BorderColor = quest.none ? Color.White : Color.Transparent,
+                BorderColor = quest.none ? Colors.White : Colors.Transparent,
                 Content = new Label
                 {
                     Text = "KEINE",
                     FontSize = 16,
                     HorizontalOptions = LayoutOptions.Center,
                     VerticalOptions = LayoutOptions.Center,
-                    TextColor = Color.FromHex("#ffffff"),
+                    TextColor = Color.FromArgb("#ffffff"),
                     Margin = new Thickness(0),
                     Padding = new Thickness(0)
                 },
@@ -1898,7 +1898,7 @@ namespace iPMCloud.Mobile
                 IsVisible = quest.isReady,
                 Padding = new Thickness(5),
                 Margin = new Thickness(0, 5, 0, 0),
-                BackgroundColor = Color.FromHex("#042d53"),
+                BackgroundColor = Color.FromArgb("#042d53"),
                 HasShadow = true,
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
@@ -1918,7 +1918,7 @@ namespace iPMCloud.Mobile
                 Text = quest.frage,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 FontSize = 16,
-                TextColor = Color.White,
+                TextColor = Colors.White,
                 Margin = new Thickness(0),
                 Padding = new Thickness(10, (quest.required == 1 ? 0 : 5), 10, 0),
                 LineBreakMode = quest.isReady ? LineBreakMode.TailTruncation : LineBreakMode.WordWrap,
@@ -1930,7 +1930,7 @@ namespace iPMCloud.Mobile
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 FontSize = 13,
                 FontAttributes = FontAttributes.Italic,
-                TextColor = Color.FromHex("#cccccc"),
+                TextColor = Color.FromArgb("#cccccc"),
                 Margin = new Thickness(0, 5),
                 Padding = new Thickness(10, 0),
                 LineBreakMode = quest.isReady ? LineBreakMode.TailTruncation : LineBreakMode.WordWrap,
@@ -1941,7 +1941,7 @@ namespace iPMCloud.Mobile
                 Text = "*PFLICHTANTWORT",
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 FontSize = 12,
-                TextColor = quest.required == 1 ? Color.FromHex("#ffcc00") : Color.Transparent,
+                TextColor = quest.required == 1 ? Color.FromArgb("#ffcc00") : Colors.Transparent,
                 HorizontalTextAlignment = TextAlignment.End,
                 Margin = new Thickness(0),
                 Padding = new Thickness(0, -3, 0, 0)
@@ -1960,7 +1960,7 @@ namespace iPMCloud.Mobile
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(15, 8, 15, 0),
-                BackgroundColor = Color.FromHex("#99042d53"),
+                BackgroundColor = Color.FromArgb("#99042d53"),
                 HasShadow = true,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 CornerRadius = 10,
@@ -1981,7 +1981,7 @@ namespace iPMCloud.Mobile
                             Text = "Nur eine Antwort ist möglich!",
                             HorizontalOptions = LayoutOptions.FillAndExpand,
                             FontSize = 12,
-                            TextColor = Color.Yellow,
+                            TextColor = Colors.Yellow,
                             Margin = new Thickness(10,0,0,0),
                             Padding = new Thickness(0)
                         },
@@ -2013,23 +2013,23 @@ namespace iPMCloud.Mobile
         public static Frame GetQuestMain_7(CheckLeistungAntwort quest)
         {
             var tapYes = new TapGestureRecognizer();
-            tapYes.Tapped -= (object o, EventArgs ev) => { quest.Tap_a7_OpenSig(); };
-            tapYes.Tapped += (object o, EventArgs ev) => { quest.Tap_a7_OpenSig(); };
+            tapYes.Tapped -= (object o, TappedEventArgs ev) => { quest.Tap_a7_OpenSig(); };
+            tapYes.Tapped += (object o, EventArTappedEventArgsgs ev) => { quest.Tap_a7_OpenSig(); };
             var tapNone = new TapGestureRecognizer();
-            tapNone.Tapped -= (object o, EventArgs ev) => { quest.Tap_a7_None(); };
-            tapNone.Tapped += (object o, EventArgs ev) => { quest.Tap_a7_None(); };
+            tapNone.Tapped -= (object o, TappedEventArgs ev) => { quest.Tap_a7_None(); };
+            tapNone.Tapped += (object o, TappedEventArgs ev) => { quest.Tap_a7_None(); };
             var tapReset = new TapGestureRecognizer();
-            tapReset.Tapped -= (object o, EventArgs ev) => { quest.Tap_a7_Reset(); };
-            tapReset.Tapped += (object o, EventArgs ev) => { quest.Tap_a7_Reset(); };
+            tapReset.Tapped -= (object o, TappedEventArgs ev) => { quest.Tap_a7_Reset(); };
+            tapReset.Tapped += (object o, TappedEventArgs ev) => { quest.Tap_a7_Reset(); };
             var tapBem = new TapGestureRecognizer();
-            tapBem.Tapped -= (object o, EventArgs ev) => { quest.Tap_a_Bem(true); };
-            tapBem.Tapped += (object o, EventArgs ev) => { quest.Tap_a_Bem(true); };
+            tapBem.Tapped -= (object o, TappedEventArgs ev) => { quest.Tap_a_Bem(true); };
+            tapBem.Tapped += (object o, TappedEventArgs ev) => { quest.Tap_a_Bem(true); };
 
             quest.frame_Bem = new Frame
             {
                 Padding = new Thickness(5),
                 Margin = new Thickness(quest.isReady ? 10 : 0, 5, 0, 0),
-                BackgroundColor = Color.FromHex("#042d53"),
+                BackgroundColor = Color.FromArgb("#042d53"),
                 HasShadow = true,
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
@@ -2049,7 +2049,7 @@ namespace iPMCloud.Mobile
                 IsVisible = !quest.isReady,
                 Padding = new Thickness(5),
                 Margin = new Thickness(0, 5, 0, 0),
-                BackgroundColor = Color.FromHex("#04732d"),// #666666
+                BackgroundColor = Color.FromArgb("#04732d"),// #666666
                 HasShadow = true,
                 HorizontalOptions = quest.required != 1 ? LayoutOptions.End : LayoutOptions.EndAndExpand,
                 Content = new Label
@@ -2058,7 +2058,7 @@ namespace iPMCloud.Mobile
                     FontSize = 16,
                     HorizontalOptions = LayoutOptions.Center,
                     VerticalOptions = LayoutOptions.Center,
-                    TextColor = Color.FromHex("#ffffff"),
+                    TextColor = Color.FromArgb("#ffffff"),
                     Margin = new Thickness(0),
                     Padding = new Thickness(0)
                 },
@@ -2070,16 +2070,16 @@ namespace iPMCloud.Mobile
                 Padding = new Thickness(5),
                 Margin = new Thickness(0, 5, 0, 0),
                 Opacity = !quest.none ? 0.5 : 1,
-                BackgroundColor = !quest.none ? Color.FromHex("#666666") : Color.FromHex("#938302"),// #666666
+                BackgroundColor = !quest.none ? Color.FromArgb("#666666") : Color.FromArgb("#938302"),// #666666
                 HasShadow = true,
                 HorizontalOptions = LayoutOptions.EndAndExpand,
                 VerticalOptions = LayoutOptions.Start,
-                BorderColor = quest.none ? Color.White : Color.Transparent,
+                BorderColor = quest.none ? Colors.White : Colors.Transparent,
                 Content = new Label
                 {
                     Text = "KEINE",
                     FontSize = 16,
-                    TextColor = Color.FromHex("#ffffff"),
+                    TextColor = Color.FromArgb("#ffffff"),
                     Margin = new Thickness(0),
                     Padding = new Thickness(0)
                 },
@@ -2090,7 +2090,7 @@ namespace iPMCloud.Mobile
                 IsVisible = quest.isReady,
                 Padding = new Thickness(5),
                 Margin = new Thickness(0, 5, 0, 0),
-                BackgroundColor = Color.FromHex("#042d53"),
+                BackgroundColor = Color.FromArgb("#042d53"),
                 HasShadow = true,
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
@@ -2110,7 +2110,7 @@ namespace iPMCloud.Mobile
                 Text = quest.frage,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 FontSize = 16,
-                TextColor = Color.White,
+                TextColor = Colors.White,
                 Margin = new Thickness(0),
                 Padding = new Thickness(10, (quest.required == 1 ? 0 : 5), 10, 0),
                 LineBreakMode = quest.isReady ? LineBreakMode.TailTruncation : LineBreakMode.WordWrap,
@@ -2122,7 +2122,7 @@ namespace iPMCloud.Mobile
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 FontSize = 13,
                 FontAttributes = FontAttributes.Italic,
-                TextColor = Color.FromHex("#cccccc"),
+                TextColor = Color.FromArgb("#cccccc"),
                 Margin = new Thickness(0, 5),
                 Padding = new Thickness(10, 0),
                 LineBreakMode = quest.isReady ? LineBreakMode.TailTruncation : LineBreakMode.WordWrap,
@@ -2133,7 +2133,7 @@ namespace iPMCloud.Mobile
                 Text = "*PFLICHTANTWORT",
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 FontSize = 12,
-                TextColor = quest.required == 1 ? Color.FromHex("#ffcc00") : Color.Transparent,
+                TextColor = quest.required == 1 ? Color.FromArgb("#ffcc00") : Colors.Transparent,
                 HorizontalTextAlignment = TextAlignment.End,
                 Margin = new Thickness(0),
                 Padding = new Thickness(0, -3, 0, 0)
@@ -2174,8 +2174,8 @@ namespace iPMCloud.Mobile
                     : GetBadgeRoundFrame(0, false, true) }
             };
             var tapSig = new TapGestureRecognizer();
-            tapSig.Tapped -= (object o, EventArgs ev) => { quest.Tap_a7_OpenSig(); };
-            tapSig.Tapped += (object o, EventArgs ev) => { quest.Tap_a7_OpenSig(); };
+            tapSig.Tapped -= (object o, TappedEventArgs ev) => { quest.Tap_a7_OpenSig(); };
+            tapSig.Tapped += (object o, TappedEventArgs ev) => { quest.Tap_a7_OpenSig(); };
 
             // Wird nur im PopUp verwendet !
 
@@ -2183,7 +2183,7 @@ namespace iPMCloud.Mobile
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(15, 8, 15, 0),
-                BackgroundColor = Color.FromHex("#99042d53"),
+                BackgroundColor = Color.FromArgb("#99042d53"),
                 HasShadow = true,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 CornerRadius = 10,
@@ -2237,17 +2237,17 @@ namespace iPMCloud.Mobile
         public static Frame GetQuestMain_7_PopUp(CheckLeistungAntwort originalQuest)
         {
             var tapNone = new TapGestureRecognizer();
-            tapNone.Tapped -= (object o, EventArgs ev) => { originalQuest.signPad.Clear(); };
-            tapNone.Tapped += (object o, EventArgs ev) => { originalQuest.signPad.Clear(); };
+            tapNone.Tapped -= (object o, TappedEventArgs ev) => { originalQuest.signPad.Clear(); };
+            tapNone.Tapped += (object o, TappedEventArgs ev) => { originalQuest.signPad.Clear(); };
             var tapYes = new TapGestureRecognizer();
-            tapYes.Tapped -= (object o, EventArgs ev) => { originalQuest.Tap_a7_ReturnSig(); };
-            tapYes.Tapped += (object o, EventArgs ev) => { originalQuest.Tap_a7_ReturnSig(); };
+            tapYes.Tapped -= (object o, TappedEventArgs ev) => { originalQuest.Tap_a7_ReturnSig(); };
+            tapYes.Tapped += (object o, TappedEventArgs ev) => { originalQuest.Tap_a7_ReturnSig(); };
 
             var frame_Yes = new Frame
             {
                 Padding = new Thickness(5),
                 Margin = new Thickness(0, 5, 0, 0),
-                BackgroundColor = Color.FromHex("#04732d"),// #666666
+                BackgroundColor = Color.FromArgb("#04732d"),// #666666
                 HasShadow = true,
                 HorizontalOptions = LayoutOptions.End,
                 Content = new Label
@@ -2256,7 +2256,7 @@ namespace iPMCloud.Mobile
                     FontSize = 16,
                     HorizontalOptions = LayoutOptions.Center,
                     VerticalOptions = LayoutOptions.Center,
-                    TextColor = Color.FromHex("#ffffff"),
+                    TextColor = Color.FromArgb("#ffffff"),
                     Margin = new Thickness(0),
                     Padding = new Thickness(0)
                 },
@@ -2266,7 +2266,7 @@ namespace iPMCloud.Mobile
             {
                 Padding = new Thickness(5),
                 Margin = new Thickness(0, 5, 0, 0),
-                BackgroundColor = Color.FromHex("#73042d"),// #666666
+                BackgroundColor = Color.FromArgb("#73042d"),// #666666
                 HasShadow = true,
                 HorizontalOptions = LayoutOptions.EndAndExpand,
                 VerticalOptions = LayoutOptions.Start,
@@ -2274,7 +2274,7 @@ namespace iPMCloud.Mobile
                 {
                     Text = "LÖSCHEN",
                     FontSize = 16,
-                    TextColor = Color.FromHex("#ffffff"),
+                    TextColor = Color.FromArgb("#ffffff"),
                     Margin = new Thickness(0),
                     Padding = new Thickness(0)
                 },
@@ -2285,7 +2285,7 @@ namespace iPMCloud.Mobile
                 Text = originalQuest.frage,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 FontSize = 16,
-                TextColor = Color.White,
+                TextColor = Colors.White,
                 Margin = new Thickness(0),
                 Padding = new Thickness(10, (originalQuest.required == 1 ? 0 : 5), 10, 0),
                 LineBreakMode = LineBreakMode.WordWrap,
@@ -2297,7 +2297,7 @@ namespace iPMCloud.Mobile
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 FontSize = 13,
                 FontAttributes = FontAttributes.Italic,
-                TextColor = Color.FromHex("#cccccc"),
+                TextColor = Color.FromArgb("#cccccc"),
                 Margin = new Thickness(0, 5),
                 Padding = new Thickness(10, 0),
                 LineBreakMode = LineBreakMode.WordWrap,
@@ -2308,7 +2308,7 @@ namespace iPMCloud.Mobile
                 Text = "*PFLICHTANTWORT",
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 FontSize = 12,
-                TextColor = Color.FromHex("#ffcc00"),
+                TextColor = Color.FromArgb("#ffcc00"),
                 HorizontalTextAlignment = TextAlignment.End,
                 Margin = new Thickness(0),
                 Padding = new Thickness(0, -3, 0, 0)
@@ -2318,7 +2318,7 @@ namespace iPMCloud.Mobile
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(15, 8, 15, 0),
-                BackgroundColor = Color.FromHex("#99042d53"),
+                BackgroundColor = Color.FromArgb("#99042d53"),
                 HasShadow = true,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 CornerRadius = 10,
@@ -2361,18 +2361,18 @@ namespace iPMCloud.Mobile
                 Margin = new Thickness(0, 20, 0, 20),
                 Padding = new Thickness(10),
                 StrokeWidth = 3f,
-                StrokeColor = Color.Black,
+                StrokeColor = Colors.Black,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.FillAndExpand,
                 HeightRequest = 250,
                 MinimumHeightRequest = 250,
                 PromptText = "Unterschrift",
                 PromptFontSize = 11,
-                PromptTextColor = Color.FromHex("#999999"),
-                BackgroundColor = Color.FromHex("#ccffffff"),
-                SignatureLineColor = Color.FromHex("#999999"),
+                PromptTextColor = Color.FromArgb("#999999"),
+                BackgroundColor = Color.FromArgb("#ccffffff"),
+                SignatureLineColor = Color.FromArgb("#999999"),
                 CaptionText = "",
-                ClearTextColor = Color.FromHex("#2f84bd"),
+                ClearTextColor = Color.FromArgb("#2f84bd"),
                 ClearText = "",
                 ClearFontSize = 12,
             };
@@ -2387,7 +2387,7 @@ namespace iPMCloud.Mobile
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(10),
-                BackgroundColor = Color.FromHex("#5504732d"),
+                BackgroundColor = Color.FromArgb("#5504732d"),
                 HasShadow = true,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 CornerRadius = 10,
@@ -2403,7 +2403,7 @@ namespace iPMCloud.Mobile
                             Text = quest.kat,
                             HorizontalOptions = LayoutOptions.FillAndExpand,
                             FontSize = 16, FontAttributes = FontAttributes.Bold,
-                            TextColor = Color.White,
+                            TextColor = Colors.White,
                             Margin = new Thickness(0),
                             Padding = new Thickness(5,3)
                         },
@@ -2411,7 +2411,7 @@ namespace iPMCloud.Mobile
                             Text = quest.frage,
                             HorizontalOptions = LayoutOptions.FillAndExpand,
                             FontSize = 16,
-                            TextColor = Color.White,
+                            TextColor = Colors.White,
                             Margin = new Thickness(0),
                             Padding = new Thickness(5,0),
                             LineBreakMode = LineBreakMode.WordWrap,
@@ -2421,7 +2421,7 @@ namespace iPMCloud.Mobile
                             IsVisible = !String.IsNullOrWhiteSpace(quest.notiz),
                             HorizontalOptions = LayoutOptions.FillAndExpand,
                             FontSize = 13, FontAttributes = FontAttributes.Italic,
-                            TextColor = Color.FromHex("#cccccc"),
+                            TextColor = Color.FromArgb("#cccccc"),
                             Margin = new Thickness(0,5),
                             Padding = new Thickness(5,0),
                             LineBreakMode = LineBreakMode.WordWrap,

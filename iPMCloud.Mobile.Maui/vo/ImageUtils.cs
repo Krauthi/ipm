@@ -86,7 +86,7 @@
              Bitmap outputImage = new Bitmap(width, height);
              Graphics graphics = Graphics.FromImage(outputImage);
 
-             graphics.Clear(Color.Black);
+             graphics.Clear(Colors.Black);
              graphics.DrawImage(image1, new Point(0, 0));
 
              Point stampPoint = new Point(100, 20);

@@ -69,7 +69,7 @@ namespace iPMCloud.Mobile
         //            new Label
         //            {
         //                Text = "ANRUFEN",
-        //                TextColor = Color.FromHex("#ffcc00"),
+        //                TextColor = Color.FromArgb("#ffcc00"),
         //                Margin = new Thickness(0, 0, 0, 0),
         //                FontSize = 12,
         //                LineBreakMode = LineBreakMode.NoWrap,

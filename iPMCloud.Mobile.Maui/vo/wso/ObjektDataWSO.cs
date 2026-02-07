@@ -122,7 +122,7 @@ namespace iPMCloud.Mobile
             var lb_nr = new Label()
             {
                 Text = od.nr,
-                TextColor = Color.FromHex("#dddddd"),
+                TextColor = Color.FromArgb("#dddddd"),
                 Margin = new Thickness(5, -5, -5, 3),
                 Padding = new Thickness(5, 5, 5, 5),
                 FontSize = 26,
@@ -131,12 +131,12 @@ namespace iPMCloud.Mobile
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 LineBreakMode = LineBreakMode.WordWrap,
                 CharacterSpacing = 1.05,
-                BackgroundColor = Color.FromHex("#143d63"),
+                BackgroundColor = Color.FromArgb("#143d63"),
             };
             var lb_text = new Label()
             {
                 Text = od.text,
-                TextColor = Color.FromHex("#cccccc"),
+                TextColor = Color.FromArgb("#cccccc"),
                 Margin = new Thickness(5, 0, 5, 5),
                 FontSize = 16,
                 HorizontalOptions = LayoutOptions.StartAndExpand,
@@ -145,48 +145,48 @@ namespace iPMCloud.Mobile
             var zaehlerGanzzahl = new Label
             {
                 Text = od.stand.Split(',')[0],
-                TextColor = Color.FromHex("#ffffff"),
+                TextColor = Color.FromArgb("#ffffff"),
                 Margin = new Thickness(0, 0, 0, 0),
                 Padding = new Thickness(5, 5, 5, 5),
                 FontSize = 26,
                 LineBreakMode = LineBreakMode.WordWrap,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 HorizontalTextAlignment = TextAlignment.End,
-                BackgroundColor = Color.FromHex("#000000"),
+                BackgroundColor = Color.FromArgb("#000000"),
             };
             var zaehlerKomma = new Label
             {
                 Text = ",",
-                TextColor = Color.FromHex("#cccccc"),
+                TextColor = Color.FromArgb("#cccccc"),
                 Margin = new Thickness(0, 0, 0, 0),
                 Padding = new Thickness(0, 5, 0, 5),
                 FontSize = 22,
                 LineBreakMode = LineBreakMode.WordWrap,
                 HorizontalOptions = LayoutOptions.End,
-                BackgroundColor = Color.FromHex("#e14b3a"),
+                BackgroundColor = Color.FromArgb("#e14b3a"),
             };
             var zaehlerKommazahl = new Label
             {
                 Text = od.stand.Split(',').Length > 1 ? od.stand.Split(',')[1] : "000",
-                TextColor = Color.FromHex("#ffffff"),
+                TextColor = Color.FromArgb("#ffffff"),
                 Margin = new Thickness(0),
                 Padding = new Thickness(0, 5, 0, 5),
                 FontSize = 26,
                 LineBreakMode = LineBreakMode.WordWrap,
                 HorizontalOptions = LayoutOptions.End,
-                BackgroundColor = Color.FromHex("#e14b3a"),
+                BackgroundColor = Color.FromArgb("#e14b3a"),
             };
             var zaehlerEinheit = new Label
             {
                 Text = od.einheit,
-                TextColor = Color.FromHex("#000000"),
+                TextColor = Color.FromArgb("#000000"),
                 Margin = new Thickness(0),
                 Padding = new Thickness(3, 5, 5, 5),
                 FontSize = 18,
                 FontAttributes = FontAttributes.Bold,
                 LineBreakMode = LineBreakMode.WordWrap,
                 HorizontalOptions = LayoutOptions.End,
-                BackgroundColor = Color.FromHex("#e14b3a"),
+                BackgroundColor = Color.FromArgb("#e14b3a"),
             };
             var hz = new StackLayout()
             {
@@ -195,14 +195,14 @@ namespace iPMCloud.Mobile
                 Spacing = 0,
                 Orientation = StackOrientation.Horizontal,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                BackgroundColor = Color.FromHex("#55ffcc00"),
+                BackgroundColor = Color.FromArgb("#55ffcc00"),
             };
 
             var noticeStack = new StackLayout
             {
                 HeightRequest = 44,
                 WidthRequest = 44,
-                BackgroundColor = Color.FromHex("#143d63"),
+                BackgroundColor = Color.FromArgb("#143d63"),
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.Start,
                 Spacing = 0,
@@ -232,7 +232,7 @@ namespace iPMCloud.Mobile
             {
                 HeightRequest = 45,
                 WidthRequest = 45,
-                BackgroundColor = Color.FromHex("#143d63"),
+                BackgroundColor = Color.FromArgb("#143d63"),
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.End,
                 Padding = new Thickness(0, 0, 0, 0),
@@ -251,7 +251,7 @@ namespace iPMCloud.Mobile
             {
                 Text = "Standort: " + od.mieter + "\nStandort: " + od.mieterb
                 + "\nEichjahr: " + od.eich,
-                TextColor = Color.FromHex("#ffcc00"),
+                TextColor = Color.FromArgb("#ffcc00"),
                 Margin = new Thickness(5, 0, 0, 0),
                 FontSize = 16,
                 LineBreakMode = LineBreakMode.WordWrap,
@@ -260,7 +260,7 @@ namespace iPMCloud.Mobile
             var last = new Label
             {
                 Text = "Zuletzt:  " + JavaScriptDateConverter.Convert(long.Parse(od.standdatum)).ToString("dd.MM.yyyy (HH:mm)"),
-                TextColor = Color.FromHex("#00cc00"),
+                TextColor = Color.FromArgb("#00cc00"),
                 VerticalTextAlignment = TextAlignment.End,
                 Margin = new Thickness(5, 0, 0, 0),
                 FontSize = 14,
@@ -274,7 +274,7 @@ namespace iPMCloud.Mobile
                 Spacing = 0,
                 Orientation = StackOrientation.Horizontal,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                BackgroundColor = Color.FromHex("#042d53"),
+                BackgroundColor = Color.FromArgb("#042d53"),
             };
             var v = new StackLayout()
             {
@@ -301,7 +301,7 @@ namespace iPMCloud.Mobile
                 Padding = new Thickness(1, 1, 1, 1),
                 Margin = new Thickness(38, 10, 0, 5),
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                BackgroundColor = Color.Transparent,
+                BackgroundColor = Colors.Transparent,
                 Content = h,
                 CornerRadius = 0,
                 HasShadow = true,
@@ -333,7 +333,7 @@ namespace iPMCloud.Mobile
             var lb_nr = new Label()
             {
                 Text = od.nr,
-                TextColor = Color.FromHex("#dddddd"),
+                TextColor = Color.FromArgb("#dddddd"),
                 Margin = new Thickness(5, -5, -5, 3),
                 Padding = new Thickness(5, 5, 5, 5),
                 FontSize = 26,
@@ -342,12 +342,12 @@ namespace iPMCloud.Mobile
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 LineBreakMode = LineBreakMode.WordWrap,
                 CharacterSpacing = 1.05,
-                BackgroundColor = Color.FromHex("#143d63"),
+                BackgroundColor = Color.FromArgb("#143d63"),
             };
             var lb_text = new Label()
             {
                 Text = od.text,
-                TextColor = Color.FromHex("#cccccc"),
+                TextColor = Color.FromArgb("#cccccc"),
                 Margin = new Thickness(5, 0, 5, 5),
                 FontSize = 16,
                 HorizontalOptions = LayoutOptions.StartAndExpand,
@@ -356,48 +356,48 @@ namespace iPMCloud.Mobile
             var zaehlerGanzzahl = new Label
             {
                 Text = od.stand.Split(',')[0],
-                TextColor = Color.FromHex("#ffffff"),
+                TextColor = Color.FromArgb("#ffffff"),
                 Margin = new Thickness(0, 0, 0, 0),
                 Padding = new Thickness(5, 5, 5, 5),
                 FontSize = 26,
                 LineBreakMode = LineBreakMode.WordWrap,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 HorizontalTextAlignment = TextAlignment.End,
-                BackgroundColor = Color.FromHex("#000000"),
+                BackgroundColor = Color.FromArgb("#000000"),
             };
             var zaehlerKomma = new Label
             {
                 Text = ",",
-                TextColor = Color.FromHex("#cccccc"),
+                TextColor = Color.FromArgb("#cccccc"),
                 Margin = new Thickness(0, 0, 0, 0),
                 Padding = new Thickness(0, 5, 0, 5),
                 FontSize = 22,
                 LineBreakMode = LineBreakMode.WordWrap,
                 HorizontalOptions = LayoutOptions.End,
-                BackgroundColor = Color.FromHex("#e14b3a"),
+                BackgroundColor = Color.FromArgb("#e14b3a"),
             };
             var zaehlerKommazahl = new Label
             {
                 Text = od.stand.Split(',')[1],
-                TextColor = Color.FromHex("#ffffff"),
+                TextColor = Color.FromArgb("#ffffff"),
                 Margin = new Thickness(0),
                 Padding = new Thickness(0, 5, 0, 5),
                 FontSize = 26,
                 LineBreakMode = LineBreakMode.WordWrap,
                 HorizontalOptions = LayoutOptions.End,
-                BackgroundColor = Color.FromHex("#e14b3a"),
+                BackgroundColor = Color.FromArgb("#e14b3a"),
             };
             var zaehlerEinheit = new Label
             {
                 Text = od.einheit,
-                TextColor = Color.FromHex("#000000"),
+                TextColor = Color.FromArgb("#000000"),
                 Margin = new Thickness(0),
                 Padding = new Thickness(3, 5, 5, 5),
                 FontSize = 18,
                 FontAttributes = FontAttributes.Bold,
                 LineBreakMode = LineBreakMode.WordWrap,
                 HorizontalOptions = LayoutOptions.End,
-                BackgroundColor = Color.FromHex("#e14b3a"),
+                BackgroundColor = Color.FromArgb("#e14b3a"),
             };
             var hz = new StackLayout()
             {
@@ -406,7 +406,7 @@ namespace iPMCloud.Mobile
                 Spacing = 0,
                 Orientation = StackOrientation.Horizontal,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                BackgroundColor = Color.FromHex("#55ffcc00"),
+                BackgroundColor = Color.FromArgb("#55ffcc00"),
             };
 
             hz.Children.Add(zaehlerGanzzahl);
@@ -417,7 +417,7 @@ namespace iPMCloud.Mobile
             {
                 Text = "Standort: " + od.mieter + "\nStandort: " + od.mieterb
                 + "\nEichjahr: " + od.eich,
-                TextColor = Color.FromHex("#ffcc00"),
+                TextColor = Color.FromArgb("#ffcc00"),
                 Margin = new Thickness(5, 0, 0, 0),
                 FontSize = 16,
                 LineBreakMode = LineBreakMode.WordWrap,
@@ -430,7 +430,7 @@ namespace iPMCloud.Mobile
                 Spacing = 0,
                 Orientation = StackOrientation.Horizontal,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                BackgroundColor = Color.FromHex("#042d53"),
+                BackgroundColor = Color.FromArgb("#042d53"),
             };
             var v = new StackLayout()
             {
@@ -454,7 +454,7 @@ namespace iPMCloud.Mobile
                 Padding = new Thickness(1, 1, 1, 1),
                 Margin = new Thickness(38, 10, 0, 5),
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                BackgroundColor = Color.Transparent,
+                BackgroundColor = Colors.Transparent,
                 Content = h,
                 CornerRadius = 0,
                 HasShadow = true,
@@ -479,7 +479,7 @@ namespace iPMCloud.Mobile
             {
                 HeightRequest = 44,
                 WidthRequest = 44,
-                BackgroundColor = Color.FromHex("#143d63"),
+                BackgroundColor = Color.FromArgb("#143d63"),
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.Start,
                 Spacing = 0,
@@ -501,7 +501,7 @@ namespace iPMCloud.Mobile
             {
                 HeightRequest = 45,
                 WidthRequest = 45,
-                BackgroundColor = Color.FromHex("#143d63"),
+                BackgroundColor = Color.FromArgb("#143d63"),
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.Start,
                 Padding = new Thickness(0, 0, 0, 0),
@@ -518,14 +518,14 @@ namespace iPMCloud.Mobile
                 Margin = new Thickness(10, 0, 0, 0),
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 VerticalOptions = LayoutOptions.StartAndExpand,
-                TextColor = Color.White,
+                TextColor = Colors.White,
                 FontSize = 30,
                 Keyboard = Keyboard.Numeric,
                 HeightRequest = 60,
                 MinimumWidthRequest = 100,
                 Text = Utils.formatDEStr3(decimal.Parse(od.stand) > 0 ? decimal.Parse(od.stand) : 0),
                 HorizontalTextAlignment = TextAlignment.End,
-                BackgroundColor = Color.FromHex("#333333")
+                BackgroundColor = Color.FromArgb("#333333")
             };
 
             od.firstStand = Utils.formatDEStr3(decimal.Parse(od.stand) > 0 ? decimal.Parse(od.stand) : 0);
@@ -544,7 +544,7 @@ namespace iPMCloud.Mobile
             //var labelnewEdit = new Label
             //{
             //    Text = "Neuer Stand:",
-            //    TextColor = Color.FromHex("#ffffff"),
+            //    TextColor = Color.FromArgb("#ffffff"),
             //    Margin = new Thickness(5, 0, 5, 0),
             //    Padding = new Thickness(0),
             //    FontSize = 14,
@@ -554,14 +554,14 @@ namespace iPMCloud.Mobile
             var zaehlerEinheitEdit = new Label
             {
                 Text = od.einheit,
-                TextColor = Color.FromHex("#ffffff"),
+                TextColor = Color.FromArgb("#ffffff"),
                 Margin = new Thickness(0, 0, 5, 0),
                 Padding = new Thickness(3, 5, 5, 5),
                 FontSize = 20,
                 FontAttributes = FontAttributes.Bold,
                 LineBreakMode = LineBreakMode.WordWrap,
                 HorizontalOptions = LayoutOptions.End,
-                BackgroundColor = Color.FromHex("#333333"),
+                BackgroundColor = Color.FromArgb("#333333"),
             };
             var hanzahl = new StackLayout()
             {
@@ -578,7 +578,7 @@ namespace iPMCloud.Mobile
                 Spacing = 0,
                 Orientation = StackOrientation.Vertical,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                BackgroundColor = Color.FromHex("#55042d53")
+                BackgroundColor = Color.FromArgb("#55042d53")
             };
             hanzahl.Children.Add(refreshFrame);
 
@@ -591,7 +591,7 @@ namespace iPMCloud.Mobile
             //var labelGrund = new Label
             //{
             //    Text = "Ablesegrund:",
-            //    TextColor = Color.FromHex("#ffffff"),
+            //    TextColor = Color.FromArgb("#ffffff"),
             //    Margin = new Thickness(5, 10, 5, 10),
             //    Padding = new Thickness(0),
             //    FontSize = 14,
@@ -609,7 +609,7 @@ namespace iPMCloud.Mobile
                 })
             });
 
-            var l1 = new Label { Text = "Jahresendablesung", TextColor = Color.FromHex("#cccccc"), WidthRequest = 125, MinimumWidthRequest = 125, VerticalOptions = LayoutOptions.Center };
+            var l1 = new Label { Text = "Jahresendablesung", TextColor = Color.FromArgb("#cccccc"), WidthRequest = 125, MinimumWidthRequest = 125, VerticalOptions = LayoutOptions.Center };
             var r1 = new Switch { IsToggled = true, InputTransparent = true };
             model.allAblesegrundStack.Add(1, r1);
             var h1 = new StackLayout()
@@ -628,7 +628,7 @@ namespace iPMCloud.Mobile
                     radioChange2(model, od, l1, 1);
                 })
             });
-            var l2 = new Label { Text = "Ablesung", TextColor = Color.FromHex("#cccccc"), WidthRequest = 95, MinimumWidthRequest = 95, VerticalOptions = LayoutOptions.Center };
+            var l2 = new Label { Text = "Ablesung", TextColor = Color.FromArgb("#cccccc"), WidthRequest = 95, MinimumWidthRequest = 95, VerticalOptions = LayoutOptions.Center };
             var r2 = new Switch { IsToggled = false, InputTransparent = true };
             model.allAblesegrundStack.Add(2, r2);
             var h2 = new StackLayout()
@@ -647,7 +647,7 @@ namespace iPMCloud.Mobile
                     radioChange2(model, od, l2, 2);
                 })
             });
-            var l3 = new Label { Text = "Erstablesung", TextColor = Color.FromHex("#cccccc"), WidthRequest = 125, MinimumWidthRequest = 125, VerticalOptions = LayoutOptions.Center };
+            var l3 = new Label { Text = "Erstablesung", TextColor = Color.FromArgb("#cccccc"), WidthRequest = 125, MinimumWidthRequest = 125, VerticalOptions = LayoutOptions.Center };
             var r3 = new Switch { IsToggled = false, InputTransparent = true };
             model.allAblesegrundStack.Add(3, r3);
             var h3 = new StackLayout()
@@ -666,7 +666,7 @@ namespace iPMCloud.Mobile
                     radioChange2(model, od, l3, 3);
                 })
             });
-            var l4 = new Label { Text = "Zwischenstand", TextColor = Color.FromHex("#cccccc"), WidthRequest = 95, MinimumWidthRequest = 95, VerticalOptions = LayoutOptions.Center };
+            var l4 = new Label { Text = "Zwischenstand", TextColor = Color.FromArgb("#cccccc"), WidthRequest = 95, MinimumWidthRequest = 95, VerticalOptions = LayoutOptions.Center };
             var r4 = new Switch { IsToggled = false, InputTransparent = true };
             model.allAblesegrundStack.Add(4, r4);
             var h4 = new StackLayout()
@@ -686,7 +686,7 @@ namespace iPMCloud.Mobile
                 })
             });
 
-            var l5 = new Label { Text = "Zählerwechsel", TextColor = Color.FromHex("#cccccc"), WidthRequest = 125, MinimumWidthRequest = 125, VerticalOptions = LayoutOptions.Center };
+            var l5 = new Label { Text = "Zählerwechsel", TextColor = Color.FromArgb("#cccccc"), WidthRequest = 125, MinimumWidthRequest = 125, VerticalOptions = LayoutOptions.Center };
             var r5 = new Switch { IsToggled = false, InputTransparent = true };
             model.allAblesegrundStack.Add(5, r5);
             var h5 = new StackLayout()
@@ -705,7 +705,7 @@ namespace iPMCloud.Mobile
                     radioChange2(model, od, l5, 5);
                 })
             });
-            var l6 = new Label { Text = "Auffüllung", TextColor = Color.FromHex("#cccccc"), WidthRequest = 95, MinimumWidthRequest = 95, VerticalOptions = LayoutOptions.Center };
+            var l6 = new Label { Text = "Auffüllung", TextColor = Color.FromArgb("#cccccc"), WidthRequest = 95, MinimumWidthRequest = 95, VerticalOptions = LayoutOptions.Center };
             var r6 = new Switch { IsToggled = false, InputTransparent = true };
             model.allAblesegrundStack.Add(6, r6);
             var h6 = new StackLayout()
@@ -725,7 +725,7 @@ namespace iPMCloud.Mobile
                 })
             });
 
-            var l7 = new Label { Text = "Mieter-/Nutzerwechsel", TextColor = Color.FromHex("#cccccc"), WidthRequest = 125, MinimumWidthRequest = 125, VerticalOptions = LayoutOptions.Center };
+            var l7 = new Label { Text = "Mieter-/Nutzerwechsel", TextColor = Color.FromArgb("#cccccc"), WidthRequest = 125, MinimumWidthRequest = 125, VerticalOptions = LayoutOptions.Center };
             var r7 = new Switch { IsToggled = false, InputTransparent = true };
             model.allAblesegrundStack.Add(7, r7);
             var h7 = new StackLayout()
@@ -745,7 +745,7 @@ namespace iPMCloud.Mobile
                 })
             });
 
-            var l8 = new Label { Text = "Kontrolle", TextColor = Color.FromHex("#cccccc"), WidthRequest = 95, MinimumWidthRequest = 95, VerticalOptions = LayoutOptions.Center };
+            var l8 = new Label { Text = "Kontrolle", TextColor = Color.FromArgb("#cccccc"), WidthRequest = 95, MinimumWidthRequest = 95, VerticalOptions = LayoutOptions.Center };
             var r8 = new Switch { IsToggled = false, InputTransparent = true };
             model.allAblesegrundStack.Add(8, r8);
             var h8 = new StackLayout()
@@ -809,7 +809,7 @@ namespace iPMCloud.Mobile
                 Spacing = 0,
                 Orientation = StackOrientation.Vertical,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                BackgroundColor = Color.Transparent,
+                BackgroundColor = Colors.Transparent,
                 Children = { m1, m2, m3, m4 }
             };
 
@@ -824,13 +824,13 @@ namespace iPMCloud.Mobile
                 Spacing = 0,
                 Orientation = StackOrientation.Horizontal,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                BackgroundColor = Color.Transparent
+                BackgroundColor = Colors.Transparent
             };
 
 
             var saveFrame = new Frame()
             {
-                BackgroundColor = Color.FromHex("#143d63"),
+                BackgroundColor = Color.FromArgb("#143d63"),
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.Start,
                 Padding = new Thickness(1),
@@ -842,7 +842,7 @@ namespace iPMCloud.Mobile
                     Padding = new Thickness(2, 2, 10, 2),
                     Margin = new Thickness(0),
                     HeightRequest = 40,
-                    BackgroundColor = Color.FromHex("#04532d"),
+                    BackgroundColor = Color.FromArgb("#04532d"),
                     HorizontalOptions = LayoutOptions.FillAndExpand,
                     Orientation = StackOrientation.Horizontal,
                     Children =
@@ -857,7 +857,7 @@ namespace iPMCloud.Mobile
                         },
                         new Label
                         {
-                            Text = "JETZT ÜBERNEHMEN", FontSize = 16, TextColor = Color.White,
+                            Text = "JETZT ÜBERNEHMEN", FontSize = 16, TextColor = Colors.White,
                             Padding = new Thickness(0),
                             Margin = new Thickness(0,2,0,0),
                             VerticalOptions = LayoutOptions.CenterAndExpand,
@@ -874,7 +874,7 @@ namespace iPMCloud.Mobile
 
             var flashlightFrame = new Frame()
             {
-                BackgroundColor = Color.FromHex("#041d43"),
+                BackgroundColor = Color.FromArgb("#041d43"),
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.EndAndExpand,
                 Padding = new Thickness(1),
@@ -883,7 +883,7 @@ namespace iPMCloud.Mobile
                 HasShadow = true,
                 Content = new StackLayout
                 {
-                    BackgroundColor = Color.FromHex("#042d53"),
+                    BackgroundColor = Color.FromArgb("#042d53"),
                     VerticalOptions = LayoutOptions.CenterAndExpand,
                     HorizontalOptions = LayoutOptions.FillAndExpand,
                     Padding = new Thickness(0),
@@ -911,7 +911,7 @@ namespace iPMCloud.Mobile
             }
             var camFrame = new Frame()
             {
-                BackgroundColor = Color.FromHex("#041d43"),
+                BackgroundColor = Color.FromArgb("#041d43"),
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.End,
                 Padding = new Thickness(1),
@@ -920,7 +920,7 @@ namespace iPMCloud.Mobile
                 HasShadow = true,
                 Content = new StackLayout
                 {
-                    BackgroundColor = Color.FromHex("#042d53"),
+                    BackgroundColor = Color.FromArgb("#042d53"),
                     VerticalOptions = LayoutOptions.CenterAndExpand,
                     HorizontalOptions = LayoutOptions.FillAndExpand,
                     Padding = new Thickness(0),
@@ -961,7 +961,7 @@ namespace iPMCloud.Mobile
                 Spacing = 0,
                 Orientation = StackOrientation.Vertical,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                BackgroundColor = Color.Transparent,
+                BackgroundColor = Colors.Transparent,
                 Children = { vanzahl
                 }
             };
@@ -1032,7 +1032,7 @@ namespace iPMCloud.Mobile
                 Spacing = 0,
                 Orientation = StackOrientation.Horizontal,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                BackgroundColor = Color.FromHex("#90144d73"),
+                BackgroundColor = Color.FromArgb("#90144d73"),
                 Children = {
                     new Image
                     {
@@ -1048,7 +1048,7 @@ namespace iPMCloud.Mobile
                         VerticalOptions = LayoutOptions.Center,
                         HorizontalOptions = LayoutOptions.FillAndExpand,
                         FontSize = 18,
-                        TextColor = Color.White,
+                        TextColor = Colors.White,
                         HorizontalTextAlignment = TextAlignment.Start,
                         Margin = new Thickness(0, 0, 0, 0),
                         Padding = new Thickness(0, 0, 0, 0)

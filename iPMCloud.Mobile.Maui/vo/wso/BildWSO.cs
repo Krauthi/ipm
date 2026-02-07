@@ -65,11 +65,11 @@ namespace iPMCloud.Mobile
                                 Margin = new Thickness(0),
                                 HorizontalOptions = LayoutOptions.StartAndExpand,
                                 VerticalOptions = LayoutOptions.CenterAndExpand,
-                                FontSize = 14, TextColor = Color.White, LineBreakMode = LineBreakMode.WordWrap
+                                FontSize = 14, TextColor = Colors.White, LineBreakMode = LineBreakMode.WordWrap
                             },
                             new Frame
                             {
-                                BackgroundColor = Color.FromHex("#041d43"),
+                                BackgroundColor = Color.FromArgb("#041d43"),
                                 IsClippedToBounds = true, HasShadow = true,
                                 HorizontalOptions = LayoutOptions.End,
                                 VerticalOptions = LayoutOptions.CenterAndExpand,
@@ -77,7 +77,7 @@ namespace iPMCloud.Mobile
                                 Margin = new Thickness(3,0,3,0),
                                 Content = new StackLayout
                                 {
-                                    BackgroundColor = Color.FromHex("#042d53"),
+                                    BackgroundColor = Color.FromArgb("#042d53"),
                                     HeightRequest = 40, WidthRequest = 40,
                                     HorizontalOptions = LayoutOptions.CenterAndExpand,
                                     VerticalOptions = LayoutOptions.CenterAndExpand,
@@ -100,7 +100,7 @@ namespace iPMCloud.Mobile
                     },
                     new BoxView
                     {
-                        BackgroundColor = Color.Gray,
+                        BackgroundColor = Colors.Gray,
                         HeightRequest = 1,
                         VerticalOptions = LayoutOptions.Start,
                         HorizontalOptions = LayoutOptions.FillAndExpand,

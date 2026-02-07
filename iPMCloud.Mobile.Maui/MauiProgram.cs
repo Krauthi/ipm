@@ -2,6 +2,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Maui.Controls.Hosting;
 using Microsoft.Maui.Hosting;
 using CommunityToolkit.Maui;
+using ZXing.Net.Maui.Controls;
 
 namespace iPMCloud.Mobile
 {
@@ -12,6 +13,7 @@ namespace iPMCloud.Mobile
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .UseBarcodeReader() 
                 .UseMauiCommunityToolkit()
                 .ConfigureFonts(fonts =>
                 {

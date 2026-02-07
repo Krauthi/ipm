@@ -1,8 +1,7 @@
-﻿using System;
+﻿using Newtonsoft.Json;
 
 namespace iPMCloud.Mobile.vo
 {
-    [Serializable]
     public class SettingDTO
     {
         public string ServerUrl { get; set; } = ""; //*** to fixServer
@@ -21,13 +20,23 @@ namespace iPMCloud.Mobile.vo
         public bool GPSInfoHasShow { get; set; } = false;
         public int SyncTimeHours { get; set; } = 12;
 
-
-        /*************** WICHTIG *****************************/
-        /* Company Objekt anpassen wenn hier erweitert wird! */
-        /*****************************************************/
-
         public SettingDTO()
         {
+            LastTokenDateTimeTicks = null;
+            FontSize = "NORMAL";
+            PNToken = ""; 
+            LastBuildingIdScanned = -1;
+            LastBuildingSyncedDateTimeTicks = null;
+            GPSInfoHasShow = false;
+            CustomerNumber = "";
+            CustomerName = "";
+            ServerUrl = "";
+            LoginName = "";
+            LoginPassword = "";
+            LoginToken = "";
+            Autologin = false;
+            RunBackground = false;
+            SyncTimeHours = 12;
         }
     }
 }

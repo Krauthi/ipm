@@ -5,8 +5,8 @@ using Microsoft.Maui.Storage;
 using Microsoft.Maui.Devices;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls;
-// TODO: ZXing.Net.Mobile.Forms not MAUI-compatible - use ZXing.Net.Maui
-// using ZXing.Net.Mobile.Forms;
+using ZXing.Net.Maui;
+using ZXing.Net.Maui.Controls;
 
 namespace iPMCloud.Mobile.vo
 {
@@ -19,47 +19,140 @@ namespace iPMCloud.Mobile.vo
         }
 
         public bool displayIsOpen = false;
-        // TODO: ZXing.Net.Mobile.Forms not MAUI-compatible - use ZXing.Net.Maui
-        // public ZXingScannerView zxing;
-        // public ZXingScannerView zxingAlone = new ZXingScannerView();
-        // public ZXingDefaultOverlay overlayz;
+
+        public CameraBarcodeReaderView zxing;
+        public CameraBarcodeReaderView zxingAlone = new CameraBarcodeReaderView();
+
+        // Eigenes Overlay erstellen (ZXingDefaultOverlay existiert nicht mehr)
+        public ContentView overlayz;
+
         public Grid grid = new Grid
         {
-            VerticalOptions = LayoutOptions.FillAndExpand,
-            HorizontalOptions = LayoutOptions.FillAndExpand,
-        };
-        public Image img = new Image
-        {
-            VerticalOptions = LayoutOptions.FillAndExpand,
-            HorizontalOptions = LayoutOptions.FillAndExpand,
+            VerticalOptions = LayoutOptions.Fill,
+            HorizontalOptions = LayoutOptions.Fill,
         };
 
+        public Image img = new Image
+        {
+            VerticalOptions = LayoutOptions.Fill,
+            HorizontalOptions = LayoutOptions.Fill,
+        };
+
+        // Hilfsmethode zum Erstellen eines Custom Overlays
+        private ContentView CreateOverlay(string topText, string bottomText, bool showFlashButton, Action onFlashButtonClicked)
+        {
+            var overlayGrid = new Grid
+            {
+                VerticalOptions = LayoutOptions.Fill,
+                HorizontalOptions = LayoutOptions.Fill,
+                BackgroundColor = Colors.Transparent
+            };
+
+            overlayGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+            overlayGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(2, GridUnitType.Star) });
+            overlayGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+
+            // Top Text
+            var topLabel = new Label
+            {
+                Text = topText,
+                TextColor = Colors.White,
+                FontSize = 16,
+                HorizontalOptions = LayoutOptions.Center,
+                VerticalOptions = LayoutOptions.End,
+                Margin = new Thickness(0, 0, 0, 20)
+            };
+            Grid.SetRow(topLabel, 0);
+            overlayGrid.Children.Add(topLabel);
+
+            // Scanner Frame (Mitte)
+            var scanFrame = new Frame
+            {
+                BorderColor = Colors.White,
+                BackgroundColor = Colors.Transparent,
+                CornerRadius = 10,
+                WidthRequest = 250,
+                HeightRequest = 250,
+                HorizontalOptions = LayoutOptions.Center,
+                VerticalOptions = LayoutOptions.Center,
+                Padding = 0,
+                HasShadow = false
+            };
+            Grid.SetRow(scanFrame, 1);
+            overlayGrid.Children.Add(scanFrame);
+
+            // Bottom Stack
+            var bottomStack = new StackLayout
+            {
+                VerticalOptions = LayoutOptions.Start,
+                HorizontalOptions = LayoutOptions.Center,
+                Spacing = 10,
+                Margin = new Thickness(0, 20, 0, 0)
+            };
+
+            var bottomLabel = new Label
+            {
+                Text = bottomText,
+                TextColor = Colors.White,
+                FontSize = 14,
+                HorizontalOptions = LayoutOptions.Center
+            };
+            bottomStack.Children.Add(bottomLabel);
+
+            // Flash Button
+            if (showFlashButton)
+            {
+                var flashButton = new Button
+                {
+                    Text = "🔦",
+                    BackgroundColor = Colors.Gray.WithAlpha(0.7f),
+                    TextColor = Colors.White,
+                    CornerRadius = 25,
+                    WidthRequest = 50,
+                    HeightRequest = 50,
+                    HorizontalOptions = LayoutOptions.Center
+                };
+                flashButton.Clicked += (s, e) => onFlashButtonClicked?.Invoke();
+                bottomStack.Children.Add(flashButton);
+            }
+
+            Grid.SetRow(bottomStack, 2);
+            overlayGrid.Children.Add(bottomStack);
+
+            return overlayGrid;
+        }
 
         public async void ScanBuildingOutView(ContentPage page, StackLayout scanContainer, Func<bool> func)
         {
             try
             {
-                var expectedFormat = ZXing.BarcodeFormat.QR_CODE;
-                var opts = new ZXing.Mobile.MobileBarcodeScanningOptions
+                var opts = new BarcodeReaderOptions
                 {
-                    PossibleFormats = new List<ZXing.BarcodeFormat> { expectedFormat }
+                    Formats = BarcodeFormats.OneDimensional | BarcodeFormats.TwoDimensional,
+                    AutoRotate = true,
+                    Multiple = false
                 };
-                zxing = new ZXingScannerView
+
+                zxing = new CameraBarcodeReaderView
                 {
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
-                    VerticalOptions = LayoutOptions.FillAndExpand,
+                    HorizontalOptions = LayoutOptions.Fill,
+                    VerticalOptions = LayoutOptions.Fill,
                     AutomationId = "zxingScannerView",
+                    Options = opts
                 };
-                zxing.Options = opts;
-                zxing.OnScanResult += (result) =>
+
+                zxing.BarcodesDetected += (sender, e) =>
+                {
                     MainThread.BeginInvokeOnMainThread(async () =>
                     {
-                        if (!displayIsOpen)
+                        if (!displayIsOpen && e.Results?.Length > 0)
                         {
                             displayIsOpen = true;
+                            var result = e.Results[0];
+
                             try
                             {
-                                var sp = result.Text.Replace("http://www.ipm-cloud.de/?objektid=", "").Split(new String[] { "_" }, System.StringSplitOptions.RemoveEmptyEntries);
+                                var sp = result.Value.Replace("http://www.ipm-cloud.de/?objektid=", "").Split(new String[] { "_" }, StringSplitOptions.RemoveEmptyEntries);
                                 if (sp != null && sp.Length > 0)
                                 {
                                     model.OutScanBuilding = null;
@@ -84,9 +177,8 @@ namespace iPMCloud.Mobile.vo
                                             }
                                             catch (Exception) { }
                                         }
-                                        zxing.IsTorchOn = false;// flashlight off;
-                                        zxing.IsAnalyzing = false;
-                                        zxing.IsScanning = false;
+                                        zxing.IsTorchOn = false;
+                                        zxing.IsDetecting = false;
                                         grid.Children.Clear();
                                         displayIsOpen = false;
 
@@ -105,33 +197,27 @@ namespace iPMCloud.Mobile.vo
                                     displayIsOpen = false;
                                 }
                             }
-                            catch (Exception e)
+                            catch (Exception ex)
                             {
                                 await page.DisplayAlert("QR-Code nicht erkannt!", "Dieser QR-Code kann nicht verwendet werden. Bitte Probieren Sie es noch einmal.", "OK");
                                 displayIsOpen = false;
                             }
                         }
-                    }
-                );
+                    });
+                };
 
-                overlayz = new ZXingDefaultOverlay
-                {
-                    TopText = "Richten Sie die Kamera auf den QR-Code",
-                    BottomText = "Das Scannen erfolgt automatisch",
-                    ShowFlashButton = false,// zxing.HasTorch,
-                    AutomationId = "zxingDefaultOverlay",
-                };
-                overlayz.FlashButtonClicked += (sender, e) =>
-                {
-                    zxing.IsTorchOn = !zxing.IsTorchOn;
-                };
+                overlayz = CreateOverlay(
+                    "Richten Sie die Kamera auf den QR-Code",
+                    "Das Scannen erfolgt automatisch",
+                    true,
+                    () => { zxing.IsTorchOn = !zxing.IsTorchOn; }
+                );
 
                 grid.Children.Clear();
                 grid.Children.Add(zxing);
                 grid.Children.Add(overlayz);
                 scanContainer.Children.Add(grid);
-                zxing.IsScanning = true;
-                zxing.IsAnalyzing = true;
+                zxing.IsDetecting = true;
             }
             catch (Exception ex)
             {
@@ -151,27 +237,33 @@ namespace iPMCloud.Mobile.vo
         {
             try
             {
-                var expectedFormat = ZXing.BarcodeFormat.QR_CODE;
-                var opts = new ZXing.Mobile.MobileBarcodeScanningOptions
+                var opts = new BarcodeReaderOptions
                 {
-                    PossibleFormats = new List<ZXing.BarcodeFormat> { expectedFormat }
+                    Formats = BarcodeFormats.OneDimensional | BarcodeFormats.TwoDimensional,
+                    AutoRotate = true,
+                    Multiple = false
                 };
-                zxing = new ZXingScannerView
+
+                zxing = new CameraBarcodeReaderView
                 {
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
-                    VerticalOptions = LayoutOptions.FillAndExpand,
+                    HorizontalOptions = LayoutOptions.Fill,
+                    VerticalOptions = LayoutOptions.Fill,
                     AutomationId = "zxingScannerView",
+                    Options = opts
                 };
-                zxing.Options = opts;
-                zxing.OnScanResult += (result) =>
+
+                zxing.BarcodesDetected += (sender, e) =>
+                {
                     MainThread.BeginInvokeOnMainThread(async () =>
                     {
-                        if (!displayIsOpen)
+                        if (!displayIsOpen && e.Results?.Length > 0)
                         {
                             displayIsOpen = true;
+                            var result = e.Results[0];
+
                             try
                             {
-                                var sp = result.Text.Replace("http://www.ipm-cloud.de/?objektid=", "").Split(new String[] { "_" }, System.StringSplitOptions.RemoveEmptyEntries);
+                                var sp = result.Value.Replace("http://www.ipm-cloud.de/?objektid=", "").Split(new String[] { "_" }, StringSplitOptions.RemoveEmptyEntries);
                                 if (sp != null && sp.Length > 0)
                                 {
                                     var CustomerNumber = "0";
@@ -190,7 +282,6 @@ namespace iPMCloud.Mobile.vo
                                         model.SettingModel.SettingDTO.LastBuildingIdScanned = buildingid;
                                         if (buildingid > 0 && model.AllBuildings != null && model.AllBuildings.Count > 0)
                                         {
-                                            // Zurücksetzten aller States für die Auswahl der Ausführungen
                                             model.SetAllObjectAndValuesToNoSelectedBuilding();
                                             model.SettingModel.SettingDTO.LastBuildingIdScanned = buildingid;
                                             model.LastBuilding = model.AllBuildings.Find(bu => bu.id == buildingid);
@@ -201,9 +292,8 @@ namespace iPMCloud.Mobile.vo
                                             catch (Exception) { }
                                         }
                                         model.SettingModel.SaveSettings();
-                                        zxing.IsTorchOn = false;// flashlight off;
-                                        zxing.IsAnalyzing = false;
-                                        zxing.IsScanning = false;
+                                        zxing.IsTorchOn = false;
+                                        zxing.IsDetecting = false;
                                         grid.Children.Clear();
                                         displayIsOpen = false;
                                         model.UseExternHardware = false;
@@ -214,7 +304,6 @@ namespace iPMCloud.Mobile.vo
                                         await page.DisplayAlert("QR-Code nicht erkannt!", "Dieser QR-Code ist zwar ein iPM-Cloud Code jedoch gehört er nicht zum Registrieten Unternehmen! Bitte Probieren Sie es noch einmal oder melden Sie sich in Ihrer Zentrale.", "OK");
                                         displayIsOpen = false;
                                     }
-
                                 }
                                 else
                                 {
@@ -222,33 +311,27 @@ namespace iPMCloud.Mobile.vo
                                     displayIsOpen = false;
                                 }
                             }
-                            catch (Exception e)
+                            catch (Exception ex)
                             {
                                 await page.DisplayAlert("QR-Code nicht erkannt!", "Dieser QR-Code kann nicht verwendet werden. Bitte Probieren Sie es noch einmal.", "OK");
                                 displayIsOpen = false;
                             }
                         }
-                    }
-                );
+                    });
+                };
 
-                overlayz = new ZXingDefaultOverlay
-                {
-                    TopText = "Richten Sie die Kamera auf den QR-Code",
-                    BottomText = "Das Scannen erfolgt automatisch",
-                    ShowFlashButton = false,// zxing.HasTorch,
-                    AutomationId = "zxingDefaultOverlay",
-                };
-                overlayz.FlashButtonClicked += (sender, e) =>
-                {
-                    zxing.IsTorchOn = !zxing.IsTorchOn;
-                };
+                overlayz = CreateOverlay(
+                    "Richten Sie die Kamera auf den QR-Code",
+                    "Das Scannen erfolgt automatisch",
+                    true,
+                    () => { zxing.IsTorchOn = !zxing.IsTorchOn; }
+                );
 
                 grid.Children.Clear();
                 grid.Children.Add(zxing);
                 grid.Children.Add(overlayz);
                 scanContainer.Children.Add(grid);
-                zxing.IsScanning = true;
-                zxing.IsAnalyzing = true;
+                zxing.IsDetecting = true;
             }
             catch (Exception ex)
             {
@@ -268,45 +351,45 @@ namespace iPMCloud.Mobile.vo
         {
             try
             {
-                var expectedFormat = ZXing.BarcodeFormat.QR_CODE;
-                var opts = new ZXing.Mobile.MobileBarcodeScanningOptions
+                var opts = new BarcodeReaderOptions
                 {
-                    PossibleFormats = new List<ZXing.BarcodeFormat> { expectedFormat }
+                    Formats = BarcodeFormats.OneDimensional | BarcodeFormats.TwoDimensional,
+                    AutoRotate = true,
+                    Multiple = false,
+                    TryHarder = true,
+                    TryInverted = true
                 };
 
-                //opts.TryHarder = true;
-                //opts.AutoRotate = true;
-                //opts.TryInverted = true;
-                //opts.UseNativeScanning = true;
-                //opts.DisableAutofocus = true;
-
-                zxing = new ZXingScannerView
+                zxing = new CameraBarcodeReaderView
                 {
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
-                    VerticalOptions = LayoutOptions.FillAndExpand,
+                    HorizontalOptions = LayoutOptions.Fill,
+                    VerticalOptions = LayoutOptions.Fill,
                     AutomationId = "zxingScannerView",
+                    Options = opts
                 };
-                zxing.Options = opts;
-                zxing.OnScanResult += (result) =>
+
+                zxing.BarcodesDetected += (sender, e) =>
+                {
                     MainThread.BeginInvokeOnMainThread(async () =>
                     {
-                        if (!displayIsOpen)
+                        if (!displayIsOpen && e.Results?.Length > 0)
                         {
                             displayIsOpen = true;
+                            var result = e.Results[0];
+
                             try
                             {
-                                var sp = result.Text.Replace("https://", "http://").Replace("httpss://", "https://").Split(new String[] { "###" }, System.StringSplitOptions.RemoveEmptyEntries);
+                                var sp = result.Value.Replace("https://", "http://").Replace("httpss://", "https://").Split(new String[] { "###" }, StringSplitOptions.RemoveEmptyEntries);
 
                                 var newScanSettings = new SettingDTO();
                                 newScanSettings.ServerUrl = sp[0];
-                                newScanSettings.CustomerNumber = sp[1]; // MandantId
+                                newScanSettings.CustomerNumber = sp[1];
                                 newScanSettings.CustomerName = sp[2];
 
-                                if (result.Text.IndexOf("###") > -1 && !String.IsNullOrWhiteSpace(newScanSettings.ServerUrl) &&
+                                if (result.Value.IndexOf("###") > -1 && !String.IsNullOrWhiteSpace(newScanSettings.ServerUrl) &&
                                     !String.IsNullOrWhiteSpace(newScanSettings.CustomerNumber) &&
                                     !String.IsNullOrWhiteSpace(newScanSettings.CustomerName))
                                 {
-
                                     string directoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "ipm/" + newScanSettings.CustomerNumber + "");
                                     if (!Directory.Exists(directoryPath)) { Directory.CreateDirectory(directoryPath); }
 
@@ -314,9 +397,8 @@ namespace iPMCloud.Mobile.vo
                                     model.SettingModel.SaveSettings();
                                     Company.AddUpdateCompany(model, model.SettingModel.SettingDTO);
 
-                                    zxing.IsTorchOn = false;// flashlight off;
-                                    zxing.IsAnalyzing = false;
-                                    zxing.IsScanning = false;
+                                    zxing.IsTorchOn = false;
+                                    zxing.IsDetecting = false;
                                     grid.Children.Clear();
                                     displayIsOpen = false;
                                     model.UseExternHardware = false;
@@ -328,33 +410,27 @@ namespace iPMCloud.Mobile.vo
                                     displayIsOpen = false;
                                 }
                             }
-                            catch (Exception e)
+                            catch (Exception ex)
                             {
                                 await page.DisplayAlert("QR-Code nicht erkannt!", "Dieser QR-Code kann für die Registrierung mit der iPM-Cloud nicht verwendet werden. Bitte Probieren Sie es noch einmal.", "OK");
                                 displayIsOpen = false;
                             }
                         }
-                    }
-                );
+                    });
+                };
 
-                overlayz = new ZXingDefaultOverlay
-                {
-                    TopText = "Richten Sie die Kamera auf den QR-Code",
-                    BottomText = "Das Scannen erfolgt automatisch",
-                    ShowFlashButton = false,// zxing.HasTorch,
-                    AutomationId = "zxingDefaultOverlay",
-                };
-                overlayz.FlashButtonClicked += (sender, e) =>
-                {
-                    zxing.IsTorchOn = !zxing.IsTorchOn;
-                };
+                overlayz = CreateOverlay(
+                    "Richten Sie die Kamera auf den QR-Code",
+                    "Das Scannen erfolgt automatisch",
+                    true,
+                    () => { zxing.IsTorchOn = !zxing.IsTorchOn; }
+                );
 
                 grid.Children.Clear();
                 grid.Children.Add(zxing);
                 grid.Children.Add(overlayz);
                 scanContainer.Children.Add(grid);
-                zxing.IsScanning = true;
-                zxing.IsAnalyzing = true;
+                zxing.IsDetecting = true;
             }
             catch (Exception ex)
             {
@@ -374,38 +450,43 @@ namespace iPMCloud.Mobile.vo
         {
             try
             {
-                var expectedFormat = ZXing.BarcodeFormat.QR_CODE;
-                var opts = new ZXing.Mobile.MobileBarcodeScanningOptions
+                var opts = new BarcodeReaderOptions
                 {
-                    PossibleFormats = new List<ZXing.BarcodeFormat> { expectedFormat }
+                    Formats = BarcodeFormats.OneDimensional | BarcodeFormats.TwoDimensional,
+                    AutoRotate = true,
+                    Multiple = false
                 };
-                zxing = new ZXingScannerView
+
+                zxing = new CameraBarcodeReaderView
                 {
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
-                    VerticalOptions = LayoutOptions.FillAndExpand,
+                    HorizontalOptions = LayoutOptions.Fill,
+                    VerticalOptions = LayoutOptions.Fill,
                     AutomationId = "zxingScannerView",
+                    Options = opts
                 };
-                zxing.Options = opts;
-                zxing.OnScanResult += (result) =>
+
+                zxing.BarcodesDetected += (sender, e) =>
+                {
                     MainThread.BeginInvokeOnMainThread(async () =>
                     {
-                        if (!displayIsOpen)
+                        if (!displayIsOpen && e.Results?.Length > 0)
                         {
                             displayIsOpen = true;
+                            var result = e.Results[0];
+
                             try
                             {
-                                var sp = result.Text.Replace("https://", "http://").Replace("httpss://", "https://").Split(new String[] { "###" }, System.StringSplitOptions.RemoveEmptyEntries);
+                                var sp = result.Value.Replace("https://", "http://").Replace("httpss://", "https://").Split(new String[] { "###" }, StringSplitOptions.RemoveEmptyEntries);
 
                                 var newScanSettings = new SettingDTO();
                                 newScanSettings.ServerUrl = sp[0];
-                                newScanSettings.CustomerNumber = sp[1]; // MandantId
+                                newScanSettings.CustomerNumber = sp[1];
                                 newScanSettings.CustomerName = sp[2];
 
-                                if (result.Text.IndexOf("###") > -1 && !String.IsNullOrWhiteSpace(newScanSettings.ServerUrl) &&
+                                if (result.Value.IndexOf("###") > -1 && !String.IsNullOrWhiteSpace(newScanSettings.ServerUrl) &&
                                     !String.IsNullOrWhiteSpace(newScanSettings.CustomerNumber) &&
                                     !String.IsNullOrWhiteSpace(newScanSettings.CustomerName) && newScanSettings.CustomerNumber != model.SettingModel.SettingDTO.CustomerNumber)
                                 {
-                                    // Vorherige aktive Company/SettingDTO speichern
                                     Company.AddUpdateCompany(model, model.SettingModel.SettingDTO);
 
                                     string directoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "ipm/" + newScanSettings.CustomerNumber + "");
@@ -414,9 +495,8 @@ namespace iPMCloud.Mobile.vo
                                     model.SettingModel.SettingDTO = newScanSettings;
                                     model.SettingModel.SaveSettings();
 
-                                    zxing.IsTorchOn = false;// flashlight off;
-                                    zxing.IsAnalyzing = false;
-                                    zxing.IsScanning = false;
+                                    zxing.IsTorchOn = false;
+                                    zxing.IsDetecting = false;
                                     grid.Children.Clear();
                                     displayIsOpen = false;
                                     model.UseExternHardware = false;
@@ -432,47 +512,39 @@ namespace iPMCloud.Mobile.vo
                                     {
                                         await page.DisplayAlert("QR-Code nicht erkannt!", "Dieser QR-Code kann für die Registrierung eines weiteren Unternehmens mit der iPM-Cloud-App nicht verwendet werden.", "OK");
                                     }
-                                    zxing.IsTorchOn = false;// flashlight off;
-                                    zxing.IsAnalyzing = false;
-                                    zxing.IsScanning = false;
+                                    zxing.IsTorchOn = false;
+                                    zxing.IsDetecting = false;
                                     grid.Children.Clear();
                                     displayIsOpen = false;
                                     funcfaild.Invoke();
                                 }
                             }
-                            catch (Exception e)
+                            catch (Exception ex)
                             {
                                 await page.DisplayAlert("QR-Code nicht erkannt!", "Dieser QR-Code kann für die Registrierung eines weiteren Unternehmens mit der iPM-Cloud-App nicht verwendet werden.", "OK");
 
-                                zxing.IsTorchOn = false;// flashlight off;
-                                zxing.IsAnalyzing = false;
-                                zxing.IsScanning = false;
+                                zxing.IsTorchOn = false;
+                                zxing.IsDetecting = false;
                                 grid.Children.Clear();
                                 displayIsOpen = false;
                                 funcfaild.Invoke();
                             }
                         }
-                    }
-                );
+                    });
+                };
 
-                overlayz = new ZXingDefaultOverlay
-                {
-                    TopText = "Richten Sie die Kamera auf den QR-Code",
-                    BottomText = "Das Scannen erfolgt automatisch",
-                    ShowFlashButton = false,// zxing.HasTorch,
-                    AutomationId = "zxingDefaultOverlay",
-                };
-                overlayz.FlashButtonClicked += (sender, e) =>
-                {
-                    zxing.IsTorchOn = !zxing.IsTorchOn;
-                };
+                overlayz = CreateOverlay(
+                    "Richten Sie die Kamera auf den QR-Code",
+                    "Das Scannen erfolgt automatisch",
+                    true,
+                    () => { zxing.IsTorchOn = !zxing.IsTorchOn; }
+                );
 
                 grid.Children.Clear();
                 grid.Children.Add(zxing);
                 grid.Children.Add(overlayz);
                 scanContainer.Children.Add(grid);
-                zxing.IsScanning = true;
-                zxing.IsAnalyzing = true;
+                zxing.IsDetecting = true;
             }
             catch (Exception ex)
             {
@@ -492,6 +564,7 @@ namespace iPMCloud.Mobile.vo
         {
             zxing.IsTorchOn = !zxing.IsTorchOn;
         }
+
         public async void Btn_FlashlightAloneTapped(object sender, EventArgs e)
         {
             try
@@ -499,69 +572,22 @@ namespace iPMCloud.Mobile.vo
                 if (AppModel.Instance.isFlashLigthAloneON)
                 {
                     AppModel.Instance.isFlashLigthAloneON = false;
-                    await Flashlight.TurnOffAsync();
+                    await Flashlight.Default.TurnOffAsync();
                 }
                 else
                 {
                     AppModel.Instance.isFlashLigthAloneON = true;
-                    await Flashlight.TurnOnAsync();
+                    await Flashlight.Default.TurnOnAsync();
                 }
             }
             catch (Exception ex)
             {
             }
         }
+
         public void FlashON_Handle_Clicked(object sender, System.EventArgs e)
         {
             zxing.IsTorchOn = !zxing.IsTorchOn;
-
-            //if (isFlashlight)
-            //{
-            //    btn_flashlight_regscan.Text = "Licht aus";
-            //    try
-            //    {
-            //        // Turn On Flashlight  
-            //        await Flashlight.TurnOnAsync();
-            //    }
-            //    catch (FeatureNotSupportedException fnsEx)
-            //    {
-            //        await DisplayAlert("(FNS) Faild by take ON Flashlight", fnsEx.Message, "Ok");
-            //    }
-            //    catch (PermissionException pEx)
-            //    {
-            //        await DisplayAlert("(P) Faild by take ON Flashlight", pEx.Message, "Ok");
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        await DisplayAlert("(R) Faild by take ON Flashlight", ex.Message, "Ok");
-            //    }
-            //}
-            //else
-            //{
-            //    btn_flashlight_regscan.Text = "Licht an";
-            //    try
-            //    {
-            //        // Turn Off Flashlight  
-            //        await Flashlight.TurnOffAsync();
-            //    }
-            //    catch (FeatureNotSupportedException fnsEx)
-            //    {
-            //        await DisplayAlert("(FNS)´Faild by take OFF Flashlight", fnsEx.Message, "Ok");
-            //    }
-            //    catch (PermissionException pEx)
-            //    {
-            //        await DisplayAlert("(P) Faild by take OFF Flashlight", pEx.Message, "Ok");
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        await DisplayAlert("(R) Faild by take OFF Flashlight", ex.Message, "Ok");
-            //    }
-            //}
         }
-
-
-
-
-
     }
 }

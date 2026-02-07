@@ -164,6 +164,13 @@ Need to migrate from DependencyService to DI in MauiProgram.cs:
 - Should be moved to `iPMCloud.Mobile.Maui/Resources/Images/` or kept in `Platforms/iOS/Resources/`
 - This is a lower priority and can be done during macOS testing phase
 
+**iOS Custom Renderers to Convert:**
+- ⚠️ **TODO**: `CustomEntryRenderer.cs` - needs conversion to MAUI Handler
+- ⚠️ **TODO**: `CustomScrollView_iOS_Renderer.cs` - needs conversion to MAUI Handler
+- ⚠️ **TODO**: `TFEntry` renderers - needs conversion to MAUI Handler
+- These are located in the old `iPMCloud.Mobile.iOS/Renderer/` and `iPMCloud.Mobile.iOS/TFControls/` directories
+- MAUI uses Handlers instead of Renderers - these will need to be rewritten during namespace migration phase
+
 ### Configuration Files
 
 - **NLog.config** - Copied ✓
@@ -199,6 +206,42 @@ Current build attempt shows ~200+ compilation errors, primarily:
 8. **Handle Remaining Compilation Errors**: Fix any specific API changes
 
 ## Notes
+
+### iOS Platform Migration Summary (Completed)
+
+This iOS platform support was added as an extension to the existing MAUI migration. The following tasks were completed:
+
+**✅ Completed:**
+1. Updated `.csproj` to target both `net9.0-android` and `net9.0-ios`
+2. Created `Platforms/iOS/` directory structure
+3. Created MAUI-compatible `AppDelegate.cs` (inherits from `MauiUIApplicationDelegate`)
+4. Migrated `Info.plist` with MinimumOSVersion updated to 14.0 (MAUI requirement)
+5. Migrated `Entitlements.plist` for push notification support
+6. Migrated `GoogleService-Info.plist` for Firebase configuration
+7. Created `Main.cs` as iOS entry point
+8. Created iOS-specific `NLog.config` with correct file paths
+9. Added iOS-specific PropertyGroup to `.csproj` for codesigning
+10. Added iOS-specific ItemGroup to `.csproj` for bundling iOS resources
+11. Documented iOS-specific blockers (Firebase, Background Services)
+
+**⚠️ Known Limitations:**
+- Firebase push notifications not yet functional (requires MAUI-compatible implementation)
+- Background services not yet functional (requires MAUI-compatible implementation)
+- iOS assets not yet migrated (can be done during macOS testing)
+- Custom renderers not yet converted to Handlers (part of namespace migration task)
+- **Cannot build or test on Linux** - macOS with Xcode required for iOS builds
+
+**📋 Next Steps for iOS:**
+1. Perform namespace migration (Xamarin.Forms → Microsoft.Maui) - applies to both platforms
+2. Test iOS build on macOS
+3. Migrate iOS assets from Assets.xcassets
+4. Convert iOS custom renderers to MAUI Handlers
+5. Implement MAUI-compatible Firebase support
+6. Implement MAUI-compatible background service support
+
+---
+
+### General Migration Status
 
 - The project structure is correct for MAUI
 - The main challenge is the mass namespace migration

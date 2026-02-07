@@ -1,13 +1,19 @@
 # Xamarin.Forms to .NET MAUI Migration - Status and TODO
 
 ## Summary
-The basic MAUI project structure has been created and builds are attempted. However, there are many namespace and package issues that need to be resolved.
+The basic MAUI project structure has been created with **multi-platform support for Android and iOS**. The project now targets both `net9.0-android` and `net9.0-ios`. However, there are many namespace and package issues that need to be resolved before the migration is complete.
+
+**Platform Status:**
+- ✅ **Android**: Platform structure complete, needs namespace migration
+- ✅ **iOS**: Platform structure complete, needs namespace migration + macOS for testing
 
 ## Completed Tasks
 
 ### 1. Project Structure ✓
-- Created iPMCloud.Mobile.Maui project with net9.0-android target
+- Created iPMCloud.Mobile.Maui project with **multi-platform support**
+- **TargetFrameworks**: `net9.0-android;net9.0-ios`
 - Set up Platforms/Android/ structure with all Android-specific files
+- Set up Platforms/iOS/ structure with all iOS-specific files
 - Copied all shared code from iPMCloud.Mobile
 - Created MauiProgram.cs as entry point
 - Created basic Resources structure (Styles, Images, Fonts, Raw)
@@ -20,7 +26,8 @@ The basic MAUI project structure has been created and builds are attempted. Howe
 - **Android Resources**: All copied to Platforms/Android/Resources/
 
 ### 3. Project Configuration ✓
-- Created iPMCloud.Mobile.Maui.csproj targeting net9.0-android
+- Created iPMCloud.Mobile.Maui.csproj targeting **net9.0-android and net9.0-ios**
+- Added iOS-specific PropertyGroup with codesigning configuration
 - Updated package references for AndroidX libraries
 - Added core MAUI packages (Microsoft.Maui.Controls 9.0.120)
 - Configured App.xaml with MAUI namespace
@@ -112,12 +119,50 @@ Need to migrate from DependencyService to DI in MauiProgram.cs:
 - IImageAddText
 - Any other services using DependencyService
 
-### iOS Support
+### iOS Support ✓ (Added)
 
-iOS platform files exist but are not being built because:
-- We're on Linux (iOS requires macOS)
-- Need to migrate iOS-specific files when building on macOS
-- iOS AppDelegate.cs needs to be created for MAUI
+**iOS Platform Structure:**
+- ✅ `Platforms/iOS/` directory created
+- ✅ iOS `AppDelegate.cs` created in MAUI format (inherits from MauiUIApplicationDelegate)
+- ✅ iOS `Main.cs` created as entry point
+- ✅ iOS `Info.plist` migrated with MAUI-compatible settings (MinimumOSVersion: 14.0)
+- ✅ iOS `Entitlements.plist` migrated (includes aps-environment for push notifications)
+- ✅ iOS `GoogleService-Info.plist` copied for Firebase configuration
+- ✅ iOS `NLog.config` created with iOS-specific log paths
+- ✅ `.csproj` updated to target `net9.0-android;net9.0-ios`
+- ✅ iOS-specific PropertyGroup added to `.csproj` (codesigning configuration)
+- ✅ iOS-specific ItemGroup added to `.csproj` for iOS files
+
+**iOS-Specific Known Blockers:**
+
+1. **Firebase Push Notifications** - NOT YET FUNCTIONAL
+   - Original iOS project used `Plugin.FirebasePushNotification` (not MAUI-compatible)
+   - AppDelegate has TODO comments indicating Firebase needs MAUI-compatible implementation
+   - Options: Use Firebase.iOS NuGet package directly or wait for community MAUI plugins
+   - **Status**: Firebase initialization commented out with TODO
+
+2. **Background Services** - NOT YET FUNCTIONAL
+   - Original iOS project used `Matcha.BackgroundService.iOS` (not MAUI-compatible)
+   - AppDelegate has TODO comments indicating background service needs MAUI-compatible implementation
+   - Options: Implement native iOS background tasks or use WorkManager alternatives
+   - **Status**: Background service initialization commented out with TODO
+
+3. **macOS Build Environment Required**
+   - iOS builds require macOS with Xcode installed
+   - Current development environment is Linux - iOS cannot be built/tested here
+   - **Status**: Structure is complete, but build/test requires macOS
+
+**iOS Bundle Configuration:**
+- Bundle Identifier: `com.ipmcloud.ipm.mobile.app`
+- Display Name: `iPM Cloud`
+- Supported iOS Version: 14.0+ (MAUI requirement)
+- Device Family: iPhone + iPad
+- Permissions: Camera, Photo Library, Microphone, Location (preserved from original)
+
+**iOS Assets Migration Status:**
+- ⚠️ **TODO**: iOS Assets from `iPMCloud.Mobile.iOS/Assets.xcassets/` not yet migrated
+- Should be moved to `iPMCloud.Mobile.Maui/Resources/Images/` or kept in `Platforms/iOS/Resources/`
+- This is a lower priority and can be done during macOS testing phase
 
 ### Configuration Files
 

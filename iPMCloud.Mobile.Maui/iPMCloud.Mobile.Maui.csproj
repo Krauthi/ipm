@@ -1,9 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net9.0-android</TargetFrameworks>
-    <!-- iOS support requires macOS build environment -->
-    <!-- <TargetFrameworks>net9.0-android;net9.0-ios</TargetFrameworks> -->
+    <TargetFrameworks>net9.0-android;net9.0-ios</TargetFrameworks>
     <!-- Uncomment to also build for Windows. Note that all MAUI libraries used must also support Windows. -->
     <!-- <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net9.0-windows10.0.19041.0</TargetFrameworks> -->
     
@@ -27,11 +25,17 @@
     <AssemblyVersion>2.0.0.0</AssemblyVersion>
     <FileVersion>2.0.0.0</FileVersion>
 
-    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">11.0</SupportedOSPlatformVersion>
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">14.0</SupportedOSPlatformVersion>
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
     
     <NeutralLanguage>de-DE</NeutralLanguage>
     <Copyright>iPM-Cloud</Copyright>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
+    <SupportedOSPlatformVersion>14.0</SupportedOSPlatformVersion>
+    <CodesignKey>iPhone Developer</CodesignKey>
+    <CodesignProvision>Automatic</CodesignProvision>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-android|AnyCPU'">
@@ -121,6 +125,18 @@
   <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
     <GoogleServicesJson Include="Platforms\Android\google-services.json" />
     <AndroidAsset Include="Platforms\Android\Assets\*.json" />
+  </ItemGroup>
+
+  <!-- iOS-specific files -->
+  <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
+    <BundleResource Include="Platforms\iOS\GoogleService-Info.plist">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </BundleResource>
+    <None Include="Platforms\iOS\Info.plist" />
+    <None Include="Platforms\iOS\Entitlements.plist" />
+    <EmbeddedResource Include="Platforms\iOS\NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

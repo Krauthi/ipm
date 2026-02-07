@@ -3,7 +3,8 @@ using Android.App;
 using Android.Content;
 using Android.Content.PM;
 using Android.Content.Res;
-using Android.Gms.Common;
+// TODO: Google Play Services not compatible - comment out until Firebase is migrated
+// using Android.Gms.Common;
 using Android.OS;
 using Android.Runtime;
 using Android.Util;

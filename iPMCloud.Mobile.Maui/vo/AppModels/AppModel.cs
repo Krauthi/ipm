@@ -1,13 +1,16 @@
 ﻿//using Plugin.Permissions;
-using Plugin.Connectivity;
+// TODO: Plugin.Connectivity not MAUI-compatible - use Microsoft.Maui.Networking.Connectivity
+// using Plugin.Connectivity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
 using System.Threading;
 using System.Threading.Tasks;
-using Xamarin.Essentials;
-using Xamarin.Forms;
+using Microsoft.Maui.Storage;
+using Microsoft.Maui.Devices;
+using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui.Controls;
 //using Android.OS;
 
 namespace iPMCloud.Mobile.vo
@@ -282,6 +285,8 @@ namespace iPMCloud.Mobile.vo
         }
 
 
+        // TODO: Plugin.Connectivity not MAUI-compatible - comment out until migrated
+        /*
         void CrossConnectivity_ConnectivityTypeChanged(object sender, Plugin.Connectivity.Abstractions.ConnectivityTypeChangedEventArgs e)
         {
             try
@@ -298,7 +303,7 @@ namespace iPMCloud.Mobile.vo
             {
                 try
                 {
-                    Device.BeginInvokeOnMainThread(() =>
+                    MainThread.BeginInvokeOnMainThread(() =>
                     {
                         (App.MainPage as MainPage).ShowDisconnected();
                     });
@@ -309,7 +314,7 @@ namespace iPMCloud.Mobile.vo
             {
                 try
                 {
-                    Device.BeginInvokeOnMainThread(() =>
+                    MainThread.BeginInvokeOnMainThread(() =>
                     {
                         (App.MainPage as StartPage).ShowDisconnected();
                     });
@@ -334,7 +339,7 @@ namespace iPMCloud.Mobile.vo
             {
                 try
                 {
-                    Device.BeginInvokeOnMainThread(() =>
+                    MainThread.BeginInvokeOnMainThread(() =>
                     {
                         (App.MainPage as MainPage).ShowDisconnected();
                     });
@@ -345,7 +350,7 @@ namespace iPMCloud.Mobile.vo
             {
                 try
                 {
-                    Device.BeginInvokeOnMainThread(() =>
+                    MainThread.BeginInvokeOnMainThread(() =>
                     {
                         (App.MainPage as StartPage).ShowDisconnected();
                     });
@@ -353,6 +358,7 @@ namespace iPMCloud.Mobile.vo
                 catch (Exception) { }
             }
         }
+        */
 
         //void Connectivity_ConnectivityChanged(object sender, ConnectivityChangedEventArgs e)
         //{
@@ -368,14 +374,14 @@ namespace iPMCloud.Mobile.vo
 
         //    if (this.App.MainPage != null && App.MainPage.ClassId == "MainPage")
         //    {
-        //        Device.BeginInvokeOnMainThread(() =>
+        //        MainThread.BeginInvokeOnMainThread(() =>
         //        {
         //            (App.MainPage as MainPage).ShowDisconnected();
         //        });
         //    }
         //    if (this.App.MainPage != null && App.MainPage.ClassId == "StartPage")
         //    {
-        //        Device.BeginInvokeOnMainThread(() =>
+        //        MainThread.BeginInvokeOnMainThread(() =>
         //        {
         //            (App.MainPage as StartPage).ShowDisconnected();
         //        });
@@ -493,11 +499,11 @@ namespace iPMCloud.Mobile.vo
         public void InitDeviceInformation()
         {
             DeviceSystem = "undefine";
-            if (Device.RuntimePlatform.Equals(Device.Android))
+            if (DeviceInfo.Platform == DevicePlatform.Android)
             {
                 DeviceSystem = "android";
             }
-            else if (Device.RuntimePlatform.Equals(Device.iOS))
+            else if (DeviceInfo.Platform == DevicePlatform.iOS)
             {
                 DeviceSystem = "ios";
             }
@@ -671,7 +677,7 @@ namespace iPMCloud.Mobile.vo
             }
             else
             {
-                if (Device.RuntimePlatform == Device.iOS)
+                if (DeviceInfo.Platform == DevicePlatform.iOS)
                 {
                     if (status == PermissionStatus.Granted)
                     {
@@ -686,7 +692,7 @@ namespace iPMCloud.Mobile.vo
                         checkPermissionGPSMessage = "Permission Error - Du hast nicht die Berechtigung für (GPS-Standortabfrage) gesetzt!";
                     }
                 }
-                else if (Device.RuntimePlatform == Device.Android)
+                else if (DeviceInfo.Platform == DevicePlatform.Android)
                 {
                     if (status == PermissionStatus.Granted || status == PermissionStatus.Restricted)
                     {
@@ -728,11 +734,11 @@ namespace iPMCloud.Mobile.vo
             {
                 gpsTimerIsRunning = true;
                 //Task.Run(() => { AppModel.Instance.SetLocationGPS(true); });
-                Device.StartTimer(TimeSpan.FromSeconds(8), () =>
+                Dispatcher.StartTimer(TimeSpan.FromSeconds(8), () =>
                 {
                     //Task.Run(() => { AppModel.Instance.Connections.IsReachableHost(); });                    
                     Task.Run(() => { AppModel.Instance.SetLocationGPS(true); });
-                    //Device.BeginInvokeOnMainThread(() => { AppModel.Instance.SetLocationGPS(); });
+                    //MainThread.BeginInvokeOnMainThread(() => { AppModel.Instance.SetLocationGPS(); });
                     return true;
                 });
             }
@@ -744,7 +750,7 @@ namespace iPMCloud.Mobile.vo
             //inLog = false;
             try
             {
-                Device.BeginInvokeOnMainThread(() =>
+                MainThread.BeginInvokeOnMainThread(() =>
                 {
                     if (this.MainPage != null)
                     {
@@ -785,7 +791,7 @@ namespace iPMCloud.Mobile.vo
                     gpsAlertHasSend = true;
                     if (!inLog)
                     {
-                        Device.BeginInvokeOnMainThread(() =>
+                        MainThread.BeginInvokeOnMainThread(() =>
                         {
                             if (this.MainPage != null)
                             {
@@ -811,7 +817,7 @@ namespace iPMCloud.Mobile.vo
                     gpsAlertHasSend = true;
                     if (!inLog)
                     {
-                        Device.BeginInvokeOnMainThread(() =>
+                        MainThread.BeginInvokeOnMainThread(() =>
                         {
                             if (this.MainPage != null)
                             {
@@ -840,7 +846,7 @@ namespace iPMCloud.Mobile.vo
                     gpsAlertHasSend = true;
                     if (!inLog)
                     {
-                        Device.BeginInvokeOnMainThread(() =>
+                        MainThread.BeginInvokeOnMainThread(() =>
                         {
                             if (this.MainPage != null)
                             {
@@ -866,7 +872,7 @@ namespace iPMCloud.Mobile.vo
                     gpsAlertHasSend = true;
                     if (!inLog)
                     {
-                        Device.BeginInvokeOnMainThread(() =>
+                        MainThread.BeginInvokeOnMainThread(() =>
                         {
                             if (this.MainPage != null)
                             {
@@ -1104,9 +1110,9 @@ namespace iPMCloud.Mobile.vo
             {
                 string folder;
 
-                if (Device.RuntimePlatform == Device.iOS)
+                if (DeviceInfo.Platform == DevicePlatform.iOS)
                     folder = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "..", "Library");
-                else if (Device.RuntimePlatform == Device.Android)
+                else if (DeviceInfo.Platform == DevicePlatform.Android)
                     folder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
                 else
                     throw new Exception("Could not show log: Platform undefined.");

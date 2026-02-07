@@ -4,7 +4,8 @@ using Google.Cloud.Translation.V2;
 using iPMCloud.Mobile.vo;
 using iPMCloud.Mobile.vo.GlobalObjects;
 using iPMCloud.Mobile.vo.wso;
-using NativeMedia;
+// TODO: NativeMedia not MAUI-compatible - needs replacement with Microsoft.Maui.Media
+// using NativeMedia;
 //using Plugin.Permissions;
 using System;
 using System.Collections.Generic;
@@ -18,7 +19,8 @@ using Microsoft.Maui.Storage;
 using Microsoft.Maui.Devices;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls;
-using Xamarin.RangeSlider.Forms;
+// TODO: Xamarin.RangeSlider not MAUI-compatible - needs replacement
+// using Xamarin.RangeSlider.Forms;
 
 //using Microsoft.Maui.Storage;
 using Microsoft.Maui.Devices;
@@ -176,8 +178,8 @@ namespace iPMCloud.Mobile
                 popupContainer_info_notscan_text.Text = "Es sind noch nicht abgeschlossene Arbeiten aktiv. Bitte erst beenden, bevor Sie ein anderes Objekt direkt auswählen.";
                 popupContainer_info_notscan_okbtn.GestureRecognizers.Clear();
                 var tgr_over_ns = new TapGestureRecognizer();
-                tgr_over_ns.Tapped += (object o, EventArgs ev) => { popupContainer_info_notscan.IsVisible = false; };
-                tgr_over_ns.Tapped += (object o, EventArgs ev) => { popupContainer_info_notscan.IsVisible = false; };
+                tgr_over_ns.Tapped += (object o, TappedEventArgs ev) => { popupContainer_info_notscan.IsVisible = false; };
+                tgr_over_ns.Tapped += (object o, TappedEventArgs ev) => { popupContainer_info_notscan.IsVisible = false; };
                 popupContainer_info_notscan_okbtn.GestureRecognizers.Add(tgr_over_ns);
                 btn_endselectedcancel.GestureRecognizers.Clear();
                 popupContainer_info_notscan.IsVisible = true;
@@ -236,8 +238,8 @@ namespace iPMCloud.Mobile
                     popupContainer_info_notscan_text.Text = "Es sind noch nicht abgeschlossene Arbeiten aktiv. Bitte erst beenden, bevor Sie ein anderes Objekt direkt auswählen oder eine Checkliste bearbeiten möchten.";
                     popupContainer_info_notscan_okbtn.GestureRecognizers.Clear();
                     var tgr_over_ns = new TapGestureRecognizer();
-                    tgr_over_ns.Tapped += (object o, EventArgs ev) => { popupContainer_info_notscan.IsVisible = false; };
-                    tgr_over_ns.Tapped += (object o, EventArgs ev) => { popupContainer_info_notscan.IsVisible = false; };
+                    tgr_over_ns.Tapped += (object o, TappedEventArgs ev) => { popupContainer_info_notscan.IsVisible = false; };
+                    tgr_over_ns.Tapped += (object o, TappedEventArgs ev) => { popupContainer_info_notscan.IsVisible = false; };
                     popupContainer_info_notscan_okbtn.GestureRecognizers.Add(tgr_over_ns);
                     btn_endselectedcancel.GestureRecognizers.Clear();
                     popupContainer_info_notscan.IsVisible = true;
@@ -343,7 +345,7 @@ namespace iPMCloud.Mobile
 
                 popupContainer_dialog_btn_ok.GestureRecognizers.Clear();
                 var tgr_popupContainer_dialog_btn_ok = new TapGestureRecognizer();
-                tgr_popupContainer_dialog_btn_ok.Tapped += (object o, EventArgs ev) =>
+                tgr_popupContainer_dialog_btn_ok.Tapped += (object o, TappedEventArgs ev) =>
                 {
                     popupContainer_dialog.IsVisible = false;
                     popupContainer_dialog_btn_ok.GestureRecognizers.Clear();
@@ -466,15 +468,15 @@ namespace iPMCloud.Mobile
             {
                 //btn_check_sub.GestureRecognizers.Clear();
                 //var tgr_btn_check_sub = new TapGestureRecognizer();
-                //tgr_btn_check_sub.Tapped += (object o, EventArgs ev) => { checkQuestIndex--; BuildCheckQuestStack(); };
+                //tgr_btn_check_sub.Tapped += (object o, TappedEventArgs ev) => { checkQuestIndex--; BuildCheckQuestStack(); };
                 //btn_check_sub.GestureRecognizers.Add(tgr_btn_check_sub);
                 //btn_check_add.GestureRecognizers.Clear();
                 //var tgr_btn_check_add = new TapGestureRecognizer();
-                //tgr_btn_check_add.Tapped += (object o, EventArgs ev) => { checkQuestIndex++; BuildCheckQuestStack(); };
+                //tgr_btn_check_add.Tapped += (object o, TappedEventArgs ev) => { checkQuestIndex++; BuildCheckQuestStack(); };
                 //btn_check_add.GestureRecognizers.Add(tgr_btn_check_add);
                 //btn_check_ready.GestureRecognizers.Clear();
                 //var tgr_btn_check_ready = new TapGestureRecognizer();
-                //tgr_btn_check_ready.Tapped += (object o, EventArgs ev) => { SetReadyCheckA(); };
+                //tgr_btn_check_ready.Tapped += (object o, TappedEventArgs ev) => { SetReadyCheckA(); };
                 //btn_check_ready.GestureRecognizers.Add(tgr_btn_check_ready);
 
                 btn_info_check_text1.Text = AppModel.Instance.selectedCheckA.bezeichnung;
@@ -1293,8 +1295,8 @@ namespace iPMCloud.Mobile
                 popupContainer_info_notscan_text.Text = "Es sind noch nicht abgeschlossene Arbeiten aktiv. Bitte erst beenden, bevor Sie ein anderes Objekt direkt auswählen.";
                 popupContainer_info_notscan_okbtn.GestureRecognizers.Clear();
                 var tgr_over_ns = new TapGestureRecognizer();
-                tgr_over_ns.Tapped += (object o, EventArgs ev) => { popupContainer_info_notscan.IsVisible = false; };
-                tgr_over_ns.Tapped += (object o, EventArgs ev) => { popupContainer_info_notscan.IsVisible = false; };
+                tgr_over_ns.Tapped += (object o, TappedEventArgs ev) => { popupContainer_info_notscan.IsVisible = false; };
+                tgr_over_ns.Tapped += (object o, TappedEventArgs ev) => { popupContainer_info_notscan.IsVisible = false; };
                 popupContainer_info_notscan_okbtn.GestureRecognizers.Add(tgr_over_ns);
                 btn_endselectedcancel.GestureRecognizers.Clear();
                 popupContainer_info_notscan.IsVisible = true;
@@ -2588,8 +2590,8 @@ namespace iPMCloud.Mobile
                 };
                 lb_day.GestureRecognizers.Clear();
                 var t_lb = new TapGestureRecognizer();
-                t_lb.Tapped -= (object o, EventArgs ev) => { daypicker_SelectedIndexChanged(o, i); };
-                t_lb.Tapped += (object o, EventArgs ev) => { daypicker_SelectedIndexChanged(o, i); };
+                t_lb.Tapped -= (object o, TappedEventArgs ev) => { daypicker_SelectedIndexChanged(o, i); };
+                t_lb.Tapped += (object o, TappedEventArgs ev) => { daypicker_SelectedIndexChanged(o, i); };
                 lb_day.GestureRecognizers.Add(t_lb);
                 daypicker_items.Children.Add(lb_day);
                 var bv = new BoxView
@@ -2610,45 +2612,45 @@ namespace iPMCloud.Mobile
 
             frame_planConA_offenbtn.GestureRecognizers.Clear();
             var t_frame_planConA_offentxt = new TapGestureRecognizer();
-            t_frame_planConA_offentxt.Tapped -= async (object o, EventArgs ev) => { await tourScroller.ScrollToAsync(0, 0, true); };
-            t_frame_planConA_offentxt.Tapped += async (object o, EventArgs ev) => { await tourScroller.ScrollToAsync(0, 0, true); };
+            t_frame_planConA_offentxt.Tapped -= async (object o, TappedEventArgs ev) => { await tourScroller.ScrollToAsync(0, 0, true); };
+            t_frame_planConA_offentxt.Tapped += async (object o, TappedEventArgs ev) => { await tourScroller.ScrollToAsync(0, 0, true); };
             frame_planConA_offenbtn.GestureRecognizers.Add(t_frame_planConA_offentxt);
             frame_planConA_erlbtn.GestureRecognizers.Clear();
             var t_frame_planConA_erltxt = new TapGestureRecognizer();
-            t_frame_planConA_erltxt.Tapped -= async (object o, EventArgs ev) => { await tourScroller.ScrollToAsync(tabContentWidth * 1, 0, true); };
-            t_frame_planConA_erltxt.Tapped += async (object o, EventArgs ev) => { await tourScroller.ScrollToAsync(tabContentWidth * 1, 0, true); };
+            t_frame_planConA_erltxt.Tapped -= async (object o, TappedEventArgs ev) => { await tourScroller.ScrollToAsync(tabContentWidth * 1, 0, true); };
+            t_frame_planConA_erltxt.Tapped += async (object o, TappedEventArgs ev) => { await tourScroller.ScrollToAsync(tabContentWidth * 1, 0, true); };
             frame_planConA_erlbtn.GestureRecognizers.Add(t_frame_planConA_erltxt);
             frame_planConA_veroffenbtn.GestureRecognizers.Clear();
             var t_frame_planConA_veroffentxt = new TapGestureRecognizer();
-            t_frame_planConA_veroffentxt.Tapped -= async (object o, EventArgs ev) => { await tourScroller.ScrollToAsync(tabContentWidth * 2, 0, true); };
-            t_frame_planConA_veroffentxt.Tapped += async (object o, EventArgs ev) => { await tourScroller.ScrollToAsync(tabContentWidth * 2, 0, true); };
+            t_frame_planConA_veroffentxt.Tapped -= async (object o, TappedEventArgs ev) => { await tourScroller.ScrollToAsync(tabContentWidth * 2, 0, true); };
+            t_frame_planConA_veroffentxt.Tapped += async (object o, TappedEventArgs ev) => { await tourScroller.ScrollToAsync(tabContentWidth * 2, 0, true); };
             frame_planConA_veroffenbtn.GestureRecognizers.Add(t_frame_planConA_veroffentxt);
 
             frame_planConB_offenbtn.GestureRecognizers.Clear();
             var t_frame_planConB_offentxt = new TapGestureRecognizer();
-            t_frame_planConB_offentxt.Tapped -= async (object o, EventArgs ev) => { await tourScrollerB.ScrollToAsync(0, 0, true); };
-            t_frame_planConB_offentxt.Tapped += async (object o, EventArgs ev) => { await tourScrollerB.ScrollToAsync(0, 0, true); };
+            t_frame_planConB_offentxt.Tapped -= async (object o, TappedEventArgs ev) => { await tourScrollerB.ScrollToAsync(0, 0, true); };
+            t_frame_planConB_offentxt.Tapped += async (object o, TappedEventArgs ev) => { await tourScrollerB.ScrollToAsync(0, 0, true); };
             frame_planConB_offenbtn.GestureRecognizers.Add(t_frame_planConB_offentxt);
             frame_planConB_erlbtn.GestureRecognizers.Clear();
             var t_frame_planConB_erltxt = new TapGestureRecognizer();
-            t_frame_planConB_erltxt.Tapped -= async (object o, EventArgs ev) => { await tourScrollerB.ScrollToAsync(tabContentWidth * 1, 0, true); };
-            t_frame_planConB_erltxt.Tapped += async (object o, EventArgs ev) => { await tourScrollerB.ScrollToAsync(tabContentWidth * 1, 0, true); };
+            t_frame_planConB_erltxt.Tapped -= async (object o, TappedEventArgs ev) => { await tourScrollerB.ScrollToAsync(tabContentWidth * 1, 0, true); };
+            t_frame_planConB_erltxt.Tapped += async (object o, TappedEventArgs ev) => { await tourScrollerB.ScrollToAsync(tabContentWidth * 1, 0, true); };
             frame_planConB_erlbtn.GestureRecognizers.Add(t_frame_planConB_erltxt);
 
             frame_planConC_offenbtn.GestureRecognizers.Clear();
             var t_frame_planConC_offentxt = new TapGestureRecognizer();
-            t_frame_planConC_offentxt.Tapped -= async (object o, EventArgs ev) => { await tourScrollerC.ScrollToAsync(0, 0, true); };
-            t_frame_planConC_offentxt.Tapped += async (object o, EventArgs ev) => { await tourScrollerC.ScrollToAsync(0, 0, true); };
+            t_frame_planConC_offentxt.Tapped -= async (object o, TappedEventArgs ev) => { await tourScrollerC.ScrollToAsync(0, 0, true); };
+            t_frame_planConC_offentxt.Tapped += async (object o, TappedEventArgs ev) => { await tourScrollerC.ScrollToAsync(0, 0, true); };
             frame_planConC_offenbtn.GestureRecognizers.Add(t_frame_planConC_offentxt);
             frame_planConC_workbtn.GestureRecognizers.Clear();
             var t_frame_planConC_worktxt = new TapGestureRecognizer();
-            t_frame_planConC_worktxt.Tapped -= async (object o, EventArgs ev) => { await tourScrollerC.ScrollToAsync(tabContentWidth * 1, 0, true); };
-            t_frame_planConC_worktxt.Tapped += async (object o, EventArgs ev) => { await tourScrollerC.ScrollToAsync(tabContentWidth * 1, 0, true); };
+            t_frame_planConC_worktxt.Tapped -= async (object o, TappedEventArgs ev) => { await tourScrollerC.ScrollToAsync(tabContentWidth * 1, 0, true); };
+            t_frame_planConC_worktxt.Tapped += async (object o, TappedEventArgs ev) => { await tourScrollerC.ScrollToAsync(tabContentWidth * 1, 0, true); };
             frame_planConC_workbtn.GestureRecognizers.Add(t_frame_planConC_worktxt);
             frame_planConC_erlbtn.GestureRecognizers.Clear();
             var t_frame_planConC_erltxt = new TapGestureRecognizer();
-            t_frame_planConC_erltxt.Tapped -= async (object o, EventArgs ev) => { await tourScrollerC.ScrollToAsync(tabContentWidth * 2, 0, true); };
-            t_frame_planConC_erltxt.Tapped += async (object o, EventArgs ev) => { await tourScrollerC.ScrollToAsync(tabContentWidth * 2, 0, true); };
+            t_frame_planConC_erltxt.Tapped -= async (object o, TappedEventArgs ev) => { await tourScrollerC.ScrollToAsync(tabContentWidth * 2, 0, true); };
+            t_frame_planConC_erltxt.Tapped += async (object o, TappedEventArgs ev) => { await tourScrollerC.ScrollToAsync(tabContentWidth * 2, 0, true); };
             frame_planConC_erlbtn.GestureRecognizers.Add(t_frame_planConC_erltxt);
 
             Init_PlanTabs();
@@ -4300,12 +4302,12 @@ namespace iPMCloud.Mobile
 
             btn_quest_changemuellPos.GestureRecognizers.Clear();
             var tgr_quest_changemuellPos = new TapGestureRecognizer();
-            tgr_quest_changemuellPos.Tapped += (object o, EventArgs ev) => { ChangeSelectedMuellPosNow(obj, 1); };
+            tgr_quest_changemuellPos.Tapped += (object o, TappedEventArgs ev) => { ChangeSelectedMuellPosNow(obj, 1); };
             btn_quest_changemuellPos.GestureRecognizers.Add(tgr_quest_changemuellPos);
 
             btn_quest_changemuellpos_raus.GestureRecognizers.Clear();
             var tgr_quest_changemuellpos_raus = new TapGestureRecognizer();
-            tgr_quest_changemuellpos_raus.Tapped += (object o, EventArgs ev) => { ChangeSelectedMuellPosNow(obj, 0); };
+            tgr_quest_changemuellpos_raus.Tapped += (object o, TappedEventArgs ev) => { ChangeSelectedMuellPosNow(obj, 0); };
             btn_quest_changemuellpos_raus.GestureRecognizers.Add(tgr_quest_changemuellpos_raus);
 
             await Task.Delay(1);
@@ -4362,7 +4364,7 @@ namespace iPMCloud.Mobile
                     btn_startselectedwork.GestureRecognizers.Add(tgr_btn_startselectedwork);
                     btn_startselectedcancel.GestureRecognizers.Clear();
                     var tgr_btn_startselectedcancel = new TapGestureRecognizer();
-                    tgr_btn_startselectedcancel.Tapped += (object o, EventArgs ev) => { popupContainer_quest_startwork.IsVisible = false; };
+                    tgr_btn_startselectedcancel.Tapped += (object o, TappedEventArgs ev) => { popupContainer_quest_startwork.IsVisible = false; };
                     btn_startselectedcancel.GestureRecognizers.Add(tgr_btn_startselectedcancel);
                     btn_startselectedwork_text.Text = "Möchten Sie wirklich Ihre Auswahl jetzt zur laufenden Ausführung nachbuchen?";
                     popupContainer_quest_startwork.IsVisible = true;
@@ -4613,13 +4615,13 @@ namespace iPMCloud.Mobile
             {
                 btn_quest_removeLastBuildingSave.GestureRecognizers.Clear();
                 var tgr_save = new TapGestureRecognizer();
-                tgr_save.Tapped -= (object o, EventArgs ev) => { popupContainer_quest_removeLastBuilding.IsVisible = false; ShowRunningWorksView(); };
-                tgr_save.Tapped += (object o, EventArgs ev) => { popupContainer_quest_removeLastBuilding.IsVisible = false; ShowRunningWorksView(); };
+                tgr_save.Tapped -= (object o, TappedEventArgs ev) => { popupContainer_quest_removeLastBuilding.IsVisible = false; ShowRunningWorksView(); };
+                tgr_save.Tapped += (object o, TappedEventArgs ev) => { popupContainer_quest_removeLastBuilding.IsVisible = false; ShowRunningWorksView(); };
                 btn_quest_removeLastBuildingSave.GestureRecognizers.Add(tgr_save);
                 btn_quest_removeLastBuildingCancel.GestureRecognizers.Clear();
                 var tgr_cancel = new TapGestureRecognizer();
-                tgr_cancel.Tapped -= (object o, EventArgs ev) => { popupContainer_quest_removeLastBuilding.IsVisible = false; };
-                tgr_cancel.Tapped += (object o, EventArgs ev) => { popupContainer_quest_removeLastBuilding.IsVisible = false; };
+                tgr_cancel.Tapped -= (object o, TappedEventArgs ev) => { popupContainer_quest_removeLastBuilding.IsVisible = false; };
+                tgr_cancel.Tapped += (object o, TappedEventArgs ev) => { popupContainer_quest_removeLastBuilding.IsVisible = false; };
                 btn_quest_removeLastBuildingCancel.GestureRecognizers.Add(tgr_cancel);
 
                 popupContainer_quest_removeLastBuilding.IsVisible = true;
@@ -5123,8 +5125,8 @@ namespace iPMCloud.Mobile
 
             btn_cancelclearlogtosupport.GestureRecognizers.Clear();
             var tgr_cancel = new TapGestureRecognizer();
-            tgr_cancel.Tapped -= (object o, EventArgs ev) => { popupContainer_quest_clearlog.IsVisible = false; };
-            tgr_cancel.Tapped += (object o, EventArgs ev) => { popupContainer_quest_clearlog.IsVisible = false; };
+            tgr_cancel.Tapped -= (object o, TappedEventArgs ev) => { popupContainer_quest_clearlog.IsVisible = false; };
+            tgr_cancel.Tapped += (object o, TappedEventArgs ev) => { popupContainer_quest_clearlog.IsVisible = false; };
             btn_cancelclearlogtosupport.GestureRecognizers.Add(tgr_cancel);
 
             // Dialog öffnen
@@ -5163,8 +5165,8 @@ namespace iPMCloud.Mobile
 
             btn_cancellogtosupport.GestureRecognizers.Clear();
             var tgr_cancel = new TapGestureRecognizer();
-            tgr_cancel.Tapped -= (object o, EventArgs ev) => { popupContainer_quest_sendlog.IsVisible = false; };
-            tgr_cancel.Tapped += (object o, EventArgs ev) => { popupContainer_quest_sendlog.IsVisible = false; };
+            tgr_cancel.Tapped -= (object o, TappedEventArgs ev) => { popupContainer_quest_sendlog.IsVisible = false; };
+            tgr_cancel.Tapped += (object o, TappedEventArgs ev) => { popupContainer_quest_sendlog.IsVisible = false; };
             btn_cancellogtosupport.GestureRecognizers.Add(tgr_cancel);
 
             // Dialog öffnen
@@ -5176,8 +5178,8 @@ namespace iPMCloud.Mobile
             //popupContainer_container_sendlog.Margin = new Thickness(0,100,0,0);
             btn_cancellogtosupport_fail.GestureRecognizers.Clear();
             var tgr_cancel = new TapGestureRecognizer();
-            tgr_cancel.Tapped -= (object o, EventArgs ev) => { popupContainer_quest_sendlog_fail.IsVisible = false; };
-            tgr_cancel.Tapped += (object o, EventArgs ev) => { popupContainer_quest_sendlog_fail.IsVisible = false; };
+            tgr_cancel.Tapped -= (object o, TappedEventArgs ev) => { popupContainer_quest_sendlog_fail.IsVisible = false; };
+            tgr_cancel.Tapped += (object o, TappedEventArgs ev) => { popupContainer_quest_sendlog_fail.IsVisible = false; };
             btn_cancellogtosupport_fail.GestureRecognizers.Add(tgr_cancel);
 
             // Dialog öffnen
@@ -5401,8 +5403,8 @@ namespace iPMCloud.Mobile
 
             btn_cancellang.GestureRecognizers.Clear();
             var tgr_cancel = new TapGestureRecognizer();
-            tgr_cancel.Tapped -= (object o, EventArgs ev) => { popupContainer_quest_changelang.IsVisible = false; };
-            tgr_cancel.Tapped += (object o, EventArgs ev) => { popupContainer_quest_changelang.IsVisible = false; };
+            tgr_cancel.Tapped -= (object o, TappedEventArgs ev) => { popupContainer_quest_changelang.IsVisible = false; };
+            tgr_cancel.Tapped += (object o, TappedEventArgs ev) => { popupContainer_quest_changelang.IsVisible = false; };
             btn_cancellang.GestureRecognizers.Add(tgr_cancel);
 
             popupContainer_container_changelang_titel.Text = "Kategorien und Leistungen ändern in (" + AppModel.Instance.Lang.text.Replace("(Standard)", "") + ")";
@@ -5416,8 +5418,8 @@ namespace iPMCloud.Mobile
             //popupContainer_container_sendlog.Margin = new Thickness(0,100,0,0);
             btn_cancellogtosupport_fail.GestureRecognizers.Clear();
             var tgr_cancel = new TapGestureRecognizer();
-            tgr_cancel.Tapped -= (object o, EventArgs ev) => { popupContainer_quest_changelang_fail.IsVisible = false; };
-            tgr_cancel.Tapped += (object o, EventArgs ev) => { popupContainer_quest_changelang_fail.IsVisible = false; };
+            tgr_cancel.Tapped -= (object o, TappedEventArgs ev) => { popupContainer_quest_changelang_fail.IsVisible = false; };
+            tgr_cancel.Tapped += (object o, TappedEventArgs ev) => { popupContainer_quest_changelang_fail.IsVisible = false; };
             btn_cancellogtosupport_fail.GestureRecognizers.Add(tgr_cancel);
 
             // Dialog öffnen
@@ -7172,8 +7174,8 @@ namespace iPMCloud.Mobile
             btn_endselectedwork.GestureRecognizers.Add(tgr_over);
             btn_endselectedcancel.GestureRecognizers.Clear();
             var tgr_cancel = new TapGestureRecognizer();
-            tgr_cancel.Tapped -= (object o, EventArgs ev) => { popupContainer_quest_endwork.IsVisible = false; };
-            tgr_cancel.Tapped += (object o, EventArgs ev) => { popupContainer_quest_endwork.IsVisible = false; };
+            tgr_cancel.Tapped -= (object o, TappedEventArgs ev) => { popupContainer_quest_endwork.IsVisible = false; };
+            tgr_cancel.Tapped += (object o, TappedEventArgs ev) => { popupContainer_quest_endwork.IsVisible = false; };
             btn_endselectedcancel.GestureRecognizers.Add(tgr_cancel);
 
 
@@ -7205,52 +7207,52 @@ namespace iPMCloud.Mobile
 
             btn_startcheckquest.GestureRecognizers.Clear();
             var tgr_btn_startcheckquest = new TapGestureRecognizer();
-            tgr_btn_startcheckquest.Tapped += (object o, EventArgs ev) => { StartOrOpenCheckA_next_start(); };
+            tgr_btn_startcheckquest.Tapped += (object o, TappedEventArgs ev) => { StartOrOpenCheckA_next_start(); };
             btn_startcheckquest.GestureRecognizers.Add(tgr_btn_startcheckquest);
 
             btn_startcheckquestcancel.GestureRecognizers.Clear();
             var tgr_btn_startcheckquestcancel = new TapGestureRecognizer();
-            tgr_btn_startcheckquestcancel.Tapped += (object o, EventArgs ev) => { StartOrOpenCheckA_next_cancel(); };
+            tgr_btn_startcheckquestcancel.Tapped += (object o, TappedEventArgs ev) => { StartOrOpenCheckA_next_cancel(); };
             btn_startcheckquestcancel.GestureRecognizers.Add(tgr_btn_startcheckquestcancel);
 
 
             btn_check_del.GestureRecognizers.Clear();
             var tgr_btn_check_del = new TapGestureRecognizer();
-            tgr_btn_check_del.Tapped += (object o, EventArgs ev) => { OpenDelCheckA(); };
+            tgr_btn_check_del.Tapped += (object o, TappedEventArgs ev) => { OpenDelCheckA(); };
             btn_check_del.GestureRecognizers.Add(tgr_btn_check_del);
             btn_delcheckquest.GestureRecognizers.Clear();
             var tgr_btn_delcheckquest = new TapGestureRecognizer();
-            tgr_btn_delcheckquest.Tapped += (object o, EventArgs ev) => { DelCheckA_now(); };
+            tgr_btn_delcheckquest.Tapped += (object o, TappedEventArgs ev) => { DelCheckA_now(); };
             btn_delcheckquest.GestureRecognizers.Add(tgr_btn_delcheckquest);
 
             btn_delcheckquestcancel.GestureRecognizers.Clear();
             var tgr_btn_delcheckquestcancel = new TapGestureRecognizer();
-            tgr_btn_delcheckquestcancel.Tapped += (object o, EventArgs ev) => { DelCheckA_cancel(); };
+            tgr_btn_delcheckquestcancel.Tapped += (object o, TappedEventArgs ev) => { DelCheckA_cancel(); };
             btn_delcheckquestcancel.GestureRecognizers.Add(tgr_btn_delcheckquestcancel);
 
 
             // Direktbuchen WINTER Dialog
             btn_quest_direktbuchenwinter_cancel.GestureRecognizers.Clear();
             var t_quest_direktbuchenwinter_cancel = new TapGestureRecognizer();
-            t_quest_direktbuchenwinter_cancel.Tapped -= (object o, EventArgs ev) => { CloseDirektbuchenWinterAusPlanliste(); };
-            t_quest_direktbuchenwinter_cancel.Tapped += (object o, EventArgs ev) => { CloseDirektbuchenWinterAusPlanliste(); };
+            t_quest_direktbuchenwinter_cancel.Tapped -= (object o, TappedEventArgs ev) => { CloseDirektbuchenWinterAusPlanliste(); };
+            t_quest_direktbuchenwinter_cancel.Tapped += (object o, TappedEventArgs ev) => { CloseDirektbuchenWinterAusPlanliste(); };
             btn_quest_direktbuchenwinter_cancel.GestureRecognizers.Add(t_quest_direktbuchenwinter_cancel);
             btn_quest_direktbuchenwinter.GestureRecognizers.Clear();
             var t_quest_direktbuchenwinter = new TapGestureRecognizer();
-            t_quest_direktbuchenwinter.Tapped -= (object o, EventArgs ev) => { SaveDirektbuchenWinterAusPlanliste(); };
-            t_quest_direktbuchenwinter.Tapped += (object o, EventArgs ev) => { SaveDirektbuchenWinterAusPlanliste(); };
+            t_quest_direktbuchenwinter.Tapped -= (object o, TappedEventArgs ev) => { SaveDirektbuchenWinterAusPlanliste(); };
+            t_quest_direktbuchenwinter.Tapped += (object o, TappedEventArgs ev) => { SaveDirektbuchenWinterAusPlanliste(); };
             btn_quest_direktbuchenwinter.GestureRecognizers.Add(t_quest_direktbuchenwinter);
 
             // Direktbuchen Dialog
             btn_quest_direktbuchen.GestureRecognizers.Clear();
             var t_quest_direktbuchen = new TapGestureRecognizer();
-            t_quest_direktbuchen.Tapped -= (object o, EventArgs ev) => { SaveDirektbuchenAusPlanliste(); };
-            t_quest_direktbuchen.Tapped += (object o, EventArgs ev) => { SaveDirektbuchenAusPlanliste(); };
+            t_quest_direktbuchen.Tapped -= (object o, TappedEventArgs ev) => { SaveDirektbuchenAusPlanliste(); };
+            t_quest_direktbuchen.Tapped += (object o, TappedEventArgs ev) => { SaveDirektbuchenAusPlanliste(); };
             btn_quest_direktbuchen.GestureRecognizers.Add(t_quest_direktbuchen);
             btn_quest_direktbuchen_cancel.GestureRecognizers.Clear();
             var t_quest_direktbuchen_cancel = new TapGestureRecognizer();
-            t_quest_direktbuchen_cancel.Tapped -= (object o, EventArgs ev) => { CloseDirektbuchenAusPlanliste(); };
-            t_quest_direktbuchen_cancel.Tapped += (object o, EventArgs ev) => { CloseDirektbuchenAusPlanliste(); };
+            t_quest_direktbuchen_cancel.Tapped -= (object o, TappedEventArgs ev) => { CloseDirektbuchenAusPlanliste(); };
+            t_quest_direktbuchen_cancel.Tapped += (object o, TappedEventArgs ev) => { CloseDirektbuchenAusPlanliste(); };
             btn_quest_direktbuchen_cancel.GestureRecognizers.Add(t_quest_direktbuchen_cancel);
 
 
@@ -7276,72 +7278,72 @@ namespace iPMCloud.Mobile
 
             btn_objektinfo.GestureRecognizers.Clear();
             var t_btn_objektinfo = new TapGestureRecognizer();
-            t_btn_objektinfo.Tapped += (object o, EventArgs ev) => { OpenObjektInfoDialog(); };
+            t_btn_objektinfo.Tapped += (object o, TappedEventArgs ev) => { OpenObjektInfoDialog(); };
             btn_objektinfo.GestureRecognizers.Add(t_btn_objektinfo);
 
             popupContainer_infodialog_close.GestureRecognizers.Clear();
             var t_popupContainer_infodialog_close = new TapGestureRecognizer();
-            t_popupContainer_infodialog_close.Tapped += (object o, EventArgs ev) => { CloseInfoDialog(); };
+            t_popupContainer_infodialog_close.Tapped += (object o, TappedEventArgs ev) => { CloseInfoDialog(); };
             popupContainer_infodialog_close.GestureRecognizers.Add(t_popupContainer_infodialog_close);
 
 
             popupContainer_quest_daypicker_close.GestureRecognizers.Clear();
             var t_popupContainer_quest_daypicker_close = new TapGestureRecognizer();
-            t_popupContainer_quest_daypicker_close.Tapped += (object o, EventArgs ev) => { popupContainer_quest_daypicker.IsVisible = false; };
+            t_popupContainer_quest_daypicker_close.Tapped += (object o, TappedEventArgs ev) => { popupContainer_quest_daypicker.IsVisible = false; };
             popupContainer_quest_daypicker_close.GestureRecognizers.Add(t_popupContainer_quest_daypicker_close);
             popupContainer_quest_daypicker_open.GestureRecognizers.Clear();
             var t_popupContainer_quest_daypicker_open = new TapGestureRecognizer();
-            t_popupContainer_quest_daypicker_open.Tapped += (object o, EventArgs ev) => { popupContainer_quest_daypicker.IsVisible = true; };
+            t_popupContainer_quest_daypicker_open.Tapped += (object o, TappedEventArgs ev) => { popupContainer_quest_daypicker.IsVisible = true; };
             popupContainer_quest_daypicker_open.GestureRecognizers.Add(t_popupContainer_quest_daypicker_open);
 
             popupContainer_ObjektPlanWeek_otherperson.GestureRecognizers.Clear();
             var t_popupContainer_ObjektPlanWeek_otherperson = new TapGestureRecognizer();
-            t_popupContainer_ObjektPlanWeek_otherperson.Tapped += (object o, EventArgs ev) => { OpenOtherPerson(); };
+            t_popupContainer_ObjektPlanWeek_otherperson.Tapped += (object o, TappedEventArgs ev) => { OpenOtherPerson(); };
             popupContainer_ObjektPlanWeek_otherperson.GestureRecognizers.Add(t_popupContainer_ObjektPlanWeek_otherperson);
 
             popupContainer_ObjektPlanWeek_otherperson2.GestureRecognizers.Clear();
             var t_popupContainer_ObjektPlanWeek_otherperson2 = new TapGestureRecognizer();
-            t_popupContainer_ObjektPlanWeek_otherperson2.Tapped += (object o, EventArgs ev) => { OpenOtherPerson(); };
+            t_popupContainer_ObjektPlanWeek_otherperson2.Tapped += (object o, TappedEventArgs ev) => { OpenOtherPerson(); };
             popupContainer_ObjektPlanWeek_otherperson2.GestureRecognizers.Add(t_popupContainer_ObjektPlanWeek_otherperson2);
 
             popupContainer_quest_personpicker_close.GestureRecognizers.Clear();
             var t_popupContainer_ObjektPlanWeek_personpicker_close = new TapGestureRecognizer();
-            t_popupContainer_ObjektPlanWeek_personpicker_close.Tapped += (object o, EventArgs ev) => { CloseOtherPerson(); };
+            t_popupContainer_ObjektPlanWeek_personpicker_close.Tapped += (object o, TappedEventArgs ev) => { CloseOtherPerson(); };
             popupContainer_quest_personpicker_close.GestureRecognizers.Add(t_popupContainer_ObjektPlanWeek_personpicker_close);
 
             popupContainer_quest_langpicker_close.GestureRecognizers.Clear();
             var t_popupContainer_langpicker_close = new TapGestureRecognizer();
-            t_popupContainer_langpicker_close.Tapped += (object o, EventArgs ev) => { CloseLanguage(); };
+            t_popupContainer_langpicker_close.Tapped += (object o, TappedEventArgs ev) => { CloseLanguage(); };
             popupContainer_quest_langpicker_close.GestureRecognizers.Add(t_popupContainer_langpicker_close);
 
             popupContainer_ObjektPlanWeek_Type.GestureRecognizers.Clear();
             var t_popupContainer_ObjektPlanWeek_Type = new TapGestureRecognizer();
-            t_popupContainer_ObjektPlanWeek_Type.Tapped += (object o, EventArgs ev) => { PlanTypeChange(); };
+            t_popupContainer_ObjektPlanWeek_Type.Tapped += (object o, TappedEventArgs ev) => { PlanTypeChange(); };
             popupContainer_ObjektPlanWeek_Type.GestureRecognizers.Add(t_popupContainer_ObjektPlanWeek_Type);
 
             popupContainer_ObjektPlanWeek_Reload.GestureRecognizers.Clear();
             var t_popupContainer_ObjektPlanWeek_Reload = new TapGestureRecognizer();
-            t_popupContainer_ObjektPlanWeek_Reload.Tapped += (object o, EventArgs ev) => { ReloadPlanData(0); };
+            t_popupContainer_ObjektPlanWeek_Reload.Tapped += (object o, TappedEventArgs ev) => { ReloadPlanData(0); };
             popupContainer_ObjektPlanWeek_Reload.GestureRecognizers.Add(t_popupContainer_ObjektPlanWeek_Reload);
             popupContainer_ObjektPlanWeek_Reload2.GestureRecognizers.Clear();
             var t_popupContainer_ObjektPlanWeek_Reload2 = new TapGestureRecognizer();
-            t_popupContainer_ObjektPlanWeek_Reload2.Tapped += (object o, EventArgs ev) => { ReloadPlanData(1); };
+            t_popupContainer_ObjektPlanWeek_Reload2.Tapped += (object o, TappedEventArgs ev) => { ReloadPlanData(1); };
             popupContainer_ObjektPlanWeek_Reload2.GestureRecognizers.Add(t_popupContainer_ObjektPlanWeek_Reload2);
 
 
             frame_planConCe_LoadAll.GestureRecognizers.Clear();
             var t_frame_planConCe_LoadAll = new TapGestureRecognizer();
-            t_frame_planConCe_LoadAll.Tapped += (object o, EventArgs ev) => { GetChecksInfo(checkInfoLastView, true); };
+            t_frame_planConCe_LoadAll.Tapped += (object o, TappedEventArgs ev) => { GetChecksInfo(checkInfoLastView, true); };
             frame_planConCe_LoadAll.GestureRecognizers.Add(t_frame_planConCe_LoadAll);
 
             frame_planConCe_LoadAll1.GestureRecognizers.Clear();
             var t_frame_planConCe_LoadAll1 = new TapGestureRecognizer();
-            t_frame_planConCe_LoadAll1.Tapped += (object o, EventArgs ev) => { GetChecksInfo(7, true); };
+            t_frame_planConCe_LoadAll1.Tapped += (object o, TappedEventArgs ev) => { GetChecksInfo(7, true); };
             frame_planConCe_LoadAll1.GestureRecognizers.Add(t_frame_planConCe_LoadAll1);
 
             frame_planConCe_LoadAll2.GestureRecognizers.Clear();
             var t_frame_planConCe_LoadAll2 = new TapGestureRecognizer();
-            t_frame_planConCe_LoadAll2.Tapped += (object o, EventArgs ev) => { GetChecksInfo(99, true); };
+            t_frame_planConCe_LoadAll2.Tapped += (object o, TappedEventArgs ev) => { GetChecksInfo(99, true); };
             frame_planConCe_LoadAll2.GestureRecognizers.Add(t_frame_planConCe_LoadAll2);
 
 
@@ -7523,8 +7525,8 @@ namespace iPMCloud.Mobile
             btn_send_objectvaluesbild.GestureRecognizers.Add(tgr_btn_send_objectvaluesbild);
             btn_cancel_objectvaluesbild.GestureRecognizers.Clear();
             var tgr_btn_cancel_objectvaluesbild = new TapGestureRecognizer();
-            tgr_btn_cancel_objectvaluesbild.Tapped -= (object o, EventArgs ev) => { RemoveObjektMeterStandBild(); popupContainer_objectvaluesbild.IsVisible = false; };
-            tgr_btn_cancel_objectvaluesbild.Tapped += (object o, EventArgs ev) => { RemoveObjektMeterStandBild(); popupContainer_objectvaluesbild.IsVisible = false; };
+            tgr_btn_cancel_objectvaluesbild.Tapped -= (object o, TappedEventArgs ev) => { RemoveObjektMeterStandBild(); popupContainer_objectvaluesbild.IsVisible = false; };
+            tgr_btn_cancel_objectvaluesbild.Tapped += (object o, TappedEventArgs ev) => { RemoveObjektMeterStandBild(); popupContainer_objectvaluesbild.IsVisible = false; };
             btn_cancel_objectvaluesbild.GestureRecognizers.Add(tgr_btn_cancel_objectvaluesbild);
 
             // BuildingOrder 
@@ -7740,7 +7742,7 @@ namespace iPMCloud.Mobile
 
             btn_nachbuchen_back.GestureRecognizers.Clear();
             var tgr_btn_nachbuchen_back = new TapGestureRecognizer();
-            tgr_btn_nachbuchen_back.Tapped += (object o, EventArgs ev) =>
+            tgr_btn_nachbuchen_back.Tapped += (object o, TappedEventArgs ev) =>
             {
                 if (model.LastSelectedCategoryAgain == null)
                 {
@@ -7756,19 +7758,19 @@ namespace iPMCloud.Mobile
             btn_nachbuchen_back.GestureRecognizers.Add(tgr_btn_nachbuchen_back);
             btn_nachbuchen_cat_back.GestureRecognizers.Clear();
             var tgr_nachbuchen_cat_back = new TapGestureRecognizer();
-            tgr_nachbuchen_cat_back.Tapped += (object o, EventArgs ev) => { btn_nachbuchen_Tapped(model.posAgain); };
+            tgr_nachbuchen_cat_back.Tapped += (object o, TappedEventArgs ev) => { btn_nachbuchen_Tapped(model.posAgain); };
             btn_nachbuchen_cat_back.GestureRecognizers.Add(tgr_nachbuchen_cat_back);
             btn_nachbuchen.GestureRecognizers.Clear();
             var tgr_nachbuchen = new TapGestureRecognizer();
-            tgr_nachbuchen.Tapped += (object o, EventArgs ev) => { ShowNachbuchenPage(model.posAgain); };
+            tgr_nachbuchen.Tapped += (object o, TappedEventArgs ev) => { ShowNachbuchenPage(model.posAgain); };
             btn_nachbuchen.GestureRecognizers.Add(tgr_nachbuchen);
             btn_nachbuchen_Produkte.GestureRecognizers.Clear();
             var tgr_produkt_nachbuchen = new TapGestureRecognizer();
-            tgr_produkt_nachbuchen.Tapped += (object o, EventArgs ev) => { btn_nachbuchen_Tapped(0); };
+            tgr_produkt_nachbuchen.Tapped += (object o, TappedEventArgs ev) => { btn_nachbuchen_Tapped(0); };
             btn_nachbuchen_Produkte.GestureRecognizers.Add(tgr_produkt_nachbuchen);
             btn_nachbuchen_Pos.GestureRecognizers.Clear();
             var tgr_nachbuchen_Pos = new TapGestureRecognizer();
-            tgr_nachbuchen_Pos.Tapped += (object o, EventArgs ev) => { btn_nachbuchen_Tapped(1); };
+            tgr_nachbuchen_Pos.Tapped += (object o, TappedEventArgs ev) => { btn_nachbuchen_Tapped(1); };
             btn_nachbuchen_Pos.GestureRecognizers.Add(tgr_nachbuchen_Pos);
             btn_showselected_pos_Again.GestureRecognizers.Clear();
             var tgr_showselected_pos_Again = new TapGestureRecognizer();

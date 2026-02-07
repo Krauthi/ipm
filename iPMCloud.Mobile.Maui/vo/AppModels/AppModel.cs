@@ -1,5 +1,6 @@
 ﻿//using Plugin.Permissions;
-using Plugin.Connectivity;
+// TODO: Plugin.Connectivity not MAUI-compatible - use Microsoft.Maui.Networking.Connectivity
+// using Plugin.Connectivity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -284,6 +285,8 @@ namespace iPMCloud.Mobile.vo
         }
 
 
+        // TODO: Plugin.Connectivity not MAUI-compatible - comment out until migrated
+        /*
         void CrossConnectivity_ConnectivityTypeChanged(object sender, Plugin.Connectivity.Abstractions.ConnectivityTypeChangedEventArgs e)
         {
             try
@@ -355,6 +358,7 @@ namespace iPMCloud.Mobile.vo
                 catch (Exception) { }
             }
         }
+        */
 
         //void Connectivity_ConnectivityChanged(object sender, ConnectivityChangedEventArgs e)
         //{

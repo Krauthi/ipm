@@ -1,5 +1,6 @@
 ﻿using iPMCloud.Mobile.vo;
-using SignaturePad.Forms;
+// TODO: SignaturePad not MAUI-compatible - needs replacement
+// using SignaturePad.Forms;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -2351,6 +2352,8 @@ namespace iPMCloud.Mobile
             return frame;
         }
 
+        // TODO: SignaturePad not MAUI-compatible - comment out until migrated
+        /*
         public static SignaturePadView GetSignElement()
         {
             return new SignaturePadView()
@@ -2374,6 +2377,7 @@ namespace iPMCloud.Mobile
                 ClearFontSize = 12,
             };
         }
+        */
 
 
         // NUR TEXT

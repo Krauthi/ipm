@@ -5,7 +5,8 @@ using Microsoft.Maui.Storage;
 using Microsoft.Maui.Devices;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls;
-using ZXing.Net.Mobile.Forms;
+// TODO: ZXing.Net.Mobile.Forms not MAUI-compatible - use ZXing.Net.Maui
+// using ZXing.Net.Mobile.Forms;
 
 namespace iPMCloud.Mobile.vo
 {
@@ -18,9 +19,10 @@ namespace iPMCloud.Mobile.vo
         }
 
         public bool displayIsOpen = false;
-        public ZXingScannerView zxing;
-        public ZXingScannerView zxingAlone = new ZXingScannerView();
-        public ZXingDefaultOverlay overlayz;
+        // TODO: ZXing.Net.Mobile.Forms not MAUI-compatible - use ZXing.Net.Maui
+        // public ZXingScannerView zxing;
+        // public ZXingScannerView zxingAlone = new ZXingScannerView();
+        // public ZXingDefaultOverlay overlayz;
         public Grid grid = new Grid
         {
             VerticalOptions = LayoutOptions.FillAndExpand,

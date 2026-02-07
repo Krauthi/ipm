@@ -2,10 +2,14 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using Xamarin.Essentials;
-using Xamarin.Forms;
+using Microsoft.Maui.Storage;
+using Microsoft.Maui.Devices;
+using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui.Controls;
 
-//using Xamarin.Essentials;
+//using Microsoft.Maui.Storage;
+using Microsoft.Maui.Devices;
+using Microsoft.Maui.ApplicationModel;
 //https://docs.microsoft.com/de-de/xamarin/essentials/preferences?tabs=android
 
 namespace iPMCloud.Mobile

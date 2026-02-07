@@ -6,10 +6,14 @@ using iPMCloud.Mobile.Droid;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Xamarin.Essentials;
-using Xamarin.Forms;
+using Microsoft.Maui.Storage;
+using Microsoft.Maui.Devices;
+using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui.Controls;
 
-[assembly: Xamarin.Forms.Dependency(typeof(DependentService))]
+// TODO: Replace Xamarin.Forms.Dependency with MAUI DI
+// Migrate to MauiProgram.cs builder.Services.AddSingleton<IDependentService, DependentService>();
+// [assembly: Xamarin.Forms.Dependency(typeof(DependentService))]
 namespace iPMCloud.Mobile.Droid
 {
     [Service]

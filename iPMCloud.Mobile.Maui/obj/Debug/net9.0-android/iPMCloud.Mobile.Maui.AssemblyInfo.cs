@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyCopyrightAttribute("iPM-Cloud")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("2.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("2.0.36+5fe6e58a53168b7b379dbcdf7be204ffa52e857c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("2.0.36+355c1c95ffc704761a19231b65f52387037ede33")]
 [assembly: System.Reflection.AssemblyProductAttribute("iPMCloud.Mobile.Maui")]
 [assembly: System.Reflection.AssemblyTitleAttribute("iPMCloud.Mobile.Maui")]
 [assembly: System.Reflection.AssemblyVersionAttribute("2.0.0.0")]

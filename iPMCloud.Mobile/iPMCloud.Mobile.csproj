@@ -1,0 +1,286 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <ReleaseVersion>2.1.90</ReleaseVersion>
+    <SignAssembly>false</SignAssembly>
+    <Version>2.0.36</Version>
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    <NeutralLanguage>de-DE</NeutralLanguage>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <FileVersion>2.0.0.0</FileVersion>
+    <Copyright>iPM-Cloud</Copyright>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile></DocumentationFile>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType></DebugType>
+    <OutputPath></OutputPath>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Cheesebaron.MvxPlugins.DeviceInfo" Version="6.0.0" />
+    <PackageReference Include="ExifLib.PCL" Version="1.0.1" />
+    <PackageReference Include="Google.Cloud.Translation.V2" Version="3.2.0" />
+    <PackageReference Include="Matcha.BackgroundService" Version="1.0.5478" />
+    <PackageReference Include="Microsoft.NETCore.Platforms" Version="7.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="Plugin.FirebasePushNotification" Version="3.4.35" />
+    <PackageReference Include="Plugin.LocalNotification" Version="10.1.5" />
+    <PackageReference Include="Plugin.Permissions" Version="6.0.1" />
+    <PackageReference Include="System.Net.Security" Version="4.3.2" />
+    <PackageReference Include="System.Net.WebHeaderCollection" Version="4.3.0" />
+    <PackageReference Include="System.Net.WebSockets.Client" Version="4.3.2" />
+    <PackageReference Include="System.Private.ServiceModel" Version="4.10.0" />
+    <PackageReference Include="System.Runtime.Serialization.Xml" Version="4.3.0" />
+    <PackageReference Include="System.ServiceModel.Http" Version="4.10.0" />
+    <PackageReference Include="System.ServiceModel.Primitives" Version="4.10.0" />
+    <PackageReference Include="Xam.Plugin.Connectivity" Version="3.2.0" />
+    <PackageReference Include="Xam.Plugin.Media" Version="5.0.1" />
+    <PackageReference Include="Xam.Plugin.MultiGestureView" Version="1.0.5" />
+    <PackageReference Include="Xamarin.Controls.SignaturePad.Forms" Version="3.0.0" />
+    <PackageReference Include="Xamarin.Essentials" Version="1.7.4" />
+    <PackageReference Include="Xamarin.FFImageLoading" Version="2.4.11.982" />
+    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2662" />
+    <PackageReference Include="Xamarin.Forms.Maps" Version="5.0.0.2662" />
+    <PackageReference Include="Xamarin.Forms.RangeSlider" Version="1.0.2" />
+    <PackageReference Include="Xamarin.MediaGallery" Version="2.2.0" />
+    <PackageReference Include="Xamarin.MediaGallery.Permision" Version="2.2.0" />
+    <PackageReference Include="Xamarin.Plugin.ImageEdit" Version="1.0.0" />
+    <PackageReference Include="ZXing.Net.Mobile" Version="2.4.1" />
+    <PackageReference Include="ZXing.Net.Mobile.Forms" Version="2.4.1" />
+    <PackageReference Include="NLog" Version="5.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Condition=" '$(EnableDefaultCompileItems)' == 'true' " Update="App.xaml.cs">
+      <DependentUpon>*.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="SettingsPage.xaml.cs">
+      <DependentUpon>SettingsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="MainPage.xaml.cs">
+      <DependentUpon>MainPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Condition=" '$(EnableDefaultCompileItems)' == 'true' " Update="StartPage.xaml.cs">
+      <DependentUpon>StartPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="MasterDetailPageMenuItem.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="MenuPageMenuItem.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="XAML\Popups\GroupCalendarSelectedMonthCalendarPopupPage.xaml.cs">
+      <DependentUpon>GroupCalendarSelectedMonthCalendarPopupPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="XAML\Popups\GroupCalendarSelectedMonthCalendarLandscapePopupPage.xaml.cs">
+      <DependentUpon>GroupCalendarSelectedMonthCalendarLandscapePopupPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="XAML\Popups\SelectedUserAppointmentViewPopupPage.xaml.cs">
+      <DependentUpon>SelectedUserAppointmentViewPopupPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="XAML\Popups\SelectedUserAppointmentLandscapePopupPage.xaml.cs">
+      <DependentUpon>SelectedUserAppointmentLandscapePopupPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="XAML\Popups\SelectedUserAppointmentPopupPage.xaml.cs">
+      <DependentUpon>SelectedUserAppointmentPopupPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="XAML\Popups\GroupUserDetailsSearchPopupPage .xaml.cs">
+      <DependentUpon>GroupUserDetailsSearchPopupPage .xaml</DependentUpon>
+    </Compile>
+    <Compile Update="XAML\Popups\GroupUserDetailsMonthCalendarLandscapePopupPage.xaml.cs">
+      <DependentUpon>GroupUserDetailsMonthCalendarLandscapePopupPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Condition=" '$(EnableDefaultCompileItems)' == 'true' " Update="XAML\Popups\DeclinePopupPage.xaml %28Kopie%29.cs">
+      <DependentUpon>XAML\Popups\DeclinePopupPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Condition=" '$(EnableDefaultCompileItems)' == 'true' " Update="XAML\Popups\AcceptPopupPage.xaml %28Kopie%29.cs">
+      <DependentUpon>XAML\Popups\AcceptPopupPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Condition=" '$(EnableDefaultCompileItems)' == 'true' " Update="XAML\Popups\StartPopupPage.xaml %28Kopie%29.cs">
+      <DependentUpon>XAML\Popups\StartPopupPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Condition=" '$(EnableDefaultCompileItems)' == 'true' " Update="XAML\Popups\DeclinePopupPage.xaml %28Kopie%29.cs">
+      <DependentUpon>XAML\Popups\DeclinePopupPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Condition=" '$(EnableDefaultCompileItems)' == 'true' " Update="XAML\Popups\CommentListPage.xaml %28Kopie%29.cs">
+      <DependentUpon>XAML\Popups\CommentListPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="XAML\Popups\ListViewPage %28Kopie%29.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\backgroundgray2.jpg" />
+    <None Remove="Assets\clear.png" />
+    <None Remove="Assets\delete.png" />
+    <None Remove="Assets\dot.png" />
+    <None Remove="Assets\dot2.png" />
+    <None Remove="Assets\favorite.png" />
+    <None Remove="Assets\icon.png" />
+    <None Remove="Assets\ic_launcher.png" />
+    <None Remove="Assets\ic_stat_ic_notification.png" />
+    <None Remove="Assets\ipmlogo_m.png" />
+    <None Remove="Assets\islogin2.png" />
+    <None Remove="Assets\isnotlogin2.png" />
+    <None Remove="Assets\isoffline.png" />
+    <None Remove="Assets\isonline.png" />
+    <None Remove="Assets\logo.png" />
+    <None Remove="Assets\mockup4b.jpg" />
+    <None Remove="Assets\screen.png" />
+    <None Remove="Assets\Sort.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\backgroundgray2.jpg" />
+    <EmbeddedResource Include="Assets\clear.png" />
+    <EmbeddedResource Include="Assets\delete.png" />
+    <EmbeddedResource Include="Assets\dot.png" />
+    <EmbeddedResource Include="Assets\dot2.png" />
+    <EmbeddedResource Include="Assets\favorite.png" />
+    <EmbeddedResource Include="Assets\icon.png" />
+    <EmbeddedResource Include="Assets\ic_launcher.png" />
+    <EmbeddedResource Include="Assets\ic_stat_ic_notification.png" />
+    <EmbeddedResource Include="Assets\ipmlogo_m.png" />
+    <EmbeddedResource Include="Assets\islogin2.png" />
+    <EmbeddedResource Include="Assets\isnotlogin2.png" />
+    <EmbeddedResource Include="Assets\isoffline.png" />
+    <EmbeddedResource Include="Assets\isonline.png" />
+    <EmbeddedResource Include="Assets\logo.png" />
+    <EmbeddedResource Include="Assets\mockup4b.jpg" />
+    <EmbeddedResource Include="Assets\screen.png" />
+    <EmbeddedResource Include="Assets\Sort.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="ResultsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="SettingsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="MainPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="StartPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="MasterDetailPageDetail.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="MasterPageMaster.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="MenuPageDetail.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="XAML\Popups\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="MainPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="MainPageA.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="SettingsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="StartPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="XAML\ContactsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="XAML\LogoutPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="XAML\MainPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="XAML\MasterPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="XAML\OverviewPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="XAML\Popups\AcceptPopupPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="XAML\Popups\AdjustPopupPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="XAML\Popups\CalendarListPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="XAML\Popups\CommentListPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="XAML\Popups\DeclinePopupPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="XAML\Popups\EndPopupPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="XAML\Popups\LoadingPopupPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="XAML\Popups\LoginPopupPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="XAML\Popups\LoginSuccessPopupPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="XAML\Popups\StartPopupPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="XAML\Popups\SystemOffsetPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="XAML\Popups\UserAnimationPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="XAML\ReminderPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="XAML\SettingsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+    <None Update="XAML\TodoListPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="eliteKit">
+      <HintPath>..\..\eliteKit.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Android">
+      <HintPath>..\..\EigeneLibs\MonoAndroid\v9.0\Mono.Android.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.iOS">
+      <HintPath>..\..\EigeneLibs\Xamarin.iOS\v1.0\Xamarin.iOS.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+</Project>

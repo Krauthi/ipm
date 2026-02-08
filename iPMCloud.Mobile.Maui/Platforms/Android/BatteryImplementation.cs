@@ -28,10 +28,8 @@ namespace iPMCloud.Mobile
         public void StartSetting()
         {
             Intent intent = new Intent();
-
             intent.SetAction(Android.Provider.Settings.ActionIgnoreBatteryOptimizationSettings);
-            Forms.Context.StartActivity(intent);
-            // StartActivity(intent);
+            Android.App.Application.Context.StartActivity(intent);
         }
     }
 }

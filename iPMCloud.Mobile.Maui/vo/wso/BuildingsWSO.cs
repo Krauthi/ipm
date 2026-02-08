@@ -759,129 +759,330 @@ namespace iPMCloud.Mobile
             return kat;
         }
 
-
+        /// <summary>
+        /// Speichert ein Building
+        /// </summary>
         public static bool Save(AppModel model, BuildingWSO building)
         {
-            MemoryStream ms = new MemoryStream();
             try
             {
-                var json = JsonConvert.SerializeObject(building);
-                BinaryFormatter bf = new BinaryFormatter();
-                bf.Serialize(ms, json);
-                string directoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "ipm/"
-                    + model.SettingModel.SettingDTO.CustomerNumber + "/buildings/");
-                if (!Directory.Exists(directoryPath)) { Directory.CreateDirectory(directoryPath); }
-                string filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "ipm/"
-                    + model.SettingModel.SettingDTO.CustomerNumber + "/buildings/b_" + building.id + ".ipm");
-                File.WriteAllBytes(filePath, ms.ToArray());
-                ms.Close();
-                ms.Dispose();
+                if (model == null || building == null)
+                {
+                    AppModel.Logger?.Error("Save BuildingWSO: model or building is null");
+                    return false;
+                }
+
+                if (string.IsNullOrWhiteSpace(model.SettingModel?.SettingDTO?.CustomerNumber))
+                {
+                    AppModel.Logger?.Error("Save BuildingWSO: CustomerNumber is null");
+                    return false;
+                }
+
+                string directoryPath = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    "ipm/" + model.SettingModel.SettingDTO.CustomerNumber + "/buildings/"
+                );
+
+                if (!Directory.Exists(directoryPath))
+                {
+                    Directory.CreateDirectory(directoryPath);
+                }
+
+                string filePath = Path.Combine(directoryPath, $"b_{building.id}.ipm");
+
+                var jsonSettings = new JsonSerializerSettings
+                {
+                    Formatting = Formatting.Indented,
+                    NullValueHandling = NullValueHandling.Include,
+                    DefaultValueHandling = DefaultValueHandling.Include,
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                };
+
+                string jsonString = JsonConvert.SerializeObject(building, jsonSettings);
+                File.WriteAllText(filePath, jsonString);
+
                 return true;
             }
             catch (Exception ex)
             {
-                ms.Close();
-                ms.Dispose();
-                AppModel.Logger.Error(ex);
+                AppModel.Logger?.Error(ex, "ERROR: Save BuildingWSO");
                 return false;
             }
         }
-        public static BuildingWSO LoadBuilding(AppModel model, Int32 id)
+
+        /// <summary>
+        /// Lädt ein Building anhand der ID
+        /// </summary>
+        public static BuildingWSO LoadBuilding(AppModel model, int id)
         {
-            MemoryStream ms = new MemoryStream();
             try
             {
-                string filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "ipm/"
-                    + model.SettingModel.SettingDTO.CustomerNumber + "/buildings/b_" + id + ".ipm");
-                if (File.Exists(filePath))
+                if (model == null || string.IsNullOrWhiteSpace(model.SettingModel?.SettingDTO?.CustomerNumber))
                 {
-                    byte[] data = File.ReadAllBytes(filePath);
-                    BinaryFormatter binForm = new BinaryFormatter();
-                    ms.Write(data, 0, data.Length);
-                    ms.Seek(0, SeekOrigin.Begin);
-                    var json = (Object)binForm.Deserialize(ms) as String;
-                    ms.Close();
-                    ms.Dispose();
-                    return JsonConvert.DeserializeObject<BuildingWSO>(json);
-                }
-                else
-                {
-                    ms.Close();
-                    ms.Dispose();
                     return null;
                 }
+
+                string filePath = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    "ipm/" + model.SettingModel.SettingDTO.CustomerNumber + "/buildings/b_" + id + ".ipm"
+                );
+
+                if (File.Exists(filePath))
+                {
+                    string jsonString = File.ReadAllText(filePath);
+
+                    if (string.IsNullOrWhiteSpace(jsonString))
+                    {
+                        return null;
+                    }
+
+                    var jsonSettings = new JsonSerializerSettings
+                    {
+                        NullValueHandling = NullValueHandling.Include,
+                        MissingMemberHandling = MissingMemberHandling.Ignore
+                    };
+
+                    return JsonConvert.DeserializeObject<BuildingWSO>(jsonString, jsonSettings);
+                }
+
+                return null;
             }
             catch (Exception ex)
             {
-                ms.Close();
-                ms.Dispose();
-                AppModel.Logger.Error(ex);
+                AppModel.Logger?.Error(ex, $"ERROR: LoadBuilding - {id}");
                 return null;
             }
         }
-        public static bool DeleteBuilding(Int32 id)
+
+        /// <summary>
+        /// Löscht ein einzelnes Building
+        /// </summary>
+        public static bool DeleteBuilding(int id)
         {
             try
             {
-                string filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "ipm/"
-                    + AppModel.Instance.SettingModel.SettingDTO.CustomerNumber + "/buildings/b_" + id + ".ipm");
+                if (string.IsNullOrWhiteSpace(AppModel.Instance?.SettingModel?.SettingDTO?.CustomerNumber))
+                {
+                    return false;
+                }
+
+                string filePath = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    "ipm/" + AppModel.Instance.SettingModel.SettingDTO.CustomerNumber + "/buildings/b_" + id + ".ipm"
+                );
+
                 if (File.Exists(filePath))
                 {
                     File.Delete(filePath);
                 }
-            }
-            catch (Exception ex)
-            {
-                AppModel.Logger.Error(ex);
-                return false;
-            }
-            return true;
-        }
-        public static bool DeleteBuildings(List<Int32> buildingIds)
-        {
-            try
-            {
-                if (buildingIds != null && buildingIds.Count > 0)
-                {
-                    buildingIds.ForEach(id => { DeleteBuilding(id); });
-                }
+
                 return true;
             }
             catch (Exception ex)
             {
-                AppModel.Logger.Error(ex);
+                AppModel.Logger?.Error(ex, $"ERROR: DeleteBuilding - {id}");
                 return false;
             }
         }
+
+        /// <summary>
+        /// Löscht mehrere Buildings anhand ihrer IDs
+        /// </summary>
+        public static bool DeleteBuildings(List<int> buildingIds)
+        {
+            try
+            {
+                if (buildingIds == null || buildingIds.Count == 0)
+                {
+                    return true;
+                }
+
+                int deletedCount = 0;
+                foreach (var id in buildingIds)
+                {
+                    if (DeleteBuilding(id))
+                    {
+                        deletedCount++;
+                    }
+                }
+
+                AppModel.Logger?.Info($"Deleted {deletedCount} of {buildingIds.Count} buildings");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: DeleteBuildings");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Löscht alle Buildings
+        /// </summary>
         public static bool DeleteAllBuildings(AppModel model)
         {
             try
             {
-                List<BuildingWSO> list = new List<BuildingWSO>();
-                string directoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "ipm/" + model.SettingModel.SettingDTO.CustomerNumber + "/buildings/");
+                if (model == null || string.IsNullOrWhiteSpace(model.SettingModel?.SettingDTO?.CustomerNumber))
+                {
+                    return false;
+                }
+
+                string directoryPath = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    "ipm/" + model.SettingModel.SettingDTO.CustomerNumber + "/buildings/"
+                );
+
                 if (Directory.Exists(directoryPath))
                 {
-                    var files = Directory.GetFiles(directoryPath);
+                    var files = Directory.GetFiles(directoryPath, "*.ipm");
+
                     if (files != null && files.Length > 0)
                     {
-                        files.ToList().ForEach(filePath =>
+                        foreach (var filePath in files)
                         {
                             if (File.Exists(filePath))
                             {
                                 File.Delete(filePath);
                             }
-                        });
+                        }
+
+                        AppModel.Logger?.Info($"Deleted all buildings: {files.Length} files");
                     }
                 }
+
                 return true;
             }
             catch (Exception ex)
             {
-                AppModel.Logger.Error(ex);
+                AppModel.Logger?.Error(ex, "ERROR: DeleteAllBuildings");
                 return false;
             }
         }
 
+        /// <summary>
+        /// Lädt alle Buildings
+        /// </summary>
+        public static List<BuildingWSO> LoadAllBuildings(AppModel model)
+        {
+            List<BuildingWSO> list = new List<BuildingWSO>();
+
+            try
+            {
+                if (model == null || string.IsNullOrWhiteSpace(model.SettingModel?.SettingDTO?.CustomerNumber))
+                {
+                    return list;
+                }
+
+                string directoryPath = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    "ipm/" + model.SettingModel.SettingDTO.CustomerNumber + "/buildings/"
+                );
+
+                if (Directory.Exists(directoryPath))
+                {
+                    var files = Directory.GetFiles(directoryPath, "b_*.ipm");
+
+                    if (files != null && files.Length > 0)
+                    {
+                        foreach (var file in files)
+                        {
+                            string fileName = Path.GetFileNameWithoutExtension(file);
+                            string idString = fileName.Replace("b_", "");
+
+                            if (int.TryParse(idString, out int buildingId))
+                            {
+                                var building = LoadBuilding(model, buildingId);
+                                if (building != null)
+                                {
+                                    list.Add(building);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: LoadAllBuildings");
+            }
+
+            return list;
+        }
+
+        /// <summary>
+        /// Zählt die Anzahl der gespeicherten Buildings
+        /// </summary>
+        public static int CountBuildings(AppModel model)
+        {
+            try
+            {
+                if (model == null || string.IsNullOrWhiteSpace(model.SettingModel?.SettingDTO?.CustomerNumber))
+                {
+                    return 0;
+                }
+
+                string directoryPath = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    "ipm/" + model.SettingModel.SettingDTO.CustomerNumber + "/buildings/"
+                );
+
+                if (Directory.Exists(directoryPath))
+                {
+                    return Directory.GetFiles(directoryPath, "b_*.ipm").Length;
+                }
+
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: CountBuildings");
+                return 0;
+            }
+        }
+
+        /// <summary>
+        /// Prüft ob ein Building existiert
+        /// </summary>
+        public static bool BuildingExists(AppModel model, int id)
+        {
+            try
+            {
+                if (model == null || string.IsNullOrWhiteSpace(model.SettingModel?.SettingDTO?.CustomerNumber))
+                {
+                    return false;
+                }
+
+                string filePath = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    "ipm/" + model.SettingModel.SettingDTO.CustomerNumber + "/buildings/b_" + id + ".ipm"
+                );
+
+                return File.Exists(filePath);
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, $"ERROR: BuildingExists - {id}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Exportiert alle Buildings als JSON
+        /// </summary>
+        public static string ExportBuildingsAsJson(AppModel model)
+        {
+            try
+            {
+                var buildings = LoadAllBuildings(model);
+                return JsonConvert.SerializeObject(buildings, Formatting.Indented);
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: ExportBuildingsAsJson");
+                return "[]";
+            }
+        }
 
         public virtual object Clone()
         {

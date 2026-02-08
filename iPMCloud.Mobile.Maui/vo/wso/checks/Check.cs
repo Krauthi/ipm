@@ -1,4 +1,7 @@
-﻿using iPMCloud.Mobile.vo;
+﻿using Android.OS;
+using iPMCloud.Mobile.Controls;
+using iPMCloud.Mobile.vo;
+using Microsoft.Maui.Controls;
 // TODO: SignaturePad not MAUI-compatible - needs replacement
 // using SignaturePad.Forms;
 using System;
@@ -6,7 +9,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Input;
-using Microsoft.Maui.Controls;
 
 namespace iPMCloud.Mobile
 {
@@ -2014,7 +2016,7 @@ namespace iPMCloud.Mobile
         {
             var tapYes = new TapGestureRecognizer();
             tapYes.Tapped -= (object o, TappedEventArgs ev) => { quest.Tap_a7_OpenSig(); };
-            tapYes.Tapped += (object o, EventArTappedEventArgsgs ev) => { quest.Tap_a7_OpenSig(); };
+            tapYes.Tapped += (object o, TappedEventArgs ev) => { quest.Tap_a7_OpenSig(); };
             var tapNone = new TapGestureRecognizer();
             tapNone.Tapped -= (object o, TappedEventArgs ev) => { quest.Tap_a7_None(); };
             tapNone.Tapped += (object o, TappedEventArgs ev) => { quest.Tap_a7_None(); };
@@ -2378,7 +2380,32 @@ namespace iPMCloud.Mobile
             };
         }
         */
+        // In Check.cs oder CheckLeistungAntwort.cs
 
+        public SignaturePadView signPad;
+
+        public StackLayout GetSignElement()
+        {
+            signPad = new SignaturePadView
+            {
+                HeightRequest = 200,
+                StrokeColor = Colors.Black,
+                StrokeWidth = 2
+            };
+
+            var stack = new StackLayout();
+            stack.Children.Add(signPad);
+            return stack;
+        }
+
+        // Signatur speichern
+        public async Task<byte[]> GetSignatureImage()
+        {
+            if (signPad.IsBlank)
+                return null;
+
+            return await signPad.GetImageStreamAsync();
+        }
 
         // NUR TEXT
         public static Frame GetQuestMain_10(CheckLeistungAntwort quest)

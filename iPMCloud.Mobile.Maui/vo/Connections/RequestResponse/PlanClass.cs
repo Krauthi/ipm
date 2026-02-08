@@ -9,6 +9,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Microsoft.Maui.Controls;
+using Microsoft.Maui.Layouts;
 
 namespace iPMCloud.Mobile
 {
@@ -2224,82 +2225,226 @@ namespace iPMCloud.Mobile
 
 
 
-
-
+        /// <summary>
+        /// Speichert die PlanResponse
+        /// </summary>
         public static bool Save(AppModel model, PlanResponse response)
         {
-            MemoryStream ms = new MemoryStream();
             try
             {
-                var json = JsonConvert.SerializeObject(response);
-                BinaryFormatter bf = new BinaryFormatter();
-                bf.Serialize(ms, json);
-                string directoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "ipm/" + model.SettingModel.SettingDTO.CustomerNumber + "/planperson/");
-                if (!Directory.Exists(directoryPath)) { Directory.CreateDirectory(directoryPath); }
-                string filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "ipm/" + model.SettingModel.SettingDTO.CustomerNumber + "/planperson/planresponse.ipm");
-                File.WriteAllBytes(filePath, ms.ToArray());
-                ms.Close();
-                ms.Dispose();
+                if (model == null || response == null)
+                {
+                    AppModel.Logger?.Error("Save PlanResponse: model or response is null");
+                    return false;
+                }
+
+                if (string.IsNullOrWhiteSpace(model.SettingModel?.SettingDTO?.CustomerNumber))
+                {
+                    AppModel.Logger?.Error("Save PlanResponse: CustomerNumber is null");
+                    return false;
+                }
+
+                string directoryPath = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    "ipm/" + model.SettingModel.SettingDTO.CustomerNumber + "/planperson/"
+                );
+
+                if (!Directory.Exists(directoryPath))
+                {
+                    Directory.CreateDirectory(directoryPath);
+                }
+
+                string filePath = Path.Combine(directoryPath, "planresponse.ipm");
+
+                var jsonSettings = new JsonSerializerSettings
+                {
+                    Formatting = Formatting.Indented,
+                    NullValueHandling = NullValueHandling.Include,
+                    DefaultValueHandling = DefaultValueHandling.Include,
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                };
+
+                string jsonString = JsonConvert.SerializeObject(response, jsonSettings);
+                File.WriteAllText(filePath, jsonString);
+
                 return true;
             }
             catch (Exception ex)
             {
-                ms.Close();
-                ms.Dispose();
-                AppModel.Logger.Error(ex);
+                AppModel.Logger?.Error(ex, "ERROR: Save PlanResponse");
                 return false;
             }
         }
 
+        /// <summary>
+        /// Lädt die PlanResponse
+        /// </summary>
         public static PlanResponse Load(AppModel model)
         {
-            MemoryStream ms = new MemoryStream();
             try
             {
-                string filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "ipm/" + model.SettingModel.SettingDTO.CustomerNumber + "/planperson/planresponse.ipm");
+                if (model == null || string.IsNullOrWhiteSpace(model.SettingModel?.SettingDTO?.CustomerNumber))
+                {
+                    return new PlanResponse();
+                }
+
+                string filePath = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    "ipm/" + model.SettingModel.SettingDTO.CustomerNumber + "/planperson/planresponse.ipm"
+                );
+
                 if (File.Exists(filePath))
                 {
-                    byte[] data = File.ReadAllBytes(filePath);
-                    BinaryFormatter binForm = new BinaryFormatter();
-                    ms.Write(data, 0, data.Length);
-                    ms.Seek(0, SeekOrigin.Begin);
-                    var json = (Object)binForm.Deserialize(ms) as String;
-                    ms.Close();
-                    ms.Dispose();
-                    return JsonConvert.DeserializeObject<PlanResponse>(json);
+                    try
+                    {
+                        string jsonString = File.ReadAllText(filePath);
+
+                        if (string.IsNullOrWhiteSpace(jsonString))
+                        {
+                            return new PlanResponse();
+                        }
+
+                        var jsonSettings = new JsonSerializerSettings
+                        {
+                            NullValueHandling = NullValueHandling.Include,
+                            DefaultValueHandling = DefaultValueHandling.Include,
+                            MissingMemberHandling = MissingMemberHandling.Ignore
+                        };
+
+                        PlanResponse response = JsonConvert.DeserializeObject<PlanResponse>(jsonString, jsonSettings);
+                        return response ?? new PlanResponse();
+                    }
+                    catch (JsonException jsonEx)
+                    {
+                        // JSON Fehler - könnte alte BinaryFormatter Datei sein
+                        AppModel.Logger?.Warn(jsonEx, "Failed to deserialize PlanResponse JSON, attempting migration");
+
+                        if (TryMigrateLegacyPlanResponse(filePath, out PlanResponse migratedResponse))
+                        {
+                            // Nach erfolgreicher Migration neu speichern
+                            Save(model, migratedResponse);
+                            return migratedResponse;
+                        }
+
+                        return new PlanResponse();
+                    }
                 }
                 else
                 {
-                    ms.Close();
-                    ms.Dispose();
                     return new PlanResponse();
                 }
             }
             catch (Exception ex)
             {
-                ms.Close();
-                ms.Dispose();
-                AppModel.Logger.Error(ex);
+                AppModel.Logger?.Error(ex, "ERROR: Load PlanResponse");
                 return new PlanResponse();
             }
         }
+        /// <summary>
+        /// Versucht alte BinaryFormatter-Datei zu migrieren
+        /// </summary>
+        private static bool TryMigrateLegacyPlanResponse(string filePath, out PlanResponse planResponse)
+        {
+            planResponse = null;
 
+            try
+            {
+                // Alte Datei sichern
+                string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+                string backupPath = filePath + $".old_binary_{timestamp}";
+
+                if (File.Exists(filePath))
+                {
+                    File.Copy(filePath, backupPath, true);
+                    AppModel.Logger?.Info($"Legacy PlanResponse file backed up to: {backupPath}");
+                }
+
+                // In .NET MAUI kann BinaryFormatter nicht mehr verwendet werden
+                // Die alte Datei wird gesichert und leere Response zurückgegeben
+                planResponse = new PlanResponse();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: TryMigrateLegacyPlanResponse()");
+                return false;
+            }
+        }
+        /// <summary>
+        /// Löscht die PlanResponse
+        /// </summary>
         public static bool Delete(AppModel model)
         {
             try
             {
-                string filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "ipm/" + model.SettingModel.SettingDTO.CustomerNumber + "/planperson/planresponse.ipm");
+                if (model == null || string.IsNullOrWhiteSpace(model.SettingModel?.SettingDTO?.CustomerNumber))
+                {
+                    return false;
+                }
+
+                string filePath = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    "ipm/" + model.SettingModel.SettingDTO.CustomerNumber + "/planperson/planresponse.ipm"
+                );
+
                 if (File.Exists(filePath))
                 {
+                    // Optional: Backup vor dem Löschen
+                    string backupPath = filePath + $".deleted_{DateTime.Now:yyyyMMdd_HHmmss}";
+                    File.Copy(filePath, backupPath, true);
+
                     File.Delete(filePath);
+
+                    AppModel.Logger?.Info($"PlanResponse deleted. Backup: {backupPath}");
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: Delete PlanResponse");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Lädt die PlanResponse als JSON-String
+        /// </summary>
+        public static string Load_AsJson(AppModel model)
+        {
+            try
+            {
+                if (model == null || string.IsNullOrWhiteSpace(model.SettingModel?.SettingDTO?.CustomerNumber))
+                {
+                    return "{\"Error\": \"CustomerNumber not set\"}";
+                }
+
+                string filePath = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    "ipm/" + model.SettingModel.SettingDTO.CustomerNumber + "/planperson/planresponse.ipm"
+                );
+
+                if (File.Exists(filePath))
+                {
+                    string jsonString = File.ReadAllText(filePath);
+
+                    if (string.IsNullOrWhiteSpace(jsonString))
+                    {
+                        return "{\"Error\": \"File is empty\"}";
+                    }
+
+                    return jsonString;
+                }
+                else
+                {
+                    return "{\"Info\": \"File not exist\"}";
                 }
             }
             catch (Exception ex)
             {
-                AppModel.Logger.Error(ex);
-                return false;
+                AppModel.Logger?.Error(ex, "ERROR: Load_AsJson PlanResponse");
+                return "{\"Error\": \"" + ex.Message.Replace("\"", "'") + "\"}";
             }
-            return true;
         }
 
         public object Clone()

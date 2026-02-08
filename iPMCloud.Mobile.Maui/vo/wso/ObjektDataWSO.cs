@@ -1084,124 +1084,387 @@ namespace iPMCloud.Mobile
             }
         }
 
+
+        /// <summary>
+        /// Fügt ein ObjektDataWSO zum Upload-Stack hinzu
+        /// </summary>
         public static bool ToUploadStack(AppModel model, ObjektDataWSO od)
         {
-            MemoryStream ms = new MemoryStream();
             try
             {
-                var json = JsonConvert.SerializeObject(od);
-                BinaryFormatter bf = new BinaryFormatter();
-                bf.Serialize(ms, json);
-                string directoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "ipm/" + model.SettingModel.SettingDTO.CustomerNumber + "/objectvalueupload/");
-                if (!Directory.Exists(directoryPath)) { Directory.CreateDirectory(directoryPath); }
-                string filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "ipm/" + model.SettingModel.SettingDTO.CustomerNumber + "/objectvalueupload/" + od.ticks + ".ipm");
-                File.WriteAllBytes(filePath, ms.ToArray());
-                ms.Close();
-                ms.Dispose();
-                if (AppModel.Instance.MainPage != null) { AppModel.Instance.MainPage.SetAllSyncState(); }
+                if (model == null || od == null)
+                {
+                    AppModel.Logger?.Error("ToUploadStack ObjektDataWSO: model or od is null");
+                    return false;
+                }
+
+                if (string.IsNullOrWhiteSpace(model.SettingModel?.SettingDTO?.CustomerNumber))
+                {
+                    AppModel.Logger?.Error("ToUploadStack ObjektDataWSO: CustomerNumber is null");
+                    return false;
+                }
+
+                string directoryPath = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    "ipm/" + model.SettingModel.SettingDTO.CustomerNumber + "/objectvalueupload/"
+                );
+
+                if (!Directory.Exists(directoryPath))
+                {
+                    Directory.CreateDirectory(directoryPath);
+                }
+
+                string filePath = Path.Combine(directoryPath, $"{od.ticks}.ipm");
+
+                var jsonSettings = new JsonSerializerSettings
+                {
+                    Formatting = Formatting.Indented,
+                    NullValueHandling = NullValueHandling.Include,
+                    DefaultValueHandling = DefaultValueHandling.Include,
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                };
+
+                string jsonString = JsonConvert.SerializeObject(od, jsonSettings);
+                File.WriteAllText(filePath, jsonString);
+
+                // UI Update
+                if (AppModel.Instance?.MainPage != null)
+                {
+                    AppModel.Instance.MainPage.SetAllSyncState();
+                }
+
                 return true;
             }
             catch (Exception ex)
             {
-                ms.Close();
-                ms.Dispose();
-                AppModel.Logger.Error(ex);
+                AppModel.Logger?.Error(ex, "ERROR: ToUploadStack ObjektDataWSO");
                 return false;
             }
         }
 
+        /// <summary>
+        /// Zählt die Anzahl der ObjektDataWSO im Upload-Stack
+        /// </summary>
         public static int CountFromStack()
         {
             try
             {
-                string directoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "ipm/" + AppModel.Instance.SettingModel.SettingDTO.CustomerNumber + "/objectvalueupload/");
+                if (string.IsNullOrWhiteSpace(AppModel.Instance?.SettingModel?.SettingDTO?.CustomerNumber))
+                {
+                    return 0;
+                }
+
+                string directoryPath = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    "ipm/" + AppModel.Instance.SettingModel.SettingDTO.CustomerNumber + "/objectvalueupload/"
+                );
+
                 if (Directory.Exists(directoryPath))
                 {
-                    return Directory.GetFiles(directoryPath).Length;
+                    return Directory.GetFiles(directoryPath, "*.ipm").Length;
                 }
-            }
-            catch (Exception)
-            {
+
                 return 0;
             }
-            return 0;
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: CountFromStack ObjektDataWSO");
+                return 0;
+            }
         }
+
+        /// <summary>
+        /// Lädt alle ObjektDataWSO aus dem Upload-Stack
+        /// </summary>
         public static List<ObjektDataWSO> LoadAllFromUploadStack(AppModel model)
         {
             List<ObjektDataWSO> list = new List<ObjektDataWSO>();
+
             try
             {
-                string directoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "ipm/" + model.SettingModel.SettingDTO.CustomerNumber + "/objectvalueupload/");
+                if (model == null || string.IsNullOrWhiteSpace(model.SettingModel?.SettingDTO?.CustomerNumber))
+                {
+                    return list;
+                }
+
+                string directoryPath = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    "ipm/" + model.SettingModel.SettingDTO.CustomerNumber + "/objectvalueupload/"
+                );
+
                 if (Directory.Exists(directoryPath))
                 {
-                    //Directory.Delete(directoryPath,true);
-                    var files = Directory.GetFiles(directoryPath);
+                    var files = Directory.GetFiles(directoryPath, "*.ipm");
+
                     if (files != null && files.Length > 0)
                     {
-                        files.ToList().ForEach(file =>
+                        foreach (var file in files)
                         {
-                            list.Add(ObjektDataWSO.LoadFromUploadStack(model, file));
-                        });
+                            var od = LoadFromUploadStack(model, file);
+                            if (od != null)
+                            {
+                                list.Add(od);
+                            }
+                        }
                     }
                 }
             }
             catch (Exception ex)
             {
-                AppModel.Logger.Error(ex);
+                AppModel.Logger?.Error(ex, "ERROR: LoadAllFromUploadStack ObjektDataWSO");
             }
+
             return list;
         }
 
+        /// <summary>
+        /// Lädt ein einzelnes ObjektDataWSO aus dem Upload-Stack
+        /// </summary>
         private static ObjektDataWSO LoadFromUploadStack(AppModel model, string filename)
         {
-            MemoryStream ms = new MemoryStream();
             try
             {
-                string filePath = Path.Combine(filename);
-                if (File.Exists(filePath))
+                if (!File.Exists(filename))
                 {
-                    byte[] data = File.ReadAllBytes(filePath);
-                    BinaryFormatter binForm = new BinaryFormatter();
-                    ms.Write(data, 0, data.Length);
-                    ms.Seek(0, SeekOrigin.Begin);
-                    var json = (Object)binForm.Deserialize(ms) as String;
-                    ms.Close();
-                    ms.Dispose();
-                    return JsonConvert.DeserializeObject<ObjektDataWSO>(json);
-                }
-                else
-                {
-                    ms.Close();
-                    ms.Dispose();
                     return null;
                 }
+
+                string jsonString = File.ReadAllText(filename);
+
+                if (string.IsNullOrWhiteSpace(jsonString))
+                {
+                    return null;
+                }
+
+                var jsonSettings = new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Include,
+                    MissingMemberHandling = MissingMemberHandling.Ignore
+                };
+
+                return JsonConvert.DeserializeObject<ObjektDataWSO>(jsonString, jsonSettings);
             }
             catch (Exception ex)
             {
-                ms.Close();
-                ms.Dispose();
-                AppModel.Logger.Error(ex);
+                AppModel.Logger?.Error(ex, $"ERROR: LoadFromUploadStack ObjektDataWSO - {filename}");
                 return null;
             }
         }
 
+        /// <summary>
+        /// Löscht ein ObjektDataWSO aus dem Upload-Stack
+        /// </summary>
         public static bool DeleteFromUploadStack(AppModel model, ObjektDataWSO od)
         {
             try
             {
-                string filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "ipm/" + model.SettingModel.SettingDTO.CustomerNumber + "/objectvalueupload/" + od.ticks + ".ipm");
+                if (od == null || model == null || string.IsNullOrWhiteSpace(model.SettingModel?.SettingDTO?.CustomerNumber))
+                {
+                    return false;
+                }
+
+                string filePath = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    "ipm/" + model.SettingModel.SettingDTO.CustomerNumber + "/objectvalueupload/" + od.ticks + ".ipm"
+                );
+
                 if (File.Exists(filePath))
                 {
                     File.Delete(filePath);
-                    if (AppModel.Instance.MainPage != null) { AppModel.Instance.MainPage.SetAllSyncState(); }
+
+                    // UI Update
+                    if (AppModel.Instance?.MainPage != null)
+                    {
+                        AppModel.Instance.MainPage.SetAllSyncState();
+                    }
                 }
+
+                return true;
             }
             catch (Exception ex)
             {
-                AppModel.Logger.Error(ex);
+                AppModel.Logger?.Error(ex, "ERROR: DeleteFromUploadStack ObjektDataWSO");
                 return false;
             }
-            return true;
+        }
+
+        /// <summary>
+        /// Löscht alle ObjektDataWSO aus dem Upload-Stack
+        /// </summary>
+        public static bool ClearUploadStack(AppModel model)
+        {
+            try
+            {
+                if (model == null || string.IsNullOrWhiteSpace(model.SettingModel?.SettingDTO?.CustomerNumber))
+                {
+                    return false;
+                }
+
+                string directoryPath = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    "ipm/" + model.SettingModel.SettingDTO.CustomerNumber + "/objectvalueupload/"
+                );
+
+                if (Directory.Exists(directoryPath))
+                {
+                    var files = Directory.GetFiles(directoryPath, "*.ipm");
+
+                    foreach (var file in files)
+                    {
+                        File.Delete(file);
+                    }
+
+                    // UI Update
+                    if (AppModel.Instance?.MainPage != null)
+                    {
+                        AppModel.Instance.MainPage.SetAllSyncState();
+                    }
+
+                    AppModel.Logger?.Info($"Cleared upload stack: {files.Length} ObjektDataWSO files deleted");
+                    return true;
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: ClearUploadStack ObjektDataWSO");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Lädt alle ObjektDataWSO aus dem Upload-Stack als JSON
+        /// </summary>
+        public static string LoadAllFromUploadStack_AsJson(AppModel model)
+        {
+            try
+            {
+                var list = LoadAllFromUploadStack(model);
+                return JsonConvert.SerializeObject(list, Formatting.Indented);
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: LoadAllFromUploadStack_AsJson ObjektDataWSO");
+                return "[]";
+            }
+        }
+
+        /// <summary>
+        /// Holt das älteste ObjektDataWSO aus dem Stack
+        /// </summary>
+        public static ObjektDataWSO GetOldestFromStack(AppModel model)
+        {
+            try
+            {
+                if (model == null || string.IsNullOrWhiteSpace(model.SettingModel?.SettingDTO?.CustomerNumber))
+                {
+                    return null;
+                }
+
+                string directoryPath = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    "ipm/" + model.SettingModel.SettingDTO.CustomerNumber + "/objectvalueupload/"
+                );
+
+                if (Directory.Exists(directoryPath))
+                {
+                    var files = Directory.GetFiles(directoryPath, "*.ipm")
+                        .OrderBy(f => File.GetCreationTime(f))
+                        .ToList();
+
+                    if (files.Any())
+                    {
+                        return LoadFromUploadStack(model, files.First());
+                    }
+                }
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: GetOldestFromStack ObjektDataWSO");
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Prüft ob der Upload-Stack leer ist
+        /// </summary>
+        public static bool IsUploadStackEmpty()
+        {
+            return CountFromStack() == 0;
+        }
+
+
+
+    }
+
+
+    public class ObjektDataUploadService
+    {
+        private readonly HttpClient _httpClient;
+
+        public ObjektDataUploadService()
+        {
+            _httpClient = new HttpClient();
+        }
+
+        public async Task<bool> ProcessUploadStackAsync()
+        {
+            try
+            {
+                var dataList = ObjektDataWSO.LoadAllFromUploadStack(AppModel.Instance);
+
+                if (dataList == null || dataList.Count == 0)
+                {
+                    return true; // Nichts zu tun
+                }
+
+                int successCount = 0;
+
+                foreach (var data in dataList)
+                {
+                    var success = await UploadDataAsync(data);
+
+                    if (success)
+                    {
+                        ObjektDataWSO.DeleteFromUploadStack(AppModel.Instance, data);
+                        successCount++;
+                    }
+                }
+
+                AppModel.Logger?.Info($"ObjektData Upload: {successCount}/{dataList.Count} erfolgreich");
+                return successCount == dataList.Count;
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: ProcessUploadStackAsync ObjektData");
+                return false;
+            }
+        }
+
+        private async Task<bool> UploadDataAsync(ObjektDataWSO data)
+        {
+            try
+            {
+                string jsonRequest = JsonConvert.SerializeObject(data);
+                var content = new StringContent(jsonRequest, System.Text.Encoding.UTF8, "application/json");
+
+                var response = await _httpClient.PostAsync(
+                    "https://api.example.com/objektdata",
+                    content
+                );
+
+                return response.IsSuccessStatusCode;
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: UploadDataAsync");
+                return false;
+            }
         }
     }
+
+
 }

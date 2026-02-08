@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Microsoft.Maui.Controls;
+using iPMCloud.Mobile.Controls;
 
 namespace iPMCloud.Mobile
 {
@@ -83,8 +84,8 @@ namespace iPMCloud.Mobile
         public Image img_sig = null;
 
         // TODO: SignaturePad not MAUI-compatible - comment out until migrated
-        // [NonSerialized]
-        // public SignaturePadView signPad = null;
+        [NonSerialized]
+        public StackLayout signPad = null;
 
         [NonSerialized]
         public StackLayout stack_Badge = null;
@@ -584,25 +585,58 @@ namespace iPMCloud.Mobile
         {
             AppModel.Instance.MainPage.OpenCheckA_Singature(this);
         }
-        public async void Tap_a7_ReturnSig()
-        {
-            none = false;
-            AppModel.Instance.MainPage.CloseCheckA_Singature(null, null);
-            var stream = await signPad.GetImageStreamAsync(SignatureImageFormat.Png);
-            if (stream != null)
-            {
-                byte[] imageArray = null;
 
-                using (MemoryStream memory = new MemoryStream())
-                {
-                    stream.CopyTo(memory);
-                    imageArray = memory.ToArray();
-                    //image.Source = ImageSource.FromStream(() => new MemoryStream(bytes));
-                    a7 = System.Convert.ToBase64String(imageArray);
+
+        //public async void Tap_a7_ReturnSig()
+        //{
+        //    none = false;
+        //    AppModel.Instance.MainPage.CloseCheckA_Singature(null, null);
+        //    var stream = await signPad.GetImageStreamAsync(SignatureImageFormat.Png);
+        //    if (stream != null)
+        //    {
+        //        byte[] imageArray = null;
+
+        //        using (MemoryStream memory = new MemoryStream())
+        //        {
+        //            stream.CopyTo(memory.ToArray(), 81920); // 81920 ist die Standard-Puffergröße
+        //            imageArray = memory.ToArray();
+        //            //image.Source = ImageSource.FromStream(() => new MemoryStream(bytes));
+        //            a7 = System.Convert.ToBase64String(imageArray);
+        //        }
+        //    }
+        //    CheckIsReadyAndSet_a7();
+        //}
+
+        public async Task Tap_a7_ReturnSig()
+        {
+            try
+            {
+                none = false;
+                AppModel.Instance.MainPage.CloseCheckA_Singature(null, null);
+
+                // Signatur als Byte-Array direkt holen
+                if (signPad.Children[0] is SignaturePadView sigPad) {
+                    var imageBytes = await sigPad.GetImageStreamAsync(SignatureImageFormat.Png);
+
+                    if (imageBytes != null && imageBytes.Length > 0)
+                    {
+                        // Direkt zu Base64 konvertieren
+                        a7 = Convert.ToBase64String(imageBytes);
+                    } 
                 }
+                CheckIsReadyAndSet_a7();
             }
-            CheckIsReadyAndSet_a7();
+            catch (Exception ex)
+            {
+                // Fehler loggen
+                System.Diagnostics.Debug.WriteLine($"Fehler beim Speichern der Signatur: {ex.Message}");
+                AppModel.Logger?.Error($"Fehler beim Speichern der Signatur: {ex.Message}");
+            }
         }
+
+
+
+
         public void CheckIsReadyAndSet_a7()
         {
             if (required == 1)

@@ -430,7 +430,7 @@ namespace iPMCloud.Mobile
 
                     // Status 
 
-                    //var mainHState = new Frame
+                    //var mainHState = new Border
                     //{
                     //    Padding = new Thickness(0, 2),
                     //    Margin = new Thickness(10, 2),
@@ -438,8 +438,8 @@ namespace iPMCloud.Mobile
                     //    HorizontalOptions = LayoutOptions.FillAndExpand,
                     //    WidthRequest = width,
                     //    BackgroundColor = Color.FromArgb("#55fff0000"),
-                    //    BorderColor = Color.FromArgb("#55ffffff"),
-                    //    CornerRadius = 10,
+                    //    Stroke = Color.FromArgb("#55ffffff"),
+                    //    StrokeShape = new RoundRectangle { CornerRadius = 10 },
                     //    Content = new Label
                     //    {
                     //        Padding = new Thickness(0),
@@ -460,19 +460,18 @@ namespace iPMCloud.Mobile
 
 
 
-        public static Frame GetBadgeFrame(int value)
+        public static Border GetBadgeFrame(int value)
         {
 
-            return new Frame
+            return new Border
             {
                 BackgroundColor = Color.FromArgb(value < 0 ? "#ff0000" : (value < 1 ? "#ffcc00" : "#009900")),
-                IsClippedToBounds = true,
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Center,
                 Margin = new Thickness(3, 0, 3, 0),
                 Padding = new Thickness(4, 2, 4, 2),
-                CornerRadius = 5,
+                StrokeShape = new RoundRectangle { CornerRadius = 5 },
                 Content = new Label
                 {
                     Text = Int32.Parse("" + value).ToString(),
@@ -489,19 +488,18 @@ namespace iPMCloud.Mobile
                 }
             };
         }
-        public static Frame GetBadgeFrameForNachBedarf()
+        public static Border GetBadgeFrameForNachBedarf()
         {
 
-            return new Frame
+            return new Border
             {
                 BackgroundColor = Color.FromArgb("#338dca"),
-                IsClippedToBounds = true,
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Center,
                 Margin = new Thickness(3, 0, 3, 0),
                 Padding = new Thickness(4, 2, 4, 2),
-                CornerRadius = 5,
+                StrokeShape = new RoundRectangle { CornerRadius = 5 },
                 Content = new Label
                 {
                     Text = "-",
@@ -520,19 +518,19 @@ namespace iPMCloud.Mobile
         }
 
 
-        public static Frame GetBadgeRoundFrame(int value, bool isRed, bool isGray)
+        public static Border GetBadgeRoundFrame(int value, bool isRed, bool isGray)
         {
 
-            return new Frame
+            return new Border
             {
                 BackgroundColor = Color.FromArgb(isRed ? "#ff0000" : (isGray ? "#999999" : "#009900")),
-                IsClippedToBounds = true,
-                HasShadow = true,
+                
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Center,
                 Margin = new Thickness(3, 0),
                 Padding = new Thickness(4, 2),
-                CornerRadius = 10,
+                StrokeShape = new RoundRectangle { CornerRadius = 10 },
                 Content = new Label
                 {
                     Text = Int32.Parse("" + value).ToString(),
@@ -550,16 +548,16 @@ namespace iPMCloud.Mobile
             };
         }
 
-        public static Frame GetQuestKategorieHeader(string title)
+        public static Border GetQuestKategorieHeader(string title)
         {
-            return new Frame
+            return new Border
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(1, 30, 1, 0),
                 BackgroundColor = Color.FromArgb("#66042d53"),
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                CornerRadius = 10,
+                StrokeShape = new RoundRectangle { CornerRadius = 10 },
                 Content = new StackLayout
                 {
                     Padding = new Thickness(5),
@@ -583,7 +581,7 @@ namespace iPMCloud.Mobile
         }
 
         // Ja / Nein / Keine
-        public static Frame GetQuestMain_0(CheckLeistungAntwort quest)
+        public static Border GetQuestMain_0(CheckLeistungAntwort quest)
         {
             var tapYes = new TapGestureRecognizer();
             tapYes.Tapped -= (object o, TappedEventArgs ev) => { quest.Tap_a0_Yes(); };
@@ -601,12 +599,12 @@ namespace iPMCloud.Mobile
             tapBem.Tapped -= (object o, TappedEventArgs ev) => { quest.Tap_a_Bem(); };
             tapBem.Tapped += (object o, TappedEventArgs ev) => { quest.Tap_a_Bem(); };
 
-            quest.frame_Bem = new Frame
+            quest.frame_Bem = new Border
             {
                 Padding = new Thickness(5),
                 Margin = new Thickness(0, 5, 0, 0),
                 BackgroundColor = Color.FromArgb("#042d53"),
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
                 Content = new Image
@@ -636,16 +634,16 @@ namespace iPMCloud.Mobile
                         quest.bemWSO.photos.Count() == 0)
                     : GetBadgeRoundFrame(0, false, true) }
             };
-            quest.frame_No = new Frame
+            quest.frame_No = new Border
             {
                 Padding = new Thickness(10, 5),
                 Margin = new Thickness(0),
                 Opacity = quest.isReady && quest.a0 != 2 ? 0.5 : 1,
                 BackgroundColor = quest.isReady && quest.a0 != 2 ? Color.FromArgb("#666666") : Color.FromArgb("#73042d"),// #666666
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = quest.required != 1 ? LayoutOptions.End : LayoutOptions.EndAndExpand,
                 VerticalOptions = LayoutOptions.Center,
-                BorderColor = quest.isReady && quest.a0 != 2 ? Colors.White : Colors.Transparent,
+                Stroke = quest.isReady && quest.a0 != 2 ? Colors.White : Colors.Transparent,
                 Content = new Label
                 {
                     Text = "NEIN",
@@ -658,16 +656,16 @@ namespace iPMCloud.Mobile
                 },
                 GestureRecognizers = { tapNo },
             };
-            quest.frame_Yes = new Frame
+            quest.frame_Yes = new Border
             {
                 Padding = new Thickness(10, 5),
                 Margin = new Thickness(0),
                 Opacity = quest.isReady && quest.a0 != 1 ? 0.5 : 1,
                 BackgroundColor = quest.isReady && quest.a0 != 1 ? Color.FromArgb("#666666") : Color.FromArgb("#04732d"),// #666666
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.End,
                 VerticalOptions = LayoutOptions.Center,
-                BorderColor = quest.isReady && quest.a0 != 1 ? Colors.White : Colors.Transparent,
+                Stroke = quest.isReady && quest.a0 != 1 ? Colors.White : Colors.Transparent,
                 Content = new Label
                 {
                     Text = "JA",
@@ -680,17 +678,17 @@ namespace iPMCloud.Mobile
                 },
                 GestureRecognizers = { tapYes },
             };
-            quest.frame_None = new Frame
+            quest.frame_None = new Border
             {
                 IsVisible = quest.required != 1,
                 Padding = new Thickness(5, 5),
                 Margin = new Thickness(0),
                 Opacity = quest.isReady && quest.a0 != 0 ? 0.5 : 1,
                 BackgroundColor = quest.isReady && quest.a0 != 0 ? Color.FromArgb("#666666") : Color.FromArgb("#938302"),// #666666
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.EndAndExpand,
                 VerticalOptions = LayoutOptions.Center,
-                BorderColor = quest.isReady && quest.a0 != 0 ? Colors.White : Colors.Transparent,
+                Stroke = quest.isReady && quest.a0 != 0 ? Colors.White : Colors.Transparent,
                 Content = new Label
                 {
                     Text = "KEINE",
@@ -703,13 +701,13 @@ namespace iPMCloud.Mobile
                 },
                 GestureRecognizers = { tapNone },
             };
-            quest.frame_Reset = new Frame
+            quest.frame_Reset = new Border
             {
                 IsVisible = quest.isReady,
                 Padding = new Thickness(5),
                 Margin = new Thickness(0, 5, 0, 0),
                 BackgroundColor = Color.FromArgb("#042d53"),
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
                 Content = new Image
@@ -766,14 +764,14 @@ namespace iPMCloud.Mobile
                 HorizontalOptions = LayoutOptions.EndAndExpand
             };
 
-            var frame = new Frame
+            var frame = new Border
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(15, 8, 15, 0),
                 BackgroundColor = Color.FromArgb("#99042d53"),
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                CornerRadius = 10,
+                StrokeShape = new RoundRectangle { CornerRadius = 10 },
                 Content = new StackLayout
                 {
                     Padding = new Thickness(5),
@@ -812,7 +810,7 @@ namespace iPMCloud.Mobile
 
 
         // Textantwort
-        public static Frame GetQuestMain_1(CheckLeistungAntwort quest)
+        public static Border GetQuestMain_1(CheckLeistungAntwort quest)
         {
             var tapReset = new TapGestureRecognizer();
             tapReset.Tapped -= (object o, TappedEventArgs ev) => { quest.Tap_a1_Reset(); };
@@ -826,12 +824,12 @@ namespace iPMCloud.Mobile
             tapBem.Tapped -= (object o, TappedEventArgs ev) => { quest.Tap_a_Bem(); };
             tapBem.Tapped += (object o, TappedEventArgs ev) => { quest.Tap_a_Bem(); };
 
-            quest.frame_Bem = new Frame
+            quest.frame_Bem = new Border
             {
                 Padding = new Thickness(5),
                 Margin = new Thickness(0, 5, 0, 0),
                 BackgroundColor = Color.FromArgb("#042d53"),
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
                 Content = new Image
@@ -878,17 +876,17 @@ namespace iPMCloud.Mobile
             quest.textEditor.Focused -= (object sender, FocusEventArgs e) => { quest.Text_a1_Focused(); };
             quest.textEditor.Focused += (object sender, FocusEventArgs e) => { quest.Text_a1_Focused(); };
 
-            quest.frame_None = new Frame
+            quest.frame_None = new Border
             {
                 IsVisible = quest.required != 1,
                 Padding = new Thickness(8, 5),
                 Margin = new Thickness(0, 5, 10, 0),
                 Opacity = quest.none ? 0.5 : 1,
                 BackgroundColor = !quest.none ? Color.FromArgb("#666666") : Color.FromArgb("#938302"),// #666666
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.End,
                 VerticalOptions = LayoutOptions.Center,
-                BorderColor = quest.none ? Colors.White : Colors.Transparent,
+                Stroke = quest.none ? Colors.White : Colors.Transparent,
                 Content = new Label
                 {
                     Text = "KEINE",
@@ -899,13 +897,13 @@ namespace iPMCloud.Mobile
                 },
                 GestureRecognizers = { tapNone },
             };
-            quest.frame_Reset = new Frame
+            quest.frame_Reset = new Border
             {
                 IsVisible = quest.isReady,
                 Padding = new Thickness(5),
                 Margin = new Thickness(0, 5, 0, 0),
                 BackgroundColor = Color.FromArgb("#042d53"),
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
                 Content = new Image
@@ -960,14 +958,14 @@ namespace iPMCloud.Mobile
                 HorizontalOptions = LayoutOptions.EndAndExpand
             };
 
-            var frame = new Frame
+            var frame = new Border
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(15, 8, 15, 0),
                 BackgroundColor = Color.FromArgb("#99042d53"),
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                CornerRadius = 10,
+                StrokeShape = new RoundRectangle { CornerRadius = 10 },
                 Content = new StackLayout
                 {
                     Padding = new Thickness(5),
@@ -993,9 +991,9 @@ namespace iPMCloud.Mobile
                                     Padding = new Thickness(0),
                                     Margin = new Thickness(0),
                                     BackgroundColor = Color.FromArgb("#99ffffff"),
-                                    HasShadow = true,
+                                    Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                                     HorizontalOptions = LayoutOptions.FillAndExpand,
-                                    CornerRadius = 10,
+                                    StrokeShape = new RoundRectangle { CornerRadius = 10 },
                                     Content = quest.textEditor,
                                 }
                             }
@@ -1023,7 +1021,7 @@ namespace iPMCloud.Mobile
         }
 
         // Werantwort
-        public static Frame GetQuestMain_2(CheckLeistungAntwort quest)
+        public static Border GetQuestMain_2(CheckLeistungAntwort quest)
         {
             var tapReset = new TapGestureRecognizer();
             tapReset.Tapped -= (object o, TappedEventArgs ev) => { quest.Tap_a2_Reset(); };
@@ -1036,12 +1034,12 @@ namespace iPMCloud.Mobile
             tapBem.Tapped -= (object o, TappedEventArgs ev) => { quest.Tap_a_Bem(); };
             tapBem.Tapped += (object o, TappedEventArgs ev) => { quest.Tap_a_Bem(); };
 
-            quest.frame_Bem = new Frame
+            quest.frame_Bem = new Border
             {
                 Padding = new Thickness(5),
                 Margin = new Thickness(0, 5, 0, 0),
                 BackgroundColor = Color.FromArgb("#042d53"),
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
                 Content = new Image
@@ -1089,17 +1087,17 @@ namespace iPMCloud.Mobile
             quest.entry.Unfocused -= (object sender, FocusEventArgs e) => { quest.Text_a2_Focused(); };
             quest.entry.Unfocused += (object sender, FocusEventArgs e) => { quest.Text_a2_Focused(); };
 
-            quest.frame_None = new Frame
+            quest.frame_None = new Border
             {
                 IsVisible = quest.required != 1,
                 Padding = new Thickness(8, 5),
                 Margin = new Thickness(0, 5, 10, 0),
                 Opacity = quest.none ? 0.5 : 1,
                 BackgroundColor = quest.none ? Color.FromArgb("#666666") : Color.FromArgb("#938302"),// #666666
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.End,
                 VerticalOptions = LayoutOptions.Center,
-                BorderColor = quest.none ? Colors.White : Colors.Transparent,
+                Stroke = quest.none ? Colors.White : Colors.Transparent,
                 Content = new Label
                 {
                     Text = "KEINE",
@@ -1112,13 +1110,13 @@ namespace iPMCloud.Mobile
                 },
                 GestureRecognizers = { tapNone },
             };
-            quest.frame_Reset = new Frame
+            quest.frame_Reset = new Border
             {
                 IsVisible = quest.isReady,
                 Padding = new Thickness(5),
                 Margin = new Thickness(0, 5, 0, 0),
                 BackgroundColor = Color.FromArgb("#042d53"),
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
                 Content = new Image
@@ -1175,14 +1173,14 @@ namespace iPMCloud.Mobile
                 HorizontalOptions = LayoutOptions.EndAndExpand
             };
 
-            var frame = new Frame
+            var frame = new Border
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(15, 8, 15, 0),
                 BackgroundColor = Color.FromArgb("#99042d53"),
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                CornerRadius = 10,
+                StrokeShape = new RoundRectangle { CornerRadius = 10 },
                 Content = new StackLayout
                 {
                     Padding = new Thickness(5),
@@ -1222,9 +1220,9 @@ namespace iPMCloud.Mobile
                                     Padding = new Thickness(0),
                                     Margin = new Thickness(0),
                                     BackgroundColor = Color.FromArgb("#99ffffff"),
-                                    HasShadow = true,
+                                    Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                                     HorizontalOptions = LayoutOptions.FillAndExpand,
-                                    CornerRadius = 10,
+                                    StrokeShape = new RoundRectangle { CornerRadius = 10 },
                                     Content = quest.entry,
                                 },
                             }
@@ -1238,7 +1236,7 @@ namespace iPMCloud.Mobile
         }
 
         // Bild Antwort
-        public static Frame GetQuestMain_3(CheckLeistungAntwort quest)
+        public static Border GetQuestMain_3(CheckLeistungAntwort quest)
         {
             var tapNone = new TapGestureRecognizer();
             tapNone.Tapped -= (object o, TappedEventArgs ev) => { quest.Tap_a3_None(); };
@@ -1255,17 +1253,17 @@ namespace iPMCloud.Mobile
 
             //var pics = quest.a3.Split(new String[] { "[##]" }, StringSplitOptions.RemoveEmptyEntries);
 
-            quest.frame_None = new Frame
+            quest.frame_None = new Border
             {
                 IsVisible = quest.required != 1,
                 Padding = new Thickness(5, 5),
                 Margin = new Thickness(0),
                 Opacity = quest.isReady && quest.a0 != 0 ? 0.5 : 1,
                 BackgroundColor = !quest.none ? Color.FromArgb("#666666") : Color.FromArgb("#938302"),
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.EndAndExpand,
                 VerticalOptions = LayoutOptions.Start,
-                BorderColor = quest.isReady && quest.a0 != 0 ? Colors.White : Colors.Transparent,
+                Stroke = quest.isReady && quest.a0 != 0 ? Colors.White : Colors.Transparent,
                 Content = new Label
                 {
                     Text = "KEINE",
@@ -1276,13 +1274,13 @@ namespace iPMCloud.Mobile
                 },
                 GestureRecognizers = { tapNone },
             };
-            quest.frame_Pic = new Frame
+            quest.frame_Pic = new Border
             {
                 Padding = new Thickness(5, 5),
                 Margin = new Thickness(0),
                 Opacity = quest.none ? 0.75 : 1,
                 BackgroundColor = Color.FromArgb("#935302"),
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = quest.required != 1 ? LayoutOptions.End : LayoutOptions.EndAndExpand,
                 VerticalOptions = LayoutOptions.Start,
                 Content = new Label
@@ -1295,12 +1293,12 @@ namespace iPMCloud.Mobile
                 },
                 GestureRecognizers = { tapPic },
             };
-            quest.frame_Bem = new Frame
+            quest.frame_Bem = new Border
             {
                 Padding = new Thickness(5),
                 Margin = new Thickness(0),
                 BackgroundColor = Color.FromArgb("#042d53"),
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
                 Content = new Image
@@ -1312,13 +1310,13 @@ namespace iPMCloud.Mobile
                 },
                 GestureRecognizers = { tapBem },
             };
-            quest.frame_Reset = new Frame
+            quest.frame_Reset = new Border
             {
                 IsVisible = quest.isReady || true,
                 Padding = new Thickness(5),
                 Margin = new Thickness(0),
                 BackgroundColor = Color.FromArgb("#042d53"),
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
                 Content = new Image
@@ -1388,14 +1386,14 @@ namespace iPMCloud.Mobile
                 }
             };
 
-            var frame = new Frame
+            var frame = new Border
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(15, 8, 15, 0),
                 BackgroundColor = Color.FromArgb("#99042d53"),
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                CornerRadius = 10,
+                StrokeShape = new RoundRectangle { CornerRadius = 10 },
                 Content = new StackLayout
                 {
                     Padding = new Thickness(5),
@@ -1429,7 +1427,7 @@ namespace iPMCloud.Mobile
             quest.CheckIsReadyAndSet_a3();
             return frame;
         }
-        public static Frame GetQuestMain_3_inlay(CheckLeistungAntwort quest)
+        public static Border GetQuestMain_3_inlay(CheckLeistungAntwort quest)
         {
             var lb_quest = new Label
             {
@@ -1465,14 +1463,14 @@ namespace iPMCloud.Mobile
                 Padding = new Thickness(0, -3, 0, 0)
             };
 
-            var frame = new Frame
+            var frame = new Border
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(0),
                 BackgroundColor = Color.FromArgb("#aa042d53"),
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                CornerRadius = 10,
+                StrokeShape = new RoundRectangle { CornerRadius = 10 },
                 Content = new StackLayout
                 {
                     Padding = new Thickness(5),
@@ -1494,7 +1492,7 @@ namespace iPMCloud.Mobile
 
 
         // Mehrfachantwort Multiquest
-        public static Frame GetQuestMain_4a(CheckLeistungAntwort quest)
+        public static Border GetQuestMain_4a(CheckLeistungAntwort quest)
         {
             var qs = quest.f4.Split(new String[] { ";" }, StringSplitOptions.RemoveEmptyEntries);
             var ants = quest.a4.Split(new String[] { ";" }, StringSplitOptions.RemoveEmptyEntries);
@@ -1524,11 +1522,11 @@ namespace iPMCloud.Mobile
                     Padding = new Thickness(5, 5),
                     Margin = new Thickness(0, 3),
                     BackgroundColor = Color.FromArgb("#33ffffff"),
-                    HasShadow = true,
-                    CornerRadius = 10,
+                    Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
+                    StrokeShape = new RoundRectangle { CornerRadius = 10 },
                     ClassId = "" + z,
                     HorizontalOptions = LayoutOptions.FillAndExpand,
-                    BorderColor = ants.Contains(z.ToString()) ? Colors.White : Colors.Transparent,
+                    Stroke = ants.Contains(z.ToString()) ? Colors.White : Colors.Transparent,
                     Content = new StackLayout
                     {
                         Padding = new Thickness(0),
@@ -1579,12 +1577,12 @@ namespace iPMCloud.Mobile
             tapBem.Tapped -= (object o, TappedEventArgs ev) => { quest.Tap_a_Bem(); };
             tapBem.Tapped += (object o, TappedEventArgs ev) => { quest.Tap_a_Bem(); };
 
-            quest.frame_Bem = new Frame
+            quest.frame_Bem = new Border
             {
                 Padding = new Thickness(5),
                 Margin = new Thickness(0),
                 BackgroundColor = Color.FromArgb("#042d53"),
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
                 Content = new Image
@@ -1614,17 +1612,17 @@ namespace iPMCloud.Mobile
                         quest.bemWSO.photos.Count() == 0)
                     : GetBadgeRoundFrame(0, false, true) }
             };
-            quest.frame_None = new Frame
+            quest.frame_None = new Border
             {
                 IsVisible = quest.required != 1,
                 Padding = new Thickness(10, 5),
                 Margin = new Thickness(0),
                 Opacity = quest.none ? 0.5 : 1,
                 BackgroundColor = quest.none ? Color.FromArgb("#666666") : Color.FromArgb("#938302"),// #666666
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.EndAndExpand,
                 VerticalOptions = LayoutOptions.Center,
-                BorderColor = quest.none ? Colors.White : Colors.Transparent,
+                Stroke = quest.none ? Colors.White : Colors.Transparent,
                 Content = new Label
                 {
                     Text = "KEINE",
@@ -1635,13 +1633,13 @@ namespace iPMCloud.Mobile
                 },
                 GestureRecognizers = { tapNone },
             };
-            quest.frame_Reset = new Frame
+            quest.frame_Reset = new Border
             {
                 IsVisible = quest.isReady,
                 Padding = new Thickness(5),
                 Margin = new Thickness(0),
                 BackgroundColor = Color.FromArgb("#042d53"),
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
                 Content = new Image
@@ -1698,14 +1696,14 @@ namespace iPMCloud.Mobile
                 HorizontalOptions = LayoutOptions.EndAndExpand
             };
 
-            var frame = new Frame
+            var frame = new Border
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(15, 8, 15, 0),
                 BackgroundColor = Color.FromArgb("#99042d53"),
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                CornerRadius = 10,
+                StrokeShape = new RoundRectangle { CornerRadius = 10 },
                 Content = new StackLayout
                 {
                     Padding = new Thickness(5),
@@ -1751,7 +1749,7 @@ namespace iPMCloud.Mobile
         }
 
         // Mehrfachantwort Singlequest
-        public static Frame GetQuestMain_4b(CheckLeistungAntwort quest)
+        public static Border GetQuestMain_4b(CheckLeistungAntwort quest)
         {
             var qs = quest.f4.Split(new String[] { ";" }, StringSplitOptions.RemoveEmptyEntries);
             var ants = quest.a4.Split(new String[] { ";" }, StringSplitOptions.RemoveEmptyEntries);
@@ -1782,11 +1780,11 @@ namespace iPMCloud.Mobile
                     Padding = new Thickness(5, 5),
                     Margin = new Thickness(0, 3),
                     BackgroundColor = Color.FromArgb("#33ffffff"),
-                    HasShadow = true,
-                    CornerRadius = 10,
+                    Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
+                    StrokeShape = new RoundRectangle { CornerRadius = 10 },
                     ClassId = "" + z,
                     HorizontalOptions = LayoutOptions.FillAndExpand,
-                    BorderColor = ants.Contains(z.ToString()) ? Colors.White : Colors.Transparent,
+                    Stroke = ants.Contains(z.ToString()) ? Colors.White : Colors.Transparent,
                     Content = new StackLayout
                     {
                         Padding = new Thickness(0),
@@ -1837,12 +1835,12 @@ namespace iPMCloud.Mobile
             tapBem.Tapped -= (object o, TappedEventArgs ev) => { quest.Tap_a_Bem(); };
             tapBem.Tapped += (object o, TappedEventArgs ev) => { quest.Tap_a_Bem(); };
 
-            quest.frame_Bem = new Frame
+            quest.frame_Bem = new Border
             {
                 Padding = new Thickness(5),
                 Margin = new Thickness(0, 5, 0, 0),
                 BackgroundColor = Color.FromArgb("#042d53"),
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
                 Content = new Image
@@ -1872,17 +1870,17 @@ namespace iPMCloud.Mobile
                         quest.bemWSO.photos.Count() == 0)
                     : GetBadgeRoundFrame(0, false, true) }
             };
-            quest.frame_None = new Frame
+            quest.frame_None = new Border
             {
                 IsVisible = quest.required != 1,
                 Padding = new Thickness(5, 5),
                 Margin = new Thickness(0),
                 Opacity = quest.none ? 0.5 : 1,
                 BackgroundColor = quest.none ? Color.FromArgb("#666666") : Color.FromArgb("#938302"),// #666666
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.EndAndExpand,
                 VerticalOptions = LayoutOptions.Center,
-                BorderColor = quest.none ? Colors.White : Colors.Transparent,
+                Stroke = quest.none ? Colors.White : Colors.Transparent,
                 Content = new Label
                 {
                     Text = "KEINE",
@@ -1895,13 +1893,13 @@ namespace iPMCloud.Mobile
                 },
                 GestureRecognizers = { tapNone },
             };
-            quest.frame_Reset = new Frame
+            quest.frame_Reset = new Border
             {
                 IsVisible = quest.isReady,
                 Padding = new Thickness(5),
                 Margin = new Thickness(0, 5, 0, 0),
                 BackgroundColor = Color.FromArgb("#042d53"),
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
                 Content = new Image
@@ -1958,14 +1956,14 @@ namespace iPMCloud.Mobile
                 HorizontalOptions = LayoutOptions.EndAndExpand
             };
 
-            var frame = new Frame
+            var frame = new Border
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(15, 8, 15, 0),
                 BackgroundColor = Color.FromArgb("#99042d53"),
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                CornerRadius = 10,
+                StrokeShape = new RoundRectangle { CornerRadius = 10 },
                 Content = new StackLayout
                 {
                     Padding = new Thickness(5),
@@ -2012,7 +2010,7 @@ namespace iPMCloud.Mobile
 
 
         // Unterschrift
-        public static Frame GetQuestMain_7(CheckLeistungAntwort quest)
+        public static Border GetQuestMain_7(CheckLeistungAntwort quest)
         {
             var tapYes = new TapGestureRecognizer();
             tapYes.Tapped -= (object o, TappedEventArgs ev) => { quest.Tap_a7_OpenSig(); };
@@ -2027,12 +2025,12 @@ namespace iPMCloud.Mobile
             tapBem.Tapped -= (object o, TappedEventArgs ev) => { quest.Tap_a_Bem(true); };
             tapBem.Tapped += (object o, TappedEventArgs ev) => { quest.Tap_a_Bem(true); };
 
-            quest.frame_Bem = new Frame
+            quest.frame_Bem = new Border
             {
                 Padding = new Thickness(5),
                 Margin = new Thickness(quest.isReady ? 10 : 0, 5, 0, 0),
                 BackgroundColor = Color.FromArgb("#042d53"),
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
                 Content = new Image
@@ -2046,13 +2044,13 @@ namespace iPMCloud.Mobile
                 },
                 GestureRecognizers = { tapBem },
             };
-            quest.frame_Yes = new Frame
+            quest.frame_Yes = new Border
             {
                 IsVisible = !quest.isReady,
                 Padding = new Thickness(5),
                 Margin = new Thickness(0, 5, 0, 0),
                 BackgroundColor = Color.FromArgb("#04732d"),// #666666
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = quest.required != 1 ? LayoutOptions.End : LayoutOptions.EndAndExpand,
                 Content = new Label
                 {
@@ -2066,17 +2064,17 @@ namespace iPMCloud.Mobile
                 },
                 GestureRecognizers = { tapYes },
             };
-            quest.frame_None = new Frame
+            quest.frame_None = new Border
             {
                 IsVisible = quest.required != 1,
                 Padding = new Thickness(5),
                 Margin = new Thickness(0, 5, 0, 0),
                 Opacity = !quest.none ? 0.5 : 1,
                 BackgroundColor = !quest.none ? Color.FromArgb("#666666") : Color.FromArgb("#938302"),// #666666
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.EndAndExpand,
                 VerticalOptions = LayoutOptions.Start,
-                BorderColor = quest.none ? Colors.White : Colors.Transparent,
+                Stroke = quest.none ? Colors.White : Colors.Transparent,
                 Content = new Label
                 {
                     Text = "KEINE",
@@ -2087,13 +2085,13 @@ namespace iPMCloud.Mobile
                 },
                 GestureRecognizers = { tapNone },
             };
-            quest.frame_Reset = new Frame
+            quest.frame_Reset = new Border
             {
                 IsVisible = quest.isReady,
                 Padding = new Thickness(5),
                 Margin = new Thickness(0, 5, 0, 0),
                 BackgroundColor = Color.FromArgb("#042d53"),
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
                 Content = new Image
@@ -2181,14 +2179,14 @@ namespace iPMCloud.Mobile
 
             // Wird nur im PopUp verwendet !
 
-            var frame = new Frame
+            var frame = new Border
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(15, 8, 15, 0),
                 BackgroundColor = Color.FromArgb("#99042d53"),
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                CornerRadius = 10,
+                StrokeShape = new RoundRectangle { CornerRadius = 10 },
                 Content = new StackLayout
                 {
                     Padding = new Thickness(5),
@@ -2236,7 +2234,7 @@ namespace iPMCloud.Mobile
             return frame;
         }
 
-        public static Frame GetQuestMain_7_PopUp(CheckLeistungAntwort originalQuest)
+        public static Border GetQuestMain_7_PopUp(CheckLeistungAntwort originalQuest)
         {
             var tapNone = new TapGestureRecognizer();
             tapNone.Tapped -= (object o, TappedEventArgs ev) => { originalQuest.signPad.Clear(); };
@@ -2245,12 +2243,12 @@ namespace iPMCloud.Mobile
             tapYes.Tapped -= (object o, TappedEventArgs ev) => { originalQuest.Tap_a7_ReturnSig(); };
             tapYes.Tapped += (object o, TappedEventArgs ev) => { originalQuest.Tap_a7_ReturnSig(); };
 
-            var frame_Yes = new Frame
+            var frame_Yes = new Border
             {
                 Padding = new Thickness(5),
                 Margin = new Thickness(0, 5, 0, 0),
                 BackgroundColor = Color.FromArgb("#04732d"),// #666666
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.End,
                 Content = new Label
                 {
@@ -2264,12 +2262,12 @@ namespace iPMCloud.Mobile
                 },
                 GestureRecognizers = { tapYes },
             };
-            var frame_None = new Frame
+            var frame_None = new Border
             {
                 Padding = new Thickness(5),
                 Margin = new Thickness(0, 5, 0, 0),
                 BackgroundColor = Color.FromArgb("#73042d"),// #666666
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.EndAndExpand,
                 VerticalOptions = LayoutOptions.Start,
                 Content = new Label
@@ -2316,14 +2314,14 @@ namespace iPMCloud.Mobile
                 Padding = new Thickness(0, -3, 0, 0)
             };
 
-            var frame = new Frame
+            var frame = new Border
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(15, 8, 15, 0),
                 BackgroundColor = Color.FromArgb("#99042d53"),
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                CornerRadius = 10,
+                StrokeShape = new RoundRectangle { CornerRadius = 10 },
                 Content = new StackLayout
                 {
                     Padding = new Thickness(5),
@@ -2408,16 +2406,16 @@ namespace iPMCloud.Mobile
         }
 
         // NUR TEXT
-        public static Frame GetQuestMain_10(CheckLeistungAntwort quest)
+        public static Border GetQuestMain_10(CheckLeistungAntwort quest)
         {
-            var frame = new Frame
+            var frame = new Border
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(10),
                 BackgroundColor = Color.FromArgb("#5504732d"),
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                CornerRadius = 10,
+                StrokeShape = new RoundRectangle { CornerRadius = 10 },
                 Content = new StackLayout
                 {
                     Padding = new Thickness(5),

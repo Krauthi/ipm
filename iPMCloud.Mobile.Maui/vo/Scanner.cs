@@ -66,11 +66,11 @@ namespace iPMCloud.Mobile.vo
             overlayGrid.Children.Add(topLabel);
 
             // Scanner Frame (Mitte)
-            var scanFrame = new Frame
+            var scanFrame = new Border
             {
-                BorderColor = Colors.White,
+                Stroke = Colors.White,
                 BackgroundColor = Colors.Transparent,
-                CornerRadius = 10,
+                StrokeShape = new RoundRectangle { CornerRadius = 10 },
                 WidthRequest = 250,
                 HeightRequest = 250,
                 HorizontalOptions = LayoutOptions.Center,
@@ -107,7 +107,7 @@ namespace iPMCloud.Mobile.vo
                     Text = "🔦",
                     BackgroundColor = Colors.Gray.WithAlpha(0.7f),
                     TextColor = Colors.White,
-                    CornerRadius = 25,
+                    StrokeShape = new RoundRectangle { CornerRadius = 25 },
                     WidthRequest = 50,
                     HeightRequest = 50,
                     HorizontalOptions = LayoutOptions.Center

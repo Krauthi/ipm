@@ -22,7 +22,7 @@
                         SelectionMode="Single">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Frame Padding="10" Margin="10,5" CornerRadius="8">
+                    <Border Padding="10" Margin="10,5" StrokeShape="RoundRectangle 8">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
@@ -49,7 +49,7 @@
                                    FontSize="12" 
                                    TextColor="Gray"/>
                         </Grid>
-                    </Frame>
+                    </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>

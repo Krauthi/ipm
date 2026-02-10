@@ -68,7 +68,7 @@ namespace iPMCloud.Mobile
             {
                 if (od.status == "Aktiv")
                 {
-                    Frame stackPos = null;
+                    Border stackPos = null;
                     var changed = JavaScriptDateConverter.Convert(long.Parse(od.standdatum)).ToString("ddMMyyyy");
                     var today = DateTime.Now.ToString("ddMMyyyy");
 
@@ -107,7 +107,7 @@ namespace iPMCloud.Mobile
             return stack;
         }
 
-        public static Frame GetCardView(ObjektDataWSO od, AppModel model, ICommand func)
+        public static Border GetCardView(ObjektDataWSO od, AppModel model, ICommand func)
         {
             //var _prio = CalcOverdue(pos);
             var imageL = new Image
@@ -208,7 +208,6 @@ namespace iPMCloud.Mobile
                 Spacing = 0,
                 Padding = new Thickness(0, 0, 0, 0),
                 Margin = new Thickness(0, 0, 0, 0),
-                IsClippedToBounds = true,
                 Children = { new Image
                 {
                     Margin = new Thickness(3, 0, 0, 0),
@@ -228,7 +227,7 @@ namespace iPMCloud.Mobile
                 Orientation = StackOrientation.Horizontal,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
             };
-            var editFrame = new Frame()
+            var editFrame = new Border()
             {
                 HeightRequest = 45,
                 WidthRequest = 45,
@@ -237,9 +236,7 @@ namespace iPMCloud.Mobile
                 HorizontalOptions = LayoutOptions.End,
                 Padding = new Thickness(0, 0, 0, 0),
                 Margin = new Thickness(0, 0, -3, 0),
-                IsClippedToBounds = true,
-                CornerRadius = 0,
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 Content = noticeStack
             };
 
@@ -296,16 +293,14 @@ namespace iPMCloud.Mobile
             h.Children.Add(imageL);
             h.Children.Add(v);
 
-            var mainFrame = new Frame()
+            var mainFrame = new Border()
             {
                 Padding = new Thickness(1, 1, 1, 1),
                 Margin = new Thickness(38, 10, 0, 5),
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 BackgroundColor = Colors.Transparent,
                 Content = h,
-                CornerRadius = 0,
-                HasShadow = true,
-                IsClippedToBounds = false,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 ClassId = "" + od.id,
             };
 
@@ -318,7 +313,7 @@ namespace iPMCloud.Mobile
             return mainFrame;
         }
 
-        public static Frame GetObjektValueInfoElement(ObjektDataWSO od, AppModel model, ICommand func)
+        public static Border GetObjektValueInfoElement(ObjektDataWSO od, AppModel model, ICommand func)
         {
             //var _prio = CalcOverdue(pos);
             var imageL = new Image
@@ -449,16 +444,14 @@ namespace iPMCloud.Mobile
             h.Children.Add(imageL);
             h.Children.Add(v);
 
-            var mainFrame = new Frame()
+            var mainFrame = new Border()
             {
                 Padding = new Thickness(1, 1, 1, 1),
                 Margin = new Thickness(38, 10, 0, 5),
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 BackgroundColor = Colors.Transparent,
                 Content = h,
-                CornerRadius = 0,
-                HasShadow = true,
-                IsClippedToBounds = false,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 ClassId = "" + od.id,
             };
 
@@ -485,7 +478,6 @@ namespace iPMCloud.Mobile
                 Spacing = 0,
                 Padding = new Thickness(0, 0, 0, 0),
                 Margin = new Thickness(0, 0, 0, 0),
-                IsClippedToBounds = true,
                 Children = { new Image
                 {
                     Margin = new Thickness(3, 0, 0, 0),
@@ -497,7 +489,7 @@ namespace iPMCloud.Mobile
                 } }
             };
 
-            var refreshFrame = new Frame()
+            var refreshFrame = new Border()
             {
                 HeightRequest = 45,
                 WidthRequest = 45,
@@ -506,9 +498,7 @@ namespace iPMCloud.Mobile
                 HorizontalOptions = LayoutOptions.Start,
                 Padding = new Thickness(0, 0, 0, 0),
                 Margin = new Thickness(0, 0, -3, 0),
-                IsClippedToBounds = true,
-                CornerRadius = 0,
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 Content = noticeStack
             };
 
@@ -828,15 +818,14 @@ namespace iPMCloud.Mobile
             };
 
 
-            var saveFrame = new Frame()
+            var saveFrame = new Border()
             {
                 BackgroundColor = Color.FromArgb("#143d63"),
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.Start,
                 Padding = new Thickness(1),
                 Margin = new Thickness(8, 15, 8, 10),
-                IsClippedToBounds = true,
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 Content = new StackLayout
                 {
                     Padding = new Thickness(2, 2, 10, 2),
@@ -872,15 +861,14 @@ namespace iPMCloud.Mobile
                 saveFrame.GestureRecognizers.Add(new TapGestureRecognizer() { Command = func, CommandParameter = od });
             }
 
-            var flashlightFrame = new Frame()
+            var flashlightFrame = new Border()
             {
                 BackgroundColor = Color.FromArgb("#041d43"),
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.EndAndExpand,
                 Padding = new Thickness(1),
                 Margin = new Thickness(0, 17, 5, 10),
-                IsClippedToBounds = true,
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 Content = new StackLayout
                 {
                     BackgroundColor = Color.FromArgb("#042d53"),
@@ -909,15 +897,14 @@ namespace iPMCloud.Mobile
                 flashlightFrame.GestureRecognizers.Clear();
                 flashlightFrame.GestureRecognizers.Add(new TapGestureRecognizer() { Command = funcLight, CommandParameter = od });
             }
-            var camFrame = new Frame()
+            var camFrame = new Border()
             {
                 BackgroundColor = Color.FromArgb("#041d43"),
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.End,
                 Padding = new Thickness(1),
                 Margin = new Thickness(5, 17, 5, 10),
-                IsClippedToBounds = true,
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 Content = new StackLayout
                 {
                     BackgroundColor = Color.FromArgb("#042d53"),

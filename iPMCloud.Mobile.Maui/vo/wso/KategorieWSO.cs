@@ -133,7 +133,7 @@ namespace iPMCloud.Mobile
             });
             return stack;
         }
-        public static Frame GetCategoryCardView(KategorieWSO cat, AppModel model, ICommand func)
+        public static Border GetCategoryCardView(KategorieWSO cat, AppModel model, ICommand func)
         {
             var _prio = CalcOverdue(cat, model);
             var imageL = new Image
@@ -230,16 +230,15 @@ namespace iPMCloud.Mobile
                 v.Children.Add(typ);
             }
 
-            var badge = new Frame
+            var badge = new Border
             {
                 BackgroundColor = Color.FromArgb(_prio < 0 ? "#ff0000" : (_prio < 1 ? "#ffcc00" : "#009900")),
-                IsClippedToBounds = true,
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
                 Margin = new Thickness(-14, -3, 0, 0),
                 Padding = new Thickness(4, 2, 4, 2),
-                CornerRadius = 5,
+                StrokeShape = new RoundRectangle { CornerRadius = 5 },
                 IsVisible = (_prio < 1360),
                 Content = new Label
                 {
@@ -261,16 +260,14 @@ namespace iPMCloud.Mobile
             h.Children.Add(v);
             h.Children.Add(hInfo);
 
-            var mainFrame = new Frame()
+            var mainFrame = new Border()
             {
                 Padding = new Thickness(1, 1, 1, 1),
                 Margin = new Thickness(0, 15, 0, 5),
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 BackgroundColor = Color.FromArgb("#041d43"),
                 Content = h,
-                CornerRadius = 0,
-                HasShadow = true,
-                IsClippedToBounds = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 ClassId = "" + cat.id,
             };
 
@@ -321,16 +318,13 @@ namespace iPMCloud.Mobile
             h.Children.Add(imageL);
             h.Children.Add(lb);
 
-            var mainFrame = new Frame()
+            var mainFrame = new Border()
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(40, 1, 0, 1),
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 BackgroundColor = Colors.Transparent,
                 Content = h,
-                CornerRadius = 0,
-                HasShadow = false,
-                IsClippedToBounds = true,
                 ClassId = "" + cat.id,
             };
 
@@ -395,7 +389,7 @@ namespace iPMCloud.Mobile
                 BackgroundColor = onlyText ? Color.FromArgb("#cc04532d") : Color.FromArgb("#cc042d53"),
             };
 
-            Frame warn = new Frame { IsVisible = false };
+            Border warn = new Border { IsVisible = false };
             if (prio < 1360)
             {
                 warn = AuftragWSO.GetTodoCountWarningSmall(prio);
@@ -412,16 +406,13 @@ namespace iPMCloud.Mobile
             }
             h.Children.Add(lb);
 
-            var mainFrame = new Frame()
+            var mainFrame = new Border()
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(40, 1, 0, 1),
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 BackgroundColor = Colors.Transparent,
                 Content = h,
-                CornerRadius = 0,
-                HasShadow = false,
-                IsClippedToBounds = true,
                 ClassId = "" + cat.id,
             };
 
@@ -482,16 +473,15 @@ namespace iPMCloud.Mobile
                 LineBreakMode = LineBreakMode.WordWrap,
             };
 
-            var badge = new Frame
+            var badge = new Border
             {
                 BackgroundColor = Color.FromArgb(count < 0 ? "#ff0000" : (count < 1 ? "#ffcc00" : "#009900")),
-                IsClippedToBounds = true,
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.End,
                 VerticalOptions = LayoutOptions.Center,
                 Margin = new Thickness(0),
                 Padding = new Thickness(4, 2, 4, 2),
-                CornerRadius = 5,
+                StrokeShape = new RoundRectangle { CornerRadius = 5 },
                 Content = new Label
                 {
                     Text = Int32.Parse("" + count).ToString(),
@@ -593,7 +583,7 @@ namespace iPMCloud.Mobile
             });
             return stack;
         }
-        public static Frame GetCategoryCardAgainView(KategorieWSO cat, AppModel model, ICommand func)
+        public static Border GetCategoryCardAgainView(KategorieWSO cat, AppModel model, ICommand func)
         {
             var _prio = CalcOverdue(cat, model);
             var imageL = new Image
@@ -678,16 +668,14 @@ namespace iPMCloud.Mobile
             h.Children.Add(v);
             h.Children.Add(id);
 
-            var mainFrame = new Frame()
+            var mainFrame = new Border()
             {
                 Padding = new Thickness(1, 1, 1, 1),
                 Margin = new Thickness(0, 15, 0, 5),
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 BackgroundColor = Color.FromArgb("#041d43"),
                 Content = h,
-                CornerRadius = 0,
-                HasShadow = true,
-                IsClippedToBounds = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 ClassId = "" + cat.id,
             };
 

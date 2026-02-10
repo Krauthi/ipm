@@ -93,10 +93,10 @@ namespace iPMCloud.Mobile.vo
 
 
         // Refresh this data by logout
-        public Dictionary<Int32, Frame> allPositionInShowingListView = new Dictionary<Int32, Frame>();
+        public Dictionary<Int32, Border> allPositionInShowingListView = new Dictionary<Int32, Border>();
         public Dictionary<Int32, SwipeView> allPositionInShowingSmallListView = new Dictionary<Int32, SwipeView>();
         public List<LeistungWSO> allSelectedPositionToWork = new List<LeistungWSO>();
-        public Dictionary<Int32, Frame> allPositionAgainInShowingListView = new Dictionary<Int32, Frame>();
+        public Dictionary<Int32, Border> allPositionAgainInShowingListView = new Dictionary<Int32, Border>();
         public Dictionary<Int32, SwipeView> allPositionAgainInShowingSmallListView = new Dictionary<Int32, SwipeView>();
         public List<LeistungWSO> allSelectedPositionAgainToWork = new List<LeistungWSO>();
         //public LeistungPackWSO allPositionInWork = null;
@@ -162,8 +162,8 @@ namespace iPMCloud.Mobile.vo
 
         public List<Int32> Plan_ObjekteThisWeek = new List<Int32>();
         public List<Int32> Plan_KatThisWeek = new List<Int32>();
-        public Frame _showall_again_OrderCategory_frame = new Frame();
-        public Frame _showall_OrderCategory_frame = new Frame();
+        public Border _showall_again_OrderCategory_frame = new Border();
+        public Border _showall_OrderCategory_frame = new Border();
         public bool _showall_again_OrderCategory = false;
         public bool _showall_OrderCategory = false;
 
@@ -387,7 +387,7 @@ namespace iPMCloud.Mobile.vo
             LastSelectedOrder = null;
             LastSelectedCategory = null;
             LastSelectedPosition = null;
-            allPositionInShowingListView = new Dictionary<int, Frame>();
+            allPositionInShowingListView = new Dictionary<int, Border>();
             allPositionInShowingSmallListView = new Dictionary<int, SwipeView>();
             allSelectedPositionToWork = new List<LeistungWSO>();
             // alle selektionen und disabled zurücksetzen 

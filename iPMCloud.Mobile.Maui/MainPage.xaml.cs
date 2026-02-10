@@ -1510,7 +1510,7 @@ namespace iPMCloud.Mobile
             //await Task.Delay(1);
 
             model.LastSelectedPosition = position;
-            Frame framePos = null;
+            Border framePos = null;
             var selPost = model.allSelectedPositionToWork.Find(p => p.id == position.id);
             if (selPost != null)
             {
@@ -1545,7 +1545,7 @@ namespace iPMCloud.Mobile
             overlay.IsVisible = true;
             //await Task.Delay(1);
 
-            Frame framePos;
+            Border framePos;
             SwipeView swipePos;
             // entfernen da schon selectiert 
             model.allSelectedPositionToWork.Remove(position);
@@ -1594,7 +1594,7 @@ namespace iPMCloud.Mobile
                         c.leistungen.ForEach(l =>
                         {
                             l.disabled = false;
-                            Frame framePos;
+                            Border framePos;
                             if (model.allPositionInShowingListView.TryGetValue(l.id, out framePos))
                             {
                                 var func = ((TapGestureRecognizer)framePos.Content.GestureRecognizers[0]).Command;
@@ -1643,7 +1643,7 @@ namespace iPMCloud.Mobile
                                     inWork = foundInWork != null;
                                 }
                                 ICommand func = null;
-                                Frame framePos;
+                                Border framePos;
                                 if (model.allPositionInShowingListView.TryGetValue(l.id, out framePos))
                                 {
                                     func = ((TapGestureRecognizer)framePos.Content.GestureRecognizers[0]).Command;
@@ -1703,7 +1703,7 @@ namespace iPMCloud.Mobile
                             c.leistungen.ForEach(l =>
                             {
                                 l.disabled = false;
-                                Frame framePos;
+                                Border framePos;
                                 if (model.allPositionInShowingListView.TryGetValue(l.id, out framePos))
                                 {
                                     var func = ((TapGestureRecognizer)framePos.Content.GestureRecognizers[0]).Command;
@@ -4468,7 +4468,7 @@ namespace iPMCloud.Mobile
             model.LastSelectedOrder = null;
             model.LastSelectedCategory = null;
             model.LastSelectedPosition = null;
-            model.allPositionInShowingListView = new Dictionary<int, Frame>();
+            model.allPositionInShowingListView = new Dictionary<int, Border>();
             model.allPositionInShowingSmallListView = new Dictionary<int, SwipeView>();
             model.allSelectedPositionToWork = new List<LeistungWSO>();
             // alle selektionen und disabled zurücksetzen 
@@ -4538,11 +4538,11 @@ namespace iPMCloud.Mobile
             model.LastSelectedOrderAgain = null;
             model.LastSelectedCategoryAgain = null;
             model.LastSelectedPositionAgain = null;
-            model.allPositionInShowingListView = new Dictionary<int, Frame>();
+            model.allPositionInShowingListView = new Dictionary<int, Border>();
             model.allPositionInShowingSmallListView = new Dictionary<int, SwipeView>();
             model.allSelectedPositionToWork = new List<LeistungWSO>();
 
-            model.allPositionAgainInShowingListView = new Dictionary<int, Frame>();
+            model.allPositionAgainInShowingListView = new Dictionary<int, Border>();
             model.allPositionAgainInShowingSmallListView = new Dictionary<int, SwipeView>();
             model.allSelectedPositionAgainToWork = new List<LeistungWSO>();
 
@@ -6077,7 +6077,7 @@ namespace iPMCloud.Mobile
 
                 var tapGestureRecognizer = new TapGestureRecognizer();
                 tapGestureRecognizer.Tapped += (s, e) => { _CategoryCommand(s, e); };
-                Frame sfb = Elements.GetWorkerCategoryTreeItem(item.Key, "" + item.Value.Count, model.imagesBase.Tools, null);
+                Border sfb = Elements.GetWorkerCategoryTreeItem(item.Key, "" + item.Value.Count, model.imagesBase.Tools, null);
                 sfb.GestureRecognizers.Clear();
                 sfb.GestureRecognizers.Add(tapGestureRecognizer);
                 sfb.ClassId = ("##" + item.Key).ToLower();
@@ -6191,7 +6191,7 @@ namespace iPMCloud.Mobile
 
                 var tapGestureRecognizer = new TapGestureRecognizer();
                 tapGestureRecognizer.Tapped += (s, e) => { _NamesCommand(s, e); };
-                Frame sfb = Elements.GetWorkerNamesTreeItem(item.Value, model.imagesBase.Worker, null);
+                Border sfb = Elements.GetWorkerNamesTreeItem(item.Value, model.imagesBase.Worker, null);
                 sfb.GestureRecognizers.Clear();
                 sfb.GestureRecognizers.Add(tapGestureRecognizer);
                 sfb.ClassId = ("##" + (String.IsNullOrEmpty(item.Value.firma) ? item.Value.name : item.Value.firma) + ";" + item.Value.strasse + ";" + item.Value.plz + ";" + item.Value.ort + ";" + item.Value.kategorie).ToLower();
@@ -6297,13 +6297,13 @@ namespace iPMCloud.Mobile
 
                     var tapGestureRecognizer = new TapGestureRecognizer();
                     tapGestureRecognizer.Tapped += (s, e) => { WorkerBuildingCommand(s, e); };
-                    Frame sfb = Elements.GetWorkerBuildingTreeItem(item.Value, model.imagesBase.Building, null);
+                    Border sfb = Elements.GetWorkerBuildingTreeItem(item.Value, model.imagesBase.Building, null);
                     sfb.GestureRecognizers.Clear();
                     sfb.GestureRecognizers.Add(tapGestureRecognizer);
                     sfb.ClassId = ("bu_" + item.Value.strasse + ";" + item.Value.hsnr + ";" + item.Value.plz + ";" + item.Value.ort + ";" + item.Value.objektname + ";" + item.Value.objektnr).ToLower();
                     var tapGestureRecognizerInfo = new TapGestureRecognizer();
                     tapGestureRecognizerInfo.Tapped += (s, e) => { AppModel.Instance.MainPage.OpenBuildingInfoDialog(item.Value); };
-                    Frame sfbb = Elements.GetWorkerBuildingTreeInfoItem(item.Value, sfb, tapGestureRecognizerInfo);
+                    Border sfbb = Elements.GetWorkerBuildingTreeInfoItem(item.Value, sfb, tapGestureRecognizerInfo);
                     sfbb.ClassId = ("bu_" + item.Value.strasse + ";" + item.Value.hsnr + ";" + item.Value.plz + ";" + item.Value.ort + ";" + item.Value.objektname + ";" + item.Value.objektnr).ToLower();
                     workerBuildingsElements.Add(item.Key, sfb);
                     mainVertStack.Children.Add(sfbb);
@@ -6762,7 +6762,7 @@ namespace iPMCloud.Mobile
             //await Task.Delay(1);
 
             model.LastSelectedPositionAgain = position;
-            Frame framePos = null;
+            Border framePos = null;
             var selPost = model.allSelectedPositionAgainToWork.Find(p => p.id == position.id);
             if (selPost != null)
             {
@@ -6797,7 +6797,7 @@ namespace iPMCloud.Mobile
             overlay.IsVisible = true;
             //await Task.Delay(1);
 
-            Frame framePos;
+            Border framePos;
             SwipeView swipePos;
             // entfernen da schon selectiert 
             model.allSelectedPositionAgainToWork.Remove(position);

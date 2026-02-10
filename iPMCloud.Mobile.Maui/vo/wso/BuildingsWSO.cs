@@ -463,7 +463,7 @@ namespace iPMCloud.Mobile
                 imgInfo.GestureRecognizers.Add(t_btn_objektinfo);
             }
 
-            Frame warn = new Frame { IsVisible = false };
+            Border warn = new Border { IsVisible = false };
             if (obj.prio < 1360) // kleiner 4 Jahre
             {
                 warn = AuftragWSO.GetTodoCountWarningSmall(obj.prio);

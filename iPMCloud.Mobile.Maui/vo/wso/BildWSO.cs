@@ -67,7 +67,7 @@ namespace iPMCloud.Mobile
                                 VerticalOptions = LayoutOptions.CenterAndExpand,
                                 FontSize = 14, TextColor = Colors.White, LineBreakMode = LineBreakMode.WordWrap
                             },
-                            new Frame
+                            new Border
                             {
                                 BackgroundColor = Color.FromArgb("#041d43"),
                                  Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },

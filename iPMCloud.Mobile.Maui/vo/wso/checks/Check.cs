@@ -516,7 +516,7 @@ namespace iPMCloud.Mobile
         }
 
 
-        public static Frame GetBadgeRoundFrame(int value, bool isRed, bool isGray)
+        public static Border GetBadgeRoundFrame(int value, bool isRed, bool isGray)
         {
 
             return new Border
@@ -546,7 +546,7 @@ namespace iPMCloud.Mobile
             };
         }
 
-        public static Frame GetQuestKategorieHeader(string title)
+        public static Border GetQuestKategorieHeader(string title)
         {
             return new Border
             {
@@ -579,7 +579,7 @@ namespace iPMCloud.Mobile
         }
 
         // Ja / Nein / Keine
-        public static Frame GetQuestMain_0(CheckLeistungAntwort quest)
+        public static Border GetQuestMain_0(CheckLeistungAntwort quest)
         {
             var tapYes = new TapGestureRecognizer();
             tapYes.Tapped -= (object o, TappedEventArgs ev) => { quest.Tap_a0_Yes(); };
@@ -808,7 +808,7 @@ namespace iPMCloud.Mobile
 
 
         // Textantwort
-        public static Frame GetQuestMain_1(CheckLeistungAntwort quest)
+        public static Border GetQuestMain_1(CheckLeistungAntwort quest)
         {
             var tapReset = new TapGestureRecognizer();
             tapReset.Tapped -= (object o, TappedEventArgs ev) => { quest.Tap_a1_Reset(); };
@@ -1019,7 +1019,7 @@ namespace iPMCloud.Mobile
         }
 
         // Werantwort
-        public static Frame GetQuestMain_2(CheckLeistungAntwort quest)
+        public static Border GetQuestMain_2(CheckLeistungAntwort quest)
         {
             var tapReset = new TapGestureRecognizer();
             tapReset.Tapped -= (object o, TappedEventArgs ev) => { quest.Tap_a2_Reset(); };
@@ -1234,7 +1234,7 @@ namespace iPMCloud.Mobile
         }
 
         // Bild Antwort
-        public static Frame GetQuestMain_3(CheckLeistungAntwort quest)
+        public static Border GetQuestMain_3(CheckLeistungAntwort quest)
         {
             var tapNone = new TapGestureRecognizer();
             tapNone.Tapped -= (object o, TappedEventArgs ev) => { quest.Tap_a3_None(); };
@@ -1425,7 +1425,7 @@ namespace iPMCloud.Mobile
             quest.CheckIsReadyAndSet_a3();
             return frame;
         }
-        public static Frame GetQuestMain_3_inlay(CheckLeistungAntwort quest)
+        public static Border GetQuestMain_3_inlay(CheckLeistungAntwort quest)
         {
             var lb_quest = new Label
             {
@@ -1490,7 +1490,7 @@ namespace iPMCloud.Mobile
 
 
         // Mehrfachantwort Multiquest
-        public static Frame GetQuestMain_4a(CheckLeistungAntwort quest)
+        public static Border GetQuestMain_4a(CheckLeistungAntwort quest)
         {
             var qs = quest.f4.Split(new String[] { ";" }, StringSplitOptions.RemoveEmptyEntries);
             var ants = quest.a4.Split(new String[] { ";" }, StringSplitOptions.RemoveEmptyEntries);
@@ -1747,7 +1747,7 @@ namespace iPMCloud.Mobile
         }
 
         // Mehrfachantwort Singlequest
-        public static Frame GetQuestMain_4b(CheckLeistungAntwort quest)
+        public static Border GetQuestMain_4b(CheckLeistungAntwort quest)
         {
             var qs = quest.f4.Split(new String[] { ";" }, StringSplitOptions.RemoveEmptyEntries);
             var ants = quest.a4.Split(new String[] { ";" }, StringSplitOptions.RemoveEmptyEntries);
@@ -2008,7 +2008,7 @@ namespace iPMCloud.Mobile
 
 
         // Unterschrift
-        public static Frame GetQuestMain_7(CheckLeistungAntwort quest)
+        public static Border GetQuestMain_7(CheckLeistungAntwort quest)
         {
             var tapYes = new TapGestureRecognizer();
             tapYes.Tapped -= (object o, TappedEventArgs ev) => { quest.Tap_a7_OpenSig(); };
@@ -2232,7 +2232,7 @@ namespace iPMCloud.Mobile
             return frame;
         }
 
-        public static Frame GetQuestMain_7_PopUp(CheckLeistungAntwort originalQuest)
+        public static Border GetQuestMain_7_PopUp(CheckLeistungAntwort originalQuest)
         {
             var tapNone = new TapGestureRecognizer();
             tapNone.Tapped -= (object o, TappedEventArgs ev) => { originalQuest.signPad.Clear(); };
@@ -2379,7 +2379,7 @@ namespace iPMCloud.Mobile
 
 
         // NUR TEXT
-        public static Frame GetQuestMain_10(CheckLeistungAntwort quest)
+        public static Border GetQuestMain_10(CheckLeistungAntwort quest)
         {
             var frame = new Border
             {

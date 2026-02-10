@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using Xamarin.Essentials;
-using Xamarin.Forms;
-using ZXing.Net.Mobile.Forms;
+using Microsoft.Maui.Storage;
+using Microsoft.Maui.Devices;
+using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui.Controls;
+// TODO: ZXing.Net.Mobile.Forms not MAUI-compatible - use ZXing.Net.Maui
+// using ZXing.Net.Mobile.Forms;
 
 namespace iPMCloud.Mobile.vo
 {
@@ -16,9 +19,10 @@ namespace iPMCloud.Mobile.vo
         }
 
         public bool displayIsOpen = false;
-        public ZXingScannerView zxing;
-        public ZXingScannerView zxingAlone = new ZXingScannerView();
-        public ZXingDefaultOverlay overlayz;
+        // TODO: ZXing.Net.Mobile.Forms not MAUI-compatible - use ZXing.Net.Maui
+        // public ZXingScannerView zxing;
+        // public ZXingScannerView zxingAlone = new ZXingScannerView();
+        // public ZXingDefaultOverlay overlayz;
         public Grid grid = new Grid
         {
             VerticalOptions = LayoutOptions.FillAndExpand,
@@ -48,7 +52,7 @@ namespace iPMCloud.Mobile.vo
                 };
                 zxing.Options = opts;
                 zxing.OnScanResult += (result) =>
-                    Device.BeginInvokeOnMainThread(async () =>
+                    MainThread.BeginInvokeOnMainThread(async () =>
                     {
                         if (!displayIsOpen)
                         {
@@ -160,7 +164,7 @@ namespace iPMCloud.Mobile.vo
                 };
                 zxing.Options = opts;
                 zxing.OnScanResult += (result) =>
-                    Device.BeginInvokeOnMainThread(async () =>
+                    MainThread.BeginInvokeOnMainThread(async () =>
                     {
                         if (!displayIsOpen)
                         {
@@ -284,7 +288,7 @@ namespace iPMCloud.Mobile.vo
                 };
                 zxing.Options = opts;
                 zxing.OnScanResult += (result) =>
-                    Device.BeginInvokeOnMainThread(async () =>
+                    MainThread.BeginInvokeOnMainThread(async () =>
                     {
                         if (!displayIsOpen)
                         {
@@ -383,7 +387,7 @@ namespace iPMCloud.Mobile.vo
                 };
                 zxing.Options = opts;
                 zxing.OnScanResult += (result) =>
-                    Device.BeginInvokeOnMainThread(async () =>
+                    MainThread.BeginInvokeOnMainThread(async () =>
                     {
                         if (!displayIsOpen)
                         {

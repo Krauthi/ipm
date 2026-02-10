@@ -1,8 +1,10 @@
-﻿using ExifLib;
-using FFImageLoading;
-using System;
+﻿using System;
 using System.IO;
-using Xamarin.Forms;
+using Microsoft.Maui.Controls;
+// TODO: ExifLib not available - needs replacement or alternative
+// using ExifLib;
+// TODO: FFImageLoading not MAUI-compatible - consider FFImageLoading.Maui
+// using FFImageLoading;
 
 namespace iPMCloud.Mobile.vo
 {
@@ -29,20 +31,25 @@ namespace iPMCloud.Mobile.vo
             stream.Position = 0;
             var bytes = stream.ToByteArray();
 
-            bytes = DependencyService.Get<IImageResizer>().ResizeWidth(1024, bytes, 50);
-            if (orientation == ExifOrientation.TopRight)
-            {
-                bytes = DependencyService.Get<IImageResizer>().Rotate(bytes, 90);
-            }
-            else if (orientation == ExifOrientation.BottomRight)
-            {
-                bytes = DependencyService.Get<IImageResizer>().Rotate(bytes, 180);
-            }
-            else if (orientation == ExifOrientation.BottomLeft)
-            {
-                bytes = DependencyService.Get<IImageResizer>().Rotate(bytes, 270);
-            }
-            var thumbbytes = DependencyService.Get<IImageResizer>().ResizeWidth(256, bytes, 50);
+            // TODO: Replace DependencyService with DI - IImageResizer
+            // Migrate to MAUI DI system via MauiProgram.cs
+            // bytes = DependencyService.Get<IImageResizer>().ResizeWidth(1024, bytes, 50);
+            // if (orientation == ExifOrientation.TopRight)
+            // {
+            //     bytes = DependencyService.Get<IImageResizer>().Rotate(bytes, 90);
+            // }
+            // else if (orientation == ExifOrientation.BottomRight)
+            // {
+            //     bytes = DependencyService.Get<IImageResizer>().Rotate(bytes, 180);
+            // }
+            // else if (orientation == ExifOrientation.BottomLeft)
+            // {
+            //     bytes = DependencyService.Get<IImageResizer>().Rotate(bytes, 270);
+            // }
+            // var thumbbytes = DependencyService.Get<IImageResizer>().ResizeWidth(256, bytes, 50);
+
+            // Temporary: Return unprocessed images until IImageResizer is migrated
+            var thumbbytes = bytes;
 
             return new PhotoResponse
             {
@@ -75,6 +82,9 @@ namespace iPMCloud.Mobile.vo
                 text = address != null ? address : "";
             }
 
+            // TODO: Replace DependencyService with DI - IImageResizer
+            // Migrate to MAUI DI system via MauiProgram.cs
+            /*
             if (AppModel.Instance.AppControll.imageIncludeLocation && AppModel.Instance.DeviceSystem == "android")
             {
                 photoResponse.thumbBytes = DependencyService.Get<IImageResizer>().AddWatermark(photoResponse.thumbBytes, photoResponse.createDate, text, true);
@@ -91,6 +101,7 @@ namespace iPMCloud.Mobile.vo
             {
                 photoResponse.imageBytes = DependencyService.Get<IImageResizer>().AddWatermark(photoResponse.imageBytes, photoResponse.createDate, text, false);
             }
+            */
             return photoResponse;
         }
     }

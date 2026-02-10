@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
-using Xamarin.Essentials;
+using Microsoft.Maui.Storage;
+using Microsoft.Maui.Devices;
+using Microsoft.Maui.ApplicationModel;
 
 namespace iPMCloud.Mobile.vo
 {

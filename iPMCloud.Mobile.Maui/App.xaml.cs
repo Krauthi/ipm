@@ -60,7 +60,10 @@ namespace iPMCloud.Mobile
         public void InitApp()
         {
 
-            OnStartIntiFirebase();
+            // TODO: Migrate to MAUI-compatible Firebase
+            // Plugin.FirebasePushNotification is not MAUI-compatible
+            // Consider: Plugin.Firebase or native Firebase SDK
+            // OnStartIntiFirebase();
 
             AppModel.Instance.InitDeviceInformation();
             AppModel.Instance.App = this;
@@ -183,6 +186,10 @@ namespace iPMCloud.Mobile
 
         public static void StartBackgroundService()
         {
+            // TODO: Implement MAUI-compatible background service
+            // Matcha.BackgroundService is not MAUI-compatible
+            // Consider: Native Android WorkManager / iOS Background Tasks
+            /*
             try
             {
                 //AppModel.Logger.Info("GPS Job gestartet");
@@ -200,12 +207,16 @@ namespace iPMCloud.Mobile
                 AppModel.Logger.Error("ERROR StartBackgroundService");
                 AppModel.Logger.Error(ex);
             }
+            */
         }
 
 
         private void OnStartIntiFirebase()
         {
-
+            // TODO: Migrate to MAUI-compatible Firebase
+            // Plugin.FirebasePushNotification is not MAUI-compatible
+            // Consider: Plugin.Firebase or native Firebase SDK
+            /*
             // Handle when your app starts
             CrossFirebasePushNotification.Current.Subscribe("general");
 
@@ -340,14 +351,14 @@ namespace iPMCloud.Mobile
 
                 if (!string.IsNullOrEmpty(p.Identifier))
                 {
-                    Device.BeginInvokeOnMainThread(() =>
+                    MainThread.BeginInvokeOnMainThread(() =>
                     {
                         //mPage.Message = p.Identifier;
                     });
                 }
                 else if (p.Data.ContainsKey("color"))
                 {
-                    Device.BeginInvokeOnMainThread(() =>
+                    MainThread.BeginInvokeOnMainThread(() =>
                     {
                         //mPage.Navigation.PushAsync(new ContentPage()
                         //{
@@ -359,7 +370,7 @@ namespace iPMCloud.Mobile
                 }
                 else if (p.Data.ContainsKey("aps.alert.title"))
                 {
-                    Device.BeginInvokeOnMainThread(() =>
+                    MainThread.BeginInvokeOnMainThread(() =>
                     {
                         //mPage.Message = $"{p.Data["aps.alert.title"]}";
                     });
@@ -388,7 +399,7 @@ namespace iPMCloud.Mobile
             {
                 System.Diagnostics.Debug.WriteLine("Dismissed");
             };
-
+            */
         }
 
     }

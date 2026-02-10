@@ -1,8 +1,10 @@
 ﻿using iPMCloud.Mobile.vo;
 using System;
 using System.Threading.Tasks;
-using Xamarin.Essentials;
-using Xamarin.Forms;
+using Microsoft.Maui.Storage;
+using Microsoft.Maui.Devices;
+using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui.Controls;
 
 namespace iPMCloud.Mobile
 {

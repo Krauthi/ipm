@@ -70,13 +70,13 @@ namespace iPMCloud.Mobile.vo
             {
                 Stroke = Colors.White,
                 BackgroundColor = Colors.Transparent,
-                StrokeShape = new RoundRectangle { CornerRadius = 10 },
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 10 },
                 WidthRequest = 250,
                 HeightRequest = 250,
                 HorizontalOptions = LayoutOptions.Center,
                 VerticalOptions = LayoutOptions.Center,
                 Padding = 0,
-                HasShadow = false
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
             };
             Grid.SetRow(scanFrame, 1);
             overlayGrid.Children.Add(scanFrame);
@@ -107,7 +107,7 @@ namespace iPMCloud.Mobile.vo
                     Text = "🔦",
                     BackgroundColor = Colors.Gray.WithAlpha(0.7f),
                     TextColor = Colors.White,
-                    StrokeShape = new RoundRectangle { CornerRadius = 25 },
+                    CornerRadius = 25,
                     WidthRequest = 50,
                     HeightRequest = 50,
                     HorizontalOptions = LayoutOptions.Center

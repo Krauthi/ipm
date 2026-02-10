@@ -1095,7 +1095,7 @@ namespace iPMCloud.Mobile
                             WidthRequest = 28,
                             Margin = new Thickness(0),
                             Padding = new Thickness(1,1,0,0),
-                            StrokeShape = new RoundRectangle { CornerRadius = 10 },
+                            StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 10 },
                             Content = winterBemerkungBadgeCount
                         },
                     }
@@ -1475,7 +1475,7 @@ namespace iPMCloud.Mobile
                             WidthRequest = 28,
                             Margin = new Thickness(0),
                             Padding = new Thickness(1,1,0,0),
-                            StrokeShape = new RoundRectangle { CornerRadius = 10 },
+                            StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 10 },
                             Content = bemBadgeCount
                         },
                     }
@@ -2238,7 +2238,7 @@ namespace iPMCloud.Mobile
                     return false;
                 }
 
-                string directoryPath = Path.Combine(
+                string directoryPath = System.IO.Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                     "ipm/" + model.SettingModel.SettingDTO.CustomerNumber + "/planperson/"
                 );

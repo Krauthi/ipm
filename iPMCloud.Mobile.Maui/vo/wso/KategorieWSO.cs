@@ -238,7 +238,7 @@ namespace iPMCloud.Mobile
                 VerticalOptions = LayoutOptions.Start,
                 Margin = new Thickness(-14, -3, 0, 0),
                 Padding = new Thickness(4, 2, 4, 2),
-                StrokeShape = new RoundRectangle { CornerRadius = 5 },
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 5 },
                 IsVisible = (_prio < 1360),
                 Content = new Label
                 {
@@ -481,7 +481,7 @@ namespace iPMCloud.Mobile
                 VerticalOptions = LayoutOptions.Center,
                 Margin = new Thickness(0),
                 Padding = new Thickness(4, 2, 4, 2),
-                StrokeShape = new RoundRectangle { CornerRadius = 5 },
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 5 },
                 Content = new Label
                 {
                     Text = Int32.Parse("" + count).ToString(),

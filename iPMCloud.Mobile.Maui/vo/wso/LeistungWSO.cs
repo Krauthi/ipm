@@ -319,7 +319,7 @@ namespace iPMCloud.Mobile
                 VerticalOptions = LayoutOptions.Start,
                 Margin = new Thickness(-16, -3, 0, 0),
                 Padding = new Thickness(4, 2, 4, 2),
-                StrokeShape = new RoundRectangle { CornerRadius = 5 },
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 5 },
                 IsVisible = pos.prio.showBadge && (pos.prio.days > 10000000 ? false : true),
                 Content = new Label
                 {
@@ -470,7 +470,7 @@ namespace iPMCloud.Mobile
                 VerticalOptions = LayoutOptions.Start,
                 Margin = new Thickness(-16, -3, 0, 0),
                 Padding = new Thickness(4, 2, 4, 2),
-                StrokeShape = new RoundRectangle { CornerRadius = 5 },
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 5 },
                 IsVisible = pos.prio.showBadge && (pos.prio.days > 10000000 ? false : true),
                 Content = new Label
                 {
@@ -646,7 +646,7 @@ namespace iPMCloud.Mobile
                 VerticalOptions = LayoutOptions.Start,
                 Margin = new Thickness(-16, -3, 0, 0),
                 Padding = new Thickness(4, 2, 4, 2),
-                StrokeShape = new RoundRectangle { CornerRadius = 5 },
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 5 },
                 IsVisible = pos.prio.showBadge && (pos.prio.days > 10000000 ? false : true),
                 Content = new Label
                 {
@@ -2515,7 +2515,7 @@ namespace iPMCloud.Mobile
                 VerticalOptions = LayoutOptions.Center,
                 Margin = new Thickness(0),
                 Padding = new Thickness(4, 2, 4, 2),
-                StrokeShape = new RoundRectangle { CornerRadius = 5 },
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 5 },
                 IsVisible = l.prio.showBadge && (l.prio.days > 10000000 ? false : true),
                 Content = new Label
                 {
@@ -2783,7 +2783,7 @@ namespace iPMCloud.Mobile
                 VerticalOptions = LayoutOptions.Start,
                 Margin = new Thickness(-13, -3, 0, 0),
                 Padding = new Thickness(4, 2, 4, 2),
-                StrokeShape = new RoundRectangle { CornerRadius = 5 },
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 5 },
                 IsVisible = pos.prio.showBadge && (pos.prio.days > 10000000 ? false : true),
                 Content = new Label
                 {

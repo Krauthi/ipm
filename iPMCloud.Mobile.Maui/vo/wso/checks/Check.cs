@@ -471,7 +471,7 @@ namespace iPMCloud.Mobile
                 VerticalOptions = LayoutOptions.Center,
                 Margin = new Thickness(3, 0, 3, 0),
                 Padding = new Thickness(4, 2, 4, 2),
-                StrokeShape = new RoundRectangle { CornerRadius = 5 },
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 5 },
                 Content = new Label
                 {
                     Text = Int32.Parse("" + value).ToString(),
@@ -499,7 +499,7 @@ namespace iPMCloud.Mobile
                 VerticalOptions = LayoutOptions.Center,
                 Margin = new Thickness(3, 0, 3, 0),
                 Padding = new Thickness(4, 2, 4, 2),
-                StrokeShape = new RoundRectangle { CornerRadius = 5 },
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 5 },
                 Content = new Label
                 {
                     Text = "-",
@@ -530,7 +530,7 @@ namespace iPMCloud.Mobile
                 VerticalOptions = LayoutOptions.Center,
                 Margin = new Thickness(3, 0),
                 Padding = new Thickness(4, 2),
-                StrokeShape = new RoundRectangle { CornerRadius = 10 },
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 10 },
                 Content = new Label
                 {
                     Text = Int32.Parse("" + value).ToString(),
@@ -557,7 +557,7 @@ namespace iPMCloud.Mobile
                 BackgroundColor = Color.FromArgb("#66042d53"),
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                StrokeShape = new RoundRectangle { CornerRadius = 10 },
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 10 },
                 Content = new StackLayout
                 {
                     Padding = new Thickness(5),
@@ -771,7 +771,7 @@ namespace iPMCloud.Mobile
                 BackgroundColor = Color.FromArgb("#99042d53"),
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                StrokeShape = new RoundRectangle { CornerRadius = 10 },
+                StrokeShape = new   Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 10 },
                 Content = new StackLayout
                 {
                     Padding = new Thickness(5),
@@ -965,7 +965,7 @@ namespace iPMCloud.Mobile
                 BackgroundColor = Color.FromArgb("#99042d53"),
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                StrokeShape = new RoundRectangle { CornerRadius = 10 },
+                StrokeShape = new   Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 10 },
                 Content = new StackLayout
                 {
                     Padding = new Thickness(5),
@@ -986,14 +986,14 @@ namespace iPMCloud.Mobile
                             HorizontalOptions = LayoutOptions.FillAndExpand,
                             Orientation = StackOrientation.Horizontal,
                             Children = {
-                                new Frame
+                                new Border
                                 {
                                     Padding = new Thickness(0),
                                     Margin = new Thickness(0),
                                     BackgroundColor = Color.FromArgb("#99ffffff"),
                                     Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                                     HorizontalOptions = LayoutOptions.FillAndExpand,
-                                    StrokeShape = new RoundRectangle { CornerRadius = 10 },
+                                    StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 10 },
                                     Content = quest.textEditor,
                                 }
                             }
@@ -1180,7 +1180,7 @@ namespace iPMCloud.Mobile
                 BackgroundColor = Color.FromArgb("#99042d53"),
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                StrokeShape = new RoundRectangle { CornerRadius = 10 },
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 10 },
                 Content = new StackLayout
                 {
                     Padding = new Thickness(5),
@@ -1215,14 +1215,14 @@ namespace iPMCloud.Mobile
                             HorizontalOptions = LayoutOptions.FillAndExpand,
                             Orientation = StackOrientation.Horizontal,
                             Children = {
-                                new Frame
+                                new Border
                                 {
                                     Padding = new Thickness(0),
                                     Margin = new Thickness(0),
                                     BackgroundColor = Color.FromArgb("#99ffffff"),
                                     Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                                     HorizontalOptions = LayoutOptions.FillAndExpand,
-                                    StrokeShape = new RoundRectangle { CornerRadius = 10 },
+                                    StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 10 },
                                     Content = quest.entry,
                                 },
                             }
@@ -1393,7 +1393,7 @@ namespace iPMCloud.Mobile
                 BackgroundColor = Color.FromArgb("#99042d53"),
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                StrokeShape = new RoundRectangle { CornerRadius = 10 },
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 10 },
                 Content = new StackLayout
                 {
                     Padding = new Thickness(5),
@@ -1470,7 +1470,7 @@ namespace iPMCloud.Mobile
                 BackgroundColor = Color.FromArgb("#aa042d53"),
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                StrokeShape = new RoundRectangle { CornerRadius = 10 },
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 10 },
                 Content = new StackLayout
                 {
                     Padding = new Thickness(5),
@@ -1498,7 +1498,7 @@ namespace iPMCloud.Mobile
             var ants = quest.a4.Split(new String[] { ";" }, StringSplitOptions.RemoveEmptyEntries);
 
             int z = 0;
-            quest.frame_ants = new List<Frame>();
+            quest.frame_ants = new List<Border>();
             foreach (var q in qs)
             {
                 var img = new Image
@@ -1517,13 +1517,13 @@ namespace iPMCloud.Mobile
                 tapAnt.Tapped += (object o, TappedEventArgs ev) => { quest.Tap_a4a_Ant(img); };
                 img.GestureRecognizers.Add(tapAnt);
 
-                quest.frame_ants.Add(new Frame
+                quest.frame_ants.Add(new Border
                 {
                     Padding = new Thickness(5, 5),
                     Margin = new Thickness(0, 3),
                     BackgroundColor = Color.FromArgb("#33ffffff"),
                     Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
-                    StrokeShape = new RoundRectangle { CornerRadius = 10 },
+                    StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 10 },
                     ClassId = "" + z,
                     HorizontalOptions = LayoutOptions.FillAndExpand,
                     Stroke = ants.Contains(z.ToString()) ? Colors.White : Colors.Transparent,
@@ -1703,7 +1703,7 @@ namespace iPMCloud.Mobile
                 BackgroundColor = Color.FromArgb("#99042d53"),
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                StrokeShape = new RoundRectangle { CornerRadius = 10 },
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 10 },
                 Content = new StackLayout
                 {
                     Padding = new Thickness(5),
@@ -1755,7 +1755,7 @@ namespace iPMCloud.Mobile
             var ants = quest.a4.Split(new String[] { ";" }, StringSplitOptions.RemoveEmptyEntries);
 
             int z = 0;
-            quest.frame_ants = new List<Frame>();
+            quest.frame_ants = new List<Border>();
             foreach (var q in qs)
             {
                 var img = new Image
@@ -1774,14 +1774,14 @@ namespace iPMCloud.Mobile
                 tapAnt.Tapped += (object o, TappedEventArgs ev) => { quest.Tap_a4b_Ant(img); };
                 img.GestureRecognizers.Add(tapAnt);
 
-                quest.frame_ants.Add(new Frame
+                quest.frame_ants.Add(new Border
                 {
                     IsVisible = !quest.none && (ants.Length == 0 || ants.Contains(z.ToString())),
                     Padding = new Thickness(5, 5),
                     Margin = new Thickness(0, 3),
                     BackgroundColor = Color.FromArgb("#33ffffff"),
                     Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
-                    StrokeShape = new RoundRectangle { CornerRadius = 10 },
+                    StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 10 },
                     ClassId = "" + z,
                     HorizontalOptions = LayoutOptions.FillAndExpand,
                     Stroke = ants.Contains(z.ToString()) ? Colors.White : Colors.Transparent,
@@ -1963,7 +1963,7 @@ namespace iPMCloud.Mobile
                 BackgroundColor = Color.FromArgb("#99042d53"),
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                StrokeShape = new RoundRectangle { CornerRadius = 10 },
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 10 },
                 Content = new StackLayout
                 {
                     Padding = new Thickness(5),
@@ -2186,7 +2186,7 @@ namespace iPMCloud.Mobile
                 BackgroundColor = Color.FromArgb("#99042d53"),
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                StrokeShape = new RoundRectangle { CornerRadius = 10 },
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 10 },
                 Content = new StackLayout
                 {
                     Padding = new Thickness(5),
@@ -2321,7 +2321,7 @@ namespace iPMCloud.Mobile
                 BackgroundColor = Color.FromArgb("#99042d53"),
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                StrokeShape = new RoundRectangle { CornerRadius = 10 },
+                StrokeShape = new   Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 10 },
                 Content = new StackLayout
                 {
                     Padding = new Thickness(5),
@@ -2415,7 +2415,7 @@ namespace iPMCloud.Mobile
                 BackgroundColor = Color.FromArgb("#5504732d"),
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                StrokeShape = new RoundRectangle { CornerRadius = 10 },
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 10 },
                 Content = new StackLayout
                 {
                     Padding = new Thickness(5),

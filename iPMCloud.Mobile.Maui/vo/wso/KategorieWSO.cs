@@ -133,7 +133,7 @@ namespace iPMCloud.Mobile
             });
             return stack;
         }
-        public static Frame GetCategoryCardView(KategorieWSO cat, AppModel model, ICommand func)
+        public static Border GetCategoryCardView(KategorieWSO cat, AppModel model, ICommand func)
         {
             var _prio = CalcOverdue(cat, model);
             var imageL = new Image
@@ -261,15 +261,14 @@ namespace iPMCloud.Mobile
             h.Children.Add(v);
             h.Children.Add(hInfo);
 
-            var mainFrame = new Frame()
+            var mainFrame = new Border()
             {
                 Padding = new Thickness(1, 1, 1, 1),
                 Margin = new Thickness(0, 15, 0, 5),
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 BackgroundColor = Color.FromArgb("#041d43"),
                 Content = h,
-                CornerRadius = 0,
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 IsClippedToBounds = true,
                 ClassId = "" + cat.id,
             };
@@ -321,15 +320,13 @@ namespace iPMCloud.Mobile
             h.Children.Add(imageL);
             h.Children.Add(lb);
 
-            var mainFrame = new Frame()
+            var mainFrame = new Border()
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(40, 1, 0, 1),
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 BackgroundColor = Colors.Transparent,
                 Content = h,
-                CornerRadius = 0,
-                HasShadow = false,
                 IsClippedToBounds = true,
                 ClassId = "" + cat.id,
             };
@@ -412,15 +409,13 @@ namespace iPMCloud.Mobile
             }
             h.Children.Add(lb);
 
-            var mainFrame = new Frame()
+            var mainFrame = new Border()
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(40, 1, 0, 1),
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 BackgroundColor = Colors.Transparent,
                 Content = h,
-                CornerRadius = 0,
-                HasShadow = false,
                 IsClippedToBounds = true,
                 ClassId = "" + cat.id,
             };
@@ -593,7 +588,7 @@ namespace iPMCloud.Mobile
             });
             return stack;
         }
-        public static Frame GetCategoryCardAgainView(KategorieWSO cat, AppModel model, ICommand func)
+        public static Border GetCategoryCardAgainView(KategorieWSO cat, AppModel model, ICommand func)
         {
             var _prio = CalcOverdue(cat, model);
             var imageL = new Image
@@ -678,15 +673,14 @@ namespace iPMCloud.Mobile
             h.Children.Add(v);
             h.Children.Add(id);
 
-            var mainFrame = new Frame()
+            var mainFrame = new Border()
             {
                 Padding = new Thickness(1, 1, 1, 1),
                 Margin = new Thickness(0, 15, 0, 5),
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 BackgroundColor = Color.FromArgb("#041d43"),
                 Content = h,
-                CornerRadius = 0,
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 IsClippedToBounds = true,
                 ClassId = "" + cat.id,
             };

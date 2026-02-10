@@ -213,7 +213,7 @@ namespace iPMCloud.Mobile
             });
             return stack;
         }
-        public static Frame GetOrderCardView(AuftragWSO order, AppModel model, ICommand func)
+        public static Border GetOrderCardView(AuftragWSO order, AppModel model, ICommand func)
         {
             var _prio = CalcOverdue(order, model);
             var imageL = new Image
@@ -320,15 +320,14 @@ namespace iPMCloud.Mobile
             h.Children.Add(v);
             h.Children.Add(id);
 
-            var mainFrame = new Frame()
+            var mainFrame = new Border()
             {
                 Padding = new Thickness(1, 1, 1, 1),
                 Margin = new Thickness(0, 15, 0, 5),
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 BackgroundColor = Color.FromArgb("#041d43"),
                 Content = h,
-                CornerRadius = 0,
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 IsClippedToBounds = true,
                 ClassId = "" + order.id,
             };
@@ -342,7 +341,7 @@ namespace iPMCloud.Mobile
 
             return mainFrame;
         }
-        public static Frame GetDisableOrderCardView(AuftragWSO order, AppModel model)
+        public static Border GetDisableOrderCardView(AuftragWSO order, AppModel model)
         {
             var _prio = CalcOverdue(order, model);
             var imageL = new Image
@@ -470,15 +469,14 @@ namespace iPMCloud.Mobile
             h.Children.Add(id);
             h.Children.Add(hi);
 
-            var mainFrame = new Frame()
+            var mainFrame = new Border()
             {
                 Padding = new Thickness(1, 1, 1, 1),
                 Margin = new Thickness(0, 15, 0, 5),
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 BackgroundColor = Color.FromArgb("#041d43"),
                 Content = h,
-                CornerRadius = 0,
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 IsClippedToBounds = true,
                 ClassId = "" + order.id,
             };
@@ -606,7 +604,7 @@ namespace iPMCloud.Mobile
             });
             return stack;
         }
-        public static Frame GetOrderAgainCardView(AuftragWSO order, AppModel model)
+        public static Border GetOrderAgainCardView(AuftragWSO order, AppModel model)
         {
             var _prio = CalcOverdue(order, model);
             var imageL = new Image
@@ -665,15 +663,14 @@ namespace iPMCloud.Mobile
             h.Children.Add(v);
             h.Children.Add(id);
 
-            var mainFrame = new Frame()
+            var mainFrame = new Border()
             {
                 Padding = new Thickness(1, 1, 1, 1),
                 Margin = new Thickness(0, 0, 0, 0),
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 BackgroundColor = Color.FromArgb("#33041d43"),
                 Content = h,
-                CornerRadius = 0,
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 IsClippedToBounds = true,
                 ClassId = "" + order.id,
             };
@@ -936,15 +933,13 @@ namespace iPMCloud.Mobile
             }
             h.Children.Add(lb);
 
-            var mainFrame = new Frame()
+            var mainFrame = new Border()
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(20, 1, 0, 1),
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 BackgroundColor = Colors.Transparent,
                 Content = h,
-                CornerRadius = 0,
-                HasShadow = false,
                 IsClippedToBounds = true,
                 ClassId = "" + order.id,
             };
@@ -1026,15 +1021,13 @@ namespace iPMCloud.Mobile
             }
             h.Children.Add(lb);
 
-            var mainFrame = new Frame()
+            var mainFrame = new Border()
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(20, 1, 0, 1),
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 BackgroundColor = Colors.Transparent,
                 Content = h,
-                CornerRadius = 0,
-                HasShadow = false,
                 IsClippedToBounds = true,
                 ClassId = "" + order.id,
             };
@@ -1175,7 +1168,7 @@ namespace iPMCloud.Mobile
             return h;
         }
 
-        public static Frame GetTodoCountWarningSmall(double count)
+        public static Border GetTodoCountWarningSmall(double count)
         {
             var badge = new Frame
             {

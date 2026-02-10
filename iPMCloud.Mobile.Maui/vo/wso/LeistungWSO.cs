@@ -157,7 +157,7 @@ namespace iPMCloud.Mobile
             });
             return stack;
         }
-        public static Frame GetPositionCardView(LeistungWSO pos, AppModel model, ICommand func)
+        public static Border GetPositionCardView(LeistungWSO pos, AppModel model, ICommand func)
         {
             //var _prio = CalcOverdue(pos);
             var imageL = new Image
@@ -341,15 +341,14 @@ namespace iPMCloud.Mobile
             h.Children.Add(badge);
             h.Children.Add(v);
 
-            var mainFrame = new Frame()
+            var mainFrame = new Border()
             {
                 Padding = new Thickness(1, 1, 1, 1),
                 Margin = new Thickness(0, 15, 0, 5),
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 BackgroundColor = Colors.Transparent,
                 Content = h,
-                CornerRadius = 0,
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 IsClippedToBounds = true,
                 ClassId = "" + pos.id,
             };
@@ -363,7 +362,7 @@ namespace iPMCloud.Mobile
 
             return mainFrame;
         }
-        public static Frame GetSelectedPositionCardView(LeistungWSO pos, AppModel model, ICommand func)
+        public static Border GetSelectedPositionCardView(LeistungWSO pos, AppModel model, ICommand func)
         {
             //var _prio = CalcOverdue(pos);
             var imageL = new Image
@@ -496,15 +495,14 @@ namespace iPMCloud.Mobile
             h.Children.Add(v);
             h.Children.Add(imageR);
 
-            var mainFrame = new Frame()
+            var mainFrame = new Border()
             {
                 Padding = new Thickness(1, 1, 1, 1),
                 Margin = new Thickness(0, 15, 0, 5),
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 BackgroundColor = Colors.Transparent,
                 Content = h,
-                CornerRadius = 0,
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 IsClippedToBounds = true,
                 ClassId = "" + pos.id,
             };
@@ -518,7 +516,7 @@ namespace iPMCloud.Mobile
 
             return mainFrame;
         }
-        public static Frame GetDisabledPositionCardView(LeistungWSO pos, AppModel model, ICommand func)
+        public static Border GetDisabledPositionCardView(LeistungWSO pos, AppModel model, ICommand func)
         {
             //var _prio = CalcOverdue(pos);
             var imageL = new Image
@@ -675,15 +673,14 @@ namespace iPMCloud.Mobile
             h.Children.Add(v);
             h.Children.Add(hi);
 
-            var mainFrame = new Frame()
+            var mainFrame = new Border()
             {
                 Padding = new Thickness(1, 1, 1, 1),
                 Margin = new Thickness(0, 15, 0, 5),
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 BackgroundColor = Colors.Transparent,
                 Content = h,
-                CornerRadius = 0,
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 IsClippedToBounds = true,
                 ClassId = "" + pos.id,
             };
@@ -696,7 +693,7 @@ namespace iPMCloud.Mobile
 
             return mainFrame;
         }
-        public static Frame GetInWorkPositionCardView(LeistungWSO pos, AppModel model, ICommand func)
+        public static Border GetInWorkPositionCardView(LeistungWSO pos, AppModel model, ICommand func)
         {
             //var _prio = CalcOverdue(pos);
             var imageL = new Image
@@ -803,15 +800,14 @@ namespace iPMCloud.Mobile
             h.Children.Add(v);
             //h.Children.Add(hi);
 
-            var mainFrame = new Frame()
+            var mainFrame = new Border()
             {
                 Padding = new Thickness(1, 1, 1, 1),
                 Margin = new Thickness(0, 15, 0, 5),
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 BackgroundColor = Colors.Transparent,
                 Content = h,
-                CornerRadius = 0,
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 IsClippedToBounds = true,
                 ClassId = "" + pos.id,
             };
@@ -828,7 +824,7 @@ namespace iPMCloud.Mobile
         public static Int32 holdlastObjektId = 0;
 
         // In ToDo Liste
-        public static Frame GetMuellPositionCardView(LeistungWSO pos, AppModel model, ICommand func)
+        public static Border GetMuellPositionCardView(LeistungWSO pos, AppModel model, ICommand func)
         {
             var vmain = new StackLayout()
             {
@@ -1001,15 +997,14 @@ namespace iPMCloud.Mobile
 
             vmain.Children.Add(h);
 
-            var mainFrame = new Frame()
+            var mainFrame = new Border()
             {
                 Padding = new Thickness(1, 1, 1, 1),
                 Margin = new Thickness(0, (holdlastObjektId != pos.objektid ? 15 : 1), 0, (holdlastObjektId != pos.objektid ? 5 : 0)),
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 BackgroundColor = Colors.Transparent,
                 Content = vmain,
-                CornerRadius = 0,
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 IsClippedToBounds = true,
                 ClassId = "" + pos.objekt.plz + "##" + pos.objekt.ort + "##" + pos.objekt.strasse + "##" + pos.objekt.hsnr + "##" + pos.objekt.objektname + "##" + pos.objekt.objektnr,
             };
@@ -1918,7 +1913,7 @@ namespace iPMCloud.Mobile
         }
 
         private static CustomEntry xxxxInWorkPosSmallCardEntryAnzahl;
-        public static Frame GetInWorkPositionSmallCardView(AuftragWSO o, KategorieWSO c, LeistungWSO leistung, LeistungInWorkWSO leiInWork, AppModel model, ICommand func)
+        public static Border GetInWorkPositionSmallCardView(AuftragWSO o, KategorieWSO c, LeistungWSO leistung, LeistungInWorkWSO leiInWork, AppModel model, ICommand func)
         {
             //var _prio = CalcOverdue(pos);
             var imageL = new Image
@@ -1994,7 +1989,7 @@ namespace iPMCloud.Mobile
                     }
                 }
             };
-            var btnNoticeFrame = new Frame()
+            var btnNoticeFrame = new Border()
             {
                 Padding = new Thickness(1, 1, 1, 1),
                 Margin = new Thickness(3, 0, 3, 0),
@@ -2002,8 +1997,7 @@ namespace iPMCloud.Mobile
                 VerticalOptions = LayoutOptions.Center,
                 BackgroundColor = Color.FromArgb("#041d43"),
                 Content = noticeStack,
-                CornerRadius = 0,
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 IsClippedToBounds = true,
             };
             if (func != null)
@@ -2217,15 +2211,14 @@ namespace iPMCloud.Mobile
             h.Children.Add(imageL);
             h.Children.Add(v);
 
-            var mainFrame = new Frame()
+            var mainFrame = new Border()
             {
                 Padding = new Thickness(1, 1, 1, 1),
                 Margin = new Thickness(0, 5, 0, 5),
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 BackgroundColor = Colors.Transparent,
                 Content = h,
-                CornerRadius = 0,
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 IsClippedToBounds = true,
             };
 
@@ -2278,7 +2271,7 @@ namespace iPMCloud.Mobile
         }
 
 
-        public static Frame GetInWorkPositionSmallCardView_DirektPos(AuftragWSO o, KategorieWSO c, LeistungWSO pos, LeistungWSO lei)
+        public static Border GetInWorkPositionSmallCardView_DirektPos(AuftragWSO o, KategorieWSO c, LeistungWSO pos, LeistungWSO lei)
         {
             //var _prio = CalcOverdue(pos);
             var imageL = new Image
@@ -2358,22 +2351,21 @@ namespace iPMCloud.Mobile
             h.Children.Add(imageL);
             h.Children.Add(v);
 
-            var mainFrame = new Frame()
+            var mainFrame = new Border()
             {
                 Padding = new Thickness(1, 1, 1, 1),
                 Margin = new Thickness(0, 5, 0, 5),
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 BackgroundColor = Colors.Transparent,
                 Content = h,
-                CornerRadius = 0,
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 IsClippedToBounds = true,
             };
 
             return mainFrame;
         }
 
-        public static Frame GetInWorkPositionSmallCardView(AuftragWSO o, KategorieWSO c, LeistungWSO pos, LeistungInWorkWSO lei, AppModel model)
+        public static Border GetInWorkPositionSmallCardView(AuftragWSO o, KategorieWSO c, LeistungWSO pos, LeistungInWorkWSO lei, AppModel model)
         {
             //var _prio = CalcOverdue(pos);
             var imageL = new Image
@@ -2453,15 +2445,14 @@ namespace iPMCloud.Mobile
             h.Children.Add(imageL);
             h.Children.Add(v);
 
-            var mainFrame = new Frame()
+            var mainFrame = new Border()
             {
                 Padding = new Thickness(1, 1, 1, 1),
                 Margin = new Thickness(0, 5, 0, 5),
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 BackgroundColor = Colors.Transparent,
                 Content = h,
-                CornerRadius = 0,
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 IsClippedToBounds = true,
             };
 
@@ -2608,7 +2599,7 @@ namespace iPMCloud.Mobile
         }
 
 
-        public static Frame GetPositionWinterCardView(LeistungWSO pos)
+        public static Border GetPositionWinterCardView(LeistungWSO pos)
         {
             var imageL = new Image
             {
@@ -2682,15 +2673,13 @@ namespace iPMCloud.Mobile
             h.Children.Add(imageL);
             h.Children.Add(v);
 
-            var mainFrame = new Frame()
+            var mainFrame = new Border()
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(60, 1, 0, 1),
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 BackgroundColor = Colors.Transparent,
                 Content = h,
-                CornerRadius = 0,
-                HasShadow = false,
                 IsClippedToBounds = true,
                 ClassId = "" + pos.id,
             };
@@ -2699,7 +2688,7 @@ namespace iPMCloud.Mobile
             return mainFrame;
         }
 
-        public static Frame GetPositionTodoCardView(LeistungWSO pos, AppModel model, bool onlyText)
+        public static Border GetPositionTodoCardView(LeistungWSO pos, AppModel model, bool onlyText)
         {
             var imageL = new Image
             {
@@ -2833,15 +2822,13 @@ namespace iPMCloud.Mobile
 
             h.Children.Add(v);
 
-            var mainFrame = new Frame()
+            var mainFrame = new Border()
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(60, 1, 0, 1),
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 BackgroundColor = Colors.Transparent,
                 Content = h,
-                CornerRadius = 0,
-                HasShadow = false,
                 IsClippedToBounds = true,
                 ClassId = "" + pos.id,
             };

@@ -1126,7 +1126,7 @@ namespace iPMCloud.Mobile
 
                 }
             };
-            var btnNoticeFrame = new Frame()
+            var btnNoticeFrame = new Border()
             {
                 Padding = new Thickness(1),
                 Margin = new Thickness(2, 2, 2, 0),
@@ -1134,8 +1134,7 @@ namespace iPMCloud.Mobile
                 VerticalOptions = LayoutOptions.Start,
                 BackgroundColor = Color.FromArgb("#041d43"),
                 Content = noticeStack,
-                CornerRadius = 0,
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 IsClippedToBounds = true,
             };
             if (func != null)
@@ -1509,7 +1508,7 @@ namespace iPMCloud.Mobile
 
                 }
                 };
-                var btnNoticeFrame = new Frame()
+                var btnNoticeFrame = new Border()
                 {
                     Padding = new Thickness(1),
                     Margin = new Thickness(2, 2, 2, 0),
@@ -1517,8 +1516,7 @@ namespace iPMCloud.Mobile
                     VerticalOptions = LayoutOptions.Start,
                     BackgroundColor = Color.FromArgb("#041d43"),
                     Content = noticeStack,
-                    CornerRadius = 0,
-                    HasShadow = true,
+                    Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                     IsClippedToBounds = true,
                 };
                 if (func != null)

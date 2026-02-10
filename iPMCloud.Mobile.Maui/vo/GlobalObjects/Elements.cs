@@ -14,13 +14,13 @@ namespace iPMCloud.Mobile.vo
 
 
 
-        public static Frame GetIconButtonGray(TapGestureRecognizer tapGestureRecognizer, ImageSource imageSource)
+        public static Border GetIconButtonGray(TapGestureRecognizer tapGestureRecognizer, ImageSource imageSource)
         {
-            return new Frame()
+            return new Border()
             {
                 Padding = new Thickness(1, 1, 1, 1),
                 Margin = new Thickness(2, 2, 2, 2),
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 BackgroundColor = Color.FromArgb("#666666"),
                 Content = new StackLayout()
                 {
@@ -46,13 +46,13 @@ namespace iPMCloud.Mobile.vo
             };
         }
 
-        public static Frame GetIconButtonBlue(TapGestureRecognizer tapGestureRecognizer, ImageSource imageSource)
+        public static Border GetIconButtonBlue(TapGestureRecognizer tapGestureRecognizer, ImageSource imageSource)
         {
-            return new Frame()
+            return new Border()
             {
                 Padding = new Thickness(1, 1, 1, 1),
                 Margin = new Thickness(2, 2, 2, 2),
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 BackgroundColor = Color.FromArgb("#041d43"),
                 Content = new StackLayout()
                 {
@@ -78,7 +78,7 @@ namespace iPMCloud.Mobile.vo
             };
         }
 
-        public static Frame GetWorkerCategoryTreeItem(string category, string count, ImageSource imageLeftSource, ICommand command)
+        public static Border GetWorkerCategoryTreeItem(string category, string count, ImageSource imageLeftSource, ICommand command)
         {
             var imageL = new Image
             {
@@ -134,15 +134,14 @@ namespace iPMCloud.Mobile.vo
             }
             mainStack.Children.Add(headerStackHorizontal);
 
-            var mainFrame = new Frame()
+            var mainFrame = new Border()
             {
                 Padding = new Thickness(0,0,0,0),
                 Margin = new Thickness(5, 5, 5, 5),
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 BackgroundColor = Color.FromArgb("#041d43"),
                 Content = mainStack, 
-                CornerRadius = 0,
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 IsClippedToBounds = true
             };
             return mainFrame;
@@ -337,7 +336,7 @@ namespace iPMCloud.Mobile.vo
             contentHori.Children.Add(detailMail);
             return contentHori;
         }
-        public static Frame GetWorkerNamesTreeItem(PersonWSO p, ImageSource imageLeftSource, ICommand command)
+        public static Border GetWorkerNamesTreeItem(PersonWSO p, ImageSource imageLeftSource, ICommand command)
         {
             var imageL = new Image
             {
@@ -420,21 +419,20 @@ namespace iPMCloud.Mobile.vo
             mainStack.Children.Add(headerStackHorizontal);
             mainStack.Children.Add(lbaddress);
 
-            var mainFrame = new Frame()
+            var mainFrame = new Border()
             {
                 Padding = new Thickness(0, 0, 0, 0),
                 Margin = new Thickness(5, 5, 5, 5),
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 BackgroundColor = Color.FromArgb("#041d43"),
                 Content = mainStack,
-                CornerRadius = 0,
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 IsClippedToBounds = true
             };
             return mainFrame;
         }
  
-        public static Frame GetWorkerBuildingTreeItem(BuildingWSO b, ImageSource imageLeftSource, ICommand command)
+        public static Border GetWorkerBuildingTreeItem(BuildingWSO b, ImageSource imageLeftSource, ICommand command)
         {
             var imageL = new Image
             {
@@ -506,21 +504,20 @@ namespace iPMCloud.Mobile.vo
             mainStack.Children.Add(headerStackHorizontal);
             mainStack.Children.Add(lbaddress);
 
-            var mainFrame = new Frame()
+            var mainFrame = new Border()
             {
                 Padding = new Thickness(0, 0, 0, 0),
                 Margin = new Thickness(5, 5, 0, 5),
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 BackgroundColor = Colors.Transparent,//Color.FromArgb("#041d43"),
                 Content = mainStack,
-                CornerRadius = 0,
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 IsClippedToBounds = true,
             };
             return mainFrame;
         }
 
-        public static Frame GetWorkerBuildingTreeInfoItem(BuildingWSO b, Frame frame, TapGestureRecognizer tgr)
+        public static Border GetWorkerBuildingTreeInfoItem(BuildingWSO b, Border frame, TapGestureRecognizer tgr)
         {
             var horiStack = new StackLayout()
             {
@@ -556,15 +553,13 @@ namespace iPMCloud.Mobile.vo
 
             horiStack.Children.Add(frame);
             horiStack.Children.Add(mainStack);
-            var mainFrame = new Frame()
+            var mainFrame = new Border()
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(0),
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 BackgroundColor = Colors.Transparent,//Color.FromArgb("#041d43"),
                 Content = horiStack,
-                CornerRadius = 0,
-                HasShadow = false,
                 IsClippedToBounds = true,
             };
             return mainFrame;
@@ -572,7 +567,7 @@ namespace iPMCloud.Mobile.vo
 
 
 
-        public static Frame GetCompanySelectionItem(Company c, ImageSource imageLeftSource, bool isSelected)
+        public static Border GetCompanySelectionItem(Company c, ImageSource imageLeftSource, bool isSelected)
         {
             var imageL = new Image
             {
@@ -625,20 +620,19 @@ namespace iPMCloud.Mobile.vo
             headerStackHorizontal.Children.Add(imageL);
             headerStackHorizontal.Children.Add(headerStackVertical);
 
-            var mainFrame = new Frame()
+            var mainFrame = new Border()
             {
                 Padding = new Thickness(1,1,1,1),
                 Margin = new Thickness(0, 15, isSelected ? 0:10, 5),
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 BackgroundColor = isSelected ? Color.FromArgb("#70144d73") : Color.FromArgb("#041d43"),
                 Content = headerStackHorizontal,
-                CornerRadius = 0,
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 IsClippedToBounds = true, //WidthRequest = 280,
             };
             return mainFrame;
         }
-        public static Frame GetXButton(Company c, ImageSource xImage, bool isSelected)
+        public static Border GetXButton(Company c, ImageSource xImage, bool isSelected)
         {
             var imageL = new Image
             {
@@ -665,7 +659,7 @@ namespace iPMCloud.Mobile.vo
             };
             headerStackHorizontal.Children.Add(imageL);
 
-            var mainFrame = new Frame()
+            var mainFrame = new Border()
             {
                 Padding = new Thickness(1,1,1,1),
                 Margin = new Thickness(0, 15, 0, 5),
@@ -673,8 +667,7 @@ namespace iPMCloud.Mobile.vo
                 VerticalOptions = LayoutOptions.Start,
                 BackgroundColor = Color.FromArgb("#041d43"),
                 Content = headerStackHorizontal,
-                CornerRadius = 0,
-                HasShadow = true, IsVisible = !isSelected,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) }, IsVisible = !isSelected,
                 IsClippedToBounds = true, WidthRequest = 40, HeightRequest = 40,
                 MinimumWidthRequest = 40,
                 MinimumHeightRequest = 40,

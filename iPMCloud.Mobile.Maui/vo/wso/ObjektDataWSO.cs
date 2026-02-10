@@ -301,7 +301,6 @@ namespace iPMCloud.Mobile
                 BackgroundColor = Colors.Transparent,
                 Content = h,
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
-                IsClippedToBounds = false,
                 ClassId = "" + od.id,
             };
 
@@ -453,7 +452,6 @@ namespace iPMCloud.Mobile
                 BackgroundColor = Colors.Transparent,
                 Content = h,
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
-                IsClippedToBounds = false,
                 ClassId = "" + od.id,
             };
 

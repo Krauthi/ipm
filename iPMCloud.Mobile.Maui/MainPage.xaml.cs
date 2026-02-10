@@ -8,12 +8,13 @@ using iPMCloud.Mobile.vo.wso;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls;
+using Microsoft.Maui.Devices;
 // TODO: Xamarin.RangeSlider not MAUI-compatible - needs replacement
 // using Xamarin.RangeSlider.Forms;
 
 //using Microsoft.Maui.Storage;
 using Microsoft.Maui.Devices;
-using Microsoft.Maui.Devices;
+using Microsoft.Maui.Layouts;
 using Microsoft.Maui.Storage;
 // TODO: NativeMedia not MAUI-compatible - needs replacement with Microsoft.Maui.Media
 // using NativeMedia;
@@ -2345,7 +2346,7 @@ namespace iPMCloud.Mobile
             popupContainer_objectvaluesbild.IsVisible = true;
             //popupContainer_objectvaluesbild_stack.WidthRequest = App.Current.MainPage.Width;
             AbsoluteLayout.SetLayoutFlags(popupContainer_objectvaluesbild_stack, AbsoluteLayoutFlags.None);
-            AbsoluteLayout.SetLayoutBounds(popupContainer_objectvaluesbild_stack, new Rectangle(0, 30, App.Current.MainPage.Width, 520));
+            AbsoluteLayout.SetLayoutBounds(popupContainer_objectvaluesbild_stack, new Rect(0, 30, App.Current.MainPage.Width, 520));
 
             editor_notice_objectvaluesbild.Text = "";
             img_photo_objectvaluesbild.Source = null;
@@ -6475,20 +6476,20 @@ namespace iPMCloud.Mobile
         private int _holdLastTodoList = 0;
         public int _holdLastTodoPage = 1;
         public int _holdLastTodoPageMax = 1;
-        private async void TodoRangeSlider_DragCompleted(object sender, EventArgs e)
-        {
-            overlay.IsVisible = true;
-            await Task.Delay(1);
-            if (!String.IsNullOrWhiteSpace(entry_todosearch.Text))
-            {
-                entry_todosearch.Text = "";
-            }
-            RangeSlider slider = (sender as RangeSlider);
-            list_todo.IsVisible = false;
-            list_todo.Children.Clear();
-            list_todo_scroll.ScrollToAsync(0, 0, false);
-            BuildTodoList(_holdLastTodoList);
-        }
+        //private async void TodoRangeSlider_DragCompleted(object sender, EventArgs e)
+        //{
+        //    overlay.IsVisible = true;
+        //    await Task.Delay(1);
+        //    if (!String.IsNullOrWhiteSpace(entry_todosearch.Text))
+        //    {
+        //        entry_todosearch.Text = "";
+        //    }
+        //    RangeSlider slider = (sender as RangeSlider);
+        //    list_todo.IsVisible = false;
+        //    list_todo.Children.Clear();
+        //    list_todo_scroll.ScrollToAsync(0, 0, false);
+        //    BuildTodoList(_holdLastTodoList);
+        //}
         public async void btn_TodosTapped(object sender, EventArgs e)
         {
             // Handwerker Liste

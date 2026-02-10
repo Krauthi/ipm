@@ -1663,20 +1663,20 @@ namespace iPMCloud.Mobile.vo
 
 
 
-        public async void IsReachableHost()
-        {
-            var connectivity = CrossConnectivity.Current;
-            if (connectivity.IsConnected)
-            {
-                var res = await connectivity.IsRemoteReachable(
-                    AppModel.Instance.SettingModel.SettingDTO.ServerUrl
-                        .Replace("https://", "")
-                        .Replace("http://", "")
-                    );
-                AppModel.Instance.isReachableServer = res;
-                if (res) { AppModel.Instance.lastServerPing = DateTime.Now.Ticks; }
-            }
-        }
+        //public async void IsReachableHost()
+        //{
+        //    var connectivity = CrossConnectivity.Current;
+        //    if (connectivity.IsConnected)
+        //    {
+        //        var res = await connectivity.IsRemoteReachable(
+        //            AppModel.Instance.SettingModel.SettingDTO.ServerUrl
+        //                .Replace("https://", "")
+        //                .Replace("http://", "")
+        //            );
+        //        AppModel.Instance.isReachableServer = res;
+        //        if (res) { AppModel.Instance.lastServerPing = DateTime.Now.Ticks; }
+        //    }
+        //}
 
         public async Task<bool> PingServer()
         {

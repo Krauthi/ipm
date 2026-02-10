@@ -103,6 +103,9 @@
     <PackageReference Include="System.Runtime.Serialization.Xml" Version="4.3.0" />
     <PackageReference Include="System.ServiceModel.Http" Version="4.10.0" />
     <PackageReference Include="System.ServiceModel.Primitives" Version="4.10.0" />
+    <PackageReference Include="Xamarin.Google.Android.Play.Core" Version="1.10.3.20" />
+    <PackageReference Include="Xamarin.GooglePlayServices.Base" Version="118.9.0.1" />
+    <PackageReference Include="Xamarin.GooglePlayServices.Basement" Version="118.9.0.1" />
     <PackageReference Include="ZXing.Net.Maui" Version="0.6.0" />
     <PackageReference Include="ZXing.Net.Maui.Controls" Version="0.6.0" />
     
@@ -116,7 +119,7 @@
 
   <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
     <PackageReference Include="Xamarin.AndroidX.AppCompat" Version="1.7.0.6" />
-    <PackageReference Include="Xamarin.AndroidX.Core" Version="1.16.0.1" />
+    <PackageReference Include="Xamarin.AndroidX.Core" Version="1.17.0.1" />
     <!-- Temporarily commented out due to download issues -->
     <!-- <PackageReference Include="Xamarin.GooglePlayServices.Base" Version="118.6.0" /> -->
   </ItemGroup>

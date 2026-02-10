@@ -10,45 +10,45 @@ using System.Threading.Tasks;
 
 namespace iPMCloud.Mobile
 {
-    [Activity(Label = "iPM-Cloud", Icon = "@drawable/icon", Theme = "@style/MainTheme.Splash", Exported = true,
-        MainLauncher = true, NoHistory = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
+    [Activity(
+        Label = "iPM-Cloud", 
+        Icon = "@drawable/icon", 
+        Theme = "@style/Maui.SplashTheme", 
+        Exported = true,
+        MainLauncher = true, 
+        NoHistory = true, 
+        ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class SplashActivity : AppCompatActivity
     {
-        static readonly string TAG = "iPM-ClouD Mobile V2.0.0: " + typeof(SplashActivity).Name;
+        static readonly string TAG = "iPM-ClouD Mobile: " + typeof(SplashActivity).Name;
 
-        public override void OnCreate(Bundle savedInstanceState, PersistableBundle persistentState)
+        protected override void OnCreate(Bundle savedInstanceState)
         {
             try
             {
-                //Hide Bottom NavigationBar 
-                int uiOptions = (int)Window.DecorView.SystemUiVisibility;
-                uiOptions |= (int)SystemUiFlags.LowProfile;
-                uiOptions |= (int)SystemUiFlags.Fullscreen;
-                uiOptions |= (int)SystemUiFlags.HideNavigation;
-                uiOptions |= (int)SystemUiFlags.ImmersiveSticky;
-                Window.DecorView.SystemUiVisibility = (StatusBarVisibility)uiOptions;
-
-                base.OnCreate(savedInstanceState, persistentState);
+                base.OnCreate(savedInstanceState);
+                SetFullscreenMode();
                 Log.Debug(TAG, "SplashActivity.OnCreate");
             }
             catch (Exception ex)
             {
-                Log.Debug(TAG, "SplashActivity.OnCreate.catch:" + ex.ToString());
+                Log.Debug(TAG, $"SplashActivity.OnCreate.catch:{ex}");
             }
         }
 
         // Launches the startup task
+
         protected override void OnResume()
         {
             try
             {
                 base.OnResume();
-                Task startupWork = new Task(() => { SimulateStartup(); });
-                startupWork.Start();
+
+                _ = StartMainActivityAsync();
             }
             catch (Exception ex)
             {
-                Log.Debug(TAG, "SplashActivity.OnResume:" + ex.ToString());
+                Log.Error(TAG, $"OnResume Error: {ex}");
             }
         }
 
@@ -57,29 +57,57 @@ namespace iPMCloud.Mobile
         {
         }
 
-
-        //public override void OnRequestPermissionsResult(int requestCode, string[] permissions, Android.Content.PM.Permission[] grantResults)
-        //{
-        //    Microsoft.Maui.ApplicationModel.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
-        //    base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
-        //}
-
-        // Simulates background work that happens behind the splash screen
-        async void SimulateStartup()
+        private void SetFullscreenMode()
         {
             try
             {
-                await Task.Delay(100);
-                var mainintent = new Intent(Application.Context, typeof(MainActivity));
-                if (Intent.Extras != null) { mainintent.PutExtras(Intent.Extras); }
-                StartActivity(mainintent);
-                //StartActivity(new Intent(Application.Context, typeof(MainActivity)));
+                if (Window?.DecorView == null) return;
+
+                var uiOptions = (int)Window.DecorView.SystemUiVisibility;
+                uiOptions |= (int)SystemUiFlags.LowProfile;
+                uiOptions |= (int)SystemUiFlags.Fullscreen;
+                uiOptions |= (int)SystemUiFlags.HideNavigation;
+                uiOptions |= (int)SystemUiFlags.ImmersiveSticky;
+
+                Window.DecorView.SystemUiVisibility = (StatusBarVisibility)uiOptions;
             }
             catch (Exception ex)
             {
-                Log.Debug(TAG, "SplashActivity.SimulateStartup:" + ex.ToString());
+                Log.Error(TAG, $"SetFullscreenMode Error: {ex}");
             }
         }
+
+
+
+        private async Task StartMainActivityAsync()
+        {
+            try
+            {
+                await Task.Delay(500);
+
+                var mainIntent = new Intent(this, typeof(MainActivity));
+
+                if (Intent?.Extras != null)
+                {
+                    mainIntent.PutExtras(Intent.Extras);
+                }
+
+                StartActivity(mainIntent);
+                Finish();  
+            }
+            catch (Exception ex)
+            {
+                Log.Error(TAG, $"StartMainActivity Error: {ex}");
+                                
+                try
+                {
+                    StartActivity(new Intent(this, typeof(MainActivity)));
+                    Finish();
+                }
+                catch { }
+            }
+        }
+
 
     }
 }

@@ -119,7 +119,7 @@ namespace iPMCloud.Mobile.vo
             Grid.SetRow(bottomStack, 2);
             overlayGrid.Children.Add(bottomStack);
 
-            return overlayGrid;
+            return new ContentView { Content = overlayGrid };
         }
 
         public async void ScanBuildingOutView(ContentPage page, StackLayout scanContainer, Func<bool> func)

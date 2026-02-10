@@ -2382,9 +2382,9 @@ namespace iPMCloud.Mobile
         */
         // In Check.cs oder CheckLeistungAntwort.cs
 
-        public SignaturePadView signPad;
+        public static SignaturePadView signPad;
 
-        public StackLayout GetSignElement()
+        public static StackLayout GetSignElement()
         {
             signPad = new SignaturePadView
             {

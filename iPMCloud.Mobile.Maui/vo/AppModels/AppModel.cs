@@ -135,18 +135,21 @@ namespace iPMCloud.Mobile.vo
 
 
         private bool _isInternet = false;
+
         public bool IsInternet
         {
             get
             {
-                if (!CrossConnectivity.IsSupported)
+                try
                 {
+                    _isInternet = Connectivity.Current.NetworkAccess == NetworkAccess.Internet;
+                }
+                catch (Exception)
+                {
+                    // Fallback: Bei Fehler annehmen, dass Internet verfügbar ist
                     _isInternet = true;
                 }
-                else
-                {
-                    _isInternet = CrossConnectivity.Current.IsConnected;
-                }
+
                 return true; // _isInternet;
             }
         }
@@ -270,125 +273,56 @@ namespace iPMCloud.Mobile.vo
 
             _ = IsInternet; // Initial abfragen 
             connectionProfiles = new List<string>();
-            var pl = CrossConnectivity.Current.ConnectionTypes.ToList();
-            if (pl != null && pl.Count > 0)
+            var profiles = Connectivity.Current.ConnectionProfiles;
+            if (profiles != null && profiles.Any())
             {
-                pl.ForEach(p => connectionProfiles.Add(p.ToString()));
+                connectionProfiles = profiles.Select(p => p.ToString()).ToList();
             }
 
-            CrossConnectivity.Current.ConnectivityChanged += CrossConnectivity_ConnectivityChanged;
-            CrossConnectivity.Current.ConnectivityTypeChanged += CrossConnectivity_ConnectivityTypeChanged;
+            Connectivity.Current.ConnectivityChanged += OnConnectivityChanged;
 
             //ChekAppVersion();
 
             return true;
         }
 
-
-        // TODO: Plugin.Connectivity not MAUI-compatible - comment out until migrated
-        /*
-        void CrossConnectivity_ConnectivityTypeChanged(object sender, Plugin.Connectivity.Abstractions.ConnectivityTypeChangedEventArgs e)
+        void OnConnectivityChanged(object sender, ConnectivityChangedEventArgs e)
         {
             try
             {
+                // Connection Profiles aktualisieren (ersetzt ConnectivityTypeChanged)
                 connectionProfiles = new List<string>();
-                e.ConnectionTypes.ToList().ForEach(_ =>
+                if (e.ConnectionProfiles != null)
                 {
-                    connectionProfiles.Add(_.ToString());
-                });
+                    foreach (var profile in e.ConnectionProfiles)
+                    {
+                        connectionProfiles.Add(profile.ToString());
+                    }
+                }
             }
             catch (Exception) { }
 
-            if (this.App.MainPage != null && App.MainPage.ClassId == "MainPage")
+            // UI-Updates auf Main Thread
+            if (this.App.MainPage != null)
             {
-                try
+                MainThread.BeginInvokeOnMainThread(() =>
                 {
-                    MainThread.BeginInvokeOnMainThread(() =>
+                    try
                     {
-                        (App.MainPage as MainPage).ShowDisconnected();
-                    });
-                }
-                catch (Exception) { }
-            }
-            if (this.App.MainPage != null && App.MainPage.ClassId == "StartPage")
-            {
-                try
-                {
-                    MainThread.BeginInvokeOnMainThread(() =>
-                    {
-                        (App.MainPage as StartPage).ShowDisconnected();
-                    });
-                }
-                catch (Exception) { }
+                        switch (App.MainPage.ClassId)
+                        {
+                            case "MainPage":
+                                (App.MainPage as MainPage)?.ShowDisconnected();
+                                break;
+                            case "StartPage":
+                                (App.MainPage as StartPage)?.ShowDisconnected();
+                                break;
+                        }
+                    }
+                    catch (Exception) { }
+                });
             }
         }
-        void CrossConnectivity_ConnectivityChanged(object sender, Plugin.Connectivity.Abstractions.ConnectivityChangedEventArgs e)
-        {
-            //try
-            //{
-            //    var connectionTypes = CrossConnectivity.Current.ConnectionTypes;
-            //    connectionProfiles = new List<string>();
-            //    connectionTypes.ToList().ForEach(_ =>
-            //    {
-            //        connectionProfiles.Add(_.ToString());
-            //    });
-            //}
-            //catch (Exception) { }
-
-            if (this.App.MainPage != null && App.MainPage.ClassId == "MainPage")
-            {
-                try
-                {
-                    MainThread.BeginInvokeOnMainThread(() =>
-                    {
-                        (App.MainPage as MainPage).ShowDisconnected();
-                    });
-                }
-                catch (Exception) { }
-            }
-            if (this.App.MainPage != null && App.MainPage.ClassId == "StartPage")
-            {
-                try
-                {
-                    MainThread.BeginInvokeOnMainThread(() =>
-                    {
-                        (App.MainPage as StartPage).ShowDisconnected();
-                    });
-                }
-                catch (Exception) { }
-            }
-        }
-        */
-
-        //void Connectivity_ConnectivityChanged(object sender, ConnectivityChangedEventArgs e)
-        //{
-        //    try
-        //    {
-        //        connectionProfiles = new List<string>();
-        //        e.ConnectionProfiles.ToList().ForEach(_ =>
-        //        {
-        //            connectionProfiles.Add(_.ToString());
-        //        });
-        //    }
-        //    catch (Exception) { }
-
-        //    if (this.App.MainPage != null && App.MainPage.ClassId == "MainPage")
-        //    {
-        //        MainThread.BeginInvokeOnMainThread(() =>
-        //        {
-        //            (App.MainPage as MainPage).ShowDisconnected();
-        //        });
-        //    }
-        //    if (this.App.MainPage != null && App.MainPage.ClassId == "StartPage")
-        //    {
-        //        MainThread.BeginInvokeOnMainThread(() =>
-        //        {
-        //            (App.MainPage as StartPage).ShowDisconnected();
-        //        });
-        //    }
-        //}
-
-
 
 
         public void InitBuildings()
@@ -726,21 +660,20 @@ namespace iPMCloud.Mobile.vo
         public long lastServerPing = 0;
         public bool gpsTimerIsRunning = false;
         public bool gpsAlertHasSend = false;
+        public GPSService _gpsService;
+
         public void InitGPSTimer()
         {
             if (gpsTimerIsRunning) { return; }
+
             CheckPermissionGPS();
+
             if (String.IsNullOrWhiteSpace(checkPermissionGPSMessage))
             {
                 gpsTimerIsRunning = true;
-                //Task.Run(() => { AppModel.Instance.SetLocationGPS(true); });
-                Dispatcher.StartTimer(TimeSpan.FromSeconds(8), () =>
-                {
-                    //Task.Run(() => { AppModel.Instance.Connections.IsReachableHost(); });                    
-                    Task.Run(() => { AppModel.Instance.SetLocationGPS(true); });
-                    //MainThread.BeginInvokeOnMainThread(() => { AppModel.Instance.SetLocationGPS(); });
-                    return true;
-                });
+                
+                _gpsService = new GPSService(App.Dispatcher);
+                _gpsService.Start();
             }
         }
 

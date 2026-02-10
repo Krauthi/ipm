@@ -19,6 +19,7 @@ using System;
 using System.Reflection;
 using Microsoft.Maui;
 using Microsoft.Maui.Controls;
+using iPMCloud.Mobile.Platforms.Android.Services;
 
 namespace iPMCloud.Mobile
 {
@@ -54,8 +55,6 @@ namespace iPMCloud.Mobile
 
         protected override void OnActivityResult(int requestCode, Result resultCode, Intent intent)
         {
-            if (NativeMedia.Platform.CheckCanProcessResult(requestCode, resultCode, intent))
-                NativeMedia.Platform.OnActivityResult(requestCode, resultCode, intent);
 
             base.OnActivityResult(requestCode, resultCode, intent);
         }
@@ -78,6 +77,13 @@ namespace iPMCloud.Mobile
 
             try
             {
+
+                if (!GooglePlayServicesChecker.IsAvailable(this))
+                {
+                    System.Diagnostics.Debug.WriteLine("Google Play Services nicht verfügbar");
+                }
+
+
                 model = AppModel.Instance;// init saved Settings or get default
                 
                 // TODO: Replace NativeMedia with MAUI MediaPicker
@@ -168,27 +174,6 @@ namespace iPMCloud.Mobile
             Window.DecorView.SystemUiVisibility = (StatusBarVisibility)uiOptions;
         }
 
-
-        public bool IsPlayServicesAvailable()
-        {
-            int resultCode = GoogleApiAvailability.Instance.IsGooglePlayServicesAvailable(this);
-            if (resultCode != ConnectionResult.Success)
-            {
-                if (GoogleApiAvailability.Instance.IsUserResolvableError(resultCode))
-                    txt = GoogleApiAvailability.Instance.GetErrorString(resultCode);
-                else
-                {
-                    AppModel.Logger.Error("PushNotification FCM IsPLayServiceAvailabel() - This device is not supported!");
-                    Finish();
-                }
-                return false;
-            }
-            else
-            {
-                txt = "Google Play Services is available.";
-                return true;
-            }
-        }
         public void CreateNotificationChannel()
         {
             if (Build.VERSION.SdkInt < BuildVersionCodes.O)

@@ -614,7 +614,7 @@ namespace iPMCloud.Mobile
                 {
                     HeightRequest = 100,
                     MinimumHeightRequest = 100,
-                    HorizontalOptions = LayoutOptions.FillAndExpand
+                    HorizontalOptions = LayoutOptions.Fill
                 });
 
             UpdateCheckAState();
@@ -1774,7 +1774,7 @@ namespace iPMCloud.Mobile
                 {
                     Text = startDT.ToString("dd.MM.yy") + "\n" + startDT.ToString("HH:mm"),
                     VerticalOptions = LayoutOptions.Center,
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    HorizontalOptions = LayoutOptions.Fill,
                     FontSize = 16,
                     TextColor = Colors.White,
                     HorizontalTextAlignment = TextAlignment.Start,
@@ -1785,7 +1785,7 @@ namespace iPMCloud.Mobile
                 {
                     Text = " - ",
                     VerticalOptions = LayoutOptions.Center,
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    HorizontalOptions = LayoutOptions.Fill,
                     FontSize = 14,
                     TextColor = Colors.Yellow,
                     HorizontalTextAlignment = TextAlignment.Start,
@@ -1796,7 +1796,7 @@ namespace iPMCloud.Mobile
                 {
                     Text = endDT.ToString("dd.MM.yy") + "\n" + endDT.ToString("HH:mm"),
                     VerticalOptions = LayoutOptions.Center,
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    HorizontalOptions = LayoutOptions.Fill,
                     FontSize = 16,
                     TextColor = Colors.White,
                     HorizontalTextAlignment = TextAlignment.Start,
@@ -1807,7 +1807,7 @@ namespace iPMCloud.Mobile
                 {
                     Text = " = ",
                     VerticalOptions = LayoutOptions.Center,
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    HorizontalOptions = LayoutOptions.Fill,
                     FontSize = 14,
                     TextColor = Colors.White,
                     HorizontalTextAlignment = TextAlignment.Start,
@@ -1818,7 +1818,7 @@ namespace iPMCloud.Mobile
                 {
                     Text = (ts.TotalDays > 1 ? ts.ToString("%d") + "T " : "") + ts.ToString(@"hh\:mm"),
                     VerticalOptions = LayoutOptions.Center,
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    HorizontalOptions = LayoutOptions.Fill,
                     FontSize = 16,
                     TextColor = Colors.Yellow,
                     HorizontalTextAlignment = TextAlignment.Start,
@@ -1855,8 +1855,8 @@ namespace iPMCloud.Mobile
                 lastDayOverStack.Children.Add(new StackLayout
                 {
                     Orientation = StackOrientation.Horizontal,
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
-                    VerticalOptions = LayoutOptions.CenterAndExpand,
+                    HorizontalOptions = LayoutOptions.Fill,
+                    VerticalOptions = LayoutOptions.Center,
                     BackgroundColor = Color.FromArgb("#042d53"),
                     Spacing = 0,
                     Margin = new Thickness(0, 0, 0, 1),
@@ -2522,7 +2522,7 @@ namespace iPMCloud.Mobile
                     Padding = new Thickness(0, 7, 0, 7),
                     FontSize = 18,
                     TextColor = Color.FromArgb("#cccccc"),
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    HorizontalOptions = LayoutOptions.Fill,
                     ClassId = "" + i,
                 };
                 lb_day.GestureRecognizers.Clear();
@@ -2536,7 +2536,7 @@ namespace iPMCloud.Mobile
                     BackgroundColor = Colors.Gray,
                     HeightRequest = 1,
                     VerticalOptions = LayoutOptions.Start,
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    HorizontalOptions = LayoutOptions.Fill,
                     Margin = new Thickness(0)
                 };
                 if (i != 0)
@@ -3058,7 +3058,7 @@ namespace iPMCloud.Mobile
                                 Margin = new Thickness(0),
                                 Spacing = 0,
                                 Orientation = StackOrientation.Vertical,
-                                HorizontalOptions = LayoutOptions.FillAndExpand,
+                                HorizontalOptions = LayoutOptions.Fill,
                                 Children = { stack },
                                 ClassId = p.muelltoid > 0 ? "Muell" : "",
                                 IsVisible = AppModel.Instance.AppSetModel.ViewOnlyMuell == 0 || AppModel.Instance.AppSetModel.ViewOnlyMuell == 1 && p.muelltoid == 0 || AppModel.Instance.AppSetModel.ViewOnlyMuell == 2 && p.muelltoid > 0
@@ -3069,7 +3069,7 @@ namespace iPMCloud.Mobile
                                 Margin = new Thickness(0),
                                 Spacing = 0,
                                 Orientation = StackOrientation.Vertical,
-                                HorizontalOptions = LayoutOptions.FillAndExpand,
+                                HorizontalOptions = LayoutOptions.Fill,
                                 IsVisible = false
                             };
                             containerA.Children.Add(containerB);
@@ -3130,7 +3130,7 @@ namespace iPMCloud.Mobile
                                     Margin = new Thickness(0),
                                     Spacing = 0,
                                     Orientation = StackOrientation.Horizontal,
-                                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                                    HorizontalOptions = LayoutOptions.Fill,
                                     BackgroundColor = Colors.Transparent,
                                     Children = {
                                     new Label() {
@@ -3138,7 +3138,7 @@ namespace iPMCloud.Mobile
                                         TextColor = Color.FromArgb("#ffcc00"),
                                         Margin = new Thickness(3, 0, 5, 1),
                                         FontSize = 18,
-                                        HorizontalOptions = LayoutOptions.StartAndExpand,
+                                        HorizontalOptions = LayoutOptions.Start,
                                         LineBreakMode = LineBreakMode.WordWrap,
                                     }
                                 }
@@ -3154,7 +3154,7 @@ namespace iPMCloud.Mobile
                                         Margin = new Thickness(0),
                                         Spacing = 0,
                                         Orientation = StackOrientation.Vertical,
-                                        HorizontalOptions = LayoutOptions.FillAndExpand,
+                                        HorizontalOptions = LayoutOptions.Fill,
                                         Children = { stack },
                                         IsVisible = true
                                     };
@@ -3164,7 +3164,7 @@ namespace iPMCloud.Mobile
                                         Margin = new Thickness(0),
                                         Spacing = 0,
                                         Orientation = StackOrientation.Vertical,
-                                        HorizontalOptions = LayoutOptions.FillAndExpand,
+                                        HorizontalOptions = LayoutOptions.Fill,
                                         IsVisible = false
                                     };
                                     containerA.Children.Add(containerB);
@@ -3251,7 +3251,7 @@ namespace iPMCloud.Mobile
                                 Margin = new Thickness(0),
                                 Spacing = 0,
                                 Orientation = StackOrientation.Horizontal,
-                                HorizontalOptions = LayoutOptions.FillAndExpand,
+                                HorizontalOptions = LayoutOptions.Fill,
                                 BackgroundColor = Colors.Transparent,
                                 Children = {
                                 new Image
@@ -3269,7 +3269,7 @@ namespace iPMCloud.Mobile
                                     TextColor = Color.FromArgb("#ffcc00"),
                                     Margin = new Thickness(4, 10, 5, 1),
                                     FontSize = 18,
-                                    HorizontalOptions = LayoutOptions.StartAndExpand,
+                                    HorizontalOptions = LayoutOptions.Start,
                                     VerticalOptions = LayoutOptions.Center,
                                     LineBreakMode = LineBreakMode.WordWrap,
                                 }
@@ -3322,7 +3322,7 @@ namespace iPMCloud.Mobile
                                 Margin = new Thickness(0),
                                 Spacing = 0,
                                 Orientation = StackOrientation.Horizontal,
-                                HorizontalOptions = LayoutOptions.FillAndExpand,
+                                HorizontalOptions = LayoutOptions.Fill,
                                 BackgroundColor = Colors.Transparent,
                                 Children = {
                                 new Label()
@@ -3331,7 +3331,7 @@ namespace iPMCloud.Mobile
                                     TextColor = Color.FromArgb("#ffcc00"),
                                     Margin = new Thickness(5, 10, 5, 1),
                                     FontSize = 18,
-                                    HorizontalOptions = LayoutOptions.StartAndExpand,
+                                    HorizontalOptions = LayoutOptions.Start,
                                     LineBreakMode = LineBreakMode.WordWrap,
                                 }
                                 }
@@ -3353,7 +3353,7 @@ namespace iPMCloud.Mobile
                                         Margin = new Thickness(0),
                                         Spacing = 0,
                                         Orientation = StackOrientation.Vertical,
-                                        HorizontalOptions = LayoutOptions.FillAndExpand,
+                                        HorizontalOptions = LayoutOptions.Fill,
                                         Children = { stack },
                                         IsVisible = true
                                     };
@@ -3363,7 +3363,7 @@ namespace iPMCloud.Mobile
                                         Margin = new Thickness(0),
                                         Spacing = 0,
                                         Orientation = StackOrientation.Vertical,
-                                        HorizontalOptions = LayoutOptions.FillAndExpand,
+                                        HorizontalOptions = LayoutOptions.Fill,
                                         IsVisible = false
                                     };
                                     containerA.Children.Add(containerB);
@@ -6060,7 +6060,7 @@ namespace iPMCloud.Mobile
                     Margin = new Thickness(0, 5, 0, 0),
                     Spacing = 0,
                     Orientation = StackOrientation.Vertical,
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    HorizontalOptions = LayoutOptions.Fill,
                     ClassId = ("##" + item.Key).ToLower()
                 };
                 var mainSubStack = new StackLayout()
@@ -6069,7 +6069,7 @@ namespace iPMCloud.Mobile
                     Margin = new Thickness(0, -5, 10, 0),
                     Spacing = 0,
                     Orientation = StackOrientation.Vertical,
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    HorizontalOptions = LayoutOptions.Fill,
                     IsVisible = false,
                     ClassId = "" + item.Key,
                 };
@@ -6114,7 +6114,7 @@ namespace iPMCloud.Mobile
                             var sfbgf = Elements.GetWorkerTreeItem(ha, model.imagesBase.Worker, null, _navigationCommand);
                             //sfbgf.ClassId = ("bu_" + ha.firma + "," + ha.name + "," + ha.vorname + "," + ha.strasse + "," + ha.plz + "," + ha.ort + "," + ha.kategorie).ToLower();
                             sfbgf.IsVisible = true;
-                            sfbgf.HorizontalOptions = LayoutOptions.FillAndExpand;
+                            sfbgf.HorizontalOptions = LayoutOptions.Fill;
                             container.Children.Add(sfbgf);
                         }
                     });
@@ -6174,7 +6174,7 @@ namespace iPMCloud.Mobile
                     Margin = new Thickness(0, 5, 0, 0),
                     Spacing = 0,
                     Orientation = StackOrientation.Vertical,
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    HorizontalOptions = LayoutOptions.Fill,
                     ClassId = ("##" + (String.IsNullOrEmpty(item.Value.firma) ? item.Value.name : item.Value.firma) + ";" + item.Value.strasse + ";" + item.Value.plz + ";" + item.Value.ort + ";" + item.Value.kategorie).ToLower()
                 };
                 var mainSubStack = new StackLayout()
@@ -6183,7 +6183,7 @@ namespace iPMCloud.Mobile
                     Margin = new Thickness(6, -5, 10, 0),
                     Spacing = 0,
                     Orientation = StackOrientation.Vertical,
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    HorizontalOptions = LayoutOptions.Fill,
                     IsVisible = false,
                     ClassId = "" + item.Value.id,
                     BackgroundColor = Color.FromArgb("#144d73"),
@@ -6225,7 +6225,7 @@ namespace iPMCloud.Mobile
                         {
                             var sfbgf = Elements.GetWorkerDetailsTreeItem(ha, model.imagesBase.Worker, null, _navigationCommand);
                             sfbgf.IsVisible = true;
-                            sfbgf.HorizontalOptions = LayoutOptions.FillAndExpand;
+                            sfbgf.HorizontalOptions = LayoutOptions.Fill;
                             container.Children.Add(sfbgf);
                         }
                     });
@@ -6281,7 +6281,7 @@ namespace iPMCloud.Mobile
                         Margin = new Thickness(0, 5, 0, 0),
                         Spacing = 0,
                         Orientation = StackOrientation.Vertical,
-                        HorizontalOptions = LayoutOptions.FillAndExpand,
+                        HorizontalOptions = LayoutOptions.Fill,
                         ClassId = ("bu_" + item.Value.strasse + ";" + item.Value.hsnr + ";" + item.Value.plz + ";" + item.Value.ort + ";" + item.Value.objektname + ";" + item.Value.objektnr).ToLower()
                     };
                     var mainSubStack = new StackLayout()
@@ -6290,7 +6290,7 @@ namespace iPMCloud.Mobile
                         Margin = new Thickness(0, -5, 10, 0),
                         Spacing = 0,
                         Orientation = StackOrientation.Vertical,
-                        HorizontalOptions = LayoutOptions.FillAndExpand,
+                        HorizontalOptions = LayoutOptions.Fill,
                         IsVisible = false,
                         ClassId = "" + item.Value.id,
                     };
@@ -6338,7 +6338,7 @@ namespace iPMCloud.Mobile
                     {
                         var sfbgf = Elements.GetWorkerTreeItem(ha, model.imagesBase.Worker, null, _navigationCommand);
                         sfbgf.IsVisible = true;
-                        sfbgf.HorizontalOptions = LayoutOptions.FillAndExpand;
+                        sfbgf.HorizontalOptions = LayoutOptions.Fill;
                         container.Children.Add(sfbgf);
                     });
                 }

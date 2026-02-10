@@ -299,7 +299,7 @@ namespace iPMCloud.Mobile
                 {
                     Margin = new Thickness(0, 0, 0, 0),
                     Spacing = 0,
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    HorizontalOptions = LayoutOptions.Fill,
                     Orientation = StackOrientation.Horizontal,
                     Children = { companyView, xBtn }
                 };

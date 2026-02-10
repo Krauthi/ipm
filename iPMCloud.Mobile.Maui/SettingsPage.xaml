@@ -28,12 +28,12 @@
             <StackLayout Orientation="Vertical" HorizontalOptions="Fill" Padding="0,0,0,0" Margin="0,0,0,0" Spacing="0" >
                 <StackLayout Orientation="Horizontal" HorizontalOptions="Fill" Margin="0,0,0,0" Spacing="0">
                     <!--<sfbuttons:SfButton Padding="0" Margin="0" CornerRadius="0" HeightRequest="30" x:Name="btn_backTo_StartPage_Menu"
-                                        Clicked="Btn_Back_Clicked" BackgroundColor="Transparent" HorizontalOptions="FillAndExpand" BorderColor="Transparent">
+                                        Clicked="Btn_Back_Clicked" BackgroundColor="Transparent" HorizontalOptions="Fill" BorderColor="Transparent">
                         <StackLayout Orientation="Horizontal" >
                             <Image x:Name="img_back" Margin="5, 0, 5, 0" HeightRequest="24"  WidthRequest="24" 
                                    VerticalOptions="Center" HorizontalOptions="Start" ></Image>
                             <Label Margin="0, 0, 5, 0"  FontSize="14"  LineBreakMode="NoWrap" VerticalTextAlignment="Center" HorizontalTextAlignment="Start"
-                                   Text="ZURÜCK ZUM HAUPTMENÜ" TextColor="#0078d7" VerticalOptions = "FillAndExpand" HorizontalOptions = "FillAndExpand"></Label>
+                                   Text="ZURÜCK ZUM HAUPTMENÜ" TextColor="#0078d7" VerticalOptions = "Fill" HorizontalOptions = "Fill"></Label>
                         </StackLayout>
                     </sfbuttons:SfButton>-->
 
@@ -42,40 +42,40 @@
                         <Image x:Name="img_loginstate" Source="islogin2.png" Margin="0,0,4,0" HeightRequest="14" WidthRequest="14" HorizontalOptions="End"/>
                     </StackLayout>
                 </StackLayout>
-                <BoxView  BackgroundColor="Gray" HeightRequest="1" VerticalOptions="Start" HorizontalOptions="FillAndExpand" Margin="0,0,0,0" />
+                <BoxView  BackgroundColor="Gray" HeightRequest="1" VerticalOptions="Start" HorizontalOptions="Fill" Margin="0,0,0,0" />
             </StackLayout>
 
 
 
-            <ScrollView HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
-                <StackLayout Padding="20,10,20,10" HorizontalOptions="FillAndExpand" Margin="0,0,0,0" Spacing="0" Orientation="Vertical">
+            <ScrollView HorizontalOptions="Fill" VerticalOptions="Fill">
+                <StackLayout Padding="20,10,20,10" HorizontalOptions="Fill" Margin="0,0,0,0" Spacing="0" Orientation="Vertical">
 
 
                     <Label Text="Einstellungen"   FontSize="22"  Margin="0,0,0,10" VerticalOptions="Center" TextColor="#0078d7" HorizontalOptions="Start"/>
 
-                    <BoxView  BackgroundColor="#0078d7" HeightRequest="1" CornerRadius="0" VerticalOptions="Start" HorizontalOptions="FillAndExpand" Margin="0,15,0,5" />
+                    <BoxView  BackgroundColor="#0078d7" HeightRequest="1" CornerRadius="0" VerticalOptions="Start" HorizontalOptions="Fill" Margin="0,15,0,5" />
 
 
-                    <StackLayout Padding="0" HorizontalOptions="FillAndExpand" Margin="0" Spacing="0" Orientation="Horizontal">
-                        <Label Text="Mandant &amp; Logindaten"  Margin="0,0,0,10" TextColor="#c0c0c0"  FontSize="18"  HorizontalOptions="StartAndExpand"/>
+                    <StackLayout Padding="0" HorizontalOptions="Fill" Margin="0" Spacing="0" Orientation="Horizontal">
+                        <Label Text="Mandant &amp; Logindaten"  Margin="0,0,0,10" TextColor="#c0c0c0"  FontSize="18"  HorizontalOptions="Start"/>
 
                     </StackLayout>
 
-                    <StackLayout x:Name="loginentry_container" Padding="0" HorizontalOptions="FillAndExpand" Margin="0" Spacing="10" >
+                    <StackLayout x:Name="loginentry_container" Padding="0" HorizontalOptions="Fill" Margin="0" Spacing="10" >
                     </StackLayout >
 
-                    <StackLayout x:Name="loginentry_container1" Padding="0" HorizontalOptions="FillAndExpand" Margin="0" Spacing="10" HeightRequest="340" >
+                    <StackLayout x:Name="loginentry_container1" Padding="0" HorizontalOptions="Fill" Margin="0" Spacing="10" HeightRequest="340" >
                         <Image x:Name="img2" Margin="5, 0, 2, 0" HeightRequest="200"  WidthRequest="200" 
                                                         VerticalOptions="Center" ></Image>
                     </StackLayout >
-                    <StackLayout x:Name="loginentry_container2" Padding="0" HorizontalOptions="FillAndExpand" Margin="0" Spacing="10" HeightRequest="340" >
+                    <StackLayout x:Name="loginentry_container2" Padding="0" HorizontalOptions="Fill" Margin="0" Spacing="10" HeightRequest="340" >
                     </StackLayout >
 
-                    <StackLayout Padding="0" HorizontalOptions="FillAndExpand" Margin="0,10,0,0" Spacing="10" Orientation="Horizontal">
+                    <StackLayout Padding="0" HorizontalOptions="Fill" Margin="0,10,0,0" Spacing="10" Orientation="Horizontal">
                         <Button Text="Snap" ></Button>
                         <Button Text="Regist" ></Button>
                         <!--<sfbuttons:SfButton Padding="5" Margin="0,0,0,0" CornerRadius="0"  x:Name="btn_SaveCredentials" WidthRequest="180"
-                                            VerticalOptions="Start" HorizontalOptions="EndAndExpand"
+                                            VerticalOptions="Start" HorizontalOptions="End"
                                             Clicked="Btn_SaveCred_Clicked" BackgroundColor="#e4e4e4" BorderColor="Transparent">
                             <StackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="1" Orientation="Horizontal" >
                                 <Image x:Name="img_save" Margin="5, 0, 2, 0" HeightRequest="20"  WidthRequest="20" 
@@ -88,9 +88,9 @@
                     </StackLayout >
 
 
-                    <BoxView  BackgroundColor="#0078d7" HeightRequest="1" CornerRadius="0" VerticalOptions="Start" HorizontalOptions="FillAndExpand" Margin="0,40,0,5" />
+                    <BoxView  BackgroundColor="#0078d7" HeightRequest="1" CornerRadius="0" VerticalOptions="Start" HorizontalOptions="Fill" Margin="0,40,0,5" />
                     <Label Text="Font Size"  Margin="0,0,0,10" TextColor="#a0a0a0"  FontSize="18"  HorizontalOptions="Start"/>
-                    <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="Center" Spacing="10" Orientation="Horizontal" >
+                    <StackLayout HorizontalOptions="Fill" VerticalOptions="Center" Spacing="10" Orientation="Horizontal" >
 
                         <!--<sfbuttons:SfRadioGroup x:Name="radioGroup_fontsize" CheckedChanged="RadioGroupFontSize_CheckedChanged" Orientation="Horizontal">
                             <sfbuttons:SfRadioButton x:Name="small" Text="KLEIN" CheckedColor="#0078d7"/>
@@ -99,16 +99,16 @@
                         </sfbuttons:SfRadioGroup>-->
                     </StackLayout >
 
-                    <BoxView  BackgroundColor="#0078d7" HeightRequest="1" CornerRadius="0" VerticalOptions="Start" HorizontalOptions="FillAndExpand" Margin="0,40,0,5" />
+                    <BoxView  BackgroundColor="#0078d7" HeightRequest="1" CornerRadius="0" VerticalOptions="Start" HorizontalOptions="Fill" Margin="0,40,0,5" />
                     <Label Text="Test Flashlight"  Margin="0,0,0,10" TextColor="#a0a0a0"  FontSize="18"  HorizontalOptions="Start"/>
-                    <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="Center" Orientation="Horizontal" Spacing="10">
+                    <StackLayout HorizontalOptions="Fill" VerticalOptions="Center" Orientation="Horizontal" Spacing="10">
                         <Button Text="Flash on" Clicked="FlashON_Handle_Clicked"></Button>
                         <Button Text="Flash off" Clicked="FlashOFF_Handle_Clicked_1"></Button>
                     </StackLayout>
                     
-                    <BoxView  BackgroundColor="#0078d7" HeightRequest="1" CornerRadius="0" VerticalOptions="Start" HorizontalOptions="FillAndExpand" Margin="0,40,0,25" />
+                    <BoxView  BackgroundColor="#0078d7" HeightRequest="1" CornerRadius="0" VerticalOptions="Start" HorizontalOptions="Fill" Margin="0,40,0,25" />
                     <Label Text="Network Connection"  Margin="0,0,0,10" TextColor="#a0a0a0"  FontSize="18"  HorizontalOptions="Start"/>
-                    <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="Center" Orientation="Horizontal" Spacing="10">
+                    <StackLayout HorizontalOptions="Fill" VerticalOptions="Center" Orientation="Horizontal" Spacing="10">
                         <Label HorizontalOptions="Center" x:Name="lblNetworkStatus"  TextColor="#ffffff"></Label>
                         <Label HorizontalOptions="Center" x:Name="lblNetworkProfile"  TextColor="#ffffff"></Label>
                     </StackLayout>

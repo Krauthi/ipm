@@ -48,7 +48,7 @@ namespace iPMCloud.Mobile
                 IsClippedToBounds = true,
                 HasShadow = true,
                 HorizontalOptions = LayoutOptions.End,
-                VerticalOptions = LayoutOptions.CenterAndExpand,
+                VerticalOptions = LayoutOptions.Center,
                 Padding = new Thickness(1),
                 Margin = new Thickness(3, 0, 3, 0),
                 Content = new StackLayout
@@ -56,8 +56,8 @@ namespace iPMCloud.Mobile
                     BackgroundColor = Color.FromArgb("#042d53"),
                     HeightRequest = 40,
                     WidthRequest = 40,
-                    HorizontalOptions = LayoutOptions.CenterAndExpand,
-                    VerticalOptions = LayoutOptions.CenterAndExpand,
+                    HorizontalOptions = LayoutOptions.Center,
+                    VerticalOptions = LayoutOptions.Center,
                     Padding = new Thickness(0),
                     Margin = new Thickness(0),
                     Spacing = 0,
@@ -68,8 +68,8 @@ namespace iPMCloud.Mobile
                             Margin = new Thickness(0),
                             HeightRequest = 30,
                             WidthRequest = 30,
-                            HorizontalOptions = LayoutOptions.CenterAndExpand,
-                            VerticalOptions = LayoutOptions.CenterAndExpand,
+                            HorizontalOptions = LayoutOptions.Center,
+                            VerticalOptions = LayoutOptions.Center,
                             Source = AppModel.Instance.imagesBase.Trash,
                         }
                     }
@@ -85,7 +85,7 @@ namespace iPMCloud.Mobile
 
             return new StackLayout
             {
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
                 Orientation = StackOrientation.Vertical,
                 Spacing = 0,
                 Padding = new Thickness(0),
@@ -94,7 +94,7 @@ namespace iPMCloud.Mobile
                 {
                     new StackLayout
                     {
-                        HorizontalOptions = LayoutOptions.FillAndExpand,
+                        HorizontalOptions = LayoutOptions.Fill,
                         Orientation = StackOrientation.Horizontal,
                         Spacing = 10,
                         Padding = new Thickness(0),
@@ -106,7 +106,7 @@ namespace iPMCloud.Mobile
                                 Margin = new Thickness(0, 0, 20, 0),
                                 HeightRequest = 60,
                                 HorizontalOptions = LayoutOptions.Start,
-                                VerticalOptions = LayoutOptions.CenterAndExpand,
+                                VerticalOptions = LayoutOptions.Center,
                                 Source = source,
                             },
                             new Label
@@ -114,8 +114,8 @@ namespace iPMCloud.Mobile
                                 Text = text,
                                 Padding = new Thickness(0),
                                 Margin = new Thickness(0),
-                                HorizontalOptions = LayoutOptions.StartAndExpand,
-                                VerticalOptions = LayoutOptions.CenterAndExpand,
+                                HorizontalOptions = LayoutOptions.Start,
+                                VerticalOptions = LayoutOptions.Center,
                                 FontSize = 14,
                                 TextColor = Colors.White,
                                 LineBreakMode = LineBreakMode.WordWrap
@@ -128,7 +128,7 @@ namespace iPMCloud.Mobile
                         BackgroundColor = Colors.Gray,
                         HeightRequest = 1,
                         VerticalOptions = LayoutOptions.Start,
-                        HorizontalOptions = LayoutOptions.FillAndExpand,
+                        HorizontalOptions = LayoutOptions.Fill,
                         Margin = new Thickness(0)
                     }
                 }

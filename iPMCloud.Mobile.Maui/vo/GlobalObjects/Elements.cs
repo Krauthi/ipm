@@ -141,8 +141,7 @@ namespace iPMCloud.Mobile.vo
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 BackgroundColor = Color.FromArgb("#041d43"),
                 Content = mainStack, 
-                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
-                IsClippedToBounds = true
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) }
             };
             return mainFrame;
         }
@@ -511,8 +510,7 @@ namespace iPMCloud.Mobile.vo
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 BackgroundColor = Colors.Transparent,//Color.FromArgb("#041d43"),
                 Content = mainStack,
-                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
-                
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) }
             };
             return mainFrame;
         }

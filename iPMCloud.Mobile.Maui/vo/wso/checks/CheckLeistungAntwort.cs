@@ -60,7 +60,7 @@ namespace iPMCloud.Mobile
         [NonSerialized]
         public Border frame_Bem = null;
         [NonSerialized]
-        public List<Frame> frame_ants = null;
+        public List<Border> frame_ants = null;
 
 
         [NonSerialized]

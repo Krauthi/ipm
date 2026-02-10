@@ -6093,10 +6093,10 @@ namespace iPMCloud.Mobile
         }
         private void _CategoryCommand(object s, EventArgs e)
         {
-            var childs = ((StackLayout)((Frame)s).Content).Children;
+            var childs = ((StackLayout)((Border)s).Content).Children;
             var category = ((Label)((StackLayout)childs[0]).Children[1]).Text;
             //var container = (StackLayout)childs[1];
-            var parentChilds = ((StackLayout)((Frame)s).Parent).Children;
+            var parentChilds = ((StackLayout)((Border)s).Parent).Children;
             var container = (StackLayout)parentChilds[1];
             if (container.IsVisible)
             {
@@ -6126,7 +6126,7 @@ namespace iPMCloud.Mobile
         {
             workerCategoriesElements.ToList().ForEach(item =>
             {
-                var el = ((StackLayout)((Frame)item.Value).Parent).Children[1];
+                var el = ((StackLayout)((Border)item.Value).Parent).Children[1];
                 if (el is VisualElement element) element.IsVisible = false;
             });
         }
@@ -6237,7 +6237,7 @@ namespace iPMCloud.Mobile
         {
             workerNamesElements.ToList().ForEach(item =>
             {
-                var el = ((StackLayout)((Frame)item.Value).Parent).Children[1];
+                var el = ((StackLayout)((Border)item.Value).Parent).Children[1];
                 if (el is VisualElement element) element.IsVisible = false;
             });
         }
@@ -6319,9 +6319,9 @@ namespace iPMCloud.Mobile
         private void WorkerBuildingCommand(object s, EventArgs e)
         {
             //var parentChilds = ((StackLayout)((Frame)s).Parent).Children;
-            var parentChilds1 = ((Frame)s).Parent;
+            var parentChilds1 = ((Border)s).Parent;
             var parentChilds2 = ((StackLayout)parentChilds1).Parent;
-            var parentChilds3 = ((Frame)parentChilds2).Parent;
+            var parentChilds3 = ((Border)parentChilds2).Parent;
             var parentChilds = ((StackLayout)parentChilds3).Children;
             var container = (StackLayout)parentChilds[1];
             var buildingid = container.ClassId;
@@ -6349,9 +6349,9 @@ namespace iPMCloud.Mobile
         {
             workerBuildingsElements.ToList().ForEach(item =>
             {
-                var parentChilds1 = ((Frame)item.Value).Parent;
+                var parentChilds1 = ((Border)item.Value).Parent;
                 var parentChilds2 = ((StackLayout)parentChilds1).Parent;
-                var parentChilds3 = ((Frame)parentChilds2).Parent;
+                var parentChilds3 = ((Border)parentChilds2).Parent;
                 var parentChilds = ((StackLayout)parentChilds3).Children;
                 var container = (StackLayout)parentChilds[1];
                 container.IsVisible = false;
@@ -6381,7 +6381,7 @@ namespace iPMCloud.Mobile
 
             ClearPageViews();
             await Task.Delay(1);
-            list_persontimes_scroll.ScrollToAsync(0, 0, false);
+            await list_persontimes_scroll.ScrollToAsync(0, 0, false);
 
             pick_persontimes_year.Items.Clear();
             pick_persontimes_year.Items.Add(DateTime.Now.ToString("yyyy"));
@@ -6595,7 +6595,7 @@ namespace iPMCloud.Mobile
             btn_todo_inout.BackgroundColor = Color.FromArgb("#999999");
             await Task.Delay(1);
             list_todo.Children.Clear();
-            list_todo_scroll.ScrollToAsync(0, 0, false);
+            await list_todo_scroll.ScrollToAsync(0, 0, false);
             _holdLastTodoList = 2;
             _holdLastTodoPage = 1;
             BuildTodoList(2);
@@ -6646,7 +6646,7 @@ namespace iPMCloud.Mobile
             btn_nachbuchen_Pos.BackgroundColor = pos == 0 ? Color.FromArgb("#042d53") : Color.FromArgb("#999999");
             btn_nachbuchen_Produkte.BackgroundColor = pos == 0 ? Color.FromArgb("#999999") : Color.FromArgb("#042d53");
             await Task.Delay(1);
-            buildingorderlist_category_scroll_Again.ScrollToAsync(0, 0, false);
+            await buildingorderlist_category_scroll_Again.ScrollToAsync(0, 0, false);
             BuildNachbuchenList();
         }
 

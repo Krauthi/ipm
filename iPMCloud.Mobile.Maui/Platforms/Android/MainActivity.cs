@@ -111,21 +111,23 @@ namespace iPMCloud.Mobile
                         Manifest.Permission.Camera,
                         Manifest.Permission.ReadExternalStorage,
                         Manifest.Permission.WriteExternalStorage,
+#if ANDROID33_0_OR_GREATER
                         Manifest.Permission.ReadMediaImages,
                         Manifest.Permission.ReadMediaVideo,
-                        Manifest.Permission.AccessWifiState,
-                        Manifest.Permission.AccessNetworkState,
-                        Manifest.Permission.ChangeNetworkState,
                         Manifest.Permission.ForegroundService,
-                        Manifest.Permission.Flashlight,
-                        Manifest.Permission.ChangeWifiState,
                         Manifest.Permission.PostNotifications,
-                        Manifest.Permission_group.Storage,
-                        Manifest.Permission_group.Camera,
-                        Manifest.Permission_group.Location,
                         Manifest.Permission_group.Notifications,
                         Manifest.Permission_group.ReadMediaVisual,
                         Manifest.Permission_group.ReadMediaAural,
+#endif
+                        Manifest.Permission.AccessWifiState,
+                        Manifest.Permission.AccessNetworkState,
+                        Manifest.Permission.ChangeNetworkState,
+                        Manifest.Permission.Flashlight,
+                        Manifest.Permission.ChangeWifiState,
+                        Manifest.Permission_group.Storage,
+                        Manifest.Permission_group.Camera,
+                        Manifest.Permission_group.Location,
                     }, 122); // your request code
 
 

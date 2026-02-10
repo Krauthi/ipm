@@ -64,7 +64,7 @@ namespace iPMCloud.Mobile
         public string fahrt { get; set; } = string.Empty;
 
         /// <summary>
-        /// L & G ... Grund
+        /// L u. G ... Grund
         /// </summary>
         public string top { get; set; } = string.Empty;
 

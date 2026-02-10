@@ -1,6 +1,4 @@
 ﻿using Newtonsoft.Json;
-// TODO: Plugin.Connectivity not MAUI-compatible - use Microsoft.Maui.Networking.Connectivity
-// using Plugin.Connectivity;
 using System;
 using System.Collections.Generic;
 using System.Linq;

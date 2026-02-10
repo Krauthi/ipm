@@ -42,11 +42,16 @@ namespace iPMCloud.Mobile
         /// </summary>
         public static StackLayout GetAttachmentForNoticeElement(ImageSource source, string text, ICommand func = null)
         {
-            var deleteButton = new Frame
+            var deleteButton = new Border
             {
                 BackgroundColor = Color.FromArgb("#041d43"),
-                IsClippedToBounds = true,
-                HasShadow = true,
+                Shadow = new Shadow
+                {
+                    Brush = Colors.Black,
+                    Opacity = 0.5f,
+                    Radius = 5,
+                    Offset = new Point(2, 2)
+                },
                 HorizontalOptions = LayoutOptions.End,
                 VerticalOptions = LayoutOptions.Center,
                 Padding = new Thickness(1),

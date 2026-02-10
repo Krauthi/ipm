@@ -414,7 +414,7 @@ namespace iPMCloud.Mobile
                 // https://developer.apple.com/library/ios/featuredarticles/iPhoneURLScheme_Reference/MapLinks/MapLinks.html
                 await Launcher.OpenAsync(new Uri(routeApple));
             }
-            else if (Device.RuntimePlatform == Device.Android)
+            else if (DeviceInfo.Platform == DevicePlatform.Android)
             {
                 //await Launcher.OpenAsync(new Uri("https://www.google.com/maps/dir/" + routefrom));
                 await Launcher.OpenAsync(new Uri(route));

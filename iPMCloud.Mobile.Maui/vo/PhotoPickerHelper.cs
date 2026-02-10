@@ -109,7 +109,7 @@ namespace iPMCloud.Mobile.Helpers
                                 removeCommand)
                         };
 
-                        var frame = (Frame)((StackLayout)(bildWSO.stack.Children[0])).Children[2];
+                        var frame = (Border)((StackLayout)(bildWSO.stack.Children[0])).Children[2];
                         frame.GestureRecognizers.Clear();
                         frame.GestureRecognizers.Add(new TapGestureRecognizer()
                         {
@@ -183,7 +183,7 @@ namespace iPMCloud.Mobile.Helpers
                 };
 
                 // Frame Gesture Recognizer einrichten
-                var frame = (Frame)((StackLayout)(bildWSO.stack.Children[0])).Children[2];
+                var frame = (Border)((StackLayout)(bildWSO.stack.Children[0])).Children[2];
                 frame.GestureRecognizers.Clear();
                 frame.GestureRecognizers.Add(new TapGestureRecognizer()
                 {

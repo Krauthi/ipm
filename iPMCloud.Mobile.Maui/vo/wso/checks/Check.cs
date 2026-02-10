@@ -2240,8 +2240,8 @@ namespace iPMCloud.Mobile
             tapNone.Tapped -= (object o, TappedEventArgs ev) => { originalQuest.signPad.Clear(); };
             tapNone.Tapped += (object o, TappedEventArgs ev) => { originalQuest.signPad.Clear(); };
             var tapYes = new TapGestureRecognizer();
-            tapYes.Tapped -= (object o, TappedEventArgs ev) => { originalQuest.Tap_a7_ReturnSig(); };
-            tapYes.Tapped += (object o, TappedEventArgs ev) => { originalQuest.Tap_a7_ReturnSig(); };
+            tapYes.Tapped -= (object o, TappedEventArgs ev) => { _ = originalQuest.Tap_a7_ReturnSig(); };
+            tapYes.Tapped += (object o, TappedEventArgs ev) => { _ = originalQuest.Tap_a7_ReturnSig(); };
 
             var frame_Yes = new Border
             {

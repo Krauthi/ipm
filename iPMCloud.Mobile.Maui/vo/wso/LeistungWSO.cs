@@ -311,15 +311,15 @@ namespace iPMCloud.Mobile
 
             v.Children.Add(hmuell);
 
-            var badge = new Frame
+            var badge = new Border
             {
                 BackgroundColor = Color.FromArgb(pos.prio.badgeColor),
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
                 Margin = new Thickness(-16, -3, 0, 0),
                 Padding = new Thickness(4, 2, 4, 2),
-                CornerRadius = 5,
+                StrokeShape = new RoundRectangle { CornerRadius = 5 },
                 IsVisible = pos.prio.showBadge && (pos.prio.days > 10000000 ? false : true),
                 Content = new Label
                 {
@@ -462,15 +462,15 @@ namespace iPMCloud.Mobile
 
             v.Children.Add(hmuell);
 
-            var badge = new Frame
+            var badge = new Border
             {
                 BackgroundColor = Color.FromArgb(pos.prio.badgeColor),
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
                 Margin = new Thickness(-16, -3, 0, 0),
                 Padding = new Thickness(4, 2, 4, 2),
-                CornerRadius = 5,
+                StrokeShape = new RoundRectangle { CornerRadius = 5 },
                 IsVisible = pos.prio.showBadge && (pos.prio.days > 10000000 ? false : true),
                 Content = new Label
                 {
@@ -638,15 +638,15 @@ namespace iPMCloud.Mobile
 
             v.Children.Add(hmuell);
 
-            var badge = new Frame
+            var badge = new Border
             {
                 BackgroundColor = Color.FromArgb(pos.prio.badgeColor),
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
                 Margin = new Thickness(-16, -3, 0, 0),
                 Padding = new Thickness(4, 2, 4, 2),
-                CornerRadius = 5,
+                StrokeShape = new RoundRectangle { CornerRadius = 5 },
                 IsVisible = pos.prio.showBadge && (pos.prio.days > 10000000 ? false : true),
                 Content = new Label
                 {
@@ -2507,15 +2507,15 @@ namespace iPMCloud.Mobile
                 LineBreakMode = LineBreakMode.WordWrap,
             };
 
-            var badge = new Frame
+            var badge = new Border
             {
                 BackgroundColor = Color.FromArgb(l.prio.badgeColor),
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.End,
                 VerticalOptions = LayoutOptions.Center,
                 Margin = new Thickness(0),
                 Padding = new Thickness(4, 2, 4, 2),
-                CornerRadius = 5,
+                StrokeShape = new RoundRectangle { CornerRadius = 5 },
                 IsVisible = l.prio.showBadge && (l.prio.days > 10000000 ? false : true),
                 Content = new Label
                 {
@@ -2775,15 +2775,15 @@ namespace iPMCloud.Mobile
 
             v.Children.Add(hmuell);
 
-            var badge = new Frame
+            var badge = new Border
             {
                 BackgroundColor = Color.FromArgb(pos.prio.badgeColor),
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
                 Margin = new Thickness(-13, -3, 0, 0),
                 Padding = new Thickness(4, 2, 4, 2),
-                CornerRadius = 5,
+                StrokeShape = new RoundRectangle { CornerRadius = 5 },
                 IsVisible = pos.prio.showBadge && (pos.prio.days > 10000000 ? false : true),
                 Content = new Label
                 {

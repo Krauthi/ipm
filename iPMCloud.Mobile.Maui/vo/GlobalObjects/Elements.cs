@@ -512,7 +512,7 @@ namespace iPMCloud.Mobile.vo
                 BackgroundColor = Colors.Transparent,//Color.FromArgb("#041d43"),
                 Content = mainStack,
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
-                IsClippedToBounds = true,
+                
             };
             return mainFrame;
         }
@@ -560,7 +560,7 @@ namespace iPMCloud.Mobile.vo
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 BackgroundColor = Colors.Transparent,//Color.FromArgb("#041d43"),
                 Content = horiStack,
-                IsClippedToBounds = true,
+                
             };
             return mainFrame;
         }
@@ -628,7 +628,7 @@ namespace iPMCloud.Mobile.vo
                 BackgroundColor = isSelected ? Color.FromArgb("#70144d73") : Color.FromArgb("#041d43"),
                 Content = headerStackHorizontal,
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
-                IsClippedToBounds = true, //WidthRequest = 280,
+                 //WidthRequest = 280,
             };
             return mainFrame;
         }
@@ -668,7 +668,7 @@ namespace iPMCloud.Mobile.vo
                 BackgroundColor = Color.FromArgb("#041d43"),
                 Content = headerStackHorizontal,
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) }, IsVisible = !isSelected,
-                IsClippedToBounds = true, WidthRequest = 40, HeightRequest = 40,
+                 WidthRequest = 40, HeightRequest = 40,
                 MinimumWidthRequest = 40,
                 MinimumHeightRequest = 40,
             };

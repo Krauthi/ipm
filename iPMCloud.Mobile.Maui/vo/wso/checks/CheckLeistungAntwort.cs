@@ -46,19 +46,19 @@ namespace iPMCloud.Mobile
         public bool inChangeMode = false;
 
         [NonSerialized]
-        public Frame mainFrame = null;
+        public Border mainFrame = null;
         [NonSerialized]
-        public Frame frame_Reset = null;
+        public Border frame_Reset = null;
         [NonSerialized]
-        public Frame frame_Yes = null;
+        public Border frame_Yes = null;
         [NonSerialized]
-        public Frame frame_No = null;
+        public Border frame_No = null;
         [NonSerialized]
-        public Frame frame_None = null;
+        public Border frame_None = null;
         [NonSerialized]
-        public Frame frame_Pic = null;
+        public Border frame_Pic = null;
         [NonSerialized]
-        public Frame frame_Bem = null;
+        public Border frame_Bem = null;
         [NonSerialized]
         public List<Frame> frame_ants = null;
 
@@ -113,13 +113,13 @@ namespace iPMCloud.Mobile
         }
         public void Tap_SetAllGuis_a0()
         {
-            frame_Yes.BorderColor = isReady && a0 == 2 ? Colors.White : Colors.Transparent;
+            frame_Yes.Stroke = isReady && a0 == 2 ? Colors.White : Colors.Transparent;
             frame_Yes.BackgroundColor = isReady && a0 != 2 ? Color.FromArgb("#666666") : Color.FromArgb("#04732d");
             frame_Yes.Opacity = isReady && a0 != 2 ? 0.5 : 1;
-            frame_No.BorderColor = isReady && a0 == 1 ? Colors.White : Colors.Transparent;
+            frame_No.Stroke = isReady && a0 == 1 ? Colors.White : Colors.Transparent;
             frame_No.BackgroundColor = isReady && a0 != 1 ? Color.FromArgb("#666666") : Color.FromArgb("#73042d");
             frame_No.Opacity = isReady && a0 != 1 ? 0.5 : 1;
-            frame_None.BorderColor = none ? Colors.White : Colors.Transparent;
+            frame_None.Stroke = none ? Colors.White : Colors.Transparent;
             frame_None.BackgroundColor = !none ? Color.FromArgb("#666666") : Color.FromArgb("#938302");
             frame_None.Opacity = !none ? 0.5 : 1;
             frame_Reset.IsVisible = isReady;
@@ -199,7 +199,7 @@ namespace iPMCloud.Mobile
             lb_required.IsVisible = required == 1 && !isReady;
             img_ready.IsVisible = isReady;
 
-            frame_None.BorderColor = none ? Colors.White : Colors.Transparent;
+            frame_None.Stroke = none ? Colors.White : Colors.Transparent;
             frame_None.BackgroundColor = !none ? Color.FromArgb("#666666") : Color.FromArgb("#938302");
             frame_None.Opacity = !none ? 0.5 : 1;
 
@@ -266,7 +266,7 @@ namespace iPMCloud.Mobile
             lb_required.IsVisible = required == 1 && !isReady;
             img_ready.IsVisible = isReady;
 
-            frame_None.BorderColor = none ? Colors.White : Colors.Transparent;
+            frame_None.Stroke = none ? Colors.White : Colors.Transparent;
             frame_None.BackgroundColor = !none ? Color.FromArgb("#666666") : Color.FromArgb("#938302");
             frame_None.Opacity = !none ? 0.5 : 1;
 
@@ -302,7 +302,7 @@ namespace iPMCloud.Mobile
         }
         public async void Tap_SetAllGuis_a3()
         {
-            frame_None.BorderColor = none ? Colors.White : Colors.Transparent;
+            frame_None.Stroke = none ? Colors.White : Colors.Transparent;
             frame_None.BackgroundColor = !none ? Color.FromArgb("#666666") : Color.FromArgb("#938302");
             frame_None.Opacity = !none ? 0.5 : 1;
 
@@ -382,14 +382,14 @@ namespace iPMCloud.Mobile
                 ants.Remove(img.ClassId);
                 img.Source = AppModel.Instance.imagesBase.No;
                 img.Opacity = 0.5;
-                foreach (var item in frame_ants) { if (item.ClassId == img.ClassId) item.BorderColor = Colors.Transparent; };
+                foreach (var item in frame_ants) { if (item.ClassId == img.ClassId) item.Stroke = Colors.Transparent; };
             }
             else
             {
                 ants.Add(img.ClassId);
                 img.Source = AppModel.Instance.imagesBase.Yes;
                 img.Opacity = 1;
-                foreach (var item in frame_ants) { if (item.ClassId == img.ClassId) item.BorderColor = Colors.White; };
+                foreach (var item in frame_ants) { if (item.ClassId == img.ClassId) item.Stroke = Colors.White; };
             }
             a4 = Utils.ConvertStringListToString(ants, ";");
             CheckIsReadyAndSet_a4a();
@@ -400,7 +400,7 @@ namespace iPMCloud.Mobile
             a4 = "";
             foreach (var item in frame_ants)
             {
-                item.BorderColor = Colors.Transparent;
+                item.Stroke = Colors.Transparent;
                 var img = (item.Content as StackLayout).Children[1] as Image;
                 img.Source = AppModel.Instance.imagesBase.No;
                 img.Opacity = 0.5;
@@ -421,7 +421,7 @@ namespace iPMCloud.Mobile
             lb_required.IsVisible = required == 1 && !isReady;
             img_ready.IsVisible = isReady;
 
-            frame_None.BorderColor = none ? Colors.White : Colors.Transparent;
+            frame_None.Stroke = none ? Colors.White : Colors.Transparent;
             frame_None.BackgroundColor = !none ? Color.FromArgb("#666666") : Color.FromArgb("#938302");
             frame_None.Opacity = !none ? 0.5 : 1;
 
@@ -461,7 +461,7 @@ namespace iPMCloud.Mobile
                 wasSet = true;
                 foreach (var item in frame_ants)
                 {
-                    if (item.ClassId == img.ClassId) { item.BorderColor = Colors.Transparent; }
+                    if (item.ClassId == img.ClassId) { item.Stroke = Colors.Transparent; }
                 };
             }
             else
@@ -471,7 +471,7 @@ namespace iPMCloud.Mobile
                 img.Opacity = 1;
                 foreach (var item in frame_ants)
                 {
-                    if (item.ClassId == img.ClassId) { item.BorderColor = Colors.White; }
+                    if (item.ClassId == img.ClassId) { item.Stroke = Colors.White; }
                 };
             }
             foreach (var item in frame_ants)
@@ -492,7 +492,7 @@ namespace iPMCloud.Mobile
             foreach (var item in frame_ants)
             {
                 item.IsVisible = true;
-                item.BorderColor = Colors.Transparent;
+                item.Stroke = Colors.Transparent;
                 var img = (item.Content as StackLayout).Children[1] as Image;
                 img.Source = AppModel.Instance.imagesBase.No_Round;
                 img.Opacity = 0.5;
@@ -517,7 +517,7 @@ namespace iPMCloud.Mobile
             lb_required.IsVisible = required == 1 && !isReady;
             img_ready.IsVisible = isReady;
 
-            frame_None.BorderColor = none ? Colors.White : Colors.Transparent;
+            frame_None.Stroke = none ? Colors.White : Colors.Transparent;
             frame_None.BackgroundColor = !none ? Color.FromArgb("#666666") : Color.FromArgb("#938302");
             frame_None.Opacity = !none ? 0.5 : 1;
 
@@ -552,7 +552,7 @@ namespace iPMCloud.Mobile
         }
         public void Tap_SetAllGuis_a7()
         {
-            frame_None.BorderColor = none ? Colors.White : Colors.Transparent;
+            frame_None.Stroke = none ? Colors.White : Colors.Transparent;
             frame_None.BackgroundColor = !none ? Color.FromArgb("#666666") : Color.FromArgb("#938302");
             frame_None.Opacity = !none ? 0.5 : 1;
 

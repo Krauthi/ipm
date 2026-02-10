@@ -818,7 +818,7 @@ namespace iPMCloud.Mobile
         }
 
 
-        public static StackLayout GetOptWinterCheckItemHeadItem(Object value, AuftragWSO order, Frame btn, Label lb, ICommand func,
+        public static StackLayout GetOptWinterCheckItemHeadItem(Object value, AuftragWSO order, Border btn, Label lb, ICommand func,
             List<IntBemerkungWSOPair> selectedBemerkungForNoticeList_DirektPos)
         {
             var model = ((value as List<Object>)[0] as AppModel);
@@ -1030,7 +1030,7 @@ namespace iPMCloud.Mobile
         }
 
 
-        public static StackLayout GetOptWinterCheckItem(LeistungWSO lei, PlanPersonMobile p, Frame btn, Label lb, AuftragWSO order, ICommand func, IntBemerkungWSOPair obj)
+        public static StackLayout GetOptWinterCheckItem(LeistungWSO lei, PlanPersonMobile p, Border btn, Label lb, AuftragWSO order, ICommand func, IntBemerkungWSOPair obj)
         {
             CheckBox checkBox = new CheckBox
             {
@@ -1085,16 +1085,16 @@ namespace iPMCloud.Mobile
                 VerticalOptions = LayoutOptions.Start,
                 IsVisible = false,
                 Children = {
-                        new Frame {
+                        new Border {
                             BackgroundColor = Color.FromArgb("#007700"),
-                            IsClippedToBounds = true, HasShadow = true,
+                             Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                             HorizontalOptions = LayoutOptions.Start,
                             VerticalOptions = LayoutOptions.Start,
                             HeightRequest = 15,
                             WidthRequest = 28,
                             Margin = new Thickness(0),
                             Padding = new Thickness(1,1,0,0),
-                            CornerRadius = 10,
+                            StrokeShape = new RoundRectangle { CornerRadius = 10 },
                             Content = winterBemerkungBadgeCount
                         },
                     }
@@ -1293,7 +1293,7 @@ namespace iPMCloud.Mobile
 
 
 
-        public static void ChangeObjektPlanWeekMobileWinterDirekt(CheckBox checkBox, PlanPersonMobile p, Frame btn, Label lb, LeistungWSO lei, AuftragWSO order)
+        public static void ChangeObjektPlanWeekMobileWinterDirekt(CheckBox checkBox, PlanPersonMobile p, Border btn, Label lb, LeistungWSO lei, AuftragWSO order)
         {
             checkBox.IsChecked = !checkBox.IsChecked;
             //            p.isSelected = checkBox.IsChecked;
@@ -1313,7 +1313,7 @@ namespace iPMCloud.Mobile
             lb.IsVisible = !btn.IsVisible;
         }
 
-        public static void ChangeObjektPlanWeekMobileWinterDirektC(CheckBox checkBox, PlanPersonMobile p, Frame btn, Label lb, LeistungWSO lei, AuftragWSO order)
+        public static void ChangeObjektPlanWeekMobileWinterDirektC(CheckBox checkBox, PlanPersonMobile p, Border btn, Label lb, LeistungWSO lei, AuftragWSO order)
         {
             //            p.isSelected = checkBox.IsChecked;
             lei.selected = checkBox.IsChecked;
@@ -1334,7 +1334,7 @@ namespace iPMCloud.Mobile
 
 
 
-        public static StackLayout GetPlanedTodayCheckItem(bool sel, PlanPersonMobile p, Frame btn, Label lb, PlanPersonMobile mainP, ICommand func, IntBemerkungWSOPair obj)
+        public static StackLayout GetPlanedTodayCheckItem(bool sel, PlanPersonMobile p, Border btn, Label lb, PlanPersonMobile mainP, ICommand func, IntBemerkungWSOPair obj)
         {
             var b = AppModel.Instance.AllBuildings.Find(o => o.id == p.objektid);
 
@@ -1465,16 +1465,16 @@ namespace iPMCloud.Mobile
                     VerticalOptions = LayoutOptions.Start,
                     IsVisible = false,
                     Children = {
-                        new Frame {
+                        new Border {
                             BackgroundColor = Color.FromArgb("#007700"),
-                            IsClippedToBounds = true, HasShadow = true,
+                             Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                             HorizontalOptions = LayoutOptions.Start,
                             VerticalOptions = LayoutOptions.Start,
                             HeightRequest = 15,
                             WidthRequest = 28,
                             Margin = new Thickness(0),
                             Padding = new Thickness(1,1,0,0),
-                            CornerRadius = 10,
+                            StrokeShape = new RoundRectangle { CornerRadius = 10 },
                             Content = bemBadgeCount
                         },
                     }
@@ -1636,7 +1636,7 @@ namespace iPMCloud.Mobile
             return stv;
         }
 
-        public static void ChangeObjektPlanWeekMobileDirekt(CheckBox checkBox, PlanPersonMobile p, Frame btn, Label lb, PlanPersonMobile mainP)
+        public static void ChangeObjektPlanWeekMobileDirekt(CheckBox checkBox, PlanPersonMobile p, Border btn, Label lb, PlanPersonMobile mainP)
         {
             checkBox.IsChecked = !checkBox.IsChecked;
             p.isSelected = checkBox.IsChecked;
@@ -1654,7 +1654,7 @@ namespace iPMCloud.Mobile
             }
         }
 
-        public static void ChangeObjektPlanWeekMobileDirektC(CheckBox checkBox, PlanPersonMobile p, Frame btn, Label lb, PlanPersonMobile mainP)
+        public static void ChangeObjektPlanWeekMobileDirektC(CheckBox checkBox, PlanPersonMobile p, Border btn, Label lb, PlanPersonMobile mainP)
         {
             p.isSelected = checkBox.IsChecked;
             if (mainP != null && mainP.more != null && mainP.more.Count > 0)

@@ -230,15 +230,15 @@ namespace iPMCloud.Mobile
                 v.Children.Add(typ);
             }
 
-            var badge = new Frame
+            var badge = new Border
             {
                 BackgroundColor = Color.FromArgb(_prio < 0 ? "#ff0000" : (_prio < 1 ? "#ffcc00" : "#009900")),
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
                 Margin = new Thickness(-14, -3, 0, 0),
                 Padding = new Thickness(4, 2, 4, 2),
-                CornerRadius = 5,
+                StrokeShape = new RoundRectangle { CornerRadius = 5 },
                 IsVisible = (_prio < 1360),
                 Content = new Label
                 {
@@ -473,15 +473,15 @@ namespace iPMCloud.Mobile
                 LineBreakMode = LineBreakMode.WordWrap,
             };
 
-            var badge = new Frame
+            var badge = new Border
             {
                 BackgroundColor = Color.FromArgb(count < 0 ? "#ff0000" : (count < 1 ? "#ffcc00" : "#009900")),
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.End,
                 VerticalOptions = LayoutOptions.Center,
                 Margin = new Thickness(0),
                 Padding = new Thickness(4, 2, 4, 2),
-                CornerRadius = 5,
+                StrokeShape = new RoundRectangle { CornerRadius = 5 },
                 Content = new Label
                 {
                     Text = Int32.Parse("" + count).ToString(),

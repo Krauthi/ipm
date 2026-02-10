@@ -70,7 +70,7 @@ namespace iPMCloud.Mobile
                             new Frame
                             {
                                 BackgroundColor = Color.FromArgb("#041d43"),
-                                IsClippedToBounds = true, HasShadow = true,
+                                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                                 HorizontalOptions = LayoutOptions.End,
                                 VerticalOptions = LayoutOptions.CenterAndExpand,
                                 Padding = new Thickness(1),

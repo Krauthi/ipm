@@ -292,7 +292,6 @@ namespace iPMCloud.Mobile
             var badge = new Frame
             {
                 BackgroundColor = Color.FromArgb(_prio < 0 ? "#ff0000" : (_prio < 1 ? "#ffcc00" : "#009900")),
-                IsClippedToBounds = true,
                 HasShadow = true,
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
@@ -328,7 +327,6 @@ namespace iPMCloud.Mobile
                 BackgroundColor = Color.FromArgb("#041d43"),
                 Content = h,
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
-                IsClippedToBounds = true,
                 ClassId = "" + order.id,
             };
 
@@ -440,7 +438,6 @@ namespace iPMCloud.Mobile
             var badge = new Frame
             {
                 BackgroundColor = Color.FromArgb(_prio < 0 ? "#ff0000" : (_prio < 1 ? "#ffcc00" : "#009900")),
-                IsClippedToBounds = true,
                 HasShadow = true,
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
@@ -477,7 +474,6 @@ namespace iPMCloud.Mobile
                 BackgroundColor = Color.FromArgb("#041d43"),
                 Content = h,
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
-                IsClippedToBounds = true,
                 ClassId = "" + order.id,
             };
 
@@ -511,7 +507,6 @@ namespace iPMCloud.Mobile
             var badge = new Frame
             {
                 BackgroundColor = Color.FromArgb(count < 0 ? "#ff0000" : (count < 1 ? "#ffcc00" : "#009900")),
-                IsClippedToBounds = true,
                 HasShadow = true,
                 HorizontalOptions = LayoutOptions.End,
                 VerticalOptions = LayoutOptions.Center,
@@ -671,7 +666,6 @@ namespace iPMCloud.Mobile
                 BackgroundColor = Color.FromArgb("#33041d43"),
                 Content = h,
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
-                IsClippedToBounds = true,
                 ClassId = "" + order.id,
             };
 
@@ -940,7 +934,6 @@ namespace iPMCloud.Mobile
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 BackgroundColor = Colors.Transparent,
                 Content = h,
-                IsClippedToBounds = true,
                 ClassId = "" + order.id,
             };
 
@@ -1028,7 +1021,6 @@ namespace iPMCloud.Mobile
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 BackgroundColor = Colors.Transparent,
                 Content = h,
-                IsClippedToBounds = true,
                 ClassId = "" + order.id,
             };
 
@@ -1090,7 +1082,6 @@ namespace iPMCloud.Mobile
             var badge = new Frame
             {
                 BackgroundColor = Color.FromArgb(count < 0 ? "#ff0000" : (count < 1 ? "#ffcc00" : "#009900")),
-                IsClippedToBounds = true,
                 HasShadow = true,
                 HorizontalOptions = LayoutOptions.End,
                 VerticalOptions = LayoutOptions.Center,
@@ -1127,7 +1118,6 @@ namespace iPMCloud.Mobile
                 badgeMax = new Frame
                 {
                     BackgroundColor = Color.FromArgb(countMax < 0 ? "#ff0000" : (countMax < 1 ? "#ffcc00" : "#009900")),
-                    IsClippedToBounds = true,
                     HasShadow = true,
                     HorizontalOptions = LayoutOptions.End,
                     VerticalOptions = LayoutOptions.Center,
@@ -1170,16 +1160,15 @@ namespace iPMCloud.Mobile
 
         public static Border GetTodoCountWarningSmall(double count)
         {
-            var badge = new Frame
+            var badge = new Border
             {
                 BackgroundColor = Color.FromArgb(count < 0 ? "#ff0000" : (count < 1 ? "#ffcc00" : "#009900")),
-                IsClippedToBounds = true,
-                HasShadow = true,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Center,
                 Margin = new Thickness(0),
                 Padding = new Thickness(4, 2, 4, 2),
-                CornerRadius = 5,
+                StrokeShape = new RoundRectangle { CornerRadius = 5 },
                 MinimumWidthRequest = 100,
                 Content = new Label
                 {

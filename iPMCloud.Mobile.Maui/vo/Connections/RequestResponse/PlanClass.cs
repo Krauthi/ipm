@@ -1111,7 +1111,6 @@ namespace iPMCloud.Mobile
                 Spacing = 0,
                 Padding = new Thickness(1),
                 Margin = new Thickness(0),
-                IsClippedToBounds = true,
                 BackgroundColor = Color.FromArgb("#144d73"),
                 Children = {
                     new Image
@@ -1135,7 +1134,6 @@ namespace iPMCloud.Mobile
                 BackgroundColor = Color.FromArgb("#041d43"),
                 Content = noticeStack,
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
-                IsClippedToBounds = true,
             };
             if (func != null)
             {
@@ -1493,7 +1491,6 @@ namespace iPMCloud.Mobile
                     Spacing = 0,
                     Padding = new Thickness(1),
                     Margin = new Thickness(0),
-                    IsClippedToBounds = true,
                     BackgroundColor = Color.FromArgb("#144d73"),
                     Children = {
                     new Image
@@ -1517,7 +1514,6 @@ namespace iPMCloud.Mobile
                     BackgroundColor = Color.FromArgb("#041d43"),
                     Content = noticeStack,
                     Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
-                    IsClippedToBounds = true,
                 };
                 if (func != null)
                 {

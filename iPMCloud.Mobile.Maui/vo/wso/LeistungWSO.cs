@@ -314,7 +314,6 @@ namespace iPMCloud.Mobile
             var badge = new Frame
             {
                 BackgroundColor = Color.FromArgb(pos.prio.badgeColor),
-                IsClippedToBounds = true,
                 HasShadow = true,
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
@@ -349,7 +348,6 @@ namespace iPMCloud.Mobile
                 BackgroundColor = Colors.Transparent,
                 Content = h,
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
-                IsClippedToBounds = true,
                 ClassId = "" + pos.id,
             };
 
@@ -467,7 +465,6 @@ namespace iPMCloud.Mobile
             var badge = new Frame
             {
                 BackgroundColor = Color.FromArgb(pos.prio.badgeColor),
-                IsClippedToBounds = true,
                 HasShadow = true,
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
@@ -503,7 +500,6 @@ namespace iPMCloud.Mobile
                 BackgroundColor = Colors.Transparent,
                 Content = h,
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
-                IsClippedToBounds = true,
                 ClassId = "" + pos.id,
             };
 
@@ -645,7 +641,6 @@ namespace iPMCloud.Mobile
             var badge = new Frame
             {
                 BackgroundColor = Color.FromArgb(pos.prio.badgeColor),
-                IsClippedToBounds = true,
                 HasShadow = true,
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
@@ -681,7 +676,6 @@ namespace iPMCloud.Mobile
                 BackgroundColor = Colors.Transparent,
                 Content = h,
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
-                IsClippedToBounds = true,
                 ClassId = "" + pos.id,
             };
 
@@ -808,7 +802,6 @@ namespace iPMCloud.Mobile
                 BackgroundColor = Colors.Transparent,
                 Content = h,
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
-                IsClippedToBounds = true,
                 ClassId = "" + pos.id,
             };
             if (func != null)
@@ -1005,7 +998,6 @@ namespace iPMCloud.Mobile
                 BackgroundColor = Colors.Transparent,
                 Content = vmain,
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
-                IsClippedToBounds = true,
                 ClassId = "" + pos.objekt.plz + "##" + pos.objekt.ort + "##" + pos.objekt.strasse + "##" + pos.objekt.hsnr + "##" + pos.objekt.objektname + "##" + pos.objekt.objektnr,
             };
 
@@ -1977,7 +1969,6 @@ namespace iPMCloud.Mobile
                 Spacing = 0,
                 Padding = new Thickness(0, 0, 0, 0),
                 Margin = new Thickness(0, 0, 0, 0),
-                IsClippedToBounds = true,
                 Children = {new Image
                     {
                         Margin = new Thickness(0, 0, 0, 0),
@@ -1998,7 +1989,6 @@ namespace iPMCloud.Mobile
                 BackgroundColor = Color.FromArgb("#041d43"),
                 Content = noticeStack,
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
-                IsClippedToBounds = true,
             };
             if (func != null)
             {
@@ -2025,7 +2015,6 @@ namespace iPMCloud.Mobile
                 Orientation = StackOrientation.Horizontal,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 Children = { btnNoticeFrame, notices },
-                IsClippedToBounds = true,
             };
 
 
@@ -2219,7 +2208,6 @@ namespace iPMCloud.Mobile
                 BackgroundColor = Colors.Transparent,
                 Content = h,
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
-                IsClippedToBounds = true,
             };
 
 
@@ -2359,7 +2347,6 @@ namespace iPMCloud.Mobile
                 BackgroundColor = Colors.Transparent,
                 Content = h,
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
-                IsClippedToBounds = true,
             };
 
             return mainFrame;
@@ -2453,7 +2440,6 @@ namespace iPMCloud.Mobile
                 BackgroundColor = Colors.Transparent,
                 Content = h,
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
-                IsClippedToBounds = true,
             };
 
             return mainFrame;
@@ -2524,7 +2510,6 @@ namespace iPMCloud.Mobile
             var badge = new Frame
             {
                 BackgroundColor = Color.FromArgb(l.prio.badgeColor),
-                IsClippedToBounds = true,
                 HasShadow = true,
                 HorizontalOptions = LayoutOptions.End,
                 VerticalOptions = LayoutOptions.Center,
@@ -2680,7 +2665,6 @@ namespace iPMCloud.Mobile
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 BackgroundColor = Colors.Transparent,
                 Content = h,
-                IsClippedToBounds = true,
                 ClassId = "" + pos.id,
             };
 
@@ -2794,7 +2778,6 @@ namespace iPMCloud.Mobile
             var badge = new Frame
             {
                 BackgroundColor = Color.FromArgb(pos.prio.badgeColor),
-                IsClippedToBounds = true,
                 HasShadow = true,
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
@@ -2829,7 +2812,6 @@ namespace iPMCloud.Mobile
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 BackgroundColor = Colors.Transparent,
                 Content = h,
-                IsClippedToBounds = true,
                 ClassId = "" + pos.id,
             };
 

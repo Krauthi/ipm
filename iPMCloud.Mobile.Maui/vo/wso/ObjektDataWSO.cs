@@ -208,7 +208,6 @@ namespace iPMCloud.Mobile
                 Spacing = 0,
                 Padding = new Thickness(0, 0, 0, 0),
                 Margin = new Thickness(0, 0, 0, 0),
-                IsClippedToBounds = true,
                 Children = { new Image
                 {
                     Margin = new Thickness(3, 0, 0, 0),
@@ -237,7 +236,6 @@ namespace iPMCloud.Mobile
                 HorizontalOptions = LayoutOptions.End,
                 Padding = new Thickness(0, 0, 0, 0),
                 Margin = new Thickness(0, 0, -3, 0),
-                IsClippedToBounds = true,
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 Content = noticeStack
             };
@@ -482,7 +480,6 @@ namespace iPMCloud.Mobile
                 Spacing = 0,
                 Padding = new Thickness(0, 0, 0, 0),
                 Margin = new Thickness(0, 0, 0, 0),
-                IsClippedToBounds = true,
                 Children = { new Image
                 {
                     Margin = new Thickness(3, 0, 0, 0),
@@ -503,7 +500,6 @@ namespace iPMCloud.Mobile
                 HorizontalOptions = LayoutOptions.Start,
                 Padding = new Thickness(0, 0, 0, 0),
                 Margin = new Thickness(0, 0, -3, 0),
-                IsClippedToBounds = true,
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 Content = noticeStack
             };
@@ -831,7 +827,6 @@ namespace iPMCloud.Mobile
                 HorizontalOptions = LayoutOptions.Start,
                 Padding = new Thickness(1),
                 Margin = new Thickness(8, 15, 8, 10),
-                IsClippedToBounds = true,
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 Content = new StackLayout
                 {
@@ -875,7 +870,6 @@ namespace iPMCloud.Mobile
                 HorizontalOptions = LayoutOptions.EndAndExpand,
                 Padding = new Thickness(1),
                 Margin = new Thickness(0, 17, 5, 10),
-                IsClippedToBounds = true,
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 Content = new StackLayout
                 {
@@ -912,7 +906,6 @@ namespace iPMCloud.Mobile
                 HorizontalOptions = LayoutOptions.End,
                 Padding = new Thickness(1),
                 Margin = new Thickness(5, 17, 5, 10),
-                IsClippedToBounds = true,
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 Content = new StackLayout
                 {

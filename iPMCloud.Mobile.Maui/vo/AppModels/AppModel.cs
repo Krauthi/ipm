@@ -159,8 +159,8 @@ namespace iPMCloud.Mobile.vo
 
         public List<Int32> Plan_ObjekteThisWeek = new List<Int32>();
         public List<Int32> Plan_KatThisWeek = new List<Int32>();
-        public Border _showall_again_OrderCategory_frame = new Border();
-        public Border _showall_OrderCategory_frame = new Border();
+        public Frame _showall_again_OrderCategory_frame = new Frame();
+        public Frame _showall_OrderCategory_frame = new Frame();
         public bool _showall_again_OrderCategory = false;
         public bool _showall_OrderCategory = false;
 

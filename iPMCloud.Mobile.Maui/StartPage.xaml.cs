@@ -282,7 +282,7 @@ namespace iPMCloud.Mobile
                 {
                     tgr.Tapped += (s, e) => { CompanySelected(s, e); };
                 }
-                Frame companyView = Elements.GetCompanySelectionItem(c, model.imagesBase.Building, isSelected);
+                Border companyView = Elements.GetCompanySelectionItem(c, model.imagesBase.Building, isSelected);
                 companyView.GestureRecognizers.Clear();
                 companyView.GestureRecognizers.Add(tgr);
                 companyView.ClassId = c.CustomerNumber;
@@ -291,7 +291,7 @@ namespace iPMCloud.Mobile
                 {
                     tgrDelete.Tapped += (s, e) => { CompanyDeleted(s, e); };
                 }
-                Frame xBtn = Elements.GetXButton(c, model.imagesBase.Trash, isSelected);
+                Border xBtn = Elements.GetXButton(c, model.imagesBase.Trash, isSelected);
                 xBtn.GestureRecognizers.Clear();
                 xBtn.GestureRecognizers.Add(tgrDelete);
                 xBtn.ClassId = c.CustomerNumber;

@@ -233,7 +233,6 @@ namespace iPMCloud.Mobile
             var badge = new Frame
             {
                 BackgroundColor = Color.FromArgb(_prio < 0 ? "#ff0000" : (_prio < 1 ? "#ffcc00" : "#009900")),
-                IsClippedToBounds = true,
                 HasShadow = true,
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
@@ -269,7 +268,6 @@ namespace iPMCloud.Mobile
                 BackgroundColor = Color.FromArgb("#041d43"),
                 Content = h,
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
-                IsClippedToBounds = true,
                 ClassId = "" + cat.id,
             };
 
@@ -327,7 +325,6 @@ namespace iPMCloud.Mobile
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 BackgroundColor = Colors.Transparent,
                 Content = h,
-                IsClippedToBounds = true,
                 ClassId = "" + cat.id,
             };
 
@@ -416,7 +413,6 @@ namespace iPMCloud.Mobile
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 BackgroundColor = Colors.Transparent,
                 Content = h,
-                IsClippedToBounds = true,
                 ClassId = "" + cat.id,
             };
 
@@ -480,7 +476,6 @@ namespace iPMCloud.Mobile
             var badge = new Frame
             {
                 BackgroundColor = Color.FromArgb(count < 0 ? "#ff0000" : (count < 1 ? "#ffcc00" : "#009900")),
-                IsClippedToBounds = true,
                 HasShadow = true,
                 HorizontalOptions = LayoutOptions.End,
                 VerticalOptions = LayoutOptions.Center,
@@ -681,7 +676,6 @@ namespace iPMCloud.Mobile
                 BackgroundColor = Color.FromArgb("#041d43"),
                 Content = h,
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
-                IsClippedToBounds = true,
                 ClassId = "" + cat.id,
             };
 

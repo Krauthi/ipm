@@ -389,7 +389,7 @@ namespace iPMCloud.Mobile
                 BackgroundColor = onlyText ? Color.FromArgb("#cc04532d") : Color.FromArgb("#cc042d53"),
             };
 
-            Frame warn = new Frame { IsVisible = false };
+            Border warn = new Border { IsVisible = false };
             if (prio < 1360)
             {
                 warn = AuftragWSO.GetTodoCountWarningSmall(prio);

@@ -1034,7 +1034,7 @@ namespace iPMCloud.Mobile
                     var foundInWork = model.allPositionInWork.leistungen.Find(l => l.id == pos.id);
                     inWork = foundInWork != null;
                 }
-                Frame stackPos = null;
+                Border stackPos = null;
                 isOptionalPos = (pos.art == "Leistung" && pos.nichtpauschal == 1 || pos.art == "Produkt");
 
                 if (pos.art == "Produkt")

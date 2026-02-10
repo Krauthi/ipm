@@ -68,7 +68,7 @@ namespace iPMCloud.Mobile
             {
                 if (od.status == "Aktiv")
                 {
-                    Frame stackPos = null;
+                    Border stackPos = null;
                     var changed = JavaScriptDateConverter.Convert(long.Parse(od.standdatum)).ToString("ddMMyyyy");
                     var today = DateTime.Now.ToString("ddMMyyyy");
 

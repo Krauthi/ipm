@@ -25,6 +25,41 @@ The basic MAUI project structure has been created with **multi-platform support 
 - **AndroidManifest.xml**: Updated minSdkVersion from 27 to 21
 - **Android Resources**: All copied to Platforms/Android/Resources/
 
+### 2.1. Android Startup Flow ✓
+The Android application follows a proper startup sequence with SplashActivity and MainActivity:
+
+#### Startup Sequence:
+1. **MainApplication.OnCreate()** - Executed first (Application-level initialization)
+   - Creates notification channels
+   - Initializes application-wide resources
+   - Called before any Activity is created
+
+2. **SplashActivity** - Launcher Activity (MainLauncher=true)
+   - Displays splash screen with app logo
+   - Uses `@style/Maui.SplashTheme` with `@drawable/splash_screen`
+   - Has `NoHistory=true` to prevent it from staying in the back stack
+   - Shows for ~500ms, then starts MainActivity
+   - Uses `ActivityFlags.NewTask | ActivityFlags.ClearTask` to ensure clean navigation
+   - Forwards any Intent extras (e.g., from push notifications)
+
+3. **MainActivity** - MAUI Host Activity (MainLauncher=false)
+   - Inherits from `MauiAppCompatActivity`
+   - Initializes MAUI platform via `Platform.Init()`
+   - Sets up fonts, permissions, UI configuration
+   - Initializes AppModel and logging
+   - Hosts the MAUI application UI
+
+#### Activity Attributes:
+- **SplashActivity**: `MainLauncher=true, NoHistory=true, Exported=true`
+- **MainActivity**: `MainLauncher=false, Exported=true, LaunchMode=SingleTop`
+
+#### Back Button Behavior:
+- Pressing back from MainActivity exits the app (not returning to SplashActivity)
+- This is ensured by `NoHistory=true` and the `ClearTask` flag
+
+#### Note:
+The Activities are defined via C# attributes (`[Activity(...)]`). The AndroidManifest.xml does not need explicit activity declarations for these, as MAUI automatically generates the necessary manifest entries during build.
+
 ### 3. Project Configuration ✓
 - Created iPMCloud.Mobile.Maui.csproj targeting **net9.0-android and net9.0-ios**
 - Added iOS-specific PropertyGroup with codesigning configuration

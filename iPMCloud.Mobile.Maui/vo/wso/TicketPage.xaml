@@ -10,10 +10,10 @@
 
         <!-- Filter-Buttons -->
         <HorizontalStackLayout Grid.Row="0" Padding="10" Spacing="10">
-            <Button Text="Alle" Clicked="OnFilterAll"/>
+            <!--<Button Text="Alle" Clicked="OnFilterAll"/>
             <Button Text="Neu" Clicked="OnFilterNew"/>
             <Button Text="In Arbeit" Clicked="OnFilterInProgress"/>
-            <Button Text="Erledigt" Clicked="OnFilterCompleted"/>
+            <Button Text="Erledigt" Clicked="OnFilterCompleted"/>-->
         </HorizontalStackLayout>
 
         <!-- Ticket-Liste -->

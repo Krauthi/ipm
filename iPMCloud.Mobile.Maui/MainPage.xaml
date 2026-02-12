@@ -11450,7 +11450,7 @@
                 VerticalOptions="Start">
                 <Label
                     Margin="10,8"
-                    FontAttributes="BOLD"
+                    FontAttributes="Bold"
                     FontSize="20"
                     HorizontalOptions="Fill"
                     HorizontalTextAlignment="Start"

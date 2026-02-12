@@ -3,278 +3,467 @@ using Android.App;
 using Android.Content;
 using Android.Content.PM;
 using Android.Content.Res;
-// TODO: Google Play Services not compatible - comment out until Firebase is migrated
-// using Android.Gms.Common;
 using Android.OS;
 using Android.Runtime;
 using Android.Util;
 using Android.Views;
 using AndroidX.Core.App;
 using iPMCloud.Mobile.vo;
-// TODO: Replace Matcha.BackgroundService with MAUI alternative
-// using Matcha.BackgroundService.Droid;
-// TODO: Replace Plugin.FirebasePushNotification with MAUI alternative
-// using Plugin.FirebasePushNotification;
+using iPMCloud.Mobile.Platforms.Android.Services;
 using System;
 using System.Reflection;
 using Microsoft.Maui;
-using Microsoft.Maui.Controls;
-using iPMCloud.Mobile.Platforms.Android.Services;
+using Microsoft.Maui.ApplicationModel;
 
 namespace iPMCloud.Mobile
 {
-    [Activity(Label = "iPM-Cloud", Icon = "@drawable/icon", Theme = "@style/MainTheme", Exported = true,
-        MainLauncher = false, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation, ScreenOrientation = ScreenOrientation.Portrait)]
+    [Activity(
+        Label = "iPM-Cloud", 
+        //Icon = "@drawable/icon",  
+        Theme = "@style/Maui.SplashTheme",
+        Exported = true,
+        MainLauncher = false, 
+        LaunchMode = LaunchMode.SingleTop,
+        ConfigurationChanges = ConfigChanges.ScreenSize | 
+                               ConfigChanges.Orientation | 
+                               ConfigChanges.UiMode | 
+                               ConfigChanges.ScreenLayout | 
+                               ConfigChanges.SmallestScreenSize | 
+                               ConfigChanges.Density,
+        ScreenOrientation = ScreenOrientation.Portrait)]
     public class MainActivity : MauiAppCompatActivity
     {
+        #region Fields & Properties
+        
         public AppModel model;
         public App app;
-
-
-        public static MainActivity Instance;
-
+        public static MainActivity Instance { get; private set; }
 
         internal static readonly string CHANNEL_ID = "ipmcloud_message_channel";
         internal static readonly int NOTIFICATION_ID = 100;
 
-        private static readonly string TAG = "IPM-CLOUD-" + typeof(MainActivity).Name;
+        private static readonly string TAG = "IPM-CLOUD-MainActivity";
 
-        private string txt = "";
+        #endregion
 
-        [Obsolete]
-        private void initFontScale()
+        #region Lifecycle Methods
+
+        protected override void OnCreate(Bundle savedInstanceState)
         {
-            Configuration configuration = Resources.Configuration;
-            configuration.FontScale = (float)1.00;
-            //0.85 small, 1 standard, 1.15 big，1.3 more bigger ，1.45 supper big 
-            DisplayMetrics metrics = new DisplayMetrics();
-            WindowManager.DefaultDisplay.GetMetrics(metrics);
-            metrics.ScaledDensity = configuration.FontScale * metrics.Density;
-            BaseContext.Resources.UpdateConfiguration(configuration, metrics);
-        }
-
-        protected override void OnActivityResult(int requestCode, Result resultCode, Intent intent)
-        {
-
-            base.OnActivityResult(requestCode, resultCode, intent);
-        }
-
-        protected override void OnCreate(Bundle bundle)
-        {
-            Instance = this;
-            initFontScale();
-            
-            // SwipeView is no longer experimental in MAUI
-            // Forms.SetFlags("SwipeView_Experimental");
-
-            // TODO: Replace BackgroundAggregator with MAUI alternative
-            // BackgroundAggregator.Init(this);
-
-            base.OnCreate(bundle);
-
-            // TODO: Initialize Maps in MauiProgram.cs instead
-            // Microsoft.Maui.Controls.Handlers.MapHandler.Mapper...
-
             try
             {
+                Instance = this;
+                
+                // ✅ MAUI Platform initialisieren (WICHTIG!)
+                Platform.Init(this, savedInstanceState);
+                
+                // Font Scale vor base.OnCreate setzen
+                InitFontScale();
+                
+                base.OnCreate(savedInstanceState);
 
+                // Google Play Services Check
                 if (!GooglePlayServicesChecker.IsAvailable(this))
                 {
-                    System.Diagnostics.Debug.WriteLine("Google Play Services nicht verfügbar");
+                    Log.Warn(TAG, "Google Play Services nicht verfügbar");
                 }
 
-
-                model = AppModel.Instance;// init saved Settings or get default
-                
-                // TODO: Replace NativeMedia with MAUI MediaPicker
-                // NativeMedia.Platform.Init(this, bundle);
-                
-                // MAUI initialization is now handled in MauiProgram.cs
-                // Xamarin.Forms.Forms.Init(this, bundle);
-                // Xamarin.Essentials.Platform.Init(this, bundle);
-                
-                // TODO: Replace ZXing with ZXing.Net.Maui
-                // global::ZXing.Net.Mobile.Forms.Android.Platform.Init();
-
+                // AppModel initialisieren
+                model = AppModel.Instance;
                 model.Activity = this;
 
-                // TODO: DependencyService is replaced by DI in MauiProgram.cs
-                // DependencyService.Register<ImageResizer>();
-
+                // NLog initialisieren
                 InitializeNLog();
 
-                HideNavAndStatusBar();
-                Window.DecorView.SystemUiVisibilityChange += DecorView_SystemUiVisibilityChange;
+                // UI Konfiguration
+                ConfigureUI();
 
-                ActivityCompat.RequestPermissions(this, new String[] {
-                        Manifest.Permission.Internet,
-                        Manifest.Permission.Camera,
-                        Manifest.Permission.ReadExternalStorage,
-                        Manifest.Permission.WriteExternalStorage,
-#if ANDROID33_0_OR_GREATER
-                        Manifest.Permission.ReadMediaImages,
-                        Manifest.Permission.ReadMediaVideo,
-                        Manifest.Permission.ForegroundService,
-                        Manifest.Permission.PostNotifications,
-                        Manifest.Permission_group.Notifications,
-                        Manifest.Permission_group.ReadMediaVisual,
-                        Manifest.Permission_group.ReadMediaAural,
-#endif
-                        Manifest.Permission.AccessWifiState,
-                        Manifest.Permission.AccessNetworkState,
-                        Manifest.Permission.ChangeNetworkState,
-                        Manifest.Permission.Flashlight,
-                        Manifest.Permission.ChangeWifiState,
-                        Manifest.Permission_group.Storage,
-                        Manifest.Permission_group.Camera,
-                        Manifest.Permission_group.Location,
-                    }, 122); // your request code
+                // Permissions anfordern
+                RequestRequiredPermissions();
 
+                // App Version setzen
+                SetAppVersion();
 
-                model.Version = GetVersion();
-                model.Build = "" + GetBuild();
-
+                // AppModel initialisieren
                 model.InitAppModel();
 
-                //model.CheckPermissions();
+                // Notification Channel erstellen
+                CreateNotificationChannel();
 
-                // Note: App initialization is now handled by MauiProgram.cs
-                // app = new App();
-                // LoadApplication(app);
-                
-                Window.SetStatusBarColor(Android.Graphics.Color.Argb(255, 0, 0, 0));
+                // Status Bar Color
+                if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop)
+                {
+                    Window?.SetStatusBarColor(Android.Graphics.Color.Argb(255, 0, 0, 0));
+                }
 
-                // TODO: Replace FirebasePushNotificationManager with MAUI alternative
-                // FirebasePushNotificationManager.ProcessIntent(this, Intent);
-
+                Log.Info(TAG, "MainActivity erfolgreich initialisiert");
             }
             catch (Exception ex)
             {
-                AppModel.Logger.Error("ERROR (4) MainActivity LoadApplication: " + ex.Message);
+                Log.Error(TAG, $"OnCreate Error: {ex.Message}");
+                AppModel.Logger?.Error($"MainActivity OnCreate: {ex.Message}");
             }
         }
 
+        protected override void OnNewIntent(Intent intent)
+        {
+            base.OnNewIntent(intent);
+            
+            try
+            {
+                // Notification Intent Handling
+                if (intent?.Extras != null)
+                {
+                    foreach (var key in intent.Extras.KeySet())
+                    {
+                        var value = intent.Extras.GetString(key);
+                        Log.Debug(TAG, $"Intent Extra: {key} = {value}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(TAG, $"OnNewIntent Error: {ex.Message}");
+            }
+        }
 
+        protected override void OnStart()
+        {
+            base.OnStart();
+            Log.Debug(TAG, "OnStart");
+        }
+
+        protected override void OnResume()
+        {
+            base.OnResume();
+            HideNavAndStatusBar();
+            Log.Debug(TAG, "OnResume");
+        }
+
+        protected override void OnPause()
+        {
+            base.OnPause();
+            Log.Debug(TAG, "OnPause");
+        }
+
+        protected override void OnStop()
+        {
+            base.OnStop();
+            Log.Debug(TAG, "OnStop");
+        }
+
+        protected override void OnDestroy()
+        {
+            try
+            {
+                if (Window?.DecorView != null)
+                {
+                    Window.DecorView.SystemUiVisibilityChange -= DecorView_SystemUiVisibilityChange;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(TAG, $"OnDestroy Error: {ex.Message}");
+            }
+            
+            base.OnDestroy();
+            Log.Debug(TAG, "OnDestroy");
+        }
+
+        #endregion
+
+        #region Configuration Methods
+
+        private void InitFontScale()
+        {
+            try
+            {
+                Configuration configuration = Resources?.Configuration;
+                if (configuration == null) return;
+
+                configuration.FontScale = 1.00f; // Fixed font scale
+                DisplayMetrics metrics = new DisplayMetrics();
+                WindowManager?.DefaultDisplay?.GetMetrics(metrics);
+                
+                if (metrics != null)
+                {
+                    metrics.ScaledDensity = configuration.FontScale * metrics.Density;
+                    BaseContext?.Resources?.UpdateConfiguration(configuration, metrics);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(TAG, $"InitFontScale Error: {ex.Message}");
+            }
+        }
+
+        private void ConfigureUI()
+        {
+            try
+            {
+                HideNavAndStatusBar();
+                
+                if (Window?.DecorView != null)
+                {
+                    Window.DecorView.SystemUiVisibilityChange += DecorView_SystemUiVisibilityChange;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(TAG, $"ConfigureUI Error: {ex.Message}");
+            }
+        }
+
+        private void HideNavAndStatusBar()
+        {
+            try
+            {
+                if (Window?.DecorView == null) return;
+
+                var uiOptions = (int)Window.DecorView.SystemUiVisibility;
+                uiOptions |= (int)SystemUiFlags.LayoutStable;
+                uiOptions |= (int)SystemUiFlags.LayoutHideNavigation;
+                uiOptions |= (int)SystemUiFlags.LayoutFullscreen;
+                uiOptions |= (int)SystemUiFlags.HideNavigation;
+                uiOptions |= (int)SystemUiFlags.Fullscreen;
+                uiOptions |= (int)SystemUiFlags.ImmersiveSticky;
+
+                Window.DecorView.SystemUiVisibility = (StatusBarVisibility)uiOptions;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(TAG, $"HideNavAndStatusBar Error: {ex.Message}");
+            }
+        }
 
         private void DecorView_SystemUiVisibilityChange(object sender, Android.Views.View.SystemUiVisibilityChangeEventArgs e)
         {
             HideNavAndStatusBar();
         }
 
-        private void HideNavAndStatusBar()
+        #endregion
+
+        #region Permissions
+
+        private void RequestRequiredPermissions()
         {
-            int uiOptions = (int)Window.DecorView.SystemUiVisibility;
-            uiOptions |= (int)SystemUiFlags.LayoutStable;
-            uiOptions |= (int)SystemUiFlags.LayoutHideNavigation;
-            uiOptions |= (int)SystemUiFlags.LayoutFullscreen;
-            uiOptions |= (int)SystemUiFlags.HideNavigation;
+            try
+            {
+                var permissions = new System.Collections.Generic.List<string>
+                {
+                    Manifest.Permission.Internet,
+                    Manifest.Permission.Camera,
+                    Manifest.Permission.AccessWifiState,
+                    Manifest.Permission.AccessNetworkState,
+                    Manifest.Permission.ChangeNetworkState,
+                    Manifest.Permission.Flashlight,
+                    Manifest.Permission.ChangeWifiState,
+                };
 
-            uiOptions |= (int)SystemUiFlags.Fullscreen;
-            uiOptions |= (int)SystemUiFlags.ImmersiveSticky;
-            uiOptions |= (int)SystemUiFlags.Immersive;
+                // Android 13+ Permissions
+                if (Build.VERSION.SdkInt >= BuildVersionCodes.Tiramisu)
+                {
+                    permissions.Add(Manifest.Permission.PostNotifications);
+                    permissions.Add(Manifest.Permission.ReadMediaImages);
+                    permissions.Add(Manifest.Permission.ReadMediaVideo);
+                }
+                else
+                {
+                    // Ältere Android Versionen
+                    permissions.Add(Manifest.Permission.ReadExternalStorage);
+                    permissions.Add(Manifest.Permission.WriteExternalStorage);
+                }
 
-            Window.DecorView.SystemUiVisibility = (StatusBarVisibility)uiOptions;
+                ActivityCompat.RequestPermissions(this, permissions.ToArray(), 122);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(TAG, $"RequestPermissions Error: {ex.Message}");
+            }
         }
+
+        public override void OnRequestPermissionsResult(
+            int requestCode, 
+            string[] permissions, 
+            [GeneratedEnum] Permission[] grantResults)
+        {
+            try
+            {
+                Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+                base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+
+                // Log granted/denied permissions
+                for (int i = 0; i < permissions.Length; i++)
+                {
+                    var granted = grantResults[i] == Permission.Granted;
+                    Log.Debug(TAG, $"Permission {permissions[i]}: {(granted ? "Granted" : "Denied")}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(TAG, $"OnRequestPermissionsResult Error: {ex.Message}");
+            }
+        }
+
+        #endregion
+
+        #region Notifications
 
         public void CreateNotificationChannel()
         {
-            if (Build.VERSION.SdkInt < BuildVersionCodes.O)
+            try
             {
-                AppModel.Logger.Warn("PushNotification FCM CreateNotificationChannel() - Notification channels are new in API 26 (and not a part of the support library). There is no need to create a notification channel on older versions of Android.");
-                return;
+                if (Build.VERSION.SdkInt < BuildVersionCodes.O)
+                {
+                    Log.Warn(TAG, "Notification channels nicht unterstützt (API < 26)");
+                    return;
+                }
+
+                var notificationManager = GetSystemService(NotificationService) as NotificationManager;
+                
+                // Prüfen ob Channel bereits existiert
+                if (notificationManager?.GetNotificationChannel(CHANNEL_ID) != null)
+                {
+                    Log.Debug(TAG, "Notification Channel existiert bereits");
+                    return;
+                }
+
+                var channel = new NotificationChannel(
+                    CHANNEL_ID, 
+                    "iPM Cloud Benachrichtigungen", 
+                    NotificationImportance.High)
+                {
+                    Description = "Wichtige Benachrichtigungen von iPM Cloud Mobile"
+                };
+
+                channel.EnableLights(true);
+                channel.LightColor = Android.Graphics.Color.ParseColor("#0078D4");
+                channel.EnableVibration(true);
+                channel.SetVibrationPattern(new long[] { 0, 500, 250, 500 });
+                channel.LockscreenVisibility = NotificationVisibility.Public;
+
+                notificationManager?.CreateNotificationChannel(channel);
+                
+                Log.Info(TAG, "Notification Channel erstellt");
             }
-
-            var channel = new NotificationChannel(CHANNEL_ID, "iPM Notifications", NotificationImportance.High)
+            catch (Exception ex)
             {
-                Description = "Dieser Nachrichtenkanal ist wichtig für die  Kominikation mit Ihrer registrierten Zentrale und diese App."
-            };
-
-            var notificationManager = (NotificationManager)GetSystemService(Android.Content.Context.NotificationService);
-            notificationManager.CreateNotificationChannel(channel);
+                Log.Error(TAG, $"CreateNotificationChannel Error: {ex.Message}");
+            }
         }
 
-        private void InitializeNLog()
+        #endregion
+
+        #region Version Info
+
+        private void SetAppVersion()
         {
-            Assembly assembly = this.GetType().Assembly;
-            string assemblyName = assembly.GetName().Name;
-            new LogService().Initialize(assembly, assemblyName);
+            try
+            {
+                model.Version = GetVersion();
+                model.Build = GetBuild().ToString();
+                
+                Log.Info(TAG, $"App Version: {model.Version}, Build: {model.Build}");
+            }
+            catch (Exception ex)
+            {
+                Log.Error(TAG, $"SetAppVersion Error: {ex.Message}");
+            }
         }
 
         public string GetVersion()
         {
-            var context = global::Android.App.Application.Context;
-
-            PackageManager manager = context.PackageManager;
-            PackageInfo info = manager.GetPackageInfo(context.PackageName, 0);
-
-
-            return info.VersionName;
+            try
+            {
+                var context = Android.App.Application.Context;
+                var manager = context.PackageManager;
+                var info = manager?.GetPackageInfo(context.PackageName, 0);
+                return info?.VersionName ?? "Unknown";
+            }
+            catch (Exception ex)
+            {
+                Log.Error(TAG, $"GetVersion Error: {ex.Message}");
+                return "Unknown";
+            }
         }
 
         public int GetBuild()
         {
-            var context = global::Android.App.Application.Context;
-            PackageManager manager = context.PackageManager;
-            PackageInfo info = manager.GetPackageInfo(context.PackageName, 0);
+            try
+            {
+                var context = Android.App.Application.Context;
+                var manager = context.PackageManager;
+                var info = manager?.GetPackageInfo(context.PackageName, 0);
 
-            return info.VersionCode;//Versionsnummer
+                if (Build.VERSION.SdkInt >= BuildVersionCodes.P)
+                {
+                    return (int)(info?.LongVersionCode ?? 0);
+                }
+                else
+                {
+#pragma warning disable CS0618 // Type or member is obsolete
+                    return info?.VersionCode ?? 0;
+#pragma warning restore CS0618
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(TAG, $"GetBuild Error: {ex.Message}");
+                return 0;
+            }
         }
 
-        /// for use the flashlight
-        public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
+        #endregion
+
+        #region Logging
+
+        private void InitializeNLog()
         {
-            //PermissionsImplementation.Current.OnRequestPermissionsResult(25, permissions, grantResults);
-            Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
-            //ZXing.Net.Mobile.Android.PermissionsHandler.OnRequestPermissionsResult(requestCode, permissions, grantResults);
-            base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+            try
+            {
+                var assembly = GetType().Assembly;
+                var assemblyName = assembly.GetName().Name;
+                new LogService().Initialize(assembly, assemblyName);
+                
+                Log.Info(TAG, "NLog initialisiert");
+            }
+            catch (Exception ex)
+            {
+                Log.Error(TAG, $"InitializeNLog Error: {ex.Message}");
+            }
         }
 
+        #endregion
+
+        #region Back Button Handling
 
         public override void OnBackPressed()
         {
+            // Custom back button handling hier einfügen
+            // Beispiel: Popups schließen, Navigation zurück, etc.
+            
+            // Standard-Verhalten (App schließen)
             base.OnBackPressed();
-            //if (model.PopupLayoutSub != null)
-            //{
-            //    model.PopupLayoutSub.Dismiss();
-            //    model.PopupLayoutSub = null;
-            //    return;
-            //}
-
-            //if (model.PopupLayout != null)
-            //{
-            //    model.PopupLayout.Dismiss();
-            //    model.PopupLayout = null;
-            //    return;
-            //}
-            //return;
-            //if (model.PageNavigator.NavigateBackToPreviousPage())
-            //{
-            //  //  base.OnBackPressed(); // close app (only Android)
-            //}
         }
 
-        protected override void OnStart()
-        {
-            base.OnStart();
+        #endregion
 
-        }
-        protected override void OnPause()
+        #region Activity Result (für Camera/Gallery)
+
+        protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
         {
-            base.OnPause();
-        }
-        protected override void OnResume()
-        {
-            //IsPlayServicesAvailable();
-            base.OnResume();
-        }
-        //protected override void OnRestart()
-        //{
-        //    base.OnRestart();
-        //}
-        protected override void OnStop()
-        {
-            base.OnStop();
+            try
+            {
+                base.OnActivityResult(requestCode, resultCode, data);
+                
+                Log.Debug(TAG, $"OnActivityResult: RequestCode={requestCode}, ResultCode={resultCode}");
+            }
+            catch (Exception ex)
+            {
+                Log.Error(TAG, $"OnActivityResult Error: {ex.Message}");
+            }
         }
 
+        #endregion
     }
 }

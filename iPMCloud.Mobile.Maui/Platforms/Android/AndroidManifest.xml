@@ -1,73 +1,56 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.ipmcloud.ipm.mobile" android:installLocation="internalOnly" android:versionCode="2201210" android:versionName="2.1.210">
-	<uses-sdk android:minSdkVersion="21" android:targetSdkVersion="35" />
-	<permission android:name="com.ipmcloud.ipm.mobile.permission.C2D_MESSAGE" android:protectionLevel="signature" />
-	<uses-feature android:name="android.hardware.location" android:required="false" />
-	<uses-feature android:name="android.hardware.location.gps" android:required="false" />
-	<uses-feature android:name="android.hardware.location.network" android:required="false" />
-	<uses-feature android:name="android.hardware.camera" />
-	<uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
-	<uses-feature android:name="android.hardware.camera.flash" android:required="false" />
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-	<uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
-	<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-	<uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" package="com.ipmcloud.ipm.mobile" android:versionName="2.1.0">
+	<!-- SDK Versionen explizit angeben -->
+	<uses-sdk tools:overrideLibrary="             androidx.lifecycle.runtime,             com.google.android.play.core,             com.google.android.gms.base,             com.google.android.gms.common,             com.google.android.gms.tasks" />
+	<application android:allowBackup="true" android:supportsRtl="true" 
+				 android:label="iPM-Cloud" android:theme="@style/Maui.SplashTheme" 
+				 android:networkSecurityConfig="@xml/network_security_config" 
+				 tools:replace="android:allowBackup,android:label"
+				 android:icon="@drawable/icon">
+
+		<!--  Option 2: Wenn du MAUI AppIcon nutzen willst (empfohlen) -->
+		<!-- android:icon="@mipmap/appicon"
+        android:roundIcon="@mipmap/appicon_round" -->
+
+		<!--  Option 3: Temporär kein Icon (zum Testen) -->
+		<!-- Einfach weglassen, Android nutzt dann Default -->
+		
+		
+		<!-- Main Activity -->
+		<activity android:name="com.companyname.ipmcloud.mobile.MainActivity" 
+				  android:exported="true" android:launchMode="singleTop" 
+				  android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|keyboard" 
+				  android:windowSoftInputMode="adjustResize">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+		</activity>
+		<!-- File Provider (für Kamera/Galerie) -->
+		<provider android:name="androidx.core.content.FileProvider" android:authorities="${applicationId}.fileprovider" android:exported="false" android:grantUriPermissions="true">
+			<meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths" />
+		</provider>
+
+	</application>
+	<!-- Permissions -->
+	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-	<uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
-	<uses-permission android:name="android.permission.CAMERA" />
-	<uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-	<uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-	<uses-permission android:name="android.permission.INTERNET" />
-	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-	<uses-permission android:name="android.permission.FLASHLIGHT" />
-	<uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
-	<uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
-	<uses-permission android:name="android.permission.CONTROL_LOCATION_UPDATES" />
-	<uses-permission android:name="android.permission.START_FOREGROUND_SERVICES_FROM_BACKGROUND" />
-	<uses-permission android:name="android.permission.INSTANT_APP_FOREGROUND_SERVICE" />
-	<uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
+	<!-- Notification Permissions (Android 13+) -->
 	<uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-	<uses-permission android:name="android.permission.REQUEST_COMPANION_START_FOREGROUND_SERVICES_FROM_BACKGROUND" />
+	<uses-permission android:name="android.permission.VIBRATE" />
+	<!-- Camera & Storage -->
+	<uses-permission android:name="android.permission.CAMERA" />
+	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="32" tools:ignore="ScopedStorage" />
+	<!-- Android 13+ Storage Permissions -->
+	<uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
 	<uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
-	<!--<uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="remove"/>-->
-	<application android:label="iPM-Cloud Mobile" android:hardwareAccelerated="true" android:requestLegacyExternalStorage="true" android:allowBackup="false" android:logo="@drawable/icon" android:fullBackupOnly="false" android:icon="@drawable/icon">
-		<provider android:name="android.support.v4.content.FileProvider" android:authorities="com.ipmcloud.ipm.mobile.fileprovider" android:exported="false" android:grantUriPermissions="true">
-			<meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@drawable/file_paths"></meta-data>
-		</provider>
-		<activity android:name=".MainActivity" android:exported="true" android:screenOrientation="portrait" android:hardwareAccelerated="true" android:configChanges="keyboard|keyboardHidden|orientation">
-			<!--<intent-filter>
-        <action android:name=".MainActivity" />
-        <category android:name="android.intent.category.DEFAULT" />
-      </intent-filter>-->
-
-			<!--
-			
-        <intent-filter>
-            <action android:name="android.intent.action.VIEW" />
-            <category android:name="android.intent.category.DEFAULT" />
-            <category android:name="android.intent.category.BROWSABLE" />
-            <data android:scheme="com.ipmcloud.ipm.mobile" android:host="ipm-cloud.de" android:pathPrefix="/start" />
-        </intent-filter>
-			-->
-			
-		</activity>
-		<meta-data android:name="android.content.APP_RESTRICTIONS" android:resource="@xml/app_restrictions" />
-		<!--<meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/ic_stat_ic_notification" />
-		<receiver android:name="com.google.firebase.iid.FirebaseInstanceIdInternalReceiver" android:exported="false" />
-		<receiver android:name="com.google.firebase.iid.FirebaseInstanceIdReceiver" android:exported="true" android:permission="com.google.android.c2dm.permission.SEND">
-			<intent-filter>
-				<action android:name="com.google.android.c2dm.intent.RECEIVE" />
-				<action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-				<category android:name="${applicationId}" />
-			</intent-filter>
-		</receiver>-->
-	</application>
-	<queries>
-		<intent>
-			<action android:name="android.media.action.IMAGE_CAPTURE" />
-		</intent>
-	</queries>
+	<uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+	<!-- Location (falls benötigt) -->
+	<!-- <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> -->
+	<!-- <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> -->
+	<!-- Features -->
+	<uses-feature android:name="android.hardware.camera" android:required="false" />
+	<uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
 </manifest>

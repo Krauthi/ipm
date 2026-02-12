@@ -794,7 +794,7 @@ namespace iPMCloud.Mobile
                              new DateTime(long.Parse(ph.name)).ToString("dd.MM.yyyy-HH:mm:ss"),
                              null);
 
-                    var frame = (Frame)((StackLayout)(ph.stack.Children[0])).Children[2];
+                    var frame = (Border)((StackLayout)(ph.stack.Children[0])).Children[2];
                     frame.GestureRecognizers.Clear();
                     frame.GestureRecognizers.Add(new TapGestureRecognizer() { Command = new Command<BildWSO>(RemoveBildInWork_check_bem), CommandParameter = ph });
                     noticePhotoStack_check_bem.Children.Add(ph.stack);
@@ -937,7 +937,7 @@ namespace iPMCloud.Mobile
                             new Command<BildWSO>(RemoveBildInWork_check_bem))
                     };
 
-                    var frame = (Frame)((StackLayout)(b.stack.Children[0])).Children[2];
+                    var frame = (Border)((StackLayout)(b.stack.Children[0])).Children[2];
                     frame.GestureRecognizers.Clear();
                     frame.GestureRecognizers.Add(new TapGestureRecognizer()
                     {
@@ -1135,7 +1135,7 @@ namespace iPMCloud.Mobile
             overlay.IsVisible = false;
             isInitialize = false;
 
-            /// GEÄNDERT ... SetAllSyncState in DELETE FILE Methode eingesetzt ///
+            /* GEÄNDERT ... SetAllSyncState in DELETE FILE Methode eingesetzt */
             //______System.Timers.Timer runonce = new System.Timers.Timer(2000);
             //runonce.Elapsed += (s, e) =>
             //{
@@ -1268,13 +1268,13 @@ namespace iPMCloud.Mobile
             entry_notscansearch_container.IsVisible = true;
             await Task.Delay(1);
             list_notscan.Children.Clear();
-            list_notscan_scroll.ScrollToAsync(0, 0, false);
+            await list_notscan_scroll.ScrollToAsync(0, 0, false);
             _holdLastTodoList = 1;
         }
         public async void BuildNotScanList(string s)
         {
             list_notscan.Children.Clear();
-            list_notscan_scroll.ScrollToAsync(0, 0, false);
+            await list_notscan_scroll.ScrollToAsync(0, 0, false);
             await Task.Delay(1);
             list_notscan.Children.Add(BuildingWSO.GetObjektNotScanListView(model, new Command<IntBoolParam>(SelectedObjektAufterNotScan), s));
             await Task.Delay(1);
@@ -3912,7 +3912,7 @@ namespace iPMCloud.Mobile
                         if (ppm != null && item.bem != null && found == null)
                         {
                             // Bemrkung zur Müllpos - JEDOCh nicht selektiert !!!!
-                            /// Nur Bemerkung zum Objekt erstellen
+                            /* Nur Bemerkung zum Objekt erstellen*/
                             item.bem.auftragid = 0;
                             item.bem.leistungid = 0;
                             item.bem.text = "LEISTUNG: " + item.lei.beschreibung + " \r\nBEMERKUNG: " + item.bem.text;
@@ -6029,7 +6029,7 @@ namespace iPMCloud.Mobile
             btn_workercategorysearch.BackgroundColor = Color.FromArgb("#999999");
             btn_workernamesearch.BackgroundColor = Color.FromArgb("#042d53");
             btn_workerbuildingsearch.BackgroundColor = Color.FromArgb("#042d53");
-            list_worker_scroll.ScrollToAsync(0, 0, false);
+            await list_worker_scroll.ScrollToAsync(0, 0, false);
             await Task.Delay(1);
             list_worker.Children.Clear();
             BuildWorkerCategoryList();
@@ -6152,7 +6152,7 @@ namespace iPMCloud.Mobile
             entry_workersearch.Text = "";
             await Task.Delay(1);
             list_worker.Children.Clear();
-            list_worker_scroll.ScrollToAsync(0, 0, false);
+            await list_worker_scroll.ScrollToAsync(0, 0, false);
             BuildWorkerNamesList();
         }
         private async void BuildWorkerNamesList()
@@ -6207,7 +6207,7 @@ namespace iPMCloud.Mobile
         }
         private void _NamesCommand(object s, EventArgs e)
         {
-            var parentChilds = ((StackLayout)((Frame)s).Parent).Children;
+            var parentChilds = ((StackLayout)((Border)s).Parent).Children;
             var container = (StackLayout)parentChilds[1];
             var workerid = container.ClassId;
             if (container.IsVisible)
@@ -6258,7 +6258,7 @@ namespace iPMCloud.Mobile
             entry_workersearch.Text = "";
             await Task.Delay(1);
             list_worker.Children.Clear();
-            list_worker_scroll.ScrollToAsync(0, 0, false);
+            await list_worker_scroll.ScrollToAsync(0, 0, false);
             BuildWorkerBuildingList();
         }
         private async void BuildWorkerBuildingList()
@@ -7790,7 +7790,7 @@ namespace iPMCloud.Mobile
             {
                 btn_buildingorder_container.IsVisible = false;
                 btn_exitwork.IsVisible = false;
-                /// Erstmal deaktiviert, da implementierung noch gemacht werden mus für das Stopen der laufenden und dann wieder die Neuen 
+                // Erstmal deaktiviert, da implementierung noch gemacht werden mus für das Stopen der laufenden und dann wieder die Neuen 
                 var ts = (DateTime.Now - new DateTime(model.allPositionInWork.startticks));
                 inwork_starttime_text.Text = (ts.TotalDays > 1 ? ts.ToString("%d") + "T " : "") + ts.ToString(@"hh\:mm");
                 inwork_start_count_text.Text = "" + model.allPositionInWork.leistungen.Count;
@@ -8658,7 +8658,7 @@ namespace iPMCloud.Mobile
         /*******************/
         private async void SyncPN()
         {
-            var pn = PNWSO.LoadAllFromUploadStack();
+            var pn = PNWSO.LoadFromUploadStack();
             pn.personid = model.Person.id;
             var resPN = await Task.Run(() => { return model.Connections.PNSync(pn); });
             if (resPN.success)

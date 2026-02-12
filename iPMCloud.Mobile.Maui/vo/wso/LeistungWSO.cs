@@ -1129,7 +1129,6 @@ namespace iPMCloud.Mobile
             return stack;
         }
 
-        private static CustomEntry SelectedPositionSmallCardViewEntryxx;
         public static SwipeView GetSelectedPositionSmallCardView(LeistungWSO leistung, AppModel model, ICommand func, ICommand funcB)
         {
             var item = new SwipeItem
@@ -1563,8 +1562,6 @@ namespace iPMCloud.Mobile
             });
             return stack;
         }
-
-        private static CustomEntry xxxSelectedPositionAgainSmallCardViewEntry;
         public static SwipeView GetSelectedPositionAgainSmallCardView(LeistungWSO leistung, AppModel model, ICommand func)
         {
             var item = new SwipeItem
@@ -1904,7 +1901,6 @@ namespace iPMCloud.Mobile
             }
         }
 
-        private static CustomEntry xxxxInWorkPosSmallCardEntryAnzahl;
         public static Border GetInWorkPositionSmallCardView(AuftragWSO o, KategorieWSO c, LeistungWSO leistung, LeistungInWorkWSO leiInWork, AppModel model, ICommand func)
         {
             //var _prio = CalcOverdue(pos);

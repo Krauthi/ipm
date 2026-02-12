@@ -1,26 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <!-- Temporarily build only for Android on Linux -->
     <TargetFrameworks>net10.0-android</TargetFrameworks>
-    <!-- Full target frameworks (restore for macOS builds): net9.0-android;net9.0-ios -->
-    <!-- Uncomment to also build for Windows. Note that all MAUI libraries used must also support Windows. -->
-    <!-- <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net9.0-windows10.0.19041.0</TargetFrameworks> -->
-    
+
     <OutputType>Exe</OutputType>
     <RootNamespace>iPMCloud.Mobile</RootNamespace>
     <UseMaui>true</UseMaui>
     <SingleProject>true</SingleProject>
     <ImplicitUsings>enable</ImplicitUsings>
 
-    <!-- Display name -->
     <ApplicationTitle>iPM-Cloud</ApplicationTitle>
 
-    <!-- App Identifier -->
     <ApplicationId>com.ipmcloud.ipm.mobile</ApplicationId>
     <ApplicationIdGuid>201CEFAB-590D-414F-9660-9EFF31FE2078</ApplicationIdGuid>
 
-    <!-- Versions -->
     <ApplicationDisplayVersion>2.1.0</ApplicationDisplayVersion>
     <ApplicationVersion>1</ApplicationVersion>
     <Version>2.1.0</Version>
@@ -28,8 +21,8 @@
     <FileVersion>2.0.0.0</FileVersion>
 
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">12.0</SupportedOSPlatformVersion>
-    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">29.0</SupportedOSPlatformVersion>
-    
+    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">30.0</SupportedOSPlatformVersion>
+
     <NeutralLanguage>de-DE</NeutralLanguage>
     <Copyright>iPM-Cloud</Copyright>
     <Nullable>disable</Nullable>
@@ -48,6 +41,8 @@
     <AndroidUseAapt2>true</AndroidUseAapt2>
     <AndroidDexTool>d8</AndroidDexTool>
     <AndroidManifestMerger>manifestmerger.jar</AndroidManifestMerger>
+
+    <!-- kann bleiben; hilft aber nicht gegen R8 duplicate class errors -->
     <AndroidIgnoreDuplicateTypesInTransitiveDependencies>true</AndroidIgnoreDuplicateTypesInTransitiveDependencies>
   </PropertyGroup>
 
@@ -69,52 +64,33 @@
     <AndroidUseAapt2>true</AndroidUseAapt2>
     <AndroidEnableMultiDex>true</AndroidEnableMultiDex>
     <AndroidLinkMode>SdkOnly</AndroidLinkMode>
-    <AndroidLinkSkip>
-    </AndroidLinkSkip>
+    <AndroidLinkSkip />
     <PublishTrimmed>false</PublishTrimmed>
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- App Icon -->
-    <!-- TODO: Create proper app icon SVG files -->
-    <!-- <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" /> -->
-
-    <!-- Splash Screen -->
-    <!-- TODO: Create proper splash screen SVG -->
-    <!-- <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" /> -->
-
-    <!-- Images -->
     <MauiImage Include="Resources\Images\*" />
-
-    <!-- Custom Fonts -->
     <MauiFont Include="Resources\Fonts\*" />
-
-    <!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
     <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
   </ItemGroup>
 
   <ItemGroup>
-    <!-- Core MAUI packages -->
     <PackageReference Include="FFImageLoading.Maui" Version="1.3.2" />
     <PackageReference Include="MetadataExtractor" Version="2.9.0" />
     <PackageReference Include="Microsoft.Maui.Controls" Version="9.0.120" />
     <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="9.0.120" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.3" />
 
-    <!-- NuGet packages from original project - updated to MAUI-compatible versions -->
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="NLog" Version="5.3.4" />
-    
-    <!-- Google/Firebase services -->
+
     <PackageReference Include="Google.Cloud.Translation.V2" Version="3.2.0" />
-    
-    <!-- MAUI Community Toolkit -->
+
     <PackageReference Include="CommunityToolkit.Maui" Version="12.3.0" />
     <PackageReference Include="SixLabors.ImageSharp" Version="3.1.12" />
     <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="2.1.7" />
-    
-    <!-- System packages -->
+
     <PackageReference Include="System.Net.Security" Version="4.3.2" />
     <PackageReference Include="System.Net.WebHeaderCollection" Version="4.3.0" />
     <PackageReference Include="System.Net.WebSockets.Client" Version="4.3.2" />
@@ -122,73 +98,35 @@
     <PackageReference Include="System.Runtime.Serialization.Xml" Version="4.3.0" />
     <PackageReference Include="System.ServiceModel.Http" Version="4.10.0" />
     <PackageReference Include="System.ServiceModel.Primitives" Version="8.1.2" />
-    
-    <!-- Google Play Services - Versionskonflikte behoben -->
+
     <PackageReference Include="Xamarin.Google.Android.Play.Core" Version="1.10.3.20" />
     <PackageReference Include="Xamarin.GooglePlayServices.Base" Version="118.9.0.1" />
     <PackageReference Include="Xamarin.GooglePlayServices.Basement" Version="118.9.0.1" />
     <PackageReference Include="Xamarin.GooglePlayServices.Tasks" Version="118.4.0.2" />
-    
-    <!-- ZXing for Barcode scanning -->
+
     <PackageReference Include="ZXing.Net.Maui" Version="0.6.0" />
     <PackageReference Include="ZXing.Net.Maui.Controls" Version="0.6.0" />
-    
-    <!-- These packages need to be updated to MAUI-compatible versions -->
-    <!-- TODO: Find MAUI alternatives for these packages -->
-    <!-- <PackageReference Include="Plugin.FirebasePushNotification" Version="3.4.35" /> -->
-    <!-- <PackageReference Include="ZXing.Net.Mobile.Forms" Version="2.4.1" /> -->
-    <!-- <PackageReference Include="Matcha.BackgroundService" Version="1.0.5478" /> -->
-    <!-- <PackageReference Include="Xam.Plugin.Media" Version="5.0.1" /> -->
   </ItemGroup>
 
   <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
     <PackageReference Include="Xamarin.AndroidX.AppCompat" Version="1.7.1.2" />
     <PackageReference Include="Xamarin.AndroidX.Core" Version="1.17.0.1" />
     <PackageReference Include="Xamarin.AndroidX.Lifecycle.Runtime" Version="2.10.0.1" />
-    <PackageReference Include="Xamarin.AndroidX.Browser" Version="1.8.1" />    
-    <PackageReference Include="Xamarin.AndroidX.Compose.Runtime.Annotation.Android" Version="1.10.0.1" />
-  
-  </ItemGroup>
-<!-- <ItemGroup>
-    <ProguardConfiguration Include="Platforms\Android\proguard.cfg" />
-</ItemGroup>
-<ItemGroup>
-    <PackageReference Include="Xamarin.AndroidX.Compose.Runtime.Annotation.Jvm">
-        <ExcludeAssets>all</ExcludeAssets>
-        <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    
-    <PackageReference Include="Xamarin.KotlinX.Serialization.Core.Jvm">
-        <ExcludeAssets>all</ExcludeAssets>
-        <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    
-    <PackageReference Include="Xamarin.AndroidX.Tracing.Tracing.Ktx">
-        <ExcludeAssets>all</ExcludeAssets>
-        <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-</ItemGroup> -->
-
-<!--  Explizit nur die Android-Version behalten -->
-<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+    <PackageReference Include="Xamarin.AndroidX.Browser" Version="1.8.1" />
     <PackageReference Include="Xamarin.AndroidX.Tracing.Tracing" Version="1.3.0.2" />
-</ItemGroup>
+  </ItemGroup>
 
-  <!-- Build Action None (project-specific files) -->
   <ItemGroup>
-    <!-- Embedded resources for NLog configuration -->
     <EmbeddedResource Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
 
-  <!-- Android-specific files -->
   <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
     <GoogleServicesJson Include="Platforms\Android\google-services.json" />
     <AndroidAsset Include="Platforms\Android\Assets\*.json" />
   </ItemGroup>
 
-  <!-- iOS-specific files -->
   <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
     <BundleResource Include="Platforms\iOS\GoogleService-Info.plist">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -199,7 +137,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
-  
+
   <ItemGroup>
     <MauiXaml Update="vo\wso\checks\SignaturePadView.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -32,7 +32,7 @@ namespace iPMCloud.Mobile
             //img_save.Source = new ImagesBase().SaveImage;
 
 
-            /// Check NetworkState
+            // Check NetworkState
             //var current = Connectivity.NetworkAccess;
             //var profiles = Connectivity.ConnectionProfiles;
             //lblNetworkStatus.Text = (current == NetworkAccess.Internet) ? "Network is Available":"Network is Not Available";

@@ -39,12 +39,11 @@ namespace iPMCloud.Mobile.vo
             model = _model;
         }
 
-
-
+        [Obsolete]
         public void NavigateTo(string mainPage, string subPage = "")
         {
-            LastMainPage = String.Copy(CurrentMainPage);
-            LastSubPage = String.Copy(CurrentSubPage); 
+            LastMainPage = ""+CurrentMainPage;
+            LastSubPage = ""+CurrentSubPage; 
             CurrentMainPage = mainPage;
             CurrentSubPage = subPage;
             switch (mainPage)

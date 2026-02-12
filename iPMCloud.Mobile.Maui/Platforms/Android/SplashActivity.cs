@@ -2,9 +2,10 @@
 using Android.Content;
 using Android.Content.PM;
 using Android.OS;
-using AndroidX.AppCompat.App;
 using Android.Util;
 using Android.Views;
+using AndroidX.AppCompat.App;
+using AndroidX.Core.View;
 using System;
 using System.Threading.Tasks;
 
@@ -72,32 +73,42 @@ namespace iPMCloud.Mobile
         #endregion
 
         #region UI Configuration
-
         private void SetFullscreenMode()
         {
             try
             {
-                if (Window?.DecorView == null)
+                if (Window?.DecorView == null) return;
+
+                // ✅ Moderne API (Android 11+)
+                if (Build.VERSION.SdkInt >= BuildVersionCodes.R)
                 {
-                    Log.Warn(TAG, "Window.DecorView ist null");
-                    return;
+                    var controller = Window.InsetsController;
+                    controller?.Hide(WindowInsets.Type.StatusBars() | WindowInsets.Type.NavigationBars());
+                    if (controller != null)
+                    {
+                        controller.SystemBarsBehavior = (int)WindowInsetsControllerBehavior.ShowTransientBarsBySwipe;
+                    }
+                }
+                else
+                {
+                    // ✅ AndroidX Compat (funktioniert überall)
+                    var controller = WindowCompat.GetInsetsController(Window, Window.DecorView);
+                    if (controller != null)
+                    {
+                        controller.Hide(WindowInsetsCompat.Type.SystemBars());
+                        controller.SystemBarsBehavior = WindowInsetsControllerCompat.BehaviorShowTransientBarsBySwipe;
+                    }
                 }
 
-                var uiOptions = (int)Window.DecorView.SystemUiVisibility;
-                uiOptions |= (int)SystemUiFlags.LowProfile;
-                uiOptions |= (int)SystemUiFlags.Fullscreen;
-                uiOptions |= (int)SystemUiFlags.HideNavigation;
-                uiOptions |= (int)SystemUiFlags.ImmersiveSticky;
-                uiOptions |= (int)SystemUiFlags.LayoutStable;
-                uiOptions |= (int)SystemUiFlags.LayoutFullscreen;
-                uiOptions |= (int)SystemUiFlags.LayoutHideNavigation;
-
-                Window.DecorView.SystemUiVisibility = (StatusBarVisibility)uiOptions;
-                
-                // Status Bar transparent
+                // Transparente Bars
                 if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop)
                 {
                     Window.SetStatusBarColor(Android.Graphics.Color.Transparent);
+
+                    if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
+                    {
+                        Window.SetNavigationBarColor(Android.Graphics.Color.Transparent);
+                    }
                 }
             }
             catch (Exception ex)
@@ -105,6 +116,38 @@ namespace iPMCloud.Mobile
                 Log.Error(TAG, $"SetFullscreenMode Error: {ex.Message}");
             }
         }
+        //private void SetFullscreenMode()
+        //{
+        //    try
+        //    {
+        //        if (Window?.DecorView == null)
+        //        {
+        //            Log.Warn(TAG, "Window.DecorView ist null");
+        //            return;
+        //        }
+
+        //        var uiOptions = (int)Window.DecorView.SystemUiVisibility;
+        //        uiOptions |= (int)SystemUiFlags.LowProfile;
+        //        uiOptions |= (int)SystemUiFlags.Fullscreen;
+        //        uiOptions |= (int)SystemUiFlags.HideNavigation;
+        //        uiOptions |= (int)SystemUiFlags.ImmersiveSticky;
+        //        uiOptions |= (int)SystemUiFlags.LayoutStable;
+        //        uiOptions |= (int)SystemUiFlags.LayoutFullscreen;
+        //        uiOptions |= (int)SystemUiFlags.LayoutHideNavigation;
+
+        //        Window.DecorView.SystemUiVisibility = (StatusBarVisibility)uiOptions;
+
+        //        // Status Bar transparent
+        //        if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop)
+        //        {
+        //            Window.SetStatusBarColor(Android.Graphics.Color.Transparent);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Log.Error(TAG, $"SetFullscreenMode Error: {ex.Message}");
+        //    }
+        //}
 
         #endregion
 
@@ -138,8 +181,20 @@ namespace iPMCloud.Mobile
                 Finish();
                 
                 // Smooth Transition
-                OverridePendingTransition(Android.Resource.Animation.FadeIn, Android.Resource.Animation.FadeOut);
-                
+                //OverridePendingTransition(Android.Resource.Animation.FadeIn, Android.Resource.Animation.FadeOut);
+                if(Build.VERSION.SdkInt >= BuildVersionCodes.UpsideDownCake) // Android 14 (API 34)
+                {
+#pragma warning disable CA1416 // Plattformkompatibilität überprüfen
+                    OverrideActivityTransition(OverrideTransition.Open, 0, 0);
+#pragma warning restore CA1416 // Plattformkompatibilität überprüfen
+                }
+        else
+                {
+#pragma warning disable CA1422 // Validate platform compatibility
+                    OverridePendingTransition(0, 0);
+#pragma warning restore CA1422 // Validate platform compatibility
+                }
+
                 Log.Info(TAG, "MainActivity gestartet");
             }
             catch (Exception ex)

@@ -286,6 +286,7 @@ namespace iPMCloud.Mobile.vo
             return true;
         }
 
+        [Obsolete]
         void OnConnectivityChanged(object sender, ConnectivityChangedEventArgs e)
         {
             try

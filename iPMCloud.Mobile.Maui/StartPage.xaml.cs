@@ -397,7 +397,7 @@ namespace iPMCloud.Mobile
             // Vorherige aktive Company/SettingDTO speichern
             Company.AddUpdateCompany(model, model.SettingModel.SettingDTO);
 
-            var child = ((StackLayout)((Frame)s).Content);
+            var child = ((StackLayout)((Border)s).Content);
             var customerNumber = child.ClassId;
             var company = model.Companies.Find(c => c.CustomerNumber == customerNumber);
             if (company != null)
@@ -424,7 +424,7 @@ namespace iPMCloud.Mobile
             var a = await DisplayAlert("Unternehmen entfernen?", "\n\nMöchten Sie wirklich das gewählte Unternehmen aus Ihrer App entfernen?", "JETZT ENTFERNEN", "ABBRECHEN");
             if (a)
             {
-                var child = ((StackLayout)((Frame)s).Content);
+                var child = ((StackLayout)((Border)s).Content);
                 var customerNumber = child.ClassId;
                 var company = model.Companies.Find(c => c.CustomerNumber == customerNumber);
                 if (company != null)

@@ -135,14 +135,6 @@ namespace iPMCloud.Mobile
             return pn;
         }
 
-        /// <summary>
-        /// Alias für LoadFromUploadStack (für Kompatibilität)
-        /// </summary>
-        [Obsolete("Use LoadFromUploadStack() instead")]
-        public static PNWSO LoadAllFromUploadStack()
-        {
-            return LoadFromUploadStack();
-        }
 
         /// <summary>
         /// Lädt eine PN aus einer spezifischen Datei

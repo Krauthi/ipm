@@ -220,21 +220,63 @@ namespace iPMCloud.Mobile
             {
                 if (Window?.DecorView == null) return;
 
-                var uiOptions = (int)Window.DecorView.SystemUiVisibility;
-                uiOptions |= (int)SystemUiFlags.LayoutStable;
-                uiOptions |= (int)SystemUiFlags.LayoutHideNavigation;
-                uiOptions |= (int)SystemUiFlags.LayoutFullscreen;
-                uiOptions |= (int)SystemUiFlags.HideNavigation;
-                uiOptions |= (int)SystemUiFlags.Fullscreen;
-                uiOptions |= (int)SystemUiFlags.ImmersiveSticky;
+                if (Build.VERSION.SdkInt >= BuildVersionCodes.R) // Android 11+ (API 30)
+                {
+                    // ✅ Moderne API: WindowInsetsController
+                    var windowInsetsController = Window.InsetsController;
 
-                Window.DecorView.SystemUiVisibility = (StatusBarVisibility)uiOptions;
+                    if (windowInsetsController != null)
+                    {
+                        // System Bars verstecken
+                        windowInsetsController.Hide(WindowInsets.Type.StatusBars() | WindowInsets.Type.NavigationBars());
+
+                        // Immersive Sticky Mode
+                        windowInsetsController.SystemBarsBehavior = (int)WindowInsetsControllerBehavior.ShowTransientBarsBySwipe;
+                    }
+                }
+                else
+                {
+                    // ✅ Fallback für Android 10 und älter
+#pragma warning disable CS0618 // Type or member is obsolete
+                    var uiOptions = (int)Window.DecorView.SystemUiVisibility;
+                    uiOptions |= (int)SystemUiFlags.LayoutStable;
+                    uiOptions |= (int)SystemUiFlags.LayoutHideNavigation;
+                    uiOptions |= (int)SystemUiFlags.LayoutFullscreen;
+                    uiOptions |= (int)SystemUiFlags.HideNavigation;
+                    uiOptions |= (int)SystemUiFlags.Fullscreen;
+                    uiOptions |= (int)SystemUiFlags.ImmersiveSticky;
+
+                    Window.DecorView.SystemUiVisibility = (StatusBarVisibility)uiOptions;
+#pragma warning restore CS0618
+                }
             }
             catch (Exception ex)
             {
                 Log.Error(TAG, $"HideNavAndStatusBar Error: {ex.Message}");
             }
         }
+
+        //private void HideNavAndStatusBar_OLD()
+        //{
+        //    try
+        //    {
+        //        if (Window?.DecorView == null) return;
+
+        //        var uiOptions = (int)Window.DecorView.SystemUiVisibility;
+        //        uiOptions |= (int)SystemUiFlags.LayoutStable;
+        //        uiOptions |= (int)SystemUiFlags.LayoutHideNavigation;
+        //        uiOptions |= (int)SystemUiFlags.LayoutFullscreen;
+        //        uiOptions |= (int)SystemUiFlags.HideNavigation;
+        //        uiOptions |= (int)SystemUiFlags.Fullscreen;
+        //        uiOptions |= (int)SystemUiFlags.ImmersiveSticky;
+
+        //        Window.DecorView.SystemUiVisibility = (StatusBarVisibility)uiOptions;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Log.Error(TAG, $"HideNavAndStatusBar Error: {ex.Message}");
+        //    }
+        //}
 
         private void DecorView_SystemUiVisibilityChange(object sender, Android.Views.View.SystemUiVisibilityChangeEventArgs e)
         {
@@ -437,14 +479,14 @@ namespace iPMCloud.Mobile
 
         #region Back Button Handling
 
-        public override void OnBackPressed()
-        {
-            // Custom back button handling hier einfügen
-            // Beispiel: Popups schließen, Navigation zurück, etc.
+        //public override void OnBackPressed()
+        //{
+        //    // Custom back button handling hier einfügen
+        //    // Beispiel: Popups schließen, Navigation zurück, etc.
             
-            // Standard-Verhalten (App schließen)
-            base.OnBackPressed();
-        }
+        //    // Standard-Verhalten (App schließen)
+        //    base.OnBackPressed();
+        //}
 
         #endregion
 

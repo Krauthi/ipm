@@ -296,11 +296,11 @@ namespace iPMCloud.Mobile.vo
                     {
                         // Fallback auf ersten verfügbaren Font
                         fontFamily = SystemFonts.Families.FirstOrDefault();
-                        if (fontFamily == null)
-                        {
-                            Console.WriteLine("No system fonts available");
-                            return imageBytes;
-                        }
+                        //if (fontFamily == null)
+                        //{
+                        //    Console.WriteLine("No system fonts available");
+                        //    return imageBytes;
+                        //}
                     }
 
                     var font = fontFamily.CreateFont(fontSize, FontStyle.Bold);

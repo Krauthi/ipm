@@ -89,11 +89,14 @@ namespace iPMCloud.Mobile.Droid
             .SetOngoing(true)
             .Build();
             StartForeground(SERVICE_RUNNING_NOTIFICATION_ID, notification);
-            MessagingCenter.Subscribe<MainPage, string>(this, "MapIntentReceived", (sender, arg) =>
-            {
-                Toast.MakeText(Android.App.Application.Context, arg, ToastLength.Short).Show();
-                // await SearchForRooms(arg);
-            });
+            
+            // TODO: MessagingCenter wurde in MAUI entfernt - Alternative Implementierung erforderlich
+            // Optionen: CommunityToolkit.Mvvm.Messaging, Event-Handler oder DI
+            // MessagingCenter.Subscribe<MainPage, string>(this, "MapIntentReceived", (sender, arg) =>
+            // {
+            //     Toast.MakeText(Android.App.Application.Context, arg, ToastLength.Short).Show();
+            //     // await SearchForRooms(arg);
+            // });
 
             Timer1.Start();
             Loop();

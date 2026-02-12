@@ -16,16 +16,10 @@
 		<!-- Einfach weglassen, Android nutzt dann Default -->
 		
 		
-		<!-- Main Activity -->
-		<activity android:name="com.companyname.ipmcloud.mobile.MainActivity" 
-				  android:exported="true" android:launchMode="singleTop" 
-				  android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|keyboard" 
-				  android:windowSoftInputMode="adjustResize">
-			<intent-filter>
-				<action android:name="android.intent.action.MAIN" />
-				<category android:name="android.intent.category.LAUNCHER" />
-			</intent-filter>
-		</activity>
+		<!-- Hinweis: SplashActivity und MainActivity werden über C# Attributes definiert -->
+		<!-- Die Activity-Registrierung erfolgt automatisch durch MAUI basierend auf den [Activity] Attributes -->
+		<!-- SplashActivity: MainLauncher=true, NoHistory=true -->
+		<!-- MainActivity: MainLauncher=false (MAUI Host Activity) -->
 		<!-- File Provider (für Kamera/Galerie) -->
 		<provider android:name="androidx.core.content.FileProvider" android:authorities="${applicationId}.fileprovider" android:exported="false" android:grantUriPermissions="true">
 			<meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths" />

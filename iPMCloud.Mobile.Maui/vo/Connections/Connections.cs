@@ -85,59 +85,24 @@ namespace iPMCloud.Mobile.vo
 
             if (hasUri)
             {
-                ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chein, sslpolicyerrors) => true;
-
+                // Use HttpClientManager instead of ServicePointManager (obsolete)
+                // Certificate validation is now per-handler instead of global
+                
                 CookieContainer cookieContainer = new CookieContainer();
-                HttpClientHandler httpClientHandler = new HttpClientHandler() { CookieContainer = cookieContainer };
-                httpClientHandler.ServerCertificateCustomValidationCallback += (sender, cert, chein, sslpolicyerrors) => true;
-                if (httpClientHandler.SupportsAutomaticDecompression)
-                {
-                    httpClientHandler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
-                }
-                //httpClientHandler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
-                httpClientInstance = new HttpClient(httpClientHandler);
-                httpClientInstance.DefaultRequestHeaders.Clear();
-                httpClientInstance.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                httpClientInstance.DefaultRequestHeaders.ConnectionClose = false;// Wird nie geschlossen
+                HttpClientHandler httpClientHandler = HttpClientManager.CreateHandler(cookieContainer, HttpClientManager.TimeoutProfile.Medium);
+                httpClientInstance = HttpClientManager.CreateClient(httpClientHandler);
 
                 CookieContainer cookieContainerLogin = new CookieContainer();
-                HttpClientHandler httpClientHandlerLogin = new HttpClientHandler() { CookieContainer = cookieContainerLogin };
-                httpClientHandlerLogin.ServerCertificateCustomValidationCallback += (sender, cert, chein, sslpolicyerrors) => true;
-                if (httpClientHandlerLogin.SupportsAutomaticDecompression)
-                {
-                    httpClientHandlerLogin.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
-                }
-                //httpClientHandlerLogin.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
-                httpClientInstanceLogin = new HttpClient(httpClientHandlerLogin);
-                httpClientInstanceLogin.DefaultRequestHeaders.Clear();
-                httpClientInstanceLogin.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                httpClientInstanceLogin.DefaultRequestHeaders.ConnectionClose = false;// Wird nie geschlossen
+                HttpClientHandler httpClientHandlerLogin = HttpClientManager.CreateHandler(cookieContainerLogin, HttpClientManager.TimeoutProfile.Short);
+                httpClientInstanceLogin = HttpClientManager.CreateClient(httpClientHandlerLogin);
 
                 CookieContainer cookieContainerSyncGuid = new CookieContainer();
-                HttpClientHandler httpClientHandlerSyncGuid = new HttpClientHandler() { CookieContainer = cookieContainerSyncGuid };
-                httpClientHandlerSyncGuid.ServerCertificateCustomValidationCallback += (sender, cert, chein, sslpolicyerrors) => true;
-                if (httpClientHandlerSyncGuid.SupportsAutomaticDecompression)
-                {
-                    httpClientHandlerSyncGuid.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
-                }
-                //httpClientHandlerSyncGuid.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
-                httpClientInstanceSyncGuid = new HttpClient(httpClientHandlerSyncGuid);
-                httpClientInstanceSyncGuid.DefaultRequestHeaders.Clear();
-                httpClientInstanceSyncGuid.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                httpClientInstanceSyncGuid.DefaultRequestHeaders.ConnectionClose = false;// Wird nie geschlossen
+                HttpClientHandler httpClientHandlerSyncGuid = HttpClientManager.CreateHandler(cookieContainerSyncGuid, HttpClientManager.TimeoutProfile.Short);
+                httpClientInstanceSyncGuid = HttpClientManager.CreateClient(httpClientHandlerSyncGuid);
 
                 CookieContainer cookieContainerSingleNotice = new CookieContainer();
-                HttpClientHandler httpClientHandlerSingleNotice = new HttpClientHandler() { CookieContainer = cookieContainerSingleNotice };
-                httpClientHandlerSingleNotice.ServerCertificateCustomValidationCallback += (sender, cert, chein, sslpolicyerrors) => true;
-                if (httpClientHandlerSingleNotice.SupportsAutomaticDecompression)
-                {
-                    httpClientHandlerSingleNotice.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
-                }
-                //httpClientHandlerSingleNotice.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
-                httpClientInstanceSingleNotice = new HttpClient(httpClientHandlerSingleNotice);
-                httpClientInstanceSingleNotice.DefaultRequestHeaders.Clear();
-                httpClientInstanceSingleNotice.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                httpClientInstanceSingleNotice.DefaultRequestHeaders.ConnectionClose = false;// Wird nie geschlossen
+                HttpClientHandler httpClientHandlerSingleNotice = HttpClientManager.CreateHandler(cookieContainerSingleNotice, HttpClientManager.TimeoutProfile.Long);
+                httpClientInstanceSingleNotice = HttpClientManager.CreateClient(httpClientHandlerSingleNotice);
 
                 //CookieContainer cookieContainerNoticeBild = new CookieContainer();
                 //HttpClientHandler httpClientHandlerNoticeBild = new HttpClientHandler() { CookieContainer = cookieContainerNoticeBild };
@@ -148,92 +113,51 @@ namespace iPMCloud.Mobile.vo
                 //httpClientInstanceNoticeBild.DefaultRequestHeaders.ConnectionClose = false;// Wird nie geschlossen
 
                 CookieContainer cookieContainerSync = new CookieContainer();
-                HttpClientHandler httpClientHandlerSync = new HttpClientHandler() { CookieContainer = cookieContainerSync };
-                httpClientHandlerSync.ServerCertificateCustomValidationCallback += (sender, cert, chein, sslpolicyerrors) => true;
-                if (httpClientHandlerSync.SupportsAutomaticDecompression)
-                {
-                    httpClientHandlerSync.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
-                }
-                //httpClientHandlerSync.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
-                httpClientInstanceSync = new HttpClient(httpClientHandlerSync);
-                httpClientInstanceSync.DefaultRequestHeaders.Clear();
-                httpClientInstanceSync.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                httpClientInstanceSync.DefaultRequestHeaders.ConnectionClose = false;// Wird nie geschlossen
+                HttpClientHandler httpClientHandlerSync = HttpClientManager.CreateHandler(cookieContainerSync, HttpClientManager.TimeoutProfile.Long);
+                httpClientInstanceSync = HttpClientManager.CreateClient(httpClientHandlerSync);
 
 
 
                 CookieContainer cookieContainerChecks = new CookieContainer();
-                HttpClientHandler httpClientHandlerChecks = new HttpClientHandler() { CookieContainer = cookieContainerChecks };
-                httpClientHandlerChecks.ServerCertificateCustomValidationCallback += (sender, cert, chein, sslpolicyerrors) => true;
-                if (httpClientHandlerChecks.SupportsAutomaticDecompression)
-                {
-                    httpClientHandlerChecks.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
-                }
-                //httpClientHandler.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
-                httpClientInstanceChecks = new HttpClient(httpClientHandlerChecks);
-                httpClientInstanceChecks.DefaultRequestHeaders.Clear();
-                httpClientInstanceChecks.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                httpClientInstanceChecks.DefaultRequestHeaders.ConnectionClose = false;// Wird nie geschlossen
+                HttpClientHandler httpClientHandlerChecks = HttpClientManager.CreateHandler(cookieContainerChecks, HttpClientManager.TimeoutProfile.Medium);
+                httpClientInstanceChecks = HttpClientManager.CreateClient(httpClientHandlerChecks);
 
 
 
+                // URI initialization - connection lifetime now managed by HttpClientManager
                 // jeweils eine eigene HttpClientInstanceLogin
                 uri_Login = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/Login");
-                ServicePointManager.FindServicePoint(uri_Login).ConnectionLeaseTimeout = 15 * 1000;
                 uri_LoginSmall = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/LoginSmall");
-                ServicePointManager.FindServicePoint(uri_LoginSmall).ConnectionLeaseTimeout = 15 * 1000;
 
                 // jeweils eine eigene HttpClientInstance
                 uri_NewSync = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/NewSync");
-                ServicePointManager.FindServicePoint(uri_NewSync).ConnectionLeaseTimeout = 180 * 1000;
                 uri_NewSyncAuftrag = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/NewSyncAuftrag");
-                ServicePointManager.FindServicePoint(uri_NewSyncAuftrag).ConnectionLeaseTimeout = 180 * 1000;
                 uri_Building = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/Building");
-                ServicePointManager.FindServicePoint(uri_Building).ConnectionLeaseTimeout = 240 * 1000;
                 uri_FastSync = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/FastSync");
-                ServicePointManager.FindServicePoint(uri_FastSync).ConnectionLeaseTimeout = 120 * 1000;
                 uri_AllTransSigns = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/AllTransSigns");
-                ServicePointManager.FindServicePoint(uri_AllTransSigns).ConnectionLeaseTimeout = 30 * 1000;
                 uri_DayOver = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/DayOver");
-                ServicePointManager.FindServicePoint(uri_DayOver).ConnectionLeaseTimeout = 30 * 1000;
                 uri_Log = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/Log");
-                ServicePointManager.FindServicePoint(uri_Log).ConnectionLeaseTimeout = 300 * 1000;
                 uri_PersonTimes = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/PersonTimes");
-                ServicePointManager.FindServicePoint(uri_PersonTimes).ConnectionLeaseTimeout = 30 * 1000;
                 uri_Plan = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/Plan");
-                ServicePointManager.FindServicePoint(uri_Plan).ConnectionLeaseTimeout = 30 * 1000;
                 uri_ChecksInfo = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/ChecksInfo");
-                ServicePointManager.FindServicePoint(uri_ChecksInfo).ConnectionLeaseTimeout = 30 * 1000;
                 uri_StartCheck = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/StartCheck");
-                ServicePointManager.FindServicePoint(uri_StartCheck).ConnectionLeaseTimeout = 30 * 1000;
                 uri_DelCheckA = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/DelCheckA");
-                ServicePointManager.FindServicePoint(uri_DelCheckA).ConnectionLeaseTimeout = 10 * 1000;
                 uri_GetCheckA = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/GetCheckA");
-                ServicePointManager.FindServicePoint(uri_GetCheckA).ConnectionLeaseTimeout = 20 * 1000;
                 uri_SetCheckANonePics = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/SetCheckANonePics");
-                ServicePointManager.FindServicePoint(uri_SetCheckANonePics).ConnectionLeaseTimeout = 30 * 1000;
                 uri_SetCheckABemImg = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/SetCheckABemImg");
-                ServicePointManager.FindServicePoint(uri_SetCheckABemImg).ConnectionLeaseTimeout = 30 * 1000;
 
                 // jeweils eine eigene httpClientInstanceSyncGuid
                 uri_GuidCheck = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/GuidsCheck");
-                ServicePointManager.FindServicePoint(uri_GuidCheck).ConnectionLeaseTimeout = 15 * 1000;
 
                 // jeweils eine eigene httpClientInstanceSync
                 uri_Position = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/Position");
-                ServicePointManager.FindServicePoint(uri_Position).ConnectionLeaseTimeout = 90 * 1000;
                 uri_PositionAgain = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/PositionAgain");
-                ServicePointManager.FindServicePoint(uri_PositionAgain).ConnectionLeaseTimeout = 90 * 1000;
                 uri_ObjectValues = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/ObjectValues");
-                ServicePointManager.FindServicePoint(uri_ObjectValues).ConnectionLeaseTimeout = 120 * 1000;
                 uri_ObjectValueBild = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/ObjectValueBild");
-                ServicePointManager.FindServicePoint(uri_ObjectValueBild).ConnectionLeaseTimeout = 300 * 1000;
 
                 // jeweils eine eigene httpClientInstanceSingleNotice
                 uri_SingleNotice = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/SingleNotice");
-                ServicePointManager.FindServicePoint(uri_SingleNotice).ConnectionLeaseTimeout = 120 * 1000;
                 uri_NoticeBild = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/NoticeBild");
-                ServicePointManager.FindServicePoint(uri_NoticeBild).ConnectionLeaseTimeout = 300 * 1000;
 
                 InitPNConnections();
             }
@@ -262,18 +186,14 @@ namespace iPMCloud.Mobile.vo
 
             if (hasUri)
             {
-                ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chein, sslpolicyerrors) => true;
-
+                // Use HttpClientManager instead of ServicePointManager (obsolete)
+                // Certificate validation is now per-handler instead of global
+                
                 CookieContainer cookieContainerPNSync = new CookieContainer();
-                HttpClientHandler httpClientHandlerPNSync = new HttpClientHandler() { CookieContainer = cookieContainerPNSync };
-                httpClientHandlerPNSync.ServerCertificateCustomValidationCallback += (sender, cert, chein, sslpolicyerrors) => true;
-                httpClientInstancePNSync = new HttpClient(httpClientHandlerPNSync);
-                httpClientInstancePNSync.DefaultRequestHeaders.Clear();
-                httpClientInstancePNSync.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                httpClientInstancePNSync.DefaultRequestHeaders.ConnectionClose = false;// Wird nie geschlossen
+                HttpClientHandler httpClientHandlerPNSync = HttpClientManager.CreateHandler(cookieContainerPNSync, HttpClientManager.TimeoutProfile.Short);
+                httpClientInstancePNSync = HttpClientManager.CreateClient(httpClientHandlerPNSync);
 
                 uri_UpdatePushToken = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/UpdatePushToken");
-                ServicePointManager.FindServicePoint(uri_UpdatePushToken).ConnectionLeaseTimeout = 15 * 1000;
             }
         }
 
@@ -1557,9 +1477,8 @@ namespace iPMCloud.Mobile.vo
         {
             HttpResponseMessage httpResponseMessage = null;
             CookieContainer cookieContainerIpmBuildingSync = new CookieContainer();
-            HttpClientHandler httpClientHandlerIpmBuildingSync = new HttpClientHandler() { CookieContainer = cookieContainerIpmBuildingSync };
-            httpClientHandlerIpmBuildingSync.ServerCertificateCustomValidationCallback += (sender, cert, chein, sslpolicyerrors) => true;
-            HttpClient httpClientIpmBuildingSync = new HttpClient(httpClientHandlerIpmBuildingSync);
+            HttpClientHandler httpClientHandlerIpmBuildingSync = HttpClientManager.CreateHandler(cookieContainerIpmBuildingSync, HttpClientManager.TimeoutProfile.Medium);
+            HttpClient httpClientIpmBuildingSync = HttpClientManager.CreateClient(httpClientHandlerIpmBuildingSync);
             httpClientIpmBuildingSync.Timeout = new TimeSpan(0, 0, 35);
 
             AppModel.Instance.FastSyncCount = 0;
@@ -1606,9 +1525,8 @@ namespace iPMCloud.Mobile.vo
         {
             HttpResponseMessage httpResponseMessage = null;
             CookieContainer cookieContainerNoticeSync = new CookieContainer();
-            HttpClientHandler httpClientHandlerNoticeSync = new HttpClientHandler() { CookieContainer = cookieContainerNoticeSync };
-            httpClientHandlerNoticeSync.ServerCertificateCustomValidationCallback += (sender, cert, chein, sslpolicyerrors) => true;
-            HttpClient httpClientNoticeSync = new HttpClient(httpClientHandlerNoticeSync);
+            HttpClientHandler httpClientHandlerNoticeSync = HttpClientManager.CreateHandler(cookieContainerNoticeSync, HttpClientManager.TimeoutProfile.Long);
+            HttpClient httpClientNoticeSync = HttpClientManager.CreateClient(httpClientHandlerNoticeSync);
             httpClientNoticeSync.Timeout = new TimeSpan(0, 0, 120);
             //if (!AppModel.Instance.IsOnline)
             //{
@@ -1679,9 +1597,9 @@ namespace iPMCloud.Mobile.vo
         public async Task<bool> PingServer()
         {
             HttpResponseMessage httpResponseMessage = null;
-            HttpClientHandler httpClientHandlerPNSync = new HttpClientHandler();
-            httpClientHandlerPNSync.ServerCertificateCustomValidationCallback += (sender, cert, chein, sslpolicyerrors) => true;
-            HttpClient httpClientPNSync = new HttpClient(httpClientHandlerPNSync);
+            CookieContainer cookieContainerPNSync = new CookieContainer();
+            HttpClientHandler httpClientHandlerPNSync = HttpClientManager.CreateHandler(cookieContainerPNSync, HttpClientManager.TimeoutProfile.Short);
+            HttpClient httpClientPNSync = HttpClientManager.CreateClient(httpClientHandlerPNSync);
             Uri uri = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/UpdatePushToken");
             try
             {

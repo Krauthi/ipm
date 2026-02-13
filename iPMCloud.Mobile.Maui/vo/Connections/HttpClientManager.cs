@@ -38,14 +38,12 @@ namespace iPMCloud.Mobile.vo
         /// <param name="cookieContainer">Cookie container for session management</param>
         /// <param name="profile">Timeout profile determining connection lifetime</param>
         /// <returns>Configured HttpClientHandler</returns>
-        public static HttpClientHandler CreateHandler(CookieContainer cookieContainer, TimeoutProfile profile = TimeoutProfile.Medium)
+        public static HttpMessageHandler CreateHandler(CookieContainer cookieContainer, TimeoutProfile profile = TimeoutProfile.Medium)
         {
             TimeSpan pooledConnectionLifetime = GetPooledConnectionLifetime(profile);
             
-            // Try to use SocketsHttpHandler for better performance and control (available in .NET Core 2.1+)
-            // Falls back to HttpClientHandler on platforms where SocketsHttpHandler is not available
-            HttpClientHandler handler;
-            
+            // Try to use SocketsHttpHandler for better performance and control (available in .NET Core 2.1+, .NET 5+, .NET 10+)
+            // Falls back to HttpClientHandler on platforms where SocketsHttpHandler is not available (e.g., .NET Standard 2.0)
             try
             {
                 // SocketsHttpHandler provides better control over connection pooling
@@ -69,31 +67,22 @@ namespace iPMCloud.Mobile.vo
                     }
                 };
                 
-                // Wrap SocketsHttpHandler in HttpClientHandler for compatibility
-                handler = new HttpClientHandler
-                {
-                    CookieContainer = cookieContainer,
-                    AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
-                };
-                
-                // Note: SocketsHttpHandler properties cannot be directly set on HttpClientHandler wrapper
-                // We use reflection or platform-specific code if needed, but for now use HttpClientHandler directly
+                return socketsHandler;
             }
             catch (PlatformNotSupportedException)
             {
-                // Fallback to standard HttpClientHandler
-                handler = new HttpClientHandler
+                // Fallback to standard HttpClientHandler for platforms that don't support SocketsHttpHandler
+                var handler = new HttpClientHandler
                 {
                     CookieContainer = cookieContainer,
-                    AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
+                    AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
+                    // Apply certificate validation callback (per-handler, not global)
+                    // This is more secure than ServicePointManager.ServerCertificateValidationCallback
+                    ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
                 };
+                
+                return handler;
             }
-            
-            // Apply certificate validation callback (per-handler, not global)
-            // This is more secure than ServicePointManager.ServerCertificateValidationCallback
-            handler.ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true;
-            
-            return handler;
         }
 
         /// <summary>
@@ -115,9 +104,9 @@ namespace iPMCloud.Mobile.vo
         /// <summary>
         /// Creates a configured HttpClient instance.
         /// </summary>
-        /// <param name="handler">Pre-configured HttpClientHandler</param>
+        /// <param name="handler">Pre-configured HttpMessageHandler (SocketsHttpHandler or HttpClientHandler)</param>
         /// <returns>Configured HttpClient</returns>
-        public static HttpClient CreateClient(HttpClientHandler handler)
+        public static HttpClient CreateClient(HttpMessageHandler handler)
         {
             var client = new HttpClient(handler);
             

@@ -89,20 +89,16 @@ namespace iPMCloud.Mobile.vo
                 // Certificate validation is now per-handler instead of global
                 
                 CookieContainer cookieContainer = new CookieContainer();
-                HttpClientHandler httpClientHandler = HttpClientManager.CreateHandler(cookieContainer, HttpClientManager.TimeoutProfile.Medium);
-                httpClientInstance = HttpClientManager.CreateClient(httpClientHandler);
+                httpClientInstance = HttpClientManager.CreateClient(cookieContainer, HttpClientManager.TimeoutProfile.Medium);
 
                 CookieContainer cookieContainerLogin = new CookieContainer();
-                HttpClientHandler httpClientHandlerLogin = HttpClientManager.CreateHandler(cookieContainerLogin, HttpClientManager.TimeoutProfile.Short);
-                httpClientInstanceLogin = HttpClientManager.CreateClient(httpClientHandlerLogin);
+                httpClientInstanceLogin = HttpClientManager.CreateClient(cookieContainerLogin, HttpClientManager.TimeoutProfile.Short);
 
                 CookieContainer cookieContainerSyncGuid = new CookieContainer();
-                HttpClientHandler httpClientHandlerSyncGuid = HttpClientManager.CreateHandler(cookieContainerSyncGuid, HttpClientManager.TimeoutProfile.Short);
-                httpClientInstanceSyncGuid = HttpClientManager.CreateClient(httpClientHandlerSyncGuid);
+                httpClientInstanceSyncGuid = HttpClientManager.CreateClient(cookieContainerSyncGuid, HttpClientManager.TimeoutProfile.Short);
 
                 CookieContainer cookieContainerSingleNotice = new CookieContainer();
-                HttpClientHandler httpClientHandlerSingleNotice = HttpClientManager.CreateHandler(cookieContainerSingleNotice, HttpClientManager.TimeoutProfile.Long);
-                httpClientInstanceSingleNotice = HttpClientManager.CreateClient(httpClientHandlerSingleNotice);
+                httpClientInstanceSingleNotice = HttpClientManager.CreateClient(cookieContainerSingleNotice, HttpClientManager.TimeoutProfile.Long);
 
                 //CookieContainer cookieContainerNoticeBild = new CookieContainer();
                 //HttpClientHandler httpClientHandlerNoticeBild = new HttpClientHandler() { CookieContainer = cookieContainerNoticeBild };
@@ -113,14 +109,12 @@ namespace iPMCloud.Mobile.vo
                 //httpClientInstanceNoticeBild.DefaultRequestHeaders.ConnectionClose = false;// Wird nie geschlossen
 
                 CookieContainer cookieContainerSync = new CookieContainer();
-                HttpClientHandler httpClientHandlerSync = HttpClientManager.CreateHandler(cookieContainerSync, HttpClientManager.TimeoutProfile.Long);
-                httpClientInstanceSync = HttpClientManager.CreateClient(httpClientHandlerSync);
+                httpClientInstanceSync = HttpClientManager.CreateClient(cookieContainerSync, HttpClientManager.TimeoutProfile.Long);
 
 
 
                 CookieContainer cookieContainerChecks = new CookieContainer();
-                HttpClientHandler httpClientHandlerChecks = HttpClientManager.CreateHandler(cookieContainerChecks, HttpClientManager.TimeoutProfile.Medium);
-                httpClientInstanceChecks = HttpClientManager.CreateClient(httpClientHandlerChecks);
+                httpClientInstanceChecks = HttpClientManager.CreateClient(cookieContainerChecks, HttpClientManager.TimeoutProfile.Medium);
 
 
 
@@ -190,8 +184,7 @@ namespace iPMCloud.Mobile.vo
                 // Certificate validation is now per-handler instead of global
                 
                 CookieContainer cookieContainerPNSync = new CookieContainer();
-                HttpClientHandler httpClientHandlerPNSync = HttpClientManager.CreateHandler(cookieContainerPNSync, HttpClientManager.TimeoutProfile.Short);
-                httpClientInstancePNSync = HttpClientManager.CreateClient(httpClientHandlerPNSync);
+                httpClientInstancePNSync = HttpClientManager.CreateClient(cookieContainerPNSync, HttpClientManager.TimeoutProfile.Short);
 
                 uri_UpdatePushToken = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/UpdatePushToken");
             }
@@ -1477,8 +1470,7 @@ namespace iPMCloud.Mobile.vo
         {
             HttpResponseMessage httpResponseMessage = null;
             CookieContainer cookieContainerIpmBuildingSync = new CookieContainer();
-            HttpClientHandler httpClientHandlerIpmBuildingSync = HttpClientManager.CreateHandler(cookieContainerIpmBuildingSync, HttpClientManager.TimeoutProfile.Medium);
-            HttpClient httpClientIpmBuildingSync = HttpClientManager.CreateClient(httpClientHandlerIpmBuildingSync);
+            HttpClient httpClientIpmBuildingSync = HttpClientManager.CreateClient(cookieContainerIpmBuildingSync, HttpClientManager.TimeoutProfile.Medium);
             httpClientIpmBuildingSync.Timeout = new TimeSpan(0, 0, 35);
 
             AppModel.Instance.FastSyncCount = 0;
@@ -1525,8 +1517,7 @@ namespace iPMCloud.Mobile.vo
         {
             HttpResponseMessage httpResponseMessage = null;
             CookieContainer cookieContainerNoticeSync = new CookieContainer();
-            HttpClientHandler httpClientHandlerNoticeSync = HttpClientManager.CreateHandler(cookieContainerNoticeSync, HttpClientManager.TimeoutProfile.Long);
-            HttpClient httpClientNoticeSync = HttpClientManager.CreateClient(httpClientHandlerNoticeSync);
+            HttpClient httpClientNoticeSync = HttpClientManager.CreateClient(cookieContainerNoticeSync, HttpClientManager.TimeoutProfile.Long);
             httpClientNoticeSync.Timeout = new TimeSpan(0, 0, 120);
             //if (!AppModel.Instance.IsOnline)
             //{
@@ -1598,8 +1589,7 @@ namespace iPMCloud.Mobile.vo
         {
             HttpResponseMessage httpResponseMessage = null;
             CookieContainer cookieContainerPNSync = new CookieContainer();
-            HttpClientHandler httpClientHandlerPNSync = HttpClientManager.CreateHandler(cookieContainerPNSync, HttpClientManager.TimeoutProfile.Short);
-            HttpClient httpClientPNSync = HttpClientManager.CreateClient(httpClientHandlerPNSync);
+            HttpClient httpClientPNSync = HttpClientManager.CreateClient(cookieContainerPNSync, HttpClientManager.TimeoutProfile.Short);
             Uri uri = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/UpdatePushToken");
             try
             {

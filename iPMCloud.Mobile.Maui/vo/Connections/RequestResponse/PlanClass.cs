@@ -142,7 +142,7 @@ namespace iPMCloud.Mobile
             var model = ((value as List<Object>)[1] as AppModel);
             var list = ((value as List<Object>)[2] as BuildingWSO).ArrayOfAuftrag;
             var overlay = ((value as List<Object>)[3] as AbsoluteLayout);
-            int w = 0;
+            //int w = 0;
 
             if (stack.Children.Count == 0)
             {

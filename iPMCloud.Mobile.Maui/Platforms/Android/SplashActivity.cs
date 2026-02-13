@@ -101,14 +101,9 @@ namespace iPMCloud.Mobile
                 }
 
                 // Transparente Bars
-                if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop)
+                if (Build.VERSION.SdkInt >= BuildVersionCodes.R)
                 {
                     Window.SetStatusBarColor(Android.Graphics.Color.Transparent);
-
-                    if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
-                    {
-                        Window.SetNavigationBarColor(Android.Graphics.Color.Transparent);
-                    }
                 }
             }
             catch (Exception ex)

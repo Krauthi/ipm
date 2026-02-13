@@ -215,7 +215,7 @@ namespace iPMCloud.Mobile.vo
             }
             else
             {
-                var a = 0;
+                //var a = 0;
                 args = JsonConvert.SerializeObject(new IpmLoginRequest
                 {
                     bn = AppModel.Instance.SettingModel.SettingDTO.LoginName,
@@ -892,7 +892,7 @@ namespace iPMCloud.Mobile.vo
                     return false;
                 }
             }
-            catch (Exception ex)
+            catch (Exception )
             {
                 resMsg?.Dispose();
                 return false;
@@ -1505,7 +1505,7 @@ namespace iPMCloud.Mobile.vo
                     return new IpmBuildingResponse { success = false, message = "0" };
                 }
             }
-            catch (Exception ex)
+            catch (Exception )
             {
                 if (httpResponseMessage != null) { httpResponseMessage.Dispose(); }
                 return new IpmBuildingResponse { success = false, message = "0" };

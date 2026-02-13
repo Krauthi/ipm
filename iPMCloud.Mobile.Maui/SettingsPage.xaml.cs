@@ -15,7 +15,7 @@ namespace iPMCloud.Mobile
         public Entry entry_LoginPassword = new Entry();
         public Editor entry_LoginHost = new Editor();
         public Editor entry_LoginAddress = new Editor();
-        bool isInitialize = false;
+        //bool isInitialize = false;
 
         public SettingsPage()
         {
@@ -25,7 +25,7 @@ namespace iPMCloud.Mobile
         public SettingsPage(AppModel model)
         {
             InitializeComponent();
-            isInitialize = true;
+            //isInitialize = true;
             this.model = model;
 
             //img_back.Source = new ImagesBase().DropLeftImage;
@@ -82,12 +82,12 @@ namespace iPMCloud.Mobile
             InitializeLoginElements();
 
             await Task.Delay(1);
-            isInitialize = false;
+            //isInitialize = false;
         }
 
         public void InitializeLoginElements()
         {
-            isInitialize = true;
+            //isInitialize = true;
 
 
 
@@ -102,7 +102,7 @@ namespace iPMCloud.Mobile
             entry_LoginAddress.TextChanged -= AddressChangedHandeler;
             entry_LoginAddress.TextChanged += AddressChangedHandeler;
 
-            isInitialize = false;
+           // isInitialize = false;
         }
 
         public Page GetPage(string subPage = "")

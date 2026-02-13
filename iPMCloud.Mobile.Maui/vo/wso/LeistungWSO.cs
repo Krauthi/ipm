@@ -1897,7 +1897,7 @@ namespace iPMCloud.Mobile
             catch (Exception ex)
             {
                 return stack;
-                AppModel.Logger.Error(ex, "ERROR: LeistungWSO - GetInWorkPositionListView(): ");
+                //AppModel.Logger.Error(ex, "ERROR: LeistungWSO - GetInWorkPositionListView(): ");
             }
         }
 

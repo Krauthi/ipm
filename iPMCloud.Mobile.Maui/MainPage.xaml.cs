@@ -3525,7 +3525,7 @@ namespace iPMCloud.Mobile
             if (!model.AppControll.showObjektPlans) { return; }
             overlay.IsVisible = true;
             await Task.Delay(1);
-            bool ok = true;
+            //bool ok = true;
 
             List<LeistungWSO> leisAtWork = new List<LeistungWSO>();
             if (selectedDirektbuchenWinterObjAuftraege != null && selectedDirektbuchenWinterObjAuftraege.Count > 0)
@@ -4163,14 +4163,14 @@ namespace iPMCloud.Mobile
             // MainStettings Menü
             if (!visible)
             {
-                await panelContainer_frame.TranslateTo(-this.Width, 0, 200, Easing.Linear);
+                await panelContainer_frame.TranslateToAsync(-this.Width, 0, 200, Easing.Linear);
                 panelContainer.IsVisible = visible;
             }
             else
             {
-                await panelContainer_frame.TranslateTo(-this.Width, 0, 0);
+                await panelContainer_frame.TranslateToAsync(-this.Width, 0, 0);
                 panelContainer.IsVisible = visible;
-                await panelContainer_frame.TranslateTo(-2, 0, 200, Easing.Linear);
+                await panelContainer_frame.TranslateToAsync(-2, 0, 200, Easing.Linear);
                 SetAllSyncState();
             }
         }
@@ -4237,15 +4237,15 @@ namespace iPMCloud.Mobile
             // MainStettings Menü
             if (!visible)
             {
-                await panelShowSelectedPos_frame.TranslateTo(-this.Width, 0, 200, Easing.Linear);
+                await panelShowSelectedPos_frame.TranslateToAsync(-this.Width, 0, 200, Easing.Linear);
                 panelShowSelectedPos_Container.IsVisible = visible;
                 selectedPosList_container.Children.Clear();
             }
             else
             {
-                await panelShowSelectedPos_frame.TranslateTo(-this.Width, 0, 0);
+                await panelShowSelectedPos_frame.TranslateToAsync(-this.Width, 0, 0);
                 panelShowSelectedPos_Container.IsVisible = visible;
-                await panelShowSelectedPos_frame.TranslateTo(-2, 0, 200, Easing.Linear);
+                await panelShowSelectedPos_frame.TranslateToAsync(-2, 0, 200, Easing.Linear);
                 selectedPosList_container.Children.Add(LeistungWSO.GetSelectedPositionListView(
                     model, new Command<LeistungWSO>(RemoveSelectPositionFromToWork),
                     new Command<ChangeSelectedMuellPos>(ChangeSelectedMuellPos)));
@@ -4292,15 +4292,15 @@ namespace iPMCloud.Mobile
         {
             if (!visible)
             {
-                await panelShowSelectedPos_frame.TranslateTo(-this.Width, 0, 200, Easing.Linear);
+                await panelShowSelectedPos_frame.TranslateToAsync(-this.Width, 0, 200, Easing.Linear);
                 panelShowSelectedPos_Container.IsVisible = visible;
                 selectedPosList_container.Children.Clear();
             }
             else
             {
-                await panelShowSelectedPos_frame.TranslateTo(-this.Width, 0, 0);
+                await panelShowSelectedPos_frame.TranslateToAsync(-this.Width, 0, 0);
                 panelShowSelectedPos_Container.IsVisible = visible;
-                await panelShowSelectedPos_frame.TranslateTo(-2, 0, 200, Easing.Linear);
+                await panelShowSelectedPos_frame.TranslateToAsync(-2, 0, 200, Easing.Linear);
                 selectedPosList_container.Children.Add(LeistungWSO.GetSelectedPositionAgainListView(model, new Command<LeistungWSO>(RemoveSelectPositionAgainFromToWork)));
             }
         }
@@ -6163,7 +6163,7 @@ namespace iPMCloud.Mobile
 
             var workers = model.AllWorkers.OrderBy(o => (String.IsNullOrEmpty(o.firma) ? o.name : o.firma)).ToList();
             workers.ForEach(ha => { workerNames["" + ha.id] = ha; });
-            var i = 0;
+            //var i = 0;
             workerNames.ToList().ForEach(item =>
             {
 

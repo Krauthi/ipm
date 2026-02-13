@@ -8677,7 +8677,7 @@
                     Spacing="0"
                     VerticalOptions="Fill">
 
-                    <ListView
+                    <CollectionView
                         x:Name="langListView"
                         Margin="0"
                         BackgroundColor="#144d73"
@@ -8688,7 +8688,7 @@
                         ItemSelected="langListView_ItemSelected"
                         ItemsSource="{Binding}"
                         SeparatorVisibility="Default">
-                        <ListView.ItemTemplate>
+                        <CollectionView.ItemTemplate>
                             <DataTemplate>
                                 <ViewCell>
                                     <StackLayout
@@ -8718,8 +8718,8 @@
                                     </StackLayout>
                                 </ViewCell>
                             </DataTemplate>
-                        </ListView.ItemTemplate>
-                        <ListView.GroupHeaderTemplate>
+                        </CollectionView.ItemTemplate>
+                        <CollectionView.GroupHeaderTemplate>
                             <DataTemplate>
                                 <ViewCell Height="42">
                                     <StackLayout
@@ -8737,8 +8737,8 @@
                                     </StackLayout>
                                 </ViewCell>
                             </DataTemplate>
-                        </ListView.GroupHeaderTemplate>
-                    </ListView>
+                        </CollectionView.GroupHeaderTemplate>
+                    </CollectionView>
                 </StackLayout>
                 <BoxView
                     Margin="0"
@@ -12226,7 +12226,7 @@
                     Spacing="0"
                     VerticalOptions="Fill">
 
-                    <ListView
+                    <CollectionView
                         x:Name="empListView"
                         BackgroundColor="#144d73"
                         GroupDisplayBinding="{Binding Key}"
@@ -12236,7 +12236,7 @@
                         ItemSelected="empListView_ItemSelected"
                         ItemsSource="{Binding}"
                         SeparatorVisibility="Default">
-                        <ListView.ItemTemplate>
+                        <CollectionView.ItemTemplate>
                             <DataTemplate>
                                 <ViewCell>
                                     <StackLayout
@@ -12273,8 +12273,8 @@
                                     </StackLayout>
                                 </ViewCell>
                             </DataTemplate>
-                        </ListView.ItemTemplate>
-                        <ListView.GroupHeaderTemplate>
+                        </CollectionView.ItemTemplate>
+                        <CollectionView.GroupHeaderTemplate>
                             <DataTemplate>
                                 <ViewCell Height="42">
                                     <StackLayout
@@ -12292,8 +12292,8 @@
                                     </StackLayout>
                                 </ViewCell>
                             </DataTemplate>
-                        </ListView.GroupHeaderTemplate>
-                    </ListView>
+                        </CollectionView.GroupHeaderTemplate>
+                    </CollectionView>
                 </StackLayout>
                 <BoxView
                     Margin="0"

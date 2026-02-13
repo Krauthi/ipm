@@ -230,7 +230,7 @@ namespace iPMCloud.Mobile.vo
                 // List of builds installed (1, 2)
                 var buildHistory = VersionTracking.BuildHistory;
             }
-            catch (Exception ex)
+            catch (Exception )
             {
             }
         }
@@ -986,7 +986,7 @@ namespace iPMCloud.Mobile.vo
                                 new Attachment(destinationZipFullPath));
                             return true;
                         }
-                        catch (Exception ex)
+                        catch (Exception )
                         {
                             return false;
                         }
@@ -1062,7 +1062,7 @@ namespace iPMCloud.Mobile.vo
                         System.IO.File.Delete(fileName);
                     }
                 }
-                catch (Exception ex)
+                catch (Exception )
                 {
                     AppModel.Logger.Error("ERROR: SendLog -> Error deleting old zip files: {e.Message}");
                 }

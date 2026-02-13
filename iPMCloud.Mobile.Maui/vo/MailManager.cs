@@ -14,8 +14,8 @@ namespace iPMCloud.Mobile
         private static string smtpPasswort = "Marnad10+";
         private static string smtpServer = "smtp.strato.de";
         private static int serverPort = 587;//465
-        private static bool mailSent = false;
-        private SmtpClient smtpclient;
+        //private static bool mailSent = false;
+        //private SmtpClient smtpclient;
 
         public static void SendMailDirect(String empfaengerMailAdresse, String kopie, String betreff,
             String nachricht, String absenderMailAdresse, Attachment attach, List<Attachment> attachList = null)

@@ -91,9 +91,9 @@ namespace iPMCloud.Mobile
                     if (sorted) { list = list.OrderBy(o => o.id).ToList(); }
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                var a = 0;
+                //var a = 0;
             }
             return list;
 
@@ -122,9 +122,9 @@ namespace iPMCloud.Mobile
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception )
             {
-                var a = 0;
+                //var a = 0;
             }
             return JsonConvert.SerializeObject(list); ;
 
@@ -553,10 +553,10 @@ namespace iPMCloud.Mobile
                 list = obj.ArrayOfAuftrag != null ? obj.ArrayOfAuftrag : new List<AuftragWSO>();
             }
             var overlay = ((value as List<Object>)[3] as AbsoluteLayout);
-            int w = 0;
+            //int w = 0;
             if (stack.Children.Count == 0)
             {
-                w = 200;
+                //w = 200;
                 overlay.IsVisible = true;
                 await Task.Delay(1);
                 var oList = new List<AuftragWSO>();
@@ -638,10 +638,10 @@ namespace iPMCloud.Mobile
                 list = obj.ArrayOfAuftrag != null ? obj.ArrayOfAuftrag : new List<AuftragWSO>();
             }
             var overlay = ((value as List<Object>)[3] as AbsoluteLayout);
-            int w = 0;
+            //int w = 0;
             if (stack.Children.Count == 0)
             {
-                w = 200;
+                //w = 200;
                 overlay.IsVisible = true;
                 await Task.Delay(1);
                 var oList = new List<AuftragWSO>();

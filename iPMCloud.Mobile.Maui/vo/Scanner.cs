@@ -187,19 +187,19 @@ namespace iPMCloud.Mobile.vo
                                     }
                                     else
                                     {
-                                        await page.DisplayAlert("QR-Code nicht erkannt!", "Dieser QR-Code ist zwar ein iPM-Cloud Code jedoch gehört er nicht zum Registrieten Unternehmen! Bitte Probieren Sie es noch einmal oder melden Sie sich in Ihrer Zentrale.", "OK");
+                                        await page.DisplayAlertAsync("QR-Code nicht erkannt!", "Dieser QR-Code ist zwar ein iPM-Cloud Code jedoch gehört er nicht zum Registrieten Unternehmen! Bitte Probieren Sie es noch einmal oder melden Sie sich in Ihrer Zentrale.", "OK");
                                         displayIsOpen = false;
                                     }
                                 }
                                 else
                                 {
-                                    await page.DisplayAlert("QR-Code nicht erkannt!", "Dieser QR-Code kann nicht verwendet werden. Bitte Probieren Sie es noch einmal.", "OK");
+                                    await page.DisplayAlertAsync("QR-Code nicht erkannt!", "Dieser QR-Code kann nicht verwendet werden. Bitte Probieren Sie es noch einmal.", "OK");
                                     displayIsOpen = false;
                                 }
                             }
-                            catch (Exception ex)
+                            catch (Exception)
                             {
-                                await page.DisplayAlert("QR-Code nicht erkannt!", "Dieser QR-Code kann nicht verwendet werden. Bitte Probieren Sie es noch einmal.", "OK");
+                                await page.DisplayAlertAsync("QR-Code nicht erkannt!", "Dieser QR-Code kann nicht verwendet werden. Bitte Probieren Sie es noch einmal.", "OK");
                                 displayIsOpen = false;
                             }
                         }
@@ -224,7 +224,7 @@ namespace iPMCloud.Mobile.vo
                 AppModel.Logger.Error(ex, "ERROR: ScanBuildingOutView(...)");
                 try
                 {
-                    await page.DisplayAlert("Faild scan QRCode", ex.Message, "OK");
+                    await page.DisplayAlertAsync("Faild scan QRCode", ex.Message, "OK");
                 }
                 catch (Exception e)
                 {
@@ -301,19 +301,19 @@ namespace iPMCloud.Mobile.vo
                                     }
                                     else
                                     {
-                                        await page.DisplayAlert("QR-Code nicht erkannt!", "Dieser QR-Code ist zwar ein iPM-Cloud Code jedoch gehört er nicht zum Registrieten Unternehmen! Bitte Probieren Sie es noch einmal oder melden Sie sich in Ihrer Zentrale.", "OK");
+                                        await page.DisplayAlertAsync("QR-Code nicht erkannt!", "Dieser QR-Code ist zwar ein iPM-Cloud Code jedoch gehört er nicht zum Registrieten Unternehmen! Bitte Probieren Sie es noch einmal oder melden Sie sich in Ihrer Zentrale.", "OK");
                                         displayIsOpen = false;
                                     }
                                 }
                                 else
                                 {
-                                    await page.DisplayAlert("QR-Code nicht erkannt!", "Dieser QR-Code kann nicht verwendet werden. Bitte Probieren Sie es noch einmal.", "OK");
+                                    await page.DisplayAlertAsync("QR-Code nicht erkannt!", "Dieser QR-Code kann nicht verwendet werden. Bitte Probieren Sie es noch einmal.", "OK");
                                     displayIsOpen = false;
                                 }
                             }
-                            catch (Exception ex)
+                            catch (Exception)
                             {
-                                await page.DisplayAlert("QR-Code nicht erkannt!", "Dieser QR-Code kann nicht verwendet werden. Bitte Probieren Sie es noch einmal.", "OK");
+                                await page.DisplayAlertAsync("QR-Code nicht erkannt!", "Dieser QR-Code kann nicht verwendet werden. Bitte Probieren Sie es noch einmal.", "OK");
                                 displayIsOpen = false;
                             }
                         }
@@ -338,7 +338,7 @@ namespace iPMCloud.Mobile.vo
                 AppModel.Logger.Error(ex, "ERROR: ScanBuildingView(...)");
                 try
                 {
-                    await page.DisplayAlert("Faild scan building QRCode", ex.Message, "OK");
+                    await page.DisplayAlertAsync("Faild scan building QRCode", ex.Message, "OK");
                 }
                 catch (Exception e)
                 {
@@ -406,13 +406,13 @@ namespace iPMCloud.Mobile.vo
                                 }
                                 else
                                 {
-                                    await page.DisplayAlert("QR-Code nicht erkannt!", "Dieser QR-Code kann für die Registrierung mit der iPM-Cloud nicht verwendet werden. Bitte Probieren Sie es noch einmal.", "OK");
+                                    await page.DisplayAlertAsync("QR-Code nicht erkannt!", "Dieser QR-Code kann für die Registrierung mit der iPM-Cloud nicht verwendet werden. Bitte Probieren Sie es noch einmal.", "OK");
                                     displayIsOpen = false;
                                 }
                             }
-                            catch (Exception ex)
+                            catch (Exception)
                             {
-                                await page.DisplayAlert("QR-Code nicht erkannt!", "Dieser QR-Code kann für die Registrierung mit der iPM-Cloud nicht verwendet werden. Bitte Probieren Sie es noch einmal.", "OK");
+                                await page.DisplayAlertAsync("QR-Code nicht erkannt!", "Dieser QR-Code kann für die Registrierung mit der iPM-Cloud nicht verwendet werden. Bitte Probieren Sie es noch einmal.", "OK");
                                 displayIsOpen = false;
                             }
                         }
@@ -437,7 +437,7 @@ namespace iPMCloud.Mobile.vo
                 AppModel.Logger.Error(ex, "ERROR: ScanRegView(...)");
                 try
                 {
-                    await page.DisplayAlert("Faild scan reg QRCode", ex.Message, "OK");
+                    await page.DisplayAlertAsync("Faild scan reg QRCode", ex.Message, "OK");
                 }
                 catch (Exception e)
                 {
@@ -506,11 +506,11 @@ namespace iPMCloud.Mobile.vo
                                 {
                                     if (newScanSettings.CustomerNumber == model.SettingModel.SettingDTO.CustomerNumber)
                                     {
-                                        await page.DisplayAlert("Registrierung existiert schon!", "Diesen QR-Code haben Sie schon Registriert!", "OK");
+                                        await page.DisplayAlertAsync("Registrierung existiert schon!", "Diesen QR-Code haben Sie schon Registriert!", "OK");
                                     }
                                     else
                                     {
-                                        await page.DisplayAlert("QR-Code nicht erkannt!", "Dieser QR-Code kann für die Registrierung eines weiteren Unternehmens mit der iPM-Cloud-App nicht verwendet werden.", "OK");
+                                        await page.DisplayAlertAsync("QR-Code nicht erkannt!", "Dieser QR-Code kann für die Registrierung eines weiteren Unternehmens mit der iPM-Cloud-App nicht verwendet werden.", "OK");
                                     }
                                     zxing.IsTorchOn = false;
                                     zxing.IsDetecting = false;
@@ -519,9 +519,9 @@ namespace iPMCloud.Mobile.vo
                                     funcfaild.Invoke();
                                 }
                             }
-                            catch (Exception ex)
+                            catch (Exception)
                             {
-                                await page.DisplayAlert("QR-Code nicht erkannt!", "Dieser QR-Code kann für die Registrierung eines weiteren Unternehmens mit der iPM-Cloud-App nicht verwendet werden.", "OK");
+                                await page.DisplayAlertAsync("QR-Code nicht erkannt!", "Dieser QR-Code kann für die Registrierung eines weiteren Unternehmens mit der iPM-Cloud-App nicht verwendet werden.", "OK");
 
                                 zxing.IsTorchOn = false;
                                 zxing.IsDetecting = false;
@@ -551,7 +551,7 @@ namespace iPMCloud.Mobile.vo
                 AppModel.Logger.Error(ex, "ERROR: ScanAddRegView(...)");
                 try
                 {
-                    await page.DisplayAlert("Faild scan addreg QRCode", ex.Message, "OK");
+                    await page.DisplayAlertAsync("Faild scan addreg QRCode", ex.Message, "OK");
                 }
                 catch (Exception e)
                 {
@@ -580,7 +580,7 @@ namespace iPMCloud.Mobile.vo
                     await Flashlight.Default.TurnOnAsync();
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
             }
         }

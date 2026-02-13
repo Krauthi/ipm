@@ -286,7 +286,7 @@ namespace iPMCloud.Mobile.vo
             return true;
         }
 
-        [Obsolete]
+
         void OnConnectivityChanged(object sender, ConnectivityChangedEventArgs e)
         {
             try
@@ -304,27 +304,30 @@ namespace iPMCloud.Mobile.vo
             catch (Exception) { }
 
             // UI-Updates auf Main Thread
-            if (this.App.MainPage != null)
+            //if (this.App.MainPage != null) 
+            var mainPage = this.App.Windows?.FirstOrDefault()?.Page;
+            if (mainPage != null)
             {
-                MainThread.BeginInvokeOnMainThread(() =>
                 {
-                    try
+                    MainThread.BeginInvokeOnMainThread(() =>
                     {
-                        switch (App.MainPage.ClassId)
+                        try
                         {
-                            case "MainPage":
-                                (App.MainPage as MainPage)?.ShowDisconnected();
-                                break;
-                            case "StartPage":
-                                (App.MainPage as StartPage)?.ShowDisconnected();
-                                break;
+                            switch (mainPage.ClassId)
+                            {
+                                case "MainPage":
+                                    (mainPage as MainPage)?.ShowDisconnected();
+                                    break;
+                                case "StartPage":
+                                    (mainPage as StartPage)?.ShowDisconnected();
+                                    break;
+                            }
                         }
-                    }
-                    catch (Exception) { }
-                });
+                        catch (Exception) { }
+                    });
+                }
             }
         }
-
 
         public void InitBuildings()
         {

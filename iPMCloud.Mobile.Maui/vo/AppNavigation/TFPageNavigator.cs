@@ -39,7 +39,6 @@ namespace iPMCloud.Mobile.vo
             model = _model;
         }
 
-        [Obsolete]
         public void NavigateTo(string mainPage, string subPage = "")
         {
             LastMainPage = ""+CurrentMainPage;
@@ -54,7 +53,11 @@ namespace iPMCloud.Mobile.vo
                     {
                         StartPageObj = new StartPage(model);
                         AppModel.Instance.StartPage = StartPageObj;
-                        model.App.MainPage = StartPageObj.GetPage(subPage);
+                        //model.App.MainPage = StartPageObj.GetPage(subPage); 
+                        if (model.App.Windows.Count > 0)
+                        {
+                            model.App.Windows[0].Page = StartPageObj.GetPage(subPage);
+                        }
                     }
                     else
                     {
@@ -69,7 +72,11 @@ namespace iPMCloud.Mobile.vo
                     {
                         MainPageObj = new MainPage(model);
                         AppModel.Instance.MainPage = MainPageObj;
-                        model.App.MainPage = MainPageObj.GetPage(subPage);
+                        //model.App.MainPage = MainPageObj.GetPage(subPage);
+                        if (model.App.Windows.Count > 0)
+                        {
+                            model.App.Windows[0].Page = StartPageObj.GetPage(subPage);
+                        }
                     }
                     else
                     {

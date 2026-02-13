@@ -159,7 +159,7 @@ namespace iPMCloud.Mobile
                 if (showAlert)
                 {
                     model.checkPermissionsMessage = model.checkPermissionsMessage.Replace(";", "\n\n");
-                    await DisplayAlert("Folgendes wird benötigt!", model.checkPermissionsMessage, "OK");
+                    await DisplayAlertAsync("Folgendes wird benötigt!", model.checkPermissionsMessage, "OK");
                     //model.PageNavigator.NavigateTo(TFPageNavigator.PAGE_CLOSEAPP);
                 }
                 return false;
@@ -172,7 +172,7 @@ namespace iPMCloud.Mobile
                     if (showAlert)
                     {
                         model.checkPermissionGPSMessage = model.checkPermissionGPSMessage.Replace(";", "\n\n");
-                        await DisplayAlert("Berechtigungsproblem!", model.checkPermissionGPSMessage, "OK");
+                        await DisplayAlertAsync("Berechtigungsproblem!", model.checkPermissionGPSMessage, "OK");
                         //model.PageNavigator.NavigateTo(TFPageNavigator.PAGE_CLOSEAPP);
                     }
                     return false;
@@ -421,7 +421,7 @@ namespace iPMCloud.Mobile
         private async void CompanyDeleted(object s, EventArgs e)
         {
 
-            var a = await DisplayAlert("Unternehmen entfernen?", "\n\nMöchten Sie wirklich das gewählte Unternehmen aus Ihrer App entfernen?", "JETZT ENTFERNEN", "ABBRECHEN");
+            var a = await DisplayAlertAsync("Unternehmen entfernen?", "\n\nMöchten Sie wirklich das gewählte Unternehmen aus Ihrer App entfernen?", "JETZT ENTFERNEN", "ABBRECHEN");
             if (a)
             {
                 var child = ((StackLayout)((Border)s).Content);
@@ -468,7 +468,7 @@ namespace iPMCloud.Mobile
             }
             else
             {
-                await DisplayAlert("KEIN INTERNET!", "Für diese Aktion brauchen Sie eine Internetverbindung!", "OK");
+                await DisplayAlertAsync("KEIN INTERNET!", "Für diese Aktion brauchen Sie eine Internetverbindung!", "OK");
             }
         }
 
@@ -478,7 +478,7 @@ namespace iPMCloud.Mobile
         {
             if (showAddRegScanTapped) { return; }
             showAddRegScanTapped = true;
-            var a = await DisplayAlert("Unternehmen hinzufügen?",
+            var a = await DisplayAlertAsync("Unternehmen hinzufügen?",
                 "Möchten Sie wirklich ein weiteres Unternehmen registrieren? \n\nBei mehreren registrieten Unternehmen können sie wählen für welches Sie gerade Arbeiten. \n\nSie müssen jedoch darauf achten, das Arbeiten/Leistungen in einem Unternehmen abgeschlossen sein müssen, um in einem anderen registrierten Unternehmen tätig zu sein.", "OK", "ABBRECHEN");
             if (a)
             {
@@ -497,7 +497,7 @@ namespace iPMCloud.Mobile
         }
         public async void Btn_DeleteRegScanTapped(object sender, EventArgs e)
         {
-            var a = await DisplayAlert("Registrierung löschen?", "Sind Sie sich sicher das Sie diese Registrierung löschen möchten?\n\n", "JETZT LÖSCHEN", "ABBRECHEN");
+            var a = await DisplayAlertAsync("Registrierung löschen?", "Sind Sie sich sicher das Sie diese Registrierung löschen möchten?\n\n", "JETZT LÖSCHEN", "ABBRECHEN");
             if (a)
             {
                 //model.SettingModel.SettingDTO.ServerUrl = "";
@@ -741,7 +741,7 @@ namespace iPMCloud.Mobile
                 isInitialize = false;
                 model.SettingModel.SaveSettings();
             }
-            await DisplayAlert("Anmeldung nicht möglich!", m, "Zurück");
+            await DisplayAlertAsync("Anmeldung nicht möglich!", m, "Zurück");
         }
 
         //public async void SetAppControll()

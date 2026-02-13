@@ -70,7 +70,7 @@ namespace iPMCloud.Mobile
 
         public static StackLayout GetPersonTimesViewItem(PersonTime pt)
         {
-            var w = App.Current.MainPage.Width;
+            var w = App.Current.Windows.FirstOrDefault().Width;
             bool isgleich = pt.start == pt.end;
             bool isMinus = pt.top.Contains("-");
             bool isZero = pt.top.Contains("00:00");
@@ -157,7 +157,7 @@ namespace iPMCloud.Mobile
 
         public static StackLayout GetPersonTimesViewHeaderItem()
         {
-            var w = App.Current.MainPage.Width;
+            var w = App.Current.Windows.FirstOrDefault().Width;
 
             var day = new Label()
             {
@@ -232,7 +232,7 @@ namespace iPMCloud.Mobile
 
         public static StackLayout GetPersonTimesViewAllItem(PersonTime pt)
         {
-            var w = App.Current.MainPage.Width;
+            var w = App.Current.Windows.FirstOrDefault().Width;
 
             var day = new Label()
             {

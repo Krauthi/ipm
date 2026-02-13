@@ -119,15 +119,15 @@ namespace iPMCloud.Mobile
             }
             catch (FeatureNotSupportedException fnsEx)
             {
-                await DisplayAlert("(FNS) Faild by take ON Flashlight", fnsEx.Message, "Ok");
+                await DisplayAlertAsync("(FNS) Faild by take ON Flashlight", fnsEx.Message, "Ok");
             }
             catch (PermissionException pEx)
             {
-                await DisplayAlert("(P) Faild by take ON Flashlight", pEx.Message, "Ok");
+                await DisplayAlertAsync("(P) Faild by take ON Flashlight", pEx.Message, "Ok");
             }
             catch (Exception ex)
             {
-                await DisplayAlert("(R) Faild by take ON Flashlight", ex.Message, "Ok");
+                await DisplayAlertAsync("(R) Faild by take ON Flashlight", ex.Message, "Ok");
             }
         }
         public async void FlashOFF_Handle_Clicked_1(object sender, System.EventArgs e)
@@ -139,15 +139,15 @@ namespace iPMCloud.Mobile
             }
             catch (FeatureNotSupportedException fnsEx)
             {
-                await DisplayAlert("(FNS)´Faild by take OFF Flashlight", fnsEx.Message, "Ok");
+                await DisplayAlertAsync("(FNS)´Faild by take OFF Flashlight", fnsEx.Message, "Ok");
             }
             catch (PermissionException pEx)
             {
-                await DisplayAlert("(P) Faild by take OFF Flashlight", pEx.Message, "Ok");
+                await DisplayAlertAsync("(P) Faild by take OFF Flashlight", pEx.Message, "Ok");
             }
             catch (Exception ex)
             {
-                await DisplayAlert("(R) Faild by take OFF Flashlight", ex.Message, "Ok");
+                await DisplayAlertAsync("(R) Faild by take OFF Flashlight", ex.Message, "Ok");
             }
         }
 

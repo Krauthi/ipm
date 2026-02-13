@@ -16,7 +16,7 @@ public partial class SignaturePage : ContentPage
     {
         if (signaturePad.IsBlank)
         {
-            await DisplayAlert("Fehler", "Bitte unterschreiben Sie zuerst", "OK");
+            await DisplayAlertAsync("Fehler", "Bitte unterschreiben Sie zuerst", "OK");
             return;
         }
 
@@ -27,7 +27,7 @@ public partial class SignaturePage : ContentPage
         var base64 = signaturePad.SignatureImage;
 
         // Speichern oder weiterverarbeiten
-        await DisplayAlert("Erfolg", "Unterschrift gespeichert", "OK");
+        await DisplayAlertAsync("Erfolg", "Unterschrift gespeichert", "OK");
 
         // Optional: Zur vorherigen Seite zurück
         await Navigation.PopAsync();

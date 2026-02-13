@@ -91,7 +91,7 @@ namespace iPMCloud.Mobile
             }
             else
             {
-                DisplayAlert("Fehlende Berechtigungen!", "Bitte beenden Sie die App und starten diese neu!\n\nAktivieren Sie nach dem neustart die benötigten Berechtigungen!", "OK");
+                DisplayAlertAsync("Fehlende Berechtigungen!", "Bitte beenden Sie die App und starten diese neu!\n\nAktivieren Sie nach dem neustart die benötigten Berechtigungen!", "OK");
             }
         }
 
@@ -201,9 +201,9 @@ namespace iPMCloud.Mobile
                 if (intBol.bol) { ShowMainPage(); }
                 else
                 {
-                    await lastBuilding_Container.FadeTo(0, 500, Easing.SpringOut);
+                    await lastBuilding_Container.FadeToAsync(0, 500, Easing.SpringOut);
                     SetLastBuilding();
-                    await lastBuilding_Container.FadeTo(1, 500, Easing.SpringIn);
+                    await lastBuilding_Container.FadeToAsync(1, 500, Easing.SpringIn);
                     overlay.IsVisible = false;
                     await Task.Delay(1);
                 }
@@ -268,9 +268,9 @@ namespace iPMCloud.Mobile
                     catch (Exception) { }
                     model.SettingModel.SaveSettings();
 
-                    await lastBuilding_Container.FadeTo(0, 500, Easing.SpringOut);
+                    await lastBuilding_Container.FadeToAsync(0, 500, Easing.SpringOut);
                     SetLastBuilding();
-                    await lastBuilding_Container.FadeTo(1, 500, Easing.SpringIn);
+                    await lastBuilding_Container.FadeToAsync(1, 500, Easing.SpringIn);
                     overlay.IsVisible = false;
                     await Task.Delay(1);
                 }
@@ -400,7 +400,7 @@ namespace iPMCloud.Mobile
                     {
                         overlay.IsVisible = false;
                         await Task.Delay(1);
-                        await DisplayAlert("Sie sind nicht Online!",
+                        await DisplayAlertAsync("Sie sind nicht Online!",
                             "Für das Starten einer Checkliste müssen Sie zum herunterladen der Checklistendaten Online sein!",
                             "OK");
                     }
@@ -408,7 +408,7 @@ namespace iPMCloud.Mobile
                     {
                         overlay.IsVisible = false;
                         await Task.Delay(1);
-                        await DisplayAlert("Fehler bei Checkliste starten!",
+                        await DisplayAlertAsync("Fehler bei Checkliste starten!",
                             "Es konnten keine Checklistendaten heruntergeladen werden! Bitte gehen Sie unter Einstellungen und senden Sie uns die Mobile LOG. Wir werden versuchen das Problem zu analysieren.",
                             "OK");
                     }
@@ -442,7 +442,7 @@ namespace iPMCloud.Mobile
                         {
                             overlay.IsVisible = false;
                             await Task.Delay(1);
-                            await DisplayAlert("Sie sind nicht Online!",
+                            await DisplayAlertAsync("Sie sind nicht Online!",
                                 "Für das Starten einer Checkliste müssen Sie zum herunterladen der Checklistendaten Online sein!",
                                 "OK");
                         }
@@ -450,7 +450,7 @@ namespace iPMCloud.Mobile
                         {
                             overlay.IsVisible = false;
                             await Task.Delay(1);
-                            await DisplayAlert("Fehler bei Checkliste starten!",
+                            await DisplayAlertAsync("Fehler bei Checkliste starten!",
                                 "Es konnten keine Checklistendaten heruntergeladen werden! Bitte gehen Sie unter Einstellungen und senden Sie uns die Mobile LOG. Wir werden versuchen das Problem zu analysieren.",
                                 "OK");
                         }
@@ -460,7 +460,7 @@ namespace iPMCloud.Mobile
                 }
             }
 
-            var w = App.Current.MainPage.Width;//-13
+            var w = this.Width;//-13
             CheckPage_Container.WidthRequest = w;
             CheckPage_position_Container.WidthRequest = w;
             CheckPage_Container.IsVisible = true;
@@ -622,7 +622,7 @@ namespace iPMCloud.Mobile
 
         public void UpdateCheckAState()
         {
-            checkQuestStack_scroll.HeightRequest = App.Current.MainPage.Height - checkQuestStack_scroll.Y - img_info_check_typ_container.Height - 6;
+            checkQuestStack_scroll.HeightRequest = this.Height - checkQuestStack_scroll.Y - img_info_check_typ_container.Height - 6;
 
             int antMax = AppModel.Instance.selectedCheckA.antworten.Where(_ => _.required == 1 && _.isReady && _.type != "10").Count();
             int antVon = AppModel.Instance.selectedCheckA.antworten.Where(_ => _.required == 1 && _.type != "10").Count();
@@ -734,10 +734,10 @@ namespace iPMCloud.Mobile
 
         public void OpenCheckA_Singature(CheckLeistungAntwort quest)
         {
-            var w = App.Current.MainPage.Width;//-13
+            var w = this.Width;//-13
             CheckPage_Signature_Container.WidthRequest = w;
             checkQuestStack_signature_scroll.HeightRequest =
-                App.Current.MainPage.Height - checkQuestStack_signature_scroll.Y - 13;
+                this.Height - checkQuestStack_signature_scroll.Y - 13;
             checkQuestStack_signature.Children.Clear();
             quest.signPad = Check.GetSignElement();
             checkQuestStack_signature.Children.Add(Check.GetQuestMain_7_PopUp(quest));
@@ -763,8 +763,8 @@ namespace iPMCloud.Mobile
         public async void ShowNoticeView_check_bem(CheckLeistungAntwort quest, bool isQuest = false, bool isSign = false)
         {
             _SelectedPosForNotice_check_bem_isquest = isQuest;
-            var w = App.Current.MainPage.Width;
-            var h = App.Current.MainPage.Height;
+            var w = this.Width;
+            var h = this.Height;
             CheckPage_Bem_Container.WidthRequest = w;
             CheckPage_Bem_inner_Container.WidthRequest = w;
             CheckPage_Bem_inner_Container.HeightRequest = h;
@@ -889,7 +889,7 @@ namespace iPMCloud.Mobile
                 // ✅ Limit prüfen
                 if (_SelectedPosForNotice_check_bem.bemWSO?.photos?.Count >= 3)
                 {
-                    await DisplayAlert("Limit erreicht", "Maximal 3 Fotos erlaubt", "OK");
+                    await DisplayAlertAsync("Limit erreicht", "Maximal 3 Fotos erlaubt", "OK");
                     return;
                 }
 
@@ -900,7 +900,7 @@ namespace iPMCloud.Mobile
                     status = await Permissions.RequestAsync<Permissions.Camera>();
                     if (status != PermissionStatus.Granted)
                     {
-                        await DisplayAlert("Berechtigung erforderlich",
+                        await DisplayAlertAsync("Berechtigung erforderlich",
                             "Bitte erlauben Sie Kamera-Zugriff", "OK");
                         return;
                     }
@@ -909,7 +909,7 @@ namespace iPMCloud.Mobile
                 // ✅ Kamera verfügbar prüfen
                 if (!MediaPicker.Default.IsCaptureSupported)
                 {
-                    await DisplayAlert("Fehler", "Kamera nicht verfügbar", "OK");
+                    await DisplayAlertAsync("Fehler", "Kamera nicht verfügbar", "OK");
                     return;
                 }
 
@@ -955,11 +955,11 @@ namespace iPMCloud.Mobile
             }
             catch (FeatureNotSupportedException)
             {
-                await DisplayAlert("Fehler", "Kamera wird nicht unterstützt", "OK");
+                await DisplayAlertAsync("Fehler", "Kamera wird nicht unterstützt", "OK");
             }
             catch (PermissionException)
             {
-                await DisplayAlert("Fehler", "Keine Kamera-Berechtigung", "OK");
+                await DisplayAlertAsync("Fehler", "Keine Kamera-Berechtigung", "OK");
             }
             catch (OperationCanceledException)
             {
@@ -968,7 +968,7 @@ namespace iPMCloud.Mobile
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Fehler beim Foto aufnehmen: {ex.Message}");
-                await DisplayAlert("Fehler", "Foto konnte nicht aufgenommen werden", "OK");
+                await DisplayAlertAsync("Fehler", "Foto konnte nicht aufgenommen werden", "OK");
             }
             finally
             {
@@ -992,7 +992,7 @@ namespace iPMCloud.Mobile
         {
             if (_SelectedPosForNotice_check_bem.bemWSO?.photos?.Count >= 3)
             {
-                await DisplayAlert("Limit erreicht", "Maximal 3 Fotos erlaubt", "OK");
+                await DisplayAlertAsync("Limit erreicht", "Maximal 3 Fotos erlaubt", "OK");
                 return;
             }
 
@@ -1074,7 +1074,7 @@ namespace iPMCloud.Mobile
             if (!String.IsNullOrWhiteSpace(model.checkPermissionsMessage))
             {
                 model.checkPermissionsMessage = model.checkPermissionsMessage.Replace(";", "\n\n");
-                await DisplayAlert("Folgendes wird benötigt!", model.checkPermissionsMessage, "OK");
+                await DisplayAlertAsync("Folgendes wird benötigt!", model.checkPermissionsMessage, "OK");
                 //model.PageNavigator.NavigateTo(TFPageNavigator.PAGE_CLOSEAPP);
                 return false;
             }
@@ -1082,7 +1082,7 @@ namespace iPMCloud.Mobile
             if (!String.IsNullOrWhiteSpace(model.checkPermissionGPSMessage))
             {
                 model.checkPermissionGPSMessage = model.checkPermissionGPSMessage.Replace(";", "\n\n");
-                await DisplayAlert("Berechtigungsproblem!", model.checkPermissionGPSMessage, "OK");
+                await DisplayAlertAsync("Berechtigungsproblem!", model.checkPermissionGPSMessage, "OK");
                 //model.PageNavigator.NavigateTo(TFPageNavigator.PAGE_CLOSEAPP);
                 return false;
             }
@@ -1320,9 +1320,9 @@ namespace iPMCloud.Mobile
                 if (intBol.bol) { ShowMainPage(); }
                 else
                 {
-                    await lastBuilding_Container.FadeTo(0, 500, Easing.SpringOut);
+                    await lastBuilding_Container.FadeToAsync(0, 500, Easing.SpringOut);
                     SetLastBuilding();
-                    await lastBuilding_Container.FadeTo(1, 500, Easing.SpringIn);
+                    await lastBuilding_Container.FadeToAsync(1, 500, Easing.SpringIn);
                     overlay.IsVisible = false;
                     await Task.Delay(1);
                 }
@@ -2067,7 +2067,7 @@ namespace iPMCloud.Mobile
             // Limit prüfen
             if (_SelectedBemerkungForNotice.photos.Count >= 5)
             {
-                await DisplayAlert("Limit erreicht", "Maximal 5 Fotos erlaubt", "OK");
+                await DisplayAlertAsync("Limit erreicht", "Maximal 5 Fotos erlaubt", "OK");
                 return;
             }
 
@@ -2077,7 +2077,6 @@ namespace iPMCloud.Mobile
 
             try
             {
-                // ✅ Building-Text vorbereiten
                 string buildingText = null;
                 if (AppModel.Instance.LastBuilding == null && _SelectedPosForNotice != null)
                 {
@@ -2088,7 +2087,6 @@ namespace iPMCloud.Mobile
                     }
                 }
 
-                // ✅ Helper-Methode verwenden
                 var bildWSO = await PhotoPickerHelper.TakeAndProcessPhotoAsync(
                     parentGuid: _SelectedBemerkungForNotice.guid,
                     removeCommand: new Command<BildWSO>(RemoveBildInWork_DirektPos),
@@ -2116,7 +2114,7 @@ namespace iPMCloud.Mobile
         {
             if (_SelectedBemerkungForNotice.photos.Count >= 5)
             {
-                await DisplayAlert("Limit erreicht", "Maximal 5 Fotos erlaubt", "OK");
+                await DisplayAlertAsync("Limit erreicht", "Maximal 5 Fotos erlaubt", "OK");
                 return;
             }
 
@@ -2344,9 +2342,10 @@ namespace iPMCloud.Mobile
         private async void OpenCamObjectValuesView()
         {
             popupContainer_objectvaluesbild.IsVisible = true;
-            //popupContainer_objectvaluesbild_stack.WidthRequest = App.Current.MainPage.Width;
+            //popupContainer_objectvaluesbild_stack.WidthRequest = this.Width;
             AbsoluteLayout.SetLayoutFlags(popupContainer_objectvaluesbild_stack, AbsoluteLayoutFlags.None);
-            AbsoluteLayout.SetLayoutBounds(popupContainer_objectvaluesbild_stack, new Rect(0, 30, App.Current.MainPage.Width, 520));
+            AbsoluteLayout.SetLayoutBounds(popupContainer_objectvaluesbild_stack, 
+                new Rect(0, 30, this.Width, 520));
 
             editor_notice_objectvaluesbild.Text = "";
             img_photo_objectvaluesbild.Source = null;
@@ -2508,7 +2507,7 @@ namespace iPMCloud.Mobile
         }
         private void Fill_DayPicker()
         {
-            tabContentWidth = App.Current.MainPage.Width - 13; //28 ;
+            tabContentWidth = this.Width - 13; //28 ;
 
             var today = ((int)DateTime.Now.DayOfWeek);
             daypicker_items.Children.Clear();
@@ -2645,8 +2644,8 @@ namespace iPMCloud.Mobile
         public void OpenOtherPerson()
         {
             empListView.SelectedItem = null;
-            popupContainer_quest_personpicker_inner.HeightRequest = App.Current.MainPage.Height - 100;
-            popupContainer_quest_personpicker_inner.WidthRequest = App.Current.MainPage.Width - 40;
+            popupContainer_quest_personpicker_inner.HeightRequest = this.Height - 100;
+            popupContainer_quest_personpicker_inner.WidthRequest = this.Width - 40;
             popupContainer_quest_personpicker.IsVisible = true;
 
             var empList = AppModel.Instance.PlanResponse.persons;
@@ -2919,7 +2918,7 @@ namespace iPMCloud.Mobile
 
         public void Init_PlanTabs()
         {
-            var w = App.Current.MainPage.Width - 13;//28
+            var w = this.Width - 13;//28
 
             frame_planConA_veroffen.Text = "";//Badge Counter
             frame_planConA_veroffentxt.Text = "Vergangene\r\nOffene";
@@ -3452,8 +3451,8 @@ namespace iPMCloud.Mobile
             await Task.Delay(1);
 
             popupContainer_quest_direktbuchen.IsVisible = true;
-            popupContainer_quest_direktbuchen_st.WidthRequest = Application.Current.MainPage.Width - 20;
-            popupContainer_quest_direktbuchen_st.HeightRequest = Application.Current.MainPage.Height - 120;
+            popupContainer_quest_direktbuchen_st.WidthRequest = this.Width - 20;
+            popupContainer_quest_direktbuchen_st.HeightRequest = this.Height - 120;
 
             btn_quest_direktbuchen_pos.Children.Clear();
 
@@ -3708,8 +3707,8 @@ namespace iPMCloud.Mobile
             await Task.Delay(1);
 
             popupContainer_quest_direktbuchen.IsVisible = true;
-            popupContainer_quest_direktbuchen_st.WidthRequest = Application.Current.MainPage.Width - 20;
-            popupContainer_quest_direktbuchen_st.HeightRequest = Application.Current.MainPage.Height - 120;
+            popupContainer_quest_direktbuchen_st.WidthRequest = this.Width - 20;
+            popupContainer_quest_direktbuchen_st.HeightRequest = this.Height - 120;
 
             btn_quest_direktbuchen_pos.Children.Clear();
 
@@ -5075,7 +5074,7 @@ namespace iPMCloud.Mobile
 
         public void ShowClearLog(object sender, EventArgs e)
         {
-            popupContainer_container_clearlog.WidthRequest = App.Current.MainPage.Width - 40;
+            popupContainer_container_clearlog.WidthRequest = this.Width - 40;
             btn_clearlogtosupport.GestureRecognizers.Clear();
             var tgr_over = new TapGestureRecognizer();
             tgr_over.Tapped -= btn_nlogclearTapped;
@@ -5114,7 +5113,7 @@ namespace iPMCloud.Mobile
 
         public void ShowSendLog(object sender, EventArgs e)
         {
-            popupContainer_container_sendlog.WidthRequest = App.Current.MainPage.Width - 40;
+            popupContainer_container_sendlog.WidthRequest = this.Width - 40;
             //popupContainer_container_sendlog.Margin = new Thickness(0,100,0,0);
             btn_sendlogtosupport.GestureRecognizers.Clear();
             var tgr_over = new TapGestureRecognizer();
@@ -5133,7 +5132,7 @@ namespace iPMCloud.Mobile
         }
         public void ShowSendLog_fail()
         {
-            popupContainer_container_sendlog_fail.WidthRequest = App.Current.MainPage.Width - 40;
+            popupContainer_container_sendlog_fail.WidthRequest = this.Width - 40;
             //popupContainer_container_sendlog.Margin = new Thickness(0,100,0,0);
             btn_cancellogtosupport_fail.GestureRecognizers.Clear();
             var tgr_cancel = new TapGestureRecognizer();
@@ -5320,8 +5319,8 @@ namespace iPMCloud.Mobile
         public void OpenLanguage(object sender, EventArgs e)
         {
             langListView.SelectedItem = null;
-            popupContainer_quest_langpicker_inner.HeightRequest = App.Current.MainPage.Height - 100;
-            popupContainer_quest_langpicker_inner.WidthRequest = App.Current.MainPage.Width - 40;
+            popupContainer_quest_langpicker_inner.HeightRequest = this.Height - 100;
+            popupContainer_quest_langpicker_inner.WidthRequest = this.Width - 40;
             popupContainer_quest_langpicker.IsVisible = true;
 
             var empList = AppModel.Instance.Langs;
@@ -5352,7 +5351,7 @@ namespace iPMCloud.Mobile
 
         public void ShowTranslate(object sender, EventArgs e)
         {
-            popupContainer_container_changelang.WidthRequest = App.Current.MainPage.Width - 40;
+            popupContainer_container_changelang.WidthRequest = this.Width - 40;
             //popupContainer_container_changelang.Margin = new Thickness(0,100,0,0);
             btn_changelang.GestureRecognizers.Clear();
             var tgr_over = new TapGestureRecognizer();
@@ -5373,7 +5372,7 @@ namespace iPMCloud.Mobile
         }
         public void ShowTranslate_fail()
         {
-            popupContainer_quest_changelang_fail.WidthRequest = App.Current.MainPage.Width - 40;
+            popupContainer_quest_changelang_fail.WidthRequest = this.Width - 40;
             //popupContainer_container_sendlog.Margin = new Thickness(0,100,0,0);
             btn_cancellogtosupport_fail.GestureRecognizers.Clear();
             var tgr_cancel = new TapGestureRecognizer();
@@ -5804,7 +5803,7 @@ namespace iPMCloud.Mobile
                 // ✅ Prüfen ob Kamera verfügbar
                 if (!MediaPicker.Default.IsCaptureSupported)
                 {
-                    await DisplayAlert("Fehler", "Kamera nicht verfügbar", "OK");
+                    await DisplayAlertAsync("Fehler", "Kamera nicht verfügbar", "OK");
                     return;
                 }
 
@@ -5835,12 +5834,12 @@ namespace iPMCloud.Mobile
             catch (FeatureNotSupportedException)
             {
                 // Kamera wird nicht unterstützt
-                await DisplayAlert("Fehler", "Kamera wird nicht unterstützt", "OK");
+                await DisplayAlertAsync("Fehler", "Kamera wird nicht unterstützt", "OK");
             }
             catch (PermissionException)
             {
                 // Berechtigungen wurden nicht erteilt
-                await DisplayAlert("Fehler", "Keine Kamera-Berechtigung", "OK");
+                await DisplayAlertAsync("Fehler", "Keine Kamera-Berechtigung", "OK");
             }
             catch (OperationCanceledException)
             {
@@ -5901,7 +5900,7 @@ namespace iPMCloud.Mobile
             // ✅ Limit prüfen
             if (_SelectedBemerkungForNotice.photos.Count >= 5)
             {
-                await DisplayAlert("Limit erreicht", "Maximal 5 Fotos erlaubt", "OK");
+                await DisplayAlertAsync("Limit erreicht", "Maximal 5 Fotos erlaubt", "OK");
                 return;
             }
 
@@ -5939,7 +5938,7 @@ namespace iPMCloud.Mobile
         {
             if (_SelectedBemerkungForNotice.photos.Count >= 5)
             {
-                await DisplayAlert("Limit erreicht", "Maximal 5 Fotos erlaubt", "OK");
+                await DisplayAlertAsync("Limit erreicht", "Maximal 5 Fotos erlaubt", "OK");
                 return;
             }
 
@@ -6413,7 +6412,7 @@ namespace iPMCloud.Mobile
 
             if (!pts.success)
             {
-                await DisplayAlert("Abruf nicht möglich!", pts.message, "OK");
+                await DisplayAlertAsync("Abruf nicht möglich!", pts.message, "OK");
             }
             else
             {
@@ -7804,7 +7803,7 @@ namespace iPMCloud.Mobile
             }
             //if (model.LastBuilding != null)
             //{
-            //    await lastBuilding_Container.FadeTo(1, 500, Easing.SpringIn);
+            //    await lastBuilding_Container.FadeToAsync(1, 500, Easing.SpringIn);
             //}
             //else
             //{
@@ -7924,7 +7923,7 @@ namespace iPMCloud.Mobile
         {
             if (model.AllBuildings == null || model.AllBuildings.Count == 0)
             {
-                await DisplayAlert("Objektprüfung nicht möglich!",
+                await DisplayAlertAsync("Objektprüfung nicht möglich!",
                     ipmBuildingResponse != null ? ipmBuildingResponse.message : "FEHLER: Muss Online gehen, kann aber nicht!", "Zurück");
             }
         }
@@ -8095,7 +8094,7 @@ namespace iPMCloud.Mobile
         {
             if (model.AllBuildings == null || model.AllBuildings.Count == 0)
             {
-                await DisplayAlert("Objektprüfung nicht möglich!",
+                await DisplayAlertAsync("Objektprüfung nicht möglich!",
                     ipmNewBuildingResponse != null ? ipmNewBuildingResponse.message : "FEHLER: Verbindung Online nicht möglich!", "Zurück");
             }
         }

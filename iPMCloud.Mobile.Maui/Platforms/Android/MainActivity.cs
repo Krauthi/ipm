@@ -56,21 +56,15 @@ namespace iPMCloud.Mobile
                 
                 // ✅ MAUI Platform initialisieren (WICHTIG!)
                 Platform.Init(this, savedInstanceState);
-                
-                // Font Scale vor base.OnCreate setzen
-                InitFontScale();
-                
-                base.OnCreate(savedInstanceState);
-
-                // Google Play Services Check
-                if (!GooglePlayServicesChecker.IsAvailable(this))
-                {
-                    Log.Warn(TAG, "Google Play Services nicht verfügbar");
-                }
 
                 // AppModel initialisieren
                 model = AppModel.Instance;
                 model.Activity = this;
+                // AppModel initialisieren
+                model.InitAppModel();
+
+                // Font Scale vor base.OnCreate setzen
+                InitFontScale();
 
                 // NLog initialisieren
                 InitializeNLog();
@@ -84,11 +78,19 @@ namespace iPMCloud.Mobile
                 // App Version setzen
                 SetAppVersion();
 
-                // AppModel initialisieren
-                model.InitAppModel();
 
                 // Notification Channel erstellen
                 CreateNotificationChannel();
+
+                base.OnCreate(savedInstanceState);
+
+                // Google Play Services Check
+                if (!GooglePlayServicesChecker.IsAvailable(this))
+                {
+                    Log.Warn(TAG, "Google Play Services nicht verfügbar");
+                }
+
+
 
                 // Status Bar Color
                 if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop)

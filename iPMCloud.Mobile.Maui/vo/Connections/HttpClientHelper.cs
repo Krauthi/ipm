@@ -5,6 +5,38 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace iPMCloud.Mobile.vo
 {
+
+
+    public static class HttpClientProvider
+    {
+        // Eine Client-Instanz pro "Profil" (z.B. Sync vs. Log) – je nachdem, was ihr braucht.
+        public static HttpClient CreateClient(TimeSpan pooledConnectionLifetime, TimeSpan timeout)
+        {
+            var handler = new SocketsHttpHandler
+            {
+                // Entspricht vom Zweck her am ehesten ConnectionLeaseTimeout:
+                // Nach Ablauf wird die Verbindung nicht weiter aus dem Pool wiederverwendet.
+                PooledConnectionLifetime = pooledConnectionLifetime,
+
+                // Optional, aber oft sinnvoll:
+                // Wie lange darf eine unbenutzte Verbindung im Pool bleiben?
+                PooledConnectionIdleTimeout = TimeSpan.FromMinutes(2),
+
+                // Optional: wenn ihr viele parallele Calls pro Host macht
+                MaxConnectionsPerServer = 20
+            };
+
+            var client = new HttpClient(handler)
+            {
+                Timeout = timeout
+            };
+
+            return client;
+        }
+    }
+
+
+
     /// <summary>
     /// Zentrale Verwaltung für HttpClient-Instanzen mit SSL-Validierung
     /// </summary>

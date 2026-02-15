@@ -21,7 +21,6 @@ namespace iPMCloud.Mobile.vo
         public const string PAGE_MAINPAGE = "mainpage";
 
                               
-        public AppModel model;
 
         public StartPage StartPageObj { get; set; }
         public MainPage MainPageObj { get; set; }
@@ -34,10 +33,6 @@ namespace iPMCloud.Mobile.vo
 
         public TFPageNavigator()
         {
-        }
-        public TFPageNavigator(AppModel _model)
-        {
-            model = _model;
         }
 
         public void NavigateTo(string mainPage, string subPage = "")
@@ -71,14 +66,14 @@ namespace iPMCloud.Mobile.vo
                 case PAGE_STARTPAGE:
                     if (LastMainPage != CurrentMainPage)
                     {
-                        StartPageObj = new StartPage(model);
+                        StartPageObj = new StartPage();
                         AppModel.Instance.StartPage = StartPageObj;
                         var startPage = StartPageObj.GetPage(subPage);
                         
                         // Set the main page - works before and after window is created
-                        if (model?.App != null)
+                        if (AppModel.Instance?.App != null)
                         {
-                            model.App.MainPage = startPage;
+                            AppModel.Instance.App.MainPage = startPage;
                         }
                     }
                     else
@@ -91,14 +86,14 @@ namespace iPMCloud.Mobile.vo
                 case PAGE_MAINPAGE:
                     if (LastMainPage != CurrentMainPage)
                     {
-                        MainPageObj = new MainPage(model);
+                        MainPageObj = new MainPage();
                         AppModel.Instance.MainPage = MainPageObj;
                         var mainPageContent = MainPageObj.GetPage(subPage); // Fixed: was using StartPageObj
                         
                         // Set the main page - works before and after window is created
-                        if (model?.App != null)
+                        if (AppModel.Instance?.App != null)
                         {
-                            model.App.MainPage = mainPageContent;
+                            AppModel.Instance.App.MainPage = mainPageContent;
                         }
                     }
                     else

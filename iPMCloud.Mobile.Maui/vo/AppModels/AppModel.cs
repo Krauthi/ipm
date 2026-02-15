@@ -40,7 +40,7 @@ namespace iPMCloud.Mobile.vo
         public Connections Connections { get; set; }
 
         // Page Navigator
-        public TFPageNavigator PageNavigator { get; set; }
+        public TFPageNavigator PageNavigator { get; set; } = new TFPageNavigator();
 
         public Scanner Scan = null;
         public State State = null;
@@ -252,8 +252,11 @@ namespace iPMCloud.Mobile.vo
             private set { }
         }
 
+
+        public bool HasInitAppmodel = false;
         public bool InitAppModel()
         {
+            if(HasInitAppmodel) { return true; }
             AppOnStart = DateTime.Now;
 
             AppSet.Load();

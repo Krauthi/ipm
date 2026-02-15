@@ -2,20 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" package="com.ipmcloud.ipm.mobile" android:versionName="2.1.0">
 	<!-- SDK Versionen explizit angeben -->
 	<uses-sdk tools:overrideLibrary="             androidx.lifecycle.runtime,             com.google.android.play.core,             com.google.android.gms.base,             com.google.android.gms.common,             com.google.android.gms.tasks" />
-	<application android:allowBackup="true" android:supportsRtl="true" 
-				 android:label="iPM-Cloud" android:theme="@style/Maui.SplashTheme" 
-				 android:networkSecurityConfig="@xml/network_security_config" 
-				 tools:replace="android:allowBackup,android:label"
-				 android:icon="@drawable/icon">
-
+	<application android:allowBackup="true" android:supportsRtl="true" android:label="iPM-Cloud" android:theme="@style/Maui.SplashTheme" android:networkSecurityConfig="@xml/network_security_config" tools:replace="android:allowBackup,android:label" android:icon="@drawable/icon">
 		<!--  Option 2: Wenn du MAUI AppIcon nutzen willst (empfohlen) -->
 		<!-- android:icon="@mipmap/appicon"
         android:roundIcon="@mipmap/appicon_round" -->
-
 		<!--  Option 3: Temporär kein Icon (zum Testen) -->
 		<!-- Einfach weglassen, Android nutzt dann Default -->
-		
-		
 		<!-- Hinweis: SplashActivity und MainActivity werden über C# Attributes definiert -->
 		<!-- Die Activity-Registrierung erfolgt automatisch durch MAUI basierend auf den [Activity] Attributes -->
 		<!-- SplashActivity: MainLauncher=true, NoHistory=true -->
@@ -24,7 +16,6 @@
 		<provider android:name="androidx.core.content.FileProvider" android:authorities="${applicationId}.fileprovider" android:exported="false" android:grantUriPermissions="true">
 			<meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths" />
 		</provider>
-
 	</application>
 	<!-- Permissions -->
 	<uses-permission android:name="android.permission.INTERNET" />
@@ -41,9 +32,8 @@
 	<uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
 	<uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
 	<uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
-	<!-- Location (falls benötigt) -->
-	<!-- <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> -->
-	<!-- <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> -->
+	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 	<!-- Features -->
 	<uses-feature android:name="android.hardware.camera" android:required="false" />
 	<uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />

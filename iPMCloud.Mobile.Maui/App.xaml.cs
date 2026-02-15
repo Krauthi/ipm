@@ -67,6 +67,7 @@ namespace iPMCloud.Mobile
 
             AppModel.Instance.InitDeviceInformation();
             AppModel.Instance.App = this;
+            if (!AppModel.Instance.HasInitAppmodel) { AppModel.Instance.HasInitAppmodel = AppModel.Instance.InitAppModel(); }
             if (AppModel.Instance.Person != null)
             {
                 AppModel.Logger.Info("INFO: App neu gestartet V" + AppModel.Instance.Version + " (" + AppModel.Instance.Person.name + " " + AppModel.Instance.Person.vorname + ")");

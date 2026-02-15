@@ -61,7 +61,7 @@ namespace iPMCloud.Mobile
                 model = AppModel.Instance;
                 model.Activity = this;
                 // AppModel initialisieren
-                model.InitAppModel();
+                model.HasInitAppmodel = model.InitAppModel();
 
                 // Font Scale vor base.OnCreate setzen
                 InitFontScale();

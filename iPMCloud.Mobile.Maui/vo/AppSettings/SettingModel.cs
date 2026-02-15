@@ -121,8 +121,8 @@ namespace iPMCloud.Mobile.vo
                 SettingDTO.ServerUrl = "https://tschoecke.ipmcloud.de";
                 SettingDTO.CustomerNumber = "11037";
 
-                SettingDTO.LoginName = "Esposito";
-                SettingDTO.LoginPassword = "21081986";
+                SettingDTO.LoginName = "JoBaum111";
+                SettingDTO.LoginPassword = "16101964";
                 SettingDTO.CustomerName = "iPD Hensel Immobilien Pflege und Dienstleistungen";
                 SettingDTO.CustomerNumber = "1"; // "10074";
                 SettingDTO.ServerUrl = "https://test-hensel.ipmcloud.de";

@@ -76,8 +76,15 @@ namespace iPMCloud.Mobile
                 AppModel.Logger.Warn("WARN: App neu gestartet (Person noch nicht bekannt - Neuinstallation)");
             }
 
-
-            AppModel.Instance.PageNavigator.NavigateTo(TFPageNavigator.PAGE_STARTPAGE);
+            // Ensure PageNavigator is initialized before navigating
+            if (AppModel.Instance.PageNavigator != null)
+            {
+                AppModel.Instance.PageNavigator.NavigateTo(TFPageNavigator.PAGE_STARTPAGE);
+            }
+            else
+            {
+                AppModel.Logger.Error("ERROR: PageNavigator is null - cannot navigate to start page");
+            }
         }
 
 

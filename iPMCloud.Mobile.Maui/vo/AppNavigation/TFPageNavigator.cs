@@ -6,6 +6,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using Microsoft.Maui.Controls;
 using System.Threading.Tasks;
 using System.Threading;
+using Microsoft.Maui.ApplicationModel;
 
 namespace iPMCloud.Mobile.vo
 {
@@ -20,6 +21,7 @@ namespace iPMCloud.Mobile.vo
         public const string PAGE_MAINPAGE = "mainpage";
 
                               
+        public AppModel model;
 
         public StartPage StartPageObj { get; set; }
         public MainPage MainPageObj { get; set; }
@@ -33,25 +35,50 @@ namespace iPMCloud.Mobile.vo
         public TFPageNavigator()
         {
         }
+        public TFPageNavigator(AppModel _model)
+        {
+            model = _model;
+        }
 
         public void NavigateTo(string mainPage, string subPage = "")
+        {
+            // Ensure navigation happens on the main thread
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                try
+                {
+                    await NavigateToAsync(mainPage, subPage);
+                }
+                catch (Exception ex)
+                {
+                    AppModel.Logger.Error($"ERROR: NavigateTo failed for page '{mainPage}': {ex.Message}");
+                    System.Diagnostics.Debug.WriteLine($"NavigateTo Error: {ex.Message}");
+                }
+            });
+        }
+
+        private async Task NavigateToAsync(string mainPage, string subPage = "")
         {
             LastMainPage = ""+CurrentMainPage;
             LastSubPage = ""+CurrentSubPage; 
             CurrentMainPage = mainPage;
             CurrentSubPage = subPage;
+            
+            AppModel.Logger.Info($"INFO: Navigating to page '{mainPage}' with subPage '{subPage}'");
+            
             switch (mainPage)
             {
                 case PAGE_STARTPAGE:
-                    //if (StartPageObj == null) { StartPageObj = new StartPage(model); }
                     if (LastMainPage != CurrentMainPage)
                     {
-                        StartPageObj = new StartPage();
+                        StartPageObj = new StartPage(model);
                         AppModel.Instance.StartPage = StartPageObj;
-                        //model.App.MainPage = StartPageObj.GetPage(subPage); 
-                        if (AppModel.Instance.App.Windows.Count > 0)
+                        var startPage = StartPageObj.GetPage(subPage);
+                        
+                        // Set the main page - works before and after window is created
+                        if (model?.App != null)
                         {
-                            AppModel.Instance.App.Windows[0].Page = StartPageObj.GetPage(subPage);
+                            model.App.MainPage = startPage;
                         }
                     }
                     else
@@ -62,15 +89,16 @@ namespace iPMCloud.Mobile.vo
 
 
                 case PAGE_MAINPAGE:
-                    //if (GroupCalendarObj == null) { GroupCalendarObj = new GroupCalendarPage(model); }                    
                     if (LastMainPage != CurrentMainPage)
                     {
-                        MainPageObj = new MainPage();
+                        MainPageObj = new MainPage(model);
                         AppModel.Instance.MainPage = MainPageObj;
-                        //model.App.MainPage = MainPageObj.GetPage(subPage);
-                        if (AppModel.Instance.App.Windows.Count > 0)
+                        var mainPageContent = MainPageObj.GetPage(subPage); // Fixed: was using StartPageObj
+                        
+                        // Set the main page - works before and after window is created
+                        if (model?.App != null)
                         {
-                            AppModel.Instance.App.Windows[0].Page = StartPageObj.GetPage(subPage);
+                            model.App.MainPage = mainPageContent;
                         }
                     }
                     else

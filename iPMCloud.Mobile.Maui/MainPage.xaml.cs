@@ -2653,11 +2653,11 @@ namespace iPMCloud.Mobile
             BindingContext = new ObservableCollection<ObservablePersonSmallWSOCollection<string, PersonSmallWSO>>(groupedData);
 
         }
-        private void empListView_ItemSelected(object sender, SelectedItemChangedEventArgs e)
+        private void empListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (e.SelectedItem != null)
+            if (e.CurrentSelection != null && e.CurrentSelection.Count > 0)
             {
-                var p = (PersonSmallWSO)e.SelectedItem;
+                var p = (PersonSmallWSO)e.CurrentSelection[0];
                 AppModel.Instance.PlanResponse.selectedPerson = p;
                 CloseOtherPerson();
                 LoadOtherPersonPlanData(p);
@@ -5327,11 +5327,11 @@ namespace iPMCloud.Mobile
             BindingContext = new ObservableCollection<ObservableLangItemCollection<string, Lang>>(groupedData);
 
         }
-        private void langListView_ItemSelected(object sender, SelectedItemChangedEventArgs e)
+        private void langListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (e.SelectedItem != null)
+            if (e.CurrentSelection != null && e.CurrentSelection.Count > 0)
             {
-                var l = (Lang)e.SelectedItem;
+                var l = (Lang)e.CurrentSelection[0];
                 AppModel.Instance.Lang = l;
                 CloseLanguage();
                 ShowTranslate(null, null);

@@ -162,8 +162,8 @@ namespace iPMCloud.Mobile.vo
 
         public List<Int32> Plan_ObjekteThisWeek = new List<Int32>();
         public List<Int32> Plan_KatThisWeek = new List<Int32>();
-        public Border _showall_again_OrderCategory_frame = new Border();
-        public Border _showall_OrderCategory_frame = new Border();
+        public Border _showall_again_OrderCategory_frame;// = new Border();
+        public Border _showall_OrderCategory_frame;// = new Border();
         public bool _showall_again_OrderCategory = false;
         public bool _showall_OrderCategory = false;
 
@@ -261,7 +261,7 @@ namespace iPMCloud.Mobile.vo
             SettingModel.InitializeSettings();
             Lang = Lang.Load();
             Companies = Company.LoadCompanies();
-            PageNavigator = new TFPageNavigator(this);
+            PageNavigator = new TFPageNavigator();
             State = new State(this);
             Connections = new Connections(this);
             Scan = new Scanner(this);

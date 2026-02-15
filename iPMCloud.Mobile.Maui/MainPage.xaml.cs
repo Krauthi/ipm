@@ -36,26 +36,20 @@ namespace iPMCloud.Mobile
     {
         // private BackgroundWorker backgroundWorker = new BackgroundWorker();
 
-        public AppModel model;
         public bool isInitialize = false;
         public bool _isShowing = false;
 
 
         public MainPage()
         {
-            InitializeComponent();
-        }
-        public MainPage(AppModel model)
-        {
             isInitialize = true;
-            this.model = model;
             InitializeComponent();
             AppModel.Instance.anImage = backgroundIMG;
 
             AppModel.Instance.MainPageOverlay = overlay;
 
-            model._showall_again_OrderCategory_frame = btn_back_inBuildingOrder_category_showall_again;
-            model._showall_OrderCategory_frame = btn_back_inBuildingOrder_category_showall;
+            AppModel.Instance._showall_again_OrderCategory_frame = btn_back_inBuildingOrder_category_showall_again;
+            AppModel.Instance._showall_OrderCategory_frame = btn_back_inBuildingOrder_category_showall;
 
             AppModel.Instance.Lang = Lang.Load();
             lb_settings_sel_trans.Text = AppModel.Instance.Lang.text.Replace("(Standard)", "");
@@ -86,7 +80,7 @@ namespace iPMCloud.Mobile
                 GetChecksInfo(checkInfoLastView);
 
 
-                model.allPositionInWork = LeistungPackWSO.Load(model);
+                AppModel.Instance.allPositionInWork = LeistungPackWSO.Load(AppModel.Instance);
                 ShowMainPage();
             }
             else
@@ -112,7 +106,7 @@ namespace iPMCloud.Mobile
                     checkInfoLastView = view;
                 }
 
-                var result = Task.Run(() => { return model.Connections.GetChecksInfo(AppModel.Instance.Person.id, checkInfoLastView); }).Result;
+                var result = Task.Run(() => { return AppModel.Instance.Connections.GetChecksInfo(AppModel.Instance.Person.id, checkInfoLastView); }).Result;
                 if (result != null && result.checks != null)
                 {
                     AppModel.Instance.ChecksInfoResponse = result;
@@ -175,7 +169,7 @@ namespace iPMCloud.Mobile
 
         public async void SelectedObjektAufterNotScan_Check(IntBoolParam intBol)
         {
-            if (model.allPositionInWork != null)
+            if (AppModel.Instance.allPositionInWork != null)
             {
                 popupContainer_info_notscan_titel.Text = "ACHTUNG!";
                 popupContainer_info_notscan_text.Text = "Es sind noch nicht abgeschlossene Arbeiten aktiv. Bitte erst beenden, bevor Sie ein anderes Objekt direkt auswählen.";
@@ -191,12 +185,12 @@ namespace iPMCloud.Mobile
             {
                 overlay.IsVisible = true;
                 await Task.Delay(1);
-                model.SettingModel.SettingDTO.LastBuildingIdScanned = intBol.val;
+                AppModel.Instance.SettingModel.SettingDTO.LastBuildingIdScanned = intBol.val;
                 // Zurücksetzten aller States für die Auswahl der Ausführungen
-                model.SetAllObjectAndValuesToNoSelectedBuilding();
-                model.SettingModel.SettingDTO.LastBuildingIdScanned = intBol.val;
-                model.LastBuilding = model.AllBuildings.Find(bu => bu.id == intBol.val);
-                model.SettingModel.SaveSettings();
+                AppModel.Instance.SetAllObjectAndValuesToNoSelectedBuilding();
+                AppModel.Instance.SettingModel.SettingDTO.LastBuildingIdScanned = intBol.val;
+                AppModel.Instance.LastBuilding = AppModel.Instance.AllBuildings.Find(bu => bu.id == intBol.val);
+                AppModel.Instance.SettingModel.SaveSettings();
                 list_notscan.Children.Clear();
                 if (intBol.bol) { ShowMainPage(); }
                 else
@@ -235,7 +229,7 @@ namespace iPMCloud.Mobile
 
             if (AppModel.Instance.AppControll.direktBuchenPos)
             {
-                if (model.allPositionInWork != null)
+                if (AppModel.Instance.allPositionInWork != null)
                 {
                     popupContainer_info_notscan_titel.Text = "ACHTUNG!";
                     popupContainer_info_notscan_text.Text = "Es sind noch nicht abgeschlossene Arbeiten aktiv. Bitte erst beenden, bevor Sie ein anderes Objekt direkt auswählen oder eine Checkliste bearbeiten möchten.";
@@ -256,17 +250,17 @@ namespace iPMCloud.Mobile
                     && AppModel.Instance.LastBuilding.id != AppModel.Instance.selectedCheckInfo.objektid))
                 {
                     // letztes Objekt ist NICHT GLEICH
-                    model.SettingModel.SettingDTO.LastBuildingIdScanned = AppModel.Instance.selectedCheckInfo.objektid;
+                    AppModel.Instance.SettingModel.SettingDTO.LastBuildingIdScanned = AppModel.Instance.selectedCheckInfo.objektid;
                     // Zurücksetzten aller States für die Auswahl der Ausführungen
-                    model.SetAllObjectAndValuesToNoSelectedBuilding();
-                    model.SettingModel.SettingDTO.LastBuildingIdScanned = AppModel.Instance.selectedCheckInfo.objektid;
-                    model.LastBuilding = model.AllBuildings.Find(bu => bu.id == AppModel.Instance.selectedCheckInfo.objektid);
+                    AppModel.Instance.SetAllObjectAndValuesToNoSelectedBuilding();
+                    AppModel.Instance.SettingModel.SettingDTO.LastBuildingIdScanned = AppModel.Instance.selectedCheckInfo.objektid;
+                    AppModel.Instance.LastBuilding = AppModel.Instance.AllBuildings.Find(bu => bu.id == AppModel.Instance.selectedCheckInfo.objektid);
                     try
                     {
-                        AppModel.Logger.Info("CHECK-IN (OHNE QR-SCAN): " + model.LastBuilding.strasse + " " + model.LastBuilding.hsnr + model.LastBuilding.plz + " " + model.LastBuilding.ort);
+                        AppModel.Logger.Info("CHECK-IN (OHNE QR-SCAN): " + AppModel.Instance.LastBuilding.strasse + " " + AppModel.Instance.LastBuilding.hsnr + AppModel.Instance.LastBuilding.plz + " " + AppModel.Instance.LastBuilding.ort);
                     }
                     catch (Exception) { }
-                    model.SettingModel.SaveSettings();
+                    AppModel.Instance.SettingModel.SaveSettings();
 
                     await lastBuilding_Container.FadeToAsync(0, 500, Easing.SpringOut);
                     SetLastBuilding();
@@ -302,8 +296,8 @@ namespace iPMCloud.Mobile
             BuildingScanPage_Container.IsVisible = true;
 
             lay_buildingscan.Children.Clear();
-            model.UseExternHardware = true;
-            model.Scan.ScanBuildingView(this, lay_buildingscan, MethodAfterScan_check);
+            AppModel.Instance.UseExternHardware = true;
+            AppModel.Instance.Scan.ScanBuildingView(this, lay_buildingscan, MethodAfterScan_check);
 
             await Task.Delay(1);
             overlay.IsVisible = false;
@@ -382,7 +376,7 @@ namespace iPMCloud.Mobile
             if (!intBol.bol)// Keine Offene
             {
                 // Starte eine neu Befragung und öffne direkt zur Bearbeitung
-                var result = await Task.Run(() => { return model.Connections.StartCheck(intBol.val); });
+                var result = await Task.Run(() => { return AppModel.Instance.Connections.StartCheck(intBol.val); });
                 if (result != null)
                 {
                     // Wenn es schonmal die Befragung (CheckA) gegeben hatte, dann löschen und aktuelle verwenden
@@ -426,7 +420,7 @@ namespace iPMCloud.Mobile
                 else
                 {
                     // Offen Befragung wurde noch nicht gespeichert!   Hole Offene Befragung
-                    var result = await Task.Run(() => { return model.Connections.GetCheckA(AppModel.Instance.selectedCheckInfo.checkA_id).Result; });
+                    var result = await Task.Run(() => { return AppModel.Instance.Connections.GetCheckA(AppModel.Instance.selectedCheckInfo.checkA_id).Result; });
                     if (result != null)
                     {
                         result.start = JavaScriptDateConverter.Convert(DateTime.Now);
@@ -535,7 +529,7 @@ namespace iPMCloud.Mobile
         {
             popupContainer_quest_delcheckquest.IsVisible = false;
 
-            var result = await Task.Run(() => { return model.Connections.DelCheckA(AppModel.Instance.selectedCheckA.id).Result; });
+            var result = await Task.Run(() => { return AppModel.Instance.Connections.DelCheckA(AppModel.Instance.selectedCheckA.id).Result; });
             if (result)
             {
                 CheckClass.DeleteCheckA(AppModel.Instance.selectedCheckA.id);
@@ -836,7 +830,7 @@ namespace iPMCloud.Mobile
 
                 _SelectedPosForNotice_check_bem.bemWSO.prio = 0;
                 _SelectedPosForNotice_check_bem.bemWSO.gruppeid = AppModel.Instance.selectedCheckInfo.gruppeid;
-                _SelectedPosForNotice_check_bem.bemWSO.personid = model.Person.id;
+                _SelectedPosForNotice_check_bem.bemWSO.personid = AppModel.Instance.Person.id;
                 _SelectedPosForNotice_check_bem.bemWSO.objektid = AppModel.Instance.selectedCheckA.objektid;
                 _SelectedPosForNotice_check_bem.bemWSO.leistungid = _SelectedPosForNotice_check_bem.id;
                 _SelectedPosForNotice_check_bem.bemWSO.datum = JavaScriptDateConverter.Convert(DateTime.Now);
@@ -884,7 +878,7 @@ namespace iPMCloud.Mobile
 
             try
             {
-                model.UseExternHardware = true;
+                AppModel.Instance.UseExternHardware = true;
 
                 // ✅ Limit prüfen
                 if (_SelectedPosForNotice_check_bem.bemWSO?.photos?.Count >= 3)
@@ -972,7 +966,7 @@ namespace iPMCloud.Mobile
             }
             finally
             {
-                model.UseExternHardware = false;
+                AppModel.Instance.UseExternHardware = false;
                 overlay.IsVisible = false;
             }
         }
@@ -996,7 +990,7 @@ namespace iPMCloud.Mobile
                 return;
             }
 
-            model.UseExternHardware = true;
+            AppModel.Instance.UseExternHardware = true;
             overlay.IsVisible = true;
 
             try
@@ -1022,7 +1016,7 @@ namespace iPMCloud.Mobile
             }
             finally
             {
-                model.UseExternHardware = false;
+                AppModel.Instance.UseExternHardware = false;
                 overlay.IsVisible = false;
             }
         }
@@ -1070,20 +1064,20 @@ namespace iPMCloud.Mobile
 
         private async Task<bool> CheckPermissions()
         {
-            model.CheckPermissions();
-            if (!String.IsNullOrWhiteSpace(model.checkPermissionsMessage))
+            AppModel.Instance.CheckPermissions();
+            if (!String.IsNullOrWhiteSpace(AppModel.Instance.checkPermissionsMessage))
             {
-                model.checkPermissionsMessage = model.checkPermissionsMessage.Replace(";", "\n\n");
-                await DisplayAlertAsync("Folgendes wird benötigt!", model.checkPermissionsMessage, "OK");
-                //model.PageNavigator.NavigateTo(TFPageNavigator.PAGE_CLOSEAPP);
+                AppModel.Instance.checkPermissionsMessage = AppModel.Instance.checkPermissionsMessage.Replace(";", "\n\n");
+                await DisplayAlertAsync("Folgendes wird benötigt!", AppModel.Instance.checkPermissionsMessage, "OK");
+                //AppModel.Instance.PageNavigator.NavigateTo(TFPageNavigator.PAGE_CLOSEAPP);
                 return false;
             }
-            model.CheckPermissionGPS();
-            if (!String.IsNullOrWhiteSpace(model.checkPermissionGPSMessage))
+            AppModel.Instance.CheckPermissionGPS();
+            if (!String.IsNullOrWhiteSpace(AppModel.Instance.checkPermissionGPSMessage))
             {
-                model.checkPermissionGPSMessage = model.checkPermissionGPSMessage.Replace(";", "\n\n");
-                await DisplayAlertAsync("Berechtigungsproblem!", model.checkPermissionGPSMessage, "OK");
-                //model.PageNavigator.NavigateTo(TFPageNavigator.PAGE_CLOSEAPP);
+                AppModel.Instance.checkPermissionGPSMessage = AppModel.Instance.checkPermissionGPSMessage.Replace(";", "\n\n");
+                await DisplayAlertAsync("Berechtigungsproblem!", AppModel.Instance.checkPermissionGPSMessage, "OK");
+                //AppModel.Instance.PageNavigator.NavigateTo(TFPageNavigator.PAGE_CLOSEAPP);
                 return false;
             }
             return true;
@@ -1100,15 +1094,15 @@ namespace iPMCloud.Mobile
             overlay.IsVisible = true;
             await Task.Delay(1);
 
-            //model.SendLogZipFile();
+            //AppModel.Instance.SendLogZipFile();
 
-            model.State.IsBackTappedToLogin = true;
+            AppModel.Instance.State.IsBackTappedToLogin = true;
 
             ClearPageViews();
             StartPage_Container.IsVisible = true;
 
 
-            model.PageNavigator.NavigateTo(TFPageNavigator.PAGE_STARTPAGE);
+            AppModel.Instance.PageNavigator.NavigateTo(TFPageNavigator.PAGE_STARTPAGE);
             return;
         }
 
@@ -1126,10 +1120,10 @@ namespace iPMCloud.Mobile
 
 
             // Selektierte Arbeiten zur Ausführung (noch nicht gestartete Arbeiten)
-            btn_showselected_pos_container.IsVisible = model.allSelectedPositionToWork.Count > 0;
-            btn_showselected_pos_container_not.IsVisible = !(model.allSelectedPositionToWork.Count > 0);
+            btn_showselected_pos_container.IsVisible = AppModel.Instance.allSelectedPositionToWork.Count > 0;
+            btn_showselected_pos_container_not.IsVisible = !(AppModel.Instance.allSelectedPositionToWork.Count > 0);
             await Task.Delay(1);
-            btn_showselected_pos_container2.IsVisible = model.allSelectedPositionToWork.Count > 0;
+            btn_showselected_pos_container2.IsVisible = AppModel.Instance.allSelectedPositionToWork.Count > 0;
 
             await Task.Delay(1);
             overlay.IsVisible = false;
@@ -1236,8 +1230,8 @@ namespace iPMCloud.Mobile
             BuildingScanPage_Container.IsVisible = true;
 
             lay_buildingscan.Children.Clear();
-            model.UseExternHardware = true;
-            model.Scan.ScanBuildingView(this, lay_buildingscan, MethodAfterScan);
+            AppModel.Instance.UseExternHardware = true;
+            AppModel.Instance.Scan.ScanBuildingView(this, lay_buildingscan, MethodAfterScan);
 
             await Task.Delay(1);
             overlay.IsVisible = false;
@@ -1276,7 +1270,7 @@ namespace iPMCloud.Mobile
             list_notscan.Children.Clear();
             await list_notscan_scroll.ScrollToAsync(0, 0, false);
             await Task.Delay(1);
-            list_notscan.Children.Add(BuildingWSO.GetObjektNotScanListView(model, new Command<IntBoolParam>(SelectedObjektAufterNotScan), s));
+            list_notscan.Children.Add(BuildingWSO.GetObjektNotScanListView(AppModel.Instance, new Command<IntBoolParam>(SelectedObjektAufterNotScan), s));
             await Task.Delay(1);
             list_notscan.IsVisible = true;
             overlay.IsVisible = false;
@@ -1289,7 +1283,7 @@ namespace iPMCloud.Mobile
         }
         public async void SelectedObjektAufterNotScan(IntBoolParam intBol)
         {
-            if (model.allPositionInWork != null)
+            if (AppModel.Instance.allPositionInWork != null)
             {
                 popupContainer_info_notscan_titel.Text = "ACHTUNG!";
                 popupContainer_info_notscan_text.Text = "Es sind noch nicht abgeschlossene Arbeiten aktiv. Bitte erst beenden, bevor Sie ein anderes Objekt direkt auswählen.";
@@ -1305,17 +1299,17 @@ namespace iPMCloud.Mobile
             {
                 overlay.IsVisible = true;
                 await Task.Delay(1);
-                model.SettingModel.SettingDTO.LastBuildingIdScanned = intBol.val;
+                AppModel.Instance.SettingModel.SettingDTO.LastBuildingIdScanned = intBol.val;
                 // Zurücksetzten aller States für die Auswahl der Ausführungen
-                model.SetAllObjectAndValuesToNoSelectedBuilding();
-                model.SettingModel.SettingDTO.LastBuildingIdScanned = intBol.val;
-                model.LastBuilding = model.AllBuildings.Find(bu => bu.id == intBol.val);
+                AppModel.Instance.SetAllObjectAndValuesToNoSelectedBuilding();
+                AppModel.Instance.SettingModel.SettingDTO.LastBuildingIdScanned = intBol.val;
+                AppModel.Instance.LastBuilding = AppModel.Instance.AllBuildings.Find(bu => bu.id == intBol.val);
                 try
                 {
-                    AppModel.Logger.Info("CHECK-IN (OHNE QR-SCAN): " + model.LastBuilding.strasse + " " + model.LastBuilding.hsnr + model.LastBuilding.plz + " " + model.LastBuilding.ort);
+                    AppModel.Logger.Info("CHECK-IN (OHNE QR-SCAN): " + AppModel.Instance.LastBuilding.strasse + " " + AppModel.Instance.LastBuilding.hsnr + AppModel.Instance.LastBuilding.plz + " " + AppModel.Instance.LastBuilding.ort);
                 }
                 catch (Exception) { }
-                model.SettingModel.SaveSettings();
+                AppModel.Instance.SettingModel.SaveSettings();
                 list_notscan.Children.Clear();
                 if (intBol.bol) { ShowMainPage(); }
                 else
@@ -1347,9 +1341,9 @@ namespace iPMCloud.Mobile
             BuildingOutScanPage_Container.IsVisible = true;
 
             lay_buildingoutscan.Children.Clear();
-            model.UseExternHardware = true;
+            AppModel.Instance.UseExternHardware = true;
 
-            model.Scan.ScanBuildingOutView(this, lay_buildingoutscan, MethodAfterOutScan);
+            AppModel.Instance.Scan.ScanBuildingOutView(this, lay_buildingoutscan, MethodAfterOutScan);
 
             await Task.Delay(1);
             overlay.IsVisible = false;
@@ -1362,9 +1356,9 @@ namespace iPMCloud.Mobile
                 try
                 {
                     string b = "";
-                    if (model.LastBuilding != null && !String.IsNullOrWhiteSpace(model.LastBuilding.hsnr))
+                    if (AppModel.Instance.LastBuilding != null && !String.IsNullOrWhiteSpace(AppModel.Instance.LastBuilding.hsnr))
                     {
-                        b = ": " + model.LastBuilding.strasse + " " + model.LastBuilding.hsnr + model.LastBuilding.plz + " " + model.LastBuilding.ort;
+                        b = ": " + AppModel.Instance.LastBuilding.strasse + " " + AppModel.Instance.LastBuilding.hsnr + AppModel.Instance.LastBuilding.plz + " " + AppModel.Instance.LastBuilding.ort;
                     }
                     AppModel.Logger.Info("CHECK-OUT (OHNE QR-SCAN) " + b);
                 }
@@ -1375,11 +1369,11 @@ namespace iPMCloud.Mobile
             }
             else
             {
-                model.UseExternHardware = false;
+                AppModel.Instance.UseExternHardware = false;
                 lay_buildingoutscan.Children.Clear();
-                if (model.OutScanBuilding != null)
+                if (AppModel.Instance.OutScanBuilding != null)
                 {
-                    if (model.OutScanBuilding.id == model.LastBuilding.id)
+                    if (AppModel.Instance.OutScanBuilding.id == AppModel.Instance.LastBuilding.id)
                     {
                         SavesRunningWorksOver(false);
                         ShowMainPage();
@@ -1421,12 +1415,12 @@ namespace iPMCloud.Mobile
             buildingorderlist_category_container.Children.Clear();
 
             buildingorderlist_order_container.Children.Clear();
-            buildingorderlist_order_container.Children.Add(AuftragWSO.GetOrderListView(model, new Command<AuftragWSO>(SelectOrder)));
+            buildingorderlist_order_container.Children.Add(AuftragWSO.GetOrderListView(AppModel.Instance, new Command<AuftragWSO>(SelectOrder)));
             BuildingOrderPage_order_Container.IsVisible = true;
 
-            model.LastSelectedOrder = null;
-            model.LastSelectedCategory = null;
-            model.LastSelectedPosition = null;
+            AppModel.Instance.LastSelectedOrder = null;
+            AppModel.Instance.LastSelectedCategory = null;
+            AppModel.Instance.LastSelectedPosition = null;
 
             await Task.Delay(1);
             overlay.IsVisible = false;
@@ -1434,7 +1428,7 @@ namespace iPMCloud.Mobile
         }
         public async void SelectOrder(AuftragWSO order)
         {
-            model.LastSelectedOrder = order;
+            AppModel.Instance.LastSelectedOrder = order;
             lb_inBuildingOrder_category_text.Text = "" + order.GetMobileText();// + " \nNr.: " + order.id + "  Typ: " + order.typ;
             ShowOrderCategoryPage(order);
         }
@@ -1449,11 +1443,11 @@ namespace iPMCloud.Mobile
             BuildingOrderPage_position_Container.IsVisible = false;
 
             buildingorderlist_category_container.Children.Clear();
-            buildingorderlist_category_container.Children.Add(KategorieWSO.GetCategoryListView(model, new Command<KategorieWSO>(SelectCategory)));
+            buildingorderlist_category_container.Children.Add(KategorieWSO.GetCategoryListView(AppModel.Instance, new Command<KategorieWSO>(SelectCategory)));
             BuildingOrderPage_category_Container.IsVisible = true;
 
-            model.LastSelectedCategory = null;
-            model.LastSelectedPosition = null;
+            AppModel.Instance.LastSelectedCategory = null;
+            AppModel.Instance.LastSelectedPosition = null;
 
             await Task.Delay(1);
             overlay.IsVisible = false;
@@ -1462,18 +1456,18 @@ namespace iPMCloud.Mobile
 
         public void btn_showall_OrderCategoryTapped(object sender, EventArgs e)
         {
-            model._showall_OrderCategory = !model._showall_OrderCategory;
-            btn_back_inBuildingOrder_category_showall_txt.Text = model._showall_OrderCategory ? "Meine zeigen" : "Alle zeigen";
+            AppModel.Instance._showall_OrderCategory = !AppModel.Instance._showall_OrderCategory;
+            btn_back_inBuildingOrder_category_showall_txt.Text = AppModel.Instance._showall_OrderCategory ? "Meine zeigen" : "Alle zeigen";
 
             buildingorderlist_category_container.Children.Clear();
-            buildingorderlist_category_container.Children.Add(KategorieWSO.GetCategoryListView(model, new Command<KategorieWSO>(SelectCategory)));
+            buildingorderlist_category_container.Children.Add(KategorieWSO.GetCategoryListView(AppModel.Instance, new Command<KategorieWSO>(SelectCategory)));
             BuildingOrderPage_category_Container.IsVisible = true;
         }
 
         public async void SelectCategory(KategorieWSO category)
         {
-            model.LastSelectedCategory = category;
-            lb_inBuildingOrder_categorypos_text.Text = model.LastSelectedOrder.GetMobileText(); // + " \nNr.: " + model.LastSelectedOrder.id + "  Typ: " + model.LastSelectedOrder.typ;
+            AppModel.Instance.LastSelectedCategory = category;
+            lb_inBuildingOrder_categorypos_text.Text = AppModel.Instance.LastSelectedOrder.GetMobileText(); // + " \nNr.: " + AppModel.Instance.LastSelectedOrder.id + "  Typ: " + AppModel.Instance.LastSelectedOrder.typ;
             lb_inBuildingOrder_position_text.Text = category.GetMobileText();
             ShowOrderPositionPage();
         }
@@ -1487,10 +1481,10 @@ namespace iPMCloud.Mobile
             BuildingOrderPage_category_Container.IsVisible = false;
 
             buildingorderlist_position_container.Children.Clear();
-            buildingorderlist_position_container.Children.Add(LeistungWSO.GetPositionListView(model, new Command<LeistungWSO>(SelectPositionToWork)));
+            buildingorderlist_position_container.Children.Add(LeistungWSO.GetPositionListView(AppModel.Instance, new Command<LeistungWSO>(SelectPositionToWork)));
             BuildingOrderPage_position_Container.IsVisible = true;
 
-            model.LastSelectedPosition = null;
+            AppModel.Instance.LastSelectedPosition = null;
 
             await Task.Delay(1);
             overlay.IsVisible = false;
@@ -1499,9 +1493,9 @@ namespace iPMCloud.Mobile
         public async void SelectPositionToWork(LeistungWSO position)
         {
             bool inWork = false;
-            if (model.allPositionInWork != null)
+            if (AppModel.Instance.allPositionInWork != null)
             {
-                var foundInWork = model.allPositionInWork.leistungen.Find(l => l.id == position.id);
+                var foundInWork = AppModel.Instance.allPositionInWork.leistungen.Find(l => l.id == position.id);
                 inWork = foundInWork != null;
             }
             if (position.disabled || inWork) { return; }
@@ -1509,32 +1503,32 @@ namespace iPMCloud.Mobile
             overlay.IsVisible = true;
             //await Task.Delay(1);
 
-            model.LastSelectedPosition = position;
+            AppModel.Instance.LastSelectedPosition = position;
             Border framePos = null;
-            var selPost = model.allSelectedPositionToWork.Find(p => p.id == position.id);
+            var selPost = AppModel.Instance.allSelectedPositionToWork.Find(p => p.id == position.id);
             if (selPost != null)
             {
                 // entfernen da schon selectiert 
-                model.allSelectedPositionToWork.Remove(position);
-                if (model.allPositionInShowingListView.TryGetValue(position.id, out framePos))
+                AppModel.Instance.allSelectedPositionToWork.Remove(position);
+                if (AppModel.Instance.allPositionInShowingListView.TryGetValue(position.id, out framePos))
                 {
                     position.selected = false;
-                    framePos.Content = LeistungWSO.GetPositionCardView(position, model, ((TapGestureRecognizer)framePos.Content.GestureRecognizers[0]).Command).Content;
+                    framePos.Content = LeistungWSO.GetPositionCardView(position, AppModel.Instance, ((TapGestureRecognizer)framePos.Content.GestureRecognizers[0]).Command).Content;
                 }
             }
             else
             {
                 // hinzufügen
-                model.allSelectedPositionToWork.Add(position);
-                if (model.allPositionInShowingListView.TryGetValue(position.id, out framePos))
+                AppModel.Instance.allSelectedPositionToWork.Add(position);
+                if (AppModel.Instance.allPositionInShowingListView.TryGetValue(position.id, out framePos))
                 {
                     position.selected = true;
-                    framePos.Content = LeistungWSO.GetSelectedPositionCardView(position, model, ((TapGestureRecognizer)framePos.Content.GestureRecognizers[0]).Command).Content;
+                    framePos.Content = LeistungWSO.GetSelectedPositionCardView(position, AppModel.Instance, ((TapGestureRecognizer)framePos.Content.GestureRecognizers[0]).Command).Content;
                 }
             }
-            btn_showselected_pos_container.IsVisible = model.allSelectedPositionToWork.Count > 0;
-            btn_showselected_pos_container_not.IsVisible = !(model.allSelectedPositionToWork.Count > 0);
-            //btn_showselected_pos_container2.IsVisible = model.allSelectedPositionToWork.Count > 0;
+            btn_showselected_pos_container.IsVisible = AppModel.Instance.allSelectedPositionToWork.Count > 0;
+            btn_showselected_pos_container_not.IsVisible = !(AppModel.Instance.allSelectedPositionToWork.Count > 0);
+            //btn_showselected_pos_container2.IsVisible = AppModel.Instance.allSelectedPositionToWork.Count > 0;
             CheckForOptionalToWork();
 
             //await Task.Delay(1);
@@ -1548,22 +1542,22 @@ namespace iPMCloud.Mobile
             Border framePos;
             SwipeView swipePos;
             // entfernen da schon selectiert 
-            model.allSelectedPositionToWork.Remove(position);
+            AppModel.Instance.allSelectedPositionToWork.Remove(position);
             position.selected = false;
-            if (model.allPositionInShowingListView.TryGetValue(position.id, out framePos))
+            if (AppModel.Instance.allPositionInShowingListView.TryGetValue(position.id, out framePos))
             {
-                framePos.Content = LeistungWSO.GetPositionCardView(position, model, ((TapGestureRecognizer)framePos.Content.GestureRecognizers[0]).Command).Content;
+                framePos.Content = LeistungWSO.GetPositionCardView(position, AppModel.Instance, ((TapGestureRecognizer)framePos.Content.GestureRecognizers[0]).Command).Content;
             }
-            if (model.allPositionInShowingSmallListView.TryGetValue(position.id, out swipePos))
+            if (AppModel.Instance.allPositionInShowingSmallListView.TryGetValue(position.id, out swipePos))
             {
                 swipePos.IsVisible = false;
             }
 
-            btn_showselected_pos_container.IsVisible = model.allSelectedPositionToWork.Count > 0;
-            btn_showselected_pos_container_not.IsVisible = !(model.allSelectedPositionToWork.Count > 0);
-            btn_showselected_pos_container2.IsVisible = model.allSelectedPositionToWork.Count > 0;
+            btn_showselected_pos_container.IsVisible = AppModel.Instance.allSelectedPositionToWork.Count > 0;
+            btn_showselected_pos_container_not.IsVisible = !(AppModel.Instance.allSelectedPositionToWork.Count > 0);
+            btn_showselected_pos_container2.IsVisible = AppModel.Instance.allSelectedPositionToWork.Count > 0;
             CheckForOptionalToWork();
-            if (model.allSelectedPositionToWork.Count == 0)
+            if (AppModel.Instance.allSelectedPositionToWork.Count == 0)
             {
                 await Task.Delay(100);
                 AuswahlAnzeigenTapped_Done(false);
@@ -1571,7 +1565,7 @@ namespace iPMCloud.Mobile
                 if (BuildingOrderPage_order_Container.IsVisible)
                 {
                     buildingorderlist_order_container.Children.Clear();
-                    buildingorderlist_order_container.Children.Add(AuftragWSO.GetOrderListView(model, new Command<AuftragWSO>(SelectOrder)));
+                    buildingorderlist_order_container.Children.Add(AuftragWSO.GetOrderListView(AppModel.Instance, new Command<AuftragWSO>(SelectOrder)));
                 }
             }
             //await Task.Delay(1);
@@ -1579,15 +1573,15 @@ namespace iPMCloud.Mobile
         }
         public async void CheckForOptionalToWork()
         {
-            model.IsOptionalToWork = false;
+            AppModel.Instance.IsOptionalToWork = false;
 
-            var foundProduktPos = model.allSelectedPositionToWork.Find(i => (i.art == "Produkt"));
-            var foundOPPos = model.allSelectedPositionToWork.Find(i => (i.art == "Leistung" && i.nichtpauschal == 1));
-            var foundRegPos = model.allSelectedPositionToWork.Find(i => (i.art == "Leistung" && i.nichtpauschal == 0));
-            if (model.allSelectedPositionToWork.Count == 0)
+            var foundProduktPos = AppModel.Instance.allSelectedPositionToWork.Find(i => (i.art == "Produkt"));
+            var foundOPPos = AppModel.Instance.allSelectedPositionToWork.Find(i => (i.art == "Leistung" && i.nichtpauschal == 1));
+            var foundRegPos = AppModel.Instance.allSelectedPositionToWork.Find(i => (i.art == "Leistung" && i.nichtpauschal == 0));
+            if (AppModel.Instance.allSelectedPositionToWork.Count == 0)
             {
                 // alles zurücksetzen 
-                model.LastBuilding.ArrayOfAuftrag.ForEach(o =>
+                AppModel.Instance.LastBuilding.ArrayOfAuftrag.ForEach(o =>
                 {
                     o.kategorien.ForEach(c =>
                     {
@@ -1595,77 +1589,77 @@ namespace iPMCloud.Mobile
                         {
                             l.disabled = false;
                             Border framePos;
-                            if (model.allPositionInShowingListView.TryGetValue(l.id, out framePos))
+                            if (AppModel.Instance.allPositionInShowingListView.TryGetValue(l.id, out framePos))
                             {
                                 var func = ((TapGestureRecognizer)framePos.Content.GestureRecognizers[0]).Command;
                                 bool inWork = false;
-                                if (model.allPositionInWork != null)
+                                if (AppModel.Instance.allPositionInWork != null)
                                 {
-                                    var foundInWork = model.allPositionInWork.leistungen.Find(le => le.id == l.id);
+                                    var foundInWork = AppModel.Instance.allPositionInWork.leistungen.Find(le => le.id == l.id);
                                     inWork = foundInWork != null;
                                 }
-                                framePos.Content = inWork ? LeistungWSO.GetInWorkPositionCardView(l, model, func).Content : LeistungWSO.GetPositionCardView(l, model, func).Content;
+                                framePos.Content = inWork ? LeistungWSO.GetInWorkPositionCardView(l, AppModel.Instance, func).Content : LeistungWSO.GetPositionCardView(l, AppModel.Instance, func).Content;
                             }
                         });
                     });
                 });
             }
-            else if (model.allSelectedPositionToWork.Count > 0)
+            else if (AppModel.Instance.allSelectedPositionToWork.Count > 0)
             {
                 // erste Einträge prüfen IsOptional
                 if (foundOPPos != null)
                 {
                     // OP Leistung gefunden dann keine Regulären leistungen zulassen
-                    model.IsOptionalToWork = true;
+                    AppModel.Instance.IsOptionalToWork = true;
                     lb_PosSelectionType_text.Text = "Nur optionale Positionen und Produkte aktiv!";
                     lb_PosSelectionType_text2.Text = "Nur optionale Positionen und Produkte aktiv!";
                 }
                 else if (foundRegPos != null)
                 {
                     // Reguläre Leistung gefunden dann keine OP's Leistunge/Produkte/etc. zulassen
-                    model.IsOptionalToWork = false;
+                    AppModel.Instance.IsOptionalToWork = false;
                     lb_PosSelectionType_text.Text = "Nur geplante Positionen und Produkte aktiv!";
                     lb_PosSelectionType_text2.Text = "Nur geplante Positionen und Produkte aktiv!";
                 }
                 if (foundOPPos != null || foundRegPos != null)
                 {
                     // check nach prüfen alle enable/disable setzten
-                    model.LastBuilding.ArrayOfAuftrag.ForEach(o =>
+                    AppModel.Instance.LastBuilding.ArrayOfAuftrag.ForEach(o =>
                     {
                         o.kategorien.ForEach(c =>
                         {
                             c.leistungen.ForEach(l =>
                             {
                                 bool inWork = false;
-                                if (model.allPositionInWork != null)
+                                if (AppModel.Instance.allPositionInWork != null)
                                 {
-                                    var foundInWork = model.allPositionInWork.leistungen.Find(le => le.id == l.id);
+                                    var foundInWork = AppModel.Instance.allPositionInWork.leistungen.Find(le => le.id == l.id);
                                     inWork = foundInWork != null;
                                 }
                                 ICommand func = null;
                                 Border framePos;
-                                if (model.allPositionInShowingListView.TryGetValue(l.id, out framePos))
+                                if (AppModel.Instance.allPositionInShowingListView.TryGetValue(l.id, out framePos))
                                 {
                                     func = ((TapGestureRecognizer)framePos.Content.GestureRecognizers[0]).Command;
                                 }
 
-                                if (model.IsOptionalToWork)
+                                if (AppModel.Instance.IsOptionalToWork)
                                 {
                                     if (l.art == "Leistung" && l.nichtpauschal == 1)
                                     {
                                         l.disabled = false;
-                                        if (model.allPositionInShowingListView.TryGetValue(l.id, out framePos))
+                                        if (AppModel.Instance.allPositionInShowingListView.TryGetValue(l.id, out framePos))
                                         {
-                                            var stackPos = inWork ? LeistungWSO.GetInWorkPositionCardView(l, model, func) : (l.disabled ? LeistungWSO.GetDisabledPositionCardView(l, model, func) : (l.selected ? LeistungWSO.GetSelectedPositionCardView(l, model, func) : LeistungWSO.GetPositionCardView(l, model, func)));
+                                            var stackPos = inWork ? LeistungWSO.GetInWorkPositionCardView(l, AppModel.Instance, func) : (l.disabled ? LeistungWSO.GetDisabledPositionCardView(l, AppModel.Instance, func) : (l.selected ? LeistungWSO.GetSelectedPositionCardView(l, AppModel.Instance, func) : LeistungWSO.GetPositionCardView(l, AppModel.Instance, func)));
                                             framePos.Content = stackPos.Content;
                                         }
                                     }
                                     else if (l.art == "Leistung" && l.nichtpauschal == 0)
                                     {
                                         l.disabled = true;
-                                        if (model.allPositionInShowingListView.TryGetValue(l.id, out framePos))
+                                        if (AppModel.Instance.allPositionInShowingListView.TryGetValue(l.id, out framePos))
                                         {
-                                            framePos.Content = inWork ? LeistungWSO.GetInWorkPositionCardView(l, model, func).Content : LeistungWSO.GetDisabledPositionCardView(l, model, func).Content;
+                                            framePos.Content = inWork ? LeistungWSO.GetInWorkPositionCardView(l, AppModel.Instance, func).Content : LeistungWSO.GetDisabledPositionCardView(l, AppModel.Instance, func).Content;
                                         }
                                     }
                                 }
@@ -1674,17 +1668,17 @@ namespace iPMCloud.Mobile
                                     if (l.art == "Leistung" && l.nichtpauschal == 1)
                                     {
                                         l.disabled = true;
-                                        if (model.allPositionInShowingListView.TryGetValue(l.id, out framePos))
+                                        if (AppModel.Instance.allPositionInShowingListView.TryGetValue(l.id, out framePos))
                                         {
-                                            framePos.Content = inWork ? LeistungWSO.GetInWorkPositionCardView(l, model, func).Content : LeistungWSO.GetDisabledPositionCardView(l, model, func).Content;
+                                            framePos.Content = inWork ? LeistungWSO.GetInWorkPositionCardView(l, AppModel.Instance, func).Content : LeistungWSO.GetDisabledPositionCardView(l, AppModel.Instance, func).Content;
                                         }
                                     }
                                     else
                                     {
                                         l.disabled = false;
-                                        if (model.allPositionInShowingListView.TryGetValue(l.id, out framePos))
+                                        if (AppModel.Instance.allPositionInShowingListView.TryGetValue(l.id, out framePos))
                                         {
-                                            var stackPos = inWork ? LeistungWSO.GetInWorkPositionCardView(l, model, func) : (l.disabled ? LeistungWSO.GetDisabledPositionCardView(l, model, func) : (l.selected ? LeistungWSO.GetSelectedPositionCardView(l, model, func) : LeistungWSO.GetPositionCardView(l, model, func)));
+                                            var stackPos = inWork ? LeistungWSO.GetInWorkPositionCardView(l, AppModel.Instance, func) : (l.disabled ? LeistungWSO.GetDisabledPositionCardView(l, AppModel.Instance, func) : (l.selected ? LeistungWSO.GetSelectedPositionCardView(l, AppModel.Instance, func) : LeistungWSO.GetPositionCardView(l, AppModel.Instance, func)));
                                             framePos.Content = stackPos.Content;
                                         }
                                     }
@@ -1696,7 +1690,7 @@ namespace iPMCloud.Mobile
                 else
                 {
                     // alles zurücksetzen 
-                    model.LastBuilding.ArrayOfAuftrag.ForEach(o =>
+                    AppModel.Instance.LastBuilding.ArrayOfAuftrag.ForEach(o =>
                     {
                         o.kategorien.ForEach(c =>
                         {
@@ -1704,18 +1698,18 @@ namespace iPMCloud.Mobile
                             {
                                 l.disabled = false;
                                 Border framePos;
-                                if (model.allPositionInShowingListView.TryGetValue(l.id, out framePos))
+                                if (AppModel.Instance.allPositionInShowingListView.TryGetValue(l.id, out framePos))
                                 {
                                     var func = ((TapGestureRecognizer)framePos.Content.GestureRecognizers[0]).Command;
                                     bool inWork = false;
-                                    if (model.allPositionInWork != null)
+                                    if (AppModel.Instance.allPositionInWork != null)
                                     {
-                                        var foundInWork = model.allPositionInWork.leistungen.Find(le => le.id == l.id);
+                                        var foundInWork = AppModel.Instance.allPositionInWork.leistungen.Find(le => le.id == l.id);
                                         inWork = foundInWork != null;
                                     }
-                                    //framePos.Content = inWork ? LeistungWSO.GetInWorkPositionCardView(l, model, func).Content : LeistungWSO.GetPositionCardView(l, model, func).Content;
+                                    //framePos.Content = inWork ? LeistungWSO.GetInWorkPositionCardView(l, AppModel.Instance, func).Content : LeistungWSO.GetPositionCardView(l, AppModel.Instance, func).Content;
 
-                                    var stackPos = inWork ? LeistungWSO.GetInWorkPositionCardView(l, model, func) : (l.disabled ? LeistungWSO.GetDisabledPositionCardView(l, model, func) : (l.selected ? LeistungWSO.GetSelectedPositionCardView(l, model, func) : LeistungWSO.GetPositionCardView(l, model, func)));
+                                    var stackPos = inWork ? LeistungWSO.GetInWorkPositionCardView(l, AppModel.Instance, func) : (l.disabled ? LeistungWSO.GetDisabledPositionCardView(l, AppModel.Instance, func) : (l.selected ? LeistungWSO.GetSelectedPositionCardView(l, AppModel.Instance, func) : LeistungWSO.GetPositionCardView(l, AppModel.Instance, func)));
                                     framePos.Content = stackPos.Content;
                                 }
                             });
@@ -1757,7 +1751,7 @@ namespace iPMCloud.Mobile
                 overlay.IsVisible = true;
                 await Task.Delay(1);
 
-                var startDT = new DateTime(model.allPositionInWork.startticks);
+                var startDT = new DateTime(AppModel.Instance.allPositionInWork.startticks);
                 var endDT = DateTime.Now;
                 var ts = (endDT - startDT);
 
@@ -1768,7 +1762,7 @@ namespace iPMCloud.Mobile
                     HeightRequest = 30,
                     WidthRequest = 30,
                     VerticalOptions = LayoutOptions.Center,
-                    Source = model.imagesBase.Time
+                    Source = AppModel.Instance.imagesBase.Time
                 });
                 timespan_inwork.Children.Add(new Label
                 {
@@ -1826,7 +1820,7 @@ namespace iPMCloud.Mobile
                     Padding = new Thickness(0, 0, 0, 0)
                 });
                 runningworks_list.Children.Clear();
-                runningworks_list.Children.Add(LeistungWSO.GetInWorkPositionListView(model, new Command<LeistungWSO>(TapNoticeFromPosInWork)));
+                runningworks_list.Children.Add(LeistungWSO.GetInWorkPositionListView(AppModel.Instance, new Command<LeistungWSO>(TapNoticeFromPosInWork)));
 
                 await Task.Delay(1);
                 overlay.IsVisible = false;
@@ -1848,7 +1842,7 @@ namespace iPMCloud.Mobile
             ClearPageViews();
             DayOverPage_Container.IsVisible = true;
             lastDayOverStack.Children.Clear();
-            var dayOvers = DayOverWSO.LoadAll(model);
+            var dayOvers = DayOverWSO.LoadAll(AppModel.Instance);
             dayOvers.ForEach(d =>
             {
                 var dt = new DateTime(d.endticks);
@@ -1927,11 +1921,11 @@ namespace iPMCloud.Mobile
             if (pos != null)
             {
 
-                BuildingWSO building = BuildingWSO.LoadBuilding(model, pos.objektid);
+                BuildingWSO building = BuildingWSO.LoadBuilding(AppModel.Instance, pos.objektid);
                 var o = building.ArrayOfAuftrag.Find(auf => auf.id == pos.auftragid);
                 var c = o.kategorien.Find(kat => kat.id == pos.kategorieid);
                 var l = c.leistungen.Find(f => f.id == pos.id);
-                //var lInWork = model.allPositionInWork.leistungen.Find(f => f.id == pos.id);
+                //var lInWork = AppModel.Instance.allPositionInWork.leistungen.Find(f => f.id == pos.id);
                 var stackPos = LeistungWSO.GetInWorkPositionSmallCardView_DirektPos(o, c, l, l);
 
                 noticeFor_DirektPos.IsVisible = true;
@@ -2018,7 +2012,7 @@ namespace iPMCloud.Mobile
                 int im = sw_internmessage_DirektPos.IsToggled ? 1 : 0;
                 _SelectedBemerkungForNotice.prio = (am + im);
                 _SelectedBemerkungForNotice.gruppeid = _SelectedPosForNotice.gruppeid;
-                _SelectedBemerkungForNotice.personid = model.Person.id;
+                _SelectedBemerkungForNotice.personid = AppModel.Instance.Person.id;
                 _SelectedBemerkungForNotice.objektid = _SelectedPosForNotice.objektid;
                 _SelectedBemerkungForNotice.leistungid = _SelectedPosForNotice.id;
                 _SelectedBemerkungForNotice.datum = DateTime.Now.Ticks;
@@ -2035,15 +2029,15 @@ namespace iPMCloud.Mobile
                 }
                 //if (_SelectedPosForNotice != null)
                 //{
-                //    var posInWork = model.allPositionInWork.leistungen.Find(pos => pos.id == _SelectedPosForNotice.id);
+                //    var posInWork = AppModel.Instance.allPositionInWork.leistungen.Find(pos => pos.id == _SelectedPosForNotice.id);
                 //    if (posInWork.bemerkungen == null) { posInWork.bemerkungen = new List<BemerkungWSO>(); }
                 //    _SelectedBemerkungForNotice.leistungid = _SelectedPosForNotice.id;
                 //    posInWork.bemerkungen.Add(_SelectedBemerkungForNotice);
-                //    LeistungPackWSO.Save(model, model.allPositionInWork);
+                //    LeistungPackWSO.Save(AppModel.Instance, AppModel.Instance.allPositionInWork);
                 //}
                 //else
                 //{
-                //    BemerkungWSO.ToUploadStack(model, _SelectedBemerkungForNotice);
+                //    BemerkungWSO.ToUploadStack(AppModel.Instance, _SelectedBemerkungForNotice);
                 //    SyncSingleNotice();
                 //}
 
@@ -2072,7 +2066,7 @@ namespace iPMCloud.Mobile
             }
 
             notizSave_stack_DirektPos.IsVisible = false;
-            model.UseExternHardware = true;
+            AppModel.Instance.UseExternHardware = true;
             overlay.IsVisible = true;
 
             try
@@ -2105,7 +2099,7 @@ namespace iPMCloud.Mobile
             }
             finally
             {
-                model.UseExternHardware = false;
+                AppModel.Instance.UseExternHardware = false;
                 overlay.IsVisible = false;
             }
         }
@@ -2119,7 +2113,7 @@ namespace iPMCloud.Mobile
             }
 
             notizSave_stack_DirektPos.IsVisible = false;
-            model.UseExternHardware = true;
+            AppModel.Instance.UseExternHardware = true;
             overlay.IsVisible = true;
 
             try
@@ -2148,7 +2142,7 @@ namespace iPMCloud.Mobile
             }
             finally
             {
-                model.UseExternHardware = false;
+                AppModel.Instance.UseExternHardware = false;
                 overlay.IsVisible = false;
             }
         }
@@ -2225,19 +2219,19 @@ namespace iPMCloud.Mobile
             if (pos != null)
             {
                 BuildingWSO building;
-                if (model.LastBuilding == null)
+                if (AppModel.Instance.LastBuilding == null)
                 {
-                    building = BuildingWSO.LoadBuilding(model, pos.objektid);
+                    building = BuildingWSO.LoadBuilding(AppModel.Instance, pos.objektid);
                 }
                 else
                 {
-                    building = model.LastBuilding;
+                    building = AppModel.Instance.LastBuilding;
                 }
                 var o = building.ArrayOfAuftrag.Find(auf => auf.id == pos.auftragid);
                 var c = o.kategorien.Find(kat => kat.id == pos.kategorieid);
                 var l = c.leistungen.Find(f => f.id == pos.id);
-                var lInWork = model.allPositionInWork.leistungen.Find(f => f.id == pos.id);
-                var stackPos = LeistungWSO.GetInWorkPositionSmallCardView(o, c, l, lInWork, model);
+                var lInWork = AppModel.Instance.allPositionInWork.leistungen.Find(f => f.id == pos.id);
+                var stackPos = LeistungWSO.GetInWorkPositionSmallCardView(o, c, l, lInWork, AppModel.Instance);
 
                 noticeFor.IsVisible = true;
                 noticeFor_Pos.Children.Clear();
@@ -2270,18 +2264,18 @@ namespace iPMCloud.Mobile
 
             ObjectValues_BuildingInfo.Children.Clear();
             ObjectValues_BuildingInfo.Children.Add(Elements.GetBoxViewLine());
-            ObjectValues_BuildingInfo.Children.Add(BuildingWSO.GetBuildingInfoElement(model.LastBuilding, model));
+            ObjectValues_BuildingInfo.Children.Add(BuildingWSO.GetBuildingInfoElement(AppModel.Instance.LastBuilding, AppModel.Instance));
             ObjectValues_BuildingInfo.Children.Add(Elements.GetBoxViewLine());
 
             ObjectValuesStack.Children.Clear();
-            var vStack = ObjektDataWSO.GetObjektDataListView(model, new Command<ObjektDataWSO>(TapObjektData));
+            var vStack = ObjektDataWSO.GetObjektDataListView(AppModel.Instance, new Command<ObjektDataWSO>(TapObjektData));
             ObjectValuesStack.Children.Add(vStack);
 
             ObjectValuesStackChangedToday.Children.Clear();
-            var vStackToday = ObjektDataWSO.GetObjektDataListView(model, new Command<ObjektDataWSO>(TapObjektData), true);
+            var vStackToday = ObjektDataWSO.GetObjektDataListView(AppModel.Instance, new Command<ObjektDataWSO>(TapObjektData), true);
             ObjectValuesStackChangedToday.Children.Add(vStackToday);
 
-            model.selectedObjectValue = null;
+            AppModel.Instance.selectedObjectValue = null;
 
             ObjectValuesPage_Container.IsVisible = true;
             ObjectValuesPage_position_Container.IsVisible = true;
@@ -2309,7 +2303,7 @@ namespace iPMCloud.Mobile
             overlay.IsVisible = true;
             await Task.Delay(1);
 
-            model.selectedObjectValue = od;
+            AppModel.Instance.selectedObjectValue = od;
             ShowObjectValuesEditView();
         }
         private async void ShowObjectValuesEditView()
@@ -2321,13 +2315,13 @@ namespace iPMCloud.Mobile
 
             ObjectValues_BuildingInfo_edit.Children.Clear();
             ObjectValues_BuildingInfo_edit.Children.Add(Elements.GetBoxViewLine());
-            ObjectValues_BuildingInfo_edit.Children.Add(BuildingWSO.GetBuildingInfoElement(model.LastBuilding, model));
+            ObjectValues_BuildingInfo_edit.Children.Add(BuildingWSO.GetBuildingInfoElement(AppModel.Instance.LastBuilding, AppModel.Instance));
             ObjectValues_BuildingInfo_edit.Children.Add(Elements.GetBoxViewLine());
-            ObjectValues_BuildingInfo_edit.Children.Add(ObjektDataWSO.GetObjektValueInfoElement(model.selectedObjectValue, model, null));
+            ObjectValues_BuildingInfo_edit.Children.Add(ObjektDataWSO.GetObjektValueInfoElement(AppModel.Instance.selectedObjectValue, AppModel.Instance, null));
             ObjectValues_BuildingInfo_edit.Children.Add(Elements.GetBoxViewLine());
 
             ObjectValues_Info_edit.Children.Clear();
-            ObjectValues_Info_edit.Children.Add(ObjektDataWSO.EditObjektValueField(model.selectedObjectValue, model,
+            ObjectValues_Info_edit.Children.Add(ObjektDataWSO.EditObjektValueField(AppModel.Instance.selectedObjectValue, AppModel.Instance,
                 new Command<ObjektDataWSO>(SaveObjektValue),
                 new Command(SwitchObjectValueFlashlight),
                 new Command(OpenCamObjectValuesView)));
@@ -2350,7 +2344,7 @@ namespace iPMCloud.Mobile
             editor_notice_objectvaluesbild.Text = "";
             img_photo_objectvaluesbild.Source = null;
             await Task.Delay(1);
-            model.selectedObjectValueBild = null;
+            AppModel.Instance.selectedObjectValueBild = null;
 
             btn_send_objectvaluesbild.IsVisible = false;
             btn_send_objectvaluesbild_err.Opacity = 0;
@@ -2358,7 +2352,7 @@ namespace iPMCloud.Mobile
 
         private async void SwitchObjectValueFlashlight()
         {
-            model.Scan.Btn_FlashlightAloneTapped(null, null);
+            AppModel.Instance.Scan.Btn_FlashlightAloneTapped(null, null);
         }
 
         public async void SaveObjektValue(ObjektDataWSO newod)
@@ -2367,7 +2361,7 @@ namespace iPMCloud.Mobile
             await Task.Delay(1);
             if (AppModel.Instance.isFlashLigthAloneON)
             {
-                model.Scan.Btn_FlashlightAloneTapped(null, null);
+                AppModel.Instance.Scan.Btn_FlashlightAloneTapped(null, null);
             }
             await Task.Delay(1);
 
@@ -2375,9 +2369,9 @@ namespace iPMCloud.Mobile
             newod.standGeaendertAm = "" + datum;
             newod.standdatum = "" + datum;
             newod.lastchange = "" + datum;
-            model.selectedObjectValue = newod;
+            AppModel.Instance.selectedObjectValue = newod;
 
-            model.LastBuilding.ArrayOfObjektdata.ForEach(od =>
+            AppModel.Instance.LastBuilding.ArrayOfObjektdata.ForEach(od =>
             {
                 if (od.id == newod.id)
                 {
@@ -2389,13 +2383,13 @@ namespace iPMCloud.Mobile
                     od.ablesegrund = "" + newod.ablesegrund;
                 }
             });
-            BuildingWSO.Save(model, model.LastBuilding);
+            BuildingWSO.Save(AppModel.Instance, AppModel.Instance.LastBuilding);
 
             newod.guid = Guid.NewGuid().ToString();
             newod.ticks = DateTime.Now.Ticks;
             newod.lastStand = Utils.formatDEStr3(decimal.Parse(newod.stand));
             newod.stand = Utils.formatDEStr3(decimal.Parse(newod.firstStand));
-            ObjektDataWSO.ToUploadStack(model, newod);
+            ObjektDataWSO.ToUploadStack(AppModel.Instance, newod);
             await Task.Delay(1);
             SyncObjectValues();
 
@@ -2664,7 +2658,7 @@ namespace iPMCloud.Mobile
             if (e.SelectedItem != null)
             {
                 var p = (PersonSmallWSO)e.SelectedItem;
-                model.PlanResponse.selectedPerson = p;
+                AppModel.Instance.PlanResponse.selectedPerson = p;
                 CloseOtherPerson();
                 LoadOtherPersonPlanData(p);
             }
@@ -2688,7 +2682,7 @@ namespace iPMCloud.Mobile
 
         public void OpenObjektInfoDialog()
         {
-            popupContainer_infodialog_text.Text = model.LastBuilding.notiz;
+            popupContainer_infodialog_text.Text = AppModel.Instance.LastBuilding.notiz;
             popupContainer_infodialog.IsVisible = true;
         }
         public void OpenObjektInfoDialogB(string n)
@@ -2709,15 +2703,15 @@ namespace iPMCloud.Mobile
         public async void LoadOtherPersonPlanData(PersonSmallWSO p)
         {
             SetAppControll();
-            if (!model.AppControll.showObjektPlans) { return; }
+            if (!AppModel.Instance.AppControll.showObjektPlans) { return; }
             overlay.IsVisible = true;
             await Task.Delay(1);
 
-            model.PlanResponse.selectedPerson = p;
+            AppModel.Instance.PlanResponse.selectedPerson = p;
             if (p != null)
             {
 
-                var result = await Task.Run(() => { return model.Connections.GetPlanPersons(p.id, true); });
+                var result = await Task.Run(() => { return AppModel.Instance.Connections.GetPlanPersons(p.id, true); });
                 if (result)
                 {
                     frame_plantabA.Margin = new Thickness(0, -8, 2, 0);
@@ -2728,8 +2722,8 @@ namespace iPMCloud.Mobile
 
                     //ObjektPlanWeekMobile.Save(AppModel.Instance, AppModel.Instance.PlanResponse);
                     frame_planConA_img_reloadx.Source = "muellInOutX" + AppModel.Instance.AppSetModel.ViewOnlyMuell + ".png";
-                    frame_planConA_img_reload.Source = model.imagesBase.DropLeftImage;
-                    frame_planConA_img_reload2.Source = model.imagesBase.DropLeftImage;
+                    frame_planConA_img_reload.Source = AppModel.Instance.imagesBase.DropLeftImage;
+                    frame_planConA_img_reload2.Source = AppModel.Instance.imagesBase.DropLeftImage;
 
                     frame_planConA_reload_text.Text = "Mein Plan";
                     frame_planConA_reload2_text.Text = "Mein Plan";
@@ -2761,7 +2755,7 @@ namespace iPMCloud.Mobile
         }
         public async void PlanTypeChange()
         {
-            if (!model.AppControll.showObjektPlans) { return; }
+            if (!AppModel.Instance.AppControll.showObjektPlans) { return; }
             var PlanResp = AppModel.Instance.PlanResponse;
             if (AppModel.Instance.PlanResponse != null && AppModel.Instance.PlanResponse.selectedPerson != null)
             {
@@ -2821,10 +2815,10 @@ namespace iPMCloud.Mobile
             //if (tab == 1) { btn_PlanTabBTapped(null, null); }
 
             bool reloadOr = frame_planConA_reload_text.Text == "Mein Plan";
-            if (!model.AppControll.showObjektPlans) { return; }
+            if (!AppModel.Instance.AppControll.showObjektPlans) { return; }
             frame_planConA_img_reloadx.Source = "muellInOutX" + AppModel.Instance.AppSetModel.ViewOnlyMuell + ".png";
-            frame_planConA_img_reload.Source = model.imagesBase.Refresh;
-            frame_planConA_img_reload2.Source = model.imagesBase.Refresh;
+            frame_planConA_img_reload.Source = AppModel.Instance.imagesBase.Refresh;
+            frame_planConA_img_reload2.Source = AppModel.Instance.imagesBase.Refresh;
             frame_planConA_reload_text.Text = "Neu laden";
             frame_planConA_reload2_text.Text = "Neu laden";
             frame_planConA_otherperson_name.Text = "Arbeiter";
@@ -2833,7 +2827,7 @@ namespace iPMCloud.Mobile
             frame_planConA_reload2_text.TextColor = Colors.White;
             frame_planConA_otherperson_name2.TextColor = Colors.White;
             frame_planConA_otherperson_name.TextColor = Colors.White;
-            model.PlanResponse.selectedPerson = null;
+            AppModel.Instance.PlanResponse.selectedPerson = null;
 
             if (reloadOr)
             {
@@ -2847,11 +2841,11 @@ namespace iPMCloud.Mobile
         public async void Load_PlanTabs(int today)
         {
             SetAppControll();
-            if (!model.AppControll.showObjektPlans) { return; }
+            if (!AppModel.Instance.AppControll.showObjektPlans) { return; }
             overlay.IsVisible = true;
             await Task.Delay(1);
 
-            var result = await Task.Run(() => { return model.Connections.GetPlanPersons(AppModel.Instance.Person.id); });
+            var result = await Task.Run(() => { return AppModel.Instance.Connections.GetPlanPersons(AppModel.Instance.Person.id); });
             if (result)
             {
                 if (AppModel.Instance.PlanResponse.lastCall != null)
@@ -2898,9 +2892,9 @@ namespace iPMCloud.Mobile
             AppModel.Instance.Plan_ObjekteThisWeek = new List<Int32>();
             AppModel.Instance.Plan_KatThisWeek = new List<Int32>();
             if (AppModel.Instance.AppControll.filterKategories && !AppModel.Instance.AppControll.ignoreKategorieFilterByPerson
-                && model.PlanResponse.planweek != null && model.PlanResponse.planweek.days != null)
+                && AppModel.Instance.PlanResponse.planweek != null && AppModel.Instance.PlanResponse.planweek.days != null)
             {
-                model.PlanResponse.planweek.days.ForEach(day =>
+                AppModel.Instance.PlanResponse.planweek.days.ForEach(day =>
                 {
                     day.ForEach(item =>
                     {
@@ -3074,7 +3068,7 @@ namespace iPMCloud.Mobile
                             containerA.Children.Add(containerB);
                             var o = new List<Object>(){
                                     containerB,
-                                    model,
+                                    AppModel.Instance,
                                     objekt,
                                     overlay,
                                     p
@@ -3169,7 +3163,7 @@ namespace iPMCloud.Mobile
                                     containerA.Children.Add(containerB);
                                     var o = new List<Object>(){
                                     containerB,
-                                    model,
+                                    AppModel.Instance,
                                     build,
                                     overlay,
                                     p
@@ -3290,7 +3284,7 @@ namespace iPMCloud.Mobile
                                 }
                                 var build = AppModel.Instance.AllBuildings.Find(ob => ob.id == p.objektid);
                                 var o = new List<Object>(){
-                                    model,
+                                    AppModel.Instance,
                                     build,
                                     overlay,
                                     p
@@ -3433,7 +3427,7 @@ namespace iPMCloud.Mobile
             winterBemerkungen = new List<BemerkungWSO>();
             btn_quest_direktbuchen_cancel.IsVisible = false;
             btn_quest_direktbuchenwinter_cancel.IsVisible = true;
-            var model = ((value as List<Object>)[0] as AppModel);
+            //var AppModel.Instance = ((value as List<Object>)[0] as AppModel);
             //var list = ((value as List<Object>)[1] as BuildingWSO).ArrayOfAuftrag;
             var p = ((value as List<Object>)[3] as PlanPersonMobile);
             var obj = ((value as List<Object>)[1] as BuildingWSO);
@@ -3522,7 +3516,7 @@ namespace iPMCloud.Mobile
         }
         public async void SaveDirektbuchenWinterAusPlanliste()
         {
-            if (!model.AppControll.showObjektPlans) { return; }
+            if (!AppModel.Instance.AppControll.showObjektPlans) { return; }
             overlay.IsVisible = true;
             await Task.Delay(1);
             //bool ok = true;
@@ -3548,12 +3542,12 @@ namespace iPMCloud.Mobile
 
             SaveDirektbuchenWinterAusPlanlisteNow(leisAtWork);
 
-            var lastworker = model.Person.name + " " + (model.Person.vorname.Length > 1 ? (model.Person.vorname.Substring(0, 1) + ".") : model.Person.vorname);
+            var lastworker = AppModel.Instance.Person.name + " " + (AppModel.Instance.Person.vorname.Length > 1 ? (AppModel.Instance.Person.vorname.Substring(0, 1) + ".") : AppModel.Instance.Person.vorname);
             selectedDirektbuchenWinterObj.haswork = 1;
             selectedDirektbuchenWinterObj.lastwork = DateTime.Now.ToString("dd.MM.yyyy - HH:mm");
             selectedDirektbuchenWinterObj.lastworker = lastworker;
-            model.PlanResponse.planweek.days = CleanPlanweekList(model.PlanResponse.planweek.days);
-            ObjektPlanWeekMobile.Save(model, model.PlanResponse);
+            AppModel.Instance.PlanResponse.planweek.days = CleanPlanweekList(AppModel.Instance.PlanResponse.planweek.days);
+            ObjektPlanWeekMobile.Save(AppModel.Instance, AppModel.Instance.PlanResponse);
 
             if (AppModel.Instance.PlanResponse.selectedPerson != null)
             {
@@ -3629,7 +3623,7 @@ namespace iPMCloud.Mobile
             }
 
 
-            model.allPositionDirectWork = new LeistungPackWSO
+            AppModel.Instance.allPositionDirectWork = new LeistungPackWSO
             {
                 latin = latin,
                 lonin = lonin,
@@ -3641,15 +3635,15 @@ namespace iPMCloud.Mobile
                 status = 2,   // 0 = in Arbeit , 1 = Ausgesetzt , 2 = Fertig
                 startticks = start.Ticks,
                 endticks = end.Ticks,
-                personid = model.Person.id,
+                personid = AppModel.Instance.Person.id,
                 diffObjekt = 2,// Direktbuchung
                 leistungen = leisInWork,
                 winterservice = 1,
             };
-            model.allPositionDirectWork.endticks = model.allPositionDirectWork.startticks;
+            AppModel.Instance.allPositionDirectWork.endticks = AppModel.Instance.allPositionDirectWork.startticks;
             addTicksWinter++;
 
-            var lastWorkTicks = "" + JavaScriptDateConverter.Convert(new DateTime(model.allPositionDirectWork.startticks), -2);
+            var lastWorkTicks = "" + JavaScriptDateConverter.Convert(new DateTime(AppModel.Instance.allPositionDirectWork.startticks), -2);
             var building = BuildingWSO.LoadBuilding(AppModel.Instance, leis[0].objektid);
             building.ArrayOfAuftrag.ForEach(o =>
             {
@@ -3657,7 +3651,7 @@ namespace iPMCloud.Mobile
                 {
                     c.leistungen.ForEach(le =>
                     {
-                        var foundPos = model.allPositionDirectWork.leistungen.Find(lei => lei.id == le.id);
+                        var foundPos = AppModel.Instance.allPositionDirectWork.leistungen.Find(lei => lei.id == le.id);
                         if (foundPos != null)
                         {
                             foundPos.lastwork = lastWorkTicks;
@@ -3673,11 +3667,11 @@ namespace iPMCloud.Mobile
                     });
                 });
             });
-            BuildingWSO.Save(model, building);
+            BuildingWSO.Save(AppModel.Instance, building);
 
-            LeistungPackWSO.ToUploadStack(model, model.allPositionDirectWork);
+            LeistungPackWSO.ToUploadStack(AppModel.Instance, AppModel.Instance.allPositionDirectWork);
 
-            model.allPositionDirectWork = null;
+            AppModel.Instance.allPositionDirectWork = null;
             await Task.Delay(1);
         }
 
@@ -3692,7 +3686,7 @@ namespace iPMCloud.Mobile
             btn_quest_direktbuchen_cancel.IsVisible = true;
             btn_quest_direktbuchenwinter_cancel.IsVisible = false;
             var stack = ((value as List<Object>)[0] as StackLayout);
-            var model = ((value as List<Object>)[1] as AppModel);
+            //var AppModel.Instance = ((value as List<Object>)[1] as AppModel);
             var obj = ((value as List<Object>)[2] as BuildingWSO);
             List<AuftragWSO> alist = null;
             if (obj != null && obj.ArrayOfAuftrag != null && obj.ArrayOfAuftrag.Count > 0)
@@ -3792,7 +3786,7 @@ namespace iPMCloud.Mobile
         }
         public async void SaveDirektbuchenAusPlanliste()
         {
-            if (!model.AppControll.showObjektPlans) { return; }
+            if (!AppModel.Instance.AppControll.showObjektPlans) { return; }
             overlay.IsVisible = true;
             await Task.Delay(1);
             bool ok = true;
@@ -3827,8 +3821,8 @@ namespace iPMCloud.Mobile
                 catch (Exception) { ok = false; }
                 if (ok)
                 {
-                    model.PlanResponse.planweek.days = CleanPlanweekList(model.PlanResponse.planweek.days);
-                    ObjektPlanWeekMobile.Save(model, model.PlanResponse);
+                    AppModel.Instance.PlanResponse.planweek.days = CleanPlanweekList(AppModel.Instance.PlanResponse.planweek.days);
+                    ObjektPlanWeekMobile.Save(AppModel.Instance, AppModel.Instance.PlanResponse);
                     if (AppModel.Instance.PlanResponse.selectedPerson != null)
                     {
                         ReloadPlanData(0);
@@ -3915,7 +3909,7 @@ namespace iPMCloud.Mobile
                             item.bem.auftragid = 0;
                             item.bem.leistungid = 0;
                             item.bem.text = "LEISTUNG: " + item.lei.beschreibung + " \r\nBEMERKUNG: " + item.bem.text;
-                            BemerkungWSO.ToUploadStack(model, item.bem);
+                            BemerkungWSO.ToUploadStack(AppModel.Instance, item.bem);
                             //btn_NoticeSaveForOnlyObjektOnlyMuellPosThatNotSelected(ppm, item);
                         }
                     }
@@ -3924,7 +3918,7 @@ namespace iPMCloud.Mobile
             catch (Exception) { }
 
 
-            model.allPositionDirectWork = new LeistungPackWSO
+            AppModel.Instance.allPositionDirectWork = new LeistungPackWSO
             {
                 latin = latin,
                 lonin = lonin,
@@ -3936,14 +3930,14 @@ namespace iPMCloud.Mobile
                 status = 2,   // 0 = in Arbeit , 1 = Ausgesetzt , 2 = Fertig
                 startticks = DateTime.Now.Ticks + addTicks,
                 endticks = DateTime.Now.Ticks + addTicks,
-                personid = model.Person.id,
+                personid = AppModel.Instance.Person.id,
                 diffObjekt = 2,// Direktbuchung
                 leistungen = leisInWork // leisIW
             };
-            model.allPositionDirectWork.endticks = model.allPositionDirectWork.startticks;
+            AppModel.Instance.allPositionDirectWork.endticks = AppModel.Instance.allPositionDirectWork.startticks;
             addTicks++;
 
-            var lastWorkTicks = "" + JavaScriptDateConverter.Convert(new DateTime(model.allPositionDirectWork.startticks), -2);
+            var lastWorkTicks = "" + JavaScriptDateConverter.Convert(new DateTime(AppModel.Instance.allPositionDirectWork.startticks), -2);
             var building = BuildingWSO.LoadBuilding(AppModel.Instance, leisIW[0].objektid);
             building.ArrayOfAuftrag.ForEach(o =>
             {
@@ -3951,7 +3945,7 @@ namespace iPMCloud.Mobile
                 {
                     c.leistungen.ForEach(le =>
                     {
-                        var foundPos = model.allPositionDirectWork.leistungen.Find(lei => lei.id == le.id);
+                        var foundPos = AppModel.Instance.allPositionDirectWork.leistungen.Find(lei => lei.id == le.id);
                         if (foundPos != null)
                         {
                             foundPos.lastwork = lastWorkTicks;
@@ -3967,9 +3961,9 @@ namespace iPMCloud.Mobile
                     });
                 });
             });
-            BuildingWSO.Save(model, building);
-            //model.allPositionDirectWork.leistungen = null;
-            LeistungPackWSO.ToUploadStack(model, model.allPositionDirectWork);
+            BuildingWSO.Save(AppModel.Instance, building);
+            //AppModel.Instance.allPositionDirectWork.leistungen = null;
+            LeistungPackWSO.ToUploadStack(AppModel.Instance, AppModel.Instance.allPositionDirectWork);
 
             leisIW.ForEach(l =>
             {
@@ -3988,12 +3982,12 @@ namespace iPMCloud.Mobile
                         l.ppm.info = name + "#" + col + "#2#" + leiid;
                     }
                 }
-                var lastworker = model.Person.name + " " + (model.Person.vorname.Length > 1 ? (model.Person.vorname.Substring(0, 1) + ".") : model.Person.vorname);
+                var lastworker = AppModel.Instance.Person.name + " " + (AppModel.Instance.Person.vorname.Length > 1 ? (AppModel.Instance.Person.vorname.Substring(0, 1) + ".") : AppModel.Instance.Person.vorname);
                 l.ppm.haswork = haswork;
-                l.ppm.lastwork = new DateTime(model.allPositionDirectWork.endticks).ToString("dd.MM.yyyy - HH:mm");
+                l.ppm.lastwork = new DateTime(AppModel.Instance.allPositionDirectWork.endticks).ToString("dd.MM.yyyy - HH:mm");
                 l.ppm.lastworker = lastworker;
             });
-            model.allPositionDirectWork = null;
+            AppModel.Instance.allPositionDirectWork = null;
             await Task.Delay(1);
         }
 
@@ -4008,20 +4002,20 @@ namespace iPMCloud.Mobile
             //    int am = sw_alertmessage.IsToggled ? 2 : 0;
             //    int im = sw_internmessage.IsToggled ? 1 : 0;
             //    _SelectedBemerkungForNotice.prio = (am + im);
-            //    _SelectedBemerkungForNotice.gruppeid = model.LastBuilding.gruppeid;
-            //    _SelectedBemerkungForNotice.personid = model.Person.id;
-            //    _SelectedBemerkungForNotice.objektid = model.LastBuilding.id;
+            //    _SelectedBemerkungForNotice.gruppeid = AppModel.Instance.LastBuilding.gruppeid;
+            //    _SelectedBemerkungForNotice.personid = AppModel.Instance.Person.id;
+            //    _SelectedBemerkungForNotice.objektid = AppModel.Instance.LastBuilding.id;
             //    _SelectedBemerkungForNotice.leistungid = 0;
             //    _SelectedBemerkungForNotice.datum = DateTime.Now.Ticks;
 
             //    if (_SelectedPosForNotice != null)
             //    {
-            //        var posInWork = model.allPositionInWork.leistungen.Find(pos => pos.id == _SelectedPosForNotice.id);
+            //        var posInWork = AppModel.Instance.allPositionInWork.leistungen.Find(pos => pos.id == _SelectedPosForNotice.id);
             //        if (posInWork.bemerkungen == null) { posInWork.bemerkungen = new List<BemerkungWSO>(); }
             //        _SelectedBemerkungForNotice.leistungid = _SelectedPosForNotice.id;
             //        posInWork.bemerkungen.Add(_SelectedBemerkungForNotice);
-            //        LeistungPackWSO.Save(model, model.allPositionInWork);
-            //        //LeistungPackWSO.Load(model);
+            //        LeistungPackWSO.Save(AppModel.Instance, AppModel.Instance.allPositionInWork);
+            //        //LeistungPackWSO.Load(AppModel.Instance);
             //    }
             //    else
             //    {
@@ -4204,25 +4198,25 @@ namespace iPMCloud.Mobile
             popupContainer_quest_overtootherBuilding.IsVisible = false;
 
             // Zurücksetzten aller States für die Auswahl der Ausführungen
-            model.SetAllObjectAndValuesToNoSelectedBuilding();
+            AppModel.Instance.SetAllObjectAndValuesToNoSelectedBuilding();
             ShowMainPage();
         }
         public void btn_back_BuildingOrderTapped(object sender, EventArgs e)
         {
-            model.LastSelectedOrder = null;
+            AppModel.Instance.LastSelectedOrder = null;
             ShowMainPage();
         }
         public void btn_back_OrderCategoryTapped(object sender, EventArgs e)
         {
             btn_back_inBuildingOrder_category_showall_txt.Text = "Alle zeigen";
-            model._showall_OrderCategory = false;
-            model.LastSelectedCategory = null;
+            AppModel.Instance._showall_OrderCategory = false;
+            AppModel.Instance.LastSelectedCategory = null;
             ShowOrderPage();
         }
         public void btn_back_CategoryPositionTapped(object sender, EventArgs e)
         {
-            model.LastSelectedPosition = null;
-            ShowOrderCategoryPage(model.LastSelectedOrder);
+            AppModel.Instance.LastSelectedPosition = null;
+            ShowOrderCategoryPage(AppModel.Instance.LastSelectedOrder);
         }
 
 
@@ -4247,7 +4241,7 @@ namespace iPMCloud.Mobile
                 panelShowSelectedPos_Container.IsVisible = visible;
                 await panelShowSelectedPos_frame.TranslateToAsync(-2, 0, 200, Easing.Linear);
                 selectedPosList_container.Children.Add(LeistungWSO.GetSelectedPositionListView(
-                    model, new Command<LeistungWSO>(RemoveSelectPositionFromToWork),
+                    AppModel.Instance, new Command<LeistungWSO>(RemoveSelectPositionFromToWork),
                     new Command<ChangeSelectedMuellPos>(ChangeSelectedMuellPos)));
             }
         }
@@ -4275,8 +4269,8 @@ namespace iPMCloud.Mobile
         {
             // !!! Hier ist der Status INVERS   - rausstellen heist hier status = 0!
             obj.pos.inout.inout = status; //obj.pos.inout.inout == 1 ? 0 : 1;
-            obj.img.Source = obj.pos.inout.inout == 0 ? model.imagesBase.Muell_OutTonne : model.imagesBase.Muell_In;
-            obj.img2.Source = obj.pos.inout.inout == 0 ? model.imagesBase.Muell_Out : model.imagesBase.Muell_InTonne;
+            obj.img.Source = obj.pos.inout.inout == 0 ? AppModel.Instance.imagesBase.Muell_OutTonne : AppModel.Instance.imagesBase.Muell_In;
+            obj.img2.Source = obj.pos.inout.inout == 0 ? AppModel.Instance.imagesBase.Muell_Out : AppModel.Instance.imagesBase.Muell_InTonne;
             obj.lb.Text = obj.pos.inout.inout == 0 ? "Ich werde RAUSSTELLEN" : "Ich werde REINSTELLEN";
             obj.lb.TextColor = Color.FromArgb(obj.pos.inout.inout == 0 ? "#dd0000" : "#00aa00");
 
@@ -4301,20 +4295,20 @@ namespace iPMCloud.Mobile
                 await panelShowSelectedPos_frame.TranslateToAsync(-this.Width, 0, 0);
                 panelShowSelectedPos_Container.IsVisible = visible;
                 await panelShowSelectedPos_frame.TranslateToAsync(-2, 0, 200, Easing.Linear);
-                selectedPosList_container.Children.Add(LeistungWSO.GetSelectedPositionAgainListView(model, new Command<LeistungWSO>(RemoveSelectPositionAgainFromToWork)));
+                selectedPosList_container.Children.Add(LeistungWSO.GetSelectedPositionAgainListView(AppModel.Instance, new Command<LeistungWSO>(RemoveSelectPositionAgainFromToWork)));
             }
         }
 
 
         public async void StartSelectedPos(object sender, EventArgs e)
         {
-            if (model.allSelectedPositionToWork.Count > 0)
+            if (AppModel.Instance.allSelectedPositionToWork.Count > 0)
             {
                 StartSelectedPosTapped_Done();
             }
             else
             {
-                if (model.allSelectedPositionAgainToWork.Count > 0)
+                if (AppModel.Instance.allSelectedPositionAgainToWork.Count > 0)
                 {
                     btn_startselectedwork.GestureRecognizers.Clear();
                     var tgr_btn_startselectedwork = new TapGestureRecognizer();
@@ -4339,7 +4333,7 @@ namespace iPMCloud.Mobile
         {
             AuswahlAnzeigenTapped_Done(false);
 
-            var isOthersAsProdukte = model.allSelectedPositionToWork.Find(l => l.art != "Produkt");
+            var isOthersAsProdukte = AppModel.Instance.allSelectedPositionToWork.Find(l => l.art != "Produkt");
             var onlyProdukte = isOthersAsProdukte == null;
 
             var geo = AppModel.Instance.LocationStr;
@@ -4360,7 +4354,7 @@ namespace iPMCloud.Mobile
             var latin = geo != null ? geo.Split(';')[0] : "";
             var lonin = geo != null ? (geo.Split(';').Length > 0 ? geo.Split(';')[1] : "") : "";
 
-            model.allPositionInWork = new LeistungPackWSO
+            AppModel.Instance.allPositionInWork = new LeistungPackWSO
             {
                 latin = latin,
                 lonin = lonin,
@@ -4369,9 +4363,9 @@ namespace iPMCloud.Mobile
                 status = 0,   // 0 = in Arbeit , 1 = Ausgesetzt , 2 = Fertig
                 startticks = DateTime.Now.Ticks,
                 endticks = DateTime.Now.Ticks,
-                personid = model.Person.id,
+                personid = AppModel.Instance.Person.id,
             };
-            model.allPositionDirectWork = new LeistungPackWSO
+            AppModel.Instance.allPositionDirectWork = new LeistungPackWSO
             {
                 latin = latin,
                 lonin = lonin,
@@ -4383,11 +4377,11 @@ namespace iPMCloud.Mobile
                 status = 2,   // 0 = in Arbeit , 1 = Ausgesetzt , 2 = Fertig
                 startticks = DateTime.Now.Ticks,
                 endticks = DateTime.Now.Ticks,
-                personid = model.Person.id,
+                personid = AppModel.Instance.Person.id,
             };
-            model.allPositionDirectWork.endticks = model.allPositionDirectWork.startticks;
+            AppModel.Instance.allPositionDirectWork.endticks = AppModel.Instance.allPositionDirectWork.startticks;
 
-            model.allSelectedPositionToWork.ForEach(l =>
+            AppModel.Instance.allSelectedPositionToWork.ForEach(l =>
             {
                 var work = new LeistungInWorkWSO
                 {
@@ -4402,25 +4396,25 @@ namespace iPMCloud.Mobile
                 };
                 if ((l.type == "1" && l.art == "Leistung") || onlyProdukte)
                 {
-                    model.allPositionDirectWork.leistungen.Add(work);
+                    AppModel.Instance.allPositionDirectWork.leistungen.Add(work);
                 }
                 else
                 {
-                    model.allPositionInWork.leistungen.Add(work);
+                    AppModel.Instance.allPositionInWork.leistungen.Add(work);
                 }
             });
 
             //var dummyLeistungInWork = new List<LeistungInWorkWSO>();
-            if (model.allPositionDirectWork.leistungen.Count > 0)
+            if (AppModel.Instance.allPositionDirectWork.leistungen.Count > 0)
             {
-                var lastWorkTicks = "" + JavaScriptDateConverter.Convert(new DateTime(model.allPositionDirectWork.startticks), -2);
-                model.LastBuilding.ArrayOfAuftrag.ForEach(o =>
+                var lastWorkTicks = "" + JavaScriptDateConverter.Convert(new DateTime(AppModel.Instance.allPositionDirectWork.startticks), -2);
+                AppModel.Instance.LastBuilding.ArrayOfAuftrag.ForEach(o =>
                 {
                     o.kategorien.ForEach(c =>
                     {
                         c.leistungen.ForEach(p =>
                         {
-                            var foundPos = model.allPositionDirectWork.leistungen.Find(lei => lei.id == p.id);
+                            var foundPos = AppModel.Instance.allPositionDirectWork.leistungen.Find(lei => lei.id == p.id);
                             if (foundPos != null)
                             {
                                 foundPos.lastwork = lastWorkTicks;
@@ -4439,39 +4433,39 @@ namespace iPMCloud.Mobile
                 });
 
                 List<LeistungInWorkWSO> newleis = new List<LeistungInWorkWSO>();
-                model.allPositionDirectWork.leistungen.ForEach(l =>
+                AppModel.Instance.allPositionDirectWork.leistungen.ForEach(l =>
                 {
                     newleis.Add(SetPlanPersonMobileToLeistungInWork(l));
                 });
-                model.allPositionDirectWork.leistungen = newleis;
+                AppModel.Instance.allPositionDirectWork.leistungen = newleis;
 
-                BuildingWSO.Save(model, model.LastBuilding);
-                LeistungPackWSO.ToUploadStack(model, model.allPositionDirectWork);
+                BuildingWSO.Save(AppModel.Instance, AppModel.Instance.LastBuilding);
+                LeistungPackWSO.ToUploadStack(AppModel.Instance, AppModel.Instance.allPositionDirectWork);
                 SyncPosition();
-                UpdateObjektPersonPlanMobileAfterUpload(model.allPositionDirectWork);
+                UpdateObjektPersonPlanMobileAfterUpload(AppModel.Instance.allPositionDirectWork);
             }
 
-            model.allPositionDirectWork = null;
+            AppModel.Instance.allPositionDirectWork = null;
 
-            if (model.allPositionInWork.leistungen.Count > 0)
+            if (AppModel.Instance.allPositionInWork.leistungen.Count > 0)
             {
-                LeistungPackWSO.Save(model, model.allPositionInWork);
-                SyncPosition(model.allPositionInWork.preview);
+                LeistungPackWSO.Save(AppModel.Instance, AppModel.Instance.allPositionInWork);
+                SyncPosition(AppModel.Instance.allPositionInWork.preview);
             }
             else
             {
-                model.allPositionInWork = null;
+                AppModel.Instance.allPositionInWork = null;
             }
 
             // Zurücksetzten aller States für die Auswahl der Ausführungen
-            model.LastSelectedOrder = null;
-            model.LastSelectedCategory = null;
-            model.LastSelectedPosition = null;
-            model.allPositionInShowingListView = new Dictionary<int, Border>();
-            model.allPositionInShowingSmallListView = new Dictionary<int, SwipeView>();
-            model.allSelectedPositionToWork = new List<LeistungWSO>();
+            AppModel.Instance.LastSelectedOrder = null;
+            AppModel.Instance.LastSelectedCategory = null;
+            AppModel.Instance.LastSelectedPosition = null;
+            AppModel.Instance.allPositionInShowingListView = new Dictionary<int, Border>();
+            AppModel.Instance.allPositionInShowingSmallListView = new Dictionary<int, SwipeView>();
+            AppModel.Instance.allSelectedPositionToWork = new List<LeistungWSO>();
             // alle selektionen und disabled zurücksetzen 
-            model.LastBuilding.ArrayOfAuftrag.ForEach(o =>
+            AppModel.Instance.LastBuilding.ArrayOfAuftrag.ForEach(o =>
             {
                 o.kategorien.ForEach(c =>
                 {
@@ -4502,7 +4496,7 @@ namespace iPMCloud.Mobile
             AuswahlAnzeigenTapped_Done(false);
 
 
-            model.allSelectedPositionAgainToWork.ForEach(l =>
+            AppModel.Instance.allSelectedPositionAgainToWork.ForEach(l =>
             {
                 var work = new LeistungInWorkWSO
                 {
@@ -4516,37 +4510,37 @@ namespace iPMCloud.Mobile
                     inout = l.inout,
                     again = 1,
                 };
-                model.allPositionInWork.leistungen.Add(work);
+                AppModel.Instance.allPositionInWork.leistungen.Add(work);
             });
             var dummyLeistungInWork = new List<LeistungInWorkWSO>();
 
-            if (model.allPositionInWork.leistungen.Count > 0)
+            if (AppModel.Instance.allPositionInWork.leistungen.Count > 0)
             {
-                LeistungPackWSO.Save(model, model.allPositionInWork);
+                LeistungPackWSO.Save(AppModel.Instance, AppModel.Instance.allPositionInWork);
                 SyncPositionAgain();
             }
             else
             {
-                model.allPositionInWork = null;
+                AppModel.Instance.allPositionInWork = null;
             }
 
             // Zurücksetzten aller States für die Auswahl der Ausführungen
-            model.LastSelectedOrder = null;
-            model.LastSelectedCategory = null;
-            model.LastSelectedPosition = null;
-            model.LastSelectedOrderAgain = null;
-            model.LastSelectedCategoryAgain = null;
-            model.LastSelectedPositionAgain = null;
-            model.allPositionInShowingListView = new Dictionary<int, Border>();
-            model.allPositionInShowingSmallListView = new Dictionary<int, SwipeView>();
-            model.allSelectedPositionToWork = new List<LeistungWSO>();
+            AppModel.Instance.LastSelectedOrder = null;
+            AppModel.Instance.LastSelectedCategory = null;
+            AppModel.Instance.LastSelectedPosition = null;
+            AppModel.Instance.LastSelectedOrderAgain = null;
+            AppModel.Instance.LastSelectedCategoryAgain = null;
+            AppModel.Instance.LastSelectedPositionAgain = null;
+            AppModel.Instance.allPositionInShowingListView = new Dictionary<int, Border>();
+            AppModel.Instance.allPositionInShowingSmallListView = new Dictionary<int, SwipeView>();
+            AppModel.Instance.allSelectedPositionToWork = new List<LeistungWSO>();
 
-            model.allPositionAgainInShowingListView = new Dictionary<int, Border>();
-            model.allPositionAgainInShowingSmallListView = new Dictionary<int, SwipeView>();
-            model.allSelectedPositionAgainToWork = new List<LeistungWSO>();
+            AppModel.Instance.allPositionAgainInShowingListView = new Dictionary<int, Border>();
+            AppModel.Instance.allPositionAgainInShowingSmallListView = new Dictionary<int, SwipeView>();
+            AppModel.Instance.allSelectedPositionAgainToWork = new List<LeistungWSO>();
 
             // alle selektionen und disabled zurücksetzen 
-            model.LastBuilding.ArrayOfAuftrag.ForEach(o =>
+            AppModel.Instance.LastBuilding.ArrayOfAuftrag.ForEach(o =>
             {
                 o.kategorien.ForEach(c =>
                 {
@@ -4569,7 +4563,7 @@ namespace iPMCloud.Mobile
         // ClearLastBuilding
         public void btn_ClearLastBuildingTapped(object sender, EventArgs e)
         {
-            if (model.allPositionInWork != null && model.allPositionInWork.leistungen.Count > 0)
+            if (AppModel.Instance.allPositionInWork != null && AppModel.Instance.allPositionInWork.leistungen.Count > 0)
             {
                 btn_quest_removeLastBuildingSave.GestureRecognizers.Clear();
                 var tgr_save = new TapGestureRecognizer();
@@ -4587,7 +4581,7 @@ namespace iPMCloud.Mobile
             else
             {
                 // Zurücksetzten aller States für die Auswahl der Ausführungen
-                model.SetAllObjectAndValuesToNoSelectedBuilding();
+                AppModel.Instance.SetAllObjectAndValuesToNoSelectedBuilding();
                 ShowMainPage();
             }
         }
@@ -4653,7 +4647,7 @@ namespace iPMCloud.Mobile
             var lonout = geo != null ? (geo.Split(';').Length > 0 ? geo.Split(';')[1] : "") : "";
 
 
-            if (model.allPositionInWork == null)
+            if (AppModel.Instance.allPositionInWork == null)
             {
                 popupContainer_quest_endwork.IsVisible = false;
                 await Task.Delay(1);
@@ -4662,24 +4656,24 @@ namespace iPMCloud.Mobile
             }
             else
             {
-                model.allPositionInWork.endticks = DateTime.Now.Ticks;
-                model.allPositionInWork.latout = latout;
-                model.allPositionInWork.lonout = lonout;
-                model.allPositionInWork.messageout = geoMessage;
-                model.allPositionInWork.preview = false;
-                model.allPositionInWork.status = 2;
-                model.allPositionInWork.personid = model.Person.id;
-                model.allPositionInWork.diffObjekt = isDiffObjekt ? 1 : 0;
+                AppModel.Instance.allPositionInWork.endticks = DateTime.Now.Ticks;
+                AppModel.Instance.allPositionInWork.latout = latout;
+                AppModel.Instance.allPositionInWork.lonout = lonout;
+                AppModel.Instance.allPositionInWork.messageout = geoMessage;
+                AppModel.Instance.allPositionInWork.preview = false;
+                AppModel.Instance.allPositionInWork.status = 2;
+                AppModel.Instance.allPositionInWork.personid = AppModel.Instance.Person.id;
+                AppModel.Instance.allPositionInWork.diffObjekt = isDiffObjekt ? 1 : 0;
 
                 var dummyLeistungInWork = new List<LeistungInWorkWSO>();
-                var lastWorkTicks = "" + JavaScriptDateConverter.Convert(new DateTime(model.allPositionInWork.endticks), -2);
-                model.LastBuilding.ArrayOfAuftrag.ForEach(o =>
+                var lastWorkTicks = "" + JavaScriptDateConverter.Convert(new DateTime(AppModel.Instance.allPositionInWork.endticks), -2);
+                AppModel.Instance.LastBuilding.ArrayOfAuftrag.ForEach(o =>
                 {
                     o.kategorien.ForEach(c =>
                     {
                         c.leistungen.ForEach(p =>
                         {
-                            var foundPos = model.allPositionInWork.leistungen.Find(lei => lei.id == p.id);
+                            var foundPos = AppModel.Instance.allPositionInWork.leistungen.Find(lei => lei.id == p.id);
                             if (foundPos != null)
                             {
                                 foundPos.lastwork = lastWorkTicks;
@@ -4695,23 +4689,23 @@ namespace iPMCloud.Mobile
                     });
                 });
                 List<LeistungInWorkWSO> newleis = new List<LeistungInWorkWSO>();
-                model.allPositionInWork.leistungen.ForEach(l =>
+                AppModel.Instance.allPositionInWork.leistungen.ForEach(l =>
                 {
                     newleis.Add(SetPlanPersonMobileToLeistungInWork(l));
                 });
-                model.allPositionInWork.leistungen = newleis;
+                AppModel.Instance.allPositionInWork.leistungen = newleis;
 
-                BuildingWSO.Save(model, model.LastBuilding);
-                LeistungPackWSO.ToUploadStack(model, model.allPositionInWork); // Beendete Arbeiten in Stacklist für Upload
-                LeistungPackWSO.Delete(model);// Aktive Arbeiten aus Datenspeicher löschen
+                BuildingWSO.Save(AppModel.Instance, AppModel.Instance.LastBuilding);
+                LeistungPackWSO.ToUploadStack(AppModel.Instance, AppModel.Instance.allPositionInWork); // Beendete Arbeiten in Stacklist für Upload
+                LeistungPackWSO.Delete(AppModel.Instance);// Aktive Arbeiten aus Datenspeicher löschen
 
-                UpdatePersonPlanMobile(model.allPositionInWork);
+                UpdatePersonPlanMobile(AppModel.Instance.allPositionInWork);
 
-                model.allPositionInWork = null;
+                AppModel.Instance.allPositionInWork = null;
 
                 if (dummyLeistungInWork.Count > 0)
                 {
-                    model.LastBuilding.ArrayOfAuftrag.ForEach(o =>
+                    AppModel.Instance.LastBuilding.ArrayOfAuftrag.ForEach(o =>
                     {
                         o.kategorien.ForEach(c =>
                         {
@@ -4729,7 +4723,7 @@ namespace iPMCloud.Mobile
                             });
                         });
                     });
-                    BuildingWSO.Save(model, model.LastBuilding);
+                    BuildingWSO.Save(AppModel.Instance, AppModel.Instance.LastBuilding);
                 }
                 dummyLeistungInWork = null;
 
@@ -4747,12 +4741,12 @@ namespace iPMCloud.Mobile
 
         public LeistungInWorkWSO SetPlanPersonMobileToLeistungInWork(LeistungInWorkWSO lei)
         {
-            if (!model.AppControll.showObjektPlans) { return lei; }
+            if (!AppModel.Instance.AppControll.showObjektPlans) { return lei; }
             PlanPersonMobile ppm = null;
             List<PlanPersonMobile> ppms = new List<PlanPersonMobile>(); ;
-            if (model.PlanResponse != null && model.PlanResponse.planweek != null && model.PlanResponse.planweek.days != null)
+            if (AppModel.Instance.PlanResponse != null && AppModel.Instance.PlanResponse.planweek != null && AppModel.Instance.PlanResponse.planweek.days != null)
             {
-                model.PlanResponse.planweek.days.ForEach(day =>
+                AppModel.Instance.PlanResponse.planweek.days.ForEach(day =>
                 {
                     day.ForEach(item =>
                     {
@@ -4800,7 +4794,7 @@ namespace iPMCloud.Mobile
 
         public void UpdateObjektPersonPlanMobileAfterUpload(LeistungPackWSO pack)
         {
-            if (!model.AppControll.showObjektPlans) { return; }
+            if (!AppModel.Instance.AppControll.showObjektPlans) { return; }
             if (AppModel.Instance.PlanResponse.selectedPerson != null)
             {
                 ReloadPlanData(0);
@@ -4820,7 +4814,7 @@ namespace iPMCloud.Mobile
 
                 pack.leistungen.ForEach(l =>
                 {
-                    model.LastBuilding.ArrayOfAuftrag.ForEach(b =>
+                    AppModel.Instance.LastBuilding.ArrayOfAuftrag.ForEach(b =>
                     {
                         b.kategorien.ForEach(k =>
                         {
@@ -4836,15 +4830,15 @@ namespace iPMCloud.Mobile
                 // gib alle Plans die von Heute oder vorher die nch nicht bearbeitet wurden von diesem Objekt zurück incl. Kategorie(NachBedarf)
                 List<PlanPersonMobile> plans = new List<PlanPersonMobile>();
                 List<PlanPersonMobile> sendplans = new List<PlanPersonMobile>();
-                if (model.PlanResponse.planweek != null)
+                if (AppModel.Instance.PlanResponse.planweek != null)
                 {
                     //if (today == 0)// Sonntag 
                     //{
-                    //    plans = model.PlanResponse.week.FindAll(p => p.objektid == model.LastBuilding.id && p.haswork == 0 && p.muelltoid == 0);
+                    //    plans = AppModel.Instance.PlanResponse.week.FindAll(p => p.objektid == AppModel.Instance.LastBuilding.id && p.haswork == 0 && p.muelltoid == 0);
                     //}
                     //else
                     //{
-                    //    plans = model.PlanResponse.week.FindAll(p => p.objektid == model.LastBuilding.id && p.day != 0 && p.day <= today && p.haswork == 0 && p.muelltoid == 0);
+                    //    plans = AppModel.Instance.PlanResponse.week.FindAll(p => p.objektid == AppModel.Instance.LastBuilding.id && p.day != 0 && p.day <= today && p.haswork == 0 && p.muelltoid == 0);
                     //}
                 }
                 else { plans = null; }
@@ -4859,7 +4853,7 @@ namespace iPMCloud.Mobile
                         {
                             p.haswork = haswork;
                             p.lastwork = DateTime.Now.ToString("dd.MM.yyyy - HH:mm");
-                            p.lastworker = model.Person.vorname + " " + model.Person.name;
+                            p.lastworker = AppModel.Instance.Person.vorname + " " + AppModel.Instance.Person.name;
                         }
                         else
                         {
@@ -4868,13 +4862,13 @@ namespace iPMCloud.Mobile
                             {
                                 p.haswork = haswork;
                                 p.lastwork = DateTime.Now.ToString("dd.MM.yyyy - HH:mm");
-                                p.lastworker = model.Person.vorname + " " + model.Person.name;
+                                p.lastworker = AppModel.Instance.Person.vorname + " " + AppModel.Instance.Person.name;
                             }
                         }
                     });
                 }
 
-                ObjektPlanWeekMobile.Save(model, model.PlanResponse);
+                ObjektPlanWeekMobile.Save(AppModel.Instance, AppModel.Instance.PlanResponse);
 
                 if (AppModel.Instance.PlanResponse.selectedPerson != null)
                 {
@@ -4913,7 +4907,7 @@ namespace iPMCloud.Mobile
 
                 List<PlanPersonMobile> muellOPWM = new List<PlanPersonMobile>();
                 List<PlanPersonMobile> foundMuellOPWM = new List<PlanPersonMobile>();
-                //var muellObjbPlanWeekMobile = null;// model.PlanResponse.week.Where(p => p.day > -1 && p.katname.Contains("#")).ToList();
+                //var muellObjbPlanWeekMobile = null;// AppModel.Instance.PlanResponse.week.Where(p => p.day > -1 && p.katname.Contains("#")).ToList();
                 //muellObjbPlanWeekMobile.ForEach(p => {
                 //    var a = p.katname.Split('#');
                 //    if (a.Length > 2)
@@ -4959,9 +4953,9 @@ namespace iPMCloud.Mobile
                         }
                         p.haswork = haswork;
                         p.lastwork = new DateTime(pack.endticks).ToString("dd.MM.yyyy - HH:mm");
-                        p.lastworker = model.Person.vorname + " " + model.Person.name;
+                        p.lastworker = AppModel.Instance.Person.vorname + " " + AppModel.Instance.Person.name;
                     });
-                    ObjektPlanWeekMobile.Save(model, model.PlanResponse);
+                    ObjektPlanWeekMobile.Save(AppModel.Instance, AppModel.Instance.PlanResponse);
                 }
 
                 pack.leistungen = holdLeiIds;
@@ -4974,7 +4968,7 @@ namespace iPMCloud.Mobile
                         objektid = l.objektid;
                         if (building == null)
                         {
-                            building = BuildingWSO.LoadBuilding(model, objektid);
+                            building = BuildingWSO.LoadBuilding(AppModel.Instance, objektid);
                         }
                         building.ArrayOfAuftrag.ForEach(b =>
                         {
@@ -4992,15 +4986,15 @@ namespace iPMCloud.Mobile
                     // gib alle Plans die von Heute oder vorher die nch nicht bearbeitet wurden von diesem Objekt zurück incl. Kategorie(NachBedarf)
                     List<PlanPersonMobile> plans = new List<PlanPersonMobile>();
                     List<PlanPersonMobile> sendplans = new List<PlanPersonMobile>();
-                    if (model.PlanResponse.planweek != null)
+                    if (AppModel.Instance.PlanResponse.planweek != null)
                     {
                         //if (today == 0)// Sonntag 
                         //{
-                        //    plans = model.PlanResponse.week.FindAll(p => p.objektid == objektid && p.haswork == 0);
+                        //    plans = AppModel.Instance.PlanResponse.week.FindAll(p => p.objektid == objektid && p.haswork == 0);
                         //}
                         //else
                         //{
-                        //    plans = model.PlanResponse.week.FindAll(p => p.objektid == objektid && p.day != 0 && p.day <= today && p.haswork == 0);
+                        //    plans = AppModel.Instance.PlanResponse.week.FindAll(p => p.objektid == objektid && p.day != 0 && p.day <= today && p.haswork == 0);
                         //}
                     }
                     else { plans = null; }
@@ -5031,7 +5025,7 @@ namespace iPMCloud.Mobile
                                     }
                                     p.haswork = haswork;
                                     p.lastwork = DateTime.Now.ToString("dd.MM.yyyy - HH:mm");
-                                    p.lastworker = model.Person.vorname + " " + model.Person.name;
+                                    p.lastworker = AppModel.Instance.Person.vorname + " " + AppModel.Instance.Person.name;
                                 }
                             }
                             else
@@ -5039,8 +5033,8 @@ namespace iPMCloud.Mobile
                                 if (p.day > -1)
                                 {
                                     p.haswork = haswork;
-                                    p.lastwork = new DateTime(model.allPositionInWork.endticks).ToString("dd.MM.yyyy - HH:mm");
-                                    p.lastworker = model.Person.vorname + " " + model.Person.name;
+                                    p.lastwork = new DateTime(AppModel.Instance.allPositionInWork.endticks).ToString("dd.MM.yyyy - HH:mm");
+                                    p.lastworker = AppModel.Instance.Person.vorname + " " + AppModel.Instance.Person.name;
                                 }
                                 else
                                 {
@@ -5049,12 +5043,12 @@ namespace iPMCloud.Mobile
                                     {
                                         p.haswork = haswork;
                                         p.lastwork = DateTime.Now.ToString("dd.MM.yyyy - HH:mm");
-                                        p.lastworker = model.Person.vorname + " " + model.Person.name;
+                                        p.lastworker = AppModel.Instance.Person.vorname + " " + AppModel.Instance.Person.name;
                                     }
                                 }
                             }
                         });
-                        ObjektPlanWeekMobile.Save(model, model.PlanResponse);
+                        ObjektPlanWeekMobile.Save(AppModel.Instance, AppModel.Instance.PlanResponse);
                     }
                 }
 
@@ -5101,7 +5095,7 @@ namespace iPMCloud.Mobile
             popupContainer_quest_clearlog.IsVisible = false;
             await Task.Delay(1);
 
-            model.ClearLog();
+            AppModel.Instance.ClearLog();
             await Task.Delay(1000);
             overlay.IsVisible = false;
             btn_settings_clearlog.Opacity = 1;
@@ -5153,7 +5147,7 @@ namespace iPMCloud.Mobile
             popupContainer_quest_sendlog.IsVisible = false;
             await Task.Delay(1);
 
-            var ok = model.SendLogZipFile();
+            var ok = AppModel.Instance.SendLogZipFile();
             await Task.Delay(2000);
             if (ok)
             {
@@ -5243,24 +5237,24 @@ namespace iPMCloud.Mobile
                 int am = sw_alertmessage.IsToggled ? 2 : 0;
                 int im = sw_internmessage.IsToggled ? 1 : 0;
                 _SelectedBemerkungForNotice.prio = (am + im);
-                _SelectedBemerkungForNotice.gruppeid = model.LastBuilding.gruppeid;
-                _SelectedBemerkungForNotice.personid = model.Person.id;
-                _SelectedBemerkungForNotice.objektid = model.LastBuilding.id;
+                _SelectedBemerkungForNotice.gruppeid = AppModel.Instance.LastBuilding.gruppeid;
+                _SelectedBemerkungForNotice.personid = AppModel.Instance.Person.id;
+                _SelectedBemerkungForNotice.objektid = AppModel.Instance.LastBuilding.id;
                 _SelectedBemerkungForNotice.leistungid = 0;
                 _SelectedBemerkungForNotice.datum = DateTime.Now.Ticks;
 
                 if (_SelectedPosForNotice != null)
                 {
-                    var posInWork = model.allPositionInWork.leistungen.Find(pos => pos.id == _SelectedPosForNotice.id);
+                    var posInWork = AppModel.Instance.allPositionInWork.leistungen.Find(pos => pos.id == _SelectedPosForNotice.id);
                     if (posInWork.bemerkungen == null) { posInWork.bemerkungen = new List<BemerkungWSO>(); }
                     _SelectedBemerkungForNotice.leistungid = _SelectedPosForNotice.id;
                     posInWork.bemerkungen.Add(_SelectedBemerkungForNotice);
-                    LeistungPackWSO.Save(model, model.allPositionInWork);
-                    //LeistungPackWSO.Load(model);
+                    LeistungPackWSO.Save(AppModel.Instance, AppModel.Instance.allPositionInWork);
+                    //LeistungPackWSO.Load(AppModel.Instance);
                 }
                 else
                 {
-                    BemerkungWSO.ToUploadStack(model, _SelectedBemerkungForNotice);
+                    BemerkungWSO.ToUploadStack(AppModel.Instance, _SelectedBemerkungForNotice);
                     //Task.Run(() => { 
                     SyncSingleNotice();
                     //}).ConfigureAwait(false);   // Im Hintergrund ausführen
@@ -5439,7 +5433,7 @@ namespace iPMCloud.Mobile
                 List<string> lls = new List<string>();
                 List<string> kls = new List<string>();
 
-                var req = new TransRequest { list = new List<TransListItem>(), to = model.Lang.lang };
+                var req = new TransRequest { list = new List<TransListItem>(), to = AppModel.Instance.Lang.lang };
                 buildings.ForEach(b =>
                 {
                     var lb = BuildingWSO.LoadBuilding(AppModel.Instance, b.id);
@@ -5685,17 +5679,17 @@ namespace iPMCloud.Mobile
 
         public async void btn_settings_synctimesub_Tapped(object sender, EventArgs e)
         {
-            if (model.SettingModel.SettingDTO.SyncTimeHours == 0) { return; }
-            model.SettingModel.SettingDTO.SyncTimeHours--;
-            model.SettingModel.SaveSettings();
-            lb_settings_synctimehours.Text = "" + model.SettingModel.SettingDTO.SyncTimeHours;
+            if (AppModel.Instance.SettingModel.SettingDTO.SyncTimeHours == 0) { return; }
+            AppModel.Instance.SettingModel.SettingDTO.SyncTimeHours--;
+            AppModel.Instance.SettingModel.SaveSettings();
+            lb_settings_synctimehours.Text = "" + AppModel.Instance.SettingModel.SettingDTO.SyncTimeHours;
         }
         public async void btn_settings_synctimeadd_Tapped(object sender, EventArgs e)
         {
-            if (model.SettingModel.SettingDTO.SyncTimeHours == 15) { return; }
-            model.SettingModel.SettingDTO.SyncTimeHours++;
-            model.SettingModel.SaveSettings();
-            lb_settings_synctimehours.Text = "" + model.SettingModel.SettingDTO.SyncTimeHours;
+            if (AppModel.Instance.SettingModel.SettingDTO.SyncTimeHours == 15) { return; }
+            AppModel.Instance.SettingModel.SettingDTO.SyncTimeHours++;
+            AppModel.Instance.SettingModel.SaveSettings();
+            lb_settings_synctimehours.Text = "" + AppModel.Instance.SettingModel.SettingDTO.SyncTimeHours;
         }
 
         public void btn_DayOverBackTapped(object sender, EventArgs e)
@@ -5729,19 +5723,19 @@ namespace iPMCloud.Mobile
                 latin = latin,
                 lonin = lonin,
                 messagein = geoMessage,
-                personid = model.Person.id,
-                gruppeid = model.Person.gruppeid,
+                personid = AppModel.Instance.Person.id,
+                gruppeid = AppModel.Instance.Person.gruppeid,
             };
-            DayOverWSO.Save(model, d);
-            DayOverWSO.ToUploadStack(model, d);
+            DayOverWSO.Save(AppModel.Instance, d);
+            DayOverWSO.ToUploadStack(AppModel.Instance, d);
             SyncDayOver();
             var dt = new DateTime(d.endticks);
             dayOverLastDate.Text = dt.ToString("dd.MM.yyyy") + " - " + dt.ToString("HH:mm");
 
-            if (model.LastBuilding != null)
+            if (AppModel.Instance.LastBuilding != null)
             {
                 // Zurücksetzten aller States für die Auswahl der Ausführungen
-                model.SetAllObjectAndValuesToNoSelectedBuilding();
+                AppModel.Instance.SetAllObjectAndValuesToNoSelectedBuilding();
             }
             ShowMainPage();
         }
@@ -5798,7 +5792,7 @@ namespace iPMCloud.Mobile
 
             try
             {
-                model.UseExternHardware = true;
+                AppModel.Instance.UseExternHardware = true;
 
                 // ✅ Prüfen ob Kamera verfügbar
                 if (!MediaPicker.Default.IsCaptureSupported)
@@ -5820,7 +5814,7 @@ namespace iPMCloud.Mobile
                     var photoResponse = PhotoUtils.GetImages(stream);
                     photoResponse = PhotoUtils.AddInfoToImage(photoResponse, AppModel.Instance.LastBuilding);
 
-                    model.selectedObjectValueBild = new ObjektDatenBildWSO { bytes = photoResponse.imageBytes };
+                    AppModel.Instance.selectedObjectValueBild = new ObjektDatenBildWSO { bytes = photoResponse.imageBytes };
 
                     img_photo_objectvaluesbild.Source = photoResponse.GetImageSourceAsThumb();
                     await Task.Delay(1);
@@ -5852,7 +5846,7 @@ namespace iPMCloud.Mobile
             }
             finally
             {
-                model.UseExternHardware = false;
+                AppModel.Instance.UseExternHardware = false;
                 overlay.IsVisible = false;  // ✅ Sicherstellen dass Overlay ausgeblendet wird
             }
         }
@@ -5861,7 +5855,7 @@ namespace iPMCloud.Mobile
         {
             img_photo_objectvaluesbild.Source = null;
             await Task.Delay(1);
-            model.selectedObjectValueBild = null;
+            AppModel.Instance.selectedObjectValueBild = null;
 
             btn_send_objectvaluesbild.IsVisible = false;
             await Task.Delay(1);
@@ -5873,17 +5867,17 @@ namespace iPMCloud.Mobile
             await Task.Delay(1);
             if (AppModel.Instance.isFlashLigthAloneON)
             {
-                model.Scan.Btn_FlashlightAloneTapped(null, null);
+                AppModel.Instance.Scan.Btn_FlashlightAloneTapped(null, null);
             }
             await Task.Delay(1);
 
-            model.selectedObjectValueBild.filename = DateTime.Now.ToString("dd_MM_yyyy_HH_mm_ss");
-            model.selectedObjectValueBild.bemerkung = editor_notice_objectvaluesbild.Text;
-            model.selectedObjectValueBild.meterid = model.selectedObjectValue.id;
-            model.selectedObjectValueBild.lastchange = JavaScriptDateConverter.Convert(DateTime.Now).ToString();
-            model.selectedObjectValueBild.standid = 0;
+            AppModel.Instance.selectedObjectValueBild.filename = DateTime.Now.ToString("dd_MM_yyyy_HH_mm_ss");
+            AppModel.Instance.selectedObjectValueBild.bemerkung = editor_notice_objectvaluesbild.Text;
+            AppModel.Instance.selectedObjectValueBild.meterid = AppModel.Instance.selectedObjectValue.id;
+            AppModel.Instance.selectedObjectValueBild.lastchange = JavaScriptDateConverter.Convert(DateTime.Now).ToString();
+            AppModel.Instance.selectedObjectValueBild.standid = 0;
 
-            ObjektDatenBildWSO.ToUploadStack(model, model.selectedObjectValueBild);
+            ObjektDatenBildWSO.ToUploadStack(AppModel.Instance, AppModel.Instance.selectedObjectValueBild);
 
             await Task.Delay(1);
             SyncObjectValueBild();
@@ -5905,7 +5899,7 @@ namespace iPMCloud.Mobile
             }
 
             notizSave_stack.IsVisible = false;
-            model.UseExternHardware = true;
+            AppModel.Instance.UseExternHardware = true;
             overlay.IsVisible = true;
 
             try
@@ -5928,7 +5922,7 @@ namespace iPMCloud.Mobile
             }
             finally
             {
-                model.UseExternHardware = false;
+                AppModel.Instance.UseExternHardware = false;
                 overlay.IsVisible = false;
             }
         }
@@ -5943,7 +5937,7 @@ namespace iPMCloud.Mobile
             }
 
             notizSave_stack.IsVisible = false;
-            model.UseExternHardware = true;
+            AppModel.Instance.UseExternHardware = true;
             overlay.IsVisible = true;
 
             try
@@ -5960,7 +5954,7 @@ namespace iPMCloud.Mobile
             }
             finally
             {
-                model.UseExternHardware = false;
+                AppModel.Instance.UseExternHardware = false;
                 overlay.IsVisible = false;
             }
         }
@@ -6038,7 +6032,7 @@ namespace iPMCloud.Mobile
             if (list_worker.Children != null && list_worker.Children.Count > 0) { return; }
             workerCategories = new Dictionary<string, List<PersonWSO>>();
             workerCategoriesElements = new Dictionary<string, Object>();
-            model.AllWorkers.ForEach(ha =>
+            AppModel.Instance.AllWorkers.ForEach(ha =>
             {
                 if (workerCategories.ContainsKey(ha.kategorie))
                 {
@@ -6076,7 +6070,7 @@ namespace iPMCloud.Mobile
 
                 var tapGestureRecognizer = new TapGestureRecognizer();
                 tapGestureRecognizer.Tapped += (s, e) => { _CategoryCommand(s, e); };
-                Border sfb = Elements.GetWorkerCategoryTreeItem(item.Key, "" + item.Value.Count, model.imagesBase.Tools, null);
+                Border sfb = Elements.GetWorkerCategoryTreeItem(item.Key, "" + item.Value.Count, AppModel.Instance.imagesBase.Tools, null);
                 sfb.GestureRecognizers.Clear();
                 sfb.GestureRecognizers.Add(tapGestureRecognizer);
                 sfb.ClassId = ("##" + item.Key).ToLower();
@@ -6106,11 +6100,11 @@ namespace iPMCloud.Mobile
                 CloseAllWorkerCategories();
                 if (container.Children.Count == 0)
                 {
-                    model.AllWorkers.ForEach(ha =>
+                    AppModel.Instance.AllWorkers.ForEach(ha =>
                     {
                         if (category == ha.kategorie)
                         {
-                            var sfbgf = Elements.GetWorkerTreeItem(ha, model.imagesBase.Worker, null, _navigationCommand);
+                            var sfbgf = Elements.GetWorkerTreeItem(ha, AppModel.Instance.imagesBase.Worker, null, _navigationCommand);
                             //sfbgf.ClassId = ("bu_" + ha.firma + "," + ha.name + "," + ha.vorname + "," + ha.strasse + "," + ha.plz + "," + ha.ort + "," + ha.kategorie).ToLower();
                             sfbgf.IsVisible = true;
                             sfbgf.HorizontalOptions = LayoutOptions.Fill;
@@ -6161,7 +6155,7 @@ namespace iPMCloud.Mobile
             workerNames = new Dictionary<string, PersonWSO>();
             workerNamesElements = new Dictionary<string, Object>();
 
-            var workers = model.AllWorkers.OrderBy(o => (String.IsNullOrEmpty(o.firma) ? o.name : o.firma)).ToList();
+            var workers = AppModel.Instance.AllWorkers.OrderBy(o => (String.IsNullOrEmpty(o.firma) ? o.name : o.firma)).ToList();
             workers.ForEach(ha => { workerNames["" + ha.id] = ha; });
             //var i = 0;
             workerNames.ToList().ForEach(item =>
@@ -6190,7 +6184,7 @@ namespace iPMCloud.Mobile
 
                 var tapGestureRecognizer = new TapGestureRecognizer();
                 tapGestureRecognizer.Tapped += (s, e) => { _NamesCommand(s, e); };
-                Border sfb = Elements.GetWorkerNamesTreeItem(item.Value, model.imagesBase.Worker, null);
+                Border sfb = Elements.GetWorkerNamesTreeItem(item.Value, AppModel.Instance.imagesBase.Worker, null);
                 sfb.GestureRecognizers.Clear();
                 sfb.GestureRecognizers.Add(tapGestureRecognizer);
                 sfb.ClassId = ("##" + (String.IsNullOrEmpty(item.Value.firma) ? item.Value.name : item.Value.firma) + ";" + item.Value.strasse + ";" + item.Value.plz + ";" + item.Value.ort + ";" + item.Value.kategorie).ToLower();
@@ -6218,11 +6212,11 @@ namespace iPMCloud.Mobile
                 CloseAllWorkerNames();
                 if (container.Children.Count == 0)
                 {
-                    model.AllWorkers.ForEach(ha =>
+                    AppModel.Instance.AllWorkers.ForEach(ha =>
                     {
                         if (workerid == ("" + ha.id))
                         {
-                            var sfbgf = Elements.GetWorkerDetailsTreeItem(ha, model.imagesBase.Worker, null, _navigationCommand);
+                            var sfbgf = Elements.GetWorkerDetailsTreeItem(ha, AppModel.Instance.imagesBase.Worker, null, _navigationCommand);
                             sfbgf.IsVisible = true;
                             sfbgf.HorizontalOptions = LayoutOptions.Fill;
                             container.Children.Add(sfbgf);
@@ -6267,7 +6261,7 @@ namespace iPMCloud.Mobile
             workerBuildings = new Dictionary<string, BuildingWSO>();
             workerBuildingsElements = new Dictionary<string, Object>();
 
-            var buildings = model.AllBuildings.OrderBy(o => o.plz + o.ort + o.strasse + o.hsnr).ToList();
+            var buildings = AppModel.Instance.AllBuildings.OrderBy(o => o.plz + o.ort + o.strasse + o.hsnr).ToList();
             buildings.ForEach(bu => { workerBuildings["" + bu.id] = bu; });
             workerBuildings.ToList().ForEach(item =>
             {
@@ -6296,7 +6290,7 @@ namespace iPMCloud.Mobile
 
                     var tapGestureRecognizer = new TapGestureRecognizer();
                     tapGestureRecognizer.Tapped += (s, e) => { WorkerBuildingCommand(s, e); };
-                    Border sfb = Elements.GetWorkerBuildingTreeItem(item.Value, model.imagesBase.Building, null);
+                    Border sfb = Elements.GetWorkerBuildingTreeItem(item.Value, AppModel.Instance.imagesBase.Building, null);
                     sfb.GestureRecognizers.Clear();
                     sfb.GestureRecognizers.Add(tapGestureRecognizer);
                     sfb.ClassId = ("bu_" + item.Value.strasse + ";" + item.Value.hsnr + ";" + item.Value.plz + ";" + item.Value.ort + ";" + item.Value.objektname + ";" + item.Value.objektnr).ToLower();
@@ -6333,9 +6327,9 @@ namespace iPMCloud.Mobile
                 CloseAllWorkerBuildings();
                 if (container.Children.Count == 0)
                 {
-                    model.AllBuildings.Find(b => ("" + b.id) == buildingid).ArrayOfHandwerker.ForEach(ha =>
+                    AppModel.Instance.AllBuildings.Find(b => ("" + b.id) == buildingid).ArrayOfHandwerker.ForEach(ha =>
                     {
-                        var sfbgf = Elements.GetWorkerTreeItem(ha, model.imagesBase.Worker, null, _navigationCommand);
+                        var sfbgf = Elements.GetWorkerTreeItem(ha, AppModel.Instance.imagesBase.Worker, null, _navigationCommand);
                         sfbgf.IsVisible = true;
                         sfbgf.HorizontalOptions = LayoutOptions.Fill;
                         container.Children.Add(sfbgf);
@@ -6407,7 +6401,7 @@ namespace iPMCloud.Mobile
 
             PersonTimeResponse pts = await Task.Run(() =>
             {
-                return model.Connections.GetPersonTimes(int.Parse(pick_persontimes_year.SelectedItem.ToString()), pick_persontimes_month.SelectedIndex + 1);
+                return AppModel.Instance.Connections.GetPersonTimes(int.Parse(pick_persontimes_year.SelectedItem.ToString()), pick_persontimes_month.SelectedIndex + 1);
             });
 
             if (!pts.success)
@@ -6606,7 +6600,7 @@ namespace iPMCloud.Mobile
                 entry_todosearch.Text = "";
             }
 
-            list_todo.Children.Add(AuftragWSO.GetOrderTodoListView(model, all, overlay, entry_todosearch.Text));
+            list_todo.Children.Add(AuftragWSO.GetOrderTodoListView(AppModel.Instance, all, overlay, entry_todosearch.Text));
             await Task.Delay(1);
             list_todo.IsVisible = true;
             overlay.IsVisible = false;
@@ -6628,20 +6622,20 @@ namespace iPMCloud.Mobile
 
         public void btn_showall_again_OrderCategoryTapped(object sender, EventArgs e)
         {
-            model._showall_again_OrderCategory = !model._showall_again_OrderCategory;
-            btn_back_inBuildingOrder_category_showall_again_txt.Text = model._showall_again_OrderCategory ? "Meine zeigen" : "Alle zeigen";
+            AppModel.Instance._showall_again_OrderCategory = !AppModel.Instance._showall_again_OrderCategory;
+            btn_back_inBuildingOrder_category_showall_again_txt.Text = AppModel.Instance._showall_again_OrderCategory ? "Meine zeigen" : "Alle zeigen";
 
             buildingorderlist_category_container_Again.Children.Clear();
-            buildingorderlist_category_container_Again.Children.Add(KategorieWSO.GetCategoryAgainListView(model, new Command<KategorieWSO>(SelectCategoryAgain)));
+            buildingorderlist_category_container_Again.Children.Add(KategorieWSO.GetCategoryAgainListView(AppModel.Instance, new Command<KategorieWSO>(SelectCategoryAgain)));
             BuildingOrderPage_category_Container_Again.IsVisible = true;
         }
 
         public async void btn_nachbuchen_Tapped(int pos)
         {
-            model.posAgain = pos;
+            AppModel.Instance.posAgain = pos;
             overlay.IsVisible = true;
-            model.LastSelectedCategoryAgain = null;
-            model.LastSelectedPositionAgain = null;
+            AppModel.Instance.LastSelectedCategoryAgain = null;
+            AppModel.Instance.LastSelectedPositionAgain = null;
             btn_nachbuchen_Pos.BackgroundColor = pos == 0 ? Color.FromArgb("#042d53") : Color.FromArgb("#999999");
             btn_nachbuchen_Produkte.BackgroundColor = pos == 0 ? Color.FromArgb("#999999") : Color.FromArgb("#042d53");
             await Task.Delay(1);
@@ -6651,22 +6645,22 @@ namespace iPMCloud.Mobile
 
         public async void BuildNachbuchenList()
         {
-            model.LastSelectedOrderAgain = null;
-            model.LastSelectedCategoryAgain = null;
-            model.LastSelectedPositionAgain = null;
+            AppModel.Instance.LastSelectedOrderAgain = null;
+            AppModel.Instance.LastSelectedCategoryAgain = null;
+            AppModel.Instance.LastSelectedPositionAgain = null;
 
             BuildingOrderPage_category_Container_Again.IsVisible = true;
             BuildingOrderPage_position_Container_Again.IsVisible = false;
             inBuildingOrder_position_stack_Again.IsVisible = false;
 
             LeistungWSO firstLeistungInWork = null;
-            model.IsOptionalPosAgain = false;
+            AppModel.Instance.IsOptionalPosAgain = false;
             var selOrderId = -1;
-            if (model.allPositionInWork != null && model.allPositionInWork.leistungen != null && model.allPositionInWork.leistungen.Count > 0)
+            if (AppModel.Instance.allPositionInWork != null && AppModel.Instance.allPositionInWork.leistungen != null && AppModel.Instance.allPositionInWork.leistungen.Count > 0)
             {
-                model.allPositionInWork.leistungen.ForEach(liw =>
+                AppModel.Instance.allPositionInWork.leistungen.ForEach(liw =>
                 {
-                    model.LastBuilding.ArrayOfAuftrag.ForEach(a =>
+                    AppModel.Instance.LastBuilding.ArrayOfAuftrag.ForEach(a =>
                     {
                         a.kategorien.ForEach(k =>
                         {
@@ -6677,21 +6671,21 @@ namespace iPMCloud.Mobile
                         });
                     });
                 });
-                model.IsOptionalPosAgain = firstLeistungInWork != null && firstLeistungInWork.nichtpauschal == 1;
-                var first = model.allPositionInWork.leistungen.First();
+                AppModel.Instance.IsOptionalPosAgain = firstLeistungInWork != null && firstLeistungInWork.nichtpauschal == 1;
+                var first = AppModel.Instance.allPositionInWork.leistungen.First();
                 if (first != null) { selOrderId = first.auftragid; } else { selOrderId = -1; }
             }
-            model.LastBuilding.ArrayOfAuftrag.ForEach(o =>
+            AppModel.Instance.LastBuilding.ArrayOfAuftrag.ForEach(o =>
             {
                 if (o.id == selOrderId || selOrderId < 0)
                 {
-                    model.LastSelectedOrderAgain = o;
+                    AppModel.Instance.LastSelectedOrderAgain = o;
                     lb_inBuildingOrder_categorypos_text_Again.Text = o.GetMobileText();// + " \nNr.: " + o.id + "  Typ: " + o.typ;
                     lb_inBuildingOrder_position_text_Again.Text = "";
                 }
             });
 
-            ShowOrderCategoryAgainPage(model.LastSelectedOrderAgain);
+            ShowOrderCategoryAgainPage(AppModel.Instance.LastSelectedOrderAgain);
 
             await Task.Delay(1);
             list_nachbuchen.IsVisible = true;
@@ -6708,11 +6702,11 @@ namespace iPMCloud.Mobile
             inBuildingOrder_position_stack_Again.IsVisible = false;
 
             buildingorderlist_category_container_Again.Children.Clear();
-            buildingorderlist_category_container_Again.Children.Add(KategorieWSO.GetCategoryAgainListView(model, new Command<KategorieWSO>(SelectCategoryAgain)));
+            buildingorderlist_category_container_Again.Children.Add(KategorieWSO.GetCategoryAgainListView(AppModel.Instance, new Command<KategorieWSO>(SelectCategoryAgain)));
             BuildingOrderPage_category_Container_Again.IsVisible = true;
 
-            model.LastSelectedCategoryAgain = null;
-            model.LastSelectedPositionAgain = null;
+            AppModel.Instance.LastSelectedCategoryAgain = null;
+            AppModel.Instance.LastSelectedPositionAgain = null;
 
             await Task.Delay(1);
             overlay.IsVisible = false;
@@ -6720,10 +6714,10 @@ namespace iPMCloud.Mobile
         }
         public async void SelectCategoryAgain(KategorieWSO category)
         {
-            model.LastSelectedCategoryAgain = category;
+            AppModel.Instance.LastSelectedCategoryAgain = category;
             BuildingOrderPage_category_Container_Again.IsVisible = false;
             inBuildingOrder_position_stack_Again.IsVisible = true;
-            lb_inBuildingOrder_categorypos_text_Again.Text = model.LastSelectedOrderAgain.GetMobileText();// + " \nNr.: " + model.LastSelectedOrderAgain.id + "  Typ: " + model.LastSelectedOrderAgain.typ;
+            lb_inBuildingOrder_categorypos_text_Again.Text = AppModel.Instance.LastSelectedOrderAgain.GetMobileText();// + " \nNr.: " + AppModel.Instance.LastSelectedOrderAgain.id + "  Typ: " + AppModel.Instance.LastSelectedOrderAgain.typ;
             lb_inBuildingOrder_position_text_Again.Text = category.GetMobileText();
             ShowOrderPositionPageAgain();
         }
@@ -6735,10 +6729,10 @@ namespace iPMCloud.Mobile
 
 
             buildingorderlist_position_container_Again.Children.Clear();
-            buildingorderlist_position_container_Again.Children.Add(LeistungWSO.GetPositionAgainListView(model, new Command<LeistungWSO>(SelectPositionToWorkAgain)));
+            buildingorderlist_position_container_Again.Children.Add(LeistungWSO.GetPositionAgainListView(AppModel.Instance, new Command<LeistungWSO>(SelectPositionToWorkAgain)));
             BuildingOrderPage_position_Container_Again.IsVisible = true;
 
-            model.LastSelectedPositionAgain = null;
+            AppModel.Instance.LastSelectedPositionAgain = null;
 
             await Task.Delay(1);
             overlay.IsVisible = false;
@@ -6748,11 +6742,11 @@ namespace iPMCloud.Mobile
         {
 
 
-            //if(model.IsOptionalPosAgain == false) { }
+            //if(AppModel.Instance.IsOptionalPosAgain == false) { }
             //bool inWork = false;
-            //if (model.allPositionInWork != null)
+            //if (AppModel.Instance.allPositionInWork != null)
             //{
-            //    var foundInWork = model.allPositionInWork.leistungen.Find(l => l.id == position.id);
+            //    var foundInWork = AppModel.Instance.allPositionInWork.leistungen.Find(l => l.id == position.id);
             //    inWork = foundInWork != null;
             //}
             //if (position.disabled || inWork) { return; }
@@ -6760,32 +6754,32 @@ namespace iPMCloud.Mobile
             overlay.IsVisible = true;
             //await Task.Delay(1);
 
-            model.LastSelectedPositionAgain = position;
+            AppModel.Instance.LastSelectedPositionAgain = position;
             Border framePos = null;
-            var selPost = model.allSelectedPositionAgainToWork.Find(p => p.id == position.id);
+            var selPost = AppModel.Instance.allSelectedPositionAgainToWork.Find(p => p.id == position.id);
             if (selPost != null)
             {
                 // entfernen da schon selectiert 
-                model.allSelectedPositionAgainToWork.Remove(position);
-                if (model.allPositionAgainInShowingListView.TryGetValue(position.id, out framePos))
+                AppModel.Instance.allSelectedPositionAgainToWork.Remove(position);
+                if (AppModel.Instance.allPositionAgainInShowingListView.TryGetValue(position.id, out framePos))
                 {
                     position.selected = false;
-                    framePos.Content = LeistungWSO.GetPositionCardView(position, model, ((TapGestureRecognizer)framePos.Content.GestureRecognizers[0]).Command).Content;
+                    framePos.Content = LeistungWSO.GetPositionCardView(position, AppModel.Instance, ((TapGestureRecognizer)framePos.Content.GestureRecognizers[0]).Command).Content;
                 }
             }
             else
             {
                 // hinzufügen
-                model.allSelectedPositionAgainToWork.Add(position);
-                if (model.allPositionAgainInShowingListView.TryGetValue(position.id, out framePos))
+                AppModel.Instance.allSelectedPositionAgainToWork.Add(position);
+                if (AppModel.Instance.allPositionAgainInShowingListView.TryGetValue(position.id, out framePos))
                 {
                     position.selected = true;
-                    framePos.Content = LeistungWSO.GetSelectedPositionCardView(position, model, ((TapGestureRecognizer)framePos.Content.GestureRecognizers[0]).Command).Content;
+                    framePos.Content = LeistungWSO.GetSelectedPositionCardView(position, AppModel.Instance, ((TapGestureRecognizer)framePos.Content.GestureRecognizers[0]).Command).Content;
                 }
             }
-            btn_showselected_pos_container_Again.IsVisible = model.allSelectedPositionAgainToWork.Count > 0;
-            btn_showselected_pos_container_not_Again.IsVisible = !(model.allSelectedPositionAgainToWork.Count > 0);
-            btn_showselected_pos_container2.IsVisible = model.allSelectedPositionAgainToWork.Count > 0;
+            btn_showselected_pos_container_Again.IsVisible = AppModel.Instance.allSelectedPositionAgainToWork.Count > 0;
+            btn_showselected_pos_container_not_Again.IsVisible = !(AppModel.Instance.allSelectedPositionAgainToWork.Count > 0);
+            btn_showselected_pos_container2.IsVisible = AppModel.Instance.allSelectedPositionAgainToWork.Count > 0;
             CheckForOptionalToWorkAgain();
 
             //await Task.Delay(1);
@@ -6799,22 +6793,22 @@ namespace iPMCloud.Mobile
             Border framePos;
             SwipeView swipePos;
             // entfernen da schon selectiert 
-            model.allSelectedPositionAgainToWork.Remove(position);
+            AppModel.Instance.allSelectedPositionAgainToWork.Remove(position);
             position.selected = false;
-            if (model.allPositionAgainInShowingListView.TryGetValue(position.id, out framePos))
+            if (AppModel.Instance.allPositionAgainInShowingListView.TryGetValue(position.id, out framePos))
             {
-                framePos.Content = LeistungWSO.GetPositionCardView(position, model, ((TapGestureRecognizer)framePos.Content.GestureRecognizers[0]).Command).Content;
+                framePos.Content = LeistungWSO.GetPositionCardView(position, AppModel.Instance, ((TapGestureRecognizer)framePos.Content.GestureRecognizers[0]).Command).Content;
             }
-            if (model.allPositionAgainInShowingSmallListView.TryGetValue(position.id, out swipePos))
+            if (AppModel.Instance.allPositionAgainInShowingSmallListView.TryGetValue(position.id, out swipePos))
             {
                 swipePos.IsVisible = false;
             }
 
-            btn_showselected_pos_container_Again.IsVisible = model.allSelectedPositionAgainToWork.Count > 0;
-            btn_showselected_pos_container_not_Again.IsVisible = !(model.allSelectedPositionAgainToWork.Count > 0);
-            btn_showselected_pos_container2.IsVisible = model.allSelectedPositionAgainToWork.Count > 0;
+            btn_showselected_pos_container_Again.IsVisible = AppModel.Instance.allSelectedPositionAgainToWork.Count > 0;
+            btn_showselected_pos_container_not_Again.IsVisible = !(AppModel.Instance.allSelectedPositionAgainToWork.Count > 0);
+            btn_showselected_pos_container2.IsVisible = AppModel.Instance.allSelectedPositionAgainToWork.Count > 0;
             CheckForOptionalToWorkAgain();
-            if (model.allSelectedPositionAgainToWork.Count == 0)
+            if (AppModel.Instance.allSelectedPositionAgainToWork.Count == 0)
             {
                 await Task.Delay(100);
                 AuswahlAnzeigenTapped_Done(false);
@@ -6822,7 +6816,7 @@ namespace iPMCloud.Mobile
                 //if (BuildingOrderPage_order_Container.IsVisible)
                 //{
                 //    buildingorderlist_order_container.Children.Clear();
-                //    buildingorderlist_order_container.Children.Add(AuftragWSO.GetOrderListView(model, new Command<AuftragWSO>(SelectOrder)));
+                //    buildingorderlist_order_container.Children.Add(AuftragWSO.GetOrderListView(AppModel.Instance, new Command<AuftragWSO>(SelectOrder)));
                 //}
             }
             await Task.Delay(1);
@@ -6830,7 +6824,7 @@ namespace iPMCloud.Mobile
         }
         public async void CheckForOptionalToWorkAgain()
         {
-            if (model.IsOptionalPosAgain)
+            if (AppModel.Instance.IsOptionalPosAgain)
             {
                 lb_PosSelectionType_text_Again.Text = "Nur optionale Positionen und Produkte aktiv!";
             }
@@ -6897,67 +6891,67 @@ namespace iPMCloud.Mobile
             //btn_regScanWarn_img.Source = imagesBase.AlertMessage;
 
             //Zählerfoto
-            btn_newphoto_objectvaluesbild_img.Source = model.imagesBase.Cam;
+            btn_newphoto_objectvaluesbild_img.Source = AppModel.Instance.imagesBase.Cam;
 
             frame_planConA_img_reloadx.Source = "muellInOutX" + AppModel.Instance.AppSetModel.ViewOnlyMuell + ".png";
 
-            popupContainer_quest_personpicker_img.Source = model.imagesBase.Worker;
-            frame_planConA_img_down.Source = model.imagesBase.DropDownImage;
-            frame_planConA_img_reload.Source = model.imagesBase.Refresh;
-            frame_planConA_img_otherperson.Source = model.imagesBase.Worker;
-            frame_planConA_img_reload2.Source = model.imagesBase.Refresh;
-            frame_planConA_img_otherperson2.Source = model.imagesBase.Worker;
-            frame_planConCe_img_reload2.Source = model.imagesBase.Refresh;
-            frame_planConCe_img_LoadAll1.Source = model.imagesBase.Refresh;
-            frame_planConCe_img_LoadAll2.Source = model.imagesBase.Refresh;
+            popupContainer_quest_personpicker_img.Source = AppModel.Instance.imagesBase.Worker;
+            frame_planConA_img_down.Source = AppModel.Instance.imagesBase.DropDownImage;
+            frame_planConA_img_reload.Source = AppModel.Instance.imagesBase.Refresh;
+            frame_planConA_img_otherperson.Source = AppModel.Instance.imagesBase.Worker;
+            frame_planConA_img_reload2.Source = AppModel.Instance.imagesBase.Refresh;
+            frame_planConA_img_otherperson2.Source = AppModel.Instance.imagesBase.Worker;
+            frame_planConCe_img_reload2.Source = AppModel.Instance.imagesBase.Refresh;
+            frame_planConCe_img_LoadAll1.Source = AppModel.Instance.imagesBase.Refresh;
+            frame_planConCe_img_LoadAll2.Source = AppModel.Instance.imagesBase.Refresh;
 
             //Top Buttons
-            btn_objScan_limg.Source = model.imagesBase.QrScan;
-            btn_objScan_limgB.Source = model.imagesBase.QrScan;
-            btn_objScan_rimg.Source = model.imagesBase.DropRightImage;
-            btn_objNotScan_limg.Source = model.imagesBase.SearchImage;
-            btn_objNotScan_rimg.Source = model.imagesBase.DropRightImage;
-            btn_mainsettings_img.Source = model.imagesBase.MenuImage;
-            btn_mainmenu_back.Source = model.imagesBase.XImageBoldRed;
-            btn_panelShowSelectedPos_back.Source = model.imagesBase.XImageBoldRed;
+            btn_objScan_limg.Source = AppModel.Instance.imagesBase.QrScan;
+            btn_objScan_limgB.Source = AppModel.Instance.imagesBase.QrScan;
+            btn_objScan_rimg.Source = AppModel.Instance.imagesBase.DropRightImage;
+            btn_objNotScan_limg.Source = AppModel.Instance.imagesBase.SearchImage;
+            btn_objNotScan_rimg.Source = AppModel.Instance.imagesBase.DropRightImage;
+            btn_mainsettings_img.Source = AppModel.Instance.imagesBase.MenuImage;
+            btn_mainmenu_back.Source = AppModel.Instance.imagesBase.XImageBoldRed;
+            btn_panelShowSelectedPos_back.Source = AppModel.Instance.imagesBase.XImageBoldRed;
 
             //Bottom Buttons
-            btn_worker_limg.Source = model.imagesBase.Worker;
-            btn_worker_rimg.Source = model.imagesBase.DropRightImage;
-            btn_exitwork_limg.Source = model.imagesBase.Exit;
-            btn_todos_limg.Source = model.imagesBase.Todos;
-            btn_todos_rimg.Source = model.imagesBase.DropRightImage;
-            btn_persontimes_limg.Source = model.imagesBase.Time;
-            btn_sync_limg.Source = model.imagesBase.Refresh;
-            btn_sync_rimg.Source = model.imagesBase.DropRightImage;
-            btn_regist_limg.Source = model.imagesBase.QrScan;
-            btn_regist_rimg.Source = model.imagesBase.DropRightImage;
-            btn_dsgvo_limg.Source = model.imagesBase.Logo;
-            btn_dsgvo_rimg.Source = model.imagesBase.DropRightImage;
+            btn_worker_limg.Source = AppModel.Instance.imagesBase.Worker;
+            btn_worker_rimg.Source = AppModel.Instance.imagesBase.DropRightImage;
+            btn_exitwork_limg.Source = AppModel.Instance.imagesBase.Exit;
+            btn_todos_limg.Source = AppModel.Instance.imagesBase.Todos;
+            btn_todos_rimg.Source = AppModel.Instance.imagesBase.DropRightImage;
+            btn_persontimes_limg.Source = AppModel.Instance.imagesBase.Time;
+            btn_sync_limg.Source = AppModel.Instance.imagesBase.Refresh;
+            btn_sync_rimg.Source = AppModel.Instance.imagesBase.DropRightImage;
+            btn_regist_limg.Source = AppModel.Instance.imagesBase.QrScan;
+            btn_regist_rimg.Source = AppModel.Instance.imagesBase.DropRightImage;
+            btn_dsgvo_limg.Source = AppModel.Instance.imagesBase.Logo;
+            btn_dsgvo_rimg.Source = AppModel.Instance.imagesBase.DropRightImage;
 
-            btn_settings_limg.Source = model.imagesBase.Setting;
-            btn_settings_rimg.Source = model.imagesBase.DropRightImage;
+            btn_settings_limg.Source = AppModel.Instance.imagesBase.Setting;
+            btn_settings_rimg.Source = AppModel.Instance.imagesBase.DropRightImage;
 
             // LastBuilding Buttons and init showing
-            btn_objektinfo_img.Source = model.imagesBase.InfoCircle;
+            btn_objektinfo_img.Source = AppModel.Instance.imagesBase.InfoCircle;
 
-            btn_alertmessage_img.Source = model.imagesBase.WarnTriangleYellow;
-            btn_alertmessage_img2.Source = model.imagesBase.WarnTriangleYellow;
-            btn_internmessage_img2.Source = model.imagesBase.InternalNoCustomer;
-            //btn_alertmessage_img_DirektPos.Source = model.imagesBase.WarnTriangleYellow;
-            btn_alertmessage_img2_DirektPos.Source = model.imagesBase.WarnTriangleYellow;
-            btn_internmessage_img2_DirektPos.Source = model.imagesBase.InternalNoCustomer;
-            btn_message_img.Source = model.imagesBase.CamMessage;
-            btn_objvalues_img.Source = model.imagesBase.ObjectValues;
-            btn_buildingout_img2.Source = model.imagesBase.BuildingOut;
+            btn_alertmessage_img.Source = AppModel.Instance.imagesBase.WarnTriangleYellow;
+            btn_alertmessage_img2.Source = AppModel.Instance.imagesBase.WarnTriangleYellow;
+            btn_internmessage_img2.Source = AppModel.Instance.imagesBase.InternalNoCustomer;
+            //btn_alertmessage_img_DirektPos.Source = AppModel.Instance.imagesBase.WarnTriangleYellow;
+            btn_alertmessage_img2_DirektPos.Source = AppModel.Instance.imagesBase.WarnTriangleYellow;
+            btn_internmessage_img2_DirektPos.Source = AppModel.Instance.imagesBase.InternalNoCustomer;
+            btn_message_img.Source = AppModel.Instance.imagesBase.CamMessage;
+            btn_objvalues_img.Source = AppModel.Instance.imagesBase.ObjectValues;
+            btn_buildingout_img2.Source = AppModel.Instance.imagesBase.BuildingOut;
 
             // LoginPerson and Version 
-            lb_LoginUser.Text = model.Person.anrede + " " + (String.IsNullOrWhiteSpace(model.Person.vorname) ? "" : (model.Person.vorname.Length > 0 ? model.Person.vorname.Substring(0, 1) + ". " : "")) + model.Person.name;
-            lb_version.Text = "V" + model.Version; //+ " (" + model.Build + ")";
-            if (model.Companies.Count > -1)
+            lb_LoginUser.Text = AppModel.Instance.Person.anrede + " " + (String.IsNullOrWhiteSpace(AppModel.Instance.Person.vorname) ? "" : (AppModel.Instance.Person.vorname.Length > 0 ? AppModel.Instance.Person.vorname.Substring(0, 1) + ". " : "")) + AppModel.Instance.Person.name;
+            lb_version.Text = "V" + AppModel.Instance.Version; //+ " (" + AppModel.Instance.Build + ")";
+            if (AppModel.Instance.Companies.Count > -1)
             {
                 lb_LoginCustomer.IsVisible = true;
-                lb_LoginCustomer.Text = model.SettingModel.SettingDTO.CustomerName.Length > 30 ? (model.SettingModel.SettingDTO.CustomerName.Substring(0, 30) + "...") : model.SettingModel.SettingDTO.CustomerName;
+                lb_LoginCustomer.Text = AppModel.Instance.SettingModel.SettingDTO.CustomerName.Length > 30 ? (AppModel.Instance.SettingModel.SettingDTO.CustomerName.Substring(0, 30) + "...") : AppModel.Instance.SettingModel.SettingDTO.CustomerName;
             }
             else
             {
@@ -6965,128 +6959,128 @@ namespace iPMCloud.Mobile
             }
 
             frm_img_LoginUser.IsVisible = false;
-            if (model.Person.userIcon != null)
+            if (AppModel.Instance.Person.userIcon != null)
             {
-                ImageSource userIconImageSource = ImageSource.FromStream(() => new MemoryStream(model.Person.userIcon));
+                ImageSource userIconImageSource = ImageSource.FromStream(() => new MemoryStream(AppModel.Instance.Person.userIcon));
                 img_LoginUser.Source = userIconImageSource;
                 frm_img_LoginUser.IsVisible = true;
             }
 
 
             // WorkerPage Buttons
-            btn_worker_search_img.Source = model.imagesBase.SearchImage;
-            btn_workercategorysearch_img.Source = model.imagesBase.Tools;
-            btn_workernamesearch_img.Source = model.imagesBase.Worker;
-            btn_workerbuildingsearch_img.Source = model.imagesBase.Building;
-            btn_worker_back_img.Source = model.imagesBase.DropLeftBlueDoubleImage;
+            btn_worker_search_img.Source = AppModel.Instance.imagesBase.SearchImage;
+            btn_workercategorysearch_img.Source = AppModel.Instance.imagesBase.Tools;
+            btn_workernamesearch_img.Source = AppModel.Instance.imagesBase.Worker;
+            btn_workerbuildingsearch_img.Source = AppModel.Instance.imagesBase.Building;
+            btn_worker_back_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
 
             // BuildingScan 
-            img_backBtn_inBuildingScan.Source = model.imagesBase.DropLeftBlueDoubleImage;
-            btn_flashlight_img.Source = model.imagesBase.Flashlight;
-            btn_regScan_limg.Source = model.imagesBase.QrScan;
-            btn_flashlight_Out_img.Source = model.imagesBase.Flashlight;
-            btn_regOutScan_limg.Source = model.imagesBase.QrScan;
-            img_backBtn_inBuildingOutScan.Source = model.imagesBase.DropLeftBlueDoubleImage;
+            img_backBtn_inBuildingScan.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
+            btn_flashlight_img.Source = AppModel.Instance.imagesBase.Flashlight;
+            btn_regScan_limg.Source = AppModel.Instance.imagesBase.QrScan;
+            btn_flashlight_Out_img.Source = AppModel.Instance.imagesBase.Flashlight;
+            btn_regOutScan_limg.Source = AppModel.Instance.imagesBase.QrScan;
+            img_backBtn_inBuildingOutScan.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
 
 
             // BuildingOrder 
-            img_backBtn_inBuildingOrder.Source = model.imagesBase.DropLeftBlueDoubleImage;
-            img_backBtn_inBuildingOrder_category.Source = model.imagesBase.DropLeftBlueDoubleImage;
-            img_backBtn_inBuildingOrder_position.Source = model.imagesBase.DropLeftBlueDoubleImage;
-            img_inBuildingOrder_category_text.Source = model.imagesBase.OrderFolderTools;
-            img_inBuildingOrder_categorypos_text.Source = model.imagesBase.OrderFolderTools;
-            img_inBuildingOrder_position_text.Source = model.imagesBase.KategorieSymbol;
-            img_inBuildingOrder_categorypos_text_Again.Source = model.imagesBase.OrderFolderTools;
-            img_inBuildingOrder_position_text_Again.Source = model.imagesBase.KategorieSymbol;
-            btn_buildingorder_limg.Source = model.imagesBase.Work;
-            btn_buildingorder_rimg.Source = model.imagesBase.DropRightImage;
+            img_backBtn_inBuildingOrder.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
+            img_backBtn_inBuildingOrder_category.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
+            img_backBtn_inBuildingOrder_position.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
+            img_inBuildingOrder_category_text.Source = AppModel.Instance.imagesBase.OrderFolderTools;
+            img_inBuildingOrder_categorypos_text.Source = AppModel.Instance.imagesBase.OrderFolderTools;
+            img_inBuildingOrder_position_text.Source = AppModel.Instance.imagesBase.KategorieSymbol;
+            img_inBuildingOrder_categorypos_text_Again.Source = AppModel.Instance.imagesBase.OrderFolderTools;
+            img_inBuildingOrder_position_text_Again.Source = AppModel.Instance.imagesBase.KategorieSymbol;
+            btn_buildingorder_limg.Source = AppModel.Instance.imagesBase.Work;
+            btn_buildingorder_rimg.Source = AppModel.Instance.imagesBase.DropRightImage;
 
             //nachbuchen
-            btn_posnachbuchen_limg.Source = model.imagesBase.LeistungSymbol;
-            btn_produktenachbuchen_limg.Source = model.imagesBase.ProduktSymbol;
-            btn_nachbuchen_img.Source = model.imagesBase.AddArrow;
-            btn_nachbuchen_rimg.Source = model.imagesBase.DropRightImage;
-            btn_nachbuchen_back_img.Source = model.imagesBase.DropLeftBlueDoubleImage;
-            btn_nachbuchen_cat_back_img.Source = model.imagesBase.DropLeftWhiteDoubleImage;
-            btn_showselected_pos_img_Again.Source = model.imagesBase.PosList;
+            btn_posnachbuchen_limg.Source = AppModel.Instance.imagesBase.LeistungSymbol;
+            btn_produktenachbuchen_limg.Source = AppModel.Instance.imagesBase.ProduktSymbol;
+            btn_nachbuchen_img.Source = AppModel.Instance.imagesBase.AddArrow;
+            btn_nachbuchen_rimg.Source = AppModel.Instance.imagesBase.DropRightImage;
+            btn_nachbuchen_back_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
+            btn_nachbuchen_cat_back_img.Source = AppModel.Instance.imagesBase.DropLeftWhiteDoubleImage;
+            btn_showselected_pos_img_Again.Source = AppModel.Instance.imagesBase.PosList;
 
             // InWork
-            btn_inwork_limg.Source = model.imagesBase.WorkerInProgressWarn;
-            btn_showselected_pos_img.Source = model.imagesBase.PosList;
-            btn_showselected_pos_img2.Source = model.imagesBase.PosList;
-            //btn_showselected_pos_img3.Source = model.imagesBase.InfoImage;
-            btn_showselected_poslist_img.Source = model.imagesBase.PosList;
-            btn_startselected_pos_img.Source = model.imagesBase.CheckWhite;
+            btn_inwork_limg.Source = AppModel.Instance.imagesBase.WorkerInProgressWarn;
+            btn_showselected_pos_img.Source = AppModel.Instance.imagesBase.PosList;
+            btn_showselected_pos_img2.Source = AppModel.Instance.imagesBase.PosList;
+            //btn_showselected_pos_img3.Source = AppModel.Instance.imagesBase.InfoImage;
+            btn_showselected_poslist_img.Source = AppModel.Instance.imagesBase.PosList;
+            btn_startselected_pos_img.Source = AppModel.Instance.imagesBase.CheckWhite;
 
             //RunningWorks
-            btn_back_runningworks_img.Source = model.imagesBase.DropLeftBlueDoubleImage;
-            btn_runningworks_over_img.Source = model.imagesBase.CheckWhite;
+            btn_back_runningworks_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
+            btn_runningworks_over_img.Source = AppModel.Instance.imagesBase.CheckWhite;
 
             //Bemerkung
-            btn_back_check_bem_img.Source = model.imagesBase.DropLeftBlueDoubleImage;
-            btn_message_imgA_check_bem.Source = model.imagesBase.Cam;
-            btn_message_imgB_check_bem.Source = model.imagesBase.Attachment;
-            btn_notice_save_img_check_bem.Source = model.imagesBase.CheckWhite;
+            btn_back_check_bem_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
+            btn_message_imgA_check_bem.Source = AppModel.Instance.imagesBase.Cam;
+            btn_message_imgB_check_bem.Source = AppModel.Instance.imagesBase.Attachment;
+            btn_notice_save_img_check_bem.Source = AppModel.Instance.imagesBase.CheckWhite;
 
-            btn_back_notice_img_DirektPos.Source = model.imagesBase.DropLeftBlueDoubleImage;
-            btn_back_notice_img.Source = model.imagesBase.DropLeftBlueDoubleImage;
-            btn_notice_save_img_DirektPos.Source = model.imagesBase.CheckWhite;
-            btn_notice_save_img.Source = model.imagesBase.CheckWhite;
-            btn_message_imgA_DirektPos.Source = model.imagesBase.Cam;
-            btn_message_imgB_DirektPos.Source = model.imagesBase.Attachment;
-            btn_message_imgA.Source = model.imagesBase.Cam;
-            btn_message_imgB.Source = model.imagesBase.Attachment;
+            btn_back_notice_img_DirektPos.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
+            btn_back_notice_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
+            btn_notice_save_img_DirektPos.Source = AppModel.Instance.imagesBase.CheckWhite;
+            btn_notice_save_img.Source = AppModel.Instance.imagesBase.CheckWhite;
+            btn_message_imgA_DirektPos.Source = AppModel.Instance.imagesBase.Cam;
+            btn_message_imgB_DirektPos.Source = AppModel.Instance.imagesBase.Attachment;
+            btn_message_imgA.Source = AppModel.Instance.imagesBase.Cam;
+            btn_message_imgB.Source = AppModel.Instance.imagesBase.Attachment;
 
             // ObjectValues
-            btn_back_ObjectValues_img.Source = model.imagesBase.DropLeftBlueDoubleImage;
-            btn_back_ObjectValues_edit_img.Source = model.imagesBase.DropLeftBlueDoubleImage;
-            //objectValues_edit_img.Source = model.imagesBase.Pen;
+            btn_back_ObjectValues_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
+            btn_back_ObjectValues_edit_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
+            //objectValues_edit_img.Source = AppModel.Instance.imagesBase.Pen;
 
             //Feierabend
-            btn_back_dayover_img.Source = model.imagesBase.DropLeftBlueDoubleImage;
+            btn_back_dayover_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
 
             //CheckContainer
-            btn_back_check_del_img.Source = model.imagesBase.Trash;
-            btn_back_check_img.Source = model.imagesBase.DropLeftBlueDoubleImage;
-            btn_info_check_img.Source = model.imagesBase.CheckSymbol;
-            btn_back_check_signature_img.Source = model.imagesBase.DropLeftBlueDoubleImage;
+            btn_back_check_del_img.Source = AppModel.Instance.imagesBase.Trash;
+            btn_back_check_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
+            btn_info_check_img.Source = AppModel.Instance.imagesBase.CheckSymbol;
+            btn_back_check_signature_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
 
             //Einstellungen
-            btn_back_settings_img.Source = model.imagesBase.DropLeftBlueDoubleImage;
+            btn_back_settings_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
 
             //Map
-            btn_back_map_img.Source = model.imagesBase.DropLeftBlueDoubleImage;
+            btn_back_map_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
 
             //DSGVO
-            btn_back_dsgvo_img.Source = model.imagesBase.DropLeftBlueDoubleImage;
+            btn_back_dsgvo_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
 
             //DSGVO
-            btn_back_pn_img.Source = model.imagesBase.DropLeftBlueDoubleImage;
+            btn_back_pn_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
 
             //Todo
-            btn_todo_back_img.Source = model.imagesBase.DropLeftBlueDoubleImage;
-            btn_todosearch_img.Source = model.imagesBase.SearchImage;
-            btn_todo_inout2_img.Source = model.imagesBase.Muell_Sign;
-            btn_todo_inout_img.Source = model.imagesBase.Muell_Out;
+            btn_todo_back_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
+            btn_todosearch_img.Source = AppModel.Instance.imagesBase.SearchImage;
+            btn_todo_inout2_img.Source = AppModel.Instance.imagesBase.Muell_Sign;
+            btn_todo_inout_img.Source = AppModel.Instance.imagesBase.Muell_Out;
 
             //NotScan
-            btn_notscan_back_img.Source = model.imagesBase.DropLeftBlueDoubleImage;
-            btn_notscansearch_img.Source = model.imagesBase.SearchImage;
+            btn_notscan_back_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
+            btn_notscansearch_img.Source = AppModel.Instance.imagesBase.SearchImage;
 
             //Sendlogfile Fail
-            popupContainer_container_sendlog_fail_img.Source = model.imagesBase.WarnTriangleYellow;
+            popupContainer_container_sendlog_fail_img.Source = AppModel.Instance.imagesBase.WarnTriangleYellow;
 
             //ifondialog
-            popupContainer_infodialog_img.Source = model.imagesBase.InfoCircle;
+            popupContainer_infodialog_img.Source = AppModel.Instance.imagesBase.InfoCircle;
 
 
             //Persontimes
             SetAppControll();
-            btn_persontimes_back_img.Source = model.imagesBase.DropLeftBlueDoubleImage;
-            warn_persontimes_limg.Source = model.imagesBase.InfoCircle;
+            btn_persontimes_back_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
+            warn_persontimes_limg.Source = AppModel.Instance.imagesBase.InfoCircle;
 
             // Einstellungen Defaults
-            lb_settings_synctimehours.Text = "" + model.SettingModel.SettingDTO.SyncTimeHours;
+            lb_settings_synctimehours.Text = "" + AppModel.Instance.SettingModel.SettingDTO.SyncTimeHours;
 
             // Jetzt beenden
             btn_endselectedwork.GestureRecognizers.Clear();
@@ -7423,7 +7417,7 @@ namespace iPMCloud.Mobile
             btn_back_inBuildingOutScan.GestureRecognizers.Add(tgr_back_inBuildingOutScan);
             btn_flashlight_Out_container.GestureRecognizers.Clear();
             var tapGestureRecognizer1b = new TapGestureRecognizer();
-            tapGestureRecognizer1b.Tapped += model.Scan.Btn_FlashlightTapped;
+            tapGestureRecognizer1b.Tapped += AppModel.Instance.Scan.Btn_FlashlightTapped;
             btn_flashlight_Out_container.GestureRecognizers.Add(tapGestureRecognizer1b);
 
             // BuidlingScan Back to MainPage
@@ -7433,7 +7427,7 @@ namespace iPMCloud.Mobile
             btn_back_inBuildingScan.GestureRecognizers.Add(tgr_back_inBuildingScan);
             btn_flashlight_container.GestureRecognizers.Clear();
             var tapGestureRecognizer1 = new TapGestureRecognizer();
-            tapGestureRecognizer1.Tapped += model.Scan.Btn_FlashlightTapped;
+            tapGestureRecognizer1.Tapped += AppModel.Instance.Scan.Btn_FlashlightTapped;
             btn_flashlight_container.GestureRecognizers.Add(tapGestureRecognizer1);
 
             //Flashlight in ObjektValuesEdit ...
@@ -7668,25 +7662,25 @@ namespace iPMCloud.Mobile
             var tgr_btn_nachbuchen_back = new TapGestureRecognizer();
             tgr_btn_nachbuchen_back.Tapped += (object o, TappedEventArgs ev) =>
             {
-                if (model.LastSelectedCategoryAgain == null)
+                if (AppModel.Instance.LastSelectedCategoryAgain == null)
                 {
                     btn_back_inBuildingOrder_category_showall_again_txt.Text = "Alle zeigen";
-                    model._showall_again_OrderCategory = false;
+                    AppModel.Instance._showall_again_OrderCategory = false;
                     this.Focus(); ShowMainPage();
                 }
                 else
                 {
-                    btn_nachbuchen_Tapped(model.posAgain);
+                    btn_nachbuchen_Tapped(AppModel.Instance.posAgain);
                 }
             };
             btn_nachbuchen_back.GestureRecognizers.Add(tgr_btn_nachbuchen_back);
             btn_nachbuchen_cat_back.GestureRecognizers.Clear();
             var tgr_nachbuchen_cat_back = new TapGestureRecognizer();
-            tgr_nachbuchen_cat_back.Tapped += (object o, TappedEventArgs ev) => { btn_nachbuchen_Tapped(model.posAgain); };
+            tgr_nachbuchen_cat_back.Tapped += (object o, TappedEventArgs ev) => { btn_nachbuchen_Tapped(AppModel.Instance.posAgain); };
             btn_nachbuchen_cat_back.GestureRecognizers.Add(tgr_nachbuchen_cat_back);
             btn_nachbuchen.GestureRecognizers.Clear();
             var tgr_nachbuchen = new TapGestureRecognizer();
-            tgr_nachbuchen.Tapped += (object o, TappedEventArgs ev) => { ShowNachbuchenPage(model.posAgain); };
+            tgr_nachbuchen.Tapped += (object o, TappedEventArgs ev) => { ShowNachbuchenPage(AppModel.Instance.posAgain); };
             btn_nachbuchen.GestureRecognizers.Add(tgr_nachbuchen);
             btn_nachbuchen_Produkte.GestureRecognizers.Clear();
             var tgr_produkt_nachbuchen = new TapGestureRecognizer();
@@ -7718,16 +7712,16 @@ namespace iPMCloud.Mobile
         /*******************/
         private async void SetLastBuilding()
         {
-            lastBuilding_Container.IsVisible = (model.LastBuilding != null);
-            lastBuilding_ContainerBottom.IsVisible = (model.LastBuilding != null);
-            btn_objektinfo_container.IsVisible = (model.LastBuilding != null && !String.IsNullOrWhiteSpace(model.LastBuilding.notiz));
+            lastBuilding_Container.IsVisible = (AppModel.Instance.LastBuilding != null);
+            lastBuilding_ContainerBottom.IsVisible = (AppModel.Instance.LastBuilding != null);
+            btn_objektinfo_container.IsVisible = (AppModel.Instance.LastBuilding != null && !String.IsNullOrWhiteSpace(AppModel.Instance.LastBuilding.notiz));
 
-            btn_buildingorder_container.IsVisible = model.LastBuilding != null;
-            btn_exitwork.IsVisible = model.allPositionInWork == null;
-            //btn_buildingorderToTime_container.IsVisible = model.LastBuilding != null;
-            btn_inwork_container.IsVisible = model.allPositionInWork != null;
-            btn_nachbuchen_container.IsVisible = model.allPositionInWork != null;
-            btn_regist.IsVisible = model.allPositionInWork == null;
+            btn_buildingorder_container.IsVisible = AppModel.Instance.LastBuilding != null;
+            btn_exitwork.IsVisible = AppModel.Instance.allPositionInWork == null;
+            //btn_buildingorderToTime_container.IsVisible = AppModel.Instance.LastBuilding != null;
+            btn_inwork_container.IsVisible = AppModel.Instance.allPositionInWork != null;
+            btn_nachbuchen_container.IsVisible = AppModel.Instance.allPositionInWork != null;
+            btn_regist.IsVisible = AppModel.Instance.allPositionInWork == null;
 
             // Plan zeigen/ ausblenden
             if (btn_nachbuchen_container.IsVisible)
@@ -7742,39 +7736,39 @@ namespace iPMCloud.Mobile
             }
 
 
-            ObjektPlanWeekMobil_Stack_A.Margin = new Thickness(2, (model.allPositionInWork == null ? 30 : 0), 2, 0);
+            ObjektPlanWeekMobil_Stack_A.Margin = new Thickness(2, (AppModel.Instance.allPositionInWork == null ? 30 : 0), 2, 0);
 
             // Trennlinie zeigen
             if (AppModel.Instance.AppControll.direktBuchenPos)
             {
                 btn_objScan.IsVisible = false;
-                btn_objNotScan.IsVisible = (model.LastBuilding == null || model.allPositionInWork == null);
-                btn_objScanB.IsVisible = (model.LastBuilding == null || model.allPositionInWork == null);
+                btn_objNotScan.IsVisible = (AppModel.Instance.LastBuilding == null || AppModel.Instance.allPositionInWork == null);
+                btn_objScanB.IsVisible = (AppModel.Instance.LastBuilding == null || AppModel.Instance.allPositionInWork == null);
             }
             else
             {
-                btn_objScan.IsVisible = (model.LastBuilding == null || model.allPositionInWork == null);
+                btn_objScan.IsVisible = (AppModel.Instance.LastBuilding == null || AppModel.Instance.allPositionInWork == null);
                 btn_objNotScan.IsVisible = false;
                 btn_objScanB.IsVisible = false;
             }
 
-            if (model.LastBuilding != null)
+            if (AppModel.Instance.LastBuilding != null)
             {
-                last_building_name.IsVisible = !String.IsNullOrWhiteSpace(model.LastBuilding.objektname);
-                last_building_name.Text = model.LastBuilding.objektname;
-                last_building_address.Text = model.LastBuilding.strasse + " " + model.LastBuilding.hsnr;
-                var la = model.LastBuilding.land.Length > 2 ? model.LastBuilding.land.Substring(0, 3) : ((String.IsNullOrWhiteSpace(model.LastBuilding.land) ? "" : model.LastBuilding.land));
-                last_building_zip_city.Text = (String.IsNullOrWhiteSpace(la) ? "" : la + " ") + model.LastBuilding.plz + " " + model.LastBuilding.ort;
+                last_building_name.IsVisible = !String.IsNullOrWhiteSpace(AppModel.Instance.LastBuilding.objektname);
+                last_building_name.Text = AppModel.Instance.LastBuilding.objektname;
+                last_building_address.Text = AppModel.Instance.LastBuilding.strasse + " " + AppModel.Instance.LastBuilding.hsnr;
+                var la = AppModel.Instance.LastBuilding.land.Length > 2 ? AppModel.Instance.LastBuilding.land.Substring(0, 3) : ((String.IsNullOrWhiteSpace(AppModel.Instance.LastBuilding.land) ? "" : AppModel.Instance.LastBuilding.land));
+                last_building_zip_city.Text = (String.IsNullOrWhiteSpace(la) ? "" : la + " ") + AppModel.Instance.LastBuilding.plz + " " + AppModel.Instance.LastBuilding.ort;
 
                 // MainPage Badge in Ausgewähltes Objekt
                 double _prio = 100000000;
-                model.LastBuilding.ArrayOfAuftrag.ForEach(order =>
+                AppModel.Instance.LastBuilding.ArrayOfAuftrag.ForEach(order =>
                 {
                     order.kategorien.ForEach(c =>
                     {
                         c.leistungen.ForEach(l =>
                         {
-                            l.prio = Prio.GetLeistungPrio(l, model);
+                            l.prio = Prio.GetLeistungPrio(l, AppModel.Instance);
                             _prio = Math.Min(_prio, l.prio.days);
                         });
                     });
@@ -7785,23 +7779,23 @@ namespace iPMCloud.Mobile
 
             }
 
-            if (model.allPositionInWork != null)
+            if (AppModel.Instance.allPositionInWork != null)
             {
                 btn_buildingorder_container.IsVisible = false;
                 btn_exitwork.IsVisible = false;
                 // Erstmal deaktiviert, da implementierung noch gemacht werden mus für das Stopen der laufenden und dann wieder die Neuen 
-                var ts = (DateTime.Now - new DateTime(model.allPositionInWork.startticks));
+                var ts = (DateTime.Now - new DateTime(AppModel.Instance.allPositionInWork.startticks));
                 inwork_starttime_text.Text = (ts.TotalDays > 1 ? ts.ToString("%d") + "T " : "") + ts.ToString(@"hh\:mm");
-                inwork_start_count_text.Text = "" + model.allPositionInWork.leistungen.Count;
+                inwork_start_count_text.Text = "" + AppModel.Instance.allPositionInWork.leistungen.Count;
             }
 
-            var dayOverLast = DayOverWSO.LoadLast(model);
+            var dayOverLast = DayOverWSO.LoadLast(AppModel.Instance);
             if (dayOverLast != null)
             {
                 var dt = new DateTime(dayOverLast.endticks);
                 dayOverLastDate.Text = dt.ToString("dd.MM.yyyy") + " - " + dt.ToString("HH:mm");
             }
-            //if (model.LastBuilding != null)
+            //if (AppModel.Instance.LastBuilding != null)
             //{
             //    await lastBuilding_Container.FadeToAsync(1, 500, Easing.SpringIn);
             //}
@@ -7839,8 +7833,8 @@ namespace iPMCloud.Mobile
             /*return;
             try
             {
-                var dt = String.IsNullOrEmpty(model.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks) ? DateTime.Now.AddDays(-2) : new DateTime(long.Parse(model.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks));
-                if (dt.AddHours(model.SettingModel.SettingDTO.SyncTimeHours) < DateTime.Now || manuellSync) //(dt.AddHours(4) < DateTime.Now || manuellSync)
+                var dt = String.IsNullOrEmpty(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks) ? DateTime.Now.AddDays(-2) : new DateTime(long.Parse(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks));
+                if (dt.AddHours(AppModel.Instance.SettingModel.SettingDTO.SyncTimeHours) < DateTime.Now || manuellSync) //(dt.AddHours(4) < DateTime.Now || manuellSync)
                 {
                     //AppModel.Logger.Info("Info: STARTE Sync Objekte/Auftraege/Leistungen => SyncBuilding");
                     // Objekte sycnen erforderlich nach 12 Stunden
@@ -7848,7 +7842,7 @@ namespace iPMCloud.Mobile
                     await Task.Delay(1);
 
 
-                    IpmBuildingResponse ipmBuildingResponse = await Task.Run(() => { return model.Connections.IpmBuildingSync(); });
+                    IpmBuildingResponse ipmBuildingResponse = await Task.Run(() => { return AppModel.Instance.Connections.IpmBuildingSync(); });
                     if (ipmBuildingResponse == null || !ipmBuildingResponse.success)
                     {
                         // Synchronisierung FAILED
@@ -7863,20 +7857,20 @@ namespace iPMCloud.Mobile
                     {
                         if (ipmBuildingResponse.AppControll != null)
                         {
-                            model.AppControll = ipmBuildingResponse.AppControll;
-                            if (model.AppControll == null) { model.AppControll = new AppControll(); }
-                            AppControll.Save(model, model.AppControll);
+                            AppModel.Instance.AppControll = ipmBuildingResponse.AppControll;
+                            if (AppModel.Instance.AppControll == null) { AppModel.Instance.AppControll = new AppControll(); }
+                            AppControll.Save(AppModel.Instance, AppModel.Instance.AppControll);
                             SetAppControll();
                         }
                         // Erfolgreich synchronisiert
                         //AppModel.Logger.Info("Info: Sync war erfolgreich => SyncBuilding");
-                        model.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks = DateTime.Now.Ticks.ToString();
-                        dt = new DateTime(long.Parse(model.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks));
-                        model.SettingModel.SaveSettings();
+                        AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks = DateTime.Now.Ticks.ToString();
+                        dt = new DateTime(long.Parse(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks));
+                        AppModel.Instance.SettingModel.SaveSettings();
 
                         BuildingWSO.DeleteBuildings(ipmBuildingResponse.deletedBuidlings);
 
-                        if (model.AppControll.lang == "de" || !AppModel.Instance.AppControll.translation)
+                        if (AppModel.Instance.AppControll.lang == "de" || !AppModel.Instance.AppControll.translation)
                         {
                             SyncBuildingDone(ipmBuildingResponse);
                             AppModel.Instance.SetAllKategorieNames();
@@ -7884,16 +7878,16 @@ namespace iPMCloud.Mobile
                         else
                         {
                             //Sync und Übersetzen
-                            var _ = await translateAfterSyncedBuildings(model.AppControll.lang, ipmBuildingResponse.builgings, AppModel.Instance.Lang.lang != model.AppControll.lang);
-                            model.AllBuildings = ipmBuildingResponse.builgings.OrderBy(o => o.id).ToList();
-                            model.InitBuildingsAgain();
+                            var _ = await translateAfterSyncedBuildings(AppModel.Instance.AppControll.lang, ipmBuildingResponse.builgings, AppModel.Instance.Lang.lang != AppModel.Instance.AppControll.lang);
+                            AppModel.Instance.AllBuildings = ipmBuildingResponse.builgings.OrderBy(o => o.id).ToList();
+                            AppModel.Instance.InitBuildingsAgain();
                             SetLastBuilding();
                             AppModel.Instance.SetAllKategorieNames();
                         }
 
-                        if (AppModel.Instance.Lang.lang != model.AppControll.lang)
+                        if (AppModel.Instance.Lang.lang != AppModel.Instance.AppControll.lang)
                         {
-                            AppModel.Instance.Lang.lang = model.AppControll.lang;
+                            AppModel.Instance.Lang.lang = AppModel.Instance.AppControll.lang;
                             Lang.Save(AppModel.Instance.Lang);
                         }
 
@@ -7909,19 +7903,19 @@ namespace iPMCloud.Mobile
                     Load_PlanTabs(((int)DateTime.Now.DayOfWeek));
                 }
                 box_buildingInformation.Children.Clear();
-                box_buildingInformation.Children.Add(BuildingWSO.GetBuildingInformation(model, dt));
+                box_buildingInformation.Children.Add(BuildingWSO.GetBuildingInformation(AppModel.Instance, dt));
             }
             catch (Exception ex)
             {
                 AppModel.Logger.Error("Method => MainPage-SyncBuildingManuell(catch): " + ex.Message);
-                model.InclFilesAsJson = true;
-                var ok = model.SendLogZipFile();
+                AppModel.Instance.InclFilesAsJson = true;
+                var ok = AppModel.Instance.SendLogZipFile();
                 await Task.Delay(2000);
             }*/
         }
         private async void CheckForBuildingFailed(IpmBuildingResponse ipmBuildingResponse)
         {
-            if (model.AllBuildings == null || model.AllBuildings.Count == 0)
+            if (AppModel.Instance.AllBuildings == null || AppModel.Instance.AllBuildings.Count == 0)
             {
                 await DisplayAlertAsync("Objektprüfung nicht möglich!",
                     ipmBuildingResponse != null ? ipmBuildingResponse.message : "FEHLER: Muss Online gehen, kann aber nicht!", "Zurück");
@@ -7929,9 +7923,9 @@ namespace iPMCloud.Mobile
         }
         private void SyncBuildingDone(IpmBuildingResponse ipmBuildingResponse)
         {
-            ipmBuildingResponse.builgings.ForEach(b => { BuildingWSO.Save(model, b); });
-            model.AllBuildings = ipmBuildingResponse.builgings.OrderBy(o => o.id).ToList();
-            model.InitBuildingsAgain();
+            ipmBuildingResponse.builgings.ForEach(b => { BuildingWSO.Save(AppModel.Instance, b); });
+            AppModel.Instance.AllBuildings = ipmBuildingResponse.builgings.OrderBy(o => o.id).ToList();
+            AppModel.Instance.InitBuildingsAgain();
             SetLastBuilding();
         }
 
@@ -7939,16 +7933,16 @@ namespace iPMCloud.Mobile
         {
             try
             {
-                var dt = String.IsNullOrEmpty(model.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks) ?
-                    DateTime.Now.AddDays(-2) : new DateTime(long.Parse(model.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks));
-                if (dt.AddHours(model.SettingModel.SettingDTO.SyncTimeHours) < DateTime.Now || manuellSync) //(dt.AddHours(4) < DateTime.Now || manuellSync)
+                var dt = String.IsNullOrEmpty(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks) ?
+                    DateTime.Now.AddDays(-2) : new DateTime(long.Parse(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks));
+                if (dt.AddHours(AppModel.Instance.SettingModel.SettingDTO.SyncTimeHours) < DateTime.Now || manuellSync) //(dt.AddHours(4) < DateTime.Now || manuellSync)
                 {
                     // AppModel.Logger.Info("Info: STARTE Sync Objekte/Auftraege/Leistungen => SyncBuilding");
                     // Objekte sycnen erforderlich nach 12 Stunden
                     popupContainer.IsVisible = true;
                     await Task.Delay(1);
 
-                    IpmNewSyncResponse ipmNewBuildingResponse = await Task.Run(() => { return model.Connections.IpmNewBuildingSync(); });
+                    IpmNewSyncResponse ipmNewBuildingResponse = await Task.Run(() => { return AppModel.Instance.Connections.IpmNewBuildingSync(); });
                     if (ipmNewBuildingResponse == null || !ipmNewBuildingResponse.success)
                     {
                         // Synchronisierung FAILED
@@ -7963,9 +7957,9 @@ namespace iPMCloud.Mobile
                     {
                         if (ipmNewBuildingResponse.AppControll != null)
                         {
-                            model.AppControll = ipmNewBuildingResponse.AppControll;
-                            if (model.AppControll == null) { model.AppControll = new AppControll(); }
-                            AppControll.Save(model, model.AppControll);
+                            AppModel.Instance.AppControll = ipmNewBuildingResponse.AppControll;
+                            if (AppModel.Instance.AppControll == null) { AppModel.Instance.AppControll = new AppControll(); }
+                            AppControll.Save(AppModel.Instance, AppModel.Instance.AppControll);
                             SetAppControll();
                         }
                         int i = 0;
@@ -7987,7 +7981,7 @@ namespace iPMCloud.Mobile
                             string objids = "";
                             //var objidsInt = Utils.ConvertStringToListInt(objids);
                             blist[zz].ForEach(b => { objids = objids + (objids.Length > 0 ? "," : "") + b.id; });
-                            IpmNewSyncResponse resp = model.Connections.IpmNewAuftragSync(objids);
+                            IpmNewSyncResponse resp = AppModel.Instance.Connections.IpmNewAuftragSync(objids);
                             if (resp != null && resp.auftraege != null)
                             {
                                 ii++;
@@ -8025,13 +8019,13 @@ namespace iPMCloud.Mobile
                     Load_PlanTabs(((int)DateTime.Now.DayOfWeek));
                 }
                 box_buildingInformation.Children.Clear();
-                box_buildingInformation.Children.Add(BuildingWSO.GetBuildingInformation(model, dt));
+                box_buildingInformation.Children.Add(BuildingWSO.GetBuildingInformation(AppModel.Instance, dt));
             }
             catch (Exception ex)
             {
                 AppModel.Logger.Error("Method => MainPage-SyncBuildingManuell(catch): " + ex.Message);
-                model.InclFilesAsJson = true;
-                var ok = model.SendLogZipFile();
+                AppModel.Instance.InclFilesAsJson = true;
+                var ok = AppModel.Instance.SendLogZipFile();
                 await Task.Delay(2000);
             }
         }
@@ -8046,13 +8040,13 @@ namespace iPMCloud.Mobile
             {
                 // Erfolgreich synchronisiert
                 // AppModel.Logger.Info("Info: Sync war erfolgreich => SyncBuilding");
-                model.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks = DateTime.Now.Ticks.ToString();
-                var dt = new DateTime(long.Parse(model.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks));
-                model.SettingModel.SaveSettings();
+                AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks = DateTime.Now.Ticks.ToString();
+                var dt = new DateTime(long.Parse(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks));
+                AppModel.Instance.SettingModel.SaveSettings();
 
                 BuildingWSO.DeleteBuildings(ipmNewBuildingResponse.deletedBuidlings);
 
-                if (model.AppControll.lang == "de" || !AppModel.Instance.AppControll.translation)
+                if (AppModel.Instance.AppControll.lang == "de" || !AppModel.Instance.AppControll.translation)
                 {
                     NewSyncBuildingDone(ipmNewBuildingResponse);
                     AppModel.Instance.SetAllKategorieNames();
@@ -8060,16 +8054,16 @@ namespace iPMCloud.Mobile
                 else
                 {
                     //Sync und Übersetzen
-                    var _ = await translateAfterSyncedBuildings(model.AppControll.lang, ipmNewBuildingResponse.builgings, AppModel.Instance.Lang.lang != model.AppControll.lang);
-                    model.AllBuildings = ipmNewBuildingResponse.builgings.OrderBy(o => o.id).ToList();
-                    model.InitBuildingsAgain();
+                    var _ = await translateAfterSyncedBuildings(AppModel.Instance.AppControll.lang, ipmNewBuildingResponse.builgings, AppModel.Instance.Lang.lang != AppModel.Instance.AppControll.lang);
+                    AppModel.Instance.AllBuildings = ipmNewBuildingResponse.builgings.OrderBy(o => o.id).ToList();
+                    AppModel.Instance.InitBuildingsAgain();
                     SetLastBuilding();
                     AppModel.Instance.SetAllKategorieNames();
                 }
 
-                if (AppModel.Instance.Lang.lang != model.AppControll.lang)
+                if (AppModel.Instance.Lang.lang != AppModel.Instance.AppControll.lang)
                 {
-                    AppModel.Instance.Lang.lang = model.AppControll.lang;
+                    AppModel.Instance.Lang.lang = AppModel.Instance.AppControll.lang;
                     Lang.Save(AppModel.Instance.Lang);
                 }
 
@@ -8083,8 +8077,8 @@ namespace iPMCloud.Mobile
             catch (Exception ex)
             {
                 AppModel.Logger.Error("Method => MainPage-SyncBuildingManuell(catch): " + ex.Message);
-                model.InclFilesAsJson = false;
-                var ok = model.SendLogZipFile();
+                AppModel.Instance.InclFilesAsJson = false;
+                var ok = AppModel.Instance.SendLogZipFile();
                 await Task.Delay(2000);
             }
         }
@@ -8092,7 +8086,7 @@ namespace iPMCloud.Mobile
 
         private async void CheckForNewBuildingFailed(IpmNewSyncResponse ipmNewBuildingResponse)
         {
-            if (model.AllBuildings == null || model.AllBuildings.Count == 0)
+            if (AppModel.Instance.AllBuildings == null || AppModel.Instance.AllBuildings.Count == 0)
             {
                 await DisplayAlertAsync("Objektprüfung nicht möglich!",
                     ipmNewBuildingResponse != null ? ipmNewBuildingResponse.message : "FEHLER: Verbindung Online nicht möglich!", "Zurück");
@@ -8100,24 +8094,24 @@ namespace iPMCloud.Mobile
         }
         private void NewSyncBuildingDone(IpmNewSyncResponse ipmNewBuildingResponse)
         {
-            ipmNewBuildingResponse.builgings.ForEach(b => { BuildingWSO.Save(model, b); });
-            model.AllBuildings = ipmNewBuildingResponse.builgings.OrderBy(o => o.id).ToList();
-            model.InitBuildingsAgain();
+            ipmNewBuildingResponse.builgings.ForEach(b => { BuildingWSO.Save(AppModel.Instance, b); });
+            AppModel.Instance.AllBuildings = ipmNewBuildingResponse.builgings.OrderBy(o => o.id).ToList();
+            AppModel.Instance.InitBuildingsAgain();
             SetLastBuilding();
         }
 
         /*
         private async void FastSyncCount()
         {
-            IpmBuildingResponse fastSyncResponse = await Task.Run(() => { return model.Connections.IpmFastSyncCount(); });
+            IpmBuildingResponse fastSyncResponse = await Task.Run(() => { return AppModel.Instance.Connections.IpmFastSyncCount(); });
             if (fastSyncResponse != null && fastSyncResponse.success)
             {
                 AppModel.Instance.FastSyncCount = Int32.Parse(fastSyncResponse.message);
 
                 if (fastSyncResponse.AppControll != null)
                 {
-                    model.AppControll = fastSyncResponse.AppControll;
-                    AppControll.Save(model, model.AppControll);
+                    AppModel.Instance.AppControll = fastSyncResponse.AppControll;
+                    AppControll.Save(AppModel.Instance, AppModel.Instance.AppControll);
                 }
 
                 if (AppModel.Instance.FastSyncCount > 0) { FastSync(true); }
@@ -8135,15 +8129,15 @@ namespace iPMCloud.Mobile
         */
         private async void FastSync(bool run = false)
         {
-            var dt = String.IsNullOrEmpty(model.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks) ? DateTime.Now.AddDays(-2) : new DateTime(long.Parse(model.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks));
-            if (run || dt.AddHours(model.SettingModel.SettingDTO.SyncTimeHours) < DateTime.Now) //(dt.AddHours(4) < DateTime.Now || manuellSync)
+            var dt = String.IsNullOrEmpty(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks) ? DateTime.Now.AddDays(-2) : new DateTime(long.Parse(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks));
+            if (run || dt.AddHours(AppModel.Instance.SettingModel.SettingDTO.SyncTimeHours) < DateTime.Now) //(dt.AddHours(4) < DateTime.Now || manuellSync)
             {
                 //AppModel.Logger.Info("Info: STARTE FastSync Objekte/Auftraege/Leistungen/weitere... => FastSync");
                 // Objekte sycnen erforderlich nach 12 Stunden
                 popupContainer.IsVisible = true;
                 await Task.Delay(1);
 
-                IpmBuildingResponse fastSyncResponse = await Task.Run(() => { return model.Connections.IpmFastSync(); });
+                IpmBuildingResponse fastSyncResponse = await Task.Run(() => { return AppModel.Instance.Connections.IpmFastSync(); });
                 if (fastSyncResponse == null || !fastSyncResponse.success)
                 {
                     // Synchronisierung FAILED
@@ -8158,29 +8152,29 @@ namespace iPMCloud.Mobile
                 {
                     if (fastSyncResponse.AppControll != null)
                     {
-                        model.AppControll = fastSyncResponse.AppControll;
-                        if (model.AppControll == null) { model.AppControll = new AppControll(); }
-                        AppControll.Save(model, model.AppControll);
+                        AppModel.Instance.AppControll = fastSyncResponse.AppControll;
+                        if (AppModel.Instance.AppControll == null) { AppModel.Instance.AppControll = new AppControll(); }
+                        AppControll.Save(AppModel.Instance, AppModel.Instance.AppControll);
                         SetAppControll();
                     }
 
                     // Erfolgreich synchronisiert
                     //AppModel.Logger.Info("Info: FastSync war erfolgreich => FastSync");
-                    model.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks = DateTime.Now.Ticks.ToString();
-                    dt = new DateTime(long.Parse(model.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks));
-                    model.SettingModel.SaveSettings();
+                    AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks = DateTime.Now.Ticks.ToString();
+                    dt = new DateTime(long.Parse(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks));
+                    AppModel.Instance.SettingModel.SaveSettings();
 
                     BuildingWSO.DeleteBuildings(fastSyncResponse.deletedBuidlings);
 
                     // Sprache hat sich geändert 
-                    if (AppModel.Instance.Lang.lang != model.AppControll.lang && AppModel.Instance.AppControll.translation)
+                    if (AppModel.Instance.Lang.lang != AppModel.Instance.AppControll.lang && AppModel.Instance.AppControll.translation)
                     {
                         SyncBuildingManuell(true);
                         return;
                     }
                     else
                     {
-                        if (model.AppControll.lang == "de" || !AppModel.Instance.AppControll.translation)
+                        if (AppModel.Instance.AppControll.lang == "de" || !AppModel.Instance.AppControll.translation)
                         {
                             FastSyncUpdate(fastSyncResponse, true);
                             AppModel.Instance.SetAllKategorieNames();
@@ -8188,15 +8182,15 @@ namespace iPMCloud.Mobile
                         else
                         {
                             //Sync und Übersetzen
-                            var _ = await translateAfterSyncedBuildings(model.AppControll.lang, fastSyncResponse.builgings, AppModel.Instance.Lang.lang != model.AppControll.lang);
+                            var _ = await translateAfterSyncedBuildings(AppModel.Instance.AppControll.lang, fastSyncResponse.builgings, AppModel.Instance.Lang.lang != AppModel.Instance.AppControll.lang);
                             FastSyncUpdate(fastSyncResponse, false);
                             AppModel.Instance.SetAllKategorieNames();
                         }
                     }
 
-                    if (AppModel.Instance.Lang.lang != model.AppControll.lang)
+                    if (AppModel.Instance.Lang.lang != AppModel.Instance.AppControll.lang)
                     {
-                        AppModel.Instance.Lang.lang = model.AppControll.lang;
+                        AppModel.Instance.Lang.lang = AppModel.Instance.AppControll.lang;
                         Lang.Save(AppModel.Instance.Lang);
                     }
 
@@ -8213,7 +8207,7 @@ namespace iPMCloud.Mobile
                 Load_PlanTabs(((int)DateTime.Now.DayOfWeek));
             }
             box_buildingInformation.Children.Clear();
-            box_buildingInformation.Children.Add(BuildingWSO.GetBuildingInformation(model, dt));
+            box_buildingInformation.Children.Add(BuildingWSO.GetBuildingInformation(AppModel.Instance, dt));
         }
         private void FastSyncUpdate(IpmBuildingResponse fastSyncResponse, bool saveBuilding)
         {
@@ -8221,7 +8215,7 @@ namespace iPMCloud.Mobile
             {
                 fastSyncResponse.builgings.ForEach(b =>
                 {
-                    if (saveBuilding) { BuildingWSO.Save(model, b); }
+                    if (saveBuilding) { BuildingWSO.Save(AppModel.Instance, b); }
                     var i = AppModel.Instance.AllBuildings.FindIndex(f => f.id == b.id);
                     if (i > -1)
                     {
@@ -8241,7 +8235,7 @@ namespace iPMCloud.Mobile
                 });
                 AppModel.Instance.AllBuildings.RemoveAll(b => b.del > 0 && b.ArrayOfAuftrag.Count == 0);
                 AppModel.Instance.AllBuildings = AppModel.Instance.AllBuildings.OrderBy(o => o.id).ToList();
-                model.InitBuildingsAgain();
+                AppModel.Instance.InitBuildingsAgain();
                 SetLastBuilding();
             }
 
@@ -8376,7 +8370,7 @@ namespace iPMCloud.Mobile
             var checklist = CheckClass.LoadAllFromUploadStack();
             List<string> guidsList = new List<string>();
             checklist.ForEach(v => { guidsList.Add(v.guid); });
-            var resGuidsList = await Task.Run(() => { return model.Connections.GuidsCheck(guidsList.ToArray()); });
+            var resGuidsList = await Task.Run(() => { return AppModel.Instance.Connections.GuidsCheck(guidsList.ToArray()); });
             if (resGuidsList != null && resGuidsList.Length > 0)
             {
                 resGuidsList.ToList().ForEach(guid =>
@@ -8427,7 +8421,7 @@ namespace iPMCloud.Mobile
         }
         private async Task<ChecksResponse> SyncChecks_Done(Check check)
         {
-            ChecksResponse checkResponse = await Task.Run(() => { return model.Connections.SetCheckANonePic(check); });
+            ChecksResponse checkResponse = await Task.Run(() => { return AppModel.Instance.Connections.SetCheckANonePic(check); });
             if (checkResponse != null && checkResponse.success)
             {
                 checkResponse.checkA.antworten.ForEach(ant =>
@@ -8474,7 +8468,7 @@ namespace iPMCloud.Mobile
             var pics = CheckLeistungAntwortBemImg.LoadAllFromStack();
             List<string> guidsList = new List<string>();
             pics.ForEach(v => { guidsList.Add(v.guid); });
-            var resGuidsList = await Task.Run(() => { return model.Connections.GuidsCheck(guidsList.ToArray()); });
+            var resGuidsList = await Task.Run(() => { return AppModel.Instance.Connections.GuidsCheck(guidsList.ToArray()); });
             if (resGuidsList != null && resGuidsList.Length > 0)
             {
                 resGuidsList.ToList().ForEach(guid =>
@@ -8505,7 +8499,7 @@ namespace iPMCloud.Mobile
         }
         private async Task<ChecksResponse> SyncChecksBemImg_Done(CheckLeistungAntwortBemImg pic)
         {
-            ChecksResponse response = await Task.Run(() => { return model.Connections.SetCheckABemImg(pic); });
+            ChecksResponse response = await Task.Run(() => { return AppModel.Instance.Connections.SetCheckABemImg(pic); });
             if (response == null)
             {
                 // FAILED
@@ -8534,10 +8528,10 @@ namespace iPMCloud.Mobile
         /*******************/
         private async void SyncObjectValues()
         {
-            var objectValues = ObjektDataWSO.LoadAllFromUploadStack(model);
+            var objectValues = ObjektDataWSO.LoadAllFromUploadStack(AppModel.Instance);
             List<string> guidsList = new List<string>();
             objectValues.ForEach(v => { guidsList.Add(v.guid); });
-            var resGuidsList = await Task.Run(() => { return model.Connections.GuidsCheck(guidsList.ToArray()); });
+            var resGuidsList = await Task.Run(() => { return AppModel.Instance.Connections.GuidsCheck(guidsList.ToArray()); });
             if (resGuidsList != null && resGuidsList.Length > 0)
             {
                 resGuidsList.ToList().ForEach(guid =>
@@ -8546,7 +8540,7 @@ namespace iPMCloud.Mobile
                     if (da != null)
                     {
                         objectValues.Remove(da);
-                        ObjektDataWSO.DeleteFromUploadStack(model, da);
+                        ObjektDataWSO.DeleteFromUploadStack(AppModel.Instance, da);
                     }
                 });
             }
@@ -8562,7 +8556,7 @@ namespace iPMCloud.Mobile
                 {
                     objectValues.ForEach(d =>
                     {
-                        ObjektDataWSO.DeleteFromUploadStack(model, d);
+                        ObjektDataWSO.DeleteFromUploadStack(AppModel.Instance, d);
                     });
                 }
             }
@@ -8570,7 +8564,7 @@ namespace iPMCloud.Mobile
         }
         private async Task<ObjectValuesResponse> SyncObjectValues_Done(List<ObjektDataWSO> objectValues)
         {
-            ObjectValuesResponse objectValuesResponse = (await Task.Run(() => { return model.Connections.ObjectValuesSync(objectValues); }));
+            ObjectValuesResponse objectValuesResponse = (await Task.Run(() => { return AppModel.Instance.Connections.ObjectValuesSync(objectValues); }));
             if (objectValuesResponse == null)
             {
                 // FAILED
@@ -8596,10 +8590,10 @@ namespace iPMCloud.Mobile
         /*******************/
         private async void SyncObjectValueBild()
         {
-            var objectValueBilds = ObjektDatenBildWSO.LoadAllFromUploadStack(model);
+            var objectValueBilds = ObjektDatenBildWSO.LoadAllFromUploadStack(AppModel.Instance);
             List<string> guidsList = new List<string>();
             objectValueBilds.ForEach(v => { guidsList.Add(v.guid); });
-            var resGuidsList = await Task.Run(() => { return model.Connections.GuidsCheck(guidsList.ToArray()); });
+            var resGuidsList = await Task.Run(() => { return AppModel.Instance.Connections.GuidsCheck(guidsList.ToArray()); });
             if (resGuidsList != null && resGuidsList.Length > 0)
             {
                 resGuidsList.ToList().ForEach(guid =>
@@ -8608,7 +8602,7 @@ namespace iPMCloud.Mobile
                     if (da != null)
                     {
                         objectValueBilds.Remove(da);
-                        ObjektDatenBildWSO.DeleteFromUploadStack(model, da);
+                        ObjektDatenBildWSO.DeleteFromUploadStack(AppModel.Instance, da);
                     }
                 });
             }
@@ -8624,7 +8618,7 @@ namespace iPMCloud.Mobile
                     var result = await SyncObjectValueBild_Done(value);
                     if (result != null && result.success)
                     {
-                        ObjektDatenBildWSO.DeleteFromUploadStack(model, value);
+                        ObjektDatenBildWSO.DeleteFromUploadStack(AppModel.Instance, value);
                     }
                 });
             }
@@ -8632,7 +8626,7 @@ namespace iPMCloud.Mobile
         }
         private async Task<ObjectValueBildResponse> SyncObjectValueBild_Done(ObjektDatenBildWSO value)
         {
-            ObjectValueBildResponse response = (await Task.Run(() => { return model.Connections.ObjectValueBildSync(value); }));
+            ObjectValueBildResponse response = (await Task.Run(() => { return AppModel.Instance.Connections.ObjectValueBildSync(value); }));
             if (response == null)
             {
                 // FAILED
@@ -8658,13 +8652,13 @@ namespace iPMCloud.Mobile
         private async void SyncPN()
         {
             var pn = PNWSO.LoadFromUploadStack();
-            pn.personid = model.Person.id;
-            var resPN = await Task.Run(() => { return model.Connections.PNSync(pn); });
+            pn.personid = AppModel.Instance.Person.id;
+            var resPN = await Task.Run(() => { return AppModel.Instance.Connections.PNSync(pn); });
             if (resPN.success)
             {
                 PNWSO.DeleteFromUploadStack();
-                model.SettingModel.SettingDTO.PNToken = pn.token;
-                model.SettingModel.SaveSettings();
+                AppModel.Instance.SettingModel.SettingDTO.PNToken = pn.token;
+                AppModel.Instance.SettingModel.SaveSettings();
             }
             else
             {
@@ -8680,10 +8674,10 @@ namespace iPMCloud.Mobile
         /*******************/
         private async void SyncDayOver()
         {
-            var dayOvers = DayOverWSO.LoadAllFromUploadStack(model);
+            var dayOvers = DayOverWSO.LoadAllFromUploadStack(AppModel.Instance);
             List<string> guidsList = new List<string>();
             dayOvers.ForEach(v => { guidsList.Add(v.guid); });
-            var resGuidsList = await Task.Run(() => { return model.Connections.GuidsCheck(guidsList.ToArray()); });
+            var resGuidsList = await Task.Run(() => { return AppModel.Instance.Connections.GuidsCheck(guidsList.ToArray()); });
             if (resGuidsList != null && resGuidsList.Length > 0)
             {
                 resGuidsList.ToList().ForEach(guid =>
@@ -8692,7 +8686,7 @@ namespace iPMCloud.Mobile
                     if (da != null)
                     {
                         dayOvers.Remove(da);
-                        DayOverWSO.DeleteFromUploadStack(model, da);
+                        DayOverWSO.DeleteFromUploadStack(AppModel.Instance, da);
                     }
                 });
             }
@@ -8708,7 +8702,7 @@ namespace iPMCloud.Mobile
                 {
                     dayOvers.ForEach(d =>
                     {
-                        DayOverWSO.DeleteFromUploadStack(model, d);
+                        DayOverWSO.DeleteFromUploadStack(AppModel.Instance, d);
                     });
                 }
             }
@@ -8716,7 +8710,7 @@ namespace iPMCloud.Mobile
         }
         private async Task<DayOverResponse> SyncDayOver_Done(List<DayOverWSO> dayOvers)
         {
-            DayOverResponse dayOverResponse = (await Task.Run(() => { return model.Connections.DayOverSync(dayOvers); }));
+            DayOverResponse dayOverResponse = (await Task.Run(() => { return AppModel.Instance.Connections.DayOverSync(dayOvers); }));
             if (dayOverResponse == null)
             {
                 // FAILED
@@ -8747,7 +8741,7 @@ namespace iPMCloud.Mobile
             var transSigns = AllTransSign.LoadAllFromUploadStack();
             List<string> guidsList = new List<string>();
             transSigns.ForEach(v => { guidsList.Add(v.guid); });
-            var resGuidsList = await Task.Run(() => { return model.Connections.GuidsCheck(guidsList.ToArray()); });
+            var resGuidsList = await Task.Run(() => { return AppModel.Instance.Connections.GuidsCheck(guidsList.ToArray()); });
             if (resGuidsList != null && resGuidsList.Length > 0)
             {
                 resGuidsList.ToList().ForEach(guid =>
@@ -8783,7 +8777,7 @@ namespace iPMCloud.Mobile
         }
         private async Task<AllTransSignResponse> SyncTransSigns_Done(AllTransSignRequest transSign)
         {
-            AllTransSignResponse res = (await Task.Run(() => { return model.Connections.AllTransSignSync(transSign); }));
+            AllTransSignResponse res = (await Task.Run(() => { return AppModel.Instance.Connections.AllTransSignSync(transSign); }));
             if (res == null)
             {
                 // FAILED
@@ -8808,10 +8802,10 @@ namespace iPMCloud.Mobile
         /*******************/
         private async void SyncSingleNotice()
         {
-            var bemerkungen = BemerkungWSO.LoadAllFromUploadStack(model);
+            var bemerkungen = BemerkungWSO.LoadAllFromUploadStack(AppModel.Instance);
             List<string> guidsList = new List<string>();
             bemerkungen.ForEach(v => { guidsList.Add(v.guid); });
-            var resGuidsList = await Task.Run(() => { return model.Connections.GuidsCheck(guidsList.ToArray()); });
+            var resGuidsList = await Task.Run(() => { return AppModel.Instance.Connections.GuidsCheck(guidsList.ToArray()); });
             if (resGuidsList != null && resGuidsList.Length > 0)
             {
                 resGuidsList.ToList().ForEach(guid =>
@@ -8820,7 +8814,7 @@ namespace iPMCloud.Mobile
                     if (bem != null)
                     {
                         bemerkungen.Remove(bem);
-                        BemerkungWSO.DeleteFromUploadStack(model, bem);
+                        BemerkungWSO.DeleteFromUploadStack(AppModel.Instance, bem);
                     }
                 });
             }
@@ -8853,13 +8847,13 @@ namespace iPMCloud.Mobile
                             await Task.Delay(1);
                             // Bilder abgelegt unter BemId - dann bemerkung löschen, weil erfolgreich hochgeladen
                             // Bilder im nächsten stepp hochladen 
-                            BemerkungWSO.DeleteFromUploadStack(model, bemerkungen[i]);
+                            BemerkungWSO.DeleteFromUploadStack(AppModel.Instance, bemerkungen[i]);
                         }
                     }
                     else
                     {
                         bemerkungen[i].hasSend = true;
-                        BemerkungWSO.DeleteFromUploadStack(model, bemerkungen[i]);
+                        BemerkungWSO.DeleteFromUploadStack(AppModel.Instance, bemerkungen[i]);
                     }
                     //});
                 }
@@ -8877,7 +8871,7 @@ namespace iPMCloud.Mobile
         }
         private async Task<Int32> SyncSingleNotice_Done(BemerkungWSO bem)
         {
-            SingleNoticeResponse noticeResponse = (await Task.Run(() => { return model.Connections.SingleNoticeSync(bem); }));
+            SingleNoticeResponse noticeResponse = (await Task.Run(() => { return AppModel.Instance.Connections.SingleNoticeSync(bem); }));
             if (noticeResponse == null)
             {
                 // FAILED
@@ -8906,7 +8900,7 @@ namespace iPMCloud.Mobile
             var pics = BildWSO.LoadAllFromStack();
             List<string> guidsList = new List<string>();
             pics.ForEach(v => { guidsList.Add(v.guid); });
-            var resGuidsList = await Task.Run(() => { return model.Connections.GuidsCheck(guidsList.ToArray()); });
+            var resGuidsList = await Task.Run(() => { return AppModel.Instance.Connections.GuidsCheck(guidsList.ToArray()); });
             if (resGuidsList != null && resGuidsList.Length > 0)
             {
                 resGuidsList.ToList().ForEach(guid =>
@@ -8937,7 +8931,7 @@ namespace iPMCloud.Mobile
         }
         private async Task<NoticeBildResponse> SyncNoticeBild_Done(BildWSO pic)
         {
-            NoticeBildResponse response = await Task.Run(() => { return model.Connections.NoticeBildSync(pic); });
+            NoticeBildResponse response = await Task.Run(() => { return AppModel.Instance.Connections.NoticeBildSync(pic); });
             if (response == null)
             {
                 // FAILED
@@ -8972,11 +8966,11 @@ namespace iPMCloud.Mobile
             List<LeistungPackWSO> packs = null;
             if (preview)
             {
-                packs = new List<LeistungPackWSO> { model.allPositionInWork };
+                packs = new List<LeistungPackWSO> { AppModel.Instance.allPositionInWork };
             }
             else
             {
-                packs = LeistungPackWSO.LoadAllFromUploadStack(model);
+                packs = LeistungPackWSO.LoadAllFromUploadStack(AppModel.Instance);
                 packs.ForEach(lp =>
                 {
                     if (lp.leistungen != null && lp.leistungen.Count > 0)
@@ -9000,7 +8994,7 @@ namespace iPMCloud.Mobile
             {
                 List<string> guidsList = new List<string>();
                 packs.ForEach(v => { guidsList.Add(v.guid); });
-                resGuidsList = await Task.Run(() => { return model.Connections.GuidsCheck(guidsList.ToArray()); });
+                resGuidsList = await Task.Run(() => { return AppModel.Instance.Connections.GuidsCheck(guidsList.ToArray()); });
                 if (resGuidsList != null && resGuidsList.Length > 0)
                 {
                     resGuidsList.ToList().ForEach(guid =>
@@ -9009,7 +9003,7 @@ namespace iPMCloud.Mobile
                         if (pa != null)
                         {
                             packs.Remove(pa);
-                            LeistungPackWSO.DeleteFromUploadStack(model, pa);
+                            LeistungPackWSO.DeleteFromUploadStack(AppModel.Instance, pa);
                         }
                     });
                 }
@@ -9056,13 +9050,13 @@ namespace iPMCloud.Mobile
                             // workat von result aktuell setzten
                             var lastWorkTicks = "" + JavaScriptDateConverter.Convert(new DateTime(result.endticks), -2);
                             BuildingWSO building = null;
-                            if (model.LastBuilding == null && result.leistungen != null && result.leistungen.Count > 0)
+                            if (AppModel.Instance.LastBuilding == null && result.leistungen != null && result.leistungen.Count > 0)
                             {
-                                building = BuildingWSO.LoadBuilding(model, result.leistungen[0].objektid);
+                                building = BuildingWSO.LoadBuilding(AppModel.Instance, result.leistungen[0].objektid);
                             }
-                            if (model.LastBuilding != null)
+                            if (AppModel.Instance.LastBuilding != null)
                             {
-                                building = model.LastBuilding;
+                                building = AppModel.Instance.LastBuilding;
                             }
                             if (building != null && result.leistungen != null && result.leistungen.Count > 0)
                             {
@@ -9087,9 +9081,9 @@ namespace iPMCloud.Mobile
                                         });
                                     });
                                 });
-                                BuildingWSO.Save(model, building);
+                                BuildingWSO.Save(AppModel.Instance, building);
                             }
-                            LeistungPackWSO.DeleteFromUploadStack(model, packs[i]);
+                            LeistungPackWSO.DeleteFromUploadStack(AppModel.Instance, packs[i]);
                         }
                     }
 
@@ -9108,7 +9102,7 @@ namespace iPMCloud.Mobile
         }
         private async Task<LeistungPackWSO> SyncPosition_Done(LeistungPackWSO pack)
         {
-            PositionResponse positionResponse = await Task.Run(() => { return model.Connections.PositionSync(pack); });
+            PositionResponse positionResponse = await Task.Run(() => { return AppModel.Instance.Connections.PositionSync(pack); });
             if (positionResponse == null)
             {
                 // FAILED
@@ -9128,7 +9122,7 @@ namespace iPMCloud.Mobile
                 // Erfolgreich 
                 //AppModel.Logger.Info("Info: Leistungspakete erfolgreich hochgeladen => SyncPosition_Done");
 
-                if (model.AppControll.showObjektPlans)
+                if (AppModel.Instance.AppControll.showObjektPlans)
                 {
                     if (positionResponse.planweek != null && AppModel.Instance.PlanResponse.selectedPerson == null)
                     {
@@ -9147,19 +9141,19 @@ namespace iPMCloud.Mobile
         /**********************/
         private async void SyncPositionAgain()
         {
-            var packs = new List<LeistungPackWSO> { model.allPositionInWork };
+            var packs = new List<LeistungPackWSO> { AppModel.Instance.allPositionInWork };
             if (packs.Count > 0)
             {
                 packs.ForEach(async pack =>
                 {
                     var result = await SyncPositionAgain_Done(pack);
-                    model.allPositionInWork.leistungen.ForEach(l => { l.again = 0; });
+                    AppModel.Instance.allPositionInWork.leistungen.ForEach(l => { l.again = 0; });
                 });
             }
         }
         private async Task<LeistungPackWSO> SyncPositionAgain_Done(LeistungPackWSO pack)
         {
-            PositionResponse positionResponse = await Task.Run(() => { return model.Connections.PositionAgainSync(pack); });
+            PositionResponse positionResponse = await Task.Run(() => { return AppModel.Instance.Connections.PositionAgainSync(pack); });
             if (positionResponse == null)
             {
                 // FAILED
@@ -9183,12 +9177,12 @@ namespace iPMCloud.Mobile
 
         public async void SetAppControll()
         {
-            if (model.AppControll != null)
+            if (AppModel.Instance.AppControll != null)
             {
-                frame_PersonTimes.IsVisible = model.AppControll.showPersonTimes;
+                frame_PersonTimes.IsVisible = AppModel.Instance.AppControll.showPersonTimes;
 
                 // beide NICHT zeigen (Plans und Ticktes)
-                if (!model.AppControll.showObjektPlans && !model.AppControll.showTickets && !model.AppControll.showChecks)
+                if (!AppModel.Instance.AppControll.showObjektPlans && !AppModel.Instance.AppControll.showTickets && !AppModel.Instance.AppControll.showChecks)
                 {
                     ObjektPlanWeekMobil_Stack_A.IsVisible = false;
                     ObjektPlanWeekMobil_Stack_B.IsVisible = false;
@@ -9196,7 +9190,7 @@ namespace iPMCloud.Mobile
                     ObjektPlanWeekMobil_Stack_ABC.IsVisible = false;
                 }
                 // Ticket NICHT zeigen (Plans und Ticktes)
-                if (model.AppControll.showObjektPlans && !model.AppControll.showTickets)
+                if (AppModel.Instance.AppControll.showObjektPlans && !AppModel.Instance.AppControll.showTickets)
                 {
                     ObjektPlanWeekMobil_Stack_A.IsVisible = true;
                     ObjektPlanWeekMobil_Stack_B.IsVisible = true;
@@ -9206,14 +9200,14 @@ namespace iPMCloud.Mobile
                     frame_plantabA.IsVisible = true;
                     frame_plantabB.IsVisible = true;
                     frame_plantabC.IsVisible = false;
-                    frame_plantabCe.IsVisible = model.AppControll.showChecks;
+                    frame_plantabCe.IsVisible = AppModel.Instance.AppControll.showChecks;
                     frame_planConA.IsVisible = true;
                     frame_planConB.IsVisible = false;
                     frame_planConCe.IsVisible = false;
                     frame_planConC.IsVisible = false;
                 }
                 // Plan NICHT zeigen (nur Ticktes)
-                if (!model.AppControll.showObjektPlans && model.AppControll.showTickets)
+                if (!AppModel.Instance.AppControll.showObjektPlans && AppModel.Instance.AppControll.showTickets)
                 {
                     ObjektPlanWeekMobil_Stack_A.IsVisible = true;
                     ObjektPlanWeekMobil_Stack_B.IsVisible = true;
@@ -9222,7 +9216,7 @@ namespace iPMCloud.Mobile
 
                     frame_plantabA.IsVisible = false;
                     frame_plantabB.IsVisible = false;
-                    frame_plantabCe.IsVisible = model.AppControll.showChecks;
+                    frame_plantabCe.IsVisible = AppModel.Instance.AppControll.showChecks;
                     frame_plantabC.IsVisible = true;
                     frame_planConA.IsVisible = false;
                     frame_planConB.IsVisible = false;
@@ -9231,7 +9225,7 @@ namespace iPMCloud.Mobile
                     frame_plantabC.Margin = new Thickness(0, -8, 2, 0);// Tab hochstellen
                 }
                 // beide zeigen (Plans und Ticktes)
-                if (model.AppControll.showObjektPlans && model.AppControll.showTickets)
+                if (AppModel.Instance.AppControll.showObjektPlans && AppModel.Instance.AppControll.showTickets)
                 {
                     ObjektPlanWeekMobil_Stack_A.IsVisible = true;
                     ObjektPlanWeekMobil_Stack_B.IsVisible = true;
@@ -9240,7 +9234,7 @@ namespace iPMCloud.Mobile
 
                     frame_plantabA.IsVisible = true;
                     frame_plantabB.IsVisible = true;
-                    frame_plantabCe.IsVisible = model.AppControll.showChecks;
+                    frame_plantabCe.IsVisible = AppModel.Instance.AppControll.showChecks;
                     frame_plantabC.IsVisible = true;
 
                     frame_planConA.IsVisible = true;

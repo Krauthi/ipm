@@ -18,50 +18,43 @@ namespace iPMCloud.Mobile
     {
         // private BackgroundWorker backgroundWorker = new BackgroundWorker();
 
-        public AppModel model;
         public bool isInitialize = false;
 
         public StartPage()
-        {
-            InitializeComponent();
-        }
-
-
-        public StartPage(AppModel model)
-        {
+        {        
             isInitialize = true;
-            this.model = model;
             InitializeComponent();
+
             InitStartPage();
             ShowDisconnected();
         }
         private void InitStartPage(bool switchCustomer = false)
         {
 
-            btn_regScan_limg.Source = model.imagesBase.QrScan;
-            //btn_regScanWarn_img.Source = model.imagesBase.WarnTriangleYellow;
+            btn_regScan_limg.Source = AppModel.Instance.imagesBase.QrScan;
+            //btn_regScanWarn_img.Source = AppModel.Instance.imagesBase.WarnTriangleYellow;
 
-            btn_flashlight_img.Source = model.imagesBase.Flashlight;
-            btn_flashlight_AddRegScan_img.Source = model.imagesBase.Flashlight;
+            btn_flashlight_img.Source = AppModel.Instance.imagesBase.Flashlight;
+            btn_flashlight_AddRegScan_img.Source = AppModel.Instance.imagesBase.Flashlight;
 
-            img_gpsinfo.Source = model.imagesBase.Pin;
+            img_gpsinfo.Source = AppModel.Instance.imagesBase.Pin;
 
-            btn_login_img.Source = model.imagesBase.Login;
-            btn_toregist_img.Source = model.imagesBase.QrScan;
-            btn_addRegScan_img.Source = model.imagesBase.AddImageWithe;
-            btn_addRegScan2_img.Source = model.imagesBase.AddImageWithe;
-            btn_ToRegScanManagement_img.Source = model.imagesBase.Change;
-            img_logo.Source = model.imagesBase.Logo;
-            img_backBtn_RegManagement.Source = model.imagesBase.DropLeftBlueDoubleImage;
-            img_backBtn_inRegAddScan_img.Source = model.imagesBase.DropLeftBlueDoubleImage;
+            btn_login_img.Source = AppModel.Instance.imagesBase.Login;
+            btn_toregist_img.Source = AppModel.Instance.imagesBase.QrScan;
+            btn_addRegScan_img.Source = AppModel.Instance.imagesBase.AddImageWithe;
+            btn_addRegScan2_img.Source = AppModel.Instance.imagesBase.AddImageWithe;
+            btn_ToRegScanManagement_img.Source = AppModel.Instance.imagesBase.Change;
+            img_logo.Source = AppModel.Instance.imagesBase.Logo;
+            img_backBtn_RegManagement.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
+            img_backBtn_inRegAddScan_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
 
-            lb_version.Text = "V" + model.Version;// + " (" + model.Build + ")";
+            lb_version.Text = "V" + AppModel.Instance.Version;// + " (" + AppModel.Instance.Build + ")";
 
             InitStartPageHandlers();
 
             InitPermission();
 
-            if (model.SettingModel.IsCredentialsSettingsReady)//|| model.IsTest)
+            if (AppModel.Instance.SettingModel.IsCredentialsSettingsReady)//|| AppModel.Instance.IsTest)
             {
                 ShowLoginPage(switchCustomer);
             }
@@ -121,8 +114,8 @@ namespace iPMCloud.Mobile
 
             InitStartPageHandlers();
             lay_regscan.Children.Clear();
-            model.UseExternHardware = true;
-            model.Scan.ScanRegView(this, lay_regscan, MethodAfterScan);
+            AppModel.Instance.UseExternHardware = true;
+            AppModel.Instance.Scan.ScanRegView(this, lay_regscan, MethodAfterScan);
 
             await Task.Delay(1);
             overlay.IsVisible = false;
@@ -131,7 +124,7 @@ namespace iPMCloud.Mobile
         public bool MethodAfterScan()
         {
             //StartGPS();
-            model.UseExternHardware = false;
+            AppModel.Instance.UseExternHardware = false;
             lay_regscan.Children.Clear();
             popupContainer_gpsinfo.IsVisible = true;
             return true;
@@ -153,31 +146,31 @@ namespace iPMCloud.Mobile
 
         private async Task<bool> CheckPermissions(bool inclGPS, bool showAlert)
         {
-            model.CheckPermissions();
-            if (!String.IsNullOrWhiteSpace(model.checkPermissionsMessage))
+            AppModel.Instance.CheckPermissions();
+            if (!String.IsNullOrWhiteSpace(AppModel.Instance.checkPermissionsMessage))
             {
                 if (showAlert)
                 {
-                    model.checkPermissionsMessage = model.checkPermissionsMessage.Replace(";", "\n\n");
-                    await DisplayAlertAsync("Folgendes wird benötigt!", model.checkPermissionsMessage, "OK");
+                    AppModel.Instance.checkPermissionsMessage = AppModel.Instance.checkPermissionsMessage.Replace(";", "\n\n");
+                    await DisplayAlertAsync("Folgendes wird benötigt!", AppModel.Instance.checkPermissionsMessage, "OK");
                     //model.PageNavigator.NavigateTo(TFPageNavigator.PAGE_CLOSEAPP);
                 }
                 return false;
             }
             if (inclGPS)
             {
-                model.CheckPermissionGPS();
-                if (!String.IsNullOrWhiteSpace(model.checkPermissionGPSMessage))
+                AppModel.Instance.CheckPermissionGPS();
+                if (!String.IsNullOrWhiteSpace(AppModel.Instance.checkPermissionGPSMessage))
                 {
                     if (showAlert)
                     {
-                        model.checkPermissionGPSMessage = model.checkPermissionGPSMessage.Replace(";", "\n\n");
-                        await DisplayAlertAsync("Berechtigungsproblem!", model.checkPermissionGPSMessage, "OK");
+                        AppModel.Instance.checkPermissionGPSMessage = AppModel.Instance.checkPermissionGPSMessage.Replace(";", "\n\n");
+                        await DisplayAlertAsync("Berechtigungsproblem!", AppModel.Instance.checkPermissionGPSMessage, "OK");
                         //model.PageNavigator.NavigateTo(TFPageNavigator.PAGE_CLOSEAPP);
                     }
                     return false;
                 }
-                AppModel.Instance.InitGPSTimer();
+                //AppModel.Instance.InitGPSTimer();
             }
             return true;
         }
@@ -252,8 +245,8 @@ namespace iPMCloud.Mobile
 
             lay_addregscan.Children.Clear();
             InitStartPageHandlers();
-            model.UseExternHardware = true;
-            model.Scan.ScanAddRegView(this, lay_addregscan, MethodAfterAddScan, MethodAfterAddScanFail);
+            AppModel.Instance.UseExternHardware = true;
+            AppModel.Instance.Scan.ScanAddRegView(this, lay_addregscan, MethodAfterAddScan, MethodAfterAddScanFail);
 
             await Task.Delay(1);
             overlay.IsVisible = false;
@@ -274,15 +267,15 @@ namespace iPMCloud.Mobile
 
             InitStartPageHandlers();
             lay_selectcompany_container.Children.Clear();
-            model.Companies.ForEach(c =>
+            AppModel.Instance.Companies.ForEach(c =>
             {
-                var isSelected = c.CustomerNumber == model.SettingModel.SettingDTO.CustomerNumber;
+                var isSelected = c.CustomerNumber == AppModel.Instance.SettingModel.SettingDTO.CustomerNumber;
                 var tgr = new TapGestureRecognizer();
                 if (!isSelected)
                 {
                     tgr.Tapped += (s, e) => { CompanySelected(s, e); };
                 }
-                Border companyView = Elements.GetCompanySelectionItem(c, model.imagesBase.Building, isSelected);
+                Border companyView = Elements.GetCompanySelectionItem(c, AppModel.Instance.imagesBase.Building, isSelected);
                 companyView.GestureRecognizers.Clear();
                 companyView.GestureRecognizers.Add(tgr);
                 companyView.ClassId = c.CustomerNumber;
@@ -291,7 +284,7 @@ namespace iPMCloud.Mobile
                 {
                     tgrDelete.Tapped += (s, e) => { CompanyDeleted(s, e); };
                 }
-                Border xBtn = Elements.GetXButton(c, model.imagesBase.Trash, isSelected);
+                Border xBtn = Elements.GetXButton(c, AppModel.Instance.imagesBase.Trash, isSelected);
                 xBtn.GestureRecognizers.Clear();
                 xBtn.GestureRecognizers.Add(tgrDelete);
                 xBtn.ClassId = c.CustomerNumber;
@@ -313,27 +306,27 @@ namespace iPMCloud.Mobile
 
         public bool MethodAfterAddScan()
         {
-            model.UseExternHardware = false;
+            AppModel.Instance.UseExternHardware = false;
             lay_addregscan.Children.Clear();
-            model.Person = null;
+            AppModel.Instance.Person = null;
             entry_login_name.Text = "";
             entry_login_password.Text = "";
             sw_autologin.IsToggled = false;
-            model.SettingModel.SettingDTO.LoginName = "";
-            model.SettingModel.SettingDTO.LoginPassword = "";
-            model.SettingModel.SettingDTO.Autologin = false;
-            model.SettingModel.SettingDTO.LoginToken = "";
-            model.SettingModel.SettingDTO.LastTokenDateTimeTicks = "";
-            model.Connections.InitConnections();
-            model.Connections.InitPNConnections();
+            AppModel.Instance.SettingModel.SettingDTO.LoginName = "";
+            AppModel.Instance.SettingModel.SettingDTO.LoginPassword = "";
+            AppModel.Instance.SettingModel.SettingDTO.Autologin = false;
+            AppModel.Instance.SettingModel.SettingDTO.LoginToken = "";
+            AppModel.Instance.SettingModel.SettingDTO.LastTokenDateTimeTicks = "";
+            AppModel.Instance.Connections.InitConnections();
+            AppModel.Instance.Connections.InitPNConnections();
 
-            model.SettingModel.SaveSettings();
+            AppModel.Instance.SettingModel.SaveSettings();
             ShowLoginPage();
             return true;
         }
         public bool MethodAfterAddScanFail()
         {
-            model.UseExternHardware = false;
+            AppModel.Instance.UseExternHardware = false;
             lay_addregscan.Children.Clear();
             ShowLoginPage();
             return false;
@@ -342,8 +335,8 @@ namespace iPMCloud.Mobile
 
         private async void ShowLoginPage(bool switchCustomer = false)
         {
-            AppModel.Instance.InitGPSTimer();
-            if (model.Companies != null && model.Companies.Count > 1)
+            //AppModel.Instance.InitGPSTimer();
+            if (AppModel.Instance.Companies != null && AppModel.Instance.Companies.Count > 1)
             {
                 btn_addRegScan_frame.IsVisible = false;
                 btn_ToRegScanManagement_frame.IsVisible = true;
@@ -354,8 +347,8 @@ namespace iPMCloud.Mobile
                 btn_ToRegScanManagement_frame.IsVisible = false;
             }
 
-            if (model.SettingModel.SettingDTO.Autologin && !String.IsNullOrWhiteSpace(model.SettingModel.SettingDTO.LoginToken) &&
-                !model.State.IsBackTappedToLogin && !switchCustomer)
+            if (AppModel.Instance.SettingModel.SettingDTO.Autologin && !String.IsNullOrWhiteSpace(AppModel.Instance.SettingModel.SettingDTO.LoginToken) &&
+                !AppModel.Instance.State.IsBackTappedToLogin && !switchCustomer)
             {
                 //Es gibt ein Token und Autologin
                 CheckLogin(true);//SmallLoginCheck
@@ -367,7 +360,7 @@ namespace iPMCloud.Mobile
                 overlay.IsVisible = true;
                 await Task.Delay(1);
 
-                model.State.IsBackTappedToLogin = false;
+                AppModel.Instance.State.IsBackTappedToLogin = false;
 
                 RegScan_Container.IsVisible = false;
                 Login_Container.IsVisible = true;
@@ -375,7 +368,7 @@ namespace iPMCloud.Mobile
                 RegManagement_Container.IsVisible = false;
 
                 InitStartPageHandlers();
-                lb_login_mandant.Text = model.SettingModel.SettingDTO.CustomerName;
+                lb_login_mandant.Text = AppModel.Instance.SettingModel.SettingDTO.CustomerName;
 
                 if (switchCustomer)
                 {
@@ -395,26 +388,26 @@ namespace iPMCloud.Mobile
         private void CompanySelected(object s, EventArgs e)
         {
             // Vorherige aktive Company/SettingDTO speichern
-            Company.AddUpdateCompany(model, model.SettingModel.SettingDTO);
+            Company.AddUpdateCompany(AppModel.Instance, AppModel.Instance.SettingModel.SettingDTO);
 
             var child = ((StackLayout)((Border)s).Content);
             var customerNumber = child.ClassId;
-            var company = model.Companies.Find(c => c.CustomerNumber == customerNumber);
+            var company = AppModel.Instance.Companies.Find(c => c.CustomerNumber == customerNumber);
             if (company != null)
             {
-                model.SettingModel.SettingDTO = Company.ToSettingDTO(company);
-                string directoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "ipm/" + model.SettingModel.SettingDTO.CustomerNumber + "");
+                AppModel.Instance.SettingModel.SettingDTO = Company.ToSettingDTO(company);
+                string directoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "ipm/" + AppModel.Instance.SettingModel.SettingDTO.CustomerNumber + "");
                 if (!Directory.Exists(directoryPath)) { Directory.CreateDirectory(directoryPath); }
 
-                model.SettingModel.SettingDTO.LoginToken = "";
-                model.SettingModel.SettingDTO.LastTokenDateTimeTicks = "";
-                entry_login_name.Text = model.SettingModel.SettingDTO.LoginName;
-                entry_login_password.Text = model.SettingModel.SettingDTO.LoginPassword;
+                AppModel.Instance.SettingModel.SettingDTO.LoginToken = "";
+                AppModel.Instance.SettingModel.SettingDTO.LastTokenDateTimeTicks = "";
+                entry_login_name.Text = AppModel.Instance.SettingModel.SettingDTO.LoginName;
+                entry_login_password.Text = AppModel.Instance.SettingModel.SettingDTO.LoginPassword;
                 sw_autologin.IsToggled = false;                //
-                model.SettingModel.SaveSettings();
+                AppModel.Instance.SettingModel.SaveSettings();
 
-                model.Connections.InitConnections();
-                model.Connections.InitPNConnections();
+                AppModel.Instance.Connections.InitConnections();
+                AppModel.Instance.Connections.InitPNConnections();
                 InitStartPage(true);
             }
         }
@@ -426,10 +419,10 @@ namespace iPMCloud.Mobile
             {
                 var child = ((StackLayout)((Border)s).Content);
                 var customerNumber = child.ClassId;
-                var company = model.Companies.Find(c => c.CustomerNumber == customerNumber);
+                var company = AppModel.Instance.Companies.Find(c => c.CustomerNumber == customerNumber);
                 if (company != null)
                 {
-                    if (Company.DeleteCompany(model, company))
+                    if (Company.DeleteCompany(AppModel.Instance, company))
                     {
                         ShowRegManagementScan();
                     }
@@ -457,13 +450,13 @@ namespace iPMCloud.Mobile
 
         public async void Btn_LoginTapped(object sender, EventArgs e)
         {
-            if (model.IsInternet)
+            if (AppModel.Instance.IsInternet)
             {
-                model.SettingModel.SettingDTO.LoginName = entry_login_name.Text;
-                model.SettingModel.SettingDTO.LoginPassword = entry_login_password.Text;
+                AppModel.Instance.SettingModel.SettingDTO.LoginName = entry_login_name.Text;
+                AppModel.Instance.SettingModel.SettingDTO.LoginPassword = entry_login_password.Text;
                 //model.SettingModel.SettingDTO.LoginToken = "";
-                model.SettingModel.SettingDTO.Autologin = sw_autologin.IsToggled;
-                model.SettingModel.SaveSettings();
+                AppModel.Instance.SettingModel.SettingDTO.Autologin = sw_autologin.IsToggled;
+                AppModel.Instance.SettingModel.SaveSettings();
                 CheckLogin();
             }
             else
@@ -522,22 +515,22 @@ namespace iPMCloud.Mobile
         private void Switch_Toggled(object sender, ToggledEventArgs e)
         {
             if (isInitialize) { return; }
-            model.SettingModel.SettingDTO.Autologin = !model.SettingModel.SettingDTO.Autologin;
-            sw_autologin.IsToggled = model.SettingModel.IsLoginSettingsReady && model.SettingModel.SettingDTO.Autologin;
-            model.SettingModel.SaveSettings();
+            AppModel.Instance.SettingModel.SettingDTO.Autologin = !AppModel.Instance.SettingModel.SettingDTO.Autologin;
+            sw_autologin.IsToggled = AppModel.Instance.SettingModel.IsLoginSettingsReady && AppModel.Instance.SettingModel.SettingDTO.Autologin;
+            AppModel.Instance.SettingModel.SaveSettings();
         }
 
 
         public void LoginNameChangedHandeler(object sender, TextChangedEventArgs e)
         {
             if (e.NewTextValue.IndexOf(" ") > -1) { entry_login_name.Text = e.NewTextValue.Replace(" ", String.Empty); };
-            model.SettingModel.SettingDTO.LoginName = entry_login_name.Text;
+            AppModel.Instance.SettingModel.SettingDTO.LoginName = entry_login_name.Text;
         }
 
         public void LoginPasswordChangedHandeler(object sender, TextChangedEventArgs e)
         {
             if (e.NewTextValue.IndexOf(" ") > -1) { entry_login_password.Text = e.NewTextValue.Replace(" ", String.Empty); };
-            model.SettingModel.SettingDTO.LoginPassword = entry_login_password.Text;
+            AppModel.Instance.SettingModel.SettingDTO.LoginPassword = entry_login_password.Text;
         }
 
         public bool hasInitializedHandlers = false;
@@ -553,14 +546,14 @@ namespace iPMCloud.Mobile
 
             btn_flashlight_container.GestureRecognizers.Clear();
             var tgr1 = new TapGestureRecognizer();
-            tgr1.Tapped -= model.Scan.Btn_FlashlightTapped;
-            tgr1.Tapped += model.Scan.Btn_FlashlightTapped;
+            tgr1.Tapped -= AppModel.Instance.Scan.Btn_FlashlightTapped;
+            tgr1.Tapped += AppModel.Instance.Scan.Btn_FlashlightTapped;
             btn_flashlight_container.GestureRecognizers.Add(tgr1);
 
             btn_flashlight_AddRegScan_container.GestureRecognizers.Clear();
             var tgr2 = new TapGestureRecognizer();
-            tgr2.Tapped -= model.Scan.Btn_FlashlightTapped;
-            tgr2.Tapped += model.Scan.Btn_FlashlightTapped;
+            tgr2.Tapped -= AppModel.Instance.Scan.Btn_FlashlightTapped;
+            tgr2.Tapped += AppModel.Instance.Scan.Btn_FlashlightTapped;
             btn_flashlight_AddRegScan_container.GestureRecognizers.Add(tgr2);
 
             btn_loginlogin_container.GestureRecognizers.Clear();
@@ -619,9 +612,9 @@ namespace iPMCloud.Mobile
             tgr9.Tapped += HideAlertMessage;
             popupContainer_Alert_btn.GestureRecognizers.Add(tgr9);
 
-            sw_autologin.IsToggled = model.SettingModel.IsLoginSettingsReady && model.SettingModel.SettingDTO.Autologin;
-            entry_login_name.Text = model.SettingModel.SettingDTO.LoginName;
-            entry_login_password.Text = model.SettingModel.SettingDTO.LoginPassword;
+            sw_autologin.IsToggled = AppModel.Instance.SettingModel.IsLoginSettingsReady && AppModel.Instance.SettingModel.SettingDTO.Autologin;
+            entry_login_name.Text = AppModel.Instance.SettingModel.SettingDTO.LoginName;
+            entry_login_password.Text = AppModel.Instance.SettingModel.SettingDTO.LoginPassword;
 
             await Task.Delay(1);
             entry_login_name.TextChanged -= LoginNameChangedHandeler;
@@ -645,34 +638,34 @@ namespace iPMCloud.Mobile
             }
             else
             {
-                DateTime lastTokenDate = String.IsNullOrWhiteSpace(model.SettingModel.SettingDTO.LastTokenDateTimeTicks)
+                DateTime lastTokenDate = String.IsNullOrWhiteSpace(AppModel.Instance.SettingModel.SettingDTO.LastTokenDateTimeTicks)
                     ? DateTime.Now.AddDays(-365)
-                    : new DateTime(long.Parse(model.SettingModel.SettingDTO.LastTokenDateTimeTicks));
+                    : new DateTime(long.Parse(AppModel.Instance.SettingModel.SettingDTO.LastTokenDateTimeTicks));
                 DateTime nowDate = DateTime.Now.AddDays(-7);
                 var d = (nowDate - lastTokenDate).TotalHours;
 
                 // token vorhanden und Letzter erfolgreicher login ist nicht länger als 7 Tage!
-                if (!String.IsNullOrWhiteSpace(model.SettingModel.SettingDTO.LoginToken) && d < 0 && model.Person != null)
+                if (!String.IsNullOrWhiteSpace(AppModel.Instance.SettingModel.SettingDTO.LoginToken) && d < 0 && AppModel.Instance.Person != null)
                 {
                     //Login Check mit Token ... erfolgreich
-                    model.SettingModel.SettingDTO.LastTokenDateTimeTicks = "" + DateTime.Now.Ticks;
+                    AppModel.Instance.SettingModel.SettingDTO.LastTokenDateTimeTicks = "" + DateTime.Now.Ticks;
                     AppModel.Instance.SettingModel.SettingDTO.GPSInfoHasShow = true;
-                    model.SettingModel.SaveSettings();
+                    AppModel.Instance.SettingModel.SaveSettings();
                     await Task.Delay(1);
                     overlay.IsVisible = false;
-                    model.PageNavigator.NavigateTo(TFPageNavigator.PAGE_MAINPAGE);
+                    AppModel.Instance.PageNavigator.NavigateTo(TFPageNavigator.PAGE_MAINPAGE);
                     return;
                 }
                 // 7 Tage sind abgelaufen
-                model.SettingModel.SettingDTO.LoginToken = "";
-                model.SettingModel.SettingDTO.Autologin = false;
-                model.SettingModel.SaveSettings();
+                AppModel.Instance.SettingModel.SettingDTO.LoginToken = "";
+                AppModel.Instance.SettingModel.SettingDTO.Autologin = false;
+                AppModel.Instance.SettingModel.SaveSettings();
                 LoginNow();
             }
         }
         private async void LoginNow()
         {
-            IpmLoginResponse ipmLoginResponse = await Task.Run(() => { return model.Connections.IpmLogin(false); });
+            IpmLoginResponse ipmLoginResponse = await Task.Run(() => { return AppModel.Instance.Connections.IpmLogin(false); });
 
 
             if (ipmLoginResponse == null || !ipmLoginResponse.success)
@@ -685,33 +678,33 @@ namespace iPMCloud.Mobile
             {
                 try
                 {
-                    model.Person = ipmLoginResponse.person;
+                    AppModel.Instance.Person = ipmLoginResponse.person;
                     if (ipmLoginResponse.versionCheck != null)
                     {
-                        model.AppControll = ipmLoginResponse.versionCheck.AppControll;
+                        AppModel.Instance.AppControll = ipmLoginResponse.versionCheck.AppControll;
                     }
-                    if (model.AppControll == null) { model.AppControll = new AppControll(); }
-                    AppControll.Save(model, model.AppControll);
+                    if (AppModel.Instance.AppControll == null) { AppModel.Instance.AppControll = new AppControll(); }
+                    AppControll.Save(AppModel.Instance, AppModel.Instance.AppControll);
 
                     // Wenn sich die Sprache geändert hat!
-                    if (model.AppControll.lang != "de" && model.AppControll.lang != AppModel.Instance.Lang.lang && AppModel.Instance.AppControll.translation)
+                    if (AppModel.Instance.AppControll.lang != "de" && AppModel.Instance.AppControll.lang != AppModel.Instance.Lang.lang && AppModel.Instance.AppControll.translation)
                     {
                         AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks = null;
                     }
 
-                    PersonWSO.SavePerson(model, model.Person);
-                    model.SettingModel.SettingDTO.LoginToken = ipmLoginResponse.sessionkey;
-                    model.SettingModel.SettingDTO.LastTokenDateTimeTicks = "" + DateTime.Now.Ticks;
+                    PersonWSO.SavePerson(AppModel.Instance, AppModel.Instance.Person);
+                    AppModel.Instance.SettingModel.SettingDTO.LoginToken = ipmLoginResponse.sessionkey;
+                    AppModel.Instance.SettingModel.SettingDTO.LastTokenDateTimeTicks = "" + DateTime.Now.Ticks;
                     AppModel.Instance.SettingModel.SettingDTO.GPSInfoHasShow = true;
-                    model.SettingModel.SaveSettings();
+                    AppModel.Instance.SettingModel.SaveSettings();
                     //try
                     //{
-                    //    //await model.Connections.SaveSettings();
+                    //    //await AppModel.Instance.Connections.SaveSettings();
                     //}
                     //catch (Exception) { }
                     await Task.Delay(1);
                     overlay.IsVisible = false;
-                    model.PageNavigator.NavigateTo(TFPageNavigator.PAGE_MAINPAGE);
+                    AppModel.Instance.PageNavigator.NavigateTo(TFPageNavigator.PAGE_MAINPAGE);
                 }
                 catch (Exception e)
                 {
@@ -732,21 +725,21 @@ namespace iPMCloud.Mobile
             }
             if (m.ToLower().Contains("zugangsdaten unbekannt"))
             {
-                model.SettingModel.SettingDTO.LoginToken = "";
-                model.SettingModel.SettingDTO.Autologin = false;
+                AppModel.Instance.SettingModel.SettingDTO.LoginToken = "";
+                AppModel.Instance.SettingModel.SettingDTO.Autologin = false;
                 isInitialize = true;
                 await Task.Delay(1);
                 sw_autologin.IsToggled = false;
                 await Task.Delay(1);
                 isInitialize = false;
-                model.SettingModel.SaveSettings();
+                AppModel.Instance.SettingModel.SaveSettings();
             }
             await DisplayAlertAsync("Anmeldung nicht möglich!", m, "Zurück");
         }
 
         //public async void SetAppControll()
         //{
-        //    frame_PersonTimes.IsVisible = model.AppControll.showPersonTimes;
+        //    frame_PersonTimes.IsVisible = AppModel.Instance.AppControll.showPersonTimes;
         //}
 
         public Page GetPage(string subPage = "")

@@ -20,7 +20,6 @@ namespace iPMCloud.Mobile.vo
         public const string PAGE_MAINPAGE = "mainpage";
 
                               
-        public AppModel model;
 
         public StartPage StartPageObj { get; set; }
         public MainPage MainPageObj { get; set; }
@@ -33,10 +32,6 @@ namespace iPMCloud.Mobile.vo
 
         public TFPageNavigator()
         {
-        }
-        public TFPageNavigator(AppModel _model)
-        {
-            model = _model;
         }
 
         public void NavigateTo(string mainPage, string subPage = "")
@@ -51,12 +46,12 @@ namespace iPMCloud.Mobile.vo
                     //if (StartPageObj == null) { StartPageObj = new StartPage(model); }
                     if (LastMainPage != CurrentMainPage)
                     {
-                        StartPageObj = new StartPage(model);
+                        StartPageObj = new StartPage();
                         AppModel.Instance.StartPage = StartPageObj;
                         //model.App.MainPage = StartPageObj.GetPage(subPage); 
-                        if (model.App.Windows.Count > 0)
+                        if (AppModel.Instance.App.Windows.Count > 0)
                         {
-                            model.App.Windows[0].Page = StartPageObj.GetPage(subPage);
+                            AppModel.Instance.App.Windows[0].Page = StartPageObj.GetPage(subPage);
                         }
                     }
                     else
@@ -70,12 +65,12 @@ namespace iPMCloud.Mobile.vo
                     //if (GroupCalendarObj == null) { GroupCalendarObj = new GroupCalendarPage(model); }                    
                     if (LastMainPage != CurrentMainPage)
                     {
-                        MainPageObj = new MainPage(model);
+                        MainPageObj = new MainPage();
                         AppModel.Instance.MainPage = MainPageObj;
                         //model.App.MainPage = MainPageObj.GetPage(subPage);
-                        if (model.App.Windows.Count > 0)
+                        if (AppModel.Instance.App.Windows.Count > 0)
                         {
-                            model.App.Windows[0].Page = StartPageObj.GetPage(subPage);
+                            AppModel.Instance.App.Windows[0].Page = StartPageObj.GetPage(subPage);
                         }
                     }
                     else

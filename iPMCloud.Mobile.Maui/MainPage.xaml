@@ -8680,61 +8680,55 @@
                         x:Name="langListView"
                         Margin="0"
                         BackgroundColor="#144d73"
-                        GroupDisplayBinding="{Binding Key}"
-                        GroupShortNameBinding="{Binding Key}"
-                        HasUnevenRows="True"
                         IsGroupingEnabled="true"
-                        ItemSelected="langListView_ItemSelected"
                         ItemsSource="{Binding}"
-                        SeparatorVisibility="Default">
+                        SelectionMode="Single"
+                        SelectionChanged="langListView_SelectionChanged">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
-                                <ViewCell>
+                                <StackLayout
+                                    Margin="0"
+                                    Padding="0"
+                                    BackgroundColor="#144d73"
+                                    Orientation="Vertical"
+                                    Spacing="0">
                                     <StackLayout
-                                        Margin="0"
+                                        Margin="10,7,5,7"
                                         Padding="0"
-                                        BackgroundColor="#144d73"
-                                        Orientation="Vertical"
+                                        Orientation="Horizontal"
                                         Spacing="0">
-                                        <StackLayout
-                                            Margin="10,7,5,7"
-                                            Padding="0"
-                                            Orientation="Horizontal"
-                                            Spacing="0">
-                                            <Label
-                                                Margin="10,0,0,0"
-                                                FontSize="18"
-                                                LineBreakMode="NoWrap"
-                                                Text="{Binding text}"
-                                                TextColor="White" />
-                                        </StackLayout>
-                                        <BoxView
-                                            Margin="0,3,0,3"
-                                            BackgroundColor="#cccccc"
-                                            HeightRequest="1"
-                                            HorizontalOptions="Fill"
-                                            VerticalOptions="Start" />
+                                        <Label
+                                            Margin="10,0,0,0"
+                                            FontSize="18"
+                                            LineBreakMode="NoWrap"
+                                            Text="{Binding text}"
+                                            TextColor="White" />
                                     </StackLayout>
-                                </ViewCell>
+                                    <BoxView
+                                        Margin="0,3,0,3"
+                                        BackgroundColor="#cccccc"
+                                        HeightRequest="1"
+                                        HorizontalOptions="Fill"
+                                        VerticalOptions="Start" />
+                                </StackLayout>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                         <CollectionView.GroupHeaderTemplate>
                             <DataTemplate>
-                                <ViewCell Height="42">
-                                    <StackLayout
+                                <StackLayout
+                                    Margin="0"
+                                    Padding="0"
+                                    BackgroundColor="#55808080"
+                                    HeightRequest="42"
+                                    Spacing="0">
+                                    <Label
                                         Margin="0"
-                                        Padding="0"
-                                        BackgroundColor="#55808080"
-                                        Spacing="0">
-                                        <Label
-                                            Margin="0"
-                                            Padding="20,0,0,0"
-                                            FontSize="24"
-                                            Text="{Binding Key}"
-                                            TextColor="Yellow"
-                                            VerticalOptions="Center" />
-                                    </StackLayout>
-                                </ViewCell>
+                                        Padding="20,0,0,0"
+                                        FontSize="24"
+                                        Text="{Binding Key}"
+                                        TextColor="Yellow"
+                                        VerticalOptions="Center" />
+                                </StackLayout>
                             </DataTemplate>
                         </CollectionView.GroupHeaderTemplate>
                     </CollectionView>
@@ -12228,68 +12222,62 @@
                     <CollectionView
                         x:Name="empListView"
                         BackgroundColor="#144d73"
-                        GroupDisplayBinding="{Binding Key}"
-                        GroupShortNameBinding="{Binding Key}"
-                        HasUnevenRows="True"
                         IsGroupingEnabled="true"
-                        ItemSelected="empListView_ItemSelected"
                         ItemsSource="{Binding}"
-                        SeparatorVisibility="Default">
+                        SelectionMode="Single"
+                        SelectionChanged="empListView_SelectionChanged">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
-                                <ViewCell>
+                                <StackLayout
+                                    Margin="0"
+                                    Padding="0"
+                                    BackgroundColor="#144d73"
+                                    Orientation="Vertical"
+                                    Spacing="0">
                                     <StackLayout
-                                        Margin="0"
+                                        Margin="10,7,5,7"
                                         Padding="0"
-                                        BackgroundColor="#144d73"
-                                        Orientation="Vertical"
+                                        Orientation="Horizontal"
                                         Spacing="0">
-                                        <StackLayout
-                                            Margin="10,7,5,7"
-                                            Padding="0"
-                                            Orientation="Horizontal"
-                                            Spacing="0">
-                                            <Label
-                                                Margin="15,0,0,0"
-                                                FontSize="18"
-                                                LineBreakMode="NoWrap"
-                                                Text="{Binding name}"
-                                                TextColor="White" />
-                                            <Label
-                                                Margin="10,0,0,0"
-                                                FontSize="18"
-                                                LineBreakMode="NoWrap"
-                                                Text="{Binding vorname}"
-                                                TextColor="White" />
-                                        </StackLayout>
-                                        <!--<Label Text="{Binding mobile}" FontSize="16" LineBreakMode="NoWrap" Margin="20,0,0,0"/>-->
-                                        <BoxView
-                                            Margin="0,3,0,3"
-                                            BackgroundColor="#cccccc"
-                                            HeightRequest="1"
-                                            HorizontalOptions="Fill"
-                                            VerticalOptions="Start" />
+                                        <Label
+                                            Margin="15,0,0,0"
+                                            FontSize="18"
+                                            LineBreakMode="NoWrap"
+                                            Text="{Binding name}"
+                                            TextColor="White" />
+                                        <Label
+                                            Margin="10,0,0,0"
+                                            FontSize="18"
+                                            LineBreakMode="NoWrap"
+                                            Text="{Binding vorname}"
+                                            TextColor="White" />
                                     </StackLayout>
-                                </ViewCell>
+                                    <!--<Label Text="{Binding mobile}" FontSize="16" LineBreakMode="NoWrap" Margin="20,0,0,0"/>-->
+                                    <BoxView
+                                        Margin="0,3,0,3"
+                                        BackgroundColor="#cccccc"
+                                        HeightRequest="1"
+                                        HorizontalOptions="Fill"
+                                        VerticalOptions="Start" />
+                                </StackLayout>
                             </DataTemplate>
                         </CollectionView.ItemTemplate>
                         <CollectionView.GroupHeaderTemplate>
                             <DataTemplate>
-                                <ViewCell Height="42">
-                                    <StackLayout
+                                <StackLayout
+                                    Margin="0"
+                                    Padding="0"
+                                    BackgroundColor="#55808080"
+                                    HeightRequest="42"
+                                    Spacing="0">
+                                    <Label
                                         Margin="0"
-                                        Padding="0"
-                                        BackgroundColor="#55808080"
-                                        Spacing="0">
-                                        <Label
-                                            Margin="0"
-                                            Padding="20,0,0,0"
-                                            FontSize="24"
-                                            Text="{Binding Key}"
-                                            TextColor="Yellow"
-                                            VerticalOptions="Center" />
-                                    </StackLayout>
-                                </ViewCell>
+                                        Padding="20,0,0,0"
+                                        FontSize="24"
+                                        Text="{Binding Key}"
+                                        TextColor="Yellow"
+                                        VerticalOptions="Center" />
+                                </StackLayout>
                             </DataTemplate>
                         </CollectionView.GroupHeaderTemplate>
                     </CollectionView>

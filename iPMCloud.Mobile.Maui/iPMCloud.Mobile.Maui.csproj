@@ -1,148 +1,143 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>net10.0-android</TargetFrameworks>
+	<PropertyGroup>
+		<TargetFrameworks>net10.0-android</TargetFrameworks>
+		<OutputType>Exe</OutputType>
+		<RootNamespace>iPMCloud.Mobile</RootNamespace>
+		<UseMaui>true</UseMaui>
+		<SingleProject>true</SingleProject>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<ApplicationTitle>iPM-Cloud</ApplicationTitle>
+		<ApplicationId>com.ipmcloud.ipm.mobile</ApplicationId>
+		<ApplicationIdGuid>201CEFAB-590D-414F-9660-9EFF31FE2078</ApplicationIdGuid>
+		<ApplicationDisplayVersion>2.1.0</ApplicationDisplayVersion>
+		<ApplicationVersion>1</ApplicationVersion>
+		<Version>2.1.0</Version>
+		<AssemblyVersion>2.0.0.0</AssemblyVersion>
+		<FileVersion>2.0.0.0</FileVersion>
+		<NeutralLanguage>de-DE</NeutralLanguage>
+		<Copyright>iPM-Cloud</Copyright>
+		<Nullable>disable</Nullable>
 
-    <OutputType>Exe</OutputType>
-    <RootNamespace>iPMCloud.Mobile</RootNamespace>
-    <UseMaui>true</UseMaui>
-    <SingleProject>true</SingleProject>
-    <ImplicitUsings>enable</ImplicitUsings>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">12.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">30.0</SupportedOSPlatformVersion>
+	</PropertyGroup>
 
-    <ApplicationTitle>iPM-Cloud</ApplicationTitle>
+	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
+		<SupportedOSPlatformVersion>14.0</SupportedOSPlatformVersion>
+		<CodesignKey>iPhone Developer</CodesignKey>
+		<CodesignProvision>Automatic</CodesignProvision>
+	</PropertyGroup>
 
-    <ApplicationId>com.ipmcloud.ipm.mobile</ApplicationId>
-    <ApplicationIdGuid>201CEFAB-590D-414F-9660-9EFF31FE2078</ApplicationIdGuid>
+	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+		<AndroidMinSdkVersion>23</AndroidMinSdkVersion>
+		<AndroidTargetSdkVersion>36</AndroidTargetSdkVersion>
+		<AndroidEnableMultiDex>true</AndroidEnableMultiDex>
+		<AndroidUseAapt2>true</AndroidUseAapt2>
+		<AndroidManifestMerger>manifestmerger.jar</AndroidManifestMerger>
+		<AndroidEnableR8>false</AndroidEnableR8>
+		<AndroidIgnoreDuplicateTypesInTransitiveDependencies>true</AndroidIgnoreDuplicateTypesInTransitiveDependencies>
+	</PropertyGroup>
 
-    <ApplicationDisplayVersion>2.1.0</ApplicationDisplayVersion>
-    <ApplicationVersion>1</ApplicationVersion>
-    <Version>2.1.0</Version>
-    <AssemblyVersion>2.0.0.0</AssemblyVersion>
-    <FileVersion>2.0.0.0</FileVersion>
+	<!-- Debug-Konfiguration optimiert für schnelles Deploy -->
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0-android|AnyCPU'">
+		<Optimize>false</Optimize>
+		<DebugSymbols>true</DebugSymbols>
+		<DebugType>portable</DebugType>
+		<AndroidEnableSGenConcurrent>true</AndroidEnableSGenConcurrent>
+		<AndroidUseAapt2>true</AndroidUseAapt2>
+		<AndroidPackageFormat>apk</AndroidPackageFormat>
+		<AndroidLinkMode>None</AndroidLinkMode>
+		<AndroidEnableMultiDex>true</AndroidEnableMultiDex>
+		<AndroidEnableR8>false</AndroidEnableR8>
+		<EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
+		<PublishTrimmed>false</PublishTrimmed>
+		<!-- Optional: Für detaillierte Diagnose -->
+		<!-- <AndroidDiagnosticBuild>true</AndroidDiagnosticBuild> -->
+	</PropertyGroup>
 
-    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">12.0</SupportedOSPlatformVersion>
-    <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">30.0</SupportedOSPlatformVersion>
+	<!-- Release-Konfiguration für Store/QA-Builds -->
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0-android|AnyCPU'">
+		<Optimize>true</Optimize>
+		<AndroidPackageFormat>aab</AndroidPackageFormat>
+		<AndroidUseAapt2>true</AndroidUseAapt2>
+		<AndroidEnableMultiDex>true</AndroidEnableMultiDex>
+		<AndroidLinkMode>SdkOnly</AndroidLinkMode>
+		<AndroidLinkSkip />
+		<PublishTrimmed>false</PublishTrimmed>
+	</PropertyGroup>
 
-    <NeutralLanguage>de-DE</NeutralLanguage>
-    <Copyright>iPM-Cloud</Copyright>
-    <Nullable>disable</Nullable>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
-    <SupportedOSPlatformVersion>14.0</SupportedOSPlatformVersion>
-    <CodesignKey>iPhone Developer</CodesignKey>
-    <CodesignProvision>Automatic</CodesignProvision>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
-    <AndroidMinSdkVersion>23</AndroidMinSdkVersion>
-    <AndroidTargetSdkVersion>36</AndroidTargetSdkVersion>
-    <AndroidEnableMultiDex>true</AndroidEnableMultiDex>
-    <AndroidUseAapt2>true</AndroidUseAapt2>
-    <AndroidManifestMerger>manifestmerger.jar</AndroidManifestMerger>
-  <AndroidEnableR8>false</AndroidEnableR8>
-
-    <!-- kann bleiben; hilft aber nicht gegen R8 duplicate class errors -->
-    <AndroidIgnoreDuplicateTypesInTransitiveDependencies>true</AndroidIgnoreDuplicateTypesInTransitiveDependencies>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-android|AnyCPU'">
-    <Optimize>false</Optimize>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>portable</DebugType>
-    <AndroidEnableSGenConcurrent>true</AndroidEnableSGenConcurrent>
-    <AndroidUseAapt2>true</AndroidUseAapt2>
-    <AndroidPackageFormat>apk</AndroidPackageFormat>
-    <AndroidLinkMode>None</AndroidLinkMode>
-    <AndroidEnableMultiDex>true</AndroidEnableMultiDex>
-  <AndroidEnableR8>false</AndroidEnableR8>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-android|AnyCPU'">
-    <Optimize>true</Optimize>
-    <AndroidPackageFormat>aab</AndroidPackageFormat>
-    <AndroidUseAapt2>true</AndroidUseAapt2>
-    <AndroidEnableMultiDex>true</AndroidEnableMultiDex>
-    <AndroidLinkMode>SdkOnly</AndroidLinkMode>
-    <AndroidLinkSkip />
-    <PublishTrimmed>false</PublishTrimmed>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0-android|AnyCPU'">
+	<!-- <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0-android|AnyCPU'">
     <EmbedAssembliesIntoApk>True</EmbedAssembliesIntoApk>
-  </PropertyGroup>
+  </PropertyGroup> -->
 
-  <ItemGroup>
-    <MauiImage Include="Resources\Images\*" />
-    <MauiFont Include="Resources\Fonts\*" />
-    <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
-  </ItemGroup>
+	<!-- Ressourcen -->
+	<ItemGroup>
+		<MauiImage Include="Resources\Images\*" />
+		<MauiFont Include="Resources\Fonts\*" />
+		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <MauiXaml Remove="vo\wso\TicketPage.xaml" />
-  </ItemGroup>
+	<!-- Einzelne XAML-Datei entfernen -->
+	<ItemGroup>
+		<MauiXaml Remove="vo\wso\TicketPage.xaml" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="FFImageLoading.Maui" Version="1.3.2" />
-    <PackageReference Include="MetadataExtractor" Version="2.9.0" />
-    <PackageReference Include="Microsoft.Maui.Controls" Version="10.0.40" />
-    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="10.0.40" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.3" />
+	<!-- NuGet Packages -->
+	<ItemGroup>
+		<PackageReference Include="FFImageLoading.Maui" Version="1.3.2" />
+		<PackageReference Include="MetadataExtractor" Version="2.9.0" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="10.0.40" />
+		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="10.0.40" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.3" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+		<PackageReference Include="NLog" Version="6.1.0" />
+		<PackageReference Include="Google.Cloud.Translation.V2" Version="3.2.0" />
+		<PackageReference Include="CommunityToolkit.Maui" Version="14.0.0" />
+		<PackageReference Include="SixLabors.ImageSharp" Version="3.1.12" />
+		<PackageReference Include="SixLabors.ImageSharp.Drawing" Version="2.1.7" />
+		<PackageReference Include="System.Private.ServiceModel" Version="4.10.0" />
+		<PackageReference Include="System.ServiceModel.Http" Version="10.0.652802" />
+		<PackageReference Include="System.ServiceModel.Primitives" Version="10.0.652802" />
+		<PackageReference Include="Xamarin.Google.Android.Play.Core" Version="1.10.3.20" />
+		<PackageReference Include="Xamarin.GooglePlayServices.Base" Version="118.9.0.1" />
+		<PackageReference Include="Xamarin.GooglePlayServices.Basement" Version="118.9.0.1" />
+		<PackageReference Include="Xamarin.GooglePlayServices.Tasks" Version="118.4.0.2" />
+		<PackageReference Include="ZXing.Net.Maui" Version="0.7.4" />
+		<PackageReference Include="ZXing.Net.Maui.Controls" Version="0.7.4" />
+		<PackageReference Include="Xamarin.AndroidX.Compose.Runtime.Annotation.Jvm" Version="1.10.0.1" ExcludeAssets="all" />
+	</ItemGroup>
 
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-    <PackageReference Include="NLog" Version="6.1.0" />
+	<!-- NLog Konfiguration -->
+	<ItemGroup>
+		<EmbeddedResource Include="NLog.config">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</EmbeddedResource>
+	</ItemGroup>
 
-    <PackageReference Include="Google.Cloud.Translation.V2" Version="3.2.0" />
+	<!-- Android spezifische Assets -->
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+		<GoogleServicesJson Include="Platforms\Android\google-services.json" />
+		<AndroidAsset Include="Platforms\Android\Assets\*.json" />
+	</ItemGroup>
 
-    <PackageReference Include="CommunityToolkit.Maui" Version="14.0.0" />
-    <PackageReference Include="SixLabors.ImageSharp" Version="3.1.12" />
-    <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="2.1.7" />
+	<!-- iOS spezifische Ressourcen -->
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
+		<BundleResource Include="Platforms\iOS\GoogleService-Info.plist">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</BundleResource>
+		<None Include="Platforms\iOS\Info.plist" />
+		<None Include="Platforms\iOS\Entitlements.plist" />
+		<EmbeddedResource Include="Platforms\iOS\NLog.config">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</EmbeddedResource>
+	</ItemGroup>
 
-    <PackageReference Include="System.Private.ServiceModel" Version="4.10.0" />
-    <PackageReference Include="System.ServiceModel.Http" Version="10.0.652802" />
-    <PackageReference Include="System.ServiceModel.Primitives" Version="10.0.652802" />
-
-    <PackageReference Include="Xamarin.Google.Android.Play.Core" Version="1.10.3.20" />
-    <PackageReference Include="Xamarin.GooglePlayServices.Base" Version="118.9.0.1" />
-    <PackageReference Include="Xamarin.GooglePlayServices.Basement" Version="118.9.0.1" />
-    <PackageReference Include="Xamarin.GooglePlayServices.Tasks" Version="118.4.0.2" />
-
-    <PackageReference Include="ZXing.Net.Maui" Version="0.7.4" />
-    <PackageReference Include="ZXing.Net.Maui.Controls" Version="0.7.4" />
-  </ItemGroup>
-  <ItemGroup>
-  <PackageReference Include="Xamarin.AndroidX.Compose.Runtime.Annotation.Jvm" Version="1.10.0.1" ExcludeAssets="all" />
-</ItemGroup>
-  
-  
-
-
-  <ItemGroup>
-    <EmbeddedResource Include="NLog.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
-    <GoogleServicesJson Include="Platforms\Android\google-services.json" />
-    <AndroidAsset Include="Platforms\Android\Assets\*.json" />
-  </ItemGroup>
-
-  <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
-    <BundleResource Include="Platforms\iOS\GoogleService-Info.plist">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </BundleResource>
-    <None Include="Platforms\iOS\Info.plist" />
-    <None Include="Platforms\iOS\Entitlements.plist" />
-    <EmbeddedResource Include="Platforms\iOS\NLog.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <MauiXaml Update="vo\wso\checks\SignaturePadView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </MauiXaml>
-  </ItemGroup>
+	<!-- Einzelne XAML Update -->
+	<ItemGroup>
+		<MauiXaml Update="vo\wso\checks\SignaturePadView.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+	</ItemGroup>
 
 </Project>

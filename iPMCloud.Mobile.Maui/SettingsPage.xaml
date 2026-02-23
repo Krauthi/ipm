@@ -73,12 +73,12 @@
                     Orientation="Horizontal"
                     Spacing="0">
                     <!--<sfbuttons:SfButton Padding="0" Margin="0" CornerRadius="0" HeightRequest="30" x:Name="btn_backTo_StartPage_Menu"
-                                        Clicked="Btn_Back_Clicked" BackgroundColor="Transparent" HorizontalOptions="Fill" BorderColor="Transparent">
+                                        Clicked="Btn_Back_Clicked" BackgroundColor="Transparent" HorizontalOptions="FillAndExpand" BorderColor="Transparent">
                         <StackLayout Orientation="Horizontal" >
                             <Image x:Name="img_back" Margin="5, 0, 5, 0" HeightRequest="24"  WidthRequest="24"
                                    VerticalOptions="Center" HorizontalOptions="Start" ></Image>
                             <Label Margin="0, 0, 5, 0"  FontSize="14"  LineBreakMode="NoWrap" VerticalTextAlignment="Center" HorizontalTextAlignment="Start"
-                                   Text="ZURÜCK ZUM HAUPTMENÜ" TextColor="#0078d7" VerticalOptions = "Fill" HorizontalOptions = "Fill"></Label>
+                                   Text="ZURÜCK ZUM HAUPTMENÜ" TextColor="#0078d7" VerticalOptions = "FillAndExpand" HorizontalOptions = "FillAndExpand"></Label>
                         </StackLayout>
                     </sfbuttons:SfButton>-->
 
@@ -108,17 +108,17 @@
                     Margin="0,0,0,0"
                     BackgroundColor="Gray"
                     HeightRequest="1"
-                    HorizontalOptions="Fill"
+                    HorizontalOptions="FillAndExpand"
                     VerticalOptions="Start" />
             </StackLayout>
 
 
 
-            <ScrollView HorizontalOptions="Fill" VerticalOptions="Fill">
+            <ScrollView HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
                 <StackLayout
                     Margin="0,0,0,0"
                     Padding="20,10,20,10"
-                    HorizontalOptions="Fill"
+                    HorizontalOptions="FillAndExpand"
                     Orientation="Vertical"
                     Spacing="0">
 
@@ -136,20 +136,20 @@
                         BackgroundColor="#0078d7"
                         CornerRadius="0"
                         HeightRequest="1"
-                        HorizontalOptions="Fill"
+                        HorizontalOptions="FillAndExpand"
                         VerticalOptions="Start" />
 
 
                     <StackLayout
                         Margin="0"
                         Padding="0"
-                        HorizontalOptions="Fill"
+                        HorizontalOptions="FillAndExpand"
                         Orientation="Horizontal"
                         Spacing="0">
                         <Label
                             Margin="0,0,0,10"
                             FontSize="18"
-                            HorizontalOptions="Start"
+                            HorizontalOptions="StartAndExpand"
                             Text="Mandant &amp; Logindaten"
                             TextColor="#c0c0c0" />
 
@@ -159,7 +159,7 @@
                         x:Name="loginentry_container"
                         Margin="0"
                         Padding="0"
-                        HorizontalOptions="Fill"
+                        HorizontalOptions="FillAndExpand"
                         Spacing="10" />
 
                     <StackLayout
@@ -167,7 +167,7 @@
                         Margin="0"
                         Padding="0"
                         HeightRequest="340"
-                        HorizontalOptions="Fill"
+                        HorizontalOptions="FillAndExpand"
                         Spacing="10">
                         <Image
                             x:Name="img2"
@@ -181,19 +181,19 @@
                         Margin="0"
                         Padding="0"
                         HeightRequest="340"
-                        HorizontalOptions="Fill"
+                        HorizontalOptions="FillAndExpand"
                         Spacing="10" />
 
                     <StackLayout
                         Margin="0,10,0,0"
                         Padding="0"
-                        HorizontalOptions="Fill"
+                        HorizontalOptions="FillAndExpand"
                         Orientation="Horizontal"
                         Spacing="10">
                         <Button Text="Snap" />
                         <Button Text="Regist" />
                         <!--<sfbuttons:SfButton Padding="5" Margin="0,0,0,0" CornerRadius="0"  x:Name="btn_SaveCredentials" WidthRequest="180"
-                                            VerticalOptions="Start" HorizontalOptions="End"
+                                            VerticalOptions="Start" HorizontalOptions="EndAndExpand"
                                             Clicked="Btn_SaveCred_Clicked" BackgroundColor="#e4e4e4" BorderColor="Transparent">
                             <StackLayout HorizontalOptions="Center" VerticalOptions="Center" Spacing="1" Orientation="Horizontal" >
                                 <Image x:Name="img_save" Margin="5, 0, 2, 0" HeightRequest="20"  WidthRequest="20"
@@ -211,7 +211,7 @@
                         BackgroundColor="#0078d7"
                         CornerRadius="0"
                         HeightRequest="1"
-                        HorizontalOptions="Fill"
+                        HorizontalOptions="FillAndExpand"
                         VerticalOptions="Start" />
                     <Label
                         Margin="0,0,0,10"
@@ -220,7 +220,7 @@
                         Text="Font Size"
                         TextColor="#a0a0a0" />
                     <StackLayout
-                        HorizontalOptions="Fill"
+                        HorizontalOptions="FillAndExpand"
                         Orientation="Horizontal"
                         Spacing="10"
                         VerticalOptions="Center">
@@ -237,7 +237,7 @@
                         BackgroundColor="#0078d7"
                         CornerRadius="0"
                         HeightRequest="1"
-                        HorizontalOptions="Fill"
+                        HorizontalOptions="FillAndExpand"
                         VerticalOptions="Start" />
                     <Label
                         Margin="0,0,0,10"
@@ -246,7 +246,7 @@
                         Text="Test Flashlight"
                         TextColor="#a0a0a0" />
                     <StackLayout
-                        HorizontalOptions="Fill"
+                        HorizontalOptions="FillAndExpand"
                         Orientation="Horizontal"
                         Spacing="10"
                         VerticalOptions="Center">
@@ -259,7 +259,7 @@
                         BackgroundColor="#0078d7"
                         CornerRadius="0"
                         HeightRequest="1"
-                        HorizontalOptions="Fill"
+                        HorizontalOptions="FillAndExpand"
                         VerticalOptions="Start" />
                     <Label
                         Margin="0,0,0,10"
@@ -268,7 +268,7 @@
                         Text="Network Connection"
                         TextColor="#a0a0a0" />
                     <StackLayout
-                        HorizontalOptions="Fill"
+                        HorizontalOptions="FillAndExpand"
                         Orientation="Horizontal"
                         Spacing="10"
                         VerticalOptions="Center">

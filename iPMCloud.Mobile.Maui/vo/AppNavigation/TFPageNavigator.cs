@@ -73,7 +73,8 @@ namespace iPMCloud.Mobile.vo
                         // Set the main page - works before and after window is created
                         if (AppModel.Instance?.App != null)
                         {
-                            AppModel.Instance.App.MainPage = startPage;
+                            //AppModel.Instance.App.MainPage = startPage; 
+                            AppModel.Instance.App.Windows[0].Page = startPage;
                         }
                     }
                     else
@@ -93,7 +94,8 @@ namespace iPMCloud.Mobile.vo
                         // Set the main page - works before and after window is created
                         if (AppModel.Instance?.App != null)
                         {
-                            AppModel.Instance.App.MainPage = mainPageContent;
+                            //AppModel.Instance.App.MainPage = mainPageContent;
+                            AppModel.Instance.App.Windows[0].Page = mainPageContent;
                         }
                     }
                     else

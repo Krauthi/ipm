@@ -164,7 +164,7 @@ namespace iPMCloud.Mobile
                 Margin = new Thickness(0, 0, 0, 0),
                 Spacing = 0,
                 Orientation = StackOrientation.Vertical,
-                HorizontalOptions = LayoutOptions.Fill
+                HorizontalOptions = LayoutOptions.FillAndExpand
             };
             var oList = model.AllBuildings;
             oList = oList.OrderBy(b => b.plz).ToList();
@@ -211,15 +211,15 @@ namespace iPMCloud.Mobile
                 Margin = new Thickness(0),
                 Spacing = 0,
                 Orientation = StackOrientation.Horizontal,
-                VerticalOptions = LayoutOptions.Fill,
+                VerticalOptions = LayoutOptions.FillAndExpand,
                 HorizontalOptions = LayoutOptions.End,
                 BackgroundColor = Color.FromArgb("#04532d"),
                 WidthRequest = 100,
                 Children = {
                     new Label {
                         Text = "Auswählen",
-                        VerticalOptions = LayoutOptions.Fill,
-                        HorizontalOptions = LayoutOptions.Fill,
+                        VerticalOptions = LayoutOptions.FillAndExpand,
+                        HorizontalOptions = LayoutOptions.FillAndExpand,
                         VerticalTextAlignment = TextAlignment.Center,
                         FontSize = 14,
                         TextColor = Colors.White,
@@ -245,12 +245,12 @@ namespace iPMCloud.Mobile
                         Margin = new Thickness(0),
                         Spacing = 0,
                         Orientation = StackOrientation.Horizontal,
-                        HorizontalOptions = LayoutOptions.Fill,
+                        HorizontalOptions = LayoutOptions.FillAndExpand,
                         Children = {
                             new Label {
                                 Text = obj.strasse + " " + obj.hsnr + "\n" + land + obj.plz  + " " + obj.ort,
-                                VerticalOptions = LayoutOptions.Start,
-                                HorizontalOptions = LayoutOptions.Fill,
+                                VerticalOptions = LayoutOptions.StartAndExpand,
+                                HorizontalOptions = LayoutOptions.FillAndExpand,
                                 FontSize = 16,
                                 TextColor = Colors.White,
                                 HorizontalTextAlignment = TextAlignment.Start,
@@ -276,7 +276,7 @@ namespace iPMCloud.Mobile
                 Margin = new Thickness(0, 0, 0, 15),
                 Spacing = 0,
                 Orientation = StackOrientation.Vertical,
-                HorizontalOptions = LayoutOptions.Fill,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
                 Children = { stack }
             };
             return mainStack;
@@ -289,7 +289,7 @@ namespace iPMCloud.Mobile
         {
             return new StackLayout
             {
-                HorizontalOptions = LayoutOptions.Fill,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
                 Margin = new Thickness(0, 0, 0, 0),
                 Padding = new Thickness(0, 0, 0, 0),
                 Spacing = 0,
@@ -334,7 +334,7 @@ namespace iPMCloud.Mobile
                     {
                         FontSize = 14,
                         Text = lastsyncdate.ToString("dd.MM.yyyy - HH:mm"),
-                        HorizontalOptions = LayoutOptions.Start, HorizontalTextAlignment = TextAlignment.Start,
+                        HorizontalOptions = LayoutOptions.StartAndExpand, HorizontalTextAlignment = TextAlignment.Start,
                         TextColor = Color.FromArgb("#cccccc"),
                         Margin = new Thickness(0, 0, 0, 0),
                         Padding = new Thickness(0, 0, 0, 0),
@@ -352,7 +352,7 @@ namespace iPMCloud.Mobile
                 Margin = new Thickness(0),
                 Spacing = 0,
                 Orientation = StackOrientation.Vertical,
-                HorizontalOptions = LayoutOptions.Fill,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
                 BackgroundColor = Color.FromArgb("#55042d53"),//#90144d73"),
                 Children = {
                     new StackLayout
@@ -361,14 +361,14 @@ namespace iPMCloud.Mobile
                         Margin = new Thickness(0),
                         Spacing = 0,
                         Orientation = StackOrientation.Horizontal,
-                        HorizontalOptions = LayoutOptions.Fill,
+                        HorizontalOptions = LayoutOptions.FillAndExpand,
                         Children = {
                             new Label {
                                 Text = (String.IsNullOrWhiteSpace(obj.objektname) ? "": (obj.objektname + "\n"))
                                 + obj.strasse + " " + obj.hsnr + "\n"
                                 + land + obj.plz  + " " + obj.ort,
-                                VerticalOptions = LayoutOptions.Start,
-                                HorizontalOptions = LayoutOptions.Fill,
+                                VerticalOptions = LayoutOptions.StartAndExpand,
+                                HorizontalOptions = LayoutOptions.FillAndExpand,
                                 FontSize = 14,
                                 TextColor = Colors.White,
                                 HorizontalTextAlignment = TextAlignment.Start,
@@ -477,7 +477,7 @@ namespace iPMCloud.Mobile
                 Margin = new Thickness(0),
                 Spacing = 0,
                 Orientation = StackOrientation.Vertical,
-                HorizontalOptions = LayoutOptions.Fill,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
                 BackgroundColor = Color.FromArgb("#77042d53"),//#90144d73"),
                 Children = {
                     new StackLayout
@@ -486,13 +486,13 @@ namespace iPMCloud.Mobile
                         Margin = new Thickness(0),
                         Spacing = 0,
                         Orientation = StackOrientation.Horizontal,
-                        HorizontalOptions = LayoutOptions.Fill,
+                        HorizontalOptions = LayoutOptions.FillAndExpand,
                         Children = {
                             warn,
                             new Label {
                                 Text = obj.strasse + " " + obj.hsnr + "\n" + land + obj.plz  + " " + obj.ort,
-                                VerticalOptions = LayoutOptions.Start,
-                                HorizontalOptions = LayoutOptions.Fill,
+                                VerticalOptions = LayoutOptions.StartAndExpand,
+                                HorizontalOptions = LayoutOptions.FillAndExpand,
                                 FontSize = 16,
                                 TextColor = Colors.White,
                                 HorizontalTextAlignment = TextAlignment.Start,
@@ -513,7 +513,7 @@ namespace iPMCloud.Mobile
                 Margin = new Thickness(0),
                 Spacing = 0,
                 Orientation = StackOrientation.Vertical,
-                HorizontalOptions = LayoutOptions.Fill,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
                 IsVisible = false
             };
 
@@ -534,7 +534,7 @@ namespace iPMCloud.Mobile
                 Margin = new Thickness(0, 0, 0, 15),
                 Spacing = 0,
                 Orientation = StackOrientation.Vertical,
-                HorizontalOptions = LayoutOptions.Fill,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
                 Children = { stack, container },
                 ClassId = "" + obj.plz + "##" + obj.ort + "##" + obj.strasse + "##" + obj.hsnr + "##" + obj.objektname + "##" + obj.objektnr,
             };

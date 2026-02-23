@@ -28,14 +28,14 @@ namespace iPMCloud.Mobile.vo
 
         public Grid grid = new Grid
         {
-            VerticalOptions = LayoutOptions.Fill,
-            HorizontalOptions = LayoutOptions.Fill,
+            VerticalOptions = LayoutOptions.FillAndExpand,
+            HorizontalOptions = LayoutOptions.FillAndExpand,
         };
 
         public Image img = new Image
         {
-            VerticalOptions = LayoutOptions.Fill,
-            HorizontalOptions = LayoutOptions.Fill,
+            VerticalOptions = LayoutOptions.FillAndExpand,
+            HorizontalOptions = LayoutOptions.FillAndExpand,
         };
 
         // Hilfsmethode zum Erstellen eines Custom Overlays
@@ -43,8 +43,8 @@ namespace iPMCloud.Mobile.vo
         {
             var overlayGrid = new Grid
             {
-                VerticalOptions = LayoutOptions.Fill,
-                HorizontalOptions = LayoutOptions.Fill,
+                VerticalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
                 BackgroundColor = Colors.Transparent
             };
 
@@ -85,7 +85,7 @@ namespace iPMCloud.Mobile.vo
             var bottomStack = new StackLayout
             {
                 VerticalOptions = LayoutOptions.Start,
-                HorizontalOptions = LayoutOptions.Center,
+                HorizontalOptions = LayoutOptions.CenterAndExpand,
                 Spacing = 10,
                 Margin = new Thickness(0, 20, 0, 0)
             };
@@ -95,7 +95,7 @@ namespace iPMCloud.Mobile.vo
                 Text = bottomText,
                 TextColor = Colors.White,
                 FontSize = 14,
-                HorizontalOptions = LayoutOptions.Center
+                HorizontalOptions = LayoutOptions.CenterAndExpand
             };
             bottomStack.Children.Add(bottomLabel);
 
@@ -110,7 +110,7 @@ namespace iPMCloud.Mobile.vo
                     CornerRadius = 25,
                     WidthRequest = 50,
                     HeightRequest = 50,
-                    HorizontalOptions = LayoutOptions.Center
+                    HorizontalOptions = LayoutOptions.CenterAndExpand
                 };
                 flashButton.Clicked += (s, e) => onFlashButtonClicked?.Invoke();
                 bottomStack.Children.Add(flashButton);
@@ -135,8 +135,8 @@ namespace iPMCloud.Mobile.vo
 
                 zxing = new CameraBarcodeReaderView
                 {
-                    HorizontalOptions = LayoutOptions.Fill,
-                    VerticalOptions = LayoutOptions.Fill,
+                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    VerticalOptions = LayoutOptions.FillAndExpand,
                     AutomationId = "zxingScannerView",
                     Options = opts
                 };
@@ -246,8 +246,8 @@ namespace iPMCloud.Mobile.vo
 
                 zxing = new CameraBarcodeReaderView
                 {
-                    HorizontalOptions = LayoutOptions.Fill,
-                    VerticalOptions = LayoutOptions.Fill,
+                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    VerticalOptions = LayoutOptions.FillAndExpand,
                     AutomationId = "zxingScannerView",
                     Options = opts
                 };
@@ -362,8 +362,8 @@ namespace iPMCloud.Mobile.vo
 
                 zxing = new CameraBarcodeReaderView
                 {
-                    HorizontalOptions = LayoutOptions.Fill,
-                    VerticalOptions = LayoutOptions.Fill,
+                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    VerticalOptions = LayoutOptions.FillAndExpand,
                     AutomationId = "zxingScannerView",
                     Options = opts
                 };
@@ -459,8 +459,8 @@ namespace iPMCloud.Mobile.vo
 
                 zxing = new CameraBarcodeReaderView
                 {
-                    HorizontalOptions = LayoutOptions.Fill,
-                    VerticalOptions = LayoutOptions.Fill,
+                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    VerticalOptions = LayoutOptions.FillAndExpand,
                     AutomationId = "zxingScannerView",
                     Options = opts
                 };

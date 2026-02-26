@@ -858,6 +858,9 @@
                     Orientation="Vertical"
                     Spacing="0">
                     <!--<Image x:Name="btn_AddRegScan_limg" Margin="0,0,10,0" HeightRequest="30" WidthRequest="30" VerticalOptions="Start" />-->
+                    <Label
+                        Margin="0"
+                        Padding="0"
                         FontSize="14"
                         HorizontalOptions="Fill"
                         HorizontalTextAlignment="Start"

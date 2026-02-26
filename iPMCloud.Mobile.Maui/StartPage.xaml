@@ -25,10 +25,10 @@
                 AbsoluteLayout.LayoutBounds="0,0,1,1"
                 AbsoluteLayout.LayoutFlags="All"
                 Aspect="Fill"
-                HorizontalOptions="FillAndExpand"
+                HorizontalOptions="Fill"
                 Opacity="1"
                 Source="backgroundgray2.jpg"
-                VerticalOptions="FillAndExpand" />
+                VerticalOptions="Fill" />
         </AbsoluteLayout>
 
         <AbsoluteLayout
@@ -301,44 +301,44 @@
             <StackLayout
                 Margin="0"
                 Padding="0"
-                HorizontalOptions="FillAndExpand"
+                HorizontalOptions="Fill"
                 Spacing="0"
-                VerticalOptions="FillAndExpand">
+                VerticalOptions="Fill">
                 <StackLayout
                     Margin="10,20,10,5"
                     Padding="5"
                     BackgroundColor="#70144d73"
-                    HorizontalOptions="FillAndExpand"
+                    HorizontalOptions="Fill"
                     Orientation="Horizontal"
                     Spacing="0">
                     <Image
                         x:Name="btn_regScan_limg"
                         Margin="0,0,10,0"
                         HeightRequest="30"
-                        VerticalOptions="StartAndExpand"
+                        VerticalOptions="Start"
                         WidthRequest="30" />
                     <Label
                         Margin="0"
                         Padding="0"
                         FontSize="14"
-                        HorizontalOptions="FillAndExpand"
+                        HorizontalOptions="Fill"
                         HorizontalTextAlignment="Start"
                         Text="Damit Sie sich mit dieser App als Mitarbeiter anmelden können, scannen Sie bitte zuerst den von Ihrem Unternehmen vorliegenden QR-Code ein."
                         TextColor="#ffffff"
-                        VerticalOptions="StartAndExpand" />
+                        VerticalOptions="Start" />
                 </StackLayout>
                 <StackLayout
                     Margin="10,0,10,0"
                     Padding="0"
-                    HorizontalOptions="FillAndExpand"
+                    HorizontalOptions="Fill"
                     Orientation="Horizontal"
                     Spacing="0">
                     <Border
                         Margin="0"
                         Padding="1"
                         BackgroundColor="#041d43"
-                        HorizontalOptions="EndAndExpand"
-                        VerticalOptions="CenterAndExpand">
+                        HorizontalOptions="End"
+                        VerticalOptions="Center">
                         <Border.Shadow>
                             <Shadow
                                 Brush="Black"
@@ -352,16 +352,16 @@
                             Padding="0"
                             BackgroundColor="#042d53"
                             HeightRequest="40"
-                            HorizontalOptions="EndAndExpand"
+                            HorizontalOptions="End"
                             Spacing="0"
-                            VerticalOptions="CenterAndExpand"
+                            VerticalOptions="Center"
                             WidthRequest="40">
                             <Image
                                 x:Name="btn_flashlight_img"
                                 Margin="0,0,0,0"
                                 HeightRequest="30"
-                                HorizontalOptions="CenterAndExpand"
-                                VerticalOptions="CenterAndExpand"
+                                HorizontalOptions="Center"
+                                VerticalOptions="Center"
                                 WidthRequest="30" />
                         </StackLayout>
                     </Border>
@@ -370,9 +370,9 @@
                     x:Name="lay_regscan"
                     Margin="10,0,10,20"
                     Padding="0"
-                    HorizontalOptions="FillAndExpand"
+                    HorizontalOptions="Fill"
                     Spacing="0"
-                    VerticalOptions="FillAndExpand" />
+                    VerticalOptions="Fill" />
             </StackLayout>
         </StackLayout>
 
@@ -418,40 +418,40 @@
                 Margin="0,0,0,0"
                 BackgroundColor="Gray"
                 HeightRequest="1"
-                HorizontalOptions="FillAndExpand"
+                HorizontalOptions="Fill"
                 VerticalOptions="Start" />
             <StackLayout
                 Margin="0"
                 Padding="8"
                 BackgroundColor="#144d73"
-                HorizontalOptions="FillAndExpand"
+                HorizontalOptions="Fill"
                 Orientation="Vertical"
                 Spacing="0">
                 <Label
                     Margin="0"
                     Padding="0"
                     FontSize="12"
-                    HorizontalOptions="FillAndExpand"
+                    HorizontalOptions="Fill"
                     HorizontalTextAlignment="Start"
                     Text="Registriet bei:"
                     TextColor="#aaaaaa"
-                    VerticalOptions="StartAndExpand" />
+                    VerticalOptions="Start" />
                 <Label
                     x:Name="lb_login_mandant"
                     Margin="0"
                     Padding="0"
                     FontSize="12"
-                    HorizontalOptions="FillAndExpand"
+                    HorizontalOptions="Fill"
                     HorizontalTextAlignment="Start"
                     Text=""
                     TextColor="#ffffff"
-                    VerticalOptions="StartAndExpand" />
+                    VerticalOptions="Start" />
                 <Border
                     x:Name="btn_addRegScan_frame"
                     Margin="0,5,0,0"
                     Padding="1"
                     BackgroundColor="#041d43"
-                    HorizontalOptions="EndAndExpand">
+                    HorizontalOptions="End">
                     <Border.Shadow>
                         <Shadow
                             Brush="Black"
@@ -465,27 +465,27 @@
                         Padding="2,2,10,2"
                         BackgroundColor="#042d53"
                         HeightRequest="30"
-                        HorizontalOptions="FillAndExpand">
+                        HorizontalOptions="Fill">
                         <StackLayout
                             Margin="0,0,0,0"
                             Padding="0"
                             HeightRequest="26"
-                            HorizontalOptions="FillAndExpand"
+                            HorizontalOptions="Fill"
                             Orientation="Horizontal"
                             Spacing="0"
-                            VerticalOptions="CenterAndExpand">
+                            VerticalOptions="Center">
                             <Image
                                 x:Name="btn_addRegScan_img"
                                 Margin="0,0,8,0"
                                 HeightRequest="26"
-                                VerticalOptions="CenterAndExpand"
+                                VerticalOptions="Center"
                                 WidthRequest="26" />
                             <StackLayout
                                 Margin="0,-4,0,0"
                                 Padding="0"
                                 Orientation="Vertical"
                                 Spacing="0"
-                                VerticalOptions="CenterAndExpand">
+                                VerticalOptions="Center">
                                 <Label
                                     Margin="0"
                                     Padding="0"
@@ -507,7 +507,7 @@
                     Margin="0,5,0,0"
                     Padding="1"
                     BackgroundColor="#041d43"
-                    HorizontalOptions="EndAndExpand"
+                    HorizontalOptions="End"
                     IsVisible="False">
                     <Border.Shadow>
                         <Shadow
@@ -522,27 +522,27 @@
                         Padding="2,2,10,2"
                         BackgroundColor="#042d53"
                         HeightRequest="30"
-                        HorizontalOptions="FillAndExpand">
+                        HorizontalOptions="Fill">
                         <StackLayout
                             Margin="0,0,0,0"
                             Padding="0"
                             HeightRequest="26"
-                            HorizontalOptions="FillAndExpand"
+                            HorizontalOptions="Fill"
                             Orientation="Horizontal"
                             Spacing="0"
-                            VerticalOptions="CenterAndExpand">
+                            VerticalOptions="Center">
                             <Image
                                 x:Name="btn_ToRegScanManagement_img"
                                 Margin="0,2,8,0"
                                 HeightRequest="26"
-                                VerticalOptions="CenterAndExpand"
+                                VerticalOptions="Center"
                                 WidthRequest="26" />
                             <StackLayout
                                 Margin="0,-4,0,0"
                                 Padding="0"
                                 Orientation="Vertical"
                                 Spacing="0"
-                                VerticalOptions="CenterAndExpand">
+                                VerticalOptions="Center">
                                 <Label
                                     Margin="0"
                                     Padding="0"
@@ -564,22 +564,22 @@
                 Margin="0,0,0,3"
                 BackgroundColor="Gray"
                 HeightRequest="1"
-                HorizontalOptions="FillAndExpand"
+                HorizontalOptions="Fill"
                 VerticalOptions="Start" />
 
             <StackLayout
                 Margin="0"
                 Padding="0,50,0,0"
-                HorizontalOptions="FillAndExpand"
+                HorizontalOptions="Fill"
                 Orientation="Vertical"
                 Spacing="0"
-                VerticalOptions="FillAndExpand">
+                VerticalOptions="Fill">
 
                 <Border
                     Margin="10,5,10,10"
                     Padding="1"
                     BackgroundColor="#043d63"
-                    HorizontalOptions="FillAndExpand">
+                    HorizontalOptions="Fill">
                     <Border.Shadow>
                         <Shadow
                             Brush="Black"
@@ -591,18 +591,18 @@
                         Margin="0"
                         Padding="5"
                         BackgroundColor="#144d73"
-                        HorizontalOptions="FillAndExpand"
+                        HorizontalOptions="Fill"
                         Orientation="Vertical"
                         Spacing="0">
                         <Label
                             Margin="0"
                             Padding="0"
                             FontSize="12"
-                            HorizontalOptions="FillAndExpand"
+                            HorizontalOptions="Fill"
                             HorizontalTextAlignment="Start"
                             Text="Benutzername:"
                             TextColor="#aaaaaa"
-                            VerticalOptions="StartAndExpand" />
+                            VerticalOptions="Start" />
                         <custom:CustomEntry
                             x:Name="entry_login_name"
                             Margin="0"
@@ -611,19 +611,19 @@
                             BorderWidth="4"
                             CornerRadius="0"
                             FontSize="17"
-                            HorizontalOptions="FillAndExpand"
+                            HorizontalOptions="Fill"
                             HorizontalTextAlignment="Start"
                             IsCurvedCornersEnabled="False"
                             TextChanged="LoginNameChangedHandeler"
                             TextColor="White"
-                            VerticalOptions="StartAndExpand" />
+                            VerticalOptions="Start" />
                     </StackLayout>
                 </Border>
                 <Border
                     Margin="10"
                     Padding="1"
                     BackgroundColor="#043d63"
-                    HorizontalOptions="FillAndExpand">
+                    HorizontalOptions="Fill">
                     <Border.Shadow>
                         <Shadow
                             Brush="Black"
@@ -635,18 +635,18 @@
                         Margin="0"
                         Padding="5"
                         BackgroundColor="#ff144d73"
-                        HorizontalOptions="FillAndExpand"
+                        HorizontalOptions="Fill"
                         Orientation="Vertical"
                         Spacing="0">
                         <Label
                             Margin="0"
                             Padding="0"
                             FontSize="12"
-                            HorizontalOptions="FillAndExpand"
+                            HorizontalOptions="Fill"
                             HorizontalTextAlignment="Start"
                             Text="Passwort:"
                             TextColor="#aaaaaa"
-                            VerticalOptions="StartAndExpand" />
+                            VerticalOptions="Start" />
 
                         <custom:CustomEntry
                             x:Name="entry_login_password"
@@ -656,27 +656,27 @@
                             BorderWidth="4"
                             CornerRadius="0"
                             FontSize="17"
-                            HorizontalOptions="FillAndExpand"
+                            HorizontalOptions="Fill"
                             HorizontalTextAlignment="Start"
                             IsCurvedCornersEnabled="False"
                             IsPassword="True"
                             TextChanged="LoginPasswordChangedHandeler"
                             TextColor="White"
-                            VerticalOptions="StartAndExpand" />
+                            VerticalOptions="Start" />
                     </StackLayout>
                 </Border>
 
                 <StackLayout
                     Margin="10,15,10,50"
                     Padding="0"
-                    HorizontalOptions="FillAndExpand"
+                    HorizontalOptions="Fill"
                     Orientation="Horizontal"
                     Spacing="0">
                     <Border
                         Margin="0"
                         Padding="1"
                         BackgroundColor="#041d43"
-                        HorizontalOptions="EndAndExpand">
+                        HorizontalOptions="End">
                         <Border.Shadow>
                             <Shadow
                                 Brush="Black"
@@ -689,26 +689,26 @@
                             Margin="0"
                             Padding="5"
                             BackgroundColor="#042d53"
-                            HorizontalOptions="EndAndExpand"
+                            HorizontalOptions="End"
                             Orientation="Horizontal"
                             Spacing="10"
-                            VerticalOptions="CenterAndExpand">
+                            VerticalOptions="Center">
                             <Image
                                 x:Name="btn_login_img"
                                 Margin="0"
                                 HeightRequest="24"
-                                HorizontalOptions="CenterAndExpand"
-                                VerticalOptions="CenterAndExpand"
+                                HorizontalOptions="Center"
+                                VerticalOptions="Center"
                                 WidthRequest="24" />
                             <Label
                                 Margin="0,0,5,0"
                                 Padding="0"
                                 FontSize="18"
-                                HorizontalOptions="StartAndExpand"
+                                HorizontalOptions="Start"
                                 HorizontalTextAlignment="Start"
                                 Text="Anmelden"
                                 TextColor="#ffffff"
-                                VerticalOptions="CenterAndExpand" />
+                                VerticalOptions="Center" />
                         </StackLayout>
                     </Border>
                 </StackLayout>
@@ -716,13 +716,13 @@
                     Margin="0,0,0,0"
                     BackgroundColor="Gray"
                     HeightRequest="1"
-                    HorizontalOptions="FillAndExpand"
+                    HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <StackLayout
                     Margin="0"
                     Padding="25,10,20,10"
                     BackgroundColor="#55144d73"
-                    HorizontalOptions="FillAndExpand"
+                    HorizontalOptions="Fill"
                     Orientation="Horizontal"
                     Spacing="0">
                     <Label
@@ -733,26 +733,26 @@
                         HorizontalTextAlignment="Start"
                         Text="Anmeldung merken"
                         TextColor="#ffffff"
-                        VerticalOptions="CenterAndExpand" />
+                        VerticalOptions="Center" />
                     <Switch
                         x:Name="sw_autologin"
                         HorizontalOptions="Start"
                         Toggled="Switch_Toggled"
-                        VerticalOptions="CenterAndExpand" />
+                        VerticalOptions="Center" />
                 </StackLayout>
                 <BoxView
                     Margin="0,0,0,0"
                     BackgroundColor="Gray"
                     HeightRequest="1"
-                    HorizontalOptions="FillAndExpand"
+                    HorizontalOptions="Fill"
                     VerticalOptions="Start" />
 
                 <StackLayout
                     Margin="0"
                     Padding="0"
-                    HorizontalOptions="FillAndExpand"
+                    HorizontalOptions="Fill"
                     Spacing="0"
-                    VerticalOptions="FillAndExpand" />
+                    VerticalOptions="Fill" />
 
             </StackLayout>
         </StackLayout>
@@ -764,25 +764,25 @@
             Padding="0"
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             AbsoluteLayout.LayoutFlags="All"
-            HorizontalOptions="FillAndExpand"
+            HorizontalOptions="Fill"
             IsVisible="False"
             Spacing="0"
-            VerticalOptions="FillAndExpand">
+            VerticalOptions="Fill">
 
             <StackLayout
                 Margin="0"
                 Padding="10,10,10,10"
                 HeightRequest="48"
-                HorizontalOptions="FillAndExpand"
+                HorizontalOptions="Fill"
                 Orientation="Horizontal"
                 Spacing="0">
                 <Border
                     Margin="3,2,2,2"
                     Padding="1"
                     BackgroundColor="Transparent"
-                    HorizontalOptions="FillAndExpand"
+                    HorizontalOptions="Fill"
                     Stroke="Transparent"
-                    VerticalOptions="CenterAndExpand">
+                    VerticalOptions="Center">
                     <Border.Shadow>
                         <Shadow
                             Brush="Black"
@@ -799,18 +799,18 @@
                         HorizontalOptions="Start"
                         Orientation="Horizontal"
                         Spacing="0"
-                        VerticalOptions="CenterAndExpand">
+                        VerticalOptions="Center">
                         <Image
                             x:Name="img_backBtn_RegManagement"
                             Margin="0,0,0,0"
                             HeightRequest="30"
                             HorizontalOptions="Start"
-                            VerticalOptions="CenterAndExpand"
+                            VerticalOptions="Center"
                             WidthRequest="30" />
                         <Label
                             Margin="0"
                             FontSize="18"
-                            HorizontalOptions="FillAndExpand"
+                            HorizontalOptions="Fill"
                             HorizontalTextAlignment="Start"
                             LineBreakMode="TailTruncation"
                             Text="ABBRECHEN"
@@ -823,51 +823,51 @@
                 Margin="0,0,0,3"
                 BackgroundColor="Gray"
                 HeightRequest="1"
-                HorizontalOptions="FillAndExpand"
+                HorizontalOptions="Fill"
                 VerticalOptions="Start" />
 
 
-            <!--<ScrollView VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Padding="0" Margin="0">-->
+            <!--<ScrollView VerticalOptions="Fill" HorizontalOptions="Fill" Padding="0" Margin="0">-->
             <StackLayout
                 Margin="0"
                 Padding="0"
-                HorizontalOptions="FillAndExpand"
+                HorizontalOptions="Fill"
                 Orientation="Vertical"
                 Spacing="0"
-                VerticalOptions="FillAndExpand">
+                VerticalOptions="Fill">
 
                 <StackLayout
                     Margin="10,0,10,5"
                     Padding="5"
                     BackgroundColor="#70144d73"
-                    HorizontalOptions="FillAndExpand"
+                    HorizontalOptions="Fill"
                     Orientation="Vertical"
                     Spacing="0">
-                    <!--<Image x:Name="btn_AddRegScan_limg" Margin="0,0,10,0" HeightRequest="30" WidthRequest="30" VerticalOptions="StartAndExpand" />-->
+                    <!--<Image x:Name="btn_AddRegScan_limg" Margin="0,0,10,0" HeightRequest="30" WidthRequest="30" VerticalOptions="Start" />-->
                     <Label
                         Margin="0"
                         Padding="5"
                         FontSize="14"
-                        HorizontalOptions="FillAndExpand"
+                        HorizontalOptions="Fill"
                         HorizontalTextAlignment="Start"
                         Text="Wählen Sie ein registrietes Unternehmen für den Sie jetzt aktuell arbeiten möchten oder fügen Sie noch ein Unternehmen hinzu."
                         TextColor="#ffffff"
-                        VerticalOptions="StartAndExpand" />
+                        VerticalOptions="Start" />
                     <Label
                         Margin="0"
                         Padding="5"
                         FontSize="14"
-                        HorizontalOptions="FillAndExpand"
+                        HorizontalOptions="Fill"
                         HorizontalTextAlignment="Start"
                         Text="Bevor Sie wechseln müssen alle Arbeiten abgelschlossen und hochgeladen sein!"
                         TextColor="#ffffff"
-                        VerticalOptions="StartAndExpand" />
+                        VerticalOptions="Start" />
                     <Border
                         x:Name="btn_addRegScan2_frame"
                         Margin="0,5,0,0"
                         Padding="1"
                         BackgroundColor="#041d43"
-                        HorizontalOptions="EndAndExpand">
+                        HorizontalOptions="End">
                         <Border.Shadow>
                             <Shadow
                                 Brush="Black"
@@ -881,27 +881,27 @@
                             Padding="2,2,10,2"
                             BackgroundColor="#042d53"
                             HeightRequest="30"
-                            HorizontalOptions="FillAndExpand">
+                            HorizontalOptions="Fill">
                             <StackLayout
                                 Margin="0,0,0,0"
                                 Padding="0"
                                 HeightRequest="26"
-                                HorizontalOptions="FillAndExpand"
+                                HorizontalOptions="Fill"
                                 Orientation="Horizontal"
                                 Spacing="0"
-                                VerticalOptions="CenterAndExpand">
+                                VerticalOptions="Center">
                                 <Image
                                     x:Name="btn_addRegScan2_img"
                                     Margin="0,0,8,0"
                                     HeightRequest="26"
-                                    VerticalOptions="CenterAndExpand"
+                                    VerticalOptions="Center"
                                     WidthRequest="26" />
                                 <StackLayout
                                     Margin="0,-4,0,0"
                                     Padding="0"
                                     Orientation="Vertical"
                                     Spacing="0"
-                                    VerticalOptions="CenterAndExpand">
+                                    VerticalOptions="Center">
                                     <Label
                                         Margin="0"
                                         Padding="0"
@@ -923,16 +923,16 @@
                 <ScrollView
                     Margin="0"
                     Padding="0"
-                    HorizontalOptions="FillAndExpand"
-                    VerticalOptions="FillAndExpand">
+                    HorizontalOptions="Fill"
+                    VerticalOptions="Fill">
                     <StackLayout
                         x:Name="lay_selectcompany_container"
                         Margin="10,0,10,5"
                         Padding="0"
-                        HorizontalOptions="FillAndExpand"
+                        HorizontalOptions="Fill"
                         Orientation="Vertical"
                         Spacing="0"
-                        VerticalOptions="FillAndExpand" />
+                        VerticalOptions="Fill" />
                 </ScrollView>
 
             </StackLayout>
@@ -946,31 +946,31 @@
             Padding="0"
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             AbsoluteLayout.LayoutFlags="All"
-            HorizontalOptions="FillAndExpand"
+            HorizontalOptions="Fill"
             IsVisible="False"
             Spacing="0"
-            VerticalOptions="FillAndExpand">
+            VerticalOptions="Fill">
 
             <BoxView
                 Margin="0,0,0,3"
                 BackgroundColor="Gray"
                 HeightRequest="1"
-                HorizontalOptions="FillAndExpand"
+                HorizontalOptions="Fill"
                 VerticalOptions="Start" />
             <StackLayout
                 Margin="0"
                 Padding="10,10,10,10"
                 HeightRequest="48"
-                HorizontalOptions="FillAndExpand"
+                HorizontalOptions="Fill"
                 Orientation="Horizontal"
                 Spacing="0">
                 <Border
                     Margin="3,2,2,2"
                     Padding="1"
                     BackgroundColor="Transparent"
-                    HorizontalOptions="FillAndExpand"
+                    HorizontalOptions="Fill"
                     Stroke="Transparent"
-                    VerticalOptions="CenterAndExpand">
+                    VerticalOptions="Center">
                     <Border.Shadow>
                         <Shadow
                             Brush="Black"
@@ -987,18 +987,18 @@
                         HorizontalOptions="Start"
                         Orientation="Horizontal"
                         Spacing="0"
-                        VerticalOptions="CenterAndExpand">
+                        VerticalOptions="Center">
                         <Image
                             x:Name="img_backBtn_inRegAddScan_img"
                             Margin="0,0,0,0"
                             HeightRequest="30"
                             HorizontalOptions="Start"
-                            VerticalOptions="CenterAndExpand"
+                            VerticalOptions="Center"
                             WidthRequest="30" />
                         <Label
                             Margin="0"
                             FontSize="18"
-                            HorizontalOptions="FillAndExpand"
+                            HorizontalOptions="Fill"
                             HorizontalTextAlignment="Start"
                             LineBreakMode="TailTruncation"
                             Text="ABBRECHEN"
@@ -1011,35 +1011,35 @@
                 Margin="0,0,0,3"
                 BackgroundColor="Gray"
                 HeightRequest="1"
-                HorizontalOptions="FillAndExpand"
+                HorizontalOptions="Fill"
                 VerticalOptions="Start" />
 
 
             <ScrollView
                 Margin="0"
                 Padding="0"
-                HorizontalOptions="FillAndExpand"
-                VerticalOptions="FillAndExpand">
+                HorizontalOptions="Fill"
+                VerticalOptions="Fill">
                 <StackLayout
                     Margin="0"
                     Padding="0"
-                    HorizontalOptions="FillAndExpand"
+                    HorizontalOptions="Fill"
                     Orientation="Vertical"
                     Spacing="0"
-                    VerticalOptions="FillAndExpand">
+                    VerticalOptions="Fill">
 
                     <StackLayout
                         Margin="10,0,10,0"
                         Padding="0"
-                        HorizontalOptions="FillAndExpand"
+                        HorizontalOptions="Fill"
                         Orientation="Horizontal"
                         Spacing="0">
                         <Border
                             Margin="0"
                             Padding="1"
                             BackgroundColor="#041d43"
-                            HorizontalOptions="EndAndExpand"
-                            VerticalOptions="CenterAndExpand">
+                            HorizontalOptions="End"
+                            VerticalOptions="Center">
                             <Border.Shadow>
                                 <Shadow
                                     Brush="Black"
@@ -1053,16 +1053,16 @@
                                 Padding="0"
                                 BackgroundColor="#042d53"
                                 HeightRequest="40"
-                                HorizontalOptions="EndAndExpand"
+                                HorizontalOptions="End"
                                 Spacing="0"
-                                VerticalOptions="CenterAndExpand"
+                                VerticalOptions="Center"
                                 WidthRequest="40">
                                 <Image
                                     x:Name="btn_flashlight_AddRegScan_img"
                                     Margin="0,0,0,0"
                                     HeightRequest="30"
-                                    HorizontalOptions="CenterAndExpand"
-                                    VerticalOptions="CenterAndExpand"
+                                    HorizontalOptions="Center"
+                                    VerticalOptions="Center"
                                     WidthRequest="30" />
                             </StackLayout>
                         </Border>
@@ -1072,27 +1072,27 @@
                         x:Name="lay_addregscan"
                         Margin="10,0,10,20"
                         Padding="0"
-                        HorizontalOptions="FillAndExpand"
+                        HorizontalOptions="Fill"
                         Spacing="0"
-                        VerticalOptions="FillAndExpand" />
+                        VerticalOptions="Fill" />
 
                     <StackLayout
                         Margin="10,0,10,5"
                         Padding="5"
                         BackgroundColor="#70144d73"
-                        HorizontalOptions="FillAndExpand"
+                        HorizontalOptions="Fill"
                         Orientation="Horizontal"
                         Spacing="0">
-                        <!--<Image x:Name="btn_AddRegScan_limg" Margin="0,0,10,0" HeightRequest="30" WidthRequest="30" VerticalOptions="StartAndExpand" />-->
+                        <!--<Image x:Name="btn_AddRegScan_limg" Margin="0,0,10,0" HeightRequest="30" WidthRequest="30" VerticalOptions="Start" />-->
                         <Label
                             Margin="0"
                             Padding="0"
                             FontSize="14"
-                            HorizontalOptions="FillAndExpand"
+                            HorizontalOptions="Fill"
                             HorizontalTextAlignment="Start"
                             Text="Scannen Sie den angezeigten Registrier-QR-Code ein um ein weiters Unternehmen hinzuzufügen. "
                             TextColor="#ffffff"
-                            VerticalOptions="StartAndExpand" />
+                            VerticalOptions="Start" />
                     </StackLayout>
                 </StackLayout>
             </ScrollView>
@@ -1113,37 +1113,37 @@
                 AbsoluteLayout.LayoutBounds="0,50,360,558"
                 AbsoluteLayout.LayoutFlags="None"
                 BackgroundColor="#144d73"
-                HorizontalOptions="FillAndExpand"
+                HorizontalOptions="Fill"
                 Orientation="Vertical"
                 Spacing="0">
                 <StackLayout
                     Margin="0"
                     Padding="0"
-                    HorizontalOptions="StartAndExpand"
+                    HorizontalOptions="Start"
                     Orientation="Horizontal"
                     Spacing="0"
-                    VerticalOptions="CenterAndExpand">
+                    VerticalOptions="Center">
                     <Image
                         x:Name="img_gpsinfo"
                         Margin="0,0,10,0"
                         HeightRequest="28"
-                        HorizontalOptions="CenterAndExpand"
-                        VerticalOptions="CenterAndExpand"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center"
                         WidthRequest="28" />
                     <Label
                         Margin="0"
                         FontSize="24"
-                        HorizontalOptions="FillAndExpand"
+                        HorizontalOptions="Fill"
                         HorizontalTextAlignment="Start"
                         Text="GPS Standort"
                         TextColor="#ffffff"
-                        VerticalOptions="CenterAndExpand" />
+                        VerticalOptions="Center" />
                 </StackLayout>
                 <BoxView
                     Margin="0,3,0,3"
                     BackgroundColor="Gray"
                     HeightRequest="1"
-                    HorizontalOptions="FillAndExpand"
+                    HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Label
                     Margin="0,0,0,20"
@@ -1157,12 +1157,12 @@
                     Margin="0,10,0,10"
                     BackgroundColor="Gray"
                     HeightRequest="1"
-                    HorizontalOptions="FillAndExpand"
+                    HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <StackLayout
                     Margin="0"
                     Padding="0"
-                    HorizontalOptions="EndAndExpand"
+                    HorizontalOptions="End"
                     Orientation="Horizontal"
                     Spacing="0">
                     <Border
@@ -1200,14 +1200,14 @@
                 Margin="10,200,20,0"
                 Padding="10"
                 BackgroundColor="#144d73"
-                HorizontalOptions="FillAndExpand"
+                HorizontalOptions="Fill"
                 Orientation="Vertical"
                 Spacing="0">
                 <Label
                     x:Name="popupContainer_Alert_Titel"
                     Margin="0"
                     FontSize="20"
-                    HorizontalOptions="FillAndExpand"
+                    HorizontalOptions="Fill"
                     HorizontalTextAlignment="Start"
                     Text=""
                     TextColor="#ffffff"
@@ -1216,7 +1216,7 @@
                     Margin="0,3,0,3"
                     BackgroundColor="Gray"
                     HeightRequest="1"
-                    HorizontalOptions="FillAndExpand"
+                    HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Label
                     x:Name="popupContainer_Alert_Text"
@@ -1231,12 +1231,12 @@
                     Margin="0,10,0,10"
                     BackgroundColor="Gray"
                     HeightRequest="1"
-                    HorizontalOptions="FillAndExpand"
+                    HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <StackLayout
                     Margin="0"
                     Padding="0"
-                    HorizontalOptions="FillAndExpand"
+                    HorizontalOptions="Fill"
                     Orientation="Horizontal"
                     Spacing="0">
                     <Border
@@ -1244,7 +1244,7 @@
                         Margin="0"
                         Padding="10"
                         BackgroundColor="#04732d"
-                        HorizontalOptions="EndAndExpand">
+                        HorizontalOptions="End">
                         <Border.Shadow>
                             <Shadow
                                 Brush="Black"

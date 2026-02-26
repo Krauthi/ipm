@@ -69,13 +69,7 @@ namespace iPMCloud.Mobile.vo
                         StartPageObj = new StartPage();
                         AppModel.Instance.StartPage = StartPageObj;
                         var startPage = StartPageObj.GetPage(subPage);
-                        
-                        // Set the main page - works before and after window is created
-                        if (AppModel.Instance?.App != null)
-                        {
-                            //AppModel.Instance.App.MainPage = startPage; 
-                            AppModel.Instance.App.Windows[0].Page = startPage;
-                        }
+                        SetPage(startPage);
                     }
                     else
                     {
@@ -90,13 +84,7 @@ namespace iPMCloud.Mobile.vo
                         MainPageObj = new MainPage();
                         AppModel.Instance.MainPage = MainPageObj;
                         var mainPageContent = MainPageObj.GetPage(subPage); // Fixed: was using StartPageObj
-                        
-                        // Set the main page - works before and after window is created
-                        if (AppModel.Instance?.App != null)
-                        {
-                            //AppModel.Instance.App.MainPage = mainPageContent;
-                            AppModel.Instance.App.Windows[0].Page = mainPageContent;
-                        }
+                        SetPage(mainPageContent);
                     }
                     else
                     {
@@ -128,6 +116,23 @@ namespace iPMCloud.Mobile.vo
                 //        System.Diagnostics.Process.GetCurrentProcess().Kill();// Complete Close App
                 //    }
                 //    break;
+            }
+        }
+
+        private static void SetPage(Page targetPage)
+        {
+            var app = Application.Current ?? AppModel.Instance?.App;
+            if (app == null)
+                return;
+
+            if (app.Windows != null && app.Windows.Count > 0)
+            {
+                app.Windows[0].Page = targetPage;
+            }
+            else
+            {
+                AppModel.Logger.Info("No window available yet – setting MainPage as fallback.");
+                app.MainPage = targetPage;
             }
         }
 

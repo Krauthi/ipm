@@ -13,7 +13,7 @@ namespace iPMCloud.Mobile.vo
     {     
     }
 
-    public class LocationInfo : IPeriodicTask
+    public class LocationInfo //: IPeriodicTask
     {
         public bool GpsIsRunning { get; set; } = false;
         public LocationInfo(int seconds)
@@ -23,37 +23,37 @@ namespace iPMCloud.Mobile.vo
 
         public TimeSpan Interval { get; set; }
 
-        public async Task<bool> StartJob()
-        {
-            if (!AppModel.Instance.isInBackground && !AppModel.Instance.GpsIsRunning
-                && AppModel.Instance.SettingModel.SettingDTO.GPSInfoHasShow)
-            {
-                try
-                {
-                    if (!GpsIsRunning)
-                    {
-                        //AppModel.Logger.Info("Ping GPS");
-                        GpsIsRunning = true;
+        //public async Task<bool> StartJob()
+        //{
+        //    if (!AppModel.Instance.isInBackground && !AppModel.Instance.GpsIsRunning
+        //        && AppModel.Instance.SettingModel.SettingDTO.GPSInfoHasShow)
+        //    {
+        //        try
+        //        {
+        //            if (!GpsIsRunning)
+        //            {
+        //                //AppModel.Logger.Info("Ping GPS");
+        //                GpsIsRunning = true;
 
-                        AppModel.Instance.CheckPermissionGPS();
-                        if (String.IsNullOrWhiteSpace(AppModel.Instance.checkPermissionGPSMessage))
-                        {
-                            //    return true;
-                            //}
-                            //if (CheckPermissionGPS().Result)
-                            //{
-                            AppModel.Instance.SetLocationGPS(true);// GetGeoLocation().Result;
-                        }
-                        GpsIsRunning = false;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    GpsIsRunning = false;
-                    AppModel.Logger.Error("ERROR: Ping GPS in JOB: " + ex.Message);
-                }
-            }
-            return true;
-        }
+        //                AppModel.Instance.CheckPermissionGPS();
+        //                if (String.IsNullOrWhiteSpace(AppModel.Instance.checkPermissionGPSMessage))
+        //                {
+        //                    //    return true;
+        //                    //}
+        //                    //if (CheckPermissionGPS().Result)
+        //                    //{
+        //                    AppModel.Instance.SetLocationGPS(true);// GetGeoLocation().Result;
+        //                }
+        //                GpsIsRunning = false;
+        //            }
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            GpsIsRunning = false;
+        //            AppModel.Logger.Error("ERROR: Ping GPS in JOB: " + ex.Message);
+        //        }
+        //    }
+        //    return true;
+        //}
     }
 }

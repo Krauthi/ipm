@@ -1961,7 +1961,7 @@
                                         Text=""
                                         TextColor="#ffffff"
                                         VerticalOptions="CenterAndExpand" />
-                                    <Frame
+                                    <Border
                                         x:Name="frame_planConA_erl_count_con"
                                         Margin="0"
                                         Padding="1"
@@ -3067,7 +3067,7 @@
                             TextColor="#2f84bd"
                             VerticalOptions="Center" />
                     </StackLayout>
-                </Frame>
+                </Border>
 
                 <StackLayout
                     Margin="0"
@@ -7960,7 +7960,7 @@
                                     VerticalOptions="Center" />
                             </StackLayout>
                         </StackLayout>
-                    </Frame>
+                    </Border>
                     <Label
                         Margin="0"
                         FontSize="22"

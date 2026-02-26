@@ -1177,7 +1177,7 @@ namespace iPMCloud.Mobile
                     Margin = new Thickness(0, -10, 0, -5),
                     HorizontalOptions = LayoutOptions.FillAndExpand,
                     VerticalOptions = LayoutOptions.StartAndExpand,
-                    TextColor = Color.White,
+                    TextColor = Colors.White,
                     FontSize = 16,
                     Keyboard = Keyboard.Numeric,
                     HeightRequest = 40,

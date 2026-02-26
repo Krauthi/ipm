@@ -151,7 +151,7 @@ namespace iPMCloud.Mobile
                 FontSize = 26,
                 LineBreakMode = LineBreakMode.WordWrap,
                 HorizontalOptions = LayoutOptions.Fill,
-                HorizontalTextAlignment = TextAlignment.EndAndExpand,
+                HorizontalTextAlignment = TextAlignment.End,
                 BackgroundColor = Color.FromArgb("#000000"),
             };
             var zaehlerKomma = new Label

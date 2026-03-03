@@ -176,7 +176,7 @@ namespace iPMCloud.Mobile.vo
         //! use Test Login and Server Data
 
 #if DEBUG
-        public bool IsTest { get; set; } = true;
+        public bool IsTest { get; set; } = false;
         public bool RefreshPNToken = false;
 #else
         public bool IsTest { get; set; } = false;

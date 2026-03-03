@@ -26,7 +26,7 @@
                 AbsoluteLayout.LayoutFlags="All"
                 Aspect="Fill"
                 HorizontalOptions="Fill"
-                Opacity="1"
+                Opacity="0.5"
                 Source="backgroundgray2.jpg"
                 VerticalOptions="Fill" />
         </AbsoluteLayout>
@@ -110,6 +110,7 @@
         </AbsoluteLayout>
 
 
+        <!--  1. SCREEN   -->
         <Grid
             x:Name="BeforeLogin_Container"
             Margin="0"
@@ -124,9 +125,9 @@
                 Margin="0"
                 AbsoluteLayout.LayoutBounds="0,0,1,1"
                 AbsoluteLayout.LayoutFlags="All"
-                Aspect="Fill"
+                Aspect="AspectFill"
                 HorizontalOptions="Fill"
-                Opacity="0.3"
+                Opacity="0.7"
                 Source="mockup4b.jpg"
                 VerticalOptions="Fill" />
 
@@ -158,7 +159,14 @@
                     HorizontalOptions="Fill"
                     HorizontalTextAlignment="Start"
                     Text="Eine Lösung"
-                    TextColor="#ffffff" />
+                    TextColor="#ffffff">
+                    <Label.Shadow><Shadow
+                                Brush="Black"
+                                Opacity="0.9"
+                                Radius="7"
+                                Offset="3,3" />
+                    </Label.Shadow>
+                </Label>
 
                 <Label
                     Grid.Row="1"
@@ -169,7 +177,15 @@
                     HorizontalOptions="Fill"
                     HorizontalTextAlignment="End"
                     Text="für Ihr Unternehmen"
-                    TextColor="#ffffff" />
+                    TextColor="#ffffff" >
+                    <Label.Shadow>
+                    <Shadow
+                                Brush="Black"
+                                Opacity="0.9"
+                                Radius="7"
+                                Offset="3,3" />
+                    </Label.Shadow>
+                </Label>
 
                 <!--  Linker Textblock  -->
                 <VerticalStackLayout
@@ -180,11 +196,19 @@
                     <Label
                         Margin="0"
                         Padding="0"
-                        FontSize="16"
+                        FontSize="18"
                         HorizontalTextAlignment="Start"
                         Text="Rund ums Objekt für den &#13;&#10;Hausmeisterservice &#13;&#10;Immobilienpflegedienst &#13;&#10;Gebäudereiniger &#13;&#10;Land- und Gartenbau &#13;&#10;Facility Management &#13;&#10;Dienstleister &#13;&#10;und noch viele mehr..."
                         TextColor="#eeeeee"
-                        VerticalOptions="Start" />
+                        VerticalOptions="Start" >
+                        <Label.Shadow>
+                            <Shadow
+                                Brush="Black"
+                                Opacity="0.9"
+                                Radius="5"
+                                Offset="2,2" />
+                        </Label.Shadow>
+                    </Label>
                 </VerticalStackLayout>
 
                 <!--  Rechter Textblock  -->
@@ -196,11 +220,19 @@
                     <Label
                         Margin="0"
                         Padding="0"
-                        FontSize="16"
+                        FontSize="18"
                         HorizontalTextAlignment="End"
                         Text="Mehr KONTROLLE &#13;&#10;schnelles HANDELN&#13;&#10;kleiner AUFWAND&#13;&#10;große WIRKUNG&#13;&#10;bessere PRÄSENZ&#13;&#10;alles aus einer HAND&#13;&#10;und ES kann noch &#13;&#10;einiges MEHR..."
-                        TextColor="#aaaaaa"
-                        VerticalOptions="Start" />
+                        TextColor="#cccccc"
+                        VerticalOptions="Start"  >
+                        <Label.Shadow>
+                            <Shadow
+                                Brush="Black"
+                                Opacity="0.9"
+                                Radius="5"
+                                Offset="2,2" />
+                        </Label.Shadow>
+                    </Label>
                 </VerticalStackLayout>
 
                 <!--  Spacer  -->
@@ -209,28 +241,43 @@
                 <!--  Info-Box  -->
                 <Border
                     Grid.Row="5"
-                    Margin="10,80,10,0"
+                    Margin="10,0,10,0"
                     Padding="0"
-                    BackgroundColor="#50144d73"
-                    Opacity="0.9"
+                    BackgroundColor="#c0144d73"                    
                     StrokeThickness="0">
                     <VerticalStackLayout Padding="5,5,5,8" Spacing="0">
                         <Label
                             Margin="0"
                             Padding="0"
-                            FontSize="16"
+                            FontSize="Large"
                             HorizontalTextAlignment="Start"
-                            Text="Danke für Ihr Interesse an dieser Mobile-App"
-                            TextColor="#007acc"
-                            VerticalOptions="Start" />
+                            Text="Danke für Ihr Interesse"
+                            TextColor="#50bafc"
+                            VerticalOptions="Start"  >
+                            <Label.Shadow>
+                                <Shadow
+                                Brush="Black"
+                                Opacity="0.9"
+                                Radius="7"
+                                Offset="3,3" />
+                            </Label.Shadow>
+                        </Label>
                         <Label
                             Margin="0,5,0,0"
                             Padding="0"
-                            FontSize="12"
-                            HorizontalTextAlignment="Start"
+                            FontSize="14"
+                            HorizontalTextAlignment="Justify"
                             Text="Diese App ist nur in Verbindung mit Unserer Hauptanwendung zu vernwenden. Um diese App nutzen zu können brauchen Sie von uns einen Unternehmer QR-Code. Diesen QR-Code erhalten Sie nur als Mitglied der iPM-Cloud."
                             TextColor="#ffffff"
-                            VerticalOptions="Start" />
+                            VerticalOptions="Start" >
+                            <Label.Shadow>
+                                <Shadow
+                                Brush="Black"
+                                Opacity="1"
+                                Radius="2"
+                                Offset="1,1" />
+                            </Label.Shadow>
+                        </Label>
                     </VerticalStackLayout>
                 </Border>
 
@@ -277,7 +324,15 @@
                                 HorizontalTextAlignment="Start"
                                 Text="Jetzt Ihren QR-Code scannen"
                                 TextColor="#ffffff"
-                                VerticalOptions="Center" />
+                                VerticalOptions="Center" >
+                                <Label.Shadow>
+                                    <Shadow
+                                        Brush="Black"
+                                        Opacity="0.9"
+                                        Radius="7"
+                                        Offset="3,3" />
+                                </Label.Shadow>
+                            </Label>
                         </HorizontalStackLayout>
                     </Border>
                 </Grid>
@@ -290,6 +345,7 @@
 
 
 
+        <!--  REGISTRIEREN QR SCREEN   -->
         <Grid
             x:Name="RegScan_Container"
             Margin="0"

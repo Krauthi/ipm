@@ -31,16 +31,17 @@ namespace iPMCloud.Mobile
         private void InitStartPage(bool switchCustomer = false)
         {
 
-            btn_regScan_limg.Source = AppModel.Instance.imagesBase.QrScan;
+            //btn_regScan_limg.Source = AppModel.Instance.imagesBase.QrScan;
             //btn_regScanWarn_img.Source = AppModel.Instance.imagesBase.WarnTriangleYellow;
 
-            btn_flashlight_img.Source = AppModel.Instance.imagesBase.Flashlight;
-            btn_flashlight_AddRegScan_img.Source = AppModel.Instance.imagesBase.Flashlight;
+            //btn_flashlight_img.Source = AppModel.Instance.imagesBase.Flashlight;
+            //btn_flashlight_AddRegScan_img.Source = AppModel.Instance.imagesBase.Flashlight;
 
             img_gpsinfo.Source = AppModel.Instance.imagesBase.Pin;
 
             btn_login_img.Source = AppModel.Instance.imagesBase.Login;
             btn_toregist_img.Source = AppModel.Instance.imagesBase.QrScan;
+            btn_toregist_more_img.Source = AppModel.Instance.imagesBase.InfoCircle;
             btn_addRegScan_img.Source = AppModel.Instance.imagesBase.AddImageWithe;
             btn_addRegScan2_img.Source = AppModel.Instance.imagesBase.AddImageWithe;
             btn_ToRegScanManagement_img.Source = AppModel.Instance.imagesBase.Change;
@@ -270,33 +271,45 @@ namespace iPMCloud.Mobile
             AppModel.Instance.Companies.ForEach(c =>
             {
                 var isSelected = c.CustomerNumber == AppModel.Instance.SettingModel.SettingDTO.CustomerNumber;
-                var tgr = new TapGestureRecognizer();
                 if (!isSelected)
                 {
-                    tgr.Tapped += (s, e) => { CompanySelected(s, e); };
+                    var tgr = new TapGestureRecognizer();
+                    if (!isSelected)
+                    {
+                        tgr.Tapped += (s, e) => { CompanySelected(s, e); };
+                    }
+                    Border companyView = Elements.GetCompanySelectionItem(c, AppModel.Instance.imagesBase.Building, isSelected);
+                    companyView.GestureRecognizers.Clear();
+                    companyView.GestureRecognizers.Add(tgr);
+                    companyView.ClassId = c.CustomerNumber;
+
+                    // Löschbutton erstmal raus !!!
+                    //var tgrDelete = new TapGestureRecognizer();
+                    //if (!isSelected)
+                    //{
+                    //    tgrDelete.Tapped += (s, e) => { CompanyDeleted(s, e); };
+                    //}
+                    //Border xBtn = Elements.GetXButton(c, AppModel.Instance.imagesBase.Trash, isSelected);
+                    //xBtn.GestureRecognizers.Clear();
+                    //xBtn.GestureRecognizers.Add(tgrDelete);
+                    //xBtn.ClassId = c.CustomerNumber;
+                    var stack = new Grid
+                    {
+                        Margin = new Thickness(0, 0, 0, 0),
+                        HorizontalOptions = LayoutOptions.Fill,
+                        Children = { companyView },
+                        RowDefinitions =
+                        {
+                            new RowDefinition { Height = GridLength.Auto }
+                        },
+                        ColumnDefinitions =
+                        {
+                            new ColumnDefinition { Width = GridLength.Star }
+                        },
+                        //Children = { companyView, xBtn }  - Löschen entfernt 
+                    };
+                    lay_selectcompany_container.Children.Add(stack);
                 }
-                Border companyView = Elements.GetCompanySelectionItem(c, AppModel.Instance.imagesBase.Building, isSelected);
-                companyView.GestureRecognizers.Clear();
-                companyView.GestureRecognizers.Add(tgr);
-                companyView.ClassId = c.CustomerNumber;
-                var tgrDelete = new TapGestureRecognizer();
-                if (!isSelected)
-                {
-                    tgrDelete.Tapped += (s, e) => { CompanyDeleted(s, e); };
-                }
-                Border xBtn = Elements.GetXButton(c, AppModel.Instance.imagesBase.Trash, isSelected);
-                xBtn.GestureRecognizers.Clear();
-                xBtn.GestureRecognizers.Add(tgrDelete);
-                xBtn.ClassId = c.CustomerNumber;
-                var stack = new StackLayout
-                {
-                    Margin = new Thickness(0, 0, 0, 0),
-                    Spacing = 0,
-                    HorizontalOptions = LayoutOptions.Fill,
-                    Orientation = StackOrientation.Horizontal,
-                    Children = { companyView, xBtn }
-                };
-                lay_selectcompany_container.Children.Add(stack);
             });
 
             await Task.Delay(1);
@@ -390,7 +403,7 @@ namespace iPMCloud.Mobile
             // Vorherige aktive Company/SettingDTO speichern
             Company.AddUpdateCompany(AppModel.Instance, AppModel.Instance.SettingModel.SettingDTO);
 
-            var child = ((StackLayout)((Border)s).Content);
+            var child = ((HorizontalStackLayout)((Border)s).Content);
             var customerNumber = child.ClassId;
             var company = AppModel.Instance.Companies.Find(c => c.CustomerNumber == customerNumber);
             if (company != null)
@@ -430,6 +443,17 @@ namespace iPMCloud.Mobile
             }
         }
 
+        public async void Btn_toregist_more_Tapped(object sender, EventArgs e)
+        {
+            try
+            {
+                await Browser.OpenAsync("http://www.ipm-cloud.de/", BrowserLaunchMode.SystemPreferred);
+            }
+            catch (Exception)
+            {
+                // An unexpected error occured. No browser may be installed on the device.
+            }
+        }
 
         public void Btn_toregistTapped(object sender, EventArgs e)
         {
@@ -544,17 +568,17 @@ namespace iPMCloud.Mobile
             tgr1btn_endselectedwork.Tapped += Btn_GPSInfoTapped;
             btn_endselectedwork.GestureRecognizers.Add(tgr1btn_endselectedwork);
 
-            btn_flashlight_container.GestureRecognizers.Clear();
-            var tgr1 = new TapGestureRecognizer();
-            tgr1.Tapped -= AppModel.Instance.Scan.Btn_FlashlightTapped;
-            tgr1.Tapped += AppModel.Instance.Scan.Btn_FlashlightTapped;
-            btn_flashlight_container.GestureRecognizers.Add(tgr1);
+            //btn_flashlight_container.GestureRecognizers.Clear();
+            //var tgr1 = new TapGestureRecognizer();
+            //tgr1.Tapped -= AppModel.Instance.Scan.Btn_FlashlightTapped;
+            //tgr1.Tapped += AppModel.Instance.Scan.Btn_FlashlightTapped;
+            //btn_flashlight_container.GestureRecognizers.Add(tgr1);
 
-            btn_flashlight_AddRegScan_container.GestureRecognizers.Clear();
-            var tgr2 = new TapGestureRecognizer();
-            tgr2.Tapped -= AppModel.Instance.Scan.Btn_FlashlightTapped;
-            tgr2.Tapped += AppModel.Instance.Scan.Btn_FlashlightTapped;
-            btn_flashlight_AddRegScan_container.GestureRecognizers.Add(tgr2);
+            //btn_flashlight_AddRegScan_container.GestureRecognizers.Clear();
+            //var tgr2 = new TapGestureRecognizer();
+            //tgr2.Tapped -= AppModel.Instance.Scan.Btn_FlashlightTapped;
+            //tgr2.Tapped += AppModel.Instance.Scan.Btn_FlashlightTapped;
+            //btn_flashlight_AddRegScan_container.GestureRecognizers.Add(tgr2);
 
             btn_loginlogin_container.GestureRecognizers.Clear();
             var tgr3 = new TapGestureRecognizer();
@@ -574,6 +598,12 @@ namespace iPMCloud.Mobile
             tgr3b.Tapped -= Btn_toregistTapped;
             tgr3b.Tapped += Btn_toregistTapped;
             btn_toregist_container.GestureRecognizers.Add(tgr3b);
+
+            btn_toregist_more_container.GestureRecognizers.Clear();
+            var tgr3c = new TapGestureRecognizer();
+            tgr3c.Tapped -= Btn_toregist_more_Tapped;
+            tgr3c.Tapped += Btn_toregist_more_Tapped;
+            btn_toregist_more_container.GestureRecognizers.Add(tgr3c);
 
 
             btn_addRegScan_container.GestureRecognizers.Clear();

@@ -569,8 +569,8 @@ namespace iPMCloud.Mobile.vo
             var imageL = new Image
             {
                 Margin = new Thickness(0, 0, 5, 0),
-                HeightRequest = 32,
-                WidthRequest = 32,
+                HeightRequest = 36,
+                WidthRequest = 36,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.Start,
                 Source = imageLeftSource
@@ -580,36 +580,34 @@ namespace iPMCloud.Mobile.vo
                 Text = c.CustomerName,
                 TextColor = Color.FromArgb("#cccccc"),
                 Margin = new Thickness(5, 0, 5, 1),
-                FontSize = 16,
+                FontSize = 18,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 LineBreakMode = LineBreakMode.WordWrap,
             };
             var more = new Label
             {
                 Text = "Unternehmens-Nr.: " + c.CustomerNumber,
-                TextColor = Color.FromArgb("#999999"),
+                TextColor = Color.FromArgb("#aaaaaa"),
                 Margin = new Thickness(5, 0, 0, 0),
-                FontSize = 12,
+                FontSize = 14,
                 LineBreakMode = LineBreakMode.TailTruncation,
                 HorizontalOptions = LayoutOptions.Start,
             };
-            var headerStackHorizontal = new StackLayout()
+            var headerStackHorizontal = new HorizontalStackLayout()
             {
-                Padding = new Thickness(5, 5, 5, 5),
+                Padding = new Thickness(8, 6, 8, 6),
                 Margin = new Thickness(0, 0, 0, 0),
                 Spacing = 0,
-                Orientation = StackOrientation.Horizontal,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
                 ClassId = c.CustomerNumber,
-                BackgroundColor = isSelected ? Color.FromRgba(4,45,83,1):Color.FromArgb("#042d53"),
+                BackgroundColor = Color.FromArgb("#042d53"),
             };
-            var headerStackVertical = new StackLayout()
+            var headerStackVertical = new VerticalStackLayout()
             {
-                Padding = new Thickness(0,0,0,0),
+                Padding = new Thickness(0, 0, 0, 0),
                 Margin = new Thickness(0, 0, 0, 0),
                 Spacing = 0,
-                Orientation = StackOrientation.Vertical,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
                 ClassId = c.CustomerNumber
             };
             headerStackVertical.Children.Add(lb);
@@ -620,15 +618,14 @@ namespace iPMCloud.Mobile.vo
             var mainFrame = new Border()
             {
                 Padding = new Thickness(1,1,1,1),
-                Margin = new Thickness(0, 15, isSelected ? 0:10, 5),
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-                BackgroundColor = isSelected ? Color.FromArgb("#70144d73") : Color.FromArgb("#041d43"),
+                Margin = new Thickness(0, 10, 0, 10),
+                HorizontalOptions = LayoutOptions.Fill,
+                BackgroundColor = Color.FromArgb("#041d43"),
                 Content = headerStackHorizontal,
-                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
-                 //WidthRequest = 280,
             };
             return mainFrame;
         }
+
         public static Border GetXButton(Company c, ImageSource xImage, bool isSelected)
         {
             var imageL = new Image

@@ -79,6 +79,31 @@
 		<MauiFont Include="Resources\Fonts\*" />
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
 	</ItemGroup>
+	<ItemGroup>
+	  <MauiImage Remove="Resources\Images\backgroundgray0.jpg" />
+	  <MauiImage Remove="Resources\Images\backgroundgray1.jpg" />
+	  <MauiImage Remove="Resources\Images\backgroundgray2.jpg" />
+	  <MauiImage Remove="Resources\Images\clear.png" />
+	  <MauiImage Remove="Resources\Images\delete.png" />
+	  <MauiImage Remove="Resources\Images\dot.png" />
+	  <MauiImage Remove="Resources\Images\dot2.png" />
+	  <MauiImage Remove="Resources\Images\favorite.png" />
+	  <MauiImage Remove="Resources\Images\gpsoff.png" />
+	  <MauiImage Remove="Resources\Images\gpsoff2.png" />
+	  <MauiImage Remove="Resources\Images\gpson.png" />
+	  <MauiImage Remove="Resources\Images\icon.png" />
+	  <MauiImage Remove="Resources\Images\ic_launcher.png" />
+	  <MauiImage Remove="Resources\Images\ic_stat_ic_notification.png" />
+	  <MauiImage Remove="Resources\Images\ipmlogo_m.png" />
+	  <MauiImage Remove="Resources\Images\islogin2.png" />
+	  <MauiImage Remove="Resources\Images\isnotlogin2.png" />
+	  <MauiImage Remove="Resources\Images\isoffline.png" />
+	  <MauiImage Remove="Resources\Images\isonline.png" />
+	  <MauiImage Remove="Resources\Images\logo.png" />
+	  <MauiImage Remove="Resources\Images\mockup4b.jpg" />
+	  <MauiImage Remove="Resources\Images\screen.png" />
+	  <MauiImage Remove="Resources\Images\Sort.png" />
+	</ItemGroup>
 
 	<!-- Einzelne XAML-Datei entfernen -->
 	<ItemGroup>
@@ -145,12 +170,46 @@
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</EmbeddedResource>
 	</ItemGroup>
+	<ItemGroup>
+	  <MauiImage Update="Resources\Images\backgroundgray1a.jpg">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </MauiImage>
+	  <MauiImage Update="Resources\Images\backgroundgray1b.jpg">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </MauiImage>
+	  <MauiImage Update="Resources\Images\backgroundgray1c.jpg">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </MauiImage>
+	</ItemGroup>
 
 	<!-- Einzelne XAML Update -->
 	<ItemGroup>
 		<MauiXaml Update="vo\wso\checks\SignaturePadView.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
+	</ItemGroup>
+	<ItemGroup>
+	  <None Update="Assets\backgroundgray0.jpg">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Assets\backgroundgray1.jpg">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Assets\backgroundgray1b.jpg">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Resources\Images\backgroundgray0.jpg">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Resources\Images\backgroundgray1.jpg">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Resources\Images\backgroundgray2.jpg">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Resources\Images\mockup4b.jpg">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
 	</ItemGroup>
 
 </Project>

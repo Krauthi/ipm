@@ -8857,7 +8857,7 @@
                                         Margin="0,3,0,3"
                                         BackgroundColor="#cccccc"
                                         HeightRequest="1"
-                                            HorizontalOptions="FillAndExpand"
+                                        HorizontalOptions="FillAndExpand"
                                         VerticalOptions="Start" />
                                 </StackLayout>
                             </DataTemplate>
@@ -8876,7 +8876,7 @@
                                         FontSize="24"
                                         Text="{Binding Key}"
                                         TextColor="Yellow"
-                                            VerticalOptions="CenterAndExpand" />
+                                        VerticalOptions="CenterAndExpand" />
                                 </StackLayout>
                             </DataTemplate>
                         </CollectionView.GroupHeaderTemplate>
@@ -12406,7 +12406,7 @@
                                         Margin="0,3,0,3"
                                         BackgroundColor="#cccccc"
                                         HeightRequest="1"
-                                            HorizontalOptions="FillAndExpand"
+                                        HorizontalOptions="FillAndExpand"
                                         VerticalOptions="Start" />
                                 </StackLayout>
                             </DataTemplate>
@@ -12425,7 +12425,7 @@
                                         FontSize="24"
                                         Text="{Binding Key}"
                                         TextColor="Yellow"
-                                            VerticalOptions="CenterAndExpand" />
+                                        VerticalOptions="CenterAndExpand" />
                                 </StackLayout>
                             </DataTemplate>
                         </CollectionView.GroupHeaderTemplate>

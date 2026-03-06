@@ -28,14 +28,14 @@ namespace iPMCloud.Mobile.vo
 
         public Grid grid = new Grid
         {
-            VerticalOptions = LayoutOptions.FillAndExpand,
-            HorizontalOptions = LayoutOptions.FillAndExpand,
+            VerticalOptions = LayoutOptions.Fill,
+            HorizontalOptions = LayoutOptions.Fill,
         };
 
         public Image img = new Image
         {
-            VerticalOptions = LayoutOptions.FillAndExpand,
-            HorizontalOptions = LayoutOptions.FillAndExpand,
+            VerticalOptions = LayoutOptions.Fill,
+            HorizontalOptions = LayoutOptions.Fill,
         };
 
         // Hilfsmethode zum Erstellen eines Custom Overlays
@@ -43,8 +43,8 @@ namespace iPMCloud.Mobile.vo
         {
             var overlayGrid = new Grid
             {
-                VerticalOptions = LayoutOptions.FillAndExpand,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                VerticalOptions = LayoutOptions.Fill,
+                HorizontalOptions = LayoutOptions.Fill,
                 BackgroundColor = Colors.Transparent
             };
 
@@ -60,7 +60,8 @@ namespace iPMCloud.Mobile.vo
                 FontSize = 16,
                 HorizontalOptions = LayoutOptions.Center,
                 VerticalOptions = LayoutOptions.End,
-                Margin = new Thickness(0, 0, 0, 20)
+                Margin = new Thickness(0, 0, 0, 30),
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.7f, Radius = 7, Offset = new Point(3, 3) },
             };
             Grid.SetRow(topLabel, 0);
             overlayGrid.Children.Add(topLabel);
@@ -85,32 +86,38 @@ namespace iPMCloud.Mobile.vo
             var bottomStack = new StackLayout
             {
                 VerticalOptions = LayoutOptions.Start,
-                HorizontalOptions = LayoutOptions.CenterAndExpand,
+                HorizontalOptions = LayoutOptions.Center,
                 Spacing = 10,
-                Margin = new Thickness(0, 20, 0, 0)
+                Margin = new Thickness(0, 30, 0, 0)
             };
 
             var bottomLabel = new Label
             {
                 Text = bottomText,
                 TextColor = Colors.White,
-                FontSize = 14,
-                HorizontalOptions = LayoutOptions.CenterAndExpand
+                FontSize = 18,
+                HorizontalOptions = LayoutOptions.Center,
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.7f, Radius = 7, Offset = new Point(3, 3) },
             };
             bottomStack.Children.Add(bottomLabel);
 
             // Flash Button
             if (showFlashButton)
             {
+                var img = new Image();
+                img.Source = AppModel.Instance.imagesBase.Flashlight;
                 var flashButton = new Button
                 {
-                    Text = "🔦",
-                    BackgroundColor = Colors.Gray.WithAlpha(0.7f),
-                    TextColor = Colors.White,
-                    CornerRadius = 25,
-                    WidthRequest = 50,
-                    HeightRequest = 50,
-                    HorizontalOptions = LayoutOptions.CenterAndExpand
+                    ImageSource = AppModel.Instance.imagesBase.Flashlight,
+                    Padding = 5, 
+                    //Text = "🔦",
+                    BackgroundColor = Color.FromRgb(20, 77, 147),
+                    //TextColor = Colors.White,
+                    CornerRadius = 0,
+                    WidthRequest = 70,
+                    HeightRequest = 70,Margin = new Thickness(0, 20, 0, 0),
+                    //FontSize = 28,
+                    HorizontalOptions = LayoutOptions.Center
                 };
                 flashButton.Clicked += (s, e) => onFlashButtonClicked?.Invoke();
                 bottomStack.Children.Add(flashButton);
@@ -135,9 +142,10 @@ namespace iPMCloud.Mobile.vo
 
                 zxing = new CameraBarcodeReaderView
                 {
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
-                    VerticalOptions = LayoutOptions.FillAndExpand,
+                    HorizontalOptions = LayoutOptions.Fill,
+                    VerticalOptions = LayoutOptions.Fill,
                     AutomationId = "zxingScannerView",
+                    Margin = new Thickness(0, 0, 0, 0),
                     Options = opts
                 };
 
@@ -246,8 +254,9 @@ namespace iPMCloud.Mobile.vo
 
                 zxing = new CameraBarcodeReaderView
                 {
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
-                    VerticalOptions = LayoutOptions.FillAndExpand,
+                    HorizontalOptions = LayoutOptions.Fill,
+                    VerticalOptions = LayoutOptions.Fill,
+                    Margin = new Thickness(0, 0, 0, 0),
                     AutomationId = "zxingScannerView",
                     Options = opts
                 };
@@ -362,9 +371,9 @@ namespace iPMCloud.Mobile.vo
 
                 zxing = new CameraBarcodeReaderView
                 {
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
-                    VerticalOptions = LayoutOptions.FillAndExpand,
-                    AutomationId = "zxingScannerView",
+                    HorizontalOptions = LayoutOptions.Fill,
+                    VerticalOptions = LayoutOptions.Fill,
+                    AutomationId = "zxingScannerView", Margin = new Thickness(0,0,0,0),
                     Options = opts
                 };
 
@@ -459,8 +468,9 @@ namespace iPMCloud.Mobile.vo
 
                 zxing = new CameraBarcodeReaderView
                 {
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
-                    VerticalOptions = LayoutOptions.FillAndExpand,
+                    HorizontalOptions = LayoutOptions.Fill,
+                    VerticalOptions = LayoutOptions.Fill,
+                    Margin = new Thickness(0, 0, 0, 0),
                     AutomationId = "zxingScannerView",
                     Options = opts
                 };
@@ -504,19 +514,19 @@ namespace iPMCloud.Mobile.vo
                                 }
                                 else
                                 {
-                                    if (newScanSettings.CustomerNumber == model.SettingModel.SettingDTO.CustomerNumber)
-                                    {
-                                        await page.DisplayAlertAsync("Registrierung existiert schon!", "Diesen QR-Code haben Sie schon Registriert!", "OK");
-                                    }
-                                    else
-                                    {
-                                        await page.DisplayAlertAsync("QR-Code nicht erkannt!", "Dieser QR-Code kann für die Registrierung eines weiteren Unternehmens mit der iPM-Cloud-App nicht verwendet werden.", "OK");
-                                    }
+                                    //if (newScanSettings.CustomerNumber == model.SettingModel.SettingDTO.CustomerNumber)
+                                    //{
+                                    //    await page.DisplayAlertAsync("Registrierung existiert schon!", "Diesen QR-Code haben Sie schon Registriert!", "OK");
+                                    //}
+                                    //else
+                                    //{
+                                    //    await page.DisplayAlertAsync("QR-Code nicht erkannt!", "Dieser QR-Code kann für die Registrierung eines weiteren Unternehmens mit der iPM-Cloud-App nicht verwendet werden.", "OK");
+                                    //}
                                     zxing.IsTorchOn = false;
                                     zxing.IsDetecting = false;
                                     grid.Children.Clear();
                                     displayIsOpen = false;
-                                    funcfaild.Invoke();
+                                    //funcfaild.Invoke();
                                 }
                             }
                             catch (Exception)

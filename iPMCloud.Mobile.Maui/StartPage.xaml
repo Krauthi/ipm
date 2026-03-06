@@ -26,11 +26,12 @@
                 AbsoluteLayout.LayoutFlags="All"
                 Aspect="Fill"
                 HorizontalOptions="Fill"
-                Opacity="0.5"
-                Source="backgroundgray2.jpg"
+                Opacity="1"
+                Source="backgroundgray1c.jpg"
                 VerticalOptions="Fill" />
         </AbsoluteLayout>
 
+        <!--  Footer  -->
         <AbsoluteLayout
             AbsoluteLayout.LayoutBounds="1,1,1,1"
             AbsoluteLayout.LayoutFlags="All"
@@ -110,7 +111,7 @@
         </AbsoluteLayout>
 
 
-        <!--  1. SCREEN   -->
+        <!--  1. SCREEN  -->
         <Grid
             x:Name="BeforeLogin_Container"
             Margin="0"
@@ -137,6 +138,7 @@
                 Padding="0"
                 AbsoluteLayout.LayoutBounds="0,0,1,1"
                 AbsoluteLayout.LayoutFlags="All"
+                BackgroundColor="Transparent"
                 RowSpacing="0">
 
                 <Grid.RowDefinitions>
@@ -160,11 +162,12 @@
                     HorizontalTextAlignment="Start"
                     Text="Eine Lösung"
                     TextColor="#ffffff">
-                    <Label.Shadow><Shadow
-                                Brush="Black"
-                                Opacity="0.9"
-                                Radius="7"
-                                Offset="3,3" />
+                    <Label.Shadow>
+                        <Shadow
+                            Brush="Black"
+                            Opacity="0.9"
+                            Radius="7"
+                            Offset="3,3" />
                     </Label.Shadow>
                 </Label>
 
@@ -177,13 +180,13 @@
                     HorizontalOptions="Fill"
                     HorizontalTextAlignment="End"
                     Text="für Ihr Unternehmen"
-                    TextColor="#ffffff" >
+                    TextColor="#ffffff">
                     <Label.Shadow>
-                    <Shadow
-                                Brush="Black"
-                                Opacity="0.9"
-                                Radius="7"
-                                Offset="3,3" />
+                        <Shadow
+                            Brush="Black"
+                            Opacity="0.9"
+                            Radius="7"
+                            Offset="3,3" />
                     </Label.Shadow>
                 </Label>
 
@@ -200,7 +203,7 @@
                         HorizontalTextAlignment="Start"
                         Text="Rund ums Objekt für den &#13;&#10;Hausmeisterservice &#13;&#10;Immobilienpflegedienst &#13;&#10;Gebäudereiniger &#13;&#10;Land- und Gartenbau &#13;&#10;Facility Management &#13;&#10;Dienstleister &#13;&#10;und noch viele mehr..."
                         TextColor="#eeeeee"
-                        VerticalOptions="Start" >
+                        VerticalOptions="Start">
                         <Label.Shadow>
                             <Shadow
                                 Brush="Black"
@@ -224,7 +227,7 @@
                         HorizontalTextAlignment="End"
                         Text="Mehr KONTROLLE &#13;&#10;schnelles HANDELN&#13;&#10;kleiner AUFWAND&#13;&#10;große WIRKUNG&#13;&#10;bessere PRÄSENZ&#13;&#10;alles aus einer HAND&#13;&#10;und ES kann noch &#13;&#10;einiges MEHR..."
                         TextColor="#cccccc"
-                        VerticalOptions="Start"  >
+                        VerticalOptions="Start">
                         <Label.Shadow>
                             <Shadow
                                 Brush="Black"
@@ -243,7 +246,7 @@
                     Grid.Row="5"
                     Margin="10,0,10,0"
                     Padding="0"
-                    BackgroundColor="#c0144d73"                    
+                    BackgroundColor="#c0144d93"
                     StrokeThickness="0">
                     <VerticalStackLayout Padding="5,5,5,8" Spacing="0">
                         <Label
@@ -253,13 +256,13 @@
                             HorizontalTextAlignment="Start"
                             Text="Danke für Ihr Interesse"
                             TextColor="#50bafc"
-                            VerticalOptions="Start"  >
+                            VerticalOptions="Start">
                             <Label.Shadow>
                                 <Shadow
-                                Brush="Black"
-                                Opacity="0.9"
-                                Radius="7"
-                                Offset="3,3" />
+                                    Brush="Black"
+                                    Opacity="0.9"
+                                    Radius="7"
+                                    Offset="3,3" />
                             </Label.Shadow>
                         </Label>
                         <Label
@@ -269,15 +272,46 @@
                             HorizontalTextAlignment="Justify"
                             Text="Diese App ist nur in Verbindung mit Unserer Hauptanwendung zu vernwenden. Um diese App nutzen zu können brauchen Sie von uns einen Unternehmer QR-Code. Diesen QR-Code erhalten Sie nur als Mitglied der iPM-Cloud."
                             TextColor="#ffffff"
-                            VerticalOptions="Start" >
+                            VerticalOptions="Start">
                             <Label.Shadow>
                                 <Shadow
-                                Brush="Black"
-                                Opacity="1"
-                                Radius="2"
-                                Offset="1,1" />
+                                    Brush="Black"
+                                    Opacity="1"
+                                    Radius="2"
+                                    Offset="1,1" />
                             </Label.Shadow>
                         </Label>
+                        <HorizontalStackLayout
+                            x:Name="btn_toregist_more_container"
+                            Margin="0"
+                            Padding="0,0,0,0"
+                            HorizontalOptions="Start"
+                            Spacing="10"
+                            VerticalOptions="Center">
+                            <Image
+                                x:Name="btn_toregist_more_img"
+                                Margin="0"
+                                HeightRequest="17"
+                                HorizontalOptions="Center"
+                                VerticalOptions="Center"
+                                WidthRequest="17" />
+                            <Label
+                                Margin="0,0,5,0"
+                                Padding="0"
+                                FontSize="16"
+                                HorizontalTextAlignment="Start"
+                                Text="Mehr erfahren unter www.iPM-Cloud.de"
+                                TextColor="#ffffff"
+                                VerticalOptions="Center">
+                                <Label.Shadow>
+                                    <Shadow
+                                        Brush="Black"
+                                        Opacity="0.9"
+                                        Radius="7"
+                                        Offset="3,3" />
+                                </Label.Shadow>
+                            </Label>
+                        </HorizontalStackLayout>
                     </VerticalStackLayout>
                 </Border>
 
@@ -324,7 +358,7 @@
                                 HorizontalTextAlignment="Start"
                                 Text="Jetzt Ihren QR-Code scannen"
                                 TextColor="#ffffff"
-                                VerticalOptions="Center" >
+                                VerticalOptions="Center">
                                 <Label.Shadow>
                                     <Shadow
                                         Brush="Black"
@@ -345,7 +379,7 @@
 
 
 
-        <!--  REGISTRIEREN QR SCREEN   -->
+        <!--  REGISTRIEREN QR SCREEN  -->
         <Grid
             x:Name="RegScan_Container"
             Margin="0"
@@ -355,92 +389,68 @@
             IsVisible="False"
             RowSpacing="0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
+                <RowDefinition Height="200" />
+
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <StackLayout
+
+            <!--  Info-Box  -->
+            <Border
                 Grid.Row="0"
-                Margin="10,20,10,5"
-                Padding="5"
-                BackgroundColor="#70144d73"
-                HorizontalOptions="Fill"
-                Orientation="Horizontal"
-                Spacing="0">
-                <Image
-                    x:Name="btn_regScan_limg"
-                    Margin="0,0,10,0"
-                    HeightRequest="30"
-                    VerticalOptions="Start"
-                    WidthRequest="30" />
-                <Label
-                    Margin="0"
-                    Padding="0"
-                    FontSize="14"
-                    HorizontalOptions="Fill"
-                    HorizontalTextAlignment="Start"
-                    Text="Damit Sie sich mit dieser App als Mitarbeiter anmelden können, scannen Sie bitte zuerst den von Ihrem Unternehmen vorliegenden QR-Code ein."
-                    TextColor="#ffffff"
-                    VerticalOptions="Start" />
-            </StackLayout>
-            <Grid
-                Grid.Row="1"
-                Margin="10,0,10,0"
-                Padding="0"
-                HorizontalOptions="Fill">
-                <Border
-                    Margin="0"
-                    Padding="1"
-                    BackgroundColor="#041d43"
-                    HorizontalOptions="End"
-                    VerticalOptions="Center">
-                    <Border.Shadow>
-                        <Shadow
-                            Brush="Black"
-                            Opacity="0.3"
-                            Radius="5"
-                            Offset="2,2" />
-                    </Border.Shadow>
-                    <StackLayout
-                        x:Name="btn_flashlight_container"
+                Margin="0,0,0,0"
+                Padding="10,15,10,20"
+                BackgroundColor="#c0144d93">
+                <VerticalStackLayout Padding="5,5,5,8" Spacing="0">
+                    <Label
                         Margin="0"
-                        Padding="0"
-                        BackgroundColor="#042d53"
-                        HeightRequest="40"
-                        HorizontalOptions="Fill"
-                        Spacing="0"
-                        VerticalOptions="Center"
-                        WidthRequest="40">
-                        <Image
-                            x:Name="btn_flashlight_img"
-                            Margin="0,0,0,0"
-                            HeightRequest="30"
-                            HorizontalOptions="Center"
-                            VerticalOptions="Center"
-                            WidthRequest="30" />
-                    </StackLayout>
-                </Border>
-            </Grid>
+                        Padding="5"
+                        FontSize="19"
+                        HorizontalTextAlignment="Justify"
+                        Text="Damit Sie sich mit dieser App als Mitarbeiter anmelden können, scannen Sie bitte zuerst den von Ihrem Unternehmen vorliegenden QR-Code ein."
+                        TextColor="#ffffff"
+                        VerticalOptions="Start">
+                        <Label.Shadow>
+                            <Shadow
+                                Brush="Black"
+                                Opacity="1"
+                                Radius="2"
+                                Offset="1,1" />
+                        </Label.Shadow>
+                    </Label>
+                </VerticalStackLayout>
+            </Border>
+
+
             <StackLayout
                 x:Name="lay_regscan"
-                Grid.Row="2"
-                Margin="10,0,10,20"
+                Grid.Row="1"
+                Margin="0,0,0,20"
                 Padding="0"
                 HorizontalOptions="Fill"
                 Spacing="0"
                 VerticalOptions="Fill" />
+
+            <Border
+                Grid.Row="2"
+                Margin="0,0,0,13"
+                Padding="0"
+                BackgroundColor="#000000"
+                VerticalOptions="Fill" />
         </Grid>
 
+
+        <!--  Anmelde Start Login  -->
         <Grid
             x:Name="Login_Container"
             Margin="0"
             Padding="0"
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             AbsoluteLayout.LayoutFlags="All"
-            IsVisible="False"
+            IsVisible="False" BackgroundColor="Transparent"
             RowSpacing="0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="40" />
+                <RowDefinition Height="50" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
@@ -451,9 +461,13 @@
                 Grid.Row="0"
                 Margin="0"
                 Padding="10,0,10,0"
-                ColumnSpacing="0"
+                ColumnSpacing="0" BackgroundColor="Black"
                 HorizontalOptions="Fill"
                 RowSpacing="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
 
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
@@ -461,7 +475,7 @@
                 </Grid.ColumnDefinitions>
 
                 <Label
-                    Grid.Column="0"
+                    Grid.Column="0" Grid.Row="0"
                     Margin="0"
                     FontSize="24"
                     HorizontalTextAlignment="Start"
@@ -471,7 +485,7 @@
 
                 <Image
                     x:Name="img_logo"
-                    Grid.Column="1"
+                    Grid.Column="1" Grid.Row="0"
                     Margin="0,2,0,1"
                     HeightRequest="37"
                     HorizontalOptions="End" />
@@ -479,15 +493,15 @@
             <BoxView
                 Grid.Row="1"
                 Margin="0,0,0,0"
-                BackgroundColor="Gray"
-                HeightRequest="1"
+                BackgroundColor="Black"
+                HeightRequest="5"
                 HorizontalOptions="Fill"
                 VerticalOptions="Start" />
             <StackLayout
                 Grid.Row="2"
                 Margin="0"
                 Padding="8"
-                BackgroundColor="#144d73"
+                BackgroundColor="#90144d93"
                 HorizontalOptions="Fill"
                 Orientation="Vertical"
                 Spacing="0">
@@ -497,7 +511,7 @@
                     FontSize="12"
                     HorizontalOptions="Fill"
                     HorizontalTextAlignment="Start"
-                    Text="Registriet bei:"
+                    Text="Registriert bei:"
                     TextColor="#aaaaaa"
                     VerticalOptions="Start" />
                 <Label
@@ -528,12 +542,12 @@
                         Margin="0"
                         Padding="2,2,10,2"
                         BackgroundColor="#042d53"
-                        HeightRequest="30"
+                        HeightRequest="38"
                         HorizontalOptions="Fill">
                         <StackLayout
                             Margin="0,0,0,0"
                             Padding="0"
-                            HeightRequest="26"
+                            HeightRequest="32"
                             HorizontalOptions="Fill"
                             Orientation="Horizontal"
                             Spacing="0"
@@ -545,7 +559,7 @@
                                 VerticalOptions="Center"
                                 WidthRequest="26" />
                             <StackLayout
-                                Margin="0,-4,0,0"
+                                Margin="0,-2,0,0"
                                 Padding="0"
                                 Orientation="Vertical"
                                 Spacing="0"
@@ -559,7 +573,7 @@
                                 <Label
                                     Margin="0,-2,0,0"
                                     Padding="0"
-                                    FontSize="8"
+                                    FontSize="11"
                                     Text="Ein weiteres Unternehmen hinzufügen"
                                     TextColor="#aaaaaa" />
                             </StackLayout>
@@ -585,12 +599,12 @@
                         Margin="0"
                         Padding="2,2,10,2"
                         BackgroundColor="#042d53"
-                        HeightRequest="30"
+                        HeightRequest="38"
                         HorizontalOptions="Fill">
                         <StackLayout
                             Margin="0,0,0,0"
                             Padding="0"
-                            HeightRequest="26"
+                            HeightRequest="32"
                             HorizontalOptions="Fill"
                             Orientation="Horizontal"
                             Spacing="0"
@@ -598,11 +612,11 @@
                             <Image
                                 x:Name="btn_ToRegScanManagement_img"
                                 Margin="0,2,8,0"
-                                HeightRequest="26"
+                                HeightRequest="30"
                                 VerticalOptions="Center"
-                                WidthRequest="26" />
+                                WidthRequest="30" />
                             <StackLayout
-                                Margin="0,-4,0,0"
+                                Margin="0,-2,0,0"
                                 Padding="0"
                                 Orientation="Vertical"
                                 Spacing="0"
@@ -616,8 +630,8 @@
                                 <Label
                                     Margin="0,-2,0,0"
                                     Padding="0"
-                                    FontSize="8"
-                                    Text="Bei meheren Unternehmen"
+                                    FontSize="11"
+                                    Text="Sie arbeiten für mehere Unternehmen"
                                     TextColor="#cccccc" />
                             </StackLayout>
                         </StackLayout>
@@ -820,14 +834,14 @@
             Padding="0"
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             AbsoluteLayout.LayoutFlags="All"
+            BackgroundColor="Transparent"
             HorizontalOptions="Fill"
             IsVisible="False"
             RowSpacing="0"
             VerticalOptions="Fill">
 
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
+                <RowDefinition Height="55" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
@@ -835,10 +849,11 @@
                 Grid.Row="0"
                 Margin="0"
                 Padding="10,10,10,10"
-                HeightRequest="48"
+                BackgroundColor="Black"
                 HorizontalOptions="Fill"
                 Orientation="Horizontal"
-                Spacing="0">
+                Spacing="0"
+                VerticalOptions="Fill">
                 <Border
                     Margin="3,2,2,2"
                     Padding="1"
@@ -846,13 +861,6 @@
                     HorizontalOptions="Fill"
                     Stroke="Transparent"
                     VerticalOptions="Center">
-                    <Border.Shadow>
-                        <Shadow
-                            Brush="Black"
-                            Opacity="0.3"
-                            Radius="5"
-                            Offset="2,2" />
-                    </Border.Shadow>
                     <StackLayout
                         x:Name="btn_back_RegManagement"
                         Margin="0"
@@ -882,18 +890,9 @@
                     </StackLayout>
                 </Border>
             </StackLayout>
-            <BoxView
-                Grid.Row="1"
-                Margin="0,0,0,3"
-                BackgroundColor="Gray"
-                HeightRequest="1"
-                HorizontalOptions="Fill"
-                VerticalOptions="Start" />
 
-
-            <!--<ScrollView VerticalOptions="Fill" HorizontalOptions="Fill" Padding="0" Margin="0">-->
             <Grid
-                Grid.Row="2"
+                Grid.Row="1"
                 Margin="0"
                 Padding="0"
                 HorizontalOptions="Fill"
@@ -902,31 +901,31 @@
 
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
                 <StackLayout
                     Grid.Row="0"
-                    Margin="10,0,10,5"
-                    Padding="5"
-                    BackgroundColor="#70144d73"
+                    Margin="0,0,0,0"
+                    Padding="15"
+                    BackgroundColor="#90144d93"
                     HorizontalOptions="Fill"
                     Orientation="Vertical"
                     Spacing="0">
-                    <!--<Image x:Name="btn_AddRegScan_limg" Margin="0,0,10,0" HeightRequest="30" WidthRequest="30" VerticalOptions="Start" />-->
                     <Label
-                        Margin="0"
+                        Margin="0,0,0,0"
                         Padding="0"
-                        FontSize="14"
+                        FontSize="16"
                         HorizontalOptions="Fill"
                         HorizontalTextAlignment="Start"
-                        Text="Wählen Sie ein registrietes Unternehmen für den Sie jetzt aktuell arbeiten möchten oder fügen Sie noch ein Unternehmen hinzu."
+                        Text="Wählen Sie ein registriertes Unternehmen für den Sie jetzt aktuell arbeiten möchten oder fügen Sie noch ein Unternehmen hinzu."
                         TextColor="#ffffff"
                         VerticalOptions="Start" />
                     <Label
-                        Margin="0"
-                        Padding="5"
-                        FontSize="14"
+                        Margin="0,10,0,10"
+                        Padding="0"
+                        FontSize="16"
                         HorizontalOptions="Fill"
                         HorizontalTextAlignment="Start"
                         Text="Bevor Sie wechseln müssen alle Arbeiten abgelschlossen und hochgeladen sein!"
@@ -950,12 +949,12 @@
                             Margin="0"
                             Padding="2,2,10,2"
                             BackgroundColor="#042d53"
-                            HeightRequest="30"
+                            HeightRequest="38"
                             HorizontalOptions="Fill">
                             <StackLayout
                                 Margin="0,0,0,0"
                                 Padding="0"
-                                HeightRequest="26"
+                                HeightRequest="32"
                                 HorizontalOptions="Fill"
                                 Orientation="Horizontal"
                                 Spacing="0"
@@ -963,11 +962,11 @@
                                 <Image
                                     x:Name="btn_addRegScan2_img"
                                     Margin="0,0,8,0"
-                                    HeightRequest="26"
+                                    HeightRequest="30"
                                     VerticalOptions="Center"
-                                    WidthRequest="26" />
+                                    WidthRequest="30" />
                                 <StackLayout
-                                    Margin="0,-4,0,0"
+                                    Margin="0,-2,0,0"
                                     Padding="0"
                                     Orientation="Vertical"
                                     Spacing="0"
@@ -981,7 +980,7 @@
                                     <Label
                                         Margin="0,-2,0,0"
                                         Padding="0"
-                                        FontSize="8"
+                                        FontSize="11"
                                         Text="Ein weiteres Unternehmen hinzufügen"
                                         TextColor="#aaaaaa" />
                                 </StackLayout>
@@ -990,59 +989,61 @@
                     </Border>
                 </StackLayout>
 
-                <ScrollView
+                <Label
                     Grid.Row="1"
                     Margin="0"
+                    Padding="5,15,5,0"
+                    BackgroundColor="Transparent"
+                    FontSize="14"
+                    HorizontalTextAlignment="Center"
+                    Text="Bereits registrierte Unternehmen in Ihrer App"
+                    TextColor="#ffffff" />
+
+                <ScrollView
+                    Grid.Row="2"
+                    Margin="0,0,0,-12"
                     Padding="0"
+                    BackgroundColor="Transparent"
                     HorizontalOptions="Fill"
                     VerticalOptions="Fill">
-                    <StackLayout
+                    <VerticalStackLayout
                         x:Name="lay_selectcompany_container"
-                        Margin="10,0,10,5"
+                        Margin="5,0,0,0"
                         Padding="0"
                         HorizontalOptions="Fill"
-                        Orientation="Vertical"
                         Spacing="0"
                         VerticalOptions="Fill" />
                 </ScrollView>
 
             </Grid>
-            <!--</ScrollView>-->
         </Grid>
 
 
         <Grid
             x:Name="AddRegScan_Container"
-            Margin="0,0,0,25"
+            Margin="0,0,0,0"
             Padding="0"
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             AbsoluteLayout.LayoutFlags="All"
             HorizontalOptions="Fill"
             IsVisible="False"
             RowSpacing="0"
+            BackgroundColor="Black"
             VerticalOptions="Fill">
 
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
+                <RowDefinition Height="54" />
+                <RowDefinition Height="130" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <BoxView
-                Grid.Row="0"
-                Margin="0,0,0,3"
-                BackgroundColor="Gray"
-                HeightRequest="1"
-                HorizontalOptions="Fill"
-                VerticalOptions="Start" />
             <StackLayout
-                Grid.Row="1"
+                Grid.Row="0"
                 Margin="0"
                 Padding="10,10,10,10"
-                HeightRequest="48"
                 HorizontalOptions="Fill"
-                Orientation="Horizontal"
+                VerticalOptions="Fill"
                 Spacing="0">
                 <Border
                     Margin="3,2,2,2"
@@ -1051,74 +1052,160 @@
                     HorizontalOptions="Fill"
                     Stroke="Transparent"
                     VerticalOptions="Center">
-                    <Border.Shadow>
-                        <Shadow
-                            Brush="Black"
-                            Opacity="0.3"
-                            Radius="5"
-                            Offset="2,2" />
-                    </Border.Shadow>
                     <StackLayout
                         x:Name="btn_back_inAddRegScan"
                         Margin="0"
                         Padding="0"
                         BackgroundColor="Transparent"
-                        HeightRequest="38"
+                        HeightRequest="28"
                         HorizontalOptions="Start"
                         Orientation="Horizontal"
                         Spacing="0"
                         VerticalOptions="Center">
                         <Image
                             x:Name="img_backBtn_inRegAddScan_img"
-                            Margin="0,0,0,0"
-                            HeightRequest="30"
+                            Margin="0,0,10,0"
+                            HeightRequest="26"
                             HorizontalOptions="Start"
                             VerticalOptions="Center"
-                            WidthRequest="30" />
+                            WidthRequest="26" />
                         <Label
                             Margin="0"
-                            FontSize="18"
+                            FontSize="20"
                             HorizontalOptions="Fill"
                             HorizontalTextAlignment="Start"
                             LineBreakMode="TailTruncation"
-                            Text="ABBRECHEN"
-                            TextColor="#2f84bd"
-                            VerticalOptions="Center" />
+                            Text="Scann abbrechen"
+                            TextColor="#4fa4dd"
+                            VerticalOptions="Center">
+                        </Label>
                     </StackLayout>
                 </Border>
             </StackLayout>
-            <BoxView
-                Grid.Row="2"
-                Margin="0,0,0,3"
-                BackgroundColor="Gray"
-                HeightRequest="1"
+
+            <VerticalStackLayout
+                Grid.Row="1"
+                Margin="0,0,0,5"
+                Padding="15,15,15,20"
+                BackgroundColor="#90144d93"
                 HorizontalOptions="Fill"
-                VerticalOptions="Start" />
+                Spacing="0">
+                <Label
+                    Margin="0"
+                    Padding="0"
+                    FontSize="18"
+                    HorizontalOptions="Fill"
+                    HorizontalTextAlignment="Start"
+                    Text="Scannen Sie den QR-Code des Unternehmens, um es zu Ihrer App hinzuzufügen. "
+                    TextColor="#ffffff"
+                    VerticalOptions="Start" />
+            </VerticalStackLayout>
 
-
-            <ScrollView
-                Grid.Row="3"
+            <VerticalStackLayout
+                Grid.Row="2"
                 Margin="0"
                 Padding="0"
                 HorizontalOptions="Fill"
-                VerticalOptions="Fill">
+                Spacing="0">
                 <StackLayout
-                    Margin="0"
+                    x:Name="lay_addregscan"
+                    Margin="0,0,0,0"
                     Padding="0"
                     HorizontalOptions="Fill"
-                    Orientation="Vertical"
-                    Spacing="0">
+                    Spacing="0"
+                    VerticalOptions="Fill" />
+            </VerticalStackLayout>
+            <BoxView
+                Grid.Row="3"
+                Margin="0,40,0,13"
+                BackgroundColor="Black"
+                HorizontalOptions="Fill"
+                VerticalOptions="Fill" />
+        </Grid>
 
+
+
+        <!--  GPS Message and check for read  -->
+        <AbsoluteLayout
+            x:Name="popupContainer_gpsinfo"
+            AbsoluteLayout.LayoutBounds="0,0,1,1"
+            AbsoluteLayout.LayoutFlags="All"
+            BackgroundColor="#000000"
+            IsVisible="false">
+
+            <Grid
+                Margin="0"
+                Padding="0"
+                AbsoluteLayout.LayoutBounds="0,0,1,1"
+                AbsoluteLayout.LayoutFlags="All"
+                RowSpacing="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="0" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <VerticalStackLayout
+                    Grid.Row="1"
+                    Margin="10,0,10,0"
+                    Padding="20"
+                    AbsoluteLayout.LayoutBounds="0,0,1,1"
+                    AbsoluteLayout.LayoutFlags="All"
+                    BackgroundColor="#144d73"
+                    HorizontalOptions="Fill"
+                    Spacing="0">
+                    <StackLayout
+                        Margin="0"
+                        Padding="0"
+                        HorizontalOptions="Fill"
+                        Orientation="Horizontal"
+                        Spacing="0"
+                        VerticalOptions="Center">
+                        <Image
+                            x:Name="img_gpsinfo"
+                            Margin="0,0,10,0"
+                            HeightRequest="36"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                            WidthRequest="36" />
+                        <Label
+                            Margin="10,0,0,0"
+                            FontSize="24"
+                            HorizontalOptions="Fill"
+                            HorizontalTextAlignment="Start"
+                            Text="GPS Standort"
+                            TextColor="#ffffff"
+                            VerticalOptions="Center" />
+                    </StackLayout>
+                    <BoxView
+                        Margin="0,3,0,13"
+                        BackgroundColor="Gray"
+                        HeightRequest="1"
+                        HorizontalOptions="Fill"
+                        VerticalOptions="Start" />
+                    <Label
+                        Margin="0,0,0,20"
+                        FontSize="18"
+                        HorizontalOptions="Fill"
+                        HorizontalTextAlignment="Start"
+                        Text="Wir möchten Sie darauf hinweisen, das diese App GPS Standort -Daten abruft und diese Ihrem Unternehmen bereitstellt.&#x0a;&#x0a;Die GPS Standort -Daten werden abgerufen, wenn diese App immer in Gebrauch ist,  im Hintergrund wenn die App geschlossen ist bzw. wenn die App nicht verwendet wird.&#x0a;&#x0a;Ihr Unternehmen benötigt diese Daten zwecks Ihrer Einsatzfähigkeit in spontanen Einsatzgebieten in befindlicher Nähe.&#x0a;&#x0a;Die GPS-Daten dienen Ihnen auch zur Navigation zum Einsatzort aus der TODO-Liste.&#x0a;&#x0a;Diese Standort -Daten werden NICHT für Anzeigen oder Support-Werbung / Support-Anzeigen verwendet."
+                        TextColor="#ffffff"
+                        VerticalOptions="Center" />
+                    <BoxView
+                        Margin="0,10,0,10"
+                        BackgroundColor="Gray"
+                        HeightRequest="1"
+                        HorizontalOptions="Fill"
+                        VerticalOptions="Start" />
                     <Grid
-                        Margin="10,0,10,0"
+                        Margin="0"
                         Padding="0"
                         HorizontalOptions="Fill">
                         <Border
+                            x:Name="btn_endselectedwork"
                             Margin="0"
-                            Padding="1"
-                            BackgroundColor="#041d43"
-                            HorizontalOptions="End"
-                            VerticalOptions="Center">
+                            Padding="10"
+                            BackgroundColor="#04732d"
+                            HorizontalOptions="End">
                             <Border.Shadow>
                                 <Shadow
                                     Brush="Black"
@@ -1126,145 +1213,19 @@
                                     Radius="5"
                                     Offset="2,2" />
                             </Border.Shadow>
-                            <StackLayout
-                                x:Name="btn_flashlight_AddRegScan_container"
+                            <Label
                                 Margin="0"
                                 Padding="0"
-                                BackgroundColor="#042d53"
-                                HeightRequest="40"
-                                HorizontalOptions="Fill"
-                                Spacing="0"
-                                VerticalOptions="Center"
-                                WidthRequest="40">
-                                <Image
-                                    x:Name="btn_flashlight_AddRegScan_img"
-                                    Margin="0,0,0,0"
-                                    HeightRequest="30"
-                                    HorizontalOptions="Center"
-                                    VerticalOptions="Center"
-                                    WidthRequest="30" />
-                            </StackLayout>
+                                FontSize="16"
+                                Text="GELESEN UND VERSTANDEN"
+                                TextColor="#ffffff" />
                         </Border>
                     </Grid>
-
-                    <StackLayout
-                        x:Name="lay_addregscan"
-                        Margin="10,0,10,20"
-                        Padding="0"
-                        HorizontalOptions="Fill"
-                        Spacing="0"
-                        VerticalOptions="Fill" />
-
-                    <StackLayout
-                        Margin="10,0,10,5"
-                        Padding="5"
-                        BackgroundColor="#70144d73"
-                        HorizontalOptions="Fill"
-                        Orientation="Horizontal"
-                        Spacing="0">
-                        <!--<Image x:Name="btn_AddRegScan_limg" Margin="0,0,10,0" HeightRequest="30" WidthRequest="30" VerticalOptions="Start" />-->
-                        <Label
-                            Margin="0"
-                            Padding="0"
-                            FontSize="14"
-                            HorizontalOptions="Fill"
-                            HorizontalTextAlignment="Start"
-                            Text="Scannen Sie den angezeigten Registrier-QR-Code ein um ein weiters Unternehmen hinzuzufügen. "
-                            TextColor="#ffffff"
-                            VerticalOptions="Start" />
-                    </StackLayout>
-                </StackLayout>
-            </ScrollView>
-        </Grid>
-
-
-
-
-        <AbsoluteLayout
-            x:Name="popupContainer_gpsinfo"
-            AbsoluteLayout.LayoutBounds="0,0,1,1"
-            AbsoluteLayout.LayoutFlags="All"
-            BackgroundColor="#aa000000"
-            IsVisible="false">
-            <StackLayout
-                Margin="40,0,20,0"
-                Padding="20"
-                AbsoluteLayout.LayoutBounds="0,50,360,558"
-                AbsoluteLayout.LayoutFlags="None"
-                BackgroundColor="#144d73"
-                HorizontalOptions="Fill"
-                Orientation="Vertical"
-                Spacing="0">
-                <StackLayout
-                    Margin="0"
-                    Padding="0"
-                    HorizontalOptions="Fill"
-                    Orientation="Horizontal"
-                    Spacing="0"
-                    VerticalOptions="Center">
-                    <Image
-                        x:Name="img_gpsinfo"
-                        Margin="0,0,10,0"
-                        HeightRequest="28"
-                        HorizontalOptions="Center"
-                        VerticalOptions="Center"
-                        WidthRequest="28" />
-                    <Label
-                        Margin="0"
-                        FontSize="24"
-                        HorizontalOptions="Fill"
-                        HorizontalTextAlignment="Start"
-                        Text="GPS Standort"
-                        TextColor="#ffffff"
-                        VerticalOptions="Center" />
-                </StackLayout>
-                <BoxView
-                    Margin="0,3,0,3"
-                    BackgroundColor="Gray"
-                    HeightRequest="1"
-                    HorizontalOptions="Fill"
-                    VerticalOptions="Start" />
-                <Label
-                    Margin="0,0,0,20"
-                    FontSize="15"
-                    HorizontalOptions="Fill"
-                    HorizontalTextAlignment="Start"
-                    Text="Wir möchten Sie darauf hinweisen, das diese App GPS Standort -Daten abruft und diese Ihrem Unternehmen bereitstellt.&#x0a;&#x0a;Die GPS Standort -Daten werden abgerufen, wenn diese App immer in Gebrauch ist,  im Hintergrund wenn die App geschlossen ist bzw. wenn die App nicht verwendet wird.&#x0a;&#x0a;Ihr Unternehmen benötigt diese Daten zwecks Ihrer Einsatzfähigkeit in spontanen Einsatzgebieten in befindlicher Nähe.&#x0a;&#x0a;Die GPS-Daten dienen Ihnen auch zur Navigation zum Einsatzort aus der TODO-Liste.&#x0a;&#x0a;Diese Standort -Daten werden NICHT für Anzeigen oder Support-Werbung / Support-Anzeigen verwendet."
-                    TextColor="#ffffff"
-                    VerticalOptions="Center" />
-                <BoxView
-                    Margin="0,10,0,10"
-                    BackgroundColor="Gray"
-                    HeightRequest="1"
-                    HorizontalOptions="Fill"
-                    VerticalOptions="Start" />
-                <Grid
-                    Margin="0"
-                    Padding="0"
-                    HorizontalOptions="Fill">
-                    <Border
-                        x:Name="btn_endselectedwork"
-                        Margin="0"
-                        Padding="10"
-                        BackgroundColor="#04732d"
-                        HorizontalOptions="End">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
-                        <Label
-                            Margin="0"
-                            Padding="0"
-                            FontSize="16"
-                            Text="GELESEN UND VERSTANDEN"
-                            TextColor="#ffffff" />
-                    </Border>
-                </Grid>
-            </StackLayout>
+                </VerticalStackLayout>
+            </Grid>
         </AbsoluteLayout>
+
+
 
 
         <AbsoluteLayout

@@ -36,6 +36,25 @@ namespace iPMCloud.Mobile
     {
         // private BackgroundWorker backgroundWorker = new BackgroundWorker();
 
+        // Forwarding properties for elements moved into TodoPageView
+        private Border btn_todo_back => TodoPageView.BtnTodoBack;
+        private Image btn_todo_back_img => TodoPageView.BtnTodoBackImg;
+        private StackLayout btn_todo_faellig => TodoPageView.BtnTodoFaellig;
+        private StackLayout btn_todo_all => TodoPageView.BtnTodoAll;
+        private StackLayout btn_todo_inout => TodoPageView.BtnTodoInout;
+        private Image btn_todo_inout2_img => TodoPageView.BtnTodoInout2Img;
+        private Image btn_todo_inout_img => TodoPageView.BtnTodoInoutImg;
+        private Grid entry_todosearch_container => TodoPageView.EntryTodosearchContainer;
+        private Label entry_todosearch_lbb => TodoPageView.EntryTodosearchLbb;
+        private iPMCloud.Mobile.vo.CustomEntry entry_todosearch => TodoPageView.EntryTodosearch;
+        private Image btn_todosearch_img => TodoPageView.BtnTodosearchImg;
+        private Grid entry_todosearch_stepcontainer => TodoPageView.EntryTodosearchStepcontainer;
+        private StackLayout btn_todo_faellig_prev => TodoPageView.BtnTodoFaelligPrev;
+        private Label btn_todo_faellig_count => TodoPageView.BtnTodoFaelligCount;
+        private StackLayout btn_todo_faellig_next => TodoPageView.BtnTodoFaelligNext;
+        private ScrollView list_todo_scroll => TodoPageView.ListTodoScroll;
+        private StackLayout list_todo => TodoPageView.ListTodo;
+
         public bool isInitialize = false;
         public bool _isShowing = false;
 
@@ -44,6 +63,7 @@ namespace iPMCloud.Mobile
         {
             isInitialize = true;
             InitializeComponent();
+            TodoPageView.EntryTodosearch.TextChanged += Entry_todosearch_TextChanged;
             //AppModel.Instance.anImage = backgroundIMG;
 
             AppModel.Instance.MainPageOverlay = overlay;
@@ -2402,7 +2422,8 @@ namespace iPMCloud.Mobile
             NotScanPage_Container.IsVisible = false;
             PersonTimesPage_Container.IsVisible = false;
             NachbuchenPage_Container.IsVisible = false;
-            TodoPage_Container.IsVisible = false;
+            // TodoPage_Container.IsVisible = false; // moved into TodoPageView
+            TodoPageView.SetVisible(false);
             StartPage_Container.IsVisible = false;
             DSGVOPage_Container.IsVisible = false;
             PN_Page_Container.IsVisible = false;
@@ -6497,7 +6518,8 @@ namespace iPMCloud.Mobile
             await Task.Delay(1);
 
             ClearPageViews();
-            TodoPage_Container.IsVisible = true;
+            // TodoPage_Container.IsVisible = true; // moved into TodoPageView
+            TodoPageView.SetVisible(true);
             btn_todo_faelligTapped(null, null);
 
             await Task.Delay(1);

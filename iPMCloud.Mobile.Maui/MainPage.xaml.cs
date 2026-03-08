@@ -44,7 +44,7 @@ namespace iPMCloud.Mobile
         {
             isInitialize = true;
             InitializeComponent();
-            AppModel.Instance.anImage = backgroundIMG;
+            //AppModel.Instance.anImage = backgroundIMG;
 
             AppModel.Instance.MainPageOverlay = overlay;
 
@@ -6600,7 +6600,7 @@ namespace iPMCloud.Mobile
                 entry_todosearch.Text = "";
             }
 
-            list_todo.Children.Add(AuftragWSO.GetOrderTodoListView(AppModel.Instance, all, overlay, entry_todosearch.Text));
+            list_todo.Children.Add(AuftragWSO.GetOrderTodoListView(all, overlay, entry_todosearch.Text));
             await Task.Delay(1);
             list_todo.IsVisible = true;
             overlay.IsVisible = false;

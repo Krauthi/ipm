@@ -432,7 +432,7 @@ namespace iPMCloud.Mobile
             Image imgPin = new Image
             {
                 Source = model.imagesBase.Pin,
-                Margin = new Thickness(5, 0, 5, 0),
+                Margin = new Thickness(0, 0, 5, 0),
                 HeightRequest = 24,
                 WidthRequest = 24,
                 VerticalOptions = LayoutOptions.Center,
@@ -466,43 +466,38 @@ namespace iPMCloud.Mobile
             Border warn = new Border { IsVisible = false };
             if (obj.prio < 1360) // kleiner 4 Jahre
             {
+                warn.MinimumWidthRequest = 60;
                 warn = AuftragWSO.GetTodoCountWarningSmall(obj.prio);
                 warn.Margin = new Thickness(0, 0, 0, 0);
             }
 
 
-            var stack = new StackLayout
+            var stack = new Grid
             {
                 Padding = new Thickness(10, 2, 10, 2),
                 Margin = new Thickness(0),
-                Spacing = 0,
-                Orientation = StackOrientation.Vertical,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-                BackgroundColor = Color.FromArgb("#77042d53"),//#90144d73"),
+                HorizontalOptions = LayoutOptions.Fill,
+                BackgroundColor = Color.FromArgb("#90144d73"),
+                ColumnDefinitions = {
+                    new ColumnDefinition { Width = GridLength.Auto },
+                    new ColumnDefinition { Width = GridLength.Star },
+                    new ColumnDefinition { Width = GridLength.Auto },
+                    new ColumnDefinition { Width = GridLength.Auto },
+                },
                 Children = {
-                    new StackLayout
-                    {
-                        Padding = new Thickness(0),
-                        Margin = new Thickness(0),
-                        Spacing = 0,
-                        Orientation = StackOrientation.Horizontal,
-                        HorizontalOptions = LayoutOptions.FillAndExpand,
-                        Children = {
-                            warn,
-                            new Label {
-                                Text = obj.strasse + " " + obj.hsnr + "\n" + land + obj.plz  + " " + obj.ort,
-                                VerticalOptions = LayoutOptions.StartAndExpand,
-                                HorizontalOptions = LayoutOptions.FillAndExpand,
-                                FontSize = 16,
-                                TextColor = Colors.White,
-                                HorizontalTextAlignment = TextAlignment.Start,
-                                Margin = new Thickness(10,0,0,0),
-                                Padding = new Thickness(0)
-                            },
-                            imgInfo,
-                            imgPin,
-                        }
-                    }
+                    warn,
+                    new Label {
+                        Text = obj.strasse + " " + obj.hsnr + "\n" + land + obj.plz  + " " + obj.ort,
+                        VerticalOptions = LayoutOptions.Start,
+                        HorizontalOptions = LayoutOptions.Fill,
+                        FontSize = 16,
+                        TextColor = Colors.White,
+                        HorizontalTextAlignment = TextAlignment.Start,
+                        Margin = new Thickness(10,0,0,0),
+                        Padding = new Thickness(0)                        
+                    },
+                    imgInfo,
+                    imgPin                    
                 }
             };
 

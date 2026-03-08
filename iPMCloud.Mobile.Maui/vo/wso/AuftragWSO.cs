@@ -675,25 +675,24 @@ namespace iPMCloud.Mobile
 
 
 
-        public static StackLayout GetOrderTodoListView(AppModel model, int all, AbsoluteLayout overlay, string s)
+        public static VerticalStackLayout GetOrderTodoListView(int all, AbsoluteLayout overlay, string s)
         {
             int maxResult = 20;
-            var stack = new StackLayout
+            var vstack = new VerticalStackLayout
             {
                 Padding = new Thickness(0, 0, 0, 0),
                 Margin = new Thickness(0, 0, 0, 0),
                 Spacing = 0,
-                Orientation = StackOrientation.Vertical,
-                HorizontalOptions = LayoutOptions.FillAndExpand
+                HorizontalOptions = LayoutOptions.Fill
             };
             // Faellige Oder Alle
             var oList = new List<BuildingWSO>();
-            model.AllBuildings.ForEach(b =>
+            AppModel.Instance.AllBuildings.ForEach(b =>
             {
                 string term = b.plz + "##" + b.ort + "##" + b.strasse + "##" + b.hsnr + "##" + b.objektname + "##" + b.objektnr;
                 if (term.ToLower().Contains(s.ToLower()))
                 {
-                    var building = CalcBuildingdue(b, model, all == 1);
+                    var building = CalcBuildingdue(b, AppModel.Instance, all == 1);
                     if (building != null)
                     {
                         oList.Add(building);
@@ -701,7 +700,7 @@ namespace iPMCloud.Mobile
                 }
             });
 
-            //oList.ForEach(b => { b = CalcBuildingdue(b, model); });
+            //oList.ForEach(b => { b = CalcBuildingdue(b, AppModel.Instance); });
             oList = oList.OrderBy(b => b.prio).ToList();
             int count = oList.Where(_ => _.isInTodoVisible).Count();
             int pages = (count / maxResult) + (count == maxResult ? 0 : 1);
@@ -742,10 +741,10 @@ namespace iPMCloud.Mobile
                 AppModel.Instance.MainPage._holdLastTodoPageMax = pages;
                 muellist.ForEach(ml =>
                 {
-                    stack.Children.Add(LeistungWSO.GetMuellPositionCardView(ml, model, null));
+                    vstack.Children.Add(LeistungWSO.GetMuellPositionCardView(ml, AppModel.Instance, null));
                 });
                 AppModel.Instance.MainPage.Update_Todopaging(AppModel.Instance.MainPage._holdLastTodoPage, AppModel.Instance.MainPage._holdLastTodoPageMax);
-                return stack;
+                return vstack;
             }
             // all = 1 oder 0
             oList.ForEach(b =>
@@ -755,13 +754,13 @@ namespace iPMCloud.Mobile
                 var bb = (maxResult * (AppModel.Instance.MainPage._holdLastTodoPage - 1)) + maxResult; // maxResult 50
                 if (i >= ba && i <= bb && b != null && b.ArrayOfAuftrag.Count > 0 && b.isInTodoVisible)
                 {
-                    stack.Children.Add(BuildingWSO.GetBuildingInfoTodoElement(b, model, overlay));
+                    vstack.Children.Add(BuildingWSO.GetBuildingInfoTodoElement(b, AppModel.Instance, overlay));
                 }
                 i++;
             });
             AppModel.Instance.MainPage.Update_Todopaging(AppModel.Instance.MainPage._holdLastTodoPage, AppModel.Instance.MainPage._holdLastTodoPageMax);
             //Task task = Task.Run(() => RestGui(all,oList,stack, overlay));
-            return stack;
+            return vstack;
         }
 
 

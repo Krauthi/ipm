@@ -6,7 +6,7 @@
 
     <Grid
         x:Name="DSGVOPage_Container"
-        Margin="0"
+        Margin="0,0,0,20"
         Padding="0"
         BackgroundColor="Black"
         HorizontalOptions="Fill"
@@ -89,17 +89,10 @@
             HorizontalOptions="Fill"
             VerticalOptions="Start" />
 
-        <VerticalStackLayout
-            x:Name="DSGVOPage_position_Container"
-            Grid.Row="2"
-            Margin="0"
-            Padding="0"
-            HorizontalOptions="Fill"
-            IsVisible="True"
-            Spacing="0"
-            VerticalOptions="Fill">
+        
             <ScrollView
-                Margin="0,0,0,17"
+                Margin="0"
+                Grid.Row="2"
                 Padding="0"
                 HorizontalOptions="Fill"
                 VerticalOptions="Start">
@@ -561,7 +554,6 @@
 
                 </VerticalStackLayout>
             </ScrollView>
-        </VerticalStackLayout>
 
     </Grid>
 

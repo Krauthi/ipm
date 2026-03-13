@@ -42,6 +42,11 @@ namespace iPMCloud.Mobile
         private Border btn_todo_back => TodoPageView.BtnTodoBack;
         private VerticalStackLayout list_todo => TodoPageView.ListTodo;
 
+        // Forwarding properties for elements moved into DSGVOPageContainerView
+        private Grid DSGVOPage_Container => DSGVOPageContainerView.ContainerGrid;
+        private Border btn_back_dsgvo => DSGVOPageContainerView.BtnBackDsgvo;
+        private Image btn_back_dsgvo_img => DSGVOPageContainerView.BtnBackDsgvoImg;
+
         // Forwarding properties for elements moved into WorkerPageContainerView
         private Grid WorkerPage_Container => WorkerPageContainerView.ContainerGrid;
         private Border btn_worker_back => WorkerPageContainerView.BtnWorkerBack;

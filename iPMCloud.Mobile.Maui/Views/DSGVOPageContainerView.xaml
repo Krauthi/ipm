@@ -1,0 +1,568 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    x:Class="iPMCloud.Mobile.Views.DSGVOPageContainerView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <Grid
+        x:Name="DSGVOPage_Container"
+        Margin="0"
+        Padding="0"
+        BackgroundColor="Black"
+        HorizontalOptions="Fill"
+        IsVisible="False"
+        RowSpacing="0"
+        VerticalOptions="Fill">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="54" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+
+        <Grid
+            Margin="0"
+            Padding="0"
+            ColumnSpacing="0"
+            HeightRequest="54"
+            HorizontalOptions="Fill">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Border
+                x:Name="btn_back_dsgvo"
+                Grid.Column="0"
+                Margin="3,2,2,2"
+                Padding="1"
+                BackgroundColor="Transparent"
+                HorizontalOptions="Start"
+                Stroke="Transparent"
+                VerticalOptions="Center">
+                <Grid
+                    Margin="0"
+                    Padding="0"
+                    ColumnSpacing="0"
+                    HeightRequest="38"
+                    HorizontalOptions="Start"
+                    VerticalOptions="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Image
+                        x:Name="btn_back_dsgvo_img"
+                        Grid.Column="0"
+                        Margin="0,0,0,0"
+                        HeightRequest="30"
+                        HorizontalOptions="Start"
+                        VerticalOptions="Center"
+                        WidthRequest="30" />
+                    <Label
+                        Grid.Column="1"
+                        Margin="0"
+                        FontSize="18"
+                        HorizontalOptions="Start"
+                        HorizontalTextAlignment="Start"
+                        LineBreakMode="TailTruncation"
+                        Text="ZURÜCK"
+                        TextColor="#2f84bd"
+                        VerticalOptions="Center" />
+                </Grid>
+            </Border>
+            <Label
+                Grid.Column="1"
+                Margin="0,0,10,0"
+                FontSize="20"
+                HorizontalOptions="End"
+                HorizontalTextAlignment="End"
+                LineBreakMode="TailTruncation"
+                Text="DSGVO &amp; Impressum"
+                TextColor="#ffffff"
+                VerticalOptions="Center" />
+        </Grid>
+        <BoxView
+            Grid.Row="1"
+            Margin="0"
+            BackgroundColor="Gray"
+            HeightRequest="1"
+            HorizontalOptions="Fill"
+            VerticalOptions="Start" />
+
+        <VerticalStackLayout
+            x:Name="DSGVOPage_position_Container"
+            Grid.Row="2"
+            Margin="0"
+            Padding="0"
+            HorizontalOptions="Fill"
+            IsVisible="True"
+            Spacing="0"
+            VerticalOptions="Fill">
+            <ScrollView
+                Margin="0,0,0,17"
+                Padding="0"
+                HorizontalOptions="Fill"
+                VerticalOptions="Start">
+                <VerticalStackLayout
+                    x:Name="dsgvoStack"
+                    Margin="0"
+                    Padding="10"
+                    HorizontalOptions="Fill"
+                    Spacing="0"
+                    VerticalOptions="Fill">
+
+                    <Image
+                        Margin="0"
+                        HorizontalOptions="Fill"
+                        Source="logo.png" />
+
+                    <Label
+                        Margin="0,10,0,0"
+                        FontSize="16"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="iPM-Cloud GmbH (c)2026"
+                        TextColor="#ffffff" />
+
+                    <Label
+                        Margin="0,20,0,0"
+                        FontSize="12"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Markus Krauthausen"
+                        TextColor="#ffffff" />
+                    <Label
+                        Margin="0,0,0,0"
+                        FontSize="12"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="EMail: mk@ipm-cloud.de"
+                        TextColor="#ffffff" />
+
+                    <Label
+                        Margin="0,10,0,0"
+                        FontSize="12"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Dirk Hensel"
+                        TextColor="#ffffff" />
+                    <Label
+                        Margin="0,0,0,0"
+                        FontSize="12"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="EMail: dh@ipm-cloud.de"
+                        TextColor="#ffffff" />
+
+
+
+                    <Label
+                        Margin="0,20,0,0"
+                        FontSize="16"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="DSGVO Datenschutzerklärung &amp; Haftungsausschluss"
+                        TextColor="#007acc"
+                        TextDecorations="Underline" />
+                    <Label
+                        Margin="0,5,0,0"
+                        FontSize="10"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Diese Datenschutzerklärung klärt Sie über die Art, den Umfang und Zweck der Verarbeitung von personenbezogenen Daten (nachfolgend kurz Daten) im Rahmen der Erbringung unserer Leistungen sowie innerhalb unseres Onlineangebotes und der mit ihm verbundenen Webseiten, Funktionen und Inhalte sowie externen Onlinepräsenzen, wie z.B. unser Social Media Profile auf (nachfolgend gemeinsam bezeichnet als Onlineangebot). Im Hinblick auf die verwendeten Begrifflichkeiten, wie z.B. Verarbeitung oder Verantwortlicher verweisen wir auf die Definitionen im Art. 4 der Datenschutzgrundverordnung (DSGVO)."
+                        TextColor="#ffffff" />
+
+
+                    <Label
+                        Margin="0,10,0,0"
+                        FontSize="14"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Verantwortlicher"
+                        TextColor="#007acc" />
+                    <Label
+                        Margin="0,5,0,0"
+                        FontSize="10"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="iPM-Cloud GmbH (c) 2025                                     &#13;&#10;Bischof-Dirichs-Straße 51                                     &#13;&#10;65375 Winkel                                     &#13;&#10;Tel.: +49 (0) 67 23 - 99 82 841                                     &#13;&#10;Datenschutzbeauftragter: Markus Krauthausen"
+                        TextColor="#ffffff" />
+
+                    <Label
+                        Margin="0,10,0,0"
+                        FontSize="14"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Arten der verarbeiteten Daten"
+                        TextColor="#007acc" />
+                    <Label
+                        Margin="0,5,0,0"
+                        FontSize="10"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="- Bestandsdaten (z.B., Personen-Stammdaten, Namen oder Adressen).                                     &#13;&#10;- Kontaktdaten (z.B., E-Mail, Telefonnummern).                                     &#13;&#10;- Inhaltsdaten (z.B., Texteingaben, Fotografien, Videos).                                     &#13;&#10;- Nutzungsdaten (z.B., besuchte Webseiten, Interesse an Inhalten, Zugriffszeiten).                                     &#13;&#10;- Meta-/Kommunikationsdaten (z.B., Geräte-Informationen, IP-Adressen)."
+                        TextColor="#ffffff" />
+
+                    <Label
+                        Margin="0,10,0,0"
+                        FontSize="14"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Kategorien betroffener Personen"
+                        TextColor="#007acc" />
+                    <Label
+                        Margin="0,5,0,0"
+                        FontSize="10"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Besucher und Nutzer des Onlineangebotes (Nachfolgend bezeichnen wir die betroffenen Personen zusammenfassend auch als Nutzer)."
+                        TextColor="#ffffff" />
+
+                    <Label
+                        Margin="0,10,0,0"
+                        FontSize="14"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Zweck der Verarbeitung"
+                        TextColor="#007acc" />
+                    <Label
+                        Margin="0,5,0,0"
+                        FontSize="10"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="- Zurverfügungstellung des Onlineangebotes, seiner Funktionen und Inhalte.                                     &#13;&#10;- Beantwortung von Kontaktanfragen und Kommunikation mit Nutzern.                                     &#13;&#10;- Sicherheitsmaßnahmen.                                     &#13;&#10;- Reichweitenmessung/Marketing"
+                        TextColor="#ffffff" />
+
+                    <Label
+                        Margin="0,10,0,0"
+                        FontSize="14"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Verwendete Begrifflichkeiten"
+                        TextColor="#007acc" />
+                    <Label
+                        Margin="0,5,0,0"
+                        FontSize="10"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Personenbezogene Daten sind alle Informationen, die sich auf eine identifizierte oder identifizierbare natürliche Person (im Folgenden betroffene Person) beziehen; als identifizierbar wird eine natürliche Person angesehen, die direkt oder indirekt, insbesondere mittels Zuordnung zu einer Kennung wie einem Namen, zu einer Kennnummer, zu Standortdaten, zu einer Online-Kennung (z.B. Cookie) oder zu einem oder mehreren besonderen Merkmalen identifiziert werden kann, die Ausdruck der physischen, physiologischen, genetischen, psychischen, wirtschaftlichen, kulturellen oder sozialen Identität dieser natürlichen Person sind.                                     &#13;&#10;Verarbeitung ist jeder mit oder ohne Hilfe automatisierter Verfahren ausgeführte Vorgang oder jede solche Vorgangsreihe im Zusammenhang mit personenbezogenen Daten. Der Begriff reicht weit und umfasst praktisch jeden Umgang mit Daten.                                     &#13;&#10;Pseudonymisierung die Verarbeitung personenbezogener Daten in einer Weise, dass die personenbezogenen Daten ohne Hinzuziehung zusätzlicher Informationen nicht mehr einer spezifischen betroffenen Person zugeordnet werden können, sofern diese zusätzlichen Informationen gesondert aufbewahrt werden und technischen und organisatorischen Maßnahmen unterliegen, die gewährleisten, dass die personenbezogenen Daten nicht einer identifizierten oder identifizierbaren natürlichen Person zugewiesen werden.                                     &#13;&#10;Profiling jede Art der automatisierten Verarbeitung personenbezogener Daten, die darin besteht, dass diese personenbezogenen Daten verwendet werden, um bestimmte persönliche Aspekte, die sich auf eine natürliche Person beziehen, zu bewerten, insbesondere um Aspekte bezüglich Arbeitsleistung, wirtschaftliche Lage, Gesundheit, persönliche Vorlieben, Interessen, Zuverlässigkeit, Verhalten, Aufenthaltsort oder Ortswechsel dieser natürlichen Person zu analysieren oder vorherzusagen.                                     &#13;&#10;Als Verantwortlicher wird die natürliche oder juristische Person, Behörde, Einrichtung oder andere Stelle, die allein oder gemeinsam mit anderen über die Zwecke und Mittel der Verarbeitung von personenbezogenen Daten entscheidet, bezeichnet.                                     &#13;&#10;Auftragsverarbeiter eine natürliche oder juristische Person, Behörde, Einrichtung oder andere Stelle, die personenbezogene Daten im Auftrag des Verantwortlichen verarbeitet."
+                        TextColor="#ffffff" />
+
+                    <Label
+                        Margin="0,10,0,0"
+                        FontSize="14"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Maßgebliche Rechtsgrundlagen"
+                        TextColor="#007acc" />
+                    <Label
+                        Margin="0,5,0,0"
+                        FontSize="10"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Nach Maßgabe des Art. 13 DSGVO teilen wir Ihnen die Rechtsgrundlagen unserer Datenverarbeitungen mit. Für Nutzer aus dem Geltungsbereich der Datenschutzgrundverordnung (DSGVO), d.h. der EU und des EWG gilt, sofern die Rechtsgrundlage in der Datenschutzerklärung nicht genannt wird, Folgendes:                                     &#13;&#10;Die Rechtsgrundlage für die Einholung von Einwilligungen ist Art. 6 Abs. 1 lit. a und Art. 7 DSGVO;                                     &#13;&#10;Die Rechtsgrundlage für die Verarbeitung zur Erfüllung unserer Leistungen und Durchführung vertraglicher Maßnahmen sowie Beantwortung von Anfragen ist Art. 6 Abs. 1 lit. b DSGVO;                                     &#13;&#10;Die Rechtsgrundlage für die Verarbeitung zur Erfüllung unserer rechtlichen Verpflichtungen ist Art. 6 Abs. 1 lit. c DSGVO;                                     &#13;&#10;Für den Fall, dass lebenswichtige Interessen der betroffenen Person oder einer anderen natürlichen Person eine Verarbeitung personenbezogener Daten erforderlich machen, dient Art. 6 Abs. 1 lit. d DSGVO als Rechtsgrundlage.                                     &#13;&#10;Die Rechtsgrundlage für die erforderliche Verarbeitung zur Wahrnehmung einer Aufgabe, die im öffentlichen Interesse liegt oder in Ausübung öffentlicher Gewalt erfolgt, die dem Verantwortlichen übertragen wurde ist Art. 6 Abs. 1 lit. e DSGVO.                                     &#13;&#10;Die Rechtsgrundlage für die Verarbeitung zur Wahrung unserer berechtigten Interessen ist Art. 6 Abs. 1 lit. f DSGVO.                                     &#13;&#10;Die Verarbeitung von Daten zu anderen Zwecken als denen, zu denen sie erhoben wurden, bestimmt sich nach den Vorgaben des Art 6 Abs. 4 DSGVO.                                     &#13;&#10;Die Verarbeitung von besonderen Kategorien von Daten (entsprechend Art. 9 Abs. 1 DSGVO) bestimmt sich nach den Vorgaben des Art. 9 Abs. 2 DSGVO."
+                        TextColor="#ffffff" />
+
+                    <Label
+                        Margin="0,10,0,0"
+                        FontSize="14"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Sicherheitsmaßnahmen"
+                        TextColor="#007acc" />
+                    <Label
+                        Margin="0,5,0,0"
+                        FontSize="10"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Wir treffen nach Maßgabe der gesetzlichen Vorgabenunter Berücksichtigung des Stands der Technik, der Implementierungskosten und der Art, des Umfangs, der Umstände und der Zwecke der Verarbeitung sowie der unterschiedlichen Eintrittswahrscheinlichkeit und Schwere des Risikos für die Rechte und Freiheiten natürlicher Personen, geeignete technische und organisatorische Maßnahmen, um ein dem Risiko angemessenes Schutzniveau zu gewährleisten.                                     &#13;&#10;Zu den Maßnahmen gehören insbesondere die Sicherung der Vertraulichkeit, Integrität und Verfügbarkeit von Daten durch Kontrolle des physischen Zugangs zu den Daten, als auch des sie betreffenden Zugriffs, der Eingabe, Weitergabe, der Sicherung der Verfügbarkeit und ihrer Trennung. Des Weiteren haben wir Verfahren eingerichtet, die eine Wahrnehmung von Betroffenenrechten, Löschung von Daten und Reaktion auf Gefährdung der Daten gewährleisten. Ferner berücksichtigen wir den Schutz personenbezogener Daten bereits bei der Entwicklung, bzw. Auswahl von Hardware, Software sowie Verfahren, entsprechend dem Prinzip des Datenschutzes durch Technikgestaltung und durch datenschutzfreundliche Voreinstellungen."
+                        TextColor="#ffffff" />
+
+                    <Label
+                        Margin="0,10,0,0"
+                        FontSize="14"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Zusammenarbeit mit Auftragsverarbeitern, gemeinsam Verantwortlichen und Dritten"
+                        TextColor="#007acc" />
+                    <Label
+                        Margin="0,5,0,0"
+                        FontSize="10"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Sofern wir im Rahmen unserer Verarbeitung Daten gegenüber anderen Personen und Unternehmen (Auftragsverarbeitern, gemeinsam Verantwortlichen oder Dritten) offenbaren, sie an diese übermitteln oder ihnen sonst Zugriff auf die Daten gewähren, erfolgt dies nur auf Grundlage einer gesetzlichen Erlaubnis (z.B. wenn eine Übermittlung der Daten an Dritte, wie an Zahlungsdienstleister, zur Vertragserfüllung erforderlich ist), Nutzer eingewilligt haben, eine rechtliche Verpflichtung dies vorsieht oder auf Grundlage unserer berechtigten Interessen (z.B. beim Einsatz von Beauftragten, Webhostern, etc.).                                     &#13;&#10;Sofern wir Daten anderen Unternehmen unserer Unternehmensgruppe offenbaren, übermitteln oder ihnen sonst den Zugriff gewähren, erfolgt dies insbesondere zu administrativen Zwecken als berechtigtes Interesse und darüberhinausgehend auf einer den gesetzlichen Vorgaben entsprechenden Grundlage."
+                        TextColor="#ffffff" />
+
+                    <Label
+                        Margin="0,10,0,0"
+                        FontSize="14"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Übermittlungen in Drittländer"
+                        TextColor="#007acc" />
+                    <Label
+                        Margin="0,5,0,0"
+                        FontSize="10"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Sofern wir Daten in einem Drittland (d.h. außerhalb der Europäischen Union (EU), des Europäischen Wirtschaftsraums (EWR) oder der Schweizer Eidgenossenschaft) verarbeiten oder dies im Rahmen der Inanspruchnahme von Diensten Dritter oder Offenlegung, bzw. Übermittlung von Daten an andere Personen oder Unternehmen geschieht, erfolgt dies nur, wenn es zur Erfüllung unserer (vor)vertraglichen Pflichten, auf Grundlage Ihrer Einwilligung, aufgrund einer rechtlichen Verpflichtung oder auf Grundlage unserer berechtigten Interessen geschieht. Vorbehaltlich gesetzlicher oder vertraglicher Erlaubnisse, verarbeiten oder lassen wir die Daten in einem Drittland nur beim Vorliegen der gesetzlichen Voraussetzungen. D.h. die Verarbeitung erfolgt z.B. auf Grundlage besonderer Garantien, wie der offiziell anerkannten Feststellung eines der EU entsprechenden Datenschutzniveaus (z.B. für die USA durch das Privacy Shield) oder Beachtung offiziell anerkannter spezieller vertraglicher Verpflichtungen."
+                        TextColor="#ffffff" />
+
+                    <Label
+                        Margin="0,10,0,0"
+                        FontSize="14"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Rechte der betroffenen Personen"
+                        TextColor="#007acc" />
+                    <Label
+                        Margin="0,5,0,0"
+                        FontSize="10"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Sie haben das Recht, eine Bestätigung darüber zu verlangen, ob betreffende Daten verarbeitet werden und auf Auskunft über diese Daten sowie auf weitere Informationen und Kopie der Daten entsprechend den gesetzlichen Vorgaben.                                      &#13;&#10;Sie haben entsprechend. den gesetzlichen Vorgaben das Recht, die Vervollständigung der Sie betreffenden Daten oder die Berichtigung der Sie betreffenden unrichtigen Daten zu verlangen.                                      &#13;&#10;Sie haben nach Maßgabe der gesetzlichen Vorgaben das Recht zu verlangen, dass betreffende Daten unverzüglich gelöscht werden, bzw. alternativ nach Maßgabe der gesetzlichen Vorgaben eine Einschränkung der Verarbeitung der Daten zu verlangen.                                      &#13;&#10;Sie haben das Recht zu verlangen, dass die Sie betreffenden Daten, die Sie uns bereitgestellt haben nach Maßgabe der gesetzlichen Vorgaben zu erhalten und deren Übermittlung an andere Verantwortliche zu fordern.                                      &#13;&#10;Sie haben ferner nach Maßgabe der gesetzlichen Vorgaben das Recht, eine Beschwerde bei der zuständigen Aufsichtsbehörde einzureichen."
+                        TextColor="#ffffff" />
+
+                    <Label
+                        Margin="0,10,0,0"
+                        FontSize="14"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Widerrufsrecht"
+                        TextColor="#007acc" />
+                    <Label
+                        Margin="0,5,0,0"
+                        FontSize="10"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Sie haben das Recht, erteilte Einwilligungen mit Wirkung für die Zukunft zu widerrufen."
+                        TextColor="#ffffff" />
+
+                    <Label
+                        Margin="0,10,0,0"
+                        FontSize="14"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Widerspruchsrecht"
+                        TextColor="#007acc" />
+                    <Label
+                        Margin="0,5,0,0"
+                        FontSize="10"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Sie können der künftigen Verarbeitung der Sie betreffenden Daten nach Maßgabe der gesetzlichen Vorgaben jederzeit widersprechen. Der Widerspruch kann insbesondere gegen die Verarbeitung für Zwecke der Direktwerbung erfolgen."
+                        TextColor="#ffffff" />
+
+                    <Label
+                        Margin="0,10,0,0"
+                        FontSize="14"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Cookies und Widerspruchsrecht bei Direktwerbung"
+                        TextColor="#007acc" />
+                    <Label
+                        Margin="0,5,0,0"
+                        FontSize="10"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Als Cookies werden kleine Dateien bezeichnet, die auf Rechnern der Nutzer gespeichert werden. Innerhalb der Cookies können unterschiedliche Angaben gespeichert werden. Ein Cookie dient primär dazu, die Angaben zu einem Nutzer (bzw. dem Gerät auf dem das Cookie gespeichert ist) während oder auch nach seinem Besuch innerhalb eines Onlineangebotes zu speichern. Als temporäre Cookies, bzw. Session-Cookies oder transiente Cookies, werden Cookies bezeichnet, die gelöscht werden, nachdem ein Nutzer ein Onlineangebot verlässt und seinen Browser schließt. In einem solchen Cookie kann z.B. der Inhalt eines Warenkorbs in einem Onlineshop oder ein Login-Status gespeichert werden. Als permanent oder persistent werden Cookies bezeichnet, die auch nach dem Schließen des Browsers gespeichert bleiben. So kann z.B. der Login-Status gespeichert werden, wenn die Nutzer diese nach mehreren Tagen aufsuchen. Ebenso können in einem solchen Cookie die Interessen der Nutzer gespeichert werden, die für Reichweitenmessung oder Marketingzwecke verwendet werden. Als Third-Party-Cookie werden Cookies bezeichnet, die von anderen Anbietern als dem Verantwortlichen, der das Onlineangebot betreibt, angeboten werden (andernfalls, wenn es nur dessen Cookies sind spricht man von First-Party Cookies).                                     &#13;&#10;Wir können temporäre und permanente Cookies einsetzen und klären hierüber im Rahmen unserer Datenschutzerklärung auf.                                     &#13;&#10;Falls die Nutzer nicht möchten, dass Cookies auf ihrem Rechner gespeichert werden, werden sie gebeten die entsprechende Option in den Systemeinstellungen ihres Browsers zu deaktivieren. Gespeicherte Cookies können in den Systemeinstellungen des Browsers gelöscht werden. Der Ausschluss von Cookies kann zu Funktionseinschränkungen dieses Onlineangebotes führen.                                     &#13;&#10;Ein genereller Widerspruch gegen den Einsatz der zu Zwecken des Onlinemarketing eingesetzten Cookies kann bei einer Vielzahl der Dienste, vor allem im Fall des Trackings, über die US-amerikanische Seite http://www.aboutads.info/choices/ oder die EU-Seite http://www.youronlinechoices.com/ erklärt werden. Des Weiteren kann die Speicherung von Cookies mittels deren Abschaltung in den Einstellungen des Browsers erreicht werden. Bitte beachten Sie, dass dann gegebenenfalls nicht alle Funktionen dieses Onlineangebotes genutzt werden können."
+                        TextColor="#ffffff" />
+
+                    <Label
+                        Margin="0,10,0,0"
+                        FontSize="14"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Löschung von Daten"
+                        TextColor="#007acc" />
+                    <Label
+                        Margin="0,5,0,0"
+                        FontSize="10"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Die von uns verarbeiteten Daten werden nach Maßgabe der gesetzlichen Vorgaben gelöscht oder in ihrer Verarbeitung eingeschränkt. Sofern nicht im Rahmen dieser Datenschutzerklärung ausdrücklich angegeben, werden die bei uns gespeicherten Daten gelöscht, sobald sie für ihre Zweckbestimmung nicht mehr erforderlich sind und der Löschung keine gesetzlichen Aufbewahrungspflichten entgegenstehen.                                     &#13;&#10;Sofern die Daten nicht gelöscht werden, weil sie für andere und gesetzlich zulässige Zwecke erforderlich sind, wird deren Verarbeitung eingeschränkt. D.h. die Daten werden gesperrt und nicht für andere Zwecke verarbeitet. Das gilt z.B. für Daten, die aus handels- oder steuerrechtlichen Gründen aufbewahrt werden müssen."
+                        TextColor="#ffffff" />
+
+                    <Label
+                        Margin="0,10,0,0"
+                        FontSize="14"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Änderungen und Aktualisierungen der Datenschutzerklärung"
+                        TextColor="#007acc" />
+                    <Label
+                        Margin="0,5,0,0"
+                        FontSize="10"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Wir bitten Sie sich regelmäßig über den Inhalt unserer Datenschutzerklärung zu informieren. Wir passen die Datenschutzerklärung an, sobald die Änderungen der von uns durchgeführten Datenverarbeitungen dies erforderlich machen. Wir informieren Sie, sobald durch die Änderungen eine Mitwirkungshandlung Ihrerseits (z.B. Einwilligung) oder eine sonstige individuelle Benachrichtigung erforderlich wird."
+                        TextColor="#ffffff" />
+
+                    <Label
+                        Margin="0,10,0,0"
+                        FontSize="14"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Vertragliche Leistungen"
+                        TextColor="#007acc" />
+                    <Label
+                        Margin="0,5,0,0"
+                        FontSize="10"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Wir verarbeiten die Daten unserer Vertragspartner und Interessenten sowie anderer Auftraggeber, Kunden, Mandanten, Klienten oder Vertragspartner (einheitlich bezeichnet als Vertragspartner) entsprechend Art. 6 Abs. 1 lit. b. DSGVO, um ihnen gegenüber unsere vertraglichen oder vorvertraglichen Leistungen zu erbringen. Die hierbei verarbeiteten Daten, die Art, der Umfang und der Zweck und die Erforderlichkeit ihrer Verarbeitung, bestimmen sich nach dem zugrundeliegenden Vertragsverhältnis.                                     &#13;&#10;Zu den verarbeiteten Daten gehören die Stammdaten unserer Vertragspartner (z.B., Namen und Adressen), Kontaktdaten (z.B. E-Mailadressen und Telefonnummern) sowie Vertragsdaten (z.B., in Anspruch genommene Leistungen, Vertragsinhalte, vertragliche Kommunikation, Namen von Kontaktpersonen) und Zahlungsdaten (z.B., Bankverbindungen, Zahlungshistorie).                                     &#13;&#10;Besondere Kategorien personenbezogener Daten verarbeiten wir grundsätzlich nicht, außer wenn diese Bestandteile einer beauftragten oder vertragsgemäßen Verarbeitung sind.                                     &#13;&#10;Wir verarbeiten Daten, die zur Begründung und Erfüllung der vertraglichen Leistungen erforderlich sind und weisen auf die Erforderlichkeit ihrer Angabe, sofern diese für die Vertragspartner nicht evident ist, hin. Eine Offenlegung an externe Personen oder Unternehmen erfolgt nur, wenn sie im Rahmen eines Vertrags erforderlich ist. Bei der Verarbeitung der uns im Rahmen eines Auftrags überlassenen Daten, handeln wir entsprechend den Weisungen der Auftraggeber sowie der gesetzlichen Vorgaben.                                     &#13;&#10;Im Rahmen der Inanspruchnahme unserer Onlinedienste, können wir die IP-Adresse und den Zeitpunkt der jeweiligen Nutzerhandlung speichern. Die Speicherung erfolgt auf Grundlage unserer berechtigten Interessen, als auch der Interessen der Nutzer am Schutz vor Missbrauch und sonstiger unbefugter Nutzung. Eine Weitergabe dieser Daten an Dritte erfolgt grundsätzlich nicht, außer sie ist zur Verfolgung unserer Ansprüche gem. Art. 6 Abs. 1 lit. f. DSGVO erforderlich oder es besteht hierzu eine gesetzliche Verpflichtung gem. Art. 6 Abs. 1 lit. c. DSGVO.                                     &#13;&#10;Die Löschung der Daten erfolgt, wenn die Daten zur Erfüllung vertraglicher oder gesetzlicher Fürsorgepflichten sowie für den Umgang mit etwaigen Gewährleistungs- und vergleichbaren Pflichten nicht mehr erforderlich sind, wobei die Erforderlichkeit der Aufbewahrung der Daten alle drei Jahre überprüft wird; im Übrigen gelten die gesetzlichen Aufbewahrungspflichten."
+                        TextColor="#ffffff" />
+
+                    <Label
+                        Margin="0,10,0,0"
+                        FontSize="14"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Administration, Finanzbuchhaltung, Büroorganisation, Kontaktverwaltung"
+                        TextColor="#007acc" />
+                    <Label
+                        Margin="0,5,0,0"
+                        FontSize="10"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Wir verarbeiten Daten im Rahmen von Verwaltungsaufgaben sowie Organisation unseres Betriebs, Finanzbuchhaltung und Befolgung der gesetzlichen Pflichten, wie z.B. der Archivierung. Hierbei verarbeiten wir dieselben Daten, die wir im Rahmen der Erbringung unserer vertraglichen Leistungen verarbeiten. Die Verarbeitungsgrundlagen sind Art. 6 Abs. 1 lit. c. DSGVO, Art. 6 Abs. 1 lit. f. DSGVO. Von der Verarbeitung sind Kunden, Interessenten, Geschäftspartner und Websitebesucher betroffen. Der Zweck und unser Interesse an der Verarbeitung liegt in der Administration, Finanzbuchhaltung, Büroorganisation, Archivierung von Daten, also Aufgaben die der Aufrechterhaltung unserer Geschäftstätigkeiten, Wahrnehmung unserer Aufgaben und Erbringung unserer Leistungen dienen. Die Löschung der Daten im Hinblick auf vertragliche Leistungen und die vertragliche Kommunikation entspricht den, bei diesen Verarbeitungstätigkeiten genannten Angaben.                                     &#13;&#10;Wir offenbaren oder übermitteln hierbei Daten an die Finanzverwaltung, Berater, wie z.B., Steuerberater oder Wirtschaftsprüfer sowie weitere Gebührenstellen und Zahlungsdienstleister.                                     &#13;&#10;Ferner speichern wir auf Grundlage unserer betriebswirtschaftlichen Interessen Angaben zu Lieferanten, Veranstaltern und sonstigen Geschäftspartnern, z.B. zwecks späterer Kontaktaufnahme. Diese mehrheitlich unternehmensbezogenen Daten, speichern wir grundsätzlich dauerhaft."
+                        TextColor="#ffffff" />
+
+                    <Label
+                        Margin="0,10,0,0"
+                        FontSize="14"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Registrierfunktion"
+                        TextColor="#007acc" />
+                    <Label
+                        Margin="0,5,0,0"
+                        FontSize="10"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Nutzer können ein Nutzerkonto anlegen. Im Rahmen der Registrierung werden die erforderlichen Pflichtangaben den Nutzern mitgeteilt und auf Grundlage des Art. 6 Abs. 1 lit. b DSGVO zu Zwecken der Bereitstellung des Nutzerkontos verarbeitet. Zu den verarbeiteten Daten gehören insbesondere die Login-Informationen (Name, Passwort sowie eine E-Mailadresse). Die im Rahmen der Registrierung eingegebenen Daten werden für die Zwecke der Nutzung des Nutzerkontos und dessen Zwecks verwendet.                                     &#13;&#10;Die Nutzer können über Informationen, die für deren Nutzerkonto relevant sind, wie z.B. technische Änderungen, per E-Mail informiert werden. Wenn Nutzer ihr Nutzerkonto gekündigt haben, werden deren Daten im Hinblick auf das Nutzerkonto, vorbehaltlich einer gesetzlichen Aufbewahrungspflicht, gelöscht. Es obliegt den Nutzern, ihre Daten bei erfolgter Kündigung vor dem Vertragsende zu sichern. Wir sind berechtigt, sämtliche während der Vertragsdauer gespeicherten Daten des Nutzers unwiederbringlich zu löschen.                                     &#13;&#10;Im Rahmen der Inanspruchnahme unserer Registrierungs- und Anmeldefunktionen sowie der Nutzung des Nutzerkontos, speichern wir die IP-Adresse und den Zeitpunkt der jeweiligen Nutzerhandlung. Die Speicherung erfolgt auf Grundlage unserer berechtigten Interessen, als auch der Nutzer an Schutz vor Missbrauch und sonstiger unbefugter Nutzung. Eine Weitergabe dieser Daten an Dritte erfolgt grundsätzlich nicht, außer sie ist zur Verfolgung unserer Ansprüche erforderlich oder es besteht hierzu besteht eine gesetzliche Verpflichtung gem. Art. 6 Abs. 1 lit. c. DSGVO. Die IP-Adressen werden spätestens nach 7 Tagen anonymisiert oder gelöscht."
+                        TextColor="#ffffff" />
+
+                    <Label
+                        Margin="0,10,0,0"
+                        FontSize="14"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Kommentare und Beiträge"
+                        TextColor="#007acc" />
+                    <Label
+                        Margin="0,5,0,0"
+                        FontSize="10"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Wenn Nutzer Kommentare oder sonstige Beiträge hinterlassen, können ihre IP-Adressen auf Grundlage unserer berechtigten Interessen im Sinne des Art. 6 Abs. 1 lit. f. DSGVO für 7 Tage gespeichert werden. Das erfolgt zu unserer Sicherheit, falls jemand in Kommentaren und Beiträgen widerrechtliche Inhalte hinterlässt (Beleidigungen, verbotene politische Propaganda, etc.). In diesem Fall können wir selbst für den Kommentar oder Beitrag belangt werden und sind daher an der Identität des Verfassers interessiert.                                     &#13;&#10;Des Weiteren behalten wir uns vor, auf Grundlage unserer berechtigten Interessen gem. Art. 6 Abs. 1 lit. f. DSGVO, die Angaben der Nutzer zwecks Spamerkennung zu verarbeiten.                                     &#13;&#10;Auf derselben Rechtsgrundlage behalten wir uns vor, im Fall von Umfragen die IP-Adressen der Nutzer für deren Dauer zu speichern und Cookies zu verwenden, um Mehrfachabstimmungen zu vermeiden.                                     &#13;&#10;Die im Rahmen der Kommentare und Beiträge mitgeteilte Informationen zur Person, etwaige Kontakt- sowie Websiteinformationen als auch die inhaltlichen Angaben, werden von uns bis zum Widerspruch der Nutzer dauerhaft gespeichert."
+                        TextColor="#ffffff" />
+
+                    <Label
+                        Margin="0,10,0,0"
+                        FontSize="14"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Kontaktaufnahme"
+                        TextColor="#007acc" />
+                    <Label
+                        Margin="0,5,0,0"
+                        FontSize="10"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Bei der Kontaktaufnahme mit uns (z.B. per Kontaktformular, E-Mail, Telefon oder via sozialer Medien) werden die Angaben des Nutzers zur Bearbeitung der Kontaktanfrage und deren Abwicklung gem. Art. 6 Abs. 1 lit. b. (im Rahmen vertraglicher-/vorvertraglicher Beziehungen), Art. 6 Abs. 1 lit. f. (andere Anfragen) DSGVO verarbeitet.. Die Angaben der Nutzer können in einem Customer-Relationship-Management System (CRM System) oder vergleichbarer Anfragenorganisation gespeichert werden.                                     &#13;&#10;Wir löschen die Anfragen, sofern diese nicht mehr erforderlich sind. Wir überprüfen die Erforderlichkeit alle zwei Jahre; Ferner gelten die gesetzlichen Archivierungspflichten.Erstellt mit Datenschutz-Generator.de von RA Dr. Thomas Schwenke"
+                        TextColor="#ffffff" />
+
+                    <Label
+                        Margin="0,10,0,0"
+                        FontSize="14"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Datenverarbeitungen der App (Android/iOS)"
+                        TextColor="#007acc" />
+                    <Label
+                        Margin="0,5,0,0"
+                        FontSize="10"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Beim Herunterladen der App werden die dafür notwendigen Informationen an die App-Downloadplattform übertragen, also insbesondere Nutzername, E-Mail-Adresse und Kundennummer Ihres Accounts, Zeitpunkt des Downloads, Zahlungsinformationen und die individuelle Gerätekennziffer. Auf diese Datenerhebung hat iPM-Cloud jedoch keinen Einfluss und ist nicht dafür verantwortlich. iPM-Cloud verarbeitet diese bereitgestellten Daten, soweit dies für das Herunterladen der App auf Ihr Smartphone notwendig ist. Sie werden darüber hinaus nicht weiter gespeichert.                                     &#13;&#10;Bei der Nutzung der App erhebt iPM-Cloud zur Ermöglichung der Funktionen der App die folgenden weiteren personenbezogenen Daten: . Bei der Nutzung verwendet iPM-Cloud statt Cookies eine in ihrer Funktion vergleichbare Technik.                                     &#13;&#10;Zu Beginn der Nutzung der App werden Sie in einem Pop-Up-Fenster um die Erlaubnis zur Nutzung Ihres Adressbuchs, Kalenders, Ihrer Kamera sowie Ihrer Fotos gebeten. Wenn Sie dies ablehnen, nutzt iPM-Cloud diese Daten nicht. Eventuell können Sie in diesem Fall nicht alle Funktionen der App nutzen. Sie können die Erlaubnis später in den Einstellungen der App oder des Betriebssystems unter Einstellungen erteilen oder widerrufen. Wenn Sie den Zugriff auf diese Daten gestatten, wird die App nur dann auf diese Daten zugreifen und sie auf die Server von iPM-Cloud übertragen, soweit dies für die Erbringung der Funktionalität notwendig ist. Diese Daten werden von iPM-Cloud vertraulich behandelt und gelöscht, wenn Sie die Rechte zur Nutzung widerrufen oder diese zur Erbringungen der Leistungen nicht mehr erforderlich sind und keine rechtlichen Aufbewahrungspflichten bestehen."
+                        TextColor="#ffffff" />
+
+                    <Label
+                        Margin="0,10,0,0"
+                        FontSize="14"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Inhalt des Angebotes"
+                        TextColor="#007acc" />
+                    <Label
+                        Margin="0,5,0,0"
+                        FontSize="10"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Der Autor übernimmt keinerlei Gewähr für die Aktualität, Korrektheit, Vollständigkeit oder Qualität der bereitgestellten Informationen. Haftungsansprüche gegen den Autor, welche sich auf Schäden materieller oder ideeller Art beziehen, die durch die Nutzung oder Nichtnutzung der dargebotenen Informationen bzw. durch die Nutzung fehlerhafter und unvollständiger Informationen verursacht wurden sind grundsätzlich ausgeschlossen, sofern seitens des Autors kein nachweislich vorsätzliches oder grob fahrlässiges Verschulden vorliegt. Alle Angebote sind freibleibend und unverbindlich. Der Autor behält es sich ausdrücklich vor, Teile der Seiten oder das gesamte Angebot ohne gesonderte Ankündigung zu verändern, zu ergänzen, zu löschen oder die Veröffentlichung zeitweise oder endgültig einzustellen."
+                        TextColor="#ffffff" />
+                    <Label
+                        Margin="0,10,0,0"
+                        FontSize="14"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Verweise und Links"
+                        TextColor="#007acc" />
+                    <Label
+                        Margin="0,5,0,0"
+                        FontSize="10"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Bei direkten oder indirekten Verweisen auf fremde Internetseiten (Links), die außerhalb des Verantwortungsbereiches des Autors liegen, würde eine Haftungsverpflichtung ausschließlich in dem Fall in Kraft treten, in dem der Autor von den Inhalten Kenntnis hat und es ihm technisch möglich und zumutbar wäre, die Nutzung im Falle rechtswidriger Inhalte zu verhindern. Der Autor erklärt daher ausdrücklich, dass zum Zeitpunkt der Linksetzung die entsprechenden verlinkten Seiten frei von illegalen Inhalten waren. Der Autor hat keinerlei Einfluss auf die aktuelle und zukünftige Gestaltung und auf die Inhalte der gelinkten/verknüpften Seiten. Deshalb distanziert er sich hiermit ausdrücklich von allen Inhalten aller gelinkten /verknüpften Seiten, die nach der Linksetzung verändert wurden. Diese Feststellung gilt für alle innerhalb des eigenen Internetangebotes gesetzten Links und Verweise sowie für Fremdeinträge in vom Autor eingerichteten Gästebüchern, Diskussionsforen und Mailinglisten. Für illegale, fehlerhafte oder unvollständige Inhalte und insbesondere für Schäden, die aus der Nutzung oder Nichtnutzung solcherart dargebotener Informationen entstehen, haftet allein der Anbieter der Seite, auf welche verwiesen wurde, nicht derjenige, der über Links auf die jeweilige Veröffentlichung lediglich verweist."
+                        TextColor="#ffffff" />
+                    <Label
+                        Margin="0,10,0,0"
+                        FontSize="14"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Urheber- und Kennzeichenrecht"
+                        TextColor="#007acc" />
+                    <Label
+                        Margin="0,5,0,0"
+                        FontSize="10"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Der Autor ist bestrebt, in allen Publikationen die Urheberrechte der verwendeten Grafiken, Tondokumente, Videosequenzen und Texte zu beachten, von ihm selbst erstellte Grafiken, Tondokumente, Videosequenzen und Texte zu nutzen oder auf lizenzfreie Grafiken, Tondokumente, Videosequenzen und Texte zurückzugreifen. Alle innerhalb des Internetangebotes genannten und ggf. durch Dritte geschützten Marken- und Warenzeichen unterliegen uneingeschränkt den Bestimmungen des jeweils gültigen Kennzeichenrechts und den Besitzrechten der jeweiligen eingetragenen Eigentümer. Allein aufgrund der bloßen Nennung ist nicht der Schluß zu ziehen, dass Markenzeichen nicht durch Rechte Dritter geschützt sind! Das Copyright für veröffentlichte, vom Autor selbst erstellte Objekte bleibt allein beim Autor der Seiten. Eine Vervielfältigung oder Verwendung solcher Grafiken, Tondokumente, Videosequenzen und Texte in anderen elektronischen oder gedruckten Publikationen ist ohne ausdrückliche Zustimmung des Autors nicht gestattet."
+                        TextColor="#ffffff" />
+                    <Label
+                        Margin="0,10,0,0"
+                        FontSize="14"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Datenschutz"
+                        TextColor="#007acc" />
+                    <Label
+                        Margin="0,5,0,0"
+                        FontSize="10"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Sofern innerhalb des Internetangebotes die Möglichkeit zur Eingabe persönlicher oder geschäftlicher Daten (Emailadressen, Namen, Anschriften) besteht, so erfolgt die Preisgabe dieser Daten seitens des Nutzers auf ausdrücklich freiwilliger Basis. Die Inanspruchnahme und Bezahlung aller angebotenen Dienste ist - soweit technisch möglich und zumutbar - auch ohne Angabe solcher Daten bzw. unter Angabe anonymisierter Daten oder eines Pseudonyms gestattet."
+                        TextColor="#ffffff" />
+                    <Label
+                        Margin="0,10,0,0"
+                        FontSize="14"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Rechtswirksamkeit dieses Haftungsausschlusses"
+                        TextColor="#007acc" />
+                    <Label
+                        Margin="0,5,0,0"
+                        FontSize="10"
+                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Dieser Haftungsausschluss ist als Teil des Internetangebotes zu betrachten, von dem aus auf diese Seite verwiesen wurde. Sofern Teile oder einzelne Formulierungen dieses Textes der geltenden Rechtslage nicht, nicht mehr oder nicht vollständig entsprechen sollten, bleiben die übrigen Teile des Dokumentes in ihrem Inhalt und ihrer Gültigkeit davon unberührt."
+                        TextColor="#ffffff" />
+
+                </VerticalStackLayout>
+            </ScrollView>
+        </VerticalStackLayout>
+
+    </Grid>
+
+</ContentView>

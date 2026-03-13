@@ -42,6 +42,22 @@ namespace iPMCloud.Mobile
         private Border btn_todo_back => TodoPageView.BtnTodoBack;
         private VerticalStackLayout list_todo => TodoPageView.ListTodo;
 
+        // Forwarding properties for elements moved into WorkerPageContainerView
+        private Grid WorkerPage_Container => WorkerPageContainerView.ContainerGrid;
+        private Border btn_worker_back => WorkerPageContainerView.BtnWorkerBack;
+        private Image btn_worker_back_img => WorkerPageContainerView.BtnWorkerBackImg;
+        private VerticalStackLayout btn_workercategorysearch => WorkerPageContainerView.BtnWorkercategorysearch;
+        private Image btn_workercategorysearch_img => WorkerPageContainerView.BtnWorkercategorysearchImg;
+        private VerticalStackLayout btn_workernamesearch => WorkerPageContainerView.BtnWorkernamesearch;
+        private Image btn_workernamesearch_img => WorkerPageContainerView.BtnWorkernamesearchImg;
+        private VerticalStackLayout btn_workerbuildingsearch => WorkerPageContainerView.BtnWorkerbuildingsearch;
+        private Image btn_workerbuildingsearch_img => WorkerPageContainerView.BtnWorkerbuildingsearchImg;
+        private Grid entry_workersearch_container => WorkerPageContainerView.EntryWorkersearchContainer;
+        private Label lb_workerbuildingsearche => WorkerPageContainerView.LbWorkerbuildingsearche;
+        private CustomEntry entry_workersearch => WorkerPageContainerView.EntryWorkersearch;
+        private ScrollView list_worker_scroll => WorkerPageContainerView.ListWorkerScroll;
+        private StackLayout list_worker => WorkerPageContainerView.ListWorker;
+
 
         public bool isInitialize = false;
         public bool _isShowing = false;
@@ -6731,27 +6747,6 @@ namespace iPMCloud.Mobile
 
 
 
-        private void Entry_workersearch_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (list_worker.Children.Count > 0)
-            {
-                foreach (var child in list_worker.Children)
-                {
-                    // Cast zu VisualElement (hat IsVisible und ClassId)
-                    if (child is VisualElement element)
-                    {
-                        if (element.ClassId != null && element.ClassId.Length > 1 && element.ClassId.Substring(0, 2) == "##")
-                        {
-                            element.IsVisible = element.ClassId.ToLower().Contains(e.NewTextValue.ToLower());
-                        }
-                        else if (element.ClassId != null && element.ClassId.Length > 2 && element.ClassId.Substring(0, 3) == "bu_")
-                        {
-                            element.IsVisible = element.ClassId.ToLower().Contains(e.NewTextValue.ToLower());
-                        }
-                    }
-                }
-            }
-        }
         private void WorkerListLayoutRefresh()
         {
             if (list_worker.Children.Count > 0)

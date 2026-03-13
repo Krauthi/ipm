@@ -7332,106 +7332,100 @@
             RowSpacing="0"
             VerticalOptions="Fill">
             <Grid.RowDefinitions>
+                <RowDefinition Height="54" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <StackLayout
+
+            <Grid
+                Margin="0"
+                Padding="0"
+                ColumnSpacing="0"
+                HeightRequest="54"
+                HorizontalOptions="Fill">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Border
+                    x:Name="btn_back_dsgvo"
+                    Grid.Column="0"
+                    Margin="3,2,2,2"
+                    Padding="1"
+                    BackgroundColor="Transparent"
+                    HorizontalOptions="Start"
+                    Stroke="Transparent"
+                    VerticalOptions="Center">
+                    <Grid
+                        Margin="0"
+                        Padding="0"
+                        ColumnSpacing="0"
+                        HeightRequest="38"
+                        HorizontalOptions="Start"
+                        VerticalOptions="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Image
+                            x:Name="btn_back_dsgvo_img"
+                            Grid.Column="0"
+                            Margin="0,0,0,0"
+                            HeightRequest="30"
+                            HorizontalOptions="Start"
+                            VerticalOptions="Center"
+                            WidthRequest="30" />
+                        <Label
+                            Grid.Column="1"
+                            Margin="0"
+                            FontSize="18"
+                            HorizontalOptions="Start"
+                            HorizontalTextAlignment="Start"
+                            LineBreakMode="TailTruncation"
+                            Text="ZURÜCK"
+                            TextColor="#2f84bd"
+                            VerticalOptions="Center" />
+                    </Grid>
+                </Border>
+                <Label
+                    Grid.Column="1"
+                    Margin="0,0,10,0"
+                    FontSize="20"
+                    HorizontalOptions="End"
+                    HorizontalTextAlignment="End"
+                    LineBreakMode="TailTruncation"
+                    Text="DSGVO &amp; Impressum"
+                    TextColor="#ffffff"
+                    VerticalOptions="Center" />
+            </Grid>
+            <BoxView
+                Grid.Row="1"
+                Margin="0"
+                BackgroundColor="Gray"
+                HeightRequest="1"
+                HorizontalOptions="Fill"
+                VerticalOptions="Start" />
+
+            <VerticalStackLayout
                 x:Name="DSGVOPage_position_Container"
-                Grid.Row="0"
+                Grid.Row="2"
                 Margin="0"
                 Padding="0"
                 HorizontalOptions="Fill"
                 IsVisible="True"
                 Spacing="0"
                 VerticalOptions="Fill">
-
-                <Grid
-                    Margin="0"
-                    Padding="10"
-                    ColumnSpacing="0"
-                    HeightRequest="48"
-                    HorizontalOptions="Fill">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Border
-                        x:Name="btn_back_dsgvo"
-                        Grid.Column="0"
-                        Margin="3,2,2,2"
-                        Padding="1"
-                        BackgroundColor="Transparent"
-                        HorizontalOptions="Start"
-                        Stroke="Transparent"
-                        VerticalOptions="Center">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
-                        <Grid
-                            Margin="0"
-                            Padding="0"
-                            ColumnSpacing="0"
-                            HeightRequest="38"
-                            HorizontalOptions="Start"
-                            VerticalOptions="Center">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Image
-                                x:Name="btn_back_dsgvo_img"
-                                Grid.Column="0"
-                                Margin="0,0,0,0"
-                                HeightRequest="30"
-                                HorizontalOptions="Start"
-                                VerticalOptions="Center"
-                                WidthRequest="30" />
-                            <Label
-                                Grid.Column="1"
-                                Margin="0"
-                                FontSize="18"
-                                HorizontalOptions="Start"
-                                HorizontalTextAlignment="Start"
-                                LineBreakMode="TailTruncation"
-                                Text="ZURÜCK"
-                                TextColor="#2f84bd"
-                                VerticalOptions="Center" />
-                        </Grid>
-                    </Border>
-                    <Label
-                        Grid.Column="1"
-                        Margin="0,0,10,0"
-                        FontSize="20"
-                        HorizontalOptions="End"
-                        HorizontalTextAlignment="End"
-                        LineBreakMode="TailTruncation"
-                        Text="DSGVO &amp; Impressum"
-                        TextColor="#ffffff"
-                        VerticalOptions="Center" />
-                </Grid>
-                <BoxView
-                    Margin="0"
-                    BackgroundColor="Gray"
-                    HeightRequest="1"
-                    HorizontalOptions="Fill"
-                    VerticalOptions="Start" />
-
                 <ScrollView
                     Margin="0,0,0,17"
                     Padding="0"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start">
-                    <StackLayout
+                    <VerticalStackLayout
                         x:Name="dsgvoStack"
                         Margin="0"
                         Padding="10"
                         HorizontalOptions="Fill"
-                        MinimumHeightRequest="100"
-                        Orientation="Vertical"
                         Spacing="0"
                         VerticalOptions="Fill">
 
@@ -7445,7 +7439,7 @@
                             FontSize="16"
                             HorizontalOptions="Fill"
                             LineBreakMode="WordWrap"
-                            Text="Hensel &amp; Krauthausen GbR iPM-Cloud(c)2020"
+                            Text="iPM-Cloud GmbH (c)2026"
                             TextColor="#ffffff" />
 
                         <Label
@@ -7454,13 +7448,6 @@
                             HorizontalOptions="Fill"
                             LineBreakMode="WordWrap"
                             Text="Markus Krauthausen"
-                            TextColor="#ffffff" />
-                        <Label
-                            Margin="0,0,0,0"
-                            FontSize="12"
-                            HorizontalOptions="Fill"
-                            LineBreakMode="WordWrap"
-                            Text="Im Unterdorf 72 - D-52393 Hürtgenwald"
                             TextColor="#ffffff" />
                         <Label
                             Margin="0,0,0,0"
@@ -7476,13 +7463,6 @@
                             HorizontalOptions="Fill"
                             LineBreakMode="WordWrap"
                             Text="Dirk Hensel"
-                            TextColor="#ffffff" />
-                        <Label
-                            Margin="0,0,0,0"
-                            FontSize="12"
-                            HorizontalOptions="Fill"
-                            LineBreakMode="WordWrap"
-                            Text="Bischof-Dirichs-Str. 51 - D-65375 Oestrich-Winkel"
                             TextColor="#ffffff" />
                         <Label
                             Margin="0,0,0,0"
@@ -7899,9 +7879,9 @@
 
 
 
-                    </StackLayout>
+                    </VerticalStackLayout>
                 </ScrollView>
-            </StackLayout>
+            </VerticalStackLayout>
 
         </Grid>
 

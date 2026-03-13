@@ -91,10 +91,10 @@
                     HorizontalOptions="End"
                     Spacing="0"
                     VerticalOptions="Center"
-                    WidthRequest="30">
+                    WidthRequest="38">
                     <Image
                         x:Name="btn_workercategorysearch_img"
-                        Margin="0,0,0,0"
+                        Margin="0,4,0,0"
                         HeightRequest="30"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
@@ -120,7 +120,7 @@
                     WidthRequest="38">
                     <Image
                         x:Name="btn_workernamesearch_img"
-                        Margin="0,0,0,0"
+                        Margin="0,4,0,0"
                         HeightRequest="30"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"
@@ -146,7 +146,7 @@
                     WidthRequest="38">
                     <Image
                         x:Name="btn_workerbuildingsearch_img"
-                        Margin="0"
+                        Margin="0,4,0,0"
                         HeightRequest="30"
                         HorizontalOptions="Center"
                         VerticalOptions="Center"

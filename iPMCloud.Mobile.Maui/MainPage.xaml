@@ -4,8 +4,8 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
-    xmlns:vo="clr-namespace:iPMCloud.Mobile.vo"
     xmlns:views="clr-namespace:iPMCloud.Mobile.Views"
+    xmlns:vo="clr-namespace:iPMCloud.Mobile.vo"
     BackgroundColor="Black"
     ClassId="MainPage">
 
@@ -879,7 +879,6 @@
                 Margin="0"
                 Padding="0"
                 HorizontalOptions="Fill"
-                Orientation="Vertical"
                 RowSpacing="0"
                 VerticalOptions="Fill">
                 <Grid.RowDefinitions>
@@ -1581,7 +1580,6 @@
                     Padding="1,1,1,1"
                     BackgroundColor="#041d43"
                     HorizontalOptions="Fill"
-                    Orientation="Vertical"
                     RowSpacing="0"
                     VerticalOptions="Fill">
                     <Grid.RowDefinitions>
@@ -1593,7 +1591,6 @@
                         Padding="0"
                         BackgroundColor="#666666"
                         HorizontalOptions="Fill"
-                        Orientation="Vertical"
                         RowSpacing="0"
                         VerticalOptions="Fill">
                         <Grid.RowDefinitions>
@@ -1610,7 +1607,6 @@
                             BackgroundColor="#55042d53"
                             HorizontalOptions="Fill"
                             IsVisible="True"
-                            Orientation="Vertical"
                             RowSpacing="0"
                             VerticalOptions="Fill">
                             <Grid.RowDefinitions>
@@ -1766,7 +1762,6 @@
                                     Margin="0"
                                     Padding="0"
                                     HorizontalOptions="Fill"
-                                    Orientation="Vertical"
                                     RowSpacing="0"
                                     VerticalOptions="Fill">
                                     <Grid.RowDefinitions>
@@ -1789,7 +1784,6 @@
                                             Margin="0"
                                             Padding="0"
                                             HorizontalOptions="Fill"
-                                            Orientation="Vertical"
                                             RowSpacing="0"
                                             VerticalOptions="Fill">
                                             <Grid.RowDefinitions>
@@ -1839,7 +1833,6 @@
                                             Margin="0"
                                             Padding="0"
                                             HorizontalOptions="Fill"
-                                            Orientation="Vertical"
                                             RowSpacing="0"
                                             VerticalOptions="Fill">
                                             <Grid.RowDefinitions>
@@ -1889,7 +1882,6 @@
                                             Margin="0"
                                             Padding="0"
                                             HorizontalOptions="Fill"
-                                            Orientation="Vertical"
                                             RowSpacing="0"
                                             VerticalOptions="Fill">
                                             <Grid.RowDefinitions>
@@ -2120,7 +2112,6 @@
                             BackgroundColor="#55042d53"
                             HorizontalOptions="Fill"
                             IsVisible="False"
-                            Orientation="Vertical"
                             RowSpacing="0"
                             VerticalOptions="Fill">
                             <Grid.RowDefinitions>
@@ -2140,14 +2131,13 @@
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                <StackLayout
+                                <HorizontalStackLayout
                                     x:Name="popupContainer_ObjektPlanWeek_Reload2"
                                     Grid.Column="0"
                                     Margin="0"
                                     Padding="10,5,10,5"
                                     BackgroundColor="Transparent"
                                     HorizontalOptions="Start"
-                                    Orientation="Horizontal"
                                     Spacing="0">
                                     <Image
                                         x:Name="frame_planConA_img_reload2"
@@ -2163,15 +2153,14 @@
                                         FontSize="14"
                                         Text="Neu laden"
                                         TextColor="#ffffff" />
-                                </StackLayout>
-                                <StackLayout
+                                </HorizontalStackLayout>
+                                <HorizontalStackLayout
                                     x:Name="popupContainer_ObjektPlanWeek_otherperson2"
                                     Grid.Column="1"
                                     Margin="0"
                                     Padding="10,5,10,5"
                                     BackgroundColor="Transparent"
                                     HorizontalOptions="Center"
-                                    Orientation="Horizontal"
                                     Spacing="0">
                                     <Image
                                         x:Name="frame_planConA_img_otherperson2"
@@ -2187,7 +2176,7 @@
                                         FontSize="14"
                                         Text="Arbeiter"
                                         TextColor="#ffffff" />
-                                </StackLayout>
+                                </HorizontalStackLayout>
                             </Grid>
                             <!--<ScrollView x:Name="scroll_planListB" VerticalOptions="Fill" HorizontalOptions="Fill" Padding="0" Margin="0">
                                 <StackLayout x:Name="frame_planListB" VerticalOptions="Fill"  IsVisible="True" Orientation="Vertical" HorizontalOptions="Fill" Padding="0" Spacing="0" Margin="0">
@@ -2234,14 +2223,13 @@
                                                 <RowDefinition Height="Auto" />
                                                 <RowDefinition Height="*" />
                                             </Grid.RowDefinitions>
-                                            <StackLayout
+                                            <HorizontalStackLayout
                                                 x:Name="frame_planConB_offenhead"
                                                 Grid.Row="0"
                                                 Margin="0"
                                                 Padding="3"
                                                 BackgroundColor="#33ffcc00"
                                                 HorizontalOptions="Fill"
-                                                Orientation="Horizontal"
                                                 Spacing="0"
                                                 VerticalOptions="Start">
                                                 <Label
@@ -2253,20 +2241,19 @@
                                                     Text="Nach Bedarf"
                                                     TextColor="#ffffff"
                                                     VerticalOptions="Start" />
-                                            </StackLayout>
+                                            </HorizontalStackLayout>
                                             <ScrollView
                                                 Grid.Row="1"
                                                 Margin="0"
                                                 Padding="0"
                                                 HorizontalOptions="Fill"
                                                 VerticalOptions="Fill">
-                                                <StackLayout
+                                                <VerticalStackLayout
                                                     x:Name="frame_planListBoffen"
                                                     Margin="0"
                                                     Padding="0"
                                                     HorizontalOptions="Fill"
                                                     IsVisible="True"
-                                                    Orientation="Vertical"
                                                     Spacing="0"
                                                     VerticalOptions="Fill">
                                                     <Label
@@ -2277,7 +2264,7 @@
                                                         Text="Nach Bedarf"
                                                         TextColor="#ffcc00"
                                                         VerticalOptions="Start" />
-                                                </StackLayout>
+                                                </VerticalStackLayout>
                                             </ScrollView>
                                         </Grid>
                                         <Grid
@@ -2285,21 +2272,19 @@
                                             Margin="0"
                                             Padding="0"
                                             HorizontalOptions="Fill"
-                                            Orientation="Vertical"
                                             RowSpacing="0"
                                             VerticalOptions="Fill">
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="Auto" />
                                                 <RowDefinition Height="*" />
                                             </Grid.RowDefinitions>
-                                            <StackLayout
+                                            <HorizontalStackLayout
                                                 x:Name="frame_planConB_erlhead"
                                                 Grid.Row="0"
                                                 Margin="0"
                                                 Padding="3"
                                                 BackgroundColor="#3300ff00"
                                                 HorizontalOptions="Fill"
-                                                Orientation="Horizontal"
                                                 Spacing="0"
                                                 VerticalOptions="Start">
                                                 <Label
@@ -2311,7 +2296,7 @@
                                                     Text="Heute Erledigte"
                                                     TextColor="#ffffff"
                                                     VerticalOptions="Start" />
-                                            </StackLayout>
+                                            </HorizontalStackLayout>
                                             <ScrollView
                                                 Grid.Row="1"
                                                 Margin="0"
@@ -4039,6 +4024,7 @@
 
         </Grid>
 
+        <!--  Zeiten person  -->
         <Grid
             x:Name="PersonTimesPage_Container"
             Margin="0,0,0,14"
@@ -4358,9 +4344,7 @@
             RowSpacing="0"
             VerticalOptions="Fill">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
+                <RowDefinition Height="54" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
@@ -4370,7 +4354,7 @@
                 Margin="0"
                 Padding="10,10,10,10"
                 ColumnSpacing="0"
-                HeightRequest="48"
+                HeightRequest="54"
                 HorizontalOptions="Fill">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
@@ -4388,13 +4372,6 @@
                     HorizontalOptions="Start"
                     Stroke="Transparent"
                     VerticalOptions="Center">
-                    <Border.Shadow>
-                        <Shadow
-                            Brush="Black"
-                            Opacity="0.3"
-                            Radius="5"
-                            Offset="2,2" />
-                    </Border.Shadow>
                     <Grid
                         Margin="0"
                         Padding="0"
@@ -4435,14 +4412,7 @@
                     BackgroundColor="#041d43"
                     HorizontalOptions="End"
                     VerticalOptions="Center">
-                    <Border.Shadow>
-                        <Shadow
-                            Brush="Black"
-                            Opacity="0.3"
-                            Radius="5"
-                            Offset="2,2" />
-                    </Border.Shadow>
-                    <StackLayout
+                    <VerticalStackLayout
                         x:Name="btn_workercategorysearch"
                         Margin="0"
                         Padding="0"
@@ -4451,7 +4421,7 @@
                         HorizontalOptions="End"
                         Spacing="0"
                         VerticalOptions="Center"
-                        WidthRequest="38">
+                        WidthRequest="30">
                         <Image
                             x:Name="btn_workercategorysearch_img"
                             Margin="0,0,0,0"
@@ -4459,7 +4429,7 @@
                             HorizontalOptions="Center"
                             VerticalOptions="Center"
                             WidthRequest="30" />
-                    </StackLayout>
+                    </VerticalStackLayout>
                 </Border>
                 <Border
                     Grid.Column="2"
@@ -4468,14 +4438,7 @@
                     BackgroundColor="#041d43"
                     HorizontalOptions="End"
                     VerticalOptions="Center">
-                    <Border.Shadow>
-                        <Shadow
-                            Brush="Black"
-                            Opacity="0.3"
-                            Radius="5"
-                            Offset="2,2" />
-                    </Border.Shadow>
-                    <StackLayout
+                    <VerticalStackLayout
                         x:Name="btn_workernamesearch"
                         Margin="0"
                         Padding="0"
@@ -4492,7 +4455,7 @@
                             HorizontalOptions="Center"
                             VerticalOptions="Center"
                             WidthRequest="30" />
-                    </StackLayout>
+                    </VerticalStackLayout>
                 </Border>
                 <Border
                     Grid.Column="3"
@@ -4501,14 +4464,7 @@
                     BackgroundColor="#041d43"
                     HorizontalOptions="End"
                     VerticalOptions="Center">
-                    <Border.Shadow>
-                        <Shadow
-                            Brush="Black"
-                            Opacity="0.3"
-                            Radius="5"
-                            Offset="2,2" />
-                    </Border.Shadow>
-                    <StackLayout
+                    <VerticalStackLayout
                         x:Name="btn_workerbuildingsearch"
                         Margin="0"
                         Padding="0"
@@ -4520,25 +4476,18 @@
                         WidthRequest="38">
                         <Image
                             x:Name="btn_workerbuildingsearch_img"
-                            Margin="0,0,0,0"
+                            Margin="0"
                             HeightRequest="30"
                             HorizontalOptions="Center"
                             VerticalOptions="Center"
                             WidthRequest="30" />
-                    </StackLayout>
+                    </VerticalStackLayout>
                 </Border>
             </Grid>
-            <BoxView
-                Grid.Row="1"
-                Margin="0,0,0,0"
-                BackgroundColor="Gray"
-                HeightRequest="1"
-                HorizontalOptions="Fill"
-                VerticalOptions="Start" />
 
             <Grid
                 x:Name="entry_workersearch_container"
-                Grid.Row="2"
+                Grid.Row="1"
                 Margin="0"
                 Padding="0"
                 BackgroundColor="#245d83"
@@ -4547,15 +4496,13 @@
                 IsVisible="False">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <StackLayout
+                <VerticalStackLayout
                     Grid.Column="0"
                     Margin="10,0,10,0"
                     Padding="0"
                     BackgroundColor="#245d83"
                     HorizontalOptions="Fill"
-                    Orientation="Vertical"
                     Spacing="0">
                     <Label
                         x:Name="lb_workerbuildingsearche"
@@ -4579,38 +4526,12 @@
                         TextChanged="Entry_workersearch_TextChanged"
                         TextColor="#ffffff"
                         VerticalOptions="Start" />
-                </StackLayout>
-                <StackLayout
-                    x:Name="btn_workersearch"
-                    Grid.Column="1"
-                    Margin="0,0,15,0"
-                    Padding="0"
-                    BackgroundColor="#245d83"
-                    HorizontalOptions="End"
-                    Spacing="0"
-                    VerticalOptions="Fill">
-                    <Image
-                        x:Name="btn_worker_search_img"
-                        Margin="0,0,0,0"
-                        HeightRequest="30"
-                        HorizontalOptions="Center"
-                        VerticalOptions="Center"
-                        WidthRequest="30" />
-                </StackLayout>
+                </VerticalStackLayout>
             </Grid>
-            <BoxView
-                Grid.Row="3"
-                Margin="0,0,0,0"
-                BackgroundColor="Gray"
-                BindingContext="{x:Reference entry_workersearch_container}"
-                HeightRequest="1"
-                HorizontalOptions="Fill"
-                IsVisible="{Binding Path=IsVisible}"
-                VerticalOptions="Start" />
 
             <ScrollView
                 x:Name="list_worker_scroll"
-                Grid.Row="4"
+                Grid.Row="2"
                 Margin="0,0,0,0"
                 Padding="0"
                 HorizontalOptions="Fill"
@@ -4626,9 +4547,9 @@
                     VerticalOptions="Fill" />
             </ScrollView>
             <BoxView
-                Grid.Row="5"
+                Grid.Row="3"
                 Margin="0,0,0,0"
-                BackgroundColor="Gray"
+                BackgroundColor="Black"
                 HeightRequest="1"
                 HorizontalOptions="Fill"
                 VerticalOptions="Start" />
@@ -6716,7 +6637,7 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <StackLayout
+            <VerticalStackLayout
                 x:Name="DayOverPage_position_Container"
                 Grid.Row="0"
                 Margin="0"
@@ -6745,13 +6666,6 @@
                         HorizontalOptions="Start"
                         Stroke="Transparent"
                         VerticalOptions="Center">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Grid
                             Margin="0"
                             Padding="0"
@@ -6819,25 +6733,18 @@
                         TextColor="#cccccc"
                         VerticalOptions="Center" />
                 </StackLayout>
-                <!--<BoxView  BackgroundColor="Gray" HeightRequest="1" VerticalOptions="Start" HorizontalOptions="Fill" Margin="0,0,0,0" />
-                <StackLayout Padding="5,15,5,10" Margin="0" Spacing="0" BackgroundColor="#144d73" MinimumHeightRequest="92" HeightRequest="92"
-                             HorizontalOptions="Fill" Orientation="Vertical" >
-                    <Label Text="Bemerkung bei Bedarf:" HorizontalOptions="Fill"
-                                   FontSize="12" TextColor="#aaaaaa" HorizontalTextAlignment="Start" Margin="0" Padding="5,0,0,0" />
-                    <vo:CustomEditor x:Name="entry_notice" BackgroundColor="Transparent" Text="" MinimumHeightRequest="80" HeightRequest="100" Keyboard="Text" HorizontalOptions="Fill"
-                                   FontSize="16" TextColor="#ffffff" Margin="0,-10,0,0" TextChanged="entry_notice_TextChanged" />
-                </StackLayout>-->
+
                 <BoxView
                     Margin="0,0,0,0"
                     BackgroundColor="Gray"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
-                <StackLayout
+
+                <HorizontalStackLayout
                     Margin="20,30,20,20"
                     Padding="0"
                     HorizontalOptions="Fill"
-                    Orientation="Horizontal"
                     Spacing="0">
                     <Border
                         x:Name="btn_dayover_yes"
@@ -6845,13 +6752,6 @@
                         Padding="28,10,28,10"
                         BackgroundColor="#04732d"
                         HorizontalOptions="Center">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Label
                             Margin="0"
                             Padding="0"
@@ -6865,13 +6765,6 @@
                         Padding="20,10,20,10"
                         BackgroundColor="#73042d"
                         HorizontalOptions="Center">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Label
                             Margin="0"
                             Padding="0"
@@ -6879,7 +6772,7 @@
                             Text="NEIN"
                             TextColor="#ffffff" />
                     </Border>
-                </StackLayout>
+                </HorizontalStackLayout>
 
                 <Label
                     Margin="0,15,0,0"
@@ -6900,17 +6793,16 @@
                     Padding="0"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start">
-                    <StackLayout
+                    <VerticalStackLayout
                         x:Name="lastDayOverStack"
                         Margin="0"
                         Padding="0"
                         HorizontalOptions="Fill"
                         MinimumHeightRequest="100"
-                        Orientation="Vertical"
                         Spacing="0"
                         VerticalOptions="Fill" />
                 </ScrollView>
-            </StackLayout>
+            </VerticalStackLayout>
 
         </Grid>
 
@@ -9480,6 +9372,7 @@
             </StackLayout>
 
         </AbsoluteLayout>
+
         <AbsoluteLayout
             x:Name="popupContainer_quest_changelang_fail"
             AbsoluteLayout.LayoutBounds="0,0,1,1"
@@ -11101,6 +10994,7 @@
                 </Grid>
             </StackLayout>
         </AbsoluteLayout>
+
         <AbsoluteLayout
             x:Name="popupContainer_quest_delcheckquest"
             AbsoluteLayout.LayoutBounds="0,0,1,1"

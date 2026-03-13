@@ -675,94 +675,6 @@ namespace iPMCloud.Mobile
 
 
 
-        public static VerticalStackLayout GetOrderTodoListView(int all, AbsoluteLayout overlay, string s)
-        {
-            int maxResult = 20;
-            var vstack = new VerticalStackLayout
-            {
-                Padding = new Thickness(0, 0, 0, 0),
-                Margin = new Thickness(0, 0, 0, 0),
-                Spacing = 0,
-                HorizontalOptions = LayoutOptions.Fill
-            };
-            // Faellige Oder Alle
-            var oList = new List<BuildingWSO>();
-            AppModel.Instance.AllBuildings.ForEach(b =>
-            {
-                string term = b.plz + "##" + b.ort + "##" + b.strasse + "##" + b.hsnr + "##" + b.objektname + "##" + b.objektnr;
-                if (term.ToLower().Contains(s.ToLower()))
-                {
-                    var building = CalcBuildingdue(b, AppModel.Instance, all == 1);
-                    if (building != null)
-                    {
-                        oList.Add(building);
-                    }
-                }
-            });
-
-            //oList.ForEach(b => { b = CalcBuildingdue(b, AppModel.Instance); });
-            oList = oList.OrderBy(b => b.prio).ToList();
-            int count = oList.Where(_ => _.isInTodoVisible).Count();
-            int pages = (count / maxResult) + (count == maxResult ? 0 : 1);
-            AppModel.Instance.MainPage._holdLastTodoPageMax = pages;
-
-            int i = 1;
-
-            if (all == 2)
-            {
-                // NUR MUELL POS
-                var muellist = new List<LeistungWSO>();
-                oList.ForEach(b =>
-                {
-                    b.ArrayOfAuftrag.ForEach(a =>
-                    {
-                        a.kategorien.ForEach(k =>
-                        {
-                            k.leistungen.ForEach(l =>
-                            {
-                                if (l.muell == 1 && l.inout != null && l.inout.inout == 1)// nur Rausgestellte
-                                {
-                                    var za = (i * (AppModel.Instance.MainPage._holdLastTodoPage - 1));
-                                    var ba = (maxResult * (AppModel.Instance.MainPage._holdLastTodoPage - 1)) + 1; // 1
-                                    var bb = (maxResult * (AppModel.Instance.MainPage._holdLastTodoPage - 1)) + maxResult; // maxResult 50
-                                    if (i >= ba && i <= bb && b != null && b.ArrayOfAuftrag.Count > 0 && b.isInTodoVisible)
-                                    {
-                                        l.objekt = b;
-                                        l.lastworkNumber = long.Parse(l.inout.last != null ? l.inout.last : "0");
-                                        muellist.Add(l);
-                                    }
-                                }
-                            });
-                        });
-                    });
-                });
-                muellist = muellist.OrderBy(o => o.objekt.plz).ThenBy(o => o.lastworkNumber).ToList();
-                pages = (muellist.Count / maxResult) + (muellist.Count == maxResult ? 0 : 1);
-                AppModel.Instance.MainPage._holdLastTodoPageMax = pages;
-                muellist.ForEach(ml =>
-                {
-                    vstack.Children.Add(LeistungWSO.GetMuellPositionCardView(ml, AppModel.Instance, null));
-                });
-                AppModel.Instance.MainPage.Update_Todopaging(AppModel.Instance.MainPage._holdLastTodoPage, AppModel.Instance.MainPage._holdLastTodoPageMax);
-                return vstack;
-            }
-            // all = 1 oder 0
-            oList.ForEach(b =>
-            {
-                var za = (i * (AppModel.Instance.MainPage._holdLastTodoPage - 1));
-                var ba = (maxResult * (AppModel.Instance.MainPage._holdLastTodoPage - 1)) + 1; // 1
-                var bb = (maxResult * (AppModel.Instance.MainPage._holdLastTodoPage - 1)) + maxResult; // maxResult 50
-                if (i >= ba && i <= bb && b != null && b.ArrayOfAuftrag.Count > 0 && b.isInTodoVisible)
-                {
-                    vstack.Children.Add(BuildingWSO.GetBuildingInfoTodoElement(b, AppModel.Instance, overlay));
-                }
-                i++;
-            });
-            AppModel.Instance.MainPage.Update_Todopaging(AppModel.Instance.MainPage._holdLastTodoPage, AppModel.Instance.MainPage._holdLastTodoPageMax);
-            //Task task = Task.Run(() => RestGui(all,oList,stack, overlay));
-            return vstack;
-        }
-
 
         public static StackLayout GetNewStack()
         {
@@ -1048,6 +960,7 @@ namespace iPMCloud.Mobile
 
             return wrapper;
         }
+        
         public static void ShowCategoryContainer(StackLayout value)
         {
             value.IsVisible = !value.IsVisible;

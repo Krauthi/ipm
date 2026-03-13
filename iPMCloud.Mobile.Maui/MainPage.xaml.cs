@@ -2,17 +2,18 @@
 using Google.Apis.Translate.v2;
 using Google.Cloud.Translation.V2;
 using iPMCloud.Mobile.Helpers;
+using iPMCloud.Mobile.Views;
 using iPMCloud.Mobile.vo;
 using iPMCloud.Mobile.vo.GlobalObjects;
 using iPMCloud.Mobile.vo.wso;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls;
-using Microsoft.Maui.Devices;
 // TODO: Xamarin.RangeSlider not MAUI-compatible - needs replacement
 // using Xamarin.RangeSlider.Forms;
 
 //using Microsoft.Maui.Storage;
+using Microsoft.Maui.Devices;
 using Microsoft.Maui.Devices;
 using Microsoft.Maui.Layouts;
 using Microsoft.Maui.Storage;
@@ -37,23 +38,10 @@ namespace iPMCloud.Mobile
         // private BackgroundWorker backgroundWorker = new BackgroundWorker();
 
         // Forwarding properties for elements moved into TodoPageView
+        public TodoPageView TodoPageViewObject => TodoPageView;
         private Border btn_todo_back => TodoPageView.BtnTodoBack;
-        private Image btn_todo_back_img => TodoPageView.BtnTodoBackImg;
-        private StackLayout btn_todo_faellig => TodoPageView.BtnTodoFaellig;
-        private StackLayout btn_todo_all => TodoPageView.BtnTodoAll;
-        private StackLayout btn_todo_inout => TodoPageView.BtnTodoInout;
-        private Image btn_todo_inout2_img => TodoPageView.BtnTodoInout2Img;
-        private Image btn_todo_inout_img => TodoPageView.BtnTodoInoutImg;
-        private Grid entry_todosearch_container => TodoPageView.EntryTodosearchContainer;
-        private Label entry_todosearch_lbb => TodoPageView.EntryTodosearchLbb;
-        private iPMCloud.Mobile.vo.CustomEntry entry_todosearch => TodoPageView.EntryTodosearch;
-        private Image btn_todosearch_img => TodoPageView.BtnTodosearchImg;
-        private Grid entry_todosearch_stepcontainer => TodoPageView.EntryTodosearchStepcontainer;
-        private StackLayout btn_todo_faellig_prev => TodoPageView.BtnTodoFaelligPrev;
-        private Label btn_todo_faellig_count => TodoPageView.BtnTodoFaelligCount;
-        private StackLayout btn_todo_faellig_next => TodoPageView.BtnTodoFaelligNext;
-        private ScrollView list_todo_scroll => TodoPageView.ListTodoScroll;
-        private StackLayout list_todo => TodoPageView.ListTodo;
+        private VerticalStackLayout list_todo => TodoPageView.ListTodo;
+
 
         public bool isInitialize = false;
         public bool _isShowing = false;
@@ -63,7 +51,6 @@ namespace iPMCloud.Mobile
         {
             isInitialize = true;
             InitializeComponent();
-            TodoPageView.EntryTodosearch.TextChanged += Entry_todosearch_TextChanged;
             //AppModel.Instance.anImage = backgroundIMG;
 
             AppModel.Instance.MainPageOverlay = overlay;
@@ -1283,7 +1270,7 @@ namespace iPMCloud.Mobile
             await Task.Delay(1);
             list_notscan.Children.Clear();
             await list_notscan_scroll.ScrollToAsync(0, 0, false);
-            _holdLastTodoList = 1;
+            //_holdLastTodoList = 1;
         }
         public async void BuildNotScanList(string s)
         {
@@ -6485,25 +6472,7 @@ namespace iPMCloud.Mobile
             ShowMainPage();
         }
 
-        // BTN Todos
 
-        private int _holdLastTodoList = 0;
-        public int _holdLastTodoPage = 1;
-        public int _holdLastTodoPageMax = 1;
-        //private async void TodoRangeSlider_DragCompleted(object sender, EventArgs e)
-        //{
-        //    overlay.IsVisible = true;
-        //    await Task.Delay(1);
-        //    if (!String.IsNullOrWhiteSpace(entry_todosearch.Text))
-        //    {
-        //        entry_todosearch.Text = "";
-        //    }
-        //    RangeSlider slider = (sender as RangeSlider);
-        //    list_todo.IsVisible = false;
-        //    list_todo.Children.Clear();
-        //    list_todo_scroll.ScrollToAsync(0, 0, false);
-        //    BuildTodoList(_holdLastTodoList);
-        //}
         public async void btn_TodosTapped(object sender, EventArgs e)
         {
             // Handwerker Liste
@@ -6520,125 +6489,26 @@ namespace iPMCloud.Mobile
             ClearPageViews();
             // TodoPage_Container.IsVisible = true; // moved into TodoPageView
             TodoPageView.SetVisible(true);
-            btn_todo_faelligTapped(null, null);
+            TodoPageView.btn_todo_faelligTapped(null, null);
 
             await Task.Delay(1);
             overlay.IsVisible = false;
             isInitialize = false;
         }
+
         public void btn_TodoBackTapped(object sender, EventArgs e)
         {
             list_todo.Children.Clear();
             this.Focus();
             ShowMainPage();
         }
+
         public void btn_NotScanBackTapped(object sender, EventArgs e)
         {
             list_notscan.Children.Clear();
             this.Focus();
             ShowMainPage();
         }
-        public async void btn_todo_allTapped(object sender, EventArgs e)
-        {
-            overlay.IsVisible = true;
-            list_todo.IsVisible = false;
-            entry_todosearch.Text = "";
-            entry_todosearch_lbb.Text = "";
-            entry_todosearch_container.IsVisible = true;
-            entry_todosearch_stepcontainer.IsVisible = true;
-            btn_todo_faellig.BackgroundColor = Color.FromArgb("#53042d");
-            btn_todo_all.BackgroundColor = Color.FromArgb("#999999");
-            btn_todo_inout.BackgroundColor = Color.FromArgb("#04532d");
-            await Task.Delay(1);
-            list_todo.Children.Clear();
-            await list_todo_scroll.ScrollToAsync(0, 0, false);
-            _holdLastTodoList = 1;
-            _holdLastTodoPage = 1;
-            BuildTodoList(1);
-        }
-        public async void btn_todo_faelligTapped(object sender, EventArgs e)
-        {
-            overlay.IsVisible = true;
-            list_todo.IsVisible = false;
-            entry_todosearch.Text = "";
-            entry_todosearch_lbb.Text = "";
-            entry_todosearch_stepcontainer.IsVisible = true;
-            entry_todosearch_container.IsVisible = true;
-            Update_Todopaging(_holdLastTodoPage, _holdLastTodoPageMax);
-            btn_todo_faellig.BackgroundColor = Color.FromArgb("#999999");
-            btn_todo_all.BackgroundColor = Color.FromArgb("#042d53");
-            btn_todo_inout.BackgroundColor = Color.FromArgb("#04532d");
-            await Task.Delay(1);
-            list_todo.Children.Clear();
-            await list_todo_scroll.ScrollToAsync(0, 0, false);
-            _holdLastTodoList = 0;
-            _holdLastTodoPage = 1;
-            BuildTodoList(0);
-        }
-        public async void btn_todo_faelligprevTapped(object sender, EventArgs e)
-        {
-            overlay.IsVisible = true;
-            list_todo.IsVisible = false;
-            await Task.Delay(1);
-            list_todo.Children.Clear();
-            await list_todo_scroll.ScrollToAsync(0, 0, false);
-            _holdLastTodoPage--;
-            if (_holdLastTodoPage < 1) { _holdLastTodoPage = 1; return; }
-            BuildTodoList(_holdLastTodoList);
-        }
-        public async void btn_todo_faellignextTapped(object sender, EventArgs e)
-        {
-            overlay.IsVisible = true;
-            list_todo.IsVisible = false;
-            await Task.Delay(1);
-            list_todo.Children.Clear();
-            await list_todo_scroll.ScrollToAsync(0, 0, false);
-            _holdLastTodoPage++;
-            if (_holdLastTodoPage > _holdLastTodoPageMax) { _holdLastTodoPage = _holdLastTodoPageMax; return; }
-            BuildTodoList(_holdLastTodoList);
-        }
-        public async void btn_todo_inoutTapped(object sender, EventArgs e)
-        {
-            overlay.IsVisible = true;
-            list_todo.IsVisible = false;
-            entry_todosearch.Text = "";
-            entry_todosearch_lbb.Text = "";
-            entry_todosearch_container.IsVisible = true;
-            entry_todosearch_stepcontainer.IsVisible = true;
-            btn_todo_faellig.BackgroundColor = Color.FromArgb("#53042d");
-            btn_todo_all.BackgroundColor = Color.FromArgb("#042d53");
-            btn_todo_inout.BackgroundColor = Color.FromArgb("#999999");
-            await Task.Delay(1);
-            list_todo.Children.Clear();
-            await list_todo_scroll.ScrollToAsync(0, 0, false);
-            _holdLastTodoList = 2;
-            _holdLastTodoPage = 1;
-            BuildTodoList(2);
-        }
-        public async void BuildTodoList(int all = 0)
-        {
-            if (String.IsNullOrWhiteSpace(entry_todosearch.Text))
-            {
-                entry_todosearch.Text = "";
-            }
-
-            list_todo.Children.Add(AuftragWSO.GetOrderTodoListView(all, overlay, entry_todosearch.Text));
-            await Task.Delay(1);
-            list_todo.IsVisible = true;
-            overlay.IsVisible = false;
-        }
-        private void Entry_todosearch_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            _holdLastTodoPage = 1;
-            list_todo.Children.Clear();
-            list_todo_scroll.ScrollToAsync(0, 0, false);
-            BuildTodoList(1);
-        }
-        public void Update_Todopaging(int page, int maxpage)
-        {
-            btn_todo_faellig_count.Text = "Seite " + page + " von " + maxpage;
-        }
-
 
 
 
@@ -6990,7 +6860,6 @@ namespace iPMCloud.Mobile
 
 
             // WorkerPage Buttons
-            btn_worker_search_img.Source = AppModel.Instance.imagesBase.SearchImage;
             btn_workercategorysearch_img.Source = AppModel.Instance.imagesBase.Tools;
             btn_workernamesearch_img.Source = AppModel.Instance.imagesBase.Worker;
             btn_workerbuildingsearch_img.Source = AppModel.Instance.imagesBase.Building;
@@ -7079,11 +6948,6 @@ namespace iPMCloud.Mobile
             //DSGVO
             btn_back_pn_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
 
-            //Todo
-            btn_todo_back_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
-            btn_todosearch_img.Source = AppModel.Instance.imagesBase.SearchImage;
-            btn_todo_inout2_img.Source = AppModel.Instance.imagesBase.Muell_Sign;
-            btn_todo_inout_img.Source = AppModel.Instance.imagesBase.Muell_Out;
 
             //NotScan
             btn_notscan_back_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
@@ -7380,29 +7244,7 @@ namespace iPMCloud.Mobile
             tgr_PersontimesLoad.Tapped += pick_persontimes_SelectedIndexChanged;
             btn_persontime_load.GestureRecognizers.Add(tgr_PersontimesLoad);
 
-            btn_todo_all.GestureRecognizers.Clear();
-            var tgr_todo_all = new TapGestureRecognizer();
-            tgr_todo_all.Tapped += btn_todo_allTapped;
-            btn_todo_all.GestureRecognizers.Add(tgr_todo_all);
-            btn_todo_inout.GestureRecognizers.Clear();
-            var tgr_todo_inout = new TapGestureRecognizer();
-            tgr_todo_inout.Tapped += btn_todo_inoutTapped;
-            btn_todo_inout.GestureRecognizers.Add(tgr_todo_inout);
 
-            btn_todo_faellig.GestureRecognizers.Clear();
-            var tgr_todo_faellig = new TapGestureRecognizer();
-            tgr_todo_faellig.Tapped += btn_todo_faelligTapped;
-            btn_todo_faellig.GestureRecognizers.Add(tgr_todo_faellig);
-
-            btn_todo_faellig_prev.GestureRecognizers.Clear();
-            var tgr_btn_todo_faellig_prev = new TapGestureRecognizer();
-            tgr_btn_todo_faellig_prev.Tapped += btn_todo_faelligprevTapped;
-            btn_todo_faellig_prev.GestureRecognizers.Add(tgr_btn_todo_faellig_prev);
-
-            btn_todo_faellig_next.GestureRecognizers.Clear();
-            var tgr_btn_todo_faellig_next = new TapGestureRecognizer();
-            tgr_btn_todo_faellig_next.Tapped += btn_todo_faellignextTapped;
-            btn_todo_faellig_next.GestureRecognizers.Add(tgr_btn_todo_faellig_next);
 
 
             popupContainer_Alert_btn.GestureRecognizers.Clear();

@@ -101,15 +101,14 @@ namespace iPMCloud.Mobile
             return _prio;
         }
 
-        public static StackLayout GetCategoryListView(AppModel model, ICommand func)
+        public static VerticalStackLayout GetCategoryListView(AppModel model, ICommand func)
         {
-            var stack = new StackLayout
+            var stack = new VerticalStackLayout
             {
                 Padding = new Thickness(5, 0, 5, 0),
                 Margin = new Thickness(0, 0, 0, 0),
                 Spacing = 0,
-                Orientation = StackOrientation.Vertical,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
             };
             bool isObjektInPlan = AppModel.Instance.Plan_ObjekteThisWeek.Contains(model.LastSelectedOrder.objektid);
 
@@ -159,12 +158,11 @@ namespace iPMCloud.Mobile
                 HorizontalOptions = LayoutOptions.End,
                 VerticalOptions = LayoutOptions.Start,
             };
-            var hInfo = new StackLayout()
+            var hInfo = new HorizontalStackLayout()
             {
                 Padding = new Thickness(5, 0, 5, 2),
                 Margin = new Thickness(0, 0, 0, 0),
                 Spacing = 0,
-                Orientation = StackOrientation.Horizontal,
                 HorizontalOptions = LayoutOptions.End,
                 VerticalOptions = LayoutOptions.Start,
                 BackgroundColor = Colors.Transparent,
@@ -182,7 +180,7 @@ namespace iPMCloud.Mobile
                 TextColor = Color.FromArgb("#cccccc"),
                 Margin = new Thickness(7, 0, 5, 1),
                 FontSize = 16,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
                 LineBreakMode = LineBreakMode.WordWrap,
             };
             var direct = new Label
@@ -206,22 +204,20 @@ namespace iPMCloud.Mobile
                 LineBreakMode = LineBreakMode.TailTruncation,
                 HorizontalOptions = LayoutOptions.Start
             };
-            var h = new StackLayout()
+            var h = new HorizontalStackLayout()
             {
                 Padding = new Thickness(5, 5, 5, 5),
                 Margin = new Thickness(0, 0, 0, 0),
                 Spacing = 0,
-                Orientation = StackOrientation.Horizontal,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
                 BackgroundColor = Color.FromArgb("#042d53"),
             };
-            var v = new StackLayout()
+            var v = new VerticalStackLayout()
             {
                 Padding = new Thickness(0, 0, 0, 0),
                 Margin = new Thickness(0, 0, 0, 0),
                 Spacing = 0,
-                Orientation = StackOrientation.Vertical,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
             };
             v.Children.Add(lb);
             v.Children.Add(direct);
@@ -264,7 +260,7 @@ namespace iPMCloud.Mobile
             {
                 Padding = new Thickness(1, 1, 1, 1),
                 Margin = new Thickness(0, 15, 0, 5),
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
                 BackgroundColor = Color.FromArgb("#041d43"),
                 Content = h,
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
@@ -355,7 +351,7 @@ namespace iPMCloud.Mobile
         }
 
 
-        public static StackLayout GetCategoryTodoCardView(KategorieWSO cat, AppModel model, double prio, bool onlyText)
+        public static VerticalStackLayout GetCategoryTodoCardView(KategorieWSO cat, AppModel model, double prio, bool onlyText)
         {
             var imageL = new Image
             {
@@ -379,12 +375,11 @@ namespace iPMCloud.Mobile
                 HorizontalOptions = LayoutOptions.Fill,
                 LineBreakMode = LineBreakMode.WordWrap,
             };
-            var h = new StackLayout()
+            var h = new HorizontalStackLayout()
             {
                 Padding = new Thickness(5, 5, 5, 5),
                 Margin = new Thickness(0, 0, 0, 0),
                 Spacing = 0,
-                Orientation = StackOrientation.Horizontal,
                 HorizontalOptions = LayoutOptions.Fill,
                 BackgroundColor = onlyText ? Color.FromArgb("#cc04532d") : Color.FromArgb("#cc042d53"),
             };
@@ -393,6 +388,7 @@ namespace iPMCloud.Mobile
             if (prio < 1360)
             {
                 warn = AuftragWSO.GetTodoCountWarningSmall(prio);
+                warn.MinimumWidthRequest = 40;
             }
 
             if (onlyText)
@@ -410,39 +406,37 @@ namespace iPMCloud.Mobile
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(40, 1, 0, 1),
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
                 BackgroundColor = Colors.Transparent,
                 Content = h,
                 ClassId = "" + cat.id,
             };
 
-            var container = new StackLayout
+            var container = new VerticalStackLayout
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(0),
                 Spacing = 0,
-                Orientation = StackOrientation.Vertical,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
                 IsVisible = false,
             };
 
             mainFrame.GestureRecognizers.Clear();
-            mainFrame.GestureRecognizers.Add(new TapGestureRecognizer() { Command = new Command<StackLayout>(ShowPositionContainer), CommandParameter = container });
+            mainFrame.GestureRecognizers.Add(new TapGestureRecognizer() { Command = new Command<VerticalStackLayout>(ShowPositionContainer), CommandParameter = container });
 
-            var wrapper = new StackLayout
+            var wrapper = new VerticalStackLayout
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(0),
                 Spacing = 0,
-                Orientation = StackOrientation.Vertical,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
                 Children = { mainFrame, container }
             };
 
             return wrapper;
         }
 
-        public static void ShowPositionContainer(StackLayout value)
+        public static void ShowPositionContainer(VerticalStackLayout value)
         {
             value.IsVisible = !value.IsVisible;
         }

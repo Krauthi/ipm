@@ -67,7 +67,7 @@ namespace iPMCloud.Mobile.vo
                 }
 
                 string directoryPath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "ipm/companies/"
                 );
 
@@ -109,7 +109,7 @@ namespace iPMCloud.Mobile.vo
             try
             {
                 string directoryPath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "ipm/companies/"
                 );
 
@@ -207,7 +207,7 @@ namespace iPMCloud.Mobile.vo
             try
             {
                 string directoryPath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "ipm/companies/"
                 );
 
@@ -299,7 +299,7 @@ namespace iPMCloud.Mobile.vo
             try
             {
                 string filePath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "ipm/companies/companies.ipm"
                 );
 

@@ -164,7 +164,7 @@ namespace iPMCloud.Mobile
                 }
 
                 string directoryPath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "ipm/" + model.SettingModel.SettingDTO.CustomerNumber + "/nbi/"
                 );
 
@@ -216,7 +216,7 @@ namespace iPMCloud.Mobile
                 }
 
                 string directoryPath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "ipm/" + model.SettingModel.SettingDTO.CustomerNumber + "/nbi/"
                 );
 
@@ -307,7 +307,7 @@ namespace iPMCloud.Mobile
                 }
 
                 string filePath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "ipm/" + model.SettingModel.SettingDTO.CustomerNumber + "/nbi/_" + b.guid + "_" + b.mainguid + ".ipm"
                 );
 
@@ -339,7 +339,7 @@ namespace iPMCloud.Mobile
                 }
 
                 string directoryPath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "ipm/" + AppModel.Instance.SettingModel.SettingDTO.CustomerNumber + "/nbi/"
                 );
 
@@ -392,7 +392,7 @@ namespace iPMCloud.Mobile
                 }
 
                 string directoryPath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "ipm/" + model.SettingModel.SettingDTO.CustomerNumber + "/nbis/"
                 );
 
@@ -445,7 +445,7 @@ namespace iPMCloud.Mobile
                 }
 
                 string directoryPath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "ipm/" + AppModel.Instance.SettingModel.SettingDTO.CustomerNumber + "/nbis/"
                 );
 
@@ -487,7 +487,7 @@ namespace iPMCloud.Mobile
                 }
 
                 string directoryPath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "ipm/" + AppModel.Instance.SettingModel.SettingDTO.CustomerNumber + "/nbis/"
                 );
 
@@ -523,7 +523,7 @@ namespace iPMCloud.Mobile
                 }
 
                 string filePath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "ipm/" + AppModel.Instance.SettingModel.SettingDTO.CustomerNumber + "/nbis/_" + pic.guid + ".ipm"
                 );
 
@@ -560,7 +560,7 @@ namespace iPMCloud.Mobile
                 }
 
                 string directoryPath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "ipm/" + AppModel.Instance.SettingModel.SettingDTO.CustomerNumber + "/nbis/"
                 );
 

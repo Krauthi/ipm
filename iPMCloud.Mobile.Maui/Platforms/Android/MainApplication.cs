@@ -2,6 +2,7 @@
 using Android.Content;
 using Android.Runtime;
 using Android.Util;
+using iPMCloud.Mobile.vo;
 using System;
 
 namespace iPMCloud.Mobile
@@ -34,16 +35,18 @@ namespace iPMCloud.Mobile
             }
         }
 
+
+
         public override void OnCreate()
         {
             try
             {
                 base.OnCreate();
 
-                Log.Info(TAG, "MainApplication OnCreate");
+                //Log.Info(TAG, "MainApplication OnCreate");
 
                 // Notification Channel beim App-Start erstellen
-                CreateNotificationChannelEarly();
+                //CreateNotificationChannelEarly();
             }
             catch (Exception ex)
             {

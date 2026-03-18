@@ -6,22 +6,27 @@ namespace iPMCloud.Mobile.Views
     {
         public Grid ContainerGrid => WorkerPage_Container;
         public Border BtnWorkerBack => btn_worker_back;
-        public Image BtnWorkerBackImg => btn_worker_back_img;
         public VerticalStackLayout BtnWorkercategorysearch => btn_workercategorysearch;
-        public Image BtnWorkercategorysearchImg => btn_workercategorysearch_img;
         public VerticalStackLayout BtnWorkernamesearch => btn_workernamesearch;
-        public Image BtnWorkernamesearchImg => btn_workernamesearch_img;
         public VerticalStackLayout BtnWorkerbuildingsearch => btn_workerbuildingsearch;
-        public Image BtnWorkerbuildingsearchImg => btn_workerbuildingsearch_img;
         public Grid EntryWorkersearchContainer => entry_workersearch_container;
         public Label LbWorkerbuildingsearche => lb_workerbuildingsearche;
         public CustomEntry EntryWorkersearch => entry_workersearch;
         public ScrollView ListWorkerScroll => list_worker_scroll;
         public StackLayout ListWorker => list_worker;
 
+
+
+        // WorkerPage Buttons
+
+
         public WorkerPageContainerView()
         {
             InitializeComponent();
+            btn_workercategorysearch_img.Source = AppModel.Instance.imagesBase.Tools;
+            btn_workernamesearch_img.Source = AppModel.Instance.imagesBase.Worker;
+            btn_workerbuildingsearch_img.Source = AppModel.Instance.imagesBase.Building;
+            btn_worker_back_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
         }
 
         private void Entry_workersearch_TextChanged(object sender, TextChangedEventArgs e)

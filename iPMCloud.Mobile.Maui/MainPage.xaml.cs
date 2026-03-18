@@ -45,19 +45,13 @@ namespace iPMCloud.Mobile
         // Forwarding properties for elements moved into DSGVOPageContainerView
         private Grid DSGVOPage_Container => DSGVOPageContainerView.ContainerGrid;
         private Border btn_back_dsgvo => DSGVOPageContainerView.BtnBackDsgvo;
-        private Image btn_back_dsgvo_img => DSGVOPageContainerView.BtnBackDsgvoImg;
 
         // Forwarding properties for elements moved into WorkerPageContainerView
         private Grid WorkerPage_Container => WorkerPageContainerView.ContainerGrid;
         private Border btn_worker_back => WorkerPageContainerView.BtnWorkerBack;
-        private Image btn_worker_back_img => WorkerPageContainerView.BtnWorkerBackImg;
         private VerticalStackLayout btn_workercategorysearch => WorkerPageContainerView.BtnWorkercategorysearch;
-        private Image btn_workercategorysearch_img => WorkerPageContainerView.BtnWorkercategorysearchImg;
         private VerticalStackLayout btn_workernamesearch => WorkerPageContainerView.BtnWorkernamesearch;
-        private Image btn_workernamesearch_img => WorkerPageContainerView.BtnWorkernamesearchImg;
         private VerticalStackLayout btn_workerbuildingsearch => WorkerPageContainerView.BtnWorkerbuildingsearch;
-        private Image btn_workerbuildingsearch_img => WorkerPageContainerView.BtnWorkerbuildingsearchImg;
-        private Grid entry_workersearch_container => WorkerPageContainerView.EntryWorkersearchContainer;
         private Label lb_workerbuildingsearche => WorkerPageContainerView.LbWorkerbuildingsearche;
         private CustomEntry entry_workersearch => WorkerPageContainerView.EntryWorkersearch;
         private ScrollView list_worker_scroll => WorkerPageContainerView.ListWorkerScroll;
@@ -6046,7 +6040,7 @@ namespace iPMCloud.Mobile
             if (workerSelectedViewIndex == 1) { return; }
             overlay.IsVisible = true;
             list_worker.IsVisible = false;
-            entry_workersearch_container.IsVisible = false;
+            WorkerPageContainerView.EntryWorkersearchContainer.IsVisible = false;
             workerSelectedViewIndex = 1;
             btn_workercategorysearch.BackgroundColor = Color.FromArgb("#999999");
             btn_workernamesearch.BackgroundColor = Color.FromArgb("#042d53");
@@ -6222,7 +6216,7 @@ namespace iPMCloud.Mobile
                 mainVertStack.Children.Add(mainSubStack);
                 list_worker.Children.Add(mainVertStack);
             });
-            entry_workersearch_container.IsVisible = true;
+            WorkerPageContainerView.EntryWorkersearchContainer.IsVisible = true;
             await Task.Delay(1);
             list_worker.IsVisible = true;
             overlay.IsVisible = false;
@@ -6334,7 +6328,7 @@ namespace iPMCloud.Mobile
                 }
             });
             await Task.Delay(1);
-            entry_workersearch_container.IsVisible = true;
+            WorkerPageContainerView.EntryWorkersearchContainer.IsVisible = true;
             list_worker.IsVisible = true;
             overlay.IsVisible = false;
         }
@@ -6859,11 +6853,6 @@ namespace iPMCloud.Mobile
             }
 
 
-            // WorkerPage Buttons
-            btn_workercategorysearch_img.Source = AppModel.Instance.imagesBase.Tools;
-            btn_workernamesearch_img.Source = AppModel.Instance.imagesBase.Worker;
-            btn_workerbuildingsearch_img.Source = AppModel.Instance.imagesBase.Building;
-            btn_worker_back_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
 
             // BuildingScan 
             img_backBtn_inBuildingScan.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
@@ -6942,10 +6931,6 @@ namespace iPMCloud.Mobile
             //Map
             btn_back_map_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
 
-            //DSGVO
-            btn_back_dsgvo_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
-
-            //DSGVO
             btn_back_pn_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
 
 

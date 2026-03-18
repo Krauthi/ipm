@@ -108,7 +108,7 @@ namespace iPMCloud.Mobile
                 }
 
                 string directoryPath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "ipm/" + AppModel.Instance.SettingModel.SettingDTO.CustomerNumber + "/checks/"
                 );
 
@@ -151,7 +151,7 @@ namespace iPMCloud.Mobile
                 }
 
                 string filePath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "ipm/" + AppModel.Instance.SettingModel.SettingDTO.CustomerNumber + "/checks/checksresponse.ipm"
                 );
 
@@ -195,7 +195,7 @@ namespace iPMCloud.Mobile
                 }
 
                 string filePath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "ipm/" + AppModel.Instance.SettingModel.SettingDTO.CustomerNumber + "/checks/checksresponse.ipm"
                 );
 
@@ -236,7 +236,7 @@ namespace iPMCloud.Mobile
                 }
 
                 string directoryPath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "ipm/" + AppModel.Instance.SettingModel.SettingDTO.CustomerNumber + "/checks/"
                 );
 
@@ -279,7 +279,7 @@ namespace iPMCloud.Mobile
                 }
 
                 string filePath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "ipm/" + AppModel.Instance.SettingModel.SettingDTO.CustomerNumber + "/checks/check_" + id + ".ipm"
                 );
 
@@ -323,7 +323,7 @@ namespace iPMCloud.Mobile
                 }
 
                 string filePath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "ipm/" + AppModel.Instance.SettingModel.SettingDTO.CustomerNumber + "/checks/check_" + id + ".ipm"
                 );
 
@@ -364,7 +364,7 @@ namespace iPMCloud.Mobile
                 }
 
                 string directoryPath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "ipm/" + AppModel.Instance.SettingModel.SettingDTO.CustomerNumber + "/checks/"
                 );
 
@@ -407,7 +407,7 @@ namespace iPMCloud.Mobile
                 }
 
                 string filePath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "ipm/" + AppModel.Instance.SettingModel.SettingDTO.CustomerNumber + "/checks/checka_" + id + ".ipm"
                 );
 
@@ -459,7 +459,7 @@ namespace iPMCloud.Mobile
                 }
 
                 string directoryPath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "ipm/" + AppModel.Instance.SettingModel.SettingDTO.CustomerNumber + "/checks"
                 );
 
@@ -516,7 +516,7 @@ namespace iPMCloud.Mobile
                 }
 
                 string filePath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "ipm/" + AppModel.Instance.SettingModel.SettingDTO.CustomerNumber + "/checks/checka_" + id + ".ipm"
                 );
 
@@ -557,7 +557,7 @@ namespace iPMCloud.Mobile
                 }
 
                 string directoryPath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "ipm/" + AppModel.Instance.SettingModel.SettingDTO.CustomerNumber + "/uploadchecka/"
                 );
 
@@ -606,7 +606,7 @@ namespace iPMCloud.Mobile
                 }
 
                 string directoryPath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "ipm/" + AppModel.Instance.SettingModel.SettingDTO.CustomerNumber + "/uploadchecka/"
                 );
 
@@ -639,7 +639,7 @@ namespace iPMCloud.Mobile
                 }
 
                 string directoryPath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "ipm/" + AppModel.Instance.SettingModel.SettingDTO.CustomerNumber + "/uploadchecka/"
                 );
 
@@ -737,7 +737,7 @@ namespace iPMCloud.Mobile
                 }
 
                 string filePath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "ipm/" + AppModel.Instance.SettingModel.SettingDTO.CustomerNumber + "/uploadchecka/" + c.id + ".ipm"
                 );
 
@@ -774,7 +774,7 @@ namespace iPMCloud.Mobile
                 }
 
                 string directoryPath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "ipm/" + AppModel.Instance.SettingModel.SettingDTO.CustomerNumber + "/uploadchecka/"
                 );
 

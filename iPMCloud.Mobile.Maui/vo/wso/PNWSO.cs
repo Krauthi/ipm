@@ -39,7 +39,7 @@ namespace iPMCloud.Mobile
                 }
 
                 string directoryPath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "ipm/pnupload/"
                 );
 
@@ -84,7 +84,7 @@ namespace iPMCloud.Mobile
             try
             {
                 string directoryPath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "ipm/pnupload/"
                 );
 
@@ -112,7 +112,7 @@ namespace iPMCloud.Mobile
             try
             {
                 string directoryPath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "ipm/pnupload/"
                 );
 
@@ -178,7 +178,7 @@ namespace iPMCloud.Mobile
             try
             {
                 string filePath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "ipm/pnupload/pn.ipm"
                 );
 

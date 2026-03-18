@@ -409,7 +409,8 @@ namespace iPMCloud.Mobile
             if (company != null)
             {
                 AppModel.Instance.SettingModel.SettingDTO = Company.ToSettingDTO(company);
-                string directoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "ipm/" + AppModel.Instance.SettingModel.SettingDTO.CustomerNumber + "");
+                string directoryPath = Path.Combine(Environment.GetFolderPath(
+                    Environment.SpecialFolder.LocalApplicationData), "ipm/" + AppModel.Instance.SettingModel.SettingDTO.CustomerNumber + "");
                 if (!Directory.Exists(directoryPath)) { Directory.CreateDirectory(directoryPath); }
 
                 AppModel.Instance.SettingModel.SettingDTO.LoginToken = "";
@@ -658,39 +659,48 @@ namespace iPMCloud.Mobile
 
         private async void CheckLogin(bool smallcheck = false)
         {
-            overlay.IsVisible = true;
-            await Task.Delay(1);
-
-
-            if (!smallcheck)
+            try
             {
-                LoginNow();// Anmeldung am Server
-            }
-            else
-            {
-                DateTime lastTokenDate = String.IsNullOrWhiteSpace(AppModel.Instance.SettingModel.SettingDTO.LastTokenDateTimeTicks)
-                    ? DateTime.Now.AddDays(-365)
-                    : new DateTime(long.Parse(AppModel.Instance.SettingModel.SettingDTO.LastTokenDateTimeTicks));
-                DateTime nowDate = DateTime.Now.AddDays(-7);
-                var d = (nowDate - lastTokenDate).TotalHours;
+                overlay.IsVisible = true;
+                await Task.Delay(1);
 
-                // token vorhanden und Letzter erfolgreicher login ist nicht länger als 7 Tage!
-                if (!String.IsNullOrWhiteSpace(AppModel.Instance.SettingModel.SettingDTO.LoginToken) && d < 0 && AppModel.Instance.Person != null)
+
+                if (!smallcheck)
                 {
-                    //Login Check mit Token ... erfolgreich
-                    AppModel.Instance.SettingModel.SettingDTO.LastTokenDateTimeTicks = "" + DateTime.Now.Ticks;
-                    AppModel.Instance.SettingModel.SettingDTO.GPSInfoHasShow = true;
-                    AppModel.Instance.SettingModel.SaveSettings();
-                    await Task.Delay(1);
-                    overlay.IsVisible = false;
-                    AppModel.Instance.PageNavigator.NavigateTo(TFPageNavigator.PAGE_MAINPAGE);
-                    return;
+                    LoginNow();// Anmeldung am Server
                 }
-                // 7 Tage sind abgelaufen
-                AppModel.Instance.SettingModel.SettingDTO.LoginToken = "";
-                AppModel.Instance.SettingModel.SettingDTO.Autologin = false;
-                AppModel.Instance.SettingModel.SaveSettings();
-                LoginNow();
+                else
+                {
+                    DateTime lastTokenDate = String.IsNullOrWhiteSpace(AppModel.Instance.SettingModel.SettingDTO.LastTokenDateTimeTicks)
+                        ? DateTime.Now.AddDays(-365)
+                        : new DateTime(long.Parse(AppModel.Instance.SettingModel.SettingDTO.LastTokenDateTimeTicks));
+                    DateTime nowDate = DateTime.Now.AddDays(-7);
+                    var d = (nowDate - lastTokenDate).TotalHours;
+
+                    // token vorhanden und Letzter erfolgreicher login ist nicht länger als 7 Tage!
+                    if (!String.IsNullOrWhiteSpace(AppModel.Instance.SettingModel.SettingDTO.LoginToken) && d < 0 && AppModel.Instance.Person != null)
+                    {
+                        //Login Check mit Token ... erfolgreich
+                        AppModel.Instance.SettingModel.SettingDTO.LastTokenDateTimeTicks = "" + DateTime.Now.Ticks;
+                        AppModel.Instance.SettingModel.SettingDTO.GPSInfoHasShow = true;
+                        AppModel.Instance.SettingModel.SaveSettings();
+                        await Task.Delay(1);
+                        overlay.IsVisible = false;
+                        AppModel.Instance.PageNavigator.NavigateTo(TFPageNavigator.PAGE_MAINPAGE);
+                        return;
+                    }
+                    // 7 Tage sind abgelaufen
+                    AppModel.Instance.SettingModel.SettingDTO.LoginToken = "";
+                    AppModel.Instance.SettingModel.SettingDTO.Autologin = false;
+                    AppModel.Instance.SettingModel.SaveSettings();
+                    LoginNow();
+                }
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger.Error("ERROR: CheckLogin failed: " + ex.Message);
+                overlay.IsVisible = false;  // ⬇️ Safety-Reset
+                isInitialize = false;
             }
         }
         private async void LoginNow()
@@ -738,7 +748,10 @@ namespace iPMCloud.Mobile
                 }
                 catch (Exception e)
                 {
-                    var a = e.Message;
+                    AppModel.Logger.Error("ERROR: LoginNow failed: " + e.Message + " - " + e.StackTrace);
+                    // ⬇️ WICHTIG: overlay immer zurücksetzen!
+                    overlay.IsVisible = false;
+                    isInitialize = false;
                 }
             }
         }

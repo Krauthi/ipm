@@ -1,16 +1,16 @@
 ﻿//using Plugin.Permissions;
 // TODO: Plugin.Connectivity not MAUI-compatible - use Microsoft.Maui.Networking.Connectivity
 // using Plugin.Connectivity;
+using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui.Controls;
+using Microsoft.Maui.Devices;
+using Microsoft.Maui.Storage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Maui.Storage;
-using Microsoft.Maui.Devices;
-using Microsoft.Maui.ApplicationModel;
-using Microsoft.Maui.Controls;
 //using Android.OS;
 
 namespace iPMCloud.Mobile.vo
@@ -833,6 +833,138 @@ namespace iPMCloud.Mobile.vo
         }
 
 
+
+
+
+
+
+        public async void CheckLogin(bool smallcheck = false)
+        {
+            try
+            {
+                if (!smallcheck)
+                {
+                    LoginNow();// Anmeldung am Server
+                }
+                else
+                {
+                    DateTime lastTokenDate = String.IsNullOrWhiteSpace(AppModel.Instance.SettingModel.SettingDTO.LastTokenDateTimeTicks)
+                        ? DateTime.Now.AddDays(-365)
+                        : new DateTime(long.Parse(AppModel.Instance.SettingModel.SettingDTO.LastTokenDateTimeTicks));
+                    DateTime nowDate = DateTime.Now.AddDays(-7);
+                    var d = (nowDate - lastTokenDate).TotalHours;
+
+                    // token vorhanden und Letzter erfolgreicher login ist nicht länger als 7 Tage!
+                    if (!String.IsNullOrWhiteSpace(AppModel.Instance.SettingModel.SettingDTO.LoginToken) && d < 0 && AppModel.Instance.Person != null)
+                    {
+                        //Login Check mit Token ... erfolgreich
+                        AppModel.Instance.SettingModel.SettingDTO.LastTokenDateTimeTicks = "" + DateTime.Now.Ticks;
+                        AppModel.Instance.SettingModel.SettingDTO.GPSInfoHasShow = true;
+                        AppModel.Instance.SettingModel.SaveSettings();
+                        AppModel.Instance.PageNavigator.NavigateTo(TFPageNavigator.PAGE_MAINPAGE);
+                        return;
+                    }
+                    // 7 Tage sind abgelaufen
+                    AppModel.Instance.SettingModel.SettingDTO.LoginToken = "";
+                    AppModel.Instance.SettingModel.SettingDTO.Autologin = false;
+                    AppModel.Instance.SettingModel.SaveSettings();
+                    LoginNow();
+                }
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger.Error("ERROR: CheckLogin failed: " + ex.Message);
+            }
+        }
+        private async void LoginNow()
+        {
+            IpmLoginResponse ipmLoginResponse = await Task.Run(() => { return AppModel.Instance.Connections.IpmLogin(false); });
+
+            if (ipmLoginResponse == null || !ipmLoginResponse.success)
+            {
+                LoginFaild(ipmLoginResponse);
+            }
+            else
+            {
+                try
+                {
+                    AppModel.Instance.Person = ipmLoginResponse.person;
+                    if (ipmLoginResponse.versionCheck != null)
+                    {
+                        AppModel.Instance.AppControll = ipmLoginResponse.versionCheck.AppControll;
+                    }
+                    if (AppModel.Instance.AppControll == null) { AppModel.Instance.AppControll = new AppControll(); }
+                    AppControll.Save(AppModel.Instance, AppModel.Instance.AppControll);
+
+                    // Wenn sich die Sprache geändert hat!
+                    if (AppModel.Instance.AppControll.lang != "de" && AppModel.Instance.AppControll.lang != AppModel.Instance.Lang.lang && AppModel.Instance.AppControll.translation)
+                    {
+                        AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks = null;
+                    }
+
+                    PersonWSO.SavePerson(AppModel.Instance, AppModel.Instance.Person);
+                    AppModel.Instance.SettingModel.SettingDTO.LoginToken = ipmLoginResponse.sessionkey;
+                    AppModel.Instance.SettingModel.SettingDTO.LastTokenDateTimeTicks = "" + DateTime.Now.Ticks;
+                    AppModel.Instance.SettingModel.SettingDTO.GPSInfoHasShow = true;
+                    AppModel.Instance.SettingModel.SaveSettings();
+                    
+                    AppModel.Instance.PageNavigator.NavigateTo(TFPageNavigator.PAGE_MAINPAGE);
+                }
+                catch (Exception e)
+                {
+                    AppModel.Logger.Error("ERROR: LoginNow failed: " + e.Message + " - " + e.StackTrace);
+                }
+            }
+        }
+        private async void LoginFaild(IpmLoginResponse ipmLoginResponse)
+        {
+            string m = "";
+            if (ipmLoginResponse != null)
+            {
+                m = ipmLoginResponse.message;
+            }
+            else
+            {
+                m = "FEHLER: Muss Online gehen, kann aber nicht!";
+            }
+            if (m.ToLower().Contains("zugangsdaten unbekannt"))
+            {
+                AppModel.Instance.SettingModel.SettingDTO.LoginToken = "";
+                AppModel.Instance.SettingModel.SettingDTO.Autologin = false;
+                //sw_autologin.IsToggled = false;
+                AppModel.Instance.SettingModel.SaveSettings();
+            }
+
+            AppModel.Logger.Error("ERROR: Anmeldung nicht möglich! - " + m);
+            //await DisplayAlertAsync("Anmeldung nicht möglich!", m, "Zurück");
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         public void InitLangs()
         {
             Langs = new List<Lang>();
@@ -1051,9 +1183,9 @@ namespace iPMCloud.Mobile.vo
                 string folder;
 
                 if (DeviceInfo.Platform == DevicePlatform.iOS)
-                    folder = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "..", "Library");
+                    folder = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "..", "Library");
                 else if (DeviceInfo.Platform == DevicePlatform.Android)
-                    folder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                    folder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
                 else
                     throw new Exception("Could not show log: Platform undefined.");
 

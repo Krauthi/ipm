@@ -96,7 +96,7 @@ namespace iPMCloud.Mobile.vo
     public static class AppSet
     {
         private static readonly string DirectoryPath = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
             "ipm/appset/"
         );
         private static readonly string FilePath = Path.Combine(DirectoryPath, "set.ipm");

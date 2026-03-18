@@ -399,7 +399,7 @@ namespace iPMCloud.Mobile.vo
                                     !String.IsNullOrWhiteSpace(newScanSettings.CustomerNumber) &&
                                     !String.IsNullOrWhiteSpace(newScanSettings.CustomerName))
                                 {
-                                    string directoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "ipm/" + newScanSettings.CustomerNumber + "");
+                                    string directoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ipm/" + newScanSettings.CustomerNumber + "");
                                     if (!Directory.Exists(directoryPath)) { Directory.CreateDirectory(directoryPath); }
 
                                     model.SettingModel.SettingDTO = newScanSettings;
@@ -499,7 +499,7 @@ namespace iPMCloud.Mobile.vo
                                 {
                                     Company.AddUpdateCompany(model, model.SettingModel.SettingDTO);
 
-                                    string directoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "ipm/" + newScanSettings.CustomerNumber + "");
+                                    string directoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ipm/" + newScanSettings.CustomerNumber + "");
                                     if (!Directory.Exists(directoryPath)) { Directory.CreateDirectory(directoryPath); }
 
                                     model.SettingModel.SettingDTO = newScanSettings;

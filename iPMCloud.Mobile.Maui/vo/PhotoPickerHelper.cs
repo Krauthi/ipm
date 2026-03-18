@@ -66,7 +66,7 @@ namespace iPMCloud.Mobile.Helpers
         public static async Task<bool> PickAndProcessPhotosAsync(
     int maxPhotos,
     List<BildWSO> photoList,
-    StackLayout targetStack,
+    VerticalStackLayout targetStack,
     string parentGuid,
     Command<BildWSO> removeCommand,
     BuildingWSO building = null,

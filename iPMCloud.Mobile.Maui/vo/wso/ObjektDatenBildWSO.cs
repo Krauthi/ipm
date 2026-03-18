@@ -58,7 +58,7 @@ namespace iPMCloud.Mobile
                 }
 
                 string directoryPath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "ipm/" + model.SettingModel.SettingDTO.CustomerNumber + "/objectvaluebildupload/"
                 );
 
@@ -107,7 +107,7 @@ namespace iPMCloud.Mobile
                 }
 
                 string directoryPath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "ipm/" + AppModel.Instance.SettingModel.SettingDTO.CustomerNumber + "/objectvaluebildupload/"
                 );
 
@@ -140,7 +140,7 @@ namespace iPMCloud.Mobile
                 }
 
                 string directoryPath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "ipm/" + model.SettingModel.SettingDTO.CustomerNumber + "/objectvaluebildupload/"
                 );
 
@@ -216,7 +216,7 @@ namespace iPMCloud.Mobile
                 }
 
                 string filePath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "ipm/" + model.SettingModel.SettingDTO.CustomerNumber + "/objectvaluebildupload/" + od.guid + ".ipm"
                 );
 
@@ -253,7 +253,7 @@ namespace iPMCloud.Mobile
                 }
 
                 string directoryPath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "ipm/" + model.SettingModel.SettingDTO.CustomerNumber + "/objectvaluebildupload/"
                 );
 

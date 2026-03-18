@@ -59,7 +59,6 @@ namespace iPMCloud.Mobile
 
         public void InitApp()
         {
-
             // TODO: Migrate to MAUI-compatible Firebase
             // Plugin.FirebasePushNotification is not MAUI-compatible
             // Consider: Plugin.Firebase or native Firebase SDK
@@ -80,7 +79,18 @@ namespace iPMCloud.Mobile
             // Ensure PageNavigator is initialized before navigating
             if (AppModel.Instance.PageNavigator != null)
             {
-                AppModel.Instance.PageNavigator.NavigateTo(TFPageNavigator.PAGE_STARTPAGE);
+                if (AppModel.Instance.SettingModel.SettingDTO.Autologin &&
+                    !String.IsNullOrWhiteSpace(AppModel.Instance.SettingModel.SettingDTO.LoginToken))
+                {
+                    //Es gibt ein Token und Autologin
+                    //AppModel.Instance.CheckLogin(true);//SmallLoginCheck
+                    AppModel.Logger.Error("STEP: App.xaml :87");
+                }
+                else
+                {
+                    //AppModel.Instance.PageNavigator.NavigateTo(TFPageNavigator.PAGE_STARTPAGE);
+                    AppModel.Logger.Error("STEP: App.xaml :92 (.NavigateTo(Startpage))");
+                }
             }
             else
             {
@@ -88,6 +98,15 @@ namespace iPMCloud.Mobile
             }
         }
 
+
+        protected override Window CreateWindow(IActivationState activationState)
+        {
+            // InitApp wurde schon im Konstruktor aufgerufen,
+            // PageNavigator hat die Startseite bereits vorbereitet
+            var startPage = new StartPage();
+            AppModel.Instance.StartPage = startPage;
+            return new Window(startPage.GetPage());
+        }
 
         protected override void OnStart()
         {
@@ -181,6 +200,14 @@ namespace iPMCloud.Mobile
             ////}
             ////AppModel.Logger.Info("App aus dem Hintergrund wieder hervorgerufen");
             //AppModel.Instance.isInBackground = false;
+
+            // ⬇️ Schutz: Nicht ausführen wenn App gerade erst gestartet wurde (< 5 Sekunden)
+            var timeSinceStart = (DateTime.Now - AppModel.Instance.AppOnStart).TotalSeconds;
+            if (timeSinceStart < 5)
+            {
+                base.OnResume();
+                return;
+            }
 
             var dt = String.IsNullOrEmpty(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks) ? DateTime.Now.AddDays(-2) : new DateTime(long.Parse(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks));
             if (dt.AddHours(AppModel.Instance.SettingModel.SettingDTO.SyncTimeHours) < DateTime.Now && !AppModel.Instance.UseExternHardware) //(dt.AddHours(4) < DateTime.Now || manuellSync)

@@ -121,18 +121,20 @@ namespace iPMCloud.Mobile.vo
 
         private static void SetPage(Page targetPage)
         {
-            var app = Application.Current ?? AppModel.Instance?.App;
-            if (app == null)
+            var appl = Application.Current ?? AppModel.Instance?.App;
+            if (appl == null) { 
+                AppModel.Logger.Error("ERROR: Unable to set page - Application instance is null.");
                 return;
+            }
 
-            if (app.Windows != null && app.Windows.Count > 0)
+            if (appl.Windows != null && appl.Windows.Count > 0)
             {
-                app.Windows[0].Page = targetPage;
+                appl.Windows[0].Page = targetPage;
             }
             else
             {
                 AppModel.Logger.Info("No window available yet – setting MainPage as fallback.");
-                app.MainPage = targetPage;
+                //appl.MainPage = targetPage;
             }
         }
 

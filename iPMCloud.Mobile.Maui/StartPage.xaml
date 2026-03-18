@@ -447,7 +447,8 @@
             Padding="0"
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             AbsoluteLayout.LayoutFlags="All"
-            IsVisible="False" BackgroundColor="Transparent"
+            BackgroundColor="Transparent"
+            IsVisible="False"
             RowSpacing="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="50" />
@@ -461,7 +462,8 @@
                 Grid.Row="0"
                 Margin="0"
                 Padding="10,0,10,0"
-                ColumnSpacing="0" BackgroundColor="Black"
+                BackgroundColor="Black"
+                ColumnSpacing="0"
                 HorizontalOptions="Fill"
                 RowSpacing="0">
                 <Grid.RowDefinitions>
@@ -475,7 +477,8 @@
                 </Grid.ColumnDefinitions>
 
                 <Label
-                    Grid.Column="0" Grid.Row="0"
+                    Grid.Row="0"
+                    Grid.Column="0"
                     Margin="0"
                     FontSize="24"
                     HorizontalTextAlignment="Start"
@@ -485,7 +488,8 @@
 
                 <Image
                     x:Name="img_logo"
-                    Grid.Column="1" Grid.Row="0"
+                    Grid.Row="0"
+                    Grid.Column="1"
                     Margin="0,2,0,1"
                     HeightRequest="37"
                     HorizontalOptions="End" />
@@ -497,13 +501,12 @@
                 HeightRequest="5"
                 HorizontalOptions="Fill"
                 VerticalOptions="Start" />
-            <StackLayout
+            <VerticalStackLayout
                 Grid.Row="2"
                 Margin="0"
                 Padding="8"
                 BackgroundColor="#90144d93"
                 HorizontalOptions="Fill"
-                Orientation="Vertical"
                 Spacing="0">
                 <Label
                     Margin="0"
@@ -544,12 +547,11 @@
                         BackgroundColor="#042d53"
                         HeightRequest="38"
                         HorizontalOptions="Fill">
-                        <StackLayout
+                        <HorizontalStackLayout
                             Margin="0,0,0,0"
                             Padding="0"
                             HeightRequest="32"
                             HorizontalOptions="Fill"
-                            Orientation="Horizontal"
                             Spacing="0"
                             VerticalOptions="Center">
                             <Image
@@ -558,10 +560,9 @@
                                 HeightRequest="26"
                                 VerticalOptions="Center"
                                 WidthRequest="26" />
-                            <StackLayout
+                            <VerticalStackLayout
                                 Margin="0,-2,0,0"
                                 Padding="0"
-                                Orientation="Vertical"
                                 Spacing="0"
                                 VerticalOptions="Center">
                                 <Label
@@ -576,8 +577,8 @@
                                     FontSize="11"
                                     Text="Ein weiteres Unternehmen hinzufügen"
                                     TextColor="#aaaaaa" />
-                            </StackLayout>
-                        </StackLayout>
+                            </VerticalStackLayout>
+                        </HorizontalStackLayout>
                     </StackLayout>
                 </Border>
                 <Border
@@ -601,12 +602,11 @@
                         BackgroundColor="#042d53"
                         HeightRequest="38"
                         HorizontalOptions="Fill">
-                        <StackLayout
+                        <HorizontalStackLayout
                             Margin="0,0,0,0"
                             Padding="0"
                             HeightRequest="32"
                             HorizontalOptions="Fill"
-                            Orientation="Horizontal"
                             Spacing="0"
                             VerticalOptions="Center">
                             <Image
@@ -615,10 +615,9 @@
                                 HeightRequest="30"
                                 VerticalOptions="Center"
                                 WidthRequest="30" />
-                            <StackLayout
+                            <VerticalStackLayout
                                 Margin="0,-2,0,0"
                                 Padding="0"
-                                Orientation="Vertical"
                                 Spacing="0"
                                 VerticalOptions="Center">
                                 <Label
@@ -633,11 +632,11 @@
                                     FontSize="11"
                                     Text="Sie arbeiten für mehere Unternehmen"
                                     TextColor="#cccccc" />
-                            </StackLayout>
-                        </StackLayout>
+                            </VerticalStackLayout>
+                        </HorizontalStackLayout>
                     </StackLayout>
                 </Border>
-            </StackLayout>
+            </VerticalStackLayout>
             <BoxView
                 Grid.Row="3"
                 Margin="0,0,0,3"
@@ -646,12 +645,11 @@
                 HorizontalOptions="Fill"
                 VerticalOptions="Start" />
 
-            <StackLayout
+            <VerticalStackLayout
                 Grid.Row="4"
                 Margin="0"
                 Padding="0,50,0,0"
                 HorizontalOptions="Fill"
-                Orientation="Vertical"
                 Spacing="0">
 
                 <Border
@@ -666,12 +664,11 @@
                             Radius="5"
                             Offset="2,2" />
                     </Border.Shadow>
-                    <StackLayout
+                    <VerticalStackLayout
                         Margin="0"
                         Padding="5"
                         BackgroundColor="#144d73"
                         HorizontalOptions="Fill"
-                        Orientation="Vertical"
                         Spacing="0">
                         <Label
                             Margin="0"
@@ -696,7 +693,7 @@
                             TextChanged="LoginNameChangedHandeler"
                             TextColor="White"
                             VerticalOptions="Start" />
-                    </StackLayout>
+                    </VerticalStackLayout>
                 </Border>
                 <Border
                     Margin="10"
@@ -710,12 +707,11 @@
                             Radius="5"
                             Offset="2,2" />
                     </Border.Shadow>
-                    <StackLayout
+                    <VerticalStackLayout
                         Margin="0"
                         Padding="5"
                         BackgroundColor="#ff144d73"
                         HorizontalOptions="Fill"
-                        Orientation="Vertical"
                         Spacing="0">
                         <Label
                             Margin="0"
@@ -742,7 +738,7 @@
                             TextChanged="LoginPasswordChangedHandeler"
                             TextColor="White"
                             VerticalOptions="Start" />
-                    </StackLayout>
+                    </VerticalStackLayout>
                 </Border>
 
                 <Grid
@@ -761,13 +757,12 @@
                                 Radius="5"
                                 Offset="2,2" />
                         </Border.Shadow>
-                        <StackLayout
+                        <HorizontalStackLayout
                             x:Name="btn_loginlogin_container"
                             Margin="0"
                             Padding="5"
                             BackgroundColor="#042d53"
                             HorizontalOptions="Fill"
-                            Orientation="Horizontal"
                             Spacing="10"
                             VerticalOptions="Center">
                             <Image
@@ -786,7 +781,7 @@
                                 Text="Anmelden"
                                 TextColor="#ffffff"
                                 VerticalOptions="Center" />
-                        </StackLayout>
+                        </HorizontalStackLayout>
                     </Border>
                 </Grid>
                 <BoxView
@@ -795,12 +790,11 @@
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
-                <StackLayout
+                <HorizontalStackLayout
                     Margin="0"
                     Padding="25,10,20,10"
                     BackgroundColor="#55144d73"
                     HorizontalOptions="Fill"
-                    Orientation="Horizontal"
                     Spacing="0">
                     <Label
                         Margin="0,0,20,0"
@@ -816,7 +810,7 @@
                         HorizontalOptions="Start"
                         Toggled="Switch_Toggled"
                         VerticalOptions="Center" />
-                </StackLayout>
+                </HorizontalStackLayout>
                 <BoxView
                     Margin="0,0,0,0"
                     BackgroundColor="Gray"
@@ -824,7 +818,7 @@
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
 
-            </StackLayout>
+            </VerticalStackLayout>
         </Grid>
 
 
@@ -845,13 +839,12 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <StackLayout
+            <HorizontalStackLayout
                 Grid.Row="0"
                 Margin="0"
                 Padding="10,10,10,10"
                 BackgroundColor="Black"
                 HorizontalOptions="Fill"
-                Orientation="Horizontal"
                 Spacing="0"
                 VerticalOptions="Fill">
                 <Border
@@ -861,14 +854,13 @@
                     HorizontalOptions="Fill"
                     Stroke="Transparent"
                     VerticalOptions="Center">
-                    <StackLayout
+                    <HorizontalStackLayout
                         x:Name="btn_back_RegManagement"
                         Margin="0"
                         Padding="0"
                         BackgroundColor="Transparent"
                         HeightRequest="38"
                         HorizontalOptions="Start"
-                        Orientation="Horizontal"
                         Spacing="0"
                         VerticalOptions="Center">
                         <Image
@@ -887,9 +879,9 @@
                             Text="ABBRECHEN"
                             TextColor="#2f84bd"
                             VerticalOptions="Center" />
-                    </StackLayout>
+                    </HorizontalStackLayout>
                 </Border>
-            </StackLayout>
+            </HorizontalStackLayout>
 
             <Grid
                 Grid.Row="1"
@@ -905,13 +897,12 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                <StackLayout
+                <VerticalStackLayout
                     Grid.Row="0"
                     Margin="0,0,0,0"
                     Padding="15"
                     BackgroundColor="#90144d93"
                     HorizontalOptions="Fill"
-                    Orientation="Vertical"
                     Spacing="0">
                     <Label
                         Margin="0,0,0,0"
@@ -951,12 +942,11 @@
                             BackgroundColor="#042d53"
                             HeightRequest="38"
                             HorizontalOptions="Fill">
-                            <StackLayout
+                            <HorizontalStackLayout
                                 Margin="0,0,0,0"
                                 Padding="0"
                                 HeightRequest="32"
                                 HorizontalOptions="Fill"
-                                Orientation="Horizontal"
                                 Spacing="0"
                                 VerticalOptions="Center">
                                 <Image
@@ -965,10 +955,9 @@
                                     HeightRequest="30"
                                     VerticalOptions="Center"
                                     WidthRequest="30" />
-                                <StackLayout
+                                <VerticalStackLayout
                                     Margin="0,-2,0,0"
                                     Padding="0"
-                                    Orientation="Vertical"
                                     Spacing="0"
                                     VerticalOptions="Center">
                                     <Label
@@ -983,11 +972,11 @@
                                         FontSize="11"
                                         Text="Ein weiteres Unternehmen hinzufügen"
                                         TextColor="#aaaaaa" />
-                                </StackLayout>
-                            </StackLayout>
+                                </VerticalStackLayout>
+                            </HorizontalStackLayout>
                         </StackLayout>
                     </Border>
-                </StackLayout>
+                </VerticalStackLayout>
 
                 <Label
                     Grid.Row="1"
@@ -1025,10 +1014,10 @@
             Padding="0"
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             AbsoluteLayout.LayoutFlags="All"
+            BackgroundColor="Black"
             HorizontalOptions="Fill"
             IsVisible="False"
             RowSpacing="0"
-            BackgroundColor="Black"
             VerticalOptions="Fill">
 
             <Grid.RowDefinitions>
@@ -1043,8 +1032,8 @@
                 Margin="0"
                 Padding="10,10,10,10"
                 HorizontalOptions="Fill"
-                VerticalOptions="Fill"
-                Spacing="0">
+                Spacing="0"
+                VerticalOptions="Fill">
                 <Border
                     Margin="3,2,2,2"
                     Padding="1"
@@ -1052,14 +1041,13 @@
                     HorizontalOptions="Fill"
                     Stroke="Transparent"
                     VerticalOptions="Center">
-                    <StackLayout
+                    <HorizontalStackLayout
                         x:Name="btn_back_inAddRegScan"
                         Margin="0"
                         Padding="0"
                         BackgroundColor="Transparent"
                         HeightRequest="28"
                         HorizontalOptions="Start"
-                        Orientation="Horizontal"
                         Spacing="0"
                         VerticalOptions="Center">
                         <Image
@@ -1077,9 +1065,8 @@
                             LineBreakMode="TailTruncation"
                             Text="Scann abbrechen"
                             TextColor="#4fa4dd"
-                            VerticalOptions="Center">
-                        </Label>
-                    </StackLayout>
+                            VerticalOptions="Center" />
+                    </HorizontalStackLayout>
                 </Border>
             </StackLayout>
 
@@ -1153,11 +1140,10 @@
                     BackgroundColor="#144d73"
                     HorizontalOptions="Fill"
                     Spacing="0">
-                    <StackLayout
+                    <HorizontalStackLayout
                         Margin="0"
                         Padding="0"
                         HorizontalOptions="Fill"
-                        Orientation="Horizontal"
                         Spacing="0"
                         VerticalOptions="Center">
                         <Image
@@ -1175,7 +1161,7 @@
                             Text="GPS Standort"
                             TextColor="#ffffff"
                             VerticalOptions="Center" />
-                    </StackLayout>
+                    </HorizontalStackLayout>
                     <BoxView
                         Margin="0,3,0,13"
                         BackgroundColor="Gray"
@@ -1234,12 +1220,11 @@
             AbsoluteLayout.LayoutFlags="All"
             BackgroundColor="#88000000"
             IsVisible="False">
-            <StackLayout
+            <VerticalStackLayout
                 Margin="10,200,20,0"
                 Padding="10"
                 BackgroundColor="#144d73"
                 HorizontalOptions="Fill"
-                Orientation="Vertical"
                 Spacing="0">
                 <Label
                     x:Name="popupContainer_Alert_Titel"
@@ -1296,7 +1281,7 @@
                             TextColor="#ffffff" />
                     </Border>
                 </Grid>
-            </StackLayout>
+            </VerticalStackLayout>
         </AbsoluteLayout>
 
 

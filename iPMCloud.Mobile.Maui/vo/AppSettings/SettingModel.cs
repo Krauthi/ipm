@@ -144,7 +144,7 @@ namespace iPMCloud.Mobile.vo
                 IoSaveError = false;
 
                 string directoryPath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "ipm/settings/"
                 );
 
@@ -196,7 +196,7 @@ namespace iPMCloud.Mobile.vo
                 IoLoadError = false;
 
                 string directoryPath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "ipm/settings/"
                 );
 
@@ -309,7 +309,7 @@ namespace iPMCloud.Mobile.vo
             try
             {
                 string directoryPath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "ipm/settings/"
                 );
 
@@ -362,7 +362,7 @@ namespace iPMCloud.Mobile.vo
                 IoDeleteError = false;
 
                 string filePath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "ipm/settings/set.ipm"
                 );
 
@@ -392,7 +392,7 @@ namespace iPMCloud.Mobile.vo
             try
             {
                 string filePath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "ipm/settings/set.ipm"
                 );
 

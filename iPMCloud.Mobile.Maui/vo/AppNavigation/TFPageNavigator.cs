@@ -66,8 +66,17 @@ namespace iPMCloud.Mobile.vo
                 case PAGE_STARTPAGE:
                     if (LastMainPage != CurrentMainPage)
                     {
-                        StartPageObj = new StartPage();
-                        AppModel.Instance.StartPage = StartPageObj;
+                        if(AppModel.Instance.StartPage != null)
+                        {
+                            AppModel.Logger.Info("Reusing existing StartPage instance.");
+                            StartPageObj = AppModel.Instance.StartPage;
+                        }
+                        else
+                        {
+                            AppModel.Logger.Info("Creating new StartPage instance.");
+                            StartPageObj = new StartPage();
+                            AppModel.Instance.StartPage = StartPageObj;
+                        }
                         var startPage = StartPageObj.GetPage(subPage);
                         SetPage(startPage);
                     }
@@ -81,9 +90,18 @@ namespace iPMCloud.Mobile.vo
                 case PAGE_MAINPAGE:
                     if (LastMainPage != CurrentMainPage)
                     {
-                        MainPageObj = new MainPage();
-                        AppModel.Instance.MainPage = MainPageObj;
-                        var mainPageContent = MainPageObj.GetPage(subPage); // Fixed: was using StartPageObj
+                        if(AppModel.Instance.MainPage != null)
+                        {
+                            AppModel.Logger.Info("Reusing existing MainPage instance.");
+                            MainPageObj = AppModel.Instance.MainPage;
+                        }
+                        else
+                        {
+                            AppModel.Logger.Info("Creating new MainPage instance.");
+                            MainPageObj = new MainPage();
+                            AppModel.Instance.MainPage = MainPageObj;
+                        }
+                        var mainPageContent = MainPageObj.GetPage(subPage); 
                         SetPage(mainPageContent);
                     }
                     else

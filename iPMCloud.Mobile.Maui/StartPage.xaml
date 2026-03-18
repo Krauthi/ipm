@@ -22,7 +22,7 @@
             BackgroundColor="Transparent">
             <Image
                 Margin="0,0,0,0"
-                AbsoluteLayout.LayoutBounds="0,0,1,1"
+                AbsoluteLayout.LayoutBounds="0,0,0.5,1"
                 AbsoluteLayout.LayoutFlags="All"
                 Aspect="Fill"
                 HorizontalOptions="Fill"

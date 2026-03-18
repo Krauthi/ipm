@@ -66,7 +66,9 @@ namespace iPMCloud.Mobile
 
             AppModel.Instance.InitDeviceInformation();
             AppModel.Instance.App = this;
-            if (!AppModel.Instance.HasInitAppmodel) { AppModel.Instance.HasInitAppmodel = AppModel.Instance.InitAppModel(); }
+            if (!AppModel.Instance.HasInitAppmodel) { 
+                AppModel.Instance.HasInitAppmodel = AppModel.Instance.InitAppModel(); 
+            }
             if (AppModel.Instance.Person != null)
             {
                 AppModel.Logger.Info("INFO: App neu gestartet V" + AppModel.Instance.Version + " (" + AppModel.Instance.Person.name + " " + AppModel.Instance.Person.vorname + ")");
@@ -76,26 +78,17 @@ namespace iPMCloud.Mobile
                 AppModel.Logger.Warn("WARN: App neu gestartet (Person noch nicht bekannt - Neuinstallation)");
             }
 
-            // Ensure PageNavigator is initialized before navigating
-            if (AppModel.Instance.PageNavigator != null)
+            if (AppModel.Instance.StartPage == null)
             {
-                if (AppModel.Instance.SettingModel.SettingDTO.Autologin &&
-                    !String.IsNullOrWhiteSpace(AppModel.Instance.SettingModel.SettingDTO.LoginToken))
-                {
-                    //Es gibt ein Token und Autologin
-                    //AppModel.Instance.CheckLogin(true);//SmallLoginCheck
-                    AppModel.Logger.Error("STEP: App.xaml :87");
-                }
-                else
-                {
-                    //AppModel.Instance.PageNavigator.NavigateTo(TFPageNavigator.PAGE_STARTPAGE);
-                    AppModel.Logger.Error("STEP: App.xaml :92 (.NavigateTo(Startpage))");
-                }
+                var startPage = new StartPage();
+                AppModel.Instance.StartPage = startPage;
             }
-            else
-            {
-                AppModel.Logger.Error("ERROR: PageNavigator is null - cannot navigate to start page");
-            }
+            //if (AppModel.Instance.MainPage == null)
+            //{
+            //    var mainPage = new MainPage();
+            //    AppModel.Instance.MainPage = mainPage;
+            //}
+
         }
 
 
@@ -103,9 +96,9 @@ namespace iPMCloud.Mobile
         {
             // InitApp wurde schon im Konstruktor aufgerufen,
             // PageNavigator hat die Startseite bereits vorbereitet
-            var startPage = new StartPage();
-            AppModel.Instance.StartPage = startPage;
-            return new Window(startPage.GetPage());
+            var page = AppModel.Instance.StartPage ?? 
+                new ContentPage { BackgroundColor = Colors.DarkGreen };
+            return new Window(page);
         }
 
         protected override void OnStart()
@@ -127,6 +120,28 @@ namespace iPMCloud.Mobile
             AppModel.Instance.isInBackground = false;
             AppModel.Instance.AppOnStart = DateTime.Now;
             base.OnStart();
+
+
+            //// Ensure PageNavigator is initialized before navigating
+            //if (AppModel.Instance.PageNavigator != null)
+            //{
+            //    if (AppModel.Instance.SettingModel.SettingDTO.Autologin &&
+            //        !String.IsNullOrWhiteSpace(AppModel.Instance.SettingModel.SettingDTO.LoginToken))
+            //    {
+            //        //Es gibt ein Token und Autologin
+            //        AppModel.Instance.CheckLogin(true);//SmallLoginCheck
+            //        AppModel.Logger.Error("STEP: App.xaml :87");
+            //    }
+            //    else
+            //    {
+            //        AppModel.Instance.PageNavigator.NavigateTo(TFPageNavigator.PAGE_STARTPAGE);
+            //        AppModel.Logger.Error("STEP: App.xaml :92 (.NavigateTo(Startpage))");
+            //    }
+            //}
+            //else
+            //{
+            //    AppModel.Logger.Error("ERROR: PageNavigator is null - cannot navigate to start page");
+            //}
         }
 
         protected async override void OnSleep()

@@ -18,7 +18,7 @@ namespace iPMCloud.Mobile
     {
         // private BackgroundWorker backgroundWorker = new BackgroundWorker();
 
-        public bool isInitialize = false;
+        public bool isInitialize { get; set; } = false;
 
         public StartPage()
         {        
@@ -558,7 +558,7 @@ namespace iPMCloud.Mobile
             AppModel.Instance.SettingModel.SettingDTO.LoginPassword = entry_login_password.Text;
         }
 
-        public bool hasInitializedHandlers = false;
+        public bool hasInitializedHandlers { get; set; } = false;
         public async void InitStartPageHandlers()
         {
             if (hasInitializedHandlers) { return; }

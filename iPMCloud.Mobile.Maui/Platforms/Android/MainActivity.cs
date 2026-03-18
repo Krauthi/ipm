@@ -59,7 +59,7 @@ namespace iPMCloud.Mobile
 
                 // AppModel initialisieren
                 model = AppModel.Instance;
-                model.Activity = this;
+                //model.Activity = this;
                 // AppModel initialisieren
                 model.HasInitAppmodel = model.InitAppModel();
 
@@ -80,7 +80,7 @@ namespace iPMCloud.Mobile
 
 
                 // Notification Channel erstellen
-                CreateNotificationChannel();
+                //CreateNotificationChannel();
 
                 base.OnCreate(savedInstanceState);
 

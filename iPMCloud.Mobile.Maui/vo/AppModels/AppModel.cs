@@ -253,7 +253,8 @@ namespace iPMCloud.Mobile.vo
         }
 
 
-        public bool HasInitAppmodel = false;
+        public bool HasInitAppmodel { get; set; } = false;
+
         public bool InitAppModel()
         {
             if(HasInitAppmodel) { return true; }

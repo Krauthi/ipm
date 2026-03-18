@@ -43,7 +43,8 @@ namespace iPMCloud.Mobile
             {
                 base.OnCreate();
 
-                //Log.Info(TAG, "MainApplication OnCreate");
+                //var model = AppModel.Instance;
+                Log.Info(TAG, "MainApplication OnCreate");
 
                 // Notification Channel beim App-Start erstellen
                 //CreateNotificationChannelEarly();

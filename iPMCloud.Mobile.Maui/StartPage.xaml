@@ -386,8 +386,8 @@
             Padding="0"
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             AbsoluteLayout.LayoutFlags="All"
-            IsVisible="False"
             BackgroundColor="Transparent"
+            IsVisible="False"
             RowSpacing="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="200" />

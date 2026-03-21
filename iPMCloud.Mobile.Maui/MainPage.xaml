@@ -2849,7 +2849,7 @@
                         Padding="1"
                         BackgroundColor="#0f649d"
                         HorizontalOptions="Start">
-                        <StackLayout
+                        <HorizontalStackLayout
                             x:Name="btn_showselected_pos2"
                             Margin="0"
                             Padding="2,2,10,2"
@@ -2888,7 +2888,7 @@
                                         TextColor="#ffffff" />
                                 </VerticalStackLayout>
                             </HorizontalStackLayout>
-                        </StackLayout>
+                        </HorizontalStackLayout>
                     </Border>
                     <Label
                         x:Name="lb_PosSelectionType_text2"
@@ -8245,12 +8245,12 @@
             x:Name="panelContainer"
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             AbsoluteLayout.LayoutFlags="All"
-            BackgroundColor="#99000000"
+            BackgroundColor="#66000000"
             IsVisible="false">
             <Border
                 x:Name="panelContainer_frame"
-                Margin="0,10,80,50"
-                Padding="1"
+                Margin="0,0,100,0"
+                Padding="0"
                 AbsoluteLayout.LayoutBounds="0,0,1,1"
                 AbsoluteLayout.LayoutFlags="All"
                 BackgroundColor="#000000"
@@ -8263,10 +8263,10 @@
                     VerticalOptions="Fill">
                     <Grid
                         Margin="0"
-                        Padding="10"
+                        Padding="10,10,10,60"
                         AbsoluteLayout.LayoutBounds="0,0,1,1"
                         AbsoluteLayout.LayoutFlags="All"
-                        BackgroundColor="#666666"
+                        BackgroundColor="#444"
                         HorizontalOptions="Fill"
                         RowSpacing="0"
                         VerticalOptions="Fill">
@@ -8295,7 +8295,7 @@
                             <Label
                                 Grid.Column="0"
                                 Margin="10"
-                                FontSize="24"
+                                FontSize="28"
                                 HorizontalOptions="Start"
                                 HorizontalTextAlignment="Start"
                                 Text="MENÜ"
@@ -8305,14 +8305,14 @@
                             <ImageButton
                                 x:Name="btn_mainmenu_back"
                                 Grid.Column="1"
-                                Margin="0"
-                                Padding="1"
+                                Margin="10"
+                                Padding="3"
                                 BackgroundColor="Transparent"
                                 Clicked="btn_MainMenuTapped"
-                                HeightRequest="36"
+                                HeightRequest="32"
                                 HorizontalOptions="End"
                                 VerticalOptions="Center"
-                                WidthRequest="36" />
+                                WidthRequest="32" />
                         </Grid>
                         <BoxView
                             Grid.Row="1"
@@ -8333,13 +8333,13 @@
                                 Margin="0"
                                 Padding="2"
                                 BackgroundColor="#042d53"
-                                HeightRequest="40"
+                                HeightRequest="42"
                                 HorizontalOptions="Fill">
                                 <Grid
                                     Margin="0,0,0,0"
                                     Padding="0"
                                     ColumnSpacing="0"
-                                    HeightRequest="30"
+                                    HeightRequest="36"
                                     HorizontalOptions="Fill"
                                     VerticalOptions="Center">
                                     <Grid.ColumnDefinitions>
@@ -8351,9 +8351,9 @@
                                         x:Name="btn_todos_limg"
                                         Grid.Column="0"
                                         Margin="0,0,8,0"
-                                        HeightRequest="30"
+                                        HeightRequest="33"
                                         VerticalOptions="Center"
-                                        WidthRequest="30" />
+                                        WidthRequest="33" />
                                     <VerticalStackLayout
                                         Grid.Column="1"
                                         Margin="0,-4,0,0"
@@ -8363,14 +8363,14 @@
                                         <Label
                                             Margin="0"
                                             Padding="0"
-                                            FontSize="18"
+                                            FontSize="20"
                                             HorizontalTextAlignment="Start"
                                             Text="Todo's"
                                             TextColor="#ffffff" />
                                         <Label
                                             Margin="0,-3,0,0"
                                             Padding="0"
-                                            FontSize="10"
+                                            FontSize="11"
                                             HorizontalTextAlignment="Start"
                                             Text="Fällige Aufagben"
                                             TextColor="#aaaaaa" />
@@ -8399,13 +8399,13 @@
                                 Margin="0"
                                 Padding="2"
                                 BackgroundColor="#042d53"
-                                HeightRequest="40"
+                                HeightRequest="42"
                                 HorizontalOptions="Fill">
                                 <Grid
                                     Margin="0,0,0,0"
                                     Padding="0"
                                     ColumnSpacing="0"
-                                    HeightRequest="30"
+                                    HeightRequest="36"
                                     HorizontalOptions="Fill"
                                     VerticalOptions="Center">
                                     <Grid.ColumnDefinitions>
@@ -8417,9 +8417,9 @@
                                         x:Name="btn_persontimes_limg"
                                         Grid.Column="0"
                                         Margin="0,0,8,0"
-                                        HeightRequest="30"
+                                        HeightRequest="33"
                                         VerticalOptions="Center"
-                                        WidthRequest="30" />
+                                        WidthRequest="33" />
                                     <VerticalStackLayout
                                         Grid.Column="1"
                                         Margin="0,-4,0,0"
@@ -8429,14 +8429,14 @@
                                         <Label
                                             Margin="0"
                                             Padding="0"
-                                            FontSize="18"
+                                            FontSize="20"
                                             HorizontalTextAlignment="Start"
                                             Text="Meine Zeiten"
                                             TextColor="#ffffff" />
                                         <Label
                                             Margin="0,-3,0,0"
                                             Padding="0"
-                                            FontSize="10"
+                                            FontSize="11"
                                             HorizontalTextAlignment="Start"
                                             Text="Meine gebuchten Zeiten"
                                             TextColor="#aaaaaa" />
@@ -8472,13 +8472,13 @@
                                 Margin="0"
                                 Padding="2"
                                 BackgroundColor="#042d53"
-                                HeightRequest="40"
+                                HeightRequest="42"
                                 HorizontalOptions="Fill">
                                 <Grid
                                     Margin="0,0,0,0"
                                     Padding="0"
                                     ColumnSpacing="0"
-                                    HeightRequest="30"
+                                    HeightRequest="36"
                                     HorizontalOptions="Fill"
                                     VerticalOptions="Center">
                                     <Grid.ColumnDefinitions>
@@ -8490,9 +8490,9 @@
                                         x:Name="btn_worker_limg"
                                         Grid.Column="0"
                                         Margin="0,0,8,0"
-                                        HeightRequest="30"
+                                        HeightRequest="33"
                                         VerticalOptions="Center"
-                                        WidthRequest="30" />
+                                        WidthRequest="33" />
                                     <VerticalStackLayout
                                         Grid.Column="1"
                                         Margin="0,-4,0,0"
@@ -8502,14 +8502,14 @@
                                         <Label
                                             Margin="0"
                                             Padding="0"
-                                            FontSize="18"
+                                            FontSize="20"
                                             HorizontalTextAlignment="Start"
                                             Text="Handwerker"
                                             TextColor="#ffffff" />
                                         <Label
                                             Margin="0,-3,0,0"
                                             Padding="0"
-                                            FontSize="10"
+                                            FontSize="11"
                                             HorizontalTextAlignment="Start"
                                             Text="Handwerkerliste zu den Objekten"
                                             TextColor="#aaaaaa" />
@@ -8554,13 +8554,13 @@
                                 Margin="0"
                                 Padding="2"
                                 BackgroundColor="#042d53"
-                                HeightRequest="40"
+                                HeightRequest="42"
                                 HorizontalOptions="Fill">
                                 <Grid
                                     Margin="0,0,0,0"
                                     Padding="0"
                                     ColumnSpacing="0"
-                                    HeightRequest="30"
+                                    HeightRequest="36"
                                     HorizontalOptions="Fill"
                                     VerticalOptions="Center">
                                     <Grid.ColumnDefinitions>
@@ -8572,9 +8572,9 @@
                                         x:Name="btn_sync_limg"
                                         Grid.Column="0"
                                         Margin="0,0,8,0"
-                                        HeightRequest="30"
+                                        HeightRequest="33"
                                         VerticalOptions="Center"
-                                        WidthRequest="30" />
+                                        WidthRequest="33" />
                                     <VerticalStackLayout
                                         Grid.Column="1"
                                         Margin="0,-4,0,0"
@@ -8584,14 +8584,14 @@
                                         <Label
                                             Margin="0"
                                             Padding="0"
-                                            FontSize="18"
+                                            FontSize="20"
                                             HorizontalTextAlignment="Start"
                                             Text="Synchronisieren"
                                             TextColor="#ffffff" />
                                         <Label
                                             Margin="0,-3,0,0"
                                             Padding="0"
-                                            FontSize="10"
+                                            FontSize="11"
                                             HorizontalTextAlignment="Start"
                                             Text="Manuelle Synchronisation starten"
                                             TextColor="#aaaaaa" />
@@ -8627,13 +8627,13 @@
                                 Margin="0"
                                 Padding="2"
                                 BackgroundColor="#042d53"
-                                HeightRequest="40"
+                                HeightRequest="42"
                                 HorizontalOptions="Fill">
                                 <Grid
                                     Margin="0,0,0,0"
                                     Padding="0"
                                     ColumnSpacing="0"
-                                    HeightRequest="30"
+                                    HeightRequest="36"
                                     HorizontalOptions="Fill"
                                     VerticalOptions="Center">
                                     <Grid.ColumnDefinitions>
@@ -8646,10 +8646,10 @@
                                         x:Name="btn_settings_limg"
                                         Grid.Column="0"
                                         Margin="0,0,8,0"
-                                        HeightRequest="30"
+                                        HeightRequest="33"
                                         HorizontalOptions="Start"
                                         VerticalOptions="Center"
-                                        WidthRequest="30" />
+                                        WidthRequest="33" />
                                     <VerticalStackLayout
                                         Grid.Column="1"
                                         Margin="0,-4,0,0"
@@ -8660,14 +8660,14 @@
                                         <Label
                                             Margin="0"
                                             Padding="0"
-                                            FontSize="18"
+                                            FontSize="20"
                                             HorizontalTextAlignment="Start"
                                             Text="Einstellungen"
                                             TextColor="#ffffff" />
                                         <Label
-                                            Margin="0,-3,0,0"
+                                            Margin="0,-2,0,0"
                                             Padding="0"
-                                            FontSize="10"
+                                            FontSize="11"
                                             HorizontalTextAlignment="Start"
                                             Text="Einstellungen und Sontiges"
                                             TextColor="#aaaaaa" />
@@ -8749,52 +8749,51 @@
                                 Margin="0"
                                 Padding="2"
                                 BackgroundColor="#333333"
-                                HeightRequest="40"
+                                HeightRequest="42"
                                 HorizontalOptions="Fill">
                                 <Grid
                                     Margin="0,0,0,0"
                                     Padding="0"
                                     ColumnSpacing="0"
-                                    HeightRequest="30"
+                                    HeightRequest="36"
                                     HorizontalOptions="Fill"
                                     VerticalOptions="Center">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
                                     <Image
                                         x:Name="btn_dsgvo_limg"
                                         Grid.Column="0"
                                         Margin="0,0,8,0"
-                                        HeightRequest="30"
+                                        HeightRequest="33"
                                         VerticalOptions="Center"
-                                        WidthRequest="30" />
+                                        WidthRequest="33" />
                                     <VerticalStackLayout
                                         Grid.Column="1"
                                         Margin="0,-4,0,0"
+                                        HorizontalOptions="Start"
                                         Padding="0"
                                         Spacing="0"
                                         VerticalOptions="Center">
                                         <Label
                                             Margin="0"
                                             Padding="0"
-                                            FontSize="18"
-                                            HorizontalTextAlignment="Start"
+                                            FontSize="20"
                                             Text="DSGVO &amp; Impressum"
                                             TextColor="#ffffff" />
                                         <Label
                                             Margin="0,-3,0,0"
                                             Padding="0"
-                                            FontSize="10"
-                                            HorizontalTextAlignment="Start"
+                                            FontSize="11"
                                             Text="Über iPM-Cloud(c)"
                                             TextColor="#aaaaaa" />
                                     </VerticalStackLayout>
                                     <Image
                                         x:Name="btn_dsgvo_rimg"
                                         Grid.Column="2"
-                                        Margin="5,0,0,0"
+                                        Margin="15,0,0,0"
                                         HeightRequest="30"
                                         HorizontalOptions="End"
                                         VerticalOptions="Center"
@@ -8821,13 +8820,13 @@
                                 Margin="0"
                                 Padding="2"
                                 BackgroundColor="#1f74ad"
-                                HeightRequest="40"
+                                HeightRequest="42"
                                 HorizontalOptions="Fill">
                                 <Grid
                                     Margin="0,0,0,0"
                                     Padding="0"
                                     ColumnSpacing="0"
-                                    HeightRequest="30"
+                                    HeightRequest="36"
                                     HorizontalOptions="Fill"
                                     VerticalOptions="Center">
                                     <Grid.ColumnDefinitions>
@@ -8839,9 +8838,9 @@
                                         x:Name="btn_regist_limg"
                                         Grid.Column="0"
                                         Margin="0,0,8,0"
-                                        HeightRequest="30"
+                                        HeightRequest="33"
                                         VerticalOptions="Center"
-                                        WidthRequest="30" />
+                                        WidthRequest="33" />
                                     <VerticalStackLayout
                                         Grid.Column="1"
                                         Margin="0,-4,0,0"
@@ -8851,14 +8850,14 @@
                                         <Label
                                             Margin="0"
                                             Padding="0"
-                                            FontSize="18"
+                                            FontSize="20"
                                             HorizontalTextAlignment="Start"
                                             Text="Anmeldung"
                                             TextColor="#ffffff" />
                                         <Label
                                             Margin="0,-3,0,0"
                                             Padding="0"
-                                            FontSize="10"
+                                            FontSize="11"
                                             HorizontalTextAlignment="Start"
                                             Text="Zur Anmeldung zurück"
                                             TextColor="#cccccc" />

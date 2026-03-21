@@ -2445,7 +2445,8 @@ namespace iPMCloud.Mobile
             ObjectValuesPage_Container.IsVisible = false;
             ObjectValuesPage_position_Container.IsVisible = false;
             ObjectValuesPage_Edit_Container.IsVisible = false;
-            SettingsPage_Container.IsVisible = false;
+            // SettingsPage_Container.IsVisible = false; // ausgelagert nach SettingsPageView (ContentView)
+            SettingsPageView.SetVisible(false);
             MapPage_Container.IsVisible = false;
         }
 
@@ -2482,7 +2483,8 @@ namespace iPMCloud.Mobile
             await Task.Delay(210);
 
             ClearPageViews();
-            SettingsPage_Container.IsVisible = true;
+            // SettingsPage_Container.IsVisible = true; // ausgelagert nach SettingsPageView (ContentView)
+            SettingsPageView.SetVisible(true);
             ////sw_setting_hintergrundprozess.IsToggled = AppModel.Instance.SettingModel.SettingDTO.RunBackground;
 
             int countAll = GetAllSyncFromUploadCount();

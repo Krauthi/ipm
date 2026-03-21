@@ -14,7 +14,7 @@
         Padding="0,0,0,0"
         AbsoluteLayout.LayoutBounds="0,0,1,1"
         AbsoluteLayout.LayoutFlags="All"
-        BackgroundColor="Transparent">
+        BackgroundColor="Black">
 
         <AbsoluteLayout
             AbsoluteLayout.LayoutBounds="0,0,1,1"
@@ -22,7 +22,7 @@
             BackgroundColor="Transparent">
             <Image
                 Margin="0,0,0,0"
-                AbsoluteLayout.LayoutBounds="0,0,0.5,1"
+                AbsoluteLayout.LayoutBounds="0,0,1,1"
                 AbsoluteLayout.LayoutFlags="All"
                 Aspect="Fill"
                 HorizontalOptions="Fill"
@@ -118,7 +118,7 @@
             Padding="0"
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             AbsoluteLayout.LayoutFlags="All"
-            BackgroundColor="Black"
+            BackgroundColor="Transparent"
             IsVisible="False">
 
             <!--  Hintergrundbild (statt verschachtelter AbsoluteLayouts)  -->
@@ -387,6 +387,7 @@
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             AbsoluteLayout.LayoutFlags="All"
             IsVisible="False"
+            BackgroundColor="Transparent"
             RowSpacing="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="200" />
@@ -1014,7 +1015,7 @@
             Padding="0"
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             AbsoluteLayout.LayoutFlags="All"
-            BackgroundColor="Black"
+            BackgroundColor="Transparent"
             HorizontalOptions="Fill"
             IsVisible="False"
             RowSpacing="0"
@@ -1192,13 +1193,6 @@
                             Padding="10"
                             BackgroundColor="#04732d"
                             HorizontalOptions="End">
-                            <Border.Shadow>
-                                <Shadow
-                                    Brush="Black"
-                                    Opacity="0.3"
-                                    Radius="5"
-                                    Offset="2,2" />
-                            </Border.Shadow>
                             <Label
                                 Margin="0"
                                 Padding="0"
@@ -1266,13 +1260,6 @@
                         Padding="10"
                         BackgroundColor="#04732d"
                         HorizontalOptions="End">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Label
                             Margin="0"
                             Padding="0"

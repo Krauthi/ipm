@@ -21,14 +21,22 @@ namespace iPMCloud.Mobile
         public bool isInitialize { get; set; } = false;
 
         public StartPage()
-        {        
+        {
             isInitialize = true;
             InitializeComponent();
+                InitStartPage();
+                ShowDisconnected();
+        }
 
+
+        public void StartPageAgain()
+        {
+            isInitialize = true;
             InitStartPage();
             ShowDisconnected();
         }
-        private void InitStartPage(bool switchCustomer = false)
+
+        public void InitStartPage(bool switchCustomer = false)
         {
 
             //btn_regScan_limg.Source = AppModel.Instance.imagesBase.QrScan;

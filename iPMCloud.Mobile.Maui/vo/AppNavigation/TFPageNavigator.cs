@@ -79,6 +79,7 @@ namespace iPMCloud.Mobile.vo
                         }
                         var startPage = StartPageObj.GetPage(subPage);
                         SetPage(startPage);
+                        AppModel.Instance.StartPage.StartPageAgain();
                     }
                     else
                     {
@@ -103,6 +104,8 @@ namespace iPMCloud.Mobile.vo
                         }
                         var mainPageContent = MainPageObj.GetPage(subPage); 
                         SetPage(mainPageContent);
+
+                        //AppModel.Instance.MainPage.MainPageAgain();
                     }
                     else
                     {
@@ -139,20 +142,46 @@ namespace iPMCloud.Mobile.vo
 
         private static void SetPage(Page targetPage)
         {
-            var appl = Application.Current ?? AppModel.Instance?.App;
+            var wA = AppModel.Instance?.App.Windows;
+            var wB = Application.Current?.Windows;
+
+            var appl = Application.Current != null ? Application.Current :AppModel.Instance?.App;
             if (appl == null) { 
                 AppModel.Logger.Error("ERROR: Unable to set page - Application instance is null.");
                 return;
             }
 
+
             if (appl.Windows != null && appl.Windows.Count > 0)
             {
+                // ✅ Normalfall: Window bereits vorhanden
                 appl.Windows[0].Page = targetPage;
+                AppModel.Logger.Info("SetPage: Page gesetzt via Windows[0]");
             }
             else
             {
-                AppModel.Logger.Info("No window available yet – setting MainPage as fallback.");
-                //appl.MainPage = targetPage;
+                // ⚠️ Window noch nicht bereit → kurz warten und nochmal versuchen
+                AppModel.Logger.Warn("SetPage: Windows noch leer – starte Retry...");
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    int retries = 0;
+                    while ((appl.Windows == null || appl.Windows.Count == 0) && retries < 20)
+                    {
+                        await Task.Delay(100); // 100ms warten
+                        retries++;
+                    }
+
+                    if (appl.Windows != null && appl.Windows.Count > 0)
+                    {
+                        appl.Windows[0].Page = targetPage;
+                        AppModel.Logger.Info($"SetPage: Page gesetzt nach {retries} Retries");
+                    }
+                    else
+                    {
+                        AppModel.Logger.Error("SetPage: Windows auch nach Retry leer – Fallback MainPage");
+                        appl.MainPage = targetPage;
+                    }
+                });
             }
         }
 

@@ -139,13 +139,6 @@
                     HorizontalOptions="Start"
                     Stroke="Transparent"
                     VerticalOptions="Center">
-                    <Border.Shadow>
-                        <Shadow
-                            Brush="Black"
-                            Opacity="0.3"
-                            Radius="5"
-                            Offset="2,2" />
-                    </Border.Shadow>
 
                     <!--  klickbare Fläche  -->
                     <Grid
@@ -344,13 +337,6 @@
                                 HorizontalOptions="End"
                                 IsVisible="True"
                                 VerticalOptions="Start">
-                                <Border.Shadow>
-                                    <Shadow
-                                        Brush="Black"
-                                        Opacity="0.3"
-                                        Radius="5"
-                                        Offset="2,2" />
-                                </Border.Shadow>
                                 <StackLayout
                                     x:Name="btn_objektinfo"
                                     Margin="0"
@@ -405,13 +391,6 @@
                         BackgroundColor="#041d43"
                         HorizontalOptions="End"
                         VerticalOptions="Start">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <StackLayout
                             x:Name="btn_alertmessage_container"
                             Margin="0"
@@ -438,13 +417,6 @@
                         BackgroundColor="#041d43"
                         HorizontalOptions="End"
                         VerticalOptions="Start">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <StackLayout
                             x:Name="btn_message_container"
                             Margin="0"
@@ -472,13 +444,6 @@
                         HorizontalOptions="End"
                         IsVisible="True"
                         VerticalOptions="Start">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <StackLayout
                             x:Name="btn_objvalues_container"
                             Margin="0"
@@ -506,13 +471,6 @@
                         BackgroundColor="#041d43"
                         HorizontalOptions="End"
                         VerticalOptions="Start">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <StackLayout
                             x:Name="btn_buildingout_container"
                             Margin="0"
@@ -542,13 +500,6 @@
                     BackgroundColor="#041d43"
                     HorizontalOptions="Fill"
                     IsVisible="False">
-                    <Border.Shadow>
-                        <Shadow
-                            Brush="Black"
-                            Opacity="0.3"
-                            Radius="5"
-                            Offset="2,2" />
-                    </Border.Shadow>
                     <StackLayout
                         x:Name="btn_buildingorder"
                         Margin="0"
@@ -609,13 +560,6 @@
                                 HorizontalOptions="End"
                                 IsVisible="False"
                                 StrokeShape="RoundRectangle 5">
-                                <Border.Shadow>
-                                    <Shadow
-                                        Brush="Black"
-                                        Opacity="0.3"
-                                        Radius="5"
-                                        Offset="2,2" />
-                                </Border.Shadow>
                                 <Label
                                     x:Name="btn_buildingorderToTime_counttext"
                                     Margin="0"
@@ -645,13 +589,6 @@
                     BackgroundColor="#04431d"
                     HorizontalOptions="Fill"
                     IsVisible="False">
-                    <Border.Shadow>
-                        <Shadow
-                            Brush="Black"
-                            Opacity="0.3"
-                            Radius="5"
-                            Offset="2,2" />
-                    </Border.Shadow>
                     <StackLayout
                         x:Name="btn_inwork"
                         Margin="0"
@@ -710,13 +647,6 @@
                                 BackgroundColor="#009900"
                                 HorizontalOptions="End"
                                 StrokeShape="RoundRectangle 5">
-                                <Border.Shadow>
-                                    <Shadow
-                                        Brush="Black"
-                                        Opacity="0.3"
-                                        Radius="5"
-                                        Offset="2,2" />
-                                </Border.Shadow>
                                 <Label
                                     x:Name="inwork_start_count_text"
                                     Margin="0"
@@ -775,13 +705,6 @@
                     BackgroundColor="#041d43"
                     HorizontalOptions="Fill"
                     IsVisible="False">
-                    <Border.Shadow>
-                        <Shadow
-                            Brush="Black"
-                            Opacity="0.3"
-                            Radius="5"
-                            Offset="2,2" />
-                    </Border.Shadow>
                     <StackLayout
                         x:Name="btn_nachbuchen"
                         Margin="0"
@@ -905,13 +828,6 @@
                         BackgroundColor="#04431d"
                         HorizontalOptions="Fill"
                         IsVisible="False">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <StackLayout
                             Margin="0"
                             Padding="5"
@@ -982,13 +898,6 @@
                         Padding="1"
                         BackgroundColor="#041d43"
                         HorizontalOptions="Fill">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <StackLayout
                             Margin="0"
                             Padding="5"
@@ -1056,13 +965,6 @@
                         BackgroundColor="#041d43"
                         HorizontalOptions="Fill"
                         IsVisible="False">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <StackLayout
                             Margin="0"
                             Padding="5"
@@ -1130,13 +1032,6 @@
                         BackgroundColor="#041d43"
                         HorizontalOptions="Center"
                         IsVisible="False">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <StackLayout
                             Margin="0"
                             Padding="5"
@@ -1178,13 +1073,6 @@
                         Padding="1"
                         BackgroundColor="#041d43"
                         HorizontalOptions="Start">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <StackLayout
                             Margin="0"
                             Padding="5,2,5,2"
@@ -1242,13 +1130,6 @@
                                         StrokeShape="RoundRectangle 10"
                                         VerticalOptions="Start"
                                         WidthRequest="14">
-                                        <Border.Shadow>
-                                            <Shadow
-                                                Brush="Black"
-                                                Opacity="0.3"
-                                                Radius="5"
-                                                Offset="2,2" />
-                                        </Border.Shadow>
                                         <Label
                                             x:Name="frame_plantabA_badge_count"
                                             Margin="0"
@@ -1270,13 +1151,6 @@
                         Padding="1"
                         BackgroundColor="#041d43"
                         HorizontalOptions="Start">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <StackLayout
                             Margin="0"
                             Padding="5,2,5,2"
@@ -1321,7 +1195,6 @@
                                     <Border  BackgroundColor="#ff0000"
                                             HorizontalOptions="Start" VerticalOptions="Start" HeightRequest="14" WidthRequest="14" Margin="0,0,0,0"
                                             Padding="1" StrokeShape="RoundRectangle 10">
-    <Border.Shadow><Shadow Brush="Black" Opacity="0.3" Radius="5" Offset="2,2" /></Border.Shadow>
                                         <Label x:Name="frame_plantabB_badge_count" Text="44"
                                                Margin="0" Padding="0" HorizontalOptions="Center" VerticalOptions="Center"
                                                FontSize="8" TextColor="#ffffff" HorizontalTextAlignment="Center" />
@@ -1337,13 +1210,6 @@
                         BackgroundColor="#041d43"
                         HorizontalOptions="Start"
                         IsVisible="True">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <StackLayout
                             Margin="0"
                             Padding="5,2,5,2"
@@ -1402,13 +1268,6 @@
                                         StrokeShape="RoundRectangle 10"
                                         VerticalOptions="Start"
                                         WidthRequest="14">
-                                        <Border.Shadow>
-                                            <Shadow
-                                                Brush="Black"
-                                                Opacity="0.3"
-                                                Radius="5"
-                                                Offset="2,2" />
-                                        </Border.Shadow>
                                         <Label
                                             x:Name="frame_plantabCe_badge_count"
                                             Margin="0"
@@ -1439,13 +1298,6 @@
                                         StrokeShape="RoundRectangle 10"
                                         VerticalOptions="Start"
                                         WidthRequest="14">
-                                        <Border.Shadow>
-                                            <Shadow
-                                                Brush="Black"
-                                                Opacity="0.3"
-                                                Radius="5"
-                                                Offset="2,2" />
-                                        </Border.Shadow>
                                         <Label
                                             x:Name="frame_plantabCe_badge_count_g"
                                             Margin="0"
@@ -1468,13 +1320,6 @@
                         BackgroundColor="#041d43"
                         HorizontalOptions="Start"
                         IsVisible="False">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <StackLayout
                             Margin="0"
                             Padding="5,2,5,2"
@@ -1532,13 +1377,6 @@
                                         StrokeShape="RoundRectangle 10"
                                         VerticalOptions="Start"
                                         WidthRequest="14">
-                                        <Border.Shadow>
-                                            <Shadow
-                                                Brush="Black"
-                                                Opacity="0.3"
-                                                Radius="5"
-                                                Offset="2,2" />
-                                        </Border.Shadow>
                                         <Label
                                             x:Name="frame_plantabC_badge_count"
                                             Margin="0"
@@ -1637,13 +1475,6 @@
                                         StrokeShape="RoundRectangle 10"
                                         VerticalOptions="Start"
                                         WidthRequest="14">
-                                        <Border.Shadow>
-                                            <Shadow
-                                                Brush="Black"
-                                                Opacity="0.3"
-                                                Radius="5"
-                                                Offset="2,2" />
-                                        </Border.Shadow>
                                         <Label
                                             x:Name="frame_planConA_typeoffen"
                                             Margin="0"
@@ -1948,13 +1779,6 @@
                                         StrokeShape="RoundRectangle 10"
                                         VerticalOptions="Center"
                                         WidthRequest="18">
-                                        <Border.Shadow>
-                                            <Shadow
-                                                Brush="Black"
-                                                Opacity="0.3"
-                                                Radius="5"
-                                                Offset="2,2" />
-                                        </Border.Shadow>
                                         <Label
                                             x:Name="frame_planConA_offen"
                                             Margin="0"
@@ -2002,13 +1826,6 @@
                                         StrokeShape="RoundRectangle 10"
                                         VerticalOptions="Center"
                                         WidthRequest="18">
-                                        <Border.Shadow>
-                                            <Shadow
-                                                Brush="Black"
-                                                Opacity="0.3"
-                                                Radius="5"
-                                                Offset="2,2" />
-                                        </Border.Shadow>
                                         <Label
                                             x:Name="frame_planConA_erl"
                                             Margin="0"
@@ -2056,13 +1873,6 @@
                                         StrokeShape="RoundRectangle 10"
                                         VerticalOptions="Center"
                                         WidthRequest="18">
-                                        <Border.Shadow>
-                                            <Shadow
-                                                Brush="Black"
-                                                Opacity="0.3"
-                                                Radius="5"
-                                                Offset="2,2" />
-                                        </Border.Shadow>
                                         <Label
                                             x:Name="frame_planConA_veroffen"
                                             Margin="0"
@@ -2342,13 +2152,6 @@
                                         StrokeShape="RoundRectangle 10"
                                         VerticalOptions="Center"
                                         WidthRequest="18">
-                                        <Border.Shadow>
-                                            <Shadow
-                                                Brush="Black"
-                                                Opacity="0.3"
-                                                Radius="5"
-                                                Offset="2,2" />
-                                        </Border.Shadow>
                                         <Label
                                             x:Name="frame_planConB_offen"
                                             Margin="0"
@@ -2396,13 +2199,6 @@
                                         StrokeShape="RoundRectangle 10"
                                         VerticalOptions="Center"
                                         WidthRequest="18">
-                                        <Border.Shadow>
-                                            <Shadow
-                                                Brush="Black"
-                                                Opacity="0.3"
-                                                Radius="5"
-                                                Offset="2,2" />
-                                        </Border.Shadow>
                                         <Label
                                             x:Name="frame_planConB_erl"
                                             Margin="0"
@@ -2855,13 +2651,6 @@
                                         StrokeShape="RoundRectangle 10"
                                         VerticalOptions="Center"
                                         WidthRequest="18">
-                                        <Border.Shadow>
-                                            <Shadow
-                                                Brush="Black"
-                                                Opacity="0.3"
-                                                Radius="5"
-                                                Offset="2,2" />
-                                        </Border.Shadow>
                                         <Label
                                             x:Name="frame_planConC_offen"
                                             Margin="0"
@@ -2909,13 +2698,6 @@
                                         StrokeShape="RoundRectangle 10"
                                         VerticalOptions="Center"
                                         WidthRequest="18">
-                                        <Border.Shadow>
-                                            <Shadow
-                                                Brush="Black"
-                                                Opacity="0.3"
-                                                Radius="5"
-                                                Offset="2,2" />
-                                        </Border.Shadow>
                                         <Label
                                             x:Name="frame_planConC_work"
                                             Margin="0"
@@ -2963,13 +2745,6 @@
                                         StrokeShape="RoundRectangle 10"
                                         VerticalOptions="Center"
                                         WidthRequest="18">
-                                        <Border.Shadow>
-                                            <Shadow
-                                                Brush="Black"
-                                                Opacity="0.3"
-                                                Radius="5"
-                                                Offset="2,2" />
-                                        </Border.Shadow>
                                         <Label
                                             x:Name="frame_planConC_erl"
                                             Margin="0"
@@ -3074,13 +2849,6 @@
                         Padding="1"
                         BackgroundColor="#0f649d"
                         HorizontalOptions="Start">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <StackLayout
                             x:Name="btn_showselected_pos2"
                             Margin="0"
@@ -3188,13 +2956,6 @@
                     HorizontalOptions="Start"
                     Stroke="Transparent"
                     VerticalOptions="Center">
-                    <Border.Shadow>
-                        <Shadow
-                            Brush="Black"
-                            Opacity="0.3"
-                            Radius="5"
-                            Offset="2,2" />
-                    </Border.Shadow>
                     <Grid
                         Margin="0"
                         Padding="0"
@@ -3269,13 +3030,6 @@
                     BackgroundColor="#041d43"
                     HorizontalOptions="Start"
                     VerticalOptions="Center">
-                    <Border.Shadow>
-                        <Shadow
-                            Brush="Black"
-                            Opacity="0.3"
-                            Radius="5"
-                            Offset="2,2" />
-                    </Border.Shadow>
                     <StackLayout
                         x:Name="btn_nachbuchen_Pos"
                         Margin="0"
@@ -3302,13 +3056,6 @@
                     BackgroundColor="#041d43"
                     HorizontalOptions="End"
                     VerticalOptions="Center">
-                    <Border.Shadow>
-                        <Shadow
-                            Brush="Black"
-                            Opacity="0.3"
-                            Radius="5"
-                            Offset="2,2" />
-                    </Border.Shadow>
                     <StackLayout
                         x:Name="btn_nachbuchen_Produkte"
                         Margin="0"
@@ -3518,13 +3265,6 @@
                         HorizontalOptions="End"
                         IsVisible="False"
                         VerticalOptions="Center">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <StackLayout
                             Margin="0"
                             Padding="3"
@@ -3661,13 +3401,6 @@
                         Padding="1"
                         BackgroundColor="#0f649d"
                         HorizontalOptions="Start">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <StackLayout
                             x:Name="btn_showselected_pos_Again"
                             Margin="0"
@@ -3776,13 +3509,6 @@
                     HorizontalOptions="Start"
                     Stroke="Transparent"
                     VerticalOptions="Center">
-                    <Border.Shadow>
-                        <Shadow
-                            Brush="Black"
-                            Opacity="0.3"
-                            Radius="5"
-                            Offset="2,2" />
-                    </Border.Shadow>
                     <Grid
                         Margin="0"
                         Padding="0"
@@ -3999,13 +3725,6 @@
                     HorizontalOptions="Start"
                     Stroke="Transparent"
                     VerticalOptions="Center">
-                    <Border.Shadow>
-                        <Shadow
-                            Brush="Black"
-                            Opacity="0.3"
-                            Radius="5"
-                            Offset="2,2" />
-                    </Border.Shadow>
                     <Grid
                         Margin="0"
                         Padding="0"
@@ -4077,13 +3796,6 @@
                     BackgroundColor="#041d43"
                     HorizontalOptions="Fill"
                     VerticalOptions="Center">
-                    <Border.Shadow>
-                        <Shadow
-                            Brush="Black"
-                            Opacity="0.3"
-                            Radius="5"
-                            Offset="2,2" />
-                    </Border.Shadow>
                     <StackLayout
                         x:Name="btn_persontimes_year"
                         Margin="0"
@@ -4114,13 +3826,6 @@
                     BackgroundColor="#041d43"
                     HorizontalOptions="Fill"
                     VerticalOptions="Center">
-                    <Border.Shadow>
-                        <Shadow
-                            Brush="Black"
-                            Opacity="0.3"
-                            Radius="5"
-                            Offset="2,2" />
-                    </Border.Shadow>
                     <StackLayout
                         x:Name="btn_persontimes_month"
                         Margin="0"
@@ -4162,13 +3867,6 @@
                     BackgroundColor="#04732d"
                     HorizontalOptions="End"
                     VerticalOptions="End">
-                    <Border.Shadow>
-                        <Shadow
-                            Brush="Black"
-                            Opacity="0.3"
-                            Radius="5"
-                            Offset="2,2" />
-                    </Border.Shadow>
                     <StackLayout
                         x:Name="btn_persontime_load"
                         Margin="0"
@@ -4308,13 +4006,6 @@
                     HorizontalOptions="Start"
                     Stroke="Transparent"
                     VerticalOptions="Center">
-                    <Border.Shadow>
-                        <Shadow
-                            Brush="Black"
-                            Opacity="0.3"
-                            Radius="5"
-                            Offset="2,2" />
-                    </Border.Shadow>
                     <Grid
                         x:Name="btn_back_inBuildingScan"
                         Margin="0"
@@ -4391,13 +4082,6 @@
                             BackgroundColor="#041d43"
                             HorizontalOptions="End"
                             VerticalOptions="Center">
-                            <Border.Shadow>
-                                <Shadow
-                                    Brush="Black"
-                                    Opacity="0.3"
-                                    Radius="5"
-                                    Offset="2,2" />
-                            </Border.Shadow>
                             <StackLayout
                                 x:Name="btn_flashlight_container"
                                 Margin="0"
@@ -4497,13 +4181,6 @@
                     HorizontalOptions="Start"
                     Stroke="Transparent"
                     VerticalOptions="Center">
-                    <Border.Shadow>
-                        <Shadow
-                            Brush="Black"
-                            Opacity="0.3"
-                            Radius="5"
-                            Offset="2,2" />
-                    </Border.Shadow>
                     <Grid
                         x:Name="btn_back_inBuildingOutScan"
                         Margin="0"
@@ -4608,13 +4285,6 @@
                             BackgroundColor="#041d43"
                             HorizontalOptions="End"
                             VerticalOptions="Center">
-                            <Border.Shadow>
-                                <Shadow
-                                    Brush="Black"
-                                    Opacity="0.3"
-                                    Radius="5"
-                                    Offset="2,2" />
-                            </Border.Shadow>
                             <StackLayout
                                 x:Name="btn_flashlight_Out_container"
                                 Margin="0"
@@ -4704,13 +4374,6 @@
                         HorizontalOptions="Start"
                         Stroke="Transparent"
                         VerticalOptions="Center">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Grid
                             x:Name="btn_back_inBuildingOrder"
                             Margin="0"
@@ -4819,13 +4482,6 @@
                         HorizontalOptions="Start"
                         Stroke="Transparent"
                         VerticalOptions="Center">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Grid
                             Margin="0"
                             Padding="0"
@@ -4877,13 +4533,6 @@
                         HorizontalOptions="End"
                         IsVisible="False"
                         VerticalOptions="Center">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <StackLayout
                             Margin="0"
                             Padding="3"
@@ -5008,13 +4657,6 @@
                         HorizontalOptions="Start"
                         Stroke="Transparent"
                         VerticalOptions="Center">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Grid
                             Margin="0"
                             Padding="0"
@@ -5195,13 +4837,6 @@
                         Padding="1"
                         BackgroundColor="#0f649d"
                         HorizontalOptions="Start">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <StackLayout
                             x:Name="btn_showselected_pos"
                             Margin="0"
@@ -5316,13 +4951,6 @@
                         HorizontalOptions="Start"
                         Stroke="Transparent"
                         VerticalOptions="Center">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Grid
                             Margin="0"
                             Padding="0"
@@ -5425,13 +5053,6 @@
                     Padding="1"
                     BackgroundColor="#04432d"
                     HorizontalOptions="Start">
-                    <Border.Shadow>
-                        <Shadow
-                            Brush="Black"
-                            Opacity="0.3"
-                            Radius="5"
-                            Offset="2,2" />
-                    </Border.Shadow>
                     <StackLayout
                         x:Name="btn_runningworks_over"
                         Margin="0"
@@ -5525,13 +5146,6 @@
                         HorizontalOptions="Start"
                         Stroke="Transparent"
                         VerticalOptions="Center">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Grid
                             Margin="0"
                             Padding="0"
@@ -5781,13 +5395,6 @@
                             BackgroundColor="#041d43"
                             HorizontalOptions="End"
                             VerticalOptions="Center">
-                            <Border.Shadow>
-                                <Shadow
-                                    Brush="Black"
-                                    Opacity="0.3"
-                                    Radius="5"
-                                    Offset="2,2" />
-                            </Border.Shadow>
                             <StackLayout
                                 Margin="0"
                                 Padding="0"
@@ -5814,13 +5421,6 @@
                             BackgroundColor="#041d43"
                             HorizontalOptions="End"
                             VerticalOptions="Center">
-                            <Border.Shadow>
-                                <Shadow
-                                    Brush="Black"
-                                    Opacity="0.3"
-                                    Radius="5"
-                                    Offset="2,2" />
-                            </Border.Shadow>
                             <StackLayout
                                 Margin="0"
                                 Padding="0"
@@ -5887,13 +5487,6 @@
                     Padding="1"
                     BackgroundColor="#04432d"
                     HorizontalOptions="Start">
-                    <Border.Shadow>
-                        <Shadow
-                            Brush="Black"
-                            Opacity="0.3"
-                            Radius="5"
-                            Offset="2,2" />
-                    </Border.Shadow>
                     <StackLayout
                         Margin="0"
                         Padding="2,2,10,2"
@@ -5995,13 +5588,6 @@
                         HorizontalOptions="Start"
                         Stroke="Transparent"
                         VerticalOptions="Center">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Grid
                             Margin="0"
                             Padding="0"
@@ -6091,13 +5677,6 @@
                         HeightRequest="38"
                         HorizontalOptions="End"
                         VerticalOptions="Center">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <StackLayout
                             x:Name="btn_objectValuesNow"
                             Margin="0"
@@ -6125,13 +5704,6 @@
                         HeightRequest="38"
                         HorizontalOptions="End"
                         VerticalOptions="Center">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <StackLayout
                             x:Name="btn_objectValuesToday"
                             Margin="0"
@@ -6226,13 +5798,6 @@
                         HorizontalOptions="Start"
                         Stroke="Transparent"
                         VerticalOptions="Center">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Grid
                             x:Name="btn_back_ObjectValues_edit"
                             Margin="0"
@@ -6537,13 +6102,6 @@
                         HorizontalOptions="Start"
                         Stroke="Transparent"
                         VerticalOptions="Center">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Grid
                             Margin="0"
                             Padding="0"
@@ -6676,13 +6234,6 @@
                                     Padding="28,10,28,10"
                                     BackgroundColor="#04732d"
                                     HorizontalOptions="End">
-                                    <Border.Shadow>
-                                        <Shadow
-                                            Brush="Black"
-                                            Opacity="0.3"
-                                            Radius="5"
-                                            Offset="2,2" />
-                                    </Border.Shadow>
                                     <Label
                                         Margin="0"
                                         Padding="0"
@@ -6742,13 +6293,6 @@
                                     Padding="28,10,28,10"
                                     BackgroundColor="#73042d"
                                     HorizontalOptions="Center">
-                                    <Border.Shadow>
-                                        <Shadow
-                                            Brush="Black"
-                                            Opacity="0.3"
-                                            Radius="5"
-                                            Offset="2,2" />
-                                    </Border.Shadow>
                                     <Label
                                         Margin="0"
                                         Padding="0"
@@ -6771,13 +6315,6 @@
                                     Padding="28,10,28,10"
                                     BackgroundColor="#04732d"
                                     HorizontalOptions="Center">
-                                    <Border.Shadow>
-                                        <Shadow
-                                            Brush="Black"
-                                            Opacity="0.3"
-                                            Radius="5"
-                                            Offset="2,2" />
-                                    </Border.Shadow>
                                     <Label
                                         Margin="0"
                                         Padding="0"
@@ -6863,13 +6400,6 @@
                                     BackgroundColor="#73042d"
                                     HorizontalOptions="End"
                                     IsVisible="False">
-                                    <Border.Shadow>
-                                        <Shadow
-                                            Brush="Black"
-                                            Opacity="0.3"
-                                            Radius="5"
-                                            Offset="2,2" />
-                                    </Border.Shadow>
                                     <Label
                                         x:Name="btn_settings_sel_trans_lang_txt"
                                         Margin="0"
@@ -6953,13 +6483,6 @@
                                     Padding="28,10,28,10"
                                     BackgroundColor="#04732d"
                                     HorizontalOptions="End">
-                                    <Border.Shadow>
-                                        <Shadow
-                                            Brush="Black"
-                                            Opacity="0.3"
-                                            Radius="5"
-                                            Offset="2,2" />
-                                    </Border.Shadow>
                                     <Label
                                         Margin="0"
                                         Padding="0"
@@ -7011,13 +6534,6 @@
                                     Padding="28,10,28,10"
                                     BackgroundColor="#73042d"
                                     HorizontalOptions="End">
-                                    <Border.Shadow>
-                                        <Shadow
-                                            Brush="Black"
-                                            Opacity="0.3"
-                                            Radius="5"
-                                            Offset="2,2" />
-                                    </Border.Shadow>
                                     <Label
                                         Margin="0"
                                         Padding="0"
@@ -7103,13 +6619,6 @@
                         HorizontalOptions="Start"
                         Stroke="Transparent"
                         VerticalOptions="Center">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Grid
                             Margin="0"
                             Padding="0"
@@ -7247,13 +6756,6 @@
                         HorizontalOptions="Start"
                         Stroke="Transparent"
                         VerticalOptions="Center">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Grid
                             Margin="0"
                             Padding="0"
@@ -7387,13 +6889,6 @@
                         HorizontalOptions="End"
                         Stroke="#73143d"
                         VerticalOptions="Center">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <HorizontalStackLayout
                             Margin="0"
                             Padding="0"
@@ -7435,13 +6930,6 @@
                         BackgroundColor="#73042d"
                         HorizontalOptions="Center"
                         IsVisible="TRUE">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Label
                             Margin="0"
                             Padding="0"
@@ -7456,13 +6944,6 @@
                         BackgroundColor="#042d53"
                         HorizontalOptions="Center"
                         IsVisible="True">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Label
                             Margin="0"
                             Padding="0"
@@ -7477,13 +6958,6 @@
                         BackgroundColor="#04732d"
                         HorizontalOptions="Center"
                         IsVisible="true">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Label
                             Margin="0"
                             Padding="0"
@@ -7549,13 +7023,6 @@
                         HeightRequest="44"
                         HorizontalOptions="Start"
                         VerticalOptions="Start">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <StackLayout
                             Margin="0"
                             Padding="10,0"
@@ -7686,13 +7153,6 @@
                         HorizontalOptions="Start"
                         Stroke="Transparent"
                         VerticalOptions="Center">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Grid
                             Margin="0"
                             Padding="0"
@@ -7809,13 +7269,6 @@
                         HorizontalOptions="Start"
                         Stroke="Transparent"
                         VerticalOptions="Center">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Grid
                             Margin="0"
                             Padding="0"
@@ -7968,13 +7421,6 @@
                             BackgroundColor="#041d43"
                             HorizontalOptions="Start"
                             VerticalOptions="Center">
-                            <Border.Shadow>
-                                <Shadow
-                                    Brush="Black"
-                                    Opacity="0.3"
-                                    Radius="5"
-                                    Offset="2,2" />
-                            </Border.Shadow>
                             <StackLayout
                                 Margin="0"
                                 Padding="0"
@@ -8001,13 +7447,6 @@
                             BackgroundColor="#041d43"
                             HorizontalOptions="Start"
                             VerticalOptions="Center">
-                            <Border.Shadow>
-                                <Shadow
-                                    Brush="Black"
-                                    Opacity="0.3"
-                                    Radius="5"
-                                    Offset="2,2" />
-                            </Border.Shadow>
                             <StackLayout
                                 Margin="0"
                                 Padding="0"
@@ -8080,13 +7519,6 @@
                         Padding="1"
                         BackgroundColor="#04432d"
                         HorizontalOptions="Start">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <StackLayout
                             Margin="0"
                             Padding="2,2,10,2"
@@ -8222,7 +7654,6 @@
                         x:Name="langListView"
                         Margin="0"
                         BackgroundColor="#144d73"
-                        IsGroupingEnabled="true"
                         ItemsSource="{Binding}"
                         SelectionChanged="langListView_SelectionChanged"
                         SelectionMode="Single">
@@ -8296,13 +7727,6 @@
                         Padding="10"
                         BackgroundColor="#73042d"
                         HorizontalOptions="End">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Label
                             Margin="0"
                             Padding="0"
@@ -8374,13 +7798,6 @@
                         Padding="10"
                         BackgroundColor="#04732d"
                         HorizontalOptions="Start">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Label
                             Margin="0"
                             Padding="0"
@@ -8395,13 +7812,6 @@
                         Padding="10"
                         BackgroundColor="#73042d"
                         HorizontalOptions="End">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Label
                             Margin="0"
                             Padding="0"
@@ -8480,13 +7890,6 @@
                         Padding="10"
                         BackgroundColor="#73042d"
                         HorizontalOptions="End">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Label
                             Margin="0"
                             Padding="0"
@@ -8562,13 +7965,6 @@
                         BackgroundColor="#041d43"
                         HorizontalOptions="End"
                         VerticalOptions="End">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <StackLayout
                             Margin="0"
                             Padding="0"
@@ -8653,13 +8049,6 @@
                         Padding="10"
                         BackgroundColor="#73042d"
                         HorizontalOptions="Fill">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Label
                             Margin="0"
                             Padding="0"
@@ -8676,13 +8065,6 @@
                         Padding="10"
                         BackgroundColor="#04732d"
                         HorizontalOptions="Fill">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Label
                             Margin="0"
                             Padding="0"
@@ -8712,13 +8094,6 @@
                 BackgroundColor="#000000"
                 HorizontalOptions="Fill"
                 VerticalOptions="Fill">
-                <Border.Shadow>
-                    <Shadow
-                        Brush="Black"
-                        Opacity="0.3"
-                        Radius="5"
-                        Offset="2,2" />
-                </Border.Shadow>
                 <Grid HorizontalOptions="Fill" VerticalOptions="Fill">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
@@ -8817,13 +8192,6 @@
                             Padding="1"
                             BackgroundColor="#0f649d"
                             HorizontalOptions="Start">
-                            <Border.Shadow>
-                                <Shadow
-                                    Brush="Black"
-                                    Opacity="0.3"
-                                    Radius="5"
-                                    Offset="2,2" />
-                            </Border.Shadow>
                             <StackLayout
                                 x:Name="btn_startselected_pos"
                                 Margin="0"
@@ -8888,13 +8256,6 @@
                 BackgroundColor="#000000"
                 HorizontalOptions="Fill"
                 VerticalOptions="Fill">
-                <Border.Shadow>
-                    <Shadow
-                        Brush="Black"
-                        Opacity="0.3"
-                        Radius="5"
-                        Offset="2,2" />
-                </Border.Shadow>
                 <ScrollView
                     Margin="0"
                     Padding="0"
@@ -8967,13 +8328,6 @@
                             BackgroundColor="#041d43"
                             HorizontalOptions="Fill"
                             IsVisible="True">
-                            <Border.Shadow>
-                                <Shadow
-                                    Brush="Black"
-                                    Opacity="0.3"
-                                    Radius="5"
-                                    Offset="2,2" />
-                            </Border.Shadow>
                             <StackLayout
                                 x:Name="btn_todos"
                                 Margin="0"
@@ -9040,13 +8394,6 @@
                             BackgroundColor="#041d43"
                             HorizontalOptions="Fill"
                             IsVisible="False">
-                            <Border.Shadow>
-                                <Shadow
-                                    Brush="Black"
-                                    Opacity="0.3"
-                                    Radius="5"
-                                    Offset="2,2" />
-                            </Border.Shadow>
                             <StackLayout
                                 x:Name="btn_persontimes"
                                 Margin="0"
@@ -9120,13 +8467,6 @@
                             Padding="1"
                             BackgroundColor="#041d43"
                             HorizontalOptions="Fill">
-                            <Border.Shadow>
-                                <Shadow
-                                    Brush="Black"
-                                    Opacity="0.3"
-                                    Radius="5"
-                                    Offset="2,2" />
-                            </Border.Shadow>
                             <StackLayout
                                 x:Name="btn_workerlist"
                                 Margin="0"
@@ -9209,13 +8549,6 @@
                             BackgroundColor="#041d43"
                             HorizontalOptions="Fill"
                             IsVisible="True">
-                            <Border.Shadow>
-                                <Shadow
-                                    Brush="Black"
-                                    Opacity="0.3"
-                                    Radius="5"
-                                    Offset="2,2" />
-                            </Border.Shadow>
                             <StackLayout
                                 x:Name="btn_sync"
                                 Margin="0"
@@ -9289,13 +8622,6 @@
                             BackgroundColor="#041d43"
                             HorizontalOptions="Fill"
                             IsVisible="True">
-                            <Border.Shadow>
-                                <Shadow
-                                    Brush="Black"
-                                    Opacity="0.3"
-                                    Radius="5"
-                                    Offset="2,2" />
-                            </Border.Shadow>
                             <StackLayout
                                 x:Name="btn_settings"
                                 Margin="0"
@@ -9418,13 +8744,6 @@
                             BackgroundColor="#222222"
                             HorizontalOptions="Fill"
                             IsVisible="True">
-                            <Border.Shadow>
-                                <Shadow
-                                    Brush="Black"
-                                    Opacity="0.3"
-                                    Radius="5"
-                                    Offset="2,2" />
-                            </Border.Shadow>
                             <HorizontalStackLayout
                                 x:Name="btn_dsgvo"
                                 Margin="0"
@@ -9498,13 +8817,6 @@
                             Padding="1"
                             BackgroundColor="#0f649d"
                             HorizontalOptions="Fill">
-                            <Border.Shadow>
-                                <Shadow
-                                    Brush="Black"
-                                    Opacity="0.3"
-                                    Radius="5"
-                                    Offset="2,2" />
-                            </Border.Shadow>
                             <StackLayout
                                 Margin="0"
                                 Padding="2"
@@ -9864,13 +9176,6 @@
                         Padding="10"
                         BackgroundColor="#04732d"
                         HorizontalOptions="Start">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Label
                             Margin="0"
                             Padding="0"
@@ -9885,13 +9190,6 @@
                         Padding="10"
                         BackgroundColor="#73042d"
                         HorizontalOptions="End">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Label
                             Margin="0"
                             Padding="0"
@@ -9970,13 +9268,6 @@
                         Padding="10"
                         BackgroundColor="#73042d"
                         HorizontalOptions="Start">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Label
                             Margin="0"
                             Padding="0"
@@ -9991,13 +9282,6 @@
                         Padding="10"
                         BackgroundColor="#04732d"
                         HorizontalOptions="End">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Label
                             Margin="0"
                             Padding="0"
@@ -10075,13 +9359,6 @@
                         Padding="10"
                         BackgroundColor="#04732d"
                         HorizontalOptions="Start">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Label
                             Margin="0"
                             Padding="0"
@@ -10096,13 +9373,6 @@
                         Padding="10"
                         BackgroundColor="#73042d"
                         HorizontalOptions="End">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Label
                             Margin="0"
                             Padding="0"
@@ -10173,13 +9443,6 @@
                         Padding="10"
                         BackgroundColor="#0f649d"
                         HorizontalOptions="End">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Label
                             Margin="0"
                             Padding="0"
@@ -10251,13 +9514,6 @@
                         Padding="10"
                         BackgroundColor="#73042d"
                         HorizontalOptions="End">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Label
                             Margin="0"
                             Padding="10,0,10,0"
@@ -10327,13 +9583,6 @@
                         Padding="10"
                         BackgroundColor="#04732d"
                         HorizontalOptions="Start">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Label
                             Margin="0"
                             Padding="0"
@@ -10348,13 +9597,6 @@
                         Padding="10"
                         BackgroundColor="#73042d"
                         HorizontalOptions="End">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Label
                             Margin="0"
                             Padding="0"
@@ -10424,13 +9666,6 @@
                         Padding="10"
                         BackgroundColor="#04732d"
                         HorizontalOptions="Start">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Label
                             Margin="0"
                             Padding="0"
@@ -10445,13 +9680,6 @@
                         Padding="10"
                         BackgroundColor="#73042d"
                         HorizontalOptions="End">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Label
                             Margin="0"
                             Padding="0"
@@ -10522,13 +9750,6 @@
                         Padding="10"
                         BackgroundColor="#04732d"
                         HorizontalOptions="End">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Label
                             Margin="0"
                             Padding="0"
@@ -10598,13 +9819,6 @@
                         Padding="10"
                         BackgroundColor="#04732d"
                         HorizontalOptions="Start">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Label
                             Margin="0"
                             Padding="0"
@@ -10619,13 +9833,6 @@
                         Padding="10"
                         BackgroundColor="#73042d"
                         HorizontalOptions="End">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Label
                             Margin="0"
                             Padding="0"
@@ -10712,13 +9919,6 @@
                         Padding="10"
                         BackgroundColor="#73042d"
                         HorizontalOptions="End">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Label
                             Margin="0"
                             Padding="0"
@@ -10784,13 +9984,6 @@
                         Padding="10"
                         BackgroundColor="#04732d"
                         HorizontalOptions="Start">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Label
                             Margin="0"
                             Padding="10,2,10,2"
@@ -10870,13 +10063,6 @@
                         Padding="10"
                         BackgroundColor="#04732d"
                         HorizontalOptions="Start">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Label
                             Margin="0"
                             Padding="0"
@@ -10891,13 +10077,6 @@
                         Padding="10"
                         BackgroundColor="#73042d"
                         HorizontalOptions="End">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Label
                             Margin="0"
                             Padding="0"
@@ -10977,13 +10156,6 @@
                         Padding="10"
                         BackgroundColor="#04732d"
                         HorizontalOptions="Start">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Label
                             Margin="0"
                             Padding="0"
@@ -10998,13 +10170,6 @@
                         Padding="10"
                         BackgroundColor="#73042d"
                         HorizontalOptions="End">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Label
                             Margin="0"
                             Padding="0"
@@ -11087,13 +10252,6 @@
                         Padding="10"
                         BackgroundColor="#04732d"
                         HorizontalOptions="Start">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Label
                             Margin="0"
                             Padding="0"
@@ -11108,13 +10266,6 @@
                         Padding="10"
                         BackgroundColor="#73042d"
                         HorizontalOptions="End">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Label
                             Margin="0"
                             Padding="0"
@@ -11228,13 +10379,6 @@
                         BackgroundColor="#73042d"
                         HorizontalOptions="Start"
                         IsVisible="False">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Label
                             Margin="0"
                             Padding="0"
@@ -11250,13 +10394,6 @@
                         BackgroundColor="#04732d"
                         HorizontalOptions="End"
                         IsVisible="False">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Label
                             Margin="0"
                             Padding="0"
@@ -11272,13 +10409,6 @@
                         BackgroundColor="#73042d"
                         HorizontalOptions="Start"
                         IsVisible="False">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Label
                             Margin="0"
                             Padding="0"
@@ -11294,13 +10424,6 @@
                         BackgroundColor="#04732d"
                         HorizontalOptions="End"
                         IsVisible="False">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Label
                             Margin="0"
                             Padding="0"
@@ -11390,13 +10513,6 @@
                         HorizontalOptions="Start"
                         Stroke="Transparent"
                         VerticalOptions="Center">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Grid
                             Margin="0"
                             Padding="0"
@@ -11635,13 +10751,6 @@
                             BackgroundColor="#041d43"
                             HorizontalOptions="End"
                             VerticalOptions="Center">
-                            <Border.Shadow>
-                                <Shadow
-                                    Brush="Black"
-                                    Opacity="0.3"
-                                    Radius="5"
-                                    Offset="2,2" />
-                            </Border.Shadow>
                             <StackLayout
                                 Margin="0"
                                 Padding="0"
@@ -11668,13 +10777,6 @@
                             BackgroundColor="#041d43"
                             HorizontalOptions="End"
                             VerticalOptions="Center">
-                            <Border.Shadow>
-                                <Shadow
-                                    Brush="Black"
-                                    Opacity="0.3"
-                                    Radius="5"
-                                    Offset="2,2" />
-                            </Border.Shadow>
                             <StackLayout
                                 Margin="0"
                                 Padding="0"
@@ -11748,13 +10850,6 @@
                         Padding="1"
                         BackgroundColor="#04432d"
                         HorizontalOptions="Start">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <StackLayout
                             Margin="0"
                             Padding="2,2,10,2"
@@ -11803,13 +10898,6 @@
                         BackgroundColor="#63042d"
                         HorizontalOptions="End"
                         IsVisible="False">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <StackLayout
                             Margin="0"
                             Padding="5,0"
@@ -11917,13 +11005,6 @@
                         Padding="10"
                         BackgroundColor="#73042d"
                         HorizontalOptions="End">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Label
                             Margin="0"
                             Padding="0"
@@ -12028,7 +11109,6 @@
                     <CollectionView
                         x:Name="empListView"
                         BackgroundColor="#144d73"
-                        IsGroupingEnabled="true"
                         ItemsSource="{Binding}"
                         SelectionChanged="empListView_SelectionChanged"
                         SelectionMode="Single">
@@ -12109,13 +11189,6 @@
                         Padding="10"
                         BackgroundColor="#73042d"
                         HorizontalOptions="End">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Label
                             Margin="0"
                             Padding="0"
@@ -12183,13 +11256,6 @@
                         Padding="10"
                         BackgroundColor="#73042d"
                         HorizontalOptions="End">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Label
                             Margin="0"
                             Padding="0"
@@ -12277,13 +11343,6 @@
                         HorizontalOptions="Start"
                         Stroke="Transparent"
                         VerticalOptions="Center">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <Grid
                             Margin="0"
                             Padding="0"
@@ -12356,13 +11415,6 @@
                             HorizontalOptions="Fill"
                             StrokeShape="RoundRectangle 17"
                             VerticalOptions="Start">
-                            <Border.Shadow>
-                                <Shadow
-                                    Brush="Black"
-                                    Opacity="0.3"
-                                    Radius="5"
-                                    Offset="2,2" />
-                            </Border.Shadow>
                             <StackLayout
                                 x:Name="btn_pn_message"
                                 Margin="0"
@@ -12403,13 +11455,6 @@
                                         IsVisible="True"
                                         StrokeShape="RoundRectangle 15"
                                         VerticalOptions="Center">
-                                        <Border.Shadow>
-                                            <Shadow
-                                                Brush="Black"
-                                                Opacity="0.3"
-                                                Radius="5"
-                                                Offset="2,2" />
-                                        </Border.Shadow>
                                         <StackLayout
                                             Margin="0"
                                             Padding="0"
@@ -12437,13 +11482,6 @@
                                         IsVisible="True"
                                         StrokeShape="RoundRectangle 15"
                                         VerticalOptions="Center">
-                                        <Border.Shadow>
-                                            <Shadow
-                                                Brush="Black"
-                                                Opacity="0.3"
-                                                Radius="5"
-                                                Offset="2,2" />
-                                        </Border.Shadow>
                                         <StackLayout
                                             Margin="0"
                                             Padding="0"
@@ -12581,13 +11619,6 @@
                                         IsVisible="True"
                                         StrokeShape="RoundRectangle 15"
                                         VerticalOptions="Center">
-                                        <Border.Shadow>
-                                            <Shadow
-                                                Brush="Black"
-                                                Opacity="0.3"
-                                                Radius="5"
-                                                Offset="2,2" />
-                                        </Border.Shadow>
                                         <StackLayout
                                             Margin="0"
                                             Padding="0"
@@ -12615,13 +11646,6 @@
                                         IsVisible="True"
                                         StrokeShape="RoundRectangle 15"
                                         VerticalOptions="Center">
-                                        <Border.Shadow>
-                                            <Shadow
-                                                Brush="Black"
-                                                Opacity="0.3"
-                                                Radius="5"
-                                                Offset="2,2" />
-                                        </Border.Shadow>
                                         <StackLayout
                                             Margin="0"
                                             Padding="0"
@@ -12649,13 +11673,6 @@
                                         IsVisible="True"
                                         StrokeShape="RoundRectangle 15"
                                         VerticalOptions="Center">
-                                        <Border.Shadow>
-                                            <Shadow
-                                                Brush="Black"
-                                                Opacity="0.3"
-                                                Radius="5"
-                                                Offset="2,2" />
-                                        </Border.Shadow>
                                         <StackLayout
                                             Margin="0"
                                             Padding="0"

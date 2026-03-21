@@ -66,6 +66,12 @@ namespace iPMCloud.Mobile
         {
             isInitialize = true;
             InitializeComponent();
+            MainPageAgain();
+        }
+
+        public void MainPageAgain()
+        {
+            isInitialize = true;
             //AppModel.Instance.anImage = backgroundIMG;
 
             AppModel.Instance.MainPageOverlay = overlay;

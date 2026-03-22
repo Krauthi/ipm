@@ -35,7 +35,8 @@ namespace iPMCloud.Mobile.Views
             btn_settings_sendlog.IsEnabled = visible;
             btn_settings_sendlog.IsVisible = !visible;
 
-            lb_settings_sel_trans.Text = AppModel.Instance.AppControll.lang;
+            string lang = AppModel.Instance.Langs.Find(l => l.lang == AppModel.Instance.AppControll.lang)?.text;
+            lb_settings_sel_trans.Text = lang != null ? lang: "Deutsch";
         }
 
         public void SetVisible(bool visible)

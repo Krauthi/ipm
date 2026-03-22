@@ -980,7 +980,7 @@ namespace iPMCloud.Mobile.vo
             });
         }
 
-        private List<string> langsStr = new List<string>
+        private List<string> langsStr { get; set; } = new List<string>
             {
                 "Afrikaans,af",
                 "Amharisch,am",

@@ -58,6 +58,9 @@ namespace iPMCloud.Mobile
         private StackLayout list_worker => WorkerPageContainerView.ListWorker;
 
 
+
+
+
         public bool isInitialize = false;
         public bool _isShowing = false;
 
@@ -80,7 +83,6 @@ namespace iPMCloud.Mobile
             AppModel.Instance._showall_OrderCategory_frame = btn_back_inBuildingOrder_category_showall;
 
             AppModel.Instance.Lang = Lang.Load();
-            lb_settings_sel_trans.Text = AppModel.Instance.Lang.text.Replace("(Standard)", "");
 
             ShowDisconnected();
 
@@ -2477,7 +2479,6 @@ namespace iPMCloud.Mobile
             overlay.IsVisible = true;
             await Task.Delay(1);
 
-            btn_settings_sendlog.IsVisible = true; // BTN SendLOG wieder aneigen!
 
             MainMenuTapped_Done(false);
             await Task.Delay(210);
@@ -2487,25 +2488,9 @@ namespace iPMCloud.Mobile
             SettingsPageView.SetVisible(true);
             ////sw_setting_hintergrundprozess.IsToggled = AppModel.Instance.SettingModel.SettingDTO.RunBackground;
 
-            int countAll = GetAllSyncFromUploadCount();
-            settings_count_positionen.Text = (countAll > 0 ? "" + countAll : "Keine Daten vorhanden");
-            btn_settings_count_positionen.IsVisible = countAll > 0;
-
-            btn_settings_count_positionen.GestureRecognizers.Clear();
-            var tgr_btn_settings_count_positionen = new TapGestureRecognizer();
-            tgr_btn_settings_count_positionen.Tapped += btn_SettingsSyncUploadTapped;
-            btn_settings_count_positionen.GestureRecognizers.Add(tgr_btn_settings_count_positionen);
-
-
             await Task.Delay(1);
             overlay.IsVisible = false;
             isInitialize = false;
-        }
-        public async void btn_SettingsSyncUploadTapped(object sender, EventArgs e)
-        {
-            CheckAllSyncFromUpload();
-            settings_count_positionen.Text = "Versucht hochzuladen";
-            btn_settings_count_positionen.IsVisible = false;
         }
 
 
@@ -5118,8 +5103,7 @@ namespace iPMCloud.Mobile
 
         public async void btn_nlogclearTapped(object sender, EventArgs e)
         {
-            btn_settings_clearlog.IsEnabled = false;
-            btn_settings_clearlog.Opacity = 0.4;
+            SettingsPageView.SetClearLog(false);
             overlay.IsVisible = true;
             await Task.Delay(1);
 
@@ -5129,9 +5113,8 @@ namespace iPMCloud.Mobile
             AppModel.Instance.ClearLog();
             await Task.Delay(1000);
             overlay.IsVisible = false;
-            btn_settings_clearlog.Opacity = 1;
-            btn_settings_clearlog.IsEnabled = true;
-            btn_settings_clearlog.IsVisible = false;
+
+            SettingsPageView.SetClearLog(true);
         }
 
 
@@ -5170,8 +5153,7 @@ namespace iPMCloud.Mobile
         }
         public async void btn_nlogsendTapped(object sender, EventArgs e)
         {
-            btn_settings_sendlog.IsEnabled = false;
-            btn_settings_sendlog.Opacity = 0.4;
+            SettingsPageView.SetSendLog(false);
             overlay.IsVisible = true;
             await Task.Delay(1);
 
@@ -5183,14 +5165,11 @@ namespace iPMCloud.Mobile
             if (ok)
             {
                 overlay.IsVisible = false;
-                btn_settings_sendlog.Opacity = 1;
-                btn_settings_sendlog.IsEnabled = true;
-                btn_settings_sendlog.IsVisible = false;
+                SettingsPageView.SetSendLog(true);
             }
             else
             {
-                btn_settings_sendlog.Opacity = 1;
-                btn_settings_sendlog.IsEnabled = true;
+                SettingsPageView.SetSendLog(true);
                 await Task.Delay(1);
                 overlay.IsVisible = false;
                 ShowSendLog_fail();
@@ -5321,25 +5300,7 @@ namespace iPMCloud.Mobile
         }
 
 
-        public async void TranslateTo(string s)
-        {
-            overlay.IsVisible = true;
-            await Task.Delay(1);
-
-            lb_settings_sel_translist.IsVisible = false;
-            if (s.Split(',')[0] == "de")
-            {
-                lb_settings_sel_trans.Text = "Deutsch";
-            }
-            else
-            {
-                lb_settings_sel_trans.Text = "" + s.Split(',')[1];
-            }
-            btn_settings_sel_trans_lang_txt.Text = "ÄNDERN";//s.Split(',')[1]
-
-            await Task.Delay(1);
-            overlay.IsVisible = false;
-        }
+      
 
         public void OpenLanguage(object sender, EventArgs e)
         {
@@ -5423,7 +5384,7 @@ namespace iPMCloud.Mobile
                     popupContainer_quest_changelang.IsVisible = false;
 
                     //Lang.Save(AppModel.Instance.Lang);
-                    lb_settings_sel_trans.Text = AppModel.Instance.Lang.text.Replace("(Standard)", "");
+                    //lb_settings_sel_trans.Text = AppModel.Instance.Lang.text.Replace("(Standard)", "");
 
                     await Task.Delay(1000);
                     overlay.IsVisible = false;
@@ -5688,7 +5649,7 @@ namespace iPMCloud.Mobile
                 popupContainer_quest_changelang.IsVisible = false;
 
                 //Lang.Save(AppModel.Instance.Lang);
-                lb_settings_sel_trans.Text = lang; // AppModel.Instance.Lang.text.Replace("(Standard)", "");
+                //lb_settings_sel_trans.Text = lang; // AppModel.Instance.Lang.text.Replace("(Standard)", "");
 
                 await Task.Delay(1000);
                 overlay.IsVisible = false;
@@ -5708,20 +5669,6 @@ namespace iPMCloud.Mobile
 
 
 
-        public async void btn_settings_synctimesub_Tapped(object sender, EventArgs e)
-        {
-            if (AppModel.Instance.SettingModel.SettingDTO.SyncTimeHours == 0) { return; }
-            AppModel.Instance.SettingModel.SettingDTO.SyncTimeHours--;
-            AppModel.Instance.SettingModel.SaveSettings();
-            lb_settings_synctimehours.Text = "" + AppModel.Instance.SettingModel.SettingDTO.SyncTimeHours;
-        }
-        public async void btn_settings_synctimeadd_Tapped(object sender, EventArgs e)
-        {
-            if (AppModel.Instance.SettingModel.SettingDTO.SyncTimeHours == 15) { return; }
-            AppModel.Instance.SettingModel.SettingDTO.SyncTimeHours++;
-            AppModel.Instance.SettingModel.SaveSettings();
-            lb_settings_synctimehours.Text = "" + AppModel.Instance.SettingModel.SettingDTO.SyncTimeHours;
-        }
 
         public void btn_DayOverBackTapped(object sender, EventArgs e)
         {
@@ -6933,9 +6880,7 @@ namespace iPMCloud.Mobile
             btn_info_check_img.Source = AppModel.Instance.imagesBase.CheckSymbol;
             btn_back_check_signature_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
 
-            //Einstellungen
-            btn_back_settings_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
-
+            
             //Map
             btn_back_map_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
 
@@ -6957,9 +6902,6 @@ namespace iPMCloud.Mobile
             SetAppControll();
             btn_persontimes_back_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
             warn_persontimes_limg.Source = AppModel.Instance.imagesBase.InfoCircle;
-
-            // Einstellungen Defaults
-            lb_settings_synctimehours.Text = "" + AppModel.Instance.SettingModel.SettingDTO.SyncTimeHours;
 
             // Jetzt beenden
             btn_endselectedwork.GestureRecognizers.Clear();
@@ -7191,10 +7133,6 @@ namespace iPMCloud.Mobile
             tgr_Settings.Tapped += btn_SettingsTapped;
             btn_settings.GestureRecognizers.Add(tgr_Settings);
 
-            btn_back_settings.GestureRecognizers.Clear();
-            var tgr_back_settings = new TapGestureRecognizer();
-            tgr_back_settings.Tapped += btn_SettingsBackTapped;
-            btn_back_settings.GestureRecognizers.Add(tgr_back_settings);
 
 
             btn_back_map.GestureRecognizers.Clear();
@@ -7487,32 +7425,6 @@ namespace iPMCloud.Mobile
             var tgr_back_pn = new TapGestureRecognizer();
             tgr_back_pn.Tapped += btn_PN_BackTapped;
             btn_back_pn.GestureRecognizers.Add(tgr_back_pn);
-
-
-            btn_settings_sendlog.GestureRecognizers.Clear();
-            var tgr_namestacksend = new TapGestureRecognizer();
-            tgr_namestacksend.Tapped += ShowSendLog;
-            btn_settings_sendlog.GestureRecognizers.Add(tgr_namestacksend);
-
-            btn_settings_clearlog.GestureRecognizers.Clear();
-            var tgr_clearlog = new TapGestureRecognizer();
-            tgr_clearlog.Tapped += ShowClearLog;
-            btn_settings_clearlog.GestureRecognizers.Add(tgr_clearlog);
-
-
-            btn_settings_sel_trans_lang.GestureRecognizers.Clear();
-            var tgr_btn_settings_sel_trans_lang = new TapGestureRecognizer();
-            tgr_btn_settings_sel_trans_lang.Tapped += OpenLanguage;
-            btn_settings_sel_trans_lang.GestureRecognizers.Add(tgr_btn_settings_sel_trans_lang);
-
-            btn_settings_synctimesub.GestureRecognizers.Clear();
-            var tgr_synctimesub = new TapGestureRecognizer();
-            tgr_synctimesub.Tapped += btn_settings_synctimesub_Tapped;
-            btn_settings_synctimesub.GestureRecognizers.Add(tgr_synctimesub);
-            btn_settings_synctimeadd.GestureRecognizers.Clear();
-            var tgr_synctimeadd = new TapGestureRecognizer();
-            tgr_synctimeadd.Tapped += btn_settings_synctimeadd_Tapped;
-            btn_settings_synctimeadd.GestureRecognizers.Add(tgr_synctimeadd);
 
 
             btn_nachbuchen_back.GestureRecognizers.Clear();
@@ -8119,7 +8031,7 @@ namespace iPMCloud.Mobile
         private int _pn = 0;
         private int _allCountFromUpload = 0;
         private bool _allCountFromUploadFalied = false;
-        private int GetAllSyncFromUploadCount()
+        public int GetAllSyncFromUploadCount()
         {
             _checks = CheckClass.CountFromStack();
             _checksBemImg = CheckLeistungAntwortBemImg.CountFromStack();
@@ -8145,7 +8057,7 @@ namespace iPMCloud.Mobile
             return allCountFromUpload;
         }
 
-        private async void CheckAllSyncFromUpload()
+        public async void CheckAllSyncFromUpload()
         {
             popupContainer_quest_countfromupload.IsVisible = false;
             _allCountFromUpload = GetAllSyncFromUploadCount();

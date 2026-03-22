@@ -2430,7 +2430,8 @@ namespace iPMCloud.Mobile
         public void ClearPageViews()
         {
             NotScanPage_Container.IsVisible = false;
-            PersonTimesPage_Container.IsVisible = false;
+            // PersonTimesPage_Container.IsVisible = false; // moved into PersonTimesPageView
+            PersonTimesPageView.SetVisible(false);
             NachbuchenPage_Container.IsVisible = false;
             // TodoPage_Container.IsVisible = false; // moved into TodoPageView
             TodoPageView.SetVisible(false);
@@ -6315,16 +6316,24 @@ namespace iPMCloud.Mobile
 
             ClearPageViews();
             await Task.Delay(1);
-            await list_persontimes_scroll.ScrollToAsync(0, 0, false);
+            // await list_persontimes_scroll.ScrollToAsync(0, 0, false); // moved into PersonTimesPageView
+            await PersonTimesPageView.ListPersontimesScroll.ScrollToAsync(0, 0, false);
 
-            pick_persontimes_year.Items.Clear();
-            pick_persontimes_year.Items.Add(DateTime.Now.ToString("yyyy"));
-            pick_persontimes_year.Items.Add(DateTime.Now.AddYears(-1).ToString("yyyy"));
-            pick_persontimes_year.Items.Add(DateTime.Now.AddYears(-2).ToString("yyyy"));
-            pick_persontimes_year.SelectedItem = DateTime.Now.ToString("yyyy");
-            pick_persontimes_month.SelectedItem = DateTime.Now.ToString("MMMM");
+            // pick_persontimes_year.Items.Clear(); // moved into PersonTimesPageView
+            // pick_persontimes_year.Items.Add(DateTime.Now.ToString("yyyy")); // moved into PersonTimesPageView
+            // pick_persontimes_year.Items.Add(DateTime.Now.AddYears(-1).ToString("yyyy")); // moved into PersonTimesPageView
+            // pick_persontimes_year.Items.Add(DateTime.Now.AddYears(-2).ToString("yyyy")); // moved into PersonTimesPageView
+            // pick_persontimes_year.SelectedItem = DateTime.Now.ToString("yyyy"); // moved into PersonTimesPageView
+            // pick_persontimes_month.SelectedItem = DateTime.Now.ToString("MMMM"); // moved into PersonTimesPageView
+            PersonTimesPageView.PickPersontimesYear.Items.Clear();
+            PersonTimesPageView.PickPersontimesYear.Items.Add(DateTime.Now.ToString("yyyy"));
+            PersonTimesPageView.PickPersontimesYear.Items.Add(DateTime.Now.AddYears(-1).ToString("yyyy"));
+            PersonTimesPageView.PickPersontimesYear.Items.Add(DateTime.Now.AddYears(-2).ToString("yyyy"));
+            PersonTimesPageView.PickPersontimesYear.SelectedItem = DateTime.Now.ToString("yyyy");
+            PersonTimesPageView.PickPersontimesMonth.SelectedItem = DateTime.Now.ToString("MMMM");
 
-            PersonTimesPage_Container.IsVisible = true;
+            // PersonTimesPage_Container.IsVisible = true; // moved into PersonTimesPageView
+            PersonTimesPageView.SetVisible(true);
 
             await Task.Delay(1);
             overlay.IsVisible = false;
@@ -6335,14 +6344,19 @@ namespace iPMCloud.Mobile
             if (isInitialize) { return; }
             overlay.IsVisible = true;
             await Task.Delay(1);
-            list_persontimes.Children.Clear();
-            stack_persontimes_top.Children.Clear();
-            stack_persontimes_top.Children.Add(PersonWSO.GetPersonTimesViewHeaderItem());
-            stack_persontimes_bottom.Children.Clear();
+            // list_persontimes.Children.Clear(); // moved into PersonTimesPageView
+            // stack_persontimes_top.Children.Clear(); // moved into PersonTimesPageView
+            // stack_persontimes_top.Children.Add(PersonWSO.GetPersonTimesViewHeaderItem()); // moved into PersonTimesPageView
+            // stack_persontimes_bottom.Children.Clear(); // moved into PersonTimesPageView
+            PersonTimesPageView.ListPersontimes.Children.Clear();
+            PersonTimesPageView.StackPersontimesTop.Children.Clear();
+            PersonTimesPageView.StackPersontimesTop.Children.Add(PersonWSO.GetPersonTimesViewHeaderItem());
+            PersonTimesPageView.StackPersontimesBottom.Children.Clear();
 
             PersonTimeResponse pts = await Task.Run(() =>
             {
-                return AppModel.Instance.Connections.GetPersonTimes(int.Parse(pick_persontimes_year.SelectedItem.ToString()), pick_persontimes_month.SelectedIndex + 1);
+                // return AppModel.Instance.Connections.GetPersonTimes(int.Parse(pick_persontimes_year.SelectedItem.ToString()), pick_persontimes_month.SelectedIndex + 1); // moved into PersonTimesPageView
+                return AppModel.Instance.Connections.GetPersonTimes(int.Parse(PersonTimesPageView.PickPersontimesYear.SelectedItem.ToString()), PersonTimesPageView.PickPersontimesMonth.SelectedIndex + 1);
             });
 
             if (!pts.success)
@@ -6367,13 +6381,15 @@ namespace iPMCloud.Mobile
                         allMin += damin;
                     });
                 }
-                list_persontimes.Children.Add(PersonWSO.GetPersonTimesView(pts.times));
+                // list_persontimes.Children.Add(PersonWSO.GetPersonTimesView(pts.times)); // moved into PersonTimesPageView
+                PersonTimesPageView.ListPersontimes.Children.Add(PersonWSO.GetPersonTimesView(pts.times));
                 if (pts.times != null && pts.times.Count > 0)
                 {
                     allHours = int.Parse("" + (allMin / 60));
                     allMins = allMin - (allHours * 60);
                     pts.times[0].all = (allHours > 9 ? ("" + allHours) : ("0" + allHours)) + ":" + (allMins > 9 ? ("" + allMins) : ("0" + allMins));
-                    stack_persontimes_bottom.Children.Add(PersonWSO.GetPersonTimesViewAllItem(pts.times[0]));
+                    // stack_persontimes_bottom.Children.Add(PersonWSO.GetPersonTimesViewAllItem(pts.times[0])); // moved into PersonTimesPageView
+                    PersonTimesPageView.StackPersontimesBottom.Children.Add(PersonWSO.GetPersonTimesViewAllItem(pts.times[0]));
                 }
             }
             await Task.Delay(1);
@@ -6399,8 +6415,10 @@ namespace iPMCloud.Mobile
         }
         public void btn_PersontimesBackTapped(object sender, EventArgs e)
         {
-            list_persontimes.Children.Clear();
-            list_persontimes_scroll.ScrollToAsync(0, 0, false);
+            // list_persontimes.Children.Clear(); // moved into PersonTimesPageView
+            // list_persontimes_scroll.ScrollToAsync(0, 0, false); // moved into PersonTimesPageView
+            PersonTimesPageView.ListPersontimes.Children.Clear();
+            PersonTimesPageView.ListPersontimesScroll.ScrollToAsync(0, 0, false);
             this.Focus();
             ShowMainPage();
         }
@@ -6863,8 +6881,10 @@ namespace iPMCloud.Mobile
 
             //Persontimes
             SetAppControll();
-            btn_persontimes_back_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
-            warn_persontimes_limg.Source = AppModel.Instance.imagesBase.InfoCircle;
+            // btn_persontimes_back_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage; // moved into PersonTimesPageView
+            // warn_persontimes_limg.Source = AppModel.Instance.imagesBase.InfoCircle; // moved into PersonTimesPageView
+            PersonTimesPageView.BtnPersontimesBackImg.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
+            PersonTimesPageView.WarnPersontimesLimg.Source = AppModel.Instance.imagesBase.InfoCircle;
 
             // Jetzt beenden
             btn_endselectedwork.GestureRecognizers.Clear();
@@ -7128,15 +7148,21 @@ namespace iPMCloud.Mobile
             tgr_NotScanBack.Tapped += btn_NotScanBackTapped;
             btn_notscan_back.GestureRecognizers.Add(tgr_NotScanBack);
 
-            btn_persontimes_back.GestureRecognizers.Clear();
+            // btn_persontimes_back.GestureRecognizers.Clear(); // moved into PersonTimesPageView
+            // tgr_PersontimesBack.Tapped += btn_PersontimesBackTapped; // moved into PersonTimesPageView
+            // btn_persontimes_back.GestureRecognizers.Add(tgr_PersontimesBack); // moved into PersonTimesPageView
+            PersonTimesPageView.BtnPersontimesBack.GestureRecognizers.Clear();
             var tgr_PersontimesBack = new TapGestureRecognizer();
             tgr_PersontimesBack.Tapped += btn_PersontimesBackTapped;
-            btn_persontimes_back.GestureRecognizers.Add(tgr_PersontimesBack);
+            PersonTimesPageView.BtnPersontimesBack.GestureRecognizers.Add(tgr_PersontimesBack);
 
-            btn_persontime_load.GestureRecognizers.Clear();
+            // btn_persontime_load.GestureRecognizers.Clear(); // moved into PersonTimesPageView
+            // tgr_PersontimesLoad.Tapped += pick_persontimes_SelectedIndexChanged; // moved into PersonTimesPageView
+            // btn_persontime_load.GestureRecognizers.Add(tgr_PersontimesLoad); // moved into PersonTimesPageView
+            PersonTimesPageView.BtnPersontimeLoad.GestureRecognizers.Clear();
             var tgr_PersontimesLoad = new TapGestureRecognizer();
             tgr_PersontimesLoad.Tapped += pick_persontimes_SelectedIndexChanged;
-            btn_persontime_load.GestureRecognizers.Add(tgr_PersontimesLoad);
+            PersonTimesPageView.BtnPersontimeLoad.GestureRecognizers.Add(tgr_PersontimesLoad);
 
 
 

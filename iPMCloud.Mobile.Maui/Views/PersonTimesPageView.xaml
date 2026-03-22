@@ -6,7 +6,7 @@
 
     <Grid
         x:Name="PersonTimesPage_Container"
-        Margin="0,0,0,14"
+        Margin="0,0,0,10"
         Padding="0"
         AbsoluteLayout.LayoutBounds="0,0,1,1"
         AbsoluteLayout.LayoutFlags="All"
@@ -15,41 +15,35 @@
         RowSpacing="0"
         VerticalOptions="Fill">
         <Grid.RowDefinitions>
+            <RowDefinition Height="54" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Grid
             Grid.Row="0"
-            Margin="0"
-            Padding="10,10,10,10"
+            Margin="10,0,10,0"
+            Padding="0"
             ColumnSpacing="0"
-            HeightRequest="48"
+            HeightRequest="54"            
             HorizontalOptions="Fill">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <Border
+            <HorizontalStackLayout
                 x:Name="btn_persontimes_back"
                 Grid.Column="0"
-                Margin="3,2,2,2"
-                Padding="1"
-                BackgroundColor="Transparent"
-                HorizontalOptions="Start"
-                Stroke="Transparent"
-                VerticalOptions="Center">
-                <Grid
-                    Margin="0"
-                    Padding="0"
-                    ColumnSpacing="0"
-                    HeightRequest="38"
-                    HorizontalOptions="Start"
-                    VerticalOptions="Center">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
+                Margin="0"
+                Padding="0"
+                HeightRequest="54"
+                HorizontalOptions="Fill"
+                VerticalOptions="Fill">
                     <Image
                         x:Name="btn_persontimes_back_img"
                         Grid.Column="0"
@@ -61,28 +55,28 @@
                     <Label
                         Grid.Column="1"
                         Margin="0"
-                        FontSize="18"
+                        FontSize="20"
                         HorizontalOptions="Fill"
                         HorizontalTextAlignment="Start"
                         LineBreakMode="TailTruncation"
                         Text="ZURÜCK"
-                        TextColor="#2f84bd"
+                        TextColor="#3f94cd"
                         VerticalOptions="Center" />
-                </Grid>
-            </Border>
+            </HorizontalStackLayout>
 
             <StackLayout
                 Grid.Column="1"
-                Margin="0"
-                Padding="1"
+                Margin="0,12,0,0"
+                Padding="0"
+                HeightRequest="54"
                 HorizontalOptions="End"
                 Spacing="0"
-                VerticalOptions="Center">
+                VerticalOptions="Fill">
                 <Label
                     Margin="0"
                     Padding="2,0,5,0"
                     FontSize="24"
-                    HorizontalOptions="Center"
+                    HorizontalOptions="End"
                     Text="Meine geb. Zeiten"
                     TextColor="#ffffff"
                     VerticalOptions="Center" />
@@ -93,7 +87,7 @@
         <Grid
             Grid.Row="1"
             Margin="0"
-            Padding="10,10,10,10"
+            Padding="0"
             ColumnSpacing="0"
             HeightRequest="48"
             HorizontalOptions="Fill">
@@ -105,7 +99,7 @@
 
             <Border
                 Grid.Column="0"
-                Margin="3,2,2,2"
+                Margin="0,2,2,2"
                 Padding="1"
                 BackgroundColor="#041d43"
                 HorizontalOptions="Fill"
@@ -115,7 +109,7 @@
                     Margin="0"
                     Padding="4"
                     BackgroundColor="#042d53"
-                    HeightRequest="38"
+                    HeightRequest="48"
                     HorizontalOptions="Fill"
                     Spacing="0"
                     VerticalOptions="Center">
@@ -123,7 +117,7 @@
                         x:Name="pick_persontimes_year"
                         BackgroundColor="#042d53"
                         HorizontalOptions="Fill"
-                        SelectedIndex="1"
+                        SelectedIndex="1" FontSize="18" 
                         TextColor="#ffffff"
                         TitleColor="#999999">
                         <Picker.Items>
@@ -145,7 +139,8 @@
                     Margin="0"
                     Padding="4"
                     BackgroundColor="#042d53"
-                    HeightRequest="38"
+                    HeightRequest="48"
+                    MinimumWidthRequest="120"
                     HorizontalOptions="Fill"
                     Spacing="0"
                     VerticalOptions="Center">
@@ -153,7 +148,7 @@
                         x:Name="pick_persontimes_month"
                         BackgroundColor="#042d53"
                         HorizontalOptions="Fill"
-                        SelectedIndex="1"
+                        SelectedIndex="1" FontSize="18"
                         TextColor="#ffffff"
                         TitleColor="#999999">
                         <Picker.Items>
@@ -176,7 +171,7 @@
 
             <Border
                 Grid.Column="2"
-                Margin="3,2,2,2"
+                Margin="20,2,0,2"
                 Padding="1"
                 BackgroundColor="#04732d"
                 HorizontalOptions="End"
@@ -191,8 +186,8 @@
                     VerticalOptions="Center">
                     <Label
                         Margin="0"
-                        Padding="5,0,5,0"
-                        FontSize="16"
+                        Padding="5,3,5,0"
+                        FontSize="18"
                         HorizontalOptions="Center"
                         Text="Abrufen"
                         TextColor="#ffffff"
@@ -202,6 +197,7 @@
         </Grid>
 
         <VerticalStackLayout
+            Grid.Row="2"
             x:Name="stack_persontimes_top"
             Margin="0,10,0,0"
             Padding="0"
@@ -209,12 +205,14 @@
             IsVisible="True"
             Spacing="0" />
         <BoxView
+            Grid.Row="3"
             Margin="0"
             BackgroundColor="Gray"
             HeightRequest="1"
             HorizontalOptions="Fill" />
 
-        <ScrollView
+        <ScrollView            
+            Grid.Row="4"
             x:Name="list_persontimes_scroll"
             Margin="0"
             Padding="0"
@@ -230,11 +228,13 @@
                 VerticalOptions="Fill" />
         </ScrollView>
         <BoxView
+            Grid.Row="5"
             Margin="0"
             BackgroundColor="#eeeeee"
             HeightRequest="3"
             HorizontalOptions="Fill" />
         <StackLayout
+            Grid.Row="6"
             x:Name="stack_persontimes_bottom"
             Margin="0,0,0,15"
             Padding="0"
@@ -242,6 +242,8 @@
             IsVisible="True"
             Spacing="0" />
         <VerticalStackLayout
+            
+            Grid.Row="7"
             x:Name="stack_persontimes_bottomA"
             Margin="0,0,0,10"
             Padding="0"

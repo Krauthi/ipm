@@ -5082,43 +5082,6 @@ namespace iPMCloud.Mobile
 
 
 
-        public void ShowClearLog(object sender, EventArgs e)
-        {
-            popupContainer_container_clearlog.WidthRequest = this.Width - 40;
-            btn_clearlogtosupport.GestureRecognizers.Clear();
-            var tgr_over = new TapGestureRecognizer();
-            tgr_over.Tapped -= btn_nlogclearTapped;
-            tgr_over.Tapped += btn_nlogclearTapped;
-            btn_clearlogtosupport.GestureRecognizers.Add(tgr_over);
-
-            btn_cancelclearlogtosupport.GestureRecognizers.Clear();
-            var tgr_cancel = new TapGestureRecognizer();
-            tgr_cancel.Tapped -= (object o, TappedEventArgs ev) => { popupContainer_quest_clearlog.IsVisible = false; };
-            tgr_cancel.Tapped += (object o, TappedEventArgs ev) => { popupContainer_quest_clearlog.IsVisible = false; };
-            btn_cancelclearlogtosupport.GestureRecognizers.Add(tgr_cancel);
-
-            // Dialog öffnen
-            popupContainer_quest_clearlog.IsVisible = true;
-        }
-
-        public async void btn_nlogclearTapped(object sender, EventArgs e)
-        {
-            SettingsPageView.SetClearLog(false);
-            overlay.IsVisible = true;
-            await Task.Delay(1);
-
-            popupContainer_quest_clearlog.IsVisible = false;
-            await Task.Delay(1);
-
-            AppModel.Instance.ClearLog();
-            await Task.Delay(1000);
-            overlay.IsVisible = false;
-
-            SettingsPageView.SetClearLog(true);
-        }
-
-
-
         public void ShowSendLog(object sender, EventArgs e)
         {
             popupContainer_container_sendlog.WidthRequest = this.Width - 40;

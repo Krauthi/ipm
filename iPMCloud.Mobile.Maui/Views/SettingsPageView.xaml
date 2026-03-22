@@ -15,10 +15,12 @@
         RowSpacing="0"
         VerticalOptions="Fill">
         <Grid.RowDefinitions>
+            <RowDefinition Height="54" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <StackLayout
+        <!--<StackLayout
             x:Name="SettingsPage_position_Container"
             Grid.Row="0"
             Margin="0"
@@ -26,287 +28,296 @@
             HorizontalOptions="Fill"
             IsVisible="True"
             Spacing="0"
-            VerticalOptions="Fill">
+            VerticalOptions="Fill">-->
 
-            <Grid
-                Margin="0"
-                Padding="10,10,10,10"
-                ColumnSpacing="0"
-                HeightRequest="48"
-                HorizontalOptions="Fill">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Border
-                    x:Name="btn_back_settings"
-                    Grid.Column="0"
-                    Margin="3,2,2,2"
-                    Padding="1"
-                    BackgroundColor="Transparent"
+        <Grid
+            Grid.Row="0"
+            Margin="0"
+            Padding="10,10,10,10"
+            ColumnSpacing="0"
+            HeightRequest="54"
+            HorizontalOptions="Fill">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Border
+                x:Name="btn_back_settings"
+                Grid.Column="0"
+                Margin="3,2,2,2"
+                Padding="1"
+                BackgroundColor="Transparent"
+                HorizontalOptions="Start"
+                Stroke="Transparent"
+                VerticalOptions="Center">
+                <Grid
+                    Margin="0"
+                    Padding="0"
+                    ColumnSpacing="0"
+                    HeightRequest="38"
                     HorizontalOptions="Start"
-                    Stroke="Transparent"
                     VerticalOptions="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Image
+                        x:Name="btn_back_settings_img"
+                        Grid.Column="0"
+                        Margin="0,0,10,0"
+                        HeightRequest="30"
+                        HorizontalOptions="Start"
+                        VerticalOptions="Center"
+                        WidthRequest="30" />
+                    <Label
+                        Grid.Column="1"
+                        Margin="0"
+                        FontSize="20"
+                        HorizontalOptions="Start"
+                        HorizontalTextAlignment="Start"
+                        LineBreakMode="TailTruncation"
+                        Text="ZURÜCK"
+                        TextColor="#3f94cd"
+                        VerticalOptions="Center" />
+                </Grid>
+            </Border>
+            <Label
+                Grid.Column="1"
+                Margin="0,0,10,0"
+                FontSize="26"
+                HorizontalOptions="End"
+                HorizontalTextAlignment="End"
+                LineBreakMode="TailTruncation"
+                Text="Einstellungen"
+                TextColor="#ffffff"
+                VerticalOptions="Center" />
+        </Grid>
+        <BoxView
+            Grid.Row="1"
+            Margin="0,0,0,0"
+            BackgroundColor="Gray"
+            HeightRequest="1"
+            HorizontalOptions="Fill"
+            VerticalOptions="Start" />
+
+
+
+        <ScrollView
+            Grid.Row="2"
+            Margin="0,0,0,17"
+            Padding="0"
+            HorizontalOptions="Fill"
+            VerticalOptions="Fill">
+            <VerticalStackLayout
+                x:Name="SettingsPageStack"
+                Margin="0"
+                Padding="0"
+                HorizontalOptions="Fill"
+                Spacing="0">
+
+                <Label
+                    Margin="10,30,10,10"
+                    Padding="0"
+                    FontSize="24"
+                    HorizontalOptions="Start"
+                    Text="Noch nicht übetragene Daten"
+                    TextColor="#ffffff"
+                    VerticalOptions="Center" />
+
+                <BoxView
+                    Margin="10,0,10,0"
+                    BackgroundColor="Gray"
+                    HeightRequest="1"
+                    HorizontalOptions="Fill"
+                    VerticalOptions="Start" />
+                <VerticalStackLayout
+                    Margin="0"
+                    Padding="10,0,10,15"
+                    HorizontalOptions="Fill"
+                    Spacing="0">
+                    <HorizontalStackLayout
+                        Margin="0,5,0,5"
+                        Padding="0"
+                        HorizontalOptions="Fill"
+                        Spacing="0">
+                        <Label
+                            Margin="0"
+                            Padding="0"
+                            FontSize="20"
+                            HorizontalOptions="Start"
+                            Text="Positionen: "
+                            TextColor="#eeeeee"
+                            VerticalOptions="Center" />
+                        <Label
+                            x:Name="settings_count_positionen"
+                            Margin="10,0,10,0"
+                            Padding="0"
+                            FontSize="20"
+                            HorizontalOptions="Start"
+                            Text="100"
+                            TextColor="#dddddd"
+                            VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+                    <Label
+                        Margin="0,0,5,0"
+                        Padding="0"
+                        FontSize="14"
+                        HorizontalOptions="Start"
+                        LineBreakMode="WordWrap"
+                        Text="Daten die auf Grund unzureichender Netzabdeckung noch nicht übertragen wurden, können hier manuell hochgeladen werden."
+                        TextColor="#cccccc"
+                        VerticalOptions="Start" />
                     <Grid
                         Margin="0"
                         Padding="0"
                         ColumnSpacing="0"
-                        HeightRequest="38"
-                        HorizontalOptions="Start"
-                        VerticalOptions="Center">
+                        HorizontalOptions="Fill">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <Image
-                            x:Name="btn_back_settings_img"
+                        <Border
+                            x:Name="btn_settings_count_positionen"
                             Grid.Column="0"
-                            Margin="0,0,0,0"
-                            HeightRequest="30"
-                            HorizontalOptions="Start"
-                            VerticalOptions="Center"
-                            WidthRequest="30" />
-                        <Label
-                            Grid.Column="1"
                             Margin="0"
-                            FontSize="18"
-                            HorizontalOptions="Start"
-                            HorizontalTextAlignment="Start"
-                            LineBreakMode="TailTruncation"
-                            Text="ZURÜCK"
-                            TextColor="#2f84bd"
-                            VerticalOptions="Center" />
+                            Padding="28,10,28,10"
+                            BackgroundColor="#04732d"
+                            HorizontalOptions="End">
+                            <Label
+                                Margin="0"
+                                Padding="0"
+                                FontSize="16"
+                                Text="JETZT HOCHLADEN"
+                                TextColor="#ffffff" />
+                        </Border>
                     </Grid>
-                </Border>
+                </VerticalStackLayout>
+
+
+                <BoxView
+                    Margin="0,0,0,0"
+                    BackgroundColor="White"
+                    HeightRequest="2"
+                    HorizontalOptions="Fill"
+                    VerticalOptions="Start" />
+
+
                 <Label
-                    Grid.Column="1"
-                    Margin="0,0,10,0"
+                    Margin="10,30,10,10"
+                    Padding="0"
                     FontSize="24"
-                    HorizontalOptions="End"
-                    HorizontalTextAlignment="End"
-                    LineBreakMode="TailTruncation"
-                    Text="Einstellungen"
+                    HorizontalOptions="Start"
+                    Text="Zeitintervall für Synchronisation"
                     TextColor="#ffffff"
                     VerticalOptions="Center" />
-            </Grid>
-            <BoxView
-                Margin="0,0,0,0"
-                BackgroundColor="Gray"
-                HeightRequest="1"
-                HorizontalOptions="Fill"
-                VerticalOptions="Start" />
 
-
-
-            <ScrollView
-                Margin="0,0,0,17"
-                Padding="0"
-                HorizontalOptions="Fill"
-                VerticalOptions="Start">
-                <VerticalStackLayout
-                    x:Name="SettingsPageStack"
-                    Margin="0"
-                    Padding="0"
+                <BoxView
+                    Margin="10,0,10,0"
+                    BackgroundColor="Gray"
+                    HeightRequest="1"
                     HorizontalOptions="Fill"
-                    MinimumHeightRequest="100"
-                    Spacing="0"
-                    VerticalOptions="Fill">
-
+                    VerticalOptions="Start" />
+                <VerticalStackLayout
+                    Margin="0"
+                    Padding="10,0,10,0"
+                    HorizontalOptions="Fill"
+                    Spacing="0">
                     <Label
-                        Margin="10,30,10,10"
+                        Margin="0,5,0,10"
                         Padding="0"
-                        FontSize="24"
+                        FontSize="14"
                         HorizontalOptions="Start"
-                        Text="Noch nicht übetragene Daten"
-                        TextColor="#ffffff"
-                        VerticalOptions="Center" />
-
-                    <BoxView
-                        Margin="10,0,10,0"
-                        BackgroundColor="Gray"
-                        HeightRequest="1"
-                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Legen Sie selbst den Zeitintevall für das synchronisieren der zentralen Daten fest."
+                        TextColor="#cccccc"
                         VerticalOptions="Start" />
-                    <VerticalStackLayout
-                        Margin="0"
-                        Padding="20,0,20,15"
+                    <HorizontalStackLayout
+                        Margin="0,5,0,15"
+                        Padding="0"
                         HorizontalOptions="Fill"
                         Spacing="0">
-                        <HorizontalStackLayout
-                            Margin="0,5,0,5"
-                            Padding="0"
-                            HorizontalOptions="Fill"
-                            Spacing="0">
-                            <Label
-                                Margin="0"
-                                Padding="0"
-                                FontSize="20"
-                                HorizontalOptions="Start"
-                                Text="Positionen: "
-                                TextColor="#eeeeee"
-                                VerticalOptions="Center" />
-                            <Label
-                                x:Name="settings_count_positionen"
-                                Margin="10,0,10,0"
-                                Padding="0"
-                                FontSize="20"
-                                HorizontalOptions="Start"
-                                Text="100"
-                                TextColor="#dddddd"
-                                VerticalOptions="Center" />
-                        </HorizontalStackLayout>
-                        <Label
-                            Margin="0,0,5,0"
-                            Padding="0"
-                            FontSize="13"
-                            HorizontalOptions="Start"
-                            LineBreakMode="WordWrap"
-                            Text="Daten die auf Grund unzureichender Netzabdeckung noch nicht übertragen wurden, können hier manuell hochgeladen werden."
-                            TextColor="#cccccc"
-                            VerticalOptions="Start" />
-                        <Grid
+                        <Border
+                            x:Name="btn_settings_synctimesub"
                             Margin="0"
-                            Padding="0"
-                            ColumnSpacing="0"
-                            HorizontalOptions="Fill">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Border
-                                x:Name="btn_settings_count_positionen"
-                                Grid.Column="0"
-                                Margin="0"
-                                Padding="28,10,28,10"
-                                BackgroundColor="#04732d"
-                                HorizontalOptions="End">
-                                <Label
-                                    Margin="0"
-                                    Padding="0"
-                                    FontSize="16"
-                                    Text="JETZT SENDEN"
-                                    TextColor="#ffffff" />
-                            </Border>
-                        </Grid>
-                    </VerticalStackLayout>
-
-
-                    <BoxView
-                        Margin="0,0,0,0"
-                        BackgroundColor="White"
-                        HeightRequest="2"
-                        HorizontalOptions="Fill"
-                        VerticalOptions="Start" />
-
-
-                    <Label
-                        Margin="10,30,10,10"
-                        Padding="0"
-                        FontSize="24"
-                        HorizontalOptions="Start"
-                        Text="Zeitintervall für Synchronisation"
-                        TextColor="#ffffff"
-                        VerticalOptions="Center" />
-
-                    <BoxView
-                        Margin="10,0,10,0"
-                        BackgroundColor="Gray"
-                        HeightRequest="1"
-                        HorizontalOptions="Fill"
-                        VerticalOptions="Start" />
-                    <VerticalStackLayout
-                        Margin="0"
-                        Padding="20,0,20,0"
-                        HorizontalOptions="Fill"
-                        Spacing="0">
-                        <Label
-                            Margin="0,0,5,10"
-                            Padding="0"
-                            FontSize="13"
-                            HorizontalOptions="Start"
-                            LineBreakMode="WordWrap"
-                            Text="Legen Sie selbst den Zeitintevall für das synchronisieren der zentralen Daten fest."
-                            TextColor="#cccccc"
-                            VerticalOptions="Start" />
-                        <HorizontalStackLayout
-                            Margin="0,5,0,15"
-                            Padding="0"
-                            HorizontalOptions="Fill"
-                            Spacing="0">
-                            <Border
-                                x:Name="btn_settings_synctimesub"
-                                Margin="0"
-                                Padding="28,10,28,10"
-                                BackgroundColor="#73042d"
-                                HorizontalOptions="Center">
-                                <Label
-                                    Margin="0"
-                                    Padding="0"
-                                    FontSize="16"
-                                    Text="-"
-                                    TextColor="#ffffff" />
-                            </Border>
+                            Padding="28,10,28,10"
+                            BackgroundColor="#73042d"
+                            HorizontalOptions="Center">
                             <Label
-                                x:Name="lb_settings_synctimehours"
                                 Margin="0"
                                 Padding="0"
-                                FontSize="22"
-                                HorizontalOptions="Center"
-                                Text="0"
-                                TextColor="#ffffff"
-                                VerticalOptions="Center" />
-                            <Border
-                                x:Name="btn_settings_synctimeadd"
+                                FontSize="16"
+                                Text="-"
+                                TextColor="#ffffff" />
+                        </Border>
+                        <Label
+                            x:Name="lb_settings_synctimehours"
+                            Margin="0"
+                            Padding="20,0"
+                            FontSize="28"
+                            HorizontalOptions="Center"
+                            Text="0"
+                            TextColor="#ffffff"
+                            VerticalOptions="Center" />
+                        <Border
+                            x:Name="btn_settings_synctimeadd"
+                            Margin="0"
+                            Padding="28,10,28,10"
+                            BackgroundColor="#04732d"
+                            HorizontalOptions="Center">
+                            <Label
                                 Margin="0"
-                                Padding="28,10,28,10"
-                                BackgroundColor="#04732d"
-                                HorizontalOptions="Center">
-                                <Label
-                                    Margin="0"
-                                    Padding="0"
-                                    FontSize="16"
-                                    Text="+"
-                                    TextColor="#ffffff" />
-                            </Border>
-                        </HorizontalStackLayout>
-                    </VerticalStackLayout>
+                                Padding="0"
+                                FontSize="16"
+                                Text="+"
+                                TextColor="#ffffff" />
+                        </Border>
+                        <Label
+                            Margin="0"
+                            Padding="20,0"
+                            FontSize="20"
+                            HorizontalOptions="Center"
+                            Text="Stunden"
+                            TextColor="#ffffff"
+                            VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
 
-                    <BoxView
-                        Margin="0,0,0,0"
-                        BackgroundColor="White"
-                        HeightRequest="2"
-                        HorizontalOptions="Fill"
-                        VerticalOptions="Start" />
+                <BoxView
+                    Margin="0,0,0,0"
+                    BackgroundColor="White"
+                    HeightRequest="2"
+                    HorizontalOptions="Fill"
+                    VerticalOptions="Start" />
 
+                <Label
+                    Margin="10,30,10,10"
+                    Padding="0"
+                    FontSize="24"
+                    HorizontalOptions="Start"
+                    Text="Übersetzung"
+                    TextColor="#ffffff"
+                    VerticalOptions="Center" />
+
+                <BoxView
+                    Margin="10,0,10,0"
+                    BackgroundColor="Gray"
+                    HeightRequest="1"
+                    HorizontalOptions="Fill"
+                    VerticalOptions="Start" />
+                <VerticalStackLayout
+                    Margin="0"
+                    Padding="10,0,10,30"
+                    HorizontalOptions="Fill"
+                    Spacing="0">
                     <Label
-                        Margin="10,30,10,10"
+                        Margin="0,5,5,5"
                         Padding="0"
-                        FontSize="24"
+                        FontSize="14"
                         HorizontalOptions="Start"
-                        Text="Übersetzung"
-                        TextColor="#ffffff"
-                        VerticalOptions="Center" />
-
-                    <BoxView
-                        Margin="10,0,10,0"
-                        BackgroundColor="Gray"
-                        HeightRequest="1"
-                        HorizontalOptions="Fill"
+                        LineBreakMode="WordWrap"
+                        Text="Kategorientitel und Leistungstexte in folgender Sprache übersetzen:"
+                        TextColor="#cccccc"
                         VerticalOptions="Start" />
-                    <VerticalStackLayout
-                        Margin="0"
-                        Padding="20,0,20,30"
-                        HorizontalOptions="Fill"
-                        Spacing="0">
-                        <Label
-                            Margin="0,0,5,5"
-                            Padding="0"
-                            FontSize="13"
-                            HorizontalOptions="Start"
-                            LineBreakMode="WordWrap"
-                            Text="Kategorientitel und Leistungstexte in folgender Sprache übersetzen:"
-                            TextColor="#cccccc"
-                            VerticalOptions="Start" />
-                        <Label
+                    <!--<Label
                             Margin="0,0,5,10"
                             Padding="0"
                             FontSize="13"
@@ -315,155 +326,156 @@
                             LineBreakMode="WordWrap"
                             Text="Wenn Sie eine Sprache ausgewählt haben, kann die übersetzung einige Minuten dauern! In dieser Zeit sollten Sie die App nicht beenden und warten bis die Übersetzung abgeschlossen ist."
                             TextColor="#ffcc00"
-                            VerticalOptions="Start" />
-                        <Grid
-                            Margin="0,0,0,0"
-                            Padding="0"
-                            ColumnSpacing="0"
-                            HorizontalOptions="Fill">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <Label
-                                x:Name="lb_settings_sel_trans"
-                                Grid.Column="0"
-                                Margin="0"
-                                Padding="0"
-                                FontSize="14"
-                                HorizontalOptions="Start"
-                                LineBreakMode="WordWrap"
-                                Text="DEUTSCH"
-                                TextColor="#fff"
-                                VerticalOptions="Center" />
-                            <Border
-                                x:Name="btn_settings_sel_trans_lang"
-                                Grid.Column="1"
-                                Margin="0"
-                                Padding="28,10,28,10"
-                                BackgroundColor="#73042d"
-                                HorizontalOptions="End"
-                                IsVisible="False">
-                                <Label
+                            VerticalOptions="Start" />-->
+                    <Grid
+                        Margin="0,0,0,0"
+                        Padding="0"
+                        ColumnSpacing="0"
+                        HorizontalOptions="Fill">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Label
+                            x:Name="lb_settings_sel_trans"
+                            Grid.Column="0"
+                            Margin="0"
+                            Padding="10"
+                            FontSize="20"
+                            HorizontalOptions="Start"
+                            LineBreakMode="WordWrap"
+                            Text="DEUTSCH"
+                            TextColor="#fff"
+                            VerticalOptions="Center" />
+                        <Border
+                            x:Name="btn_settings_sel_trans_lang"
+                            Grid.Column="1"
+                            Margin="0"
+                            Padding="28,10,28,10"
+                            BackgroundColor="#73042d"
+                            HorizontalOptions="End"
+                            IsVisible="False">
+                            <!--<Label
                                     x:Name="btn_settings_sel_trans_lang_txt"
                                     Margin="0"
                                     Padding="0"
                                     FontSize="16"
                                     Text="ÄNDERN"
-                                    TextColor="#ffffff" />
-                            </Border>
-                            <Label
-                                Grid.Column="2"
-                                Margin="0,0,5,10"
-                                Padding="0"
-                                FontSize="13"
-                                HorizontalOptions="End"
-                                IsVisible="True"
-                                LineBreakMode="WordWrap"
-                                Text="Die Auswahl der Sprache, wurde von Ihrer Zentrale festgelegt!"
-                                TextColor="#ffcc00"
-                                VerticalOptions="Center"
-                                WidthRequest="190" />
-                        </Grid>
-                        <VerticalStackLayout
-                            x:Name="lb_settings_sel_translist"
-                            Margin="0,0,0,15"
-                            Padding="5"
-                            BackgroundColor="#144d73"
-                            HorizontalOptions="Fill"
-                            IsVisible="False"
-                            Spacing="8" />
-                    </VerticalStackLayout>
-
-
-                    <BoxView
-                        Margin="0,0,0,0"
-                        BackgroundColor="White"
-                        HeightRequest="2"
-                        HorizontalOptions="Fill"
-                        VerticalOptions="Start" />
-
-                    <Label
-                        Margin="10,30,10,10"
-                        Padding="0"
-                        FontSize="24"
-                        HorizontalOptions="Start"
-                        Text="Log-Daten an Support senden"
-                        TextColor="#ffffff"
-                        VerticalOptions="Center" />
-
-                    <BoxView
-                        Margin="10,0,10,0"
-                        BackgroundColor="Gray"
-                        HeightRequest="1"
-                        HorizontalOptions="Fill"
-                        VerticalOptions="Start" />
-                    <VerticalStackLayout
-                        Margin="0"
-                        Padding="20,0,20,0"
-                        HorizontalOptions="Fill"
-                        Spacing="0">
+                                    TextColor="#ffffff" />-->
+                        </Border>
                         <Label
-                            Margin="0,0,5,0"
+                            Grid.Column="2"
+                            Margin="0,0,5,10"
                             Padding="0"
-                            FontSize="13"
-                            HorizontalOptions="Start"
+                            FontSize="14"
+                            HorizontalOptions="End"
+                            IsVisible="True"
                             LineBreakMode="WordWrap"
-                            Text="In einem Problemfall, können Sie uns hiermit die App-Protokolldaten senden. Mit diesen Daten können wir die Problemfälle analysieren und auswerten. Ebenfalls helfen Sie uns hiermit für Sie die Mobile App noch stabieler zu entwickeln."
-                            TextColor="#cccccc"
-                            VerticalOptions="Start" />
-                        <Grid
+                            Text="Die Auswahl der Sprache, wurde von Ihrer Zentrale festgelegt!"
+                            TextColor="#ffcc00"
+                            VerticalOptions="Center"
+                            WidthRequest="190" />
+                    </Grid>
+                    <VerticalStackLayout
+                        x:Name="lb_settings_sel_translist"
+                        Margin="0,0,0,15"
+                        Padding="5"
+                        BackgroundColor="#144d73"
+                        HorizontalOptions="Fill"
+                        IsVisible="False"
+                        Spacing="8" />
+                </VerticalStackLayout>
+
+
+                <BoxView
+                    Margin="0,0,0,0"
+                    BackgroundColor="White"
+                    HeightRequest="2"
+                    HorizontalOptions="Fill"
+                    VerticalOptions="Start" />
+
+                <Label
+                    Margin="10,30,10,10"
+                    Padding="0"
+                    FontSize="24"
+                    HorizontalOptions="Start"
+                    Text="Log-Daten an Support senden"
+                    TextColor="#ffffff"
+                    VerticalOptions="Center" />
+
+                <BoxView
+                    Margin="10,0,10,0"
+                    BackgroundColor="Gray"
+                    HeightRequest="1"
+                    HorizontalOptions="Fill"
+                    VerticalOptions="Start" />
+                <VerticalStackLayout
+                    Margin="0"
+                    Padding="10,5,10,50"
+                    HorizontalOptions="Fill"
+                    Spacing="0">
+                    <Label
+                        Margin="0,5,5,0"
+                        Padding="0"
+                        FontSize="14"
+                        HorizontalOptions="Start"
+                        LineBreakMode="WordWrap"
+                        Text="In einem Problemfall, können Sie uns hiermit die App-Protokolldaten senden. Mit diesen Daten können wir die Problemfälle analysieren und auswerten. Ebenfalls helfen Sie uns hiermit für Sie die Mobile App noch stabieler zu entwickeln."
+                        TextColor="#cccccc"
+                        VerticalOptions="Start" />
+                    <Grid
+                        Margin="0,10,0,20"
+                        Padding="0"
+                        ColumnSpacing="0"
+                        HorizontalOptions="Fill"
+                        VerticalOptions="Fill">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Border
+                            x:Name="btn_settings_sendlog"
+                            Grid.Column="0"
+                            Margin="0"
+                            Padding="28,10,28,10"
+                            BackgroundColor="#04732d"
+                            HorizontalOptions="End">
+                            <Label
+                                Margin="0"
+                                Padding="0"
+                                FontSize="16"
+                                Text="JETZT SENDEN"
+                                TextColor="#ffffff" />
+                        </Border>
+                    </Grid>
+                    <Grid
+                        Margin="0,20,0,15"
+                        Padding="0"
+                        ColumnSpacing="0"
+                        HorizontalOptions="Fill">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Label
+                            Grid.Column="0"
                             Margin="0"
                             Padding="0"
-                            ColumnSpacing="0"
-                            HorizontalOptions="Fill">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Border
-                                x:Name="btn_settings_sendlog"
-                                Grid.Column="0"
-                                Margin="0"
-                                Padding="28,10,28,10"
-                                BackgroundColor="#04732d"
-                                HorizontalOptions="End">
-                                <Label
-                                    Margin="0"
-                                    Padding="0"
-                                    FontSize="16"
-                                    Text="JETZT SENDEN"
-                                    TextColor="#ffffff" />
-                            </Border>
-                        </Grid>
-                        <Grid
-                            Margin="0,28,0,15"
-                            Padding="0"
-                            ColumnSpacing="0"
-                            HorizontalOptions="Fill">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <Label
-                                Grid.Column="0"
-                                Margin="0"
-                                Padding="0"
-                                FontSize="18"
-                                HorizontalOptions="Start"
-                                Text="Inklusive Cache-Daten senden"
-                                TextColor="#eeeeee"
-                                VerticalOptions="Center" />
-                            <Switch
-                                Grid.Column="1"
-                                Margin="0,0,8,0"
-                                HorizontalOptions="End"
-                                IsToggled="False"
-                                Scale="1.25"
-                                Toggled="Settings_Log_includeCache_Switch_Toggled"
-                                VerticalOptions="Center" />
-                        </Grid>
-                        <Grid
+                            FontSize="18"
+                            HorizontalOptions="Start"
+                            Text="Inklusive Cache-Daten senden"
+                            TextColor="#eeeeee"
+                            VerticalOptions="Center" />
+                        <Switch
+                            Grid.Column="1"
+                            Margin="0,0,8,0"
+                            HorizontalOptions="End"
+                            IsToggled="False"
+                            Scale="1.25"
+                            Toggled="Settings_Log_includeCache_Switch_Toggled"
+                            VerticalOptions="Center" />
+                    </Grid>
+                    <!--<Grid
                             Margin="0,20,0,15"
                             Padding="0"
                             ColumnSpacing="0"
@@ -486,30 +498,18 @@
                                     Text="LOG LEEREN"
                                     TextColor="#ffffff" />
                             </Border>
-                        </Grid>
-                    </VerticalStackLayout>
-
-
-
-
-                    <BoxView
-                        Margin="10,0,10,0"
-                        BackgroundColor="Gray"
-                        HeightRequest="1"
-                        HorizontalOptions="Fill"
-                        VerticalOptions="Start" />
-
-
-
-                    <BoxView
-                        Margin="0,0,0,0"
-                        BackgroundColor="Gray"
-                        HeightRequest="1"
-                        HorizontalOptions="Fill"
-                        VerticalOptions="Start" />
+                        </Grid>-->
                 </VerticalStackLayout>
-            </ScrollView>
-        </StackLayout>
+
+
+
+
+
+
+
+            </VerticalStackLayout>
+        </ScrollView>
+        <!--</StackLayout>-->
 
     </Grid>
 

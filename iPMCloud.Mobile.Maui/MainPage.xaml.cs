@@ -1870,13 +1870,16 @@ namespace iPMCloud.Mobile
             await Task.Delay(1);
 
             ClearPageViews();
-            DayOverPage_Container.IsVisible = true;
-            lastDayOverStack.Children.Clear();
+            // DayOverPage_Container.IsVisible = true; // ausgelagert nach DayOverPageView (ContentView)
+            DayOverPageView.SetVisible(true);
+            // lastDayOverStack.Children.Clear(); // ausgelagert nach DayOverPageView (ContentView)
+            DayOverPageView.LastDayOverStack.Children.Clear();
             var dayOvers = DayOverWSO.LoadAll(AppModel.Instance);
             dayOvers.ForEach(d =>
             {
                 var dt = new DateTime(d.endticks);
-                lastDayOverStack.Children.Add(new StackLayout
+                // lastDayOverStack.Children.Add(new StackLayout // ausgelagert nach DayOverPageView (ContentView)
+                DayOverPageView.LastDayOverStack.Children.Add(new StackLayout
                 {
                     Orientation = StackOrientation.Horizontal,
                     HorizontalOptions = LayoutOptions.Fill,
@@ -2444,7 +2447,8 @@ namespace iPMCloud.Mobile
             BuildingOrderPage_Container.IsVisible = false;
             RunningWorksPage_Container.IsVisible = false;
             NoticePage_Container.IsVisible = false;
-            DayOverPage_Container.IsVisible = false;
+            // DayOverPage_Container.IsVisible = false; // ausgelagert nach DayOverPageView (ContentView)
+            DayOverPageView.SetVisible(false);
             ObjectValuesPage_Container.IsVisible = false;
             ObjectValuesPage_position_Container.IsVisible = false;
             ObjectValuesPage_Edit_Container.IsVisible = false;
@@ -6853,7 +6857,8 @@ namespace iPMCloud.Mobile
             //objectValues_edit_img.Source = AppModel.Instance.imagesBase.Pen;
 
             //Feierabend
-            btn_back_dayover_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
+            // btn_back_dayover_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage; // ausgelagert nach DayOverPageView (ContentView)
+            DayOverPageView.BtnBackDayoverImg.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
 
             //CheckContainer
             btn_back_check_del_img.Source = AppModel.Instance.imagesBase.Trash;
@@ -7391,18 +7396,24 @@ namespace iPMCloud.Mobile
             tgr_ExitWork.Tapped += DayOverTapped;
             btn_exitwork.GestureRecognizers.Add(tgr_ExitWork);
 
-            btn_back_dayover.GestureRecognizers.Clear();
+            // btn_back_dayover.GestureRecognizers.Clear(); // ausgelagert nach DayOverPageView (ContentView)
+            DayOverPageView.BtnBackDayover.GestureRecognizers.Clear();
             var tgr_back_dayover = new TapGestureRecognizer();
             tgr_back_dayover.Tapped += btn_DayOverBackTapped;
-            btn_back_dayover.GestureRecognizers.Add(tgr_back_dayover);
-            btn_dayover_yes.GestureRecognizers.Clear();
+            // btn_back_dayover.GestureRecognizers.Add(tgr_back_dayover); // ausgelagert nach DayOverPageView (ContentView)
+            DayOverPageView.BtnBackDayover.GestureRecognizers.Add(tgr_back_dayover);
+            // btn_dayover_yes.GestureRecognizers.Clear(); // ausgelagert nach DayOverPageView (ContentView)
+            DayOverPageView.BtnDayoverYes.GestureRecognizers.Clear();
             var tgr_dayover_yes = new TapGestureRecognizer();
             tgr_dayover_yes.Tapped += btn_DayOverYesTapped;
-            btn_dayover_yes.GestureRecognizers.Add(tgr_dayover_yes);
-            btn_dayover_no.GestureRecognizers.Clear();
+            // btn_dayover_yes.GestureRecognizers.Add(tgr_dayover_yes); // ausgelagert nach DayOverPageView (ContentView)
+            DayOverPageView.BtnDayoverYes.GestureRecognizers.Add(tgr_dayover_yes);
+            // btn_dayover_no.GestureRecognizers.Clear(); // ausgelagert nach DayOverPageView (ContentView)
+            DayOverPageView.BtnDayoverNo.GestureRecognizers.Clear();
             var tgr_dayover_no = new TapGestureRecognizer();
             tgr_dayover_no.Tapped += btn_DayOverBackTapped;
-            btn_dayover_no.GestureRecognizers.Add(tgr_dayover_no);
+            // btn_dayover_no.GestureRecognizers.Add(tgr_dayover_no); // ausgelagert nach DayOverPageView (ContentView)
+            DayOverPageView.BtnDayoverNo.GestureRecognizers.Add(tgr_dayover_no);
 
 
             btn_back_dsgvo.GestureRecognizers.Clear();

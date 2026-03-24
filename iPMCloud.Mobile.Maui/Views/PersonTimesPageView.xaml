@@ -29,7 +29,7 @@
             Margin="10,0,10,0"
             Padding="0"
             ColumnSpacing="0"
-            HeightRequest="54"            
+            HeightRequest="54"
             HorizontalOptions="Fill">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
@@ -44,24 +44,24 @@
                 HeightRequest="54"
                 HorizontalOptions="Fill"
                 VerticalOptions="Fill">
-                    <Image
-                        x:Name="btn_persontimes_back_img"
-                        Grid.Column="0"
-                        Margin="0,0,0,0"
-                        HeightRequest="30"
-                        HorizontalOptions="Start"
-                        VerticalOptions="Center"
-                        WidthRequest="30" />
-                    <Label
-                        Grid.Column="1"
-                        Margin="0"
-                        FontSize="20"
-                        HorizontalOptions="Fill"
-                        HorizontalTextAlignment="Start"
-                        LineBreakMode="TailTruncation"
-                        Text="ZURÜCK"
-                        TextColor="#3f94cd"
-                        VerticalOptions="Center" />
+                <Image
+                    x:Name="btn_persontimes_back_img"
+                    Grid.Column="0"
+                    Margin="0,0,0,0"
+                    HeightRequest="30"
+                    HorizontalOptions="Start"
+                    VerticalOptions="Center"
+                    WidthRequest="30" />
+                <Label
+                    Grid.Column="1"
+                    Margin="0"
+                    FontSize="20"
+                    HorizontalOptions="Fill"
+                    HorizontalTextAlignment="Start"
+                    LineBreakMode="TailTruncation"
+                    Text="ZURÜCK"
+                    TextColor="#3f94cd"
+                    VerticalOptions="Center" />
             </HorizontalStackLayout>
 
             <StackLayout
@@ -116,8 +116,9 @@
                     <Picker
                         x:Name="pick_persontimes_year"
                         BackgroundColor="#042d53"
+                        FontSize="18"
                         HorizontalOptions="Fill"
-                        SelectedIndex="1" FontSize="18" 
+                        SelectedIndex="1"
                         TextColor="#ffffff"
                         TitleColor="#999999">
                         <Picker.Items>
@@ -140,15 +141,16 @@
                     Padding="4"
                     BackgroundColor="#042d53"
                     HeightRequest="48"
-                    MinimumWidthRequest="120"
                     HorizontalOptions="Fill"
+                    MinimumWidthRequest="120"
                     Spacing="0"
                     VerticalOptions="Center">
                     <Picker
                         x:Name="pick_persontimes_month"
                         BackgroundColor="#042d53"
+                        FontSize="18"
                         HorizontalOptions="Fill"
-                        SelectedIndex="1" FontSize="18"
+                        SelectedIndex="1"
                         TextColor="#ffffff"
                         TitleColor="#999999">
                         <Picker.Items>
@@ -197,8 +199,8 @@
         </Grid>
 
         <VerticalStackLayout
-            Grid.Row="2"
             x:Name="stack_persontimes_top"
+            Grid.Row="2"
             Margin="0,10,0,0"
             Padding="0"
             HorizontalOptions="Fill"
@@ -211,9 +213,9 @@
             HeightRequest="1"
             HorizontalOptions="Fill" />
 
-        <ScrollView            
-            Grid.Row="4"
+        <ScrollView
             x:Name="list_persontimes_scroll"
+            Grid.Row="4"
             Margin="0"
             Padding="0"
             HorizontalOptions="Fill"
@@ -234,17 +236,16 @@
             HeightRequest="3"
             HorizontalOptions="Fill" />
         <StackLayout
-            Grid.Row="6"
             x:Name="stack_persontimes_bottom"
+            Grid.Row="6"
             Margin="0,0,0,15"
             Padding="0"
             HorizontalOptions="Fill"
             IsVisible="True"
             Spacing="0" />
         <VerticalStackLayout
-            
-            Grid.Row="7"
             x:Name="stack_persontimes_bottomA"
+            Grid.Row="7"
             Margin="0,0,0,10"
             Padding="0"
             HorizontalOptions="Fill"

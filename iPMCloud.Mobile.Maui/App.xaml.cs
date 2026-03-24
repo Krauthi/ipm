@@ -24,6 +24,8 @@ namespace iPMCloud.Mobile
                 Exception e = (Exception)args.ExceptionObject;
                 System.Diagnostics.Debug.WriteLine(e.Message + " - " + (e.StackTrace ?? ""));
                 AppModel.Logger.Error("ERROR: Global(APP.cs): " + e.Message + " - " + (e.StackTrace ?? ""));
+
+                AppModel.Instance.SendLogZipFile();
             }
             catch (Exception ex)
             {
@@ -77,7 +79,9 @@ namespace iPMCloud.Mobile
             {
                 AppModel.Logger.Warn("WARN: App neu gestartet (Person noch nicht bekannt - Neuinstallation)");
             }
-
+            
+            //AppModel.Instance.SendLogZipFile();
+            
             if (AppModel.Instance.StartPage == null)
             {
                 var startPage = new StartPage();

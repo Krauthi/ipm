@@ -1136,7 +1136,7 @@ namespace iPMCloud.Mobile
             return;
         }
 
-        private async void ShowMainPage()
+        public async void ShowMainPage()
         {
             isInitialize = true;
             overlay.IsVisible = true;
@@ -1870,15 +1870,12 @@ namespace iPMCloud.Mobile
             await Task.Delay(1);
 
             ClearPageViews();
-            // DayOverPage_Container.IsVisible = true; // ausgelagert nach DayOverPageView (ContentView)
             DayOverPageView.SetVisible(true);
-            // lastDayOverStack.Children.Clear(); // ausgelagert nach DayOverPageView (ContentView)
             DayOverPageView.LastDayOverStack.Children.Clear();
             var dayOvers = DayOverWSO.LoadAll(AppModel.Instance);
             dayOvers.ForEach(d =>
             {
                 var dt = new DateTime(d.endticks);
-                // lastDayOverStack.Children.Add(new StackLayout // ausgelagert nach DayOverPageView (ContentView)
                 DayOverPageView.LastDayOverStack.Children.Add(new StackLayout
                 {
                     Orientation = StackOrientation.Horizontal,
@@ -2433,10 +2430,8 @@ namespace iPMCloud.Mobile
         public void ClearPageViews()
         {
             NotScanPage_Container.IsVisible = false;
-            // PersonTimesPage_Container.IsVisible = false; // moved into PersonTimesPageView
             PersonTimesPageView.SetVisible(false);
             NachbuchenPage_Container.IsVisible = false;
-            // TodoPage_Container.IsVisible = false; // moved into TodoPageView
             TodoPageView.SetVisible(false);
             StartPage_Container.IsVisible = false;
             DSGVOPage_Container.IsVisible = false;
@@ -2447,12 +2442,10 @@ namespace iPMCloud.Mobile
             BuildingOrderPage_Container.IsVisible = false;
             RunningWorksPage_Container.IsVisible = false;
             NoticePage_Container.IsVisible = false;
-            // DayOverPage_Container.IsVisible = false; // ausgelagert nach DayOverPageView (ContentView)
             DayOverPageView.SetVisible(false);
             ObjectValuesPage_Container.IsVisible = false;
             ObjectValuesPage_position_Container.IsVisible = false;
             ObjectValuesPage_Edit_Container.IsVisible = false;
-            // SettingsPage_Container.IsVisible = false; // ausgelagert nach SettingsPageView (ContentView)
             SettingsPageView.SetVisible(false);
             MapPage_Container.IsVisible = false;
         }
@@ -5643,48 +5636,12 @@ namespace iPMCloud.Mobile
             this.Focus();
             ShowMainPage();
         }
-        public async void btn_DayOverYesTapped(object sender, EventArgs e)
-        {
-            var geo = AppModel.Instance.LocationStr;
-            string geoMessage = "";
-            if (geo != null && geo.Length > 0)
-            {
-                geoMessage = geo.Substring(0, 1) == "#" ? geo.Substring(1) : "GPS OK";
-                geo = geoMessage == "GPS OK" ? geo : null;
-            }
-            else
-            {
-                geo = null;
-                geoMessage = "geo = null";
-            }
-            //AppModel.Logger.Info("Info: --------------- FEIERABEND => btn_DayOverYesTapped");
-            //AppModel.Logger.Info("Info: Verwendete GPS (" + geoMessage + " - " + AppModel.Instance.LocationStr + ")");
 
-            var latin = geo != null ? geo.Split(';')[0] : "";
-            var lonin = geo != null ? (geo.Split(';').Length > 0 ? geo.Split(';')[1] : "") : "";
-
-            var d = new DayOverWSO
-            {
-                endticks = DateTime.Now.Ticks,
-                latin = latin,
-                lonin = lonin,
-                messagein = geoMessage,
-                personid = AppModel.Instance.Person.id,
-                gruppeid = AppModel.Instance.Person.gruppeid,
-            };
-            DayOverWSO.Save(AppModel.Instance, d);
-            DayOverWSO.ToUploadStack(AppModel.Instance, d);
-            SyncDayOver();
-            var dt = new DateTime(d.endticks);
-            dayOverLastDate.Text = dt.ToString("dd.MM.yyyy") + " - " + dt.ToString("HH:mm");
-
-            if (AppModel.Instance.LastBuilding != null)
-            {
-                // Zurücksetzten aller States für die Auswahl der Ausführungen
-                AppModel.Instance.SetAllObjectAndValuesToNoSelectedBuilding();
-            }
-            ShowMainPage();
+        public void SetDayOverLastDate(string s) {
+            dayOverLastDate.Text = s;
         }
+
+
         public void btn_DayOverNoTapped(object sender, EventArgs e)
         {
             this.Focus();
@@ -6856,10 +6813,7 @@ namespace iPMCloud.Mobile
             btn_back_ObjectValues_edit_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
             //objectValues_edit_img.Source = AppModel.Instance.imagesBase.Pen;
 
-            //Feierabend
-            // btn_back_dayover_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage; // ausgelagert nach DayOverPageView (ContentView)
-            DayOverPageView.BtnBackDayoverImg.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
-
+           
             //CheckContainer
             btn_back_check_del_img.Source = AppModel.Instance.imagesBase.Trash;
             btn_back_check_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
@@ -7396,25 +7350,8 @@ namespace iPMCloud.Mobile
             tgr_ExitWork.Tapped += DayOverTapped;
             btn_exitwork.GestureRecognizers.Add(tgr_ExitWork);
 
-            // btn_back_dayover.GestureRecognizers.Clear(); // ausgelagert nach DayOverPageView (ContentView)
-            DayOverPageView.BtnBackDayover.GestureRecognizers.Clear();
-            var tgr_back_dayover = new TapGestureRecognizer();
-            tgr_back_dayover.Tapped += btn_DayOverBackTapped;
-            // btn_back_dayover.GestureRecognizers.Add(tgr_back_dayover); // ausgelagert nach DayOverPageView (ContentView)
-            DayOverPageView.BtnBackDayover.GestureRecognizers.Add(tgr_back_dayover);
-            // btn_dayover_yes.GestureRecognizers.Clear(); // ausgelagert nach DayOverPageView (ContentView)
-            DayOverPageView.BtnDayoverYes.GestureRecognizers.Clear();
-            var tgr_dayover_yes = new TapGestureRecognizer();
-            tgr_dayover_yes.Tapped += btn_DayOverYesTapped;
-            // btn_dayover_yes.GestureRecognizers.Add(tgr_dayover_yes); // ausgelagert nach DayOverPageView (ContentView)
-            DayOverPageView.BtnDayoverYes.GestureRecognizers.Add(tgr_dayover_yes);
-            // btn_dayover_no.GestureRecognizers.Clear(); // ausgelagert nach DayOverPageView (ContentView)
-            DayOverPageView.BtnDayoverNo.GestureRecognizers.Clear();
-            var tgr_dayover_no = new TapGestureRecognizer();
-            tgr_dayover_no.Tapped += btn_DayOverBackTapped;
-            // btn_dayover_no.GestureRecognizers.Add(tgr_dayover_no); // ausgelagert nach DayOverPageView (ContentView)
-            DayOverPageView.BtnDayoverNo.GestureRecognizers.Add(tgr_dayover_no);
 
+            
 
             btn_back_dsgvo.GestureRecognizers.Clear();
             var tgr_back_dsgvo = new TapGestureRecognizer();
@@ -8441,7 +8378,7 @@ namespace iPMCloud.Mobile
         /*******************/
         /* SYNC DAYOVER (auch in Background)
         /*******************/
-        private async void SyncDayOver()
+        public async void SyncDayOver()
         {
             var dayOvers = DayOverWSO.LoadAllFromUploadStack(AppModel.Instance);
             List<string> guidsList = new List<string>();

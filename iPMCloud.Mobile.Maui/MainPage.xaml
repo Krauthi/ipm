@@ -5617,24 +5617,17 @@
             RowSpacing="0"
             VerticalOptions="Fill">
             <Grid.RowDefinitions>
+                <RowDefinition Height="54" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <VerticalStackLayout
-                x:Name="DayOverPage_position_Container"
-                Grid.Row="0"
-                Margin="0"
-                Padding="0"
-                HorizontalOptions="Fill"
-                IsVisible="True"
-                Spacing="0"
-                VerticalOptions="Fill">
 
-                <Grid
+            <Grid
+                Grid.Row="0"
                     Margin="0"
-                    Padding="10,10,10,10"
+                    Padding="0"
                     ColumnSpacing="0"
-                    HeightRequest="48"
+                    HeightRequest="54"
                     HorizontalOptions="Fill">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
@@ -5671,12 +5664,12 @@
                             <Label
                                 Grid.Column="1"
                                 Margin="0"
-                                FontSize="18"
+                                FontSize="20"
                                 HorizontalOptions="Start"
                                 HorizontalTextAlignment="Start"
                                 LineBreakMode="TailTruncation"
                                 Text="ZURÜCK"
-                                TextColor="#2f84bd"
+                                TextColor="#3f94cd"
                                 VerticalOptions="Center" />
                         </Grid>
                     </Border>
@@ -5687,10 +5680,20 @@
                         HorizontalOptions="End"
                         HorizontalTextAlignment="End"
                         LineBreakMode="TailTruncation"
-                        Text="Feierabend"
+                        Text="Zwischenstop/Feierabend"
                         TextColor="#ffffff"
                         VerticalOptions="Center" />
                 </Grid>
+
+            <VerticalStackLayout
+                x:Name="DayOverPage_position_Container"
+                Grid.Row="1"
+                Margin="0"
+                Padding="0"
+                HorizontalOptions="Fill"
+                IsVisible="True"
+                Spacing="0"
+                VerticalOptions="Fill">
                 <BoxView
                     Margin="0,0,0,0"
                     BackgroundColor="Gray"
@@ -5700,7 +5703,7 @@
 
                 <HorizontalStackLayout
                     Margin="0"
-                    Padding="10"
+                    Padding="0"
                     BackgroundColor="#55042d53"
                     HorizontalOptions="Fill"
                     Spacing="0">
@@ -5712,8 +5715,7 @@
                         HorizontalOptions="Start"
                         LineBreakMode="WordWrap"
                         Text="Bestätigen Sie mit JA, wenn Sie Ihren Abreitsverlauf für heute oder für eine gewisse Zeit beenden werden."
-                        TextColor="#cccccc"
-                        VerticalOptions="Center" />
+                        TextColor="#cccccc" />
                 </HorizontalStackLayout>
 
                 <BoxView

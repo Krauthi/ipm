@@ -2366,18 +2366,18 @@ namespace iPMCloud.Mobile
         private async void OpenCamObjectValuesView()
         {
             popupContainer_objectvaluesbild.IsVisible = true;
-            //popupContainer_objectvaluesbild_stack.WidthRequest = this.Width;
-            AbsoluteLayout.SetLayoutFlags(popupContainer_objectvaluesbild_stack, AbsoluteLayoutFlags.None);
-            AbsoluteLayout.SetLayoutBounds(popupContainer_objectvaluesbild_stack, 
+            //popupContainer_objectvaluesbild.PopupStack.WidthRequest = this.Width;
+            AbsoluteLayout.SetLayoutFlags(popupContainer_objectvaluesbild.PopupStack, AbsoluteLayoutFlags.None);
+            AbsoluteLayout.SetLayoutBounds(popupContainer_objectvaluesbild.PopupStack, 
                 new Rect(0, 30, this.Width, 520));
 
-            editor_notice_objectvaluesbild.Text = "";
-            img_photo_objectvaluesbild.Source = null;
+            popupContainer_objectvaluesbild.EditorNotice.Text = "";
+            popupContainer_objectvaluesbild.ImgPhoto.Source = null;
             await Task.Delay(1);
             AppModel.Instance.selectedObjectValueBild = null;
 
-            btn_send_objectvaluesbild.IsVisible = false;
-            btn_send_objectvaluesbild_err.Opacity = 0;
+            popupContainer_objectvaluesbild.BtnSend.IsVisible = false;
+            popupContainer_objectvaluesbild.LblSendErr.Opacity = 0;
         }
 
         private async void SwitchObjectValueFlashlight()
@@ -5719,10 +5719,10 @@ namespace iPMCloud.Mobile
 
                     AppModel.Instance.selectedObjectValueBild = new ObjektDatenBildWSO { bytes = photoResponse.imageBytes };
 
-                    img_photo_objectvaluesbild.Source = photoResponse.GetImageSourceAsThumb();
+                    popupContainer_objectvaluesbild.ImgPhoto.Source = photoResponse.GetImageSourceAsThumb();
                     await Task.Delay(1);
 
-                    btn_send_objectvaluesbild.IsVisible = true;
+                    popupContainer_objectvaluesbild.BtnSend.IsVisible = true;
 
                     await Task.Delay(1);
                     overlay.IsVisible = false;
@@ -5756,13 +5756,13 @@ namespace iPMCloud.Mobile
         
         public async void RemoveObjektMeterStandBild()
         {
-            img_photo_objectvaluesbild.Source = null;
+            popupContainer_objectvaluesbild.ImgPhoto.Source = null;
             await Task.Delay(1);
             AppModel.Instance.selectedObjectValueBild = null;
 
-            btn_send_objectvaluesbild.IsVisible = false;
+            popupContainer_objectvaluesbild.BtnSend.IsVisible = false;
             await Task.Delay(1);
-            btn_send_objectvaluesbild_err.Opacity = 0;
+            popupContainer_objectvaluesbild.LblSendErr.Opacity = 0;
         }
         public async void btn_sendPhotoForMeterstand(object sender, EventArgs e)
         {
@@ -5775,7 +5775,7 @@ namespace iPMCloud.Mobile
             await Task.Delay(1);
 
             AppModel.Instance.selectedObjectValueBild.filename = DateTime.Now.ToString("dd_MM_yyyy_HH_mm_ss");
-            AppModel.Instance.selectedObjectValueBild.bemerkung = editor_notice_objectvaluesbild.Text;
+            AppModel.Instance.selectedObjectValueBild.bemerkung = popupContainer_objectvaluesbild.EditorNotice.Text;
             AppModel.Instance.selectedObjectValueBild.meterid = AppModel.Instance.selectedObjectValue.id;
             AppModel.Instance.selectedObjectValueBild.lastchange = JavaScriptDateConverter.Convert(DateTime.Now).ToString();
             AppModel.Instance.selectedObjectValueBild.standid = 0;
@@ -6674,7 +6674,7 @@ namespace iPMCloud.Mobile
             //btn_regScanWarn_img.Source = imagesBase.AlertMessage;
 
             //Zählerfoto
-            btn_newphoto_objectvaluesbild_img.Source = AppModel.Instance.imagesBase.Cam;
+            popupContainer_objectvaluesbild.BtnNewPhotoImg.Source = AppModel.Instance.imagesBase.Cam;
 
             frame_planConA_img_reloadx.Source = "muellInOutX" + AppModel.Instance.AppSetModel.ViewOnlyMuell + ".png";
 
@@ -7176,21 +7176,21 @@ namespace iPMCloud.Mobile
             btn_flashlight_container.GestureRecognizers.Add(tapGestureRecognizer1);
 
             //Flashlight in ObjektValuesEdit ...
-            btn_newphoto_objectvaluesbild.GestureRecognizers.Clear();
+            popupContainer_objectvaluesbild.BtnNewPhoto.GestureRecognizers.Clear();
             var tgr_btn_newphoto_objectvaluesbild = new TapGestureRecognizer();
             // tgr_btn_newphoto_objectvaluesbild.Tapped += btn_takePhotoForMeterstand;
             tgr_btn_newphoto_objectvaluesbild.Tapped += async (s, e) => await btn_takePhotoForMeterstand(s, e);
 
-            btn_newphoto_objectvaluesbild.GestureRecognizers.Add(tgr_btn_newphoto_objectvaluesbild);
-            btn_send_objectvaluesbild.GestureRecognizers.Clear();
+            popupContainer_objectvaluesbild.BtnNewPhoto.GestureRecognizers.Add(tgr_btn_newphoto_objectvaluesbild);
+            popupContainer_objectvaluesbild.BtnSend.GestureRecognizers.Clear();
             var tgr_btn_send_objectvaluesbild = new TapGestureRecognizer();
             tgr_btn_send_objectvaluesbild.Tapped += btn_sendPhotoForMeterstand;
-            btn_send_objectvaluesbild.GestureRecognizers.Add(tgr_btn_send_objectvaluesbild);
-            btn_cancel_objectvaluesbild.GestureRecognizers.Clear();
+            popupContainer_objectvaluesbild.BtnSend.GestureRecognizers.Add(tgr_btn_send_objectvaluesbild);
+            popupContainer_objectvaluesbild.BtnCancel.GestureRecognizers.Clear();
             var tgr_btn_cancel_objectvaluesbild = new TapGestureRecognizer();
             tgr_btn_cancel_objectvaluesbild.Tapped -= (object o, TappedEventArgs ev) => { RemoveObjektMeterStandBild(); popupContainer_objectvaluesbild.IsVisible = false; };
             tgr_btn_cancel_objectvaluesbild.Tapped += (object o, TappedEventArgs ev) => { RemoveObjektMeterStandBild(); popupContainer_objectvaluesbild.IsVisible = false; };
-            btn_cancel_objectvaluesbild.GestureRecognizers.Add(tgr_btn_cancel_objectvaluesbild);
+            popupContainer_objectvaluesbild.BtnCancel.GestureRecognizers.Add(tgr_btn_cancel_objectvaluesbild);
 
             // BuildingOrder 
             btn_back_inBuildingOrder.GestureRecognizers.Clear();

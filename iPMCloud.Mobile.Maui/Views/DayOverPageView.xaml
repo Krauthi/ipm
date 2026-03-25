@@ -105,7 +105,7 @@
                 HorizontalOptions="Start"
                 LineBreakMode="WordWrap"
                 Text="Hier mit bestätigen Sie, dass Sie jetzt Ihre Arbeitszeit stoppen. So Entseht ein Ende des Arbeitszeitstrahl. Sollten Sie später am heutigen Tag nochmal die Arbeit beginnen, so ensteht eine Lücke in Ihrem Arbeitszeitstrahl."
-                TextColor="#cccccc" /> 
+                TextColor="#cccccc" />
 
             <HorizontalStackLayout
                 Margin="20,40,20,20"

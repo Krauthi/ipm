@@ -2447,7 +2447,7 @@ namespace iPMCloud.Mobile
             ObjectValuesPage_position_Container.IsVisible = false;
             ObjectValuesPage_Edit_Container.IsVisible = false;
             SettingsPageView.SetVisible(false);
-            MapPage_Container.IsVisible = false;
+            //MapPage_Container.IsVisible = false;
         }
 
         private void Settings_Log_includeCache_Switch_Toggled(object sender, ToggledEventArgs e)
@@ -6820,9 +6820,15 @@ namespace iPMCloud.Mobile
             btn_info_check_img.Source = AppModel.Instance.imagesBase.CheckSymbol;
             btn_back_check_signature_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
 
-            
+
             //Map
-            btn_back_map_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
+            //btn_back_map_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
+            //btn_back_map.GestureRecognizers.Clear();
+            //var tgr_back_map = new TapGestureRecognizer();
+            //tgr_back_map.Tapped += btn_MapBackTapped;
+            //btn_back_map.GestureRecognizers.Add(tgr_back_map);
+
+
 
             btn_back_pn_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
 
@@ -7077,10 +7083,6 @@ namespace iPMCloud.Mobile
 
 
 
-            btn_back_map.GestureRecognizers.Clear();
-            var tgr_back_map = new TapGestureRecognizer();
-            tgr_back_map.Tapped += btn_MapBackTapped;
-            btn_back_map.GestureRecognizers.Add(tgr_back_map);
 
             btn_sync.GestureRecognizers.Clear();
             var tgr_sync = new TapGestureRecognizer();

@@ -26,10 +26,10 @@ namespace iPMCloud.Mobile.Views
             tgr_dayover_yes.Tapped += btn_DayOverYesTapped;
             btn_dayover_yes.GestureRecognizers.Add(tgr_dayover_yes);
 
-            btn_dayover_no.GestureRecognizers.Clear();
-            var tgr_dayover_no = new TapGestureRecognizer();
-            tgr_dayover_no.Tapped += AppModel.Instance.MainPage.btn_DayOverBackTapped;
-            btn_dayover_no.GestureRecognizers.Add(tgr_dayover_no);
+            //btn_dayover_no.GestureRecognizers.Clear();
+            //var tgr_dayover_no = new TapGestureRecognizer();
+            //tgr_dayover_no.Tapped += AppModel.Instance.MainPage.btn_DayOverBackTapped;
+            //btn_dayover_no.GestureRecognizers.Add(tgr_dayover_no);
 
             btn_back_dayover_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
             DayOverPage_Container.IsVisible = visible;

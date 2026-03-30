@@ -9,11 +9,11 @@ using iPMCloud.Mobile.vo.wso;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls;
+using Microsoft.Maui.Devices;
 // TODO: Xamarin.RangeSlider not MAUI-compatible - needs replacement
 // using Xamarin.RangeSlider.Forms;
 
 //using Microsoft.Maui.Storage;
-using Microsoft.Maui.Devices;
 using Microsoft.Maui.Devices;
 using Microsoft.Maui.Layouts;
 using Microsoft.Maui.Storage;
@@ -43,9 +43,8 @@ namespace iPMCloud.Mobile
         private VerticalStackLayout list_todo => TodoPageView.ListTodo;
 
         // Forwarding properties for elements moved into DSGVOPageContainerView
-        private Grid DSGVOPage_Container => DSGVOPageContainerView.ContainerGrid;
-        private Border btn_back_dsgvo => DSGVOPageContainerView.BtnBackDsgvo;
-
+        //private Grid DSGVOPage_Container => DSGVOPageContainerView.ContainerGrid;
+        //private Border btn_back_dsgvo => DSGVOPageContainerView.BtnBackDsgvo;
         // Forwarding properties for elements moved into WorkerPageContainerView
         private Grid WorkerPage_Container => WorkerPageContainerView.ContainerGrid;
         private Border btn_worker_back => WorkerPageContainerView.BtnWorkerBack;
@@ -59,6 +58,10 @@ namespace iPMCloud.Mobile
 
 
 
+        public DisplayInfo di = DeviceDisplay.MainDisplayInfo;
+        public double density = 0;//> di.Density;           // px pro dp
+        public double screenWidthDp = 0;//> di.Width / di.Density;
+        public double screenHeightDp = 0;//> di.height / di.Density;
 
 
         public bool isInitialize = false;
@@ -69,6 +72,9 @@ namespace iPMCloud.Mobile
         {
             isInitialize = true;
             InitializeComponent();
+            density = di.Density;
+            screenWidthDp = di.Width / di.Density;
+            screenHeightDp = di.Height / di.Density;
             MainPageAgain();
         }
 
@@ -484,7 +490,7 @@ namespace iPMCloud.Mobile
                 }
             }
 
-            var w = this.Width;//-13
+            double w = screenWidthDp;
             CheckPage_Container.WidthRequest = w;
             CheckPage_position_Container.WidthRequest = w;
             CheckPage_Container.IsVisible = true;
@@ -758,10 +764,10 @@ namespace iPMCloud.Mobile
 
         public void OpenCheckA_Singature(CheckLeistungAntwort quest)
         {
-            var w = this.Width;//-13
+            double w = screenWidthDp;
             CheckPage_Signature_Container.WidthRequest = w;
             checkQuestStack_signature_scroll.HeightRequest =
-                this.Height - checkQuestStack_signature_scroll.Y - 13;
+                screenHeightDp - checkQuestStack_signature_scroll.Y - 13;
             checkQuestStack_signature.Children.Clear();
             quest.signPad = Check.GetSignElement();
             checkQuestStack_signature.Children.Add(Check.GetQuestMain_7_PopUp(quest));
@@ -787,8 +793,9 @@ namespace iPMCloud.Mobile
         public async void ShowNoticeView_check_bem(CheckLeistungAntwort quest, bool isQuest = false, bool isSign = false)
         {
             _SelectedPosForNotice_check_bem_isquest = isQuest;
-            var w = this.Width;
-            var h = this.Height;
+            double w = screenWidthDp;
+            double h = screenHeightDp;
+
             CheckPage_Bem_Container.WidthRequest = w;
             CheckPage_Bem_inner_Container.WidthRequest = w;
             CheckPage_Bem_inner_Container.HeightRequest = h;
@@ -1203,7 +1210,7 @@ namespace iPMCloud.Mobile
             await Task.Delay(1);
 
             ClearPageViews();
-            DSGVOPage_Container.IsVisible = true;
+            DSGVOPageContainerView.SetVisible(true);
 
 
             await Task.Delay(1);
@@ -2293,9 +2300,9 @@ namespace iPMCloud.Mobile
             ClearPageViews();
 
             ObjectValues_BuildingInfo.Children.Clear();
-            ObjectValues_BuildingInfo.Children.Add(Elements.GetBoxViewLine());
+            //ObjectValues_BuildingInfo.Children.Add(Elements.GetBoxViewLine());
             ObjectValues_BuildingInfo.Children.Add(BuildingWSO.GetBuildingInfoElement(AppModel.Instance.LastBuilding, AppModel.Instance));
-            ObjectValues_BuildingInfo.Children.Add(Elements.GetBoxViewLine());
+            //ObjectValues_BuildingInfo.Children.Add(Elements.GetBoxViewLine());
 
             ObjectValuesStack.Children.Clear();
             var vStack = ObjektDataWSO.GetObjektDataListView(AppModel.Instance, new Command<ObjektDataWSO>(TapObjektData));
@@ -2365,19 +2372,20 @@ namespace iPMCloud.Mobile
 
         private async void OpenCamObjectValuesView()
         {
-            popupContainer_objectvaluesbild.IsVisible = true;
-            //popupContainer_objectvaluesbild.PopupStack.WidthRequest = this.Width;
-            AbsoluteLayout.SetLayoutFlags(popupContainer_objectvaluesbild.PopupStack, AbsoluteLayoutFlags.None);
-            AbsoluteLayout.SetLayoutBounds(popupContainer_objectvaluesbild.PopupStack, 
-                new Rect(0, 30, this.Width, 520));
+            PopupContainerObjectValuesBild.SetVisible(true);
+            double w = screenWidthDp;
+            double h = screenHeightDp;
+            //PopupContainerObjectValuesBild.PopupStack.WidthRequest = w;
+            AbsoluteLayout.SetLayoutFlags(PopupContainerObjectValuesBild.PopupStack, AbsoluteLayoutFlags.None);
+            AbsoluteLayout.SetLayoutBounds(PopupContainerObjectValuesBild.PopupStack, new Rect(0, 30, w, 520));
 
-            popupContainer_objectvaluesbild.EditorNotice.Text = "";
-            popupContainer_objectvaluesbild.ImgPhoto.Source = null;
+            PopupContainerObjectValuesBild.EditorNotice.Text = "";
+            PopupContainerObjectValuesBild.ImgPhoto.Source = null;
             await Task.Delay(1);
             AppModel.Instance.selectedObjectValueBild = null;
 
-            popupContainer_objectvaluesbild.BtnSend.IsVisible = false;
-            popupContainer_objectvaluesbild.LblSendErr.Opacity = 0;
+            PopupContainerObjectValuesBild.BtnSend.IsVisible = false;
+            PopupContainerObjectValuesBild.LblSendErr.Opacity = 0;
         }
 
         private async void SwitchObjectValueFlashlight()
@@ -2434,7 +2442,7 @@ namespace iPMCloud.Mobile
             NachbuchenPage_Container.IsVisible = false;
             TodoPageView.SetVisible(false);
             StartPage_Container.IsVisible = false;
-            DSGVOPage_Container.IsVisible = false;
+            DSGVOPageContainerView.SetVisible(false);
             PN_Page_Container.IsVisible = false;
             WorkerPage_Container.IsVisible = false;
             BuildingScanPage_Container.IsVisible = false;
@@ -2515,7 +2523,8 @@ namespace iPMCloud.Mobile
         }
         private void Fill_DayPicker()
         {
-            tabContentWidth = this.Width - 13; //28 ;
+            double w = screenWidthDp - 13;
+            tabContentWidth = w; //28 ;
 
             var today = ((int)DateTime.Now.DayOfWeek);
             daypicker_items.Children.Clear();
@@ -2651,9 +2660,12 @@ namespace iPMCloud.Mobile
 
         public void OpenOtherPerson()
         {
+            double w = screenWidthDp;
+            double h = screenHeightDp;
+
             empListView.SelectedItem = null;
-            popupContainer_quest_personpicker_inner.HeightRequest = this.Height - 100;
-            popupContainer_quest_personpicker_inner.WidthRequest = this.Width - 40;
+            popupContainer_quest_personpicker_inner.HeightRequest = h - 100;
+            popupContainer_quest_personpicker_inner.WidthRequest = w - 40;
             popupContainer_quest_personpicker.IsVisible = true;
 
             var empList = AppModel.Instance.PlanResponse.persons;
@@ -2926,8 +2938,7 @@ namespace iPMCloud.Mobile
 
         public void Init_PlanTabs()
         {
-            var w = this.Width - 13;//28
-
+            var w = screenWidthDp - 13;
             frame_planConA_veroffen.Text = "";//Badge Counter
             frame_planConA_veroffentxt.Text = "Vergangene\r\nOffene";
             frame_planConA_veroffen_count_con.IsVisible = false;
@@ -3458,9 +3469,11 @@ namespace iPMCloud.Mobile
             overlay.IsVisible = true;
             await Task.Delay(1);
 
+            double w = screenWidthDp;
+            double h = screenHeightDp;
             popupContainer_quest_direktbuchen.IsVisible = true;
-            popupContainer_quest_direktbuchen_st.WidthRequest = this.Width - 20;
-            popupContainer_quest_direktbuchen_st.HeightRequest = this.Height - 120;
+            popupContainer_quest_direktbuchen_st.WidthRequest = w - 20;
+            popupContainer_quest_direktbuchen_st.HeightRequest = h - 120;
 
             btn_quest_direktbuchen_pos.Children.Clear();
 
@@ -3714,9 +3727,11 @@ namespace iPMCloud.Mobile
             overlay.IsVisible = true;
             await Task.Delay(1);
 
+            double w = screenWidthDp;
+            double h = screenHeightDp;
             popupContainer_quest_direktbuchen.IsVisible = true;
-            popupContainer_quest_direktbuchen_st.WidthRequest = this.Width - 20;
-            popupContainer_quest_direktbuchen_st.HeightRequest = this.Height - 120;
+            popupContainer_quest_direktbuchen_st.WidthRequest = w - 20;
+            popupContainer_quest_direktbuchen_st.HeightRequest = h - 120;
 
             btn_quest_direktbuchen_pos.Children.Clear();
 
@@ -4168,15 +4183,17 @@ namespace iPMCloud.Mobile
         }
         public async void MainMenuTapped_Done(bool visible)
         {
+            double w = screenWidthDp;
+            double h = screenHeightDp;
             // MainStettings Menü
             if (!visible)
             {
-                await panelContainer_frame.TranslateToAsync(-this.Width, 0, 200, Easing.Linear);
+                await panelContainer_frame.TranslateToAsync(-w, 0, 200, Easing.Linear);
                 panelContainer.IsVisible = visible;
             }
             else
             {
-                await panelContainer_frame.TranslateToAsync(-this.Width, 0, 0);
+                await panelContainer_frame.TranslateToAsync(-w, 0, 0);
                 panelContainer.IsVisible = visible;
                 await panelContainer_frame.TranslateToAsync(-2, 0, 200, Easing.Linear);
                 SetAllSyncState();
@@ -4242,16 +4259,18 @@ namespace iPMCloud.Mobile
         }
         public async void AuswahlAnzeigenTapped_Done(bool visible)
         {
+            double w = screenWidthDp;
+            double h = screenHeightDp;
             // MainStettings Menü
             if (!visible)
             {
-                await panelShowSelectedPos_frame.TranslateToAsync(-this.Width, 0, 200, Easing.Linear);
+                await panelShowSelectedPos_frame.TranslateToAsync(-w, 0, 200, Easing.Linear);
                 panelShowSelectedPos_Container.IsVisible = visible;
                 selectedPosList_container.Children.Clear();
             }
             else
             {
-                await panelShowSelectedPos_frame.TranslateToAsync(-this.Width, 0, 0);
+                await panelShowSelectedPos_frame.TranslateToAsync(-w, 0, 0);
                 panelShowSelectedPos_Container.IsVisible = visible;
                 await panelShowSelectedPos_frame.TranslateToAsync(-2, 0, 200, Easing.Linear);
                 selectedPosList_container.Children.Add(LeistungWSO.GetSelectedPositionListView(
@@ -4298,15 +4317,17 @@ namespace iPMCloud.Mobile
         }
         public async void AuswahlAnzeigenTapped_Again_Done(bool visible)
         {
+            double w = screenWidthDp;
+            double h = screenHeightDp;
             if (!visible)
             {
-                await panelShowSelectedPos_frame.TranslateToAsync(-this.Width, 0, 200, Easing.Linear);
+                await panelShowSelectedPos_frame.TranslateToAsync(-w, 0, 200, Easing.Linear);
                 panelShowSelectedPos_Container.IsVisible = visible;
                 selectedPosList_container.Children.Clear();
             }
             else
             {
-                await panelShowSelectedPos_frame.TranslateToAsync(-this.Width, 0, 0);
+                await panelShowSelectedPos_frame.TranslateToAsync(-w, 0, 0);
                 panelShowSelectedPos_Container.IsVisible = visible;
                 await panelShowSelectedPos_frame.TranslateToAsync(-2, 0, 200, Easing.Linear);
                 selectedPosList_container.Children.Add(LeistungWSO.GetSelectedPositionAgainListView(AppModel.Instance, new Command<LeistungWSO>(RemoveSelectPositionAgainFromToWork)));
@@ -5082,7 +5103,9 @@ namespace iPMCloud.Mobile
 
         public void ShowSendLog(object sender, EventArgs e)
         {
-            popupContainer_container_sendlog.WidthRequest = this.Width - 40;
+            double w = screenWidthDp;
+            double h = screenHeightDp;
+            popupContainer_container_sendlog.WidthRequest = w - 40;
             //popupContainer_container_sendlog.Margin = new Thickness(0,100,0,0);
             btn_sendlogtosupport.GestureRecognizers.Clear();
             var tgr_over = new TapGestureRecognizer();
@@ -5101,7 +5124,9 @@ namespace iPMCloud.Mobile
         }
         public void ShowSendLog_fail()
         {
-            popupContainer_container_sendlog_fail.WidthRequest = this.Width - 40;
+            double w = screenWidthDp;
+            double h = screenHeightDp;
+            popupContainer_container_sendlog_fail.WidthRequest = w - 40;
             //popupContainer_container_sendlog.Margin = new Thickness(0,100,0,0);
             btn_cancellogtosupport_fail.GestureRecognizers.Clear();
             var tgr_cancel = new TapGestureRecognizer();
@@ -5149,7 +5174,8 @@ namespace iPMCloud.Mobile
         }
         public void btn_CloseObjectValuesEditTapped(object sender, EventArgs e)
         {
-            ShowObjectValuesView();
+            ObjectValuesPage_Edit_Container.IsVisible = false;
+            //ShowObjectValuesView();
         }
         public void btn_ShowNoticeTapped(object sender, EventArgs e)
         {
@@ -5265,9 +5291,11 @@ namespace iPMCloud.Mobile
 
         public void OpenLanguage(object sender, EventArgs e)
         {
+            double w = screenWidthDp;
+            double h = screenHeightDp;
             langListView.SelectedItem = null;
-            popupContainer_quest_langpicker_inner.HeightRequest = this.Height - 100;
-            popupContainer_quest_langpicker_inner.WidthRequest = this.Width - 40;
+            popupContainer_quest_langpicker_inner.HeightRequest = h - 100;
+            popupContainer_quest_langpicker_inner.WidthRequest = w - 40;
             popupContainer_quest_langpicker.IsVisible = true;
 
             var empList = AppModel.Instance.Langs;
@@ -5298,7 +5326,9 @@ namespace iPMCloud.Mobile
 
         public void ShowTranslate(object sender, EventArgs e)
         {
-            popupContainer_container_changelang.WidthRequest = this.Width - 40;
+            double w = screenWidthDp;
+            double h = screenHeightDp;
+            popupContainer_container_changelang.WidthRequest = w - 40;
             //popupContainer_container_changelang.Margin = new Thickness(0,100,0,0);
             btn_changelang.GestureRecognizers.Clear();
             var tgr_over = new TapGestureRecognizer();
@@ -5319,7 +5349,9 @@ namespace iPMCloud.Mobile
         }
         public void ShowTranslate_fail()
         {
-            popupContainer_quest_changelang_fail.WidthRequest = this.Width - 40;
+            double w = screenWidthDp;
+            double h = screenHeightDp;
+            popupContainer_quest_changelang_fail.WidthRequest = w - 40;
             //popupContainer_container_sendlog.Margin = new Thickness(0,100,0,0);
             btn_cancellogtosupport_fail.GestureRecognizers.Clear();
             var tgr_cancel = new TapGestureRecognizer();
@@ -5704,26 +5736,33 @@ namespace iPMCloud.Mobile
                     return;
                 }
 
+                overlay.IsVisible = true;
+                await Task.Delay(1);
                 // ✅ MAUI MediaPicker verwenden
-                var photo = await MediaPicker.Default.CapturePhotoAsync();
+                var photo = await MediaPicker.CapturePhotoAsync(new MediaPickerOptions
+                {
+                    CompressionQuality = 50,
+                    MaximumHeight = 1024,
+                    MaximumWidth = 1024,
+                    RotateImage = true,
+                    SelectionLimit = 1,
+                    PreserveMetaData = true,
+                });
 
                 if (photo != null)
                 {
-                    using var stream = await photo.OpenReadAsync();  // ✅ using für Stream
-
-                    overlay.IsVisible = true;
-                    await Task.Delay(1);
-
-                    var photoResponse = PhotoUtils.GetImages(stream);
-                    photoResponse = PhotoUtils.AddInfoToImage(photoResponse, AppModel.Instance.LastBuilding);
+  
+                    //using var stream = await photo.OpenReadAsync();  
+                    var photoResponse = await PhotoResize.CreatePhotoResponseAsync(photo);
+                    
+                    // TODO: Später wieder aktivieren bzw. Testen - dauer zu lange!!
+                    //photoResponse = PhotoUtils.AddInfoToImage(photoResponse, AppModel.Instance.LastBuilding);
 
                     AppModel.Instance.selectedObjectValueBild = new ObjektDatenBildWSO { bytes = photoResponse.imageBytes };
 
-                    popupContainer_objectvaluesbild.ImgPhoto.Source = photoResponse.GetImageSourceAsThumb();
-                    await Task.Delay(1);
-
-                    popupContainer_objectvaluesbild.BtnSend.IsVisible = true;
-
+                    PopupContainerObjectValuesBild.ImgPhoto.Source = photoResponse.GetImageSourceAsThumb();
+                                        
+                    PopupContainerObjectValuesBild.BtnSend.IsVisible = true;
                     await Task.Delay(1);
                     overlay.IsVisible = false;
                 }
@@ -5756,13 +5795,13 @@ namespace iPMCloud.Mobile
         
         public async void RemoveObjektMeterStandBild()
         {
-            popupContainer_objectvaluesbild.ImgPhoto.Source = null;
+            PopupContainerObjectValuesBild.ImgPhoto.Source = null;
             await Task.Delay(1);
             AppModel.Instance.selectedObjectValueBild = null;
 
-            popupContainer_objectvaluesbild.BtnSend.IsVisible = false;
+            PopupContainerObjectValuesBild.BtnSend.IsVisible = false;
             await Task.Delay(1);
-            popupContainer_objectvaluesbild.LblSendErr.Opacity = 0;
+            PopupContainerObjectValuesBild.LblSendErr.Opacity = 0;
         }
         public async void btn_sendPhotoForMeterstand(object sender, EventArgs e)
         {
@@ -5775,7 +5814,7 @@ namespace iPMCloud.Mobile
             await Task.Delay(1);
 
             AppModel.Instance.selectedObjectValueBild.filename = DateTime.Now.ToString("dd_MM_yyyy_HH_mm_ss");
-            AppModel.Instance.selectedObjectValueBild.bemerkung = popupContainer_objectvaluesbild.EditorNotice.Text;
+            AppModel.Instance.selectedObjectValueBild.bemerkung = PopupContainerObjectValuesBild.EditorNotice.Text;
             AppModel.Instance.selectedObjectValueBild.meterid = AppModel.Instance.selectedObjectValue.id;
             AppModel.Instance.selectedObjectValueBild.lastchange = JavaScriptDateConverter.Convert(DateTime.Now).ToString();
             AppModel.Instance.selectedObjectValueBild.standid = 0;
@@ -5786,7 +5825,7 @@ namespace iPMCloud.Mobile
             SyncObjectValueBild();
 
             RemoveObjektMeterStandBild();
-            popupContainer_objectvaluesbild.IsVisible = false;
+            PopupContainerObjectValuesBild.SetVisible(false);
 
             await Task.Delay(1);
             overlay.IsVisible = false;
@@ -6672,10 +6711,7 @@ namespace iPMCloud.Mobile
         public void InitStartPageHandlers()
         {
             //btn_regScanWarn_img.Source = imagesBase.AlertMessage;
-
-            //Zählerfoto
-            popupContainer_objectvaluesbild.BtnNewPhotoImg.Source = AppModel.Instance.imagesBase.Cam;
-
+                        
             frame_planConA_img_reloadx.Source = "muellInOutX" + AppModel.Instance.AppSetModel.ViewOnlyMuell + ".png";
 
             popupContainer_quest_personpicker_img.Source = AppModel.Instance.imagesBase.Worker;
@@ -7175,22 +7211,6 @@ namespace iPMCloud.Mobile
             tapGestureRecognizer1.Tapped += AppModel.Instance.Scan.Btn_FlashlightTapped;
             btn_flashlight_container.GestureRecognizers.Add(tapGestureRecognizer1);
 
-            //Flashlight in ObjektValuesEdit ...
-            popupContainer_objectvaluesbild.BtnNewPhoto.GestureRecognizers.Clear();
-            var tgr_btn_newphoto_objectvaluesbild = new TapGestureRecognizer();
-            // tgr_btn_newphoto_objectvaluesbild.Tapped += btn_takePhotoForMeterstand;
-            tgr_btn_newphoto_objectvaluesbild.Tapped += async (s, e) => await btn_takePhotoForMeterstand(s, e);
-
-            popupContainer_objectvaluesbild.BtnNewPhoto.GestureRecognizers.Add(tgr_btn_newphoto_objectvaluesbild);
-            popupContainer_objectvaluesbild.BtnSend.GestureRecognizers.Clear();
-            var tgr_btn_send_objectvaluesbild = new TapGestureRecognizer();
-            tgr_btn_send_objectvaluesbild.Tapped += btn_sendPhotoForMeterstand;
-            popupContainer_objectvaluesbild.BtnSend.GestureRecognizers.Add(tgr_btn_send_objectvaluesbild);
-            popupContainer_objectvaluesbild.BtnCancel.GestureRecognizers.Clear();
-            var tgr_btn_cancel_objectvaluesbild = new TapGestureRecognizer();
-            tgr_btn_cancel_objectvaluesbild.Tapped -= (object o, TappedEventArgs ev) => { RemoveObjektMeterStandBild(); popupContainer_objectvaluesbild.IsVisible = false; };
-            tgr_btn_cancel_objectvaluesbild.Tapped += (object o, TappedEventArgs ev) => { RemoveObjektMeterStandBild(); popupContainer_objectvaluesbild.IsVisible = false; };
-            popupContainer_objectvaluesbild.BtnCancel.GestureRecognizers.Add(tgr_btn_cancel_objectvaluesbild);
 
             // BuildingOrder 
             btn_back_inBuildingOrder.GestureRecognizers.Clear();
@@ -7353,12 +7373,6 @@ namespace iPMCloud.Mobile
             btn_exitwork.GestureRecognizers.Add(tgr_ExitWork);
 
 
-            
-
-            btn_back_dsgvo.GestureRecognizers.Clear();
-            var tgr_back_dsgvo = new TapGestureRecognizer();
-            tgr_back_dsgvo.Tapped += btn_DSGVOBackTapped;
-            btn_back_dsgvo.GestureRecognizers.Add(tgr_back_dsgvo);
 
             btn_back_pn.GestureRecognizers.Clear();
             var tgr_back_pn = new TapGestureRecognizer();

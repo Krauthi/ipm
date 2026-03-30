@@ -349,7 +349,7 @@
                                     WidthRequest="26">
                                     <Image
                                         x:Name="btn_objektinfo_img"
-                                        Margin="0,0,0,0"
+                                        Margin="0,3,0,0"
                                         HeightRequest="26"
                                         HorizontalOptions="Center"
                                         VerticalOptions="Center"
@@ -403,7 +403,7 @@
                             WidthRequest="40">
                             <Image
                                 x:Name="btn_alertmessage_img"
-                                Margin="0,0,0,0"
+                                Margin="0,4,0,0"
                                 HeightRequest="30"
                                 HorizontalOptions="Center"
                                 VerticalOptions="Center"
@@ -429,7 +429,7 @@
                             WidthRequest="40">
                             <Image
                                 x:Name="btn_message_img"
-                                Margin="0,0,0,0"
+                                Margin="0,5,0,0"
                                 HeightRequest="30"
                                 HorizontalOptions="Center"
                                 VerticalOptions="Center"
@@ -456,7 +456,7 @@
                             WidthRequest="40">
                             <Image
                                 x:Name="btn_objvalues_img"
-                                Margin="0,0,0,0"
+                                Margin="0,5,0,0"
                                 HeightRequest="30"
                                 HorizontalOptions="Center"
                                 VerticalOptions="Center"
@@ -468,14 +468,14 @@
                         Grid.Column="4"
                         Margin="3,0,0,0"
                         Padding="1"
-                        BackgroundColor="#041d43"
+                        BackgroundColor="#73040d"
                         HorizontalOptions="End"
                         VerticalOptions="Start">
                         <StackLayout
                             x:Name="btn_buildingout_container"
                             Margin="0"
                             Padding="0"
-                            BackgroundColor="#042d53"
+                            BackgroundColor="#93040d"
                             HeightRequest="40"
                             HorizontalOptions="End"
                             Spacing="0"
@@ -483,7 +483,7 @@
                             WidthRequest="40">
                             <Image
                                 x:Name="btn_buildingout_img2"
-                                Margin="0,0,0,0"
+                                Margin="0,5,0,0"
                                 HeightRequest="30"
                                 HorizontalOptions="Center"
                                 VerticalOptions="Center"
@@ -495,23 +495,24 @@
 
                 <Border
                     x:Name="btn_buildingorder_container"
-                    Margin="10,1,10,2"
+                    Margin="10,5,10,2"
                     Padding="1"
                     BackgroundColor="#041d43"
                     HorizontalOptions="Fill"
+                        HeightRequest="48"
                     IsVisible="False">
                     <StackLayout
                         x:Name="btn_buildingorder"
                         Margin="0"
-                        Padding="5"
+                        Padding="4"
                         BackgroundColor="#042d53"
-                        HeightRequest="40"
+                        VerticalOptions= "Fill"
                         HorizontalOptions="Fill">
                         <Grid
-                            Margin="10,0,0,0"
+                            Margin="2,0,0,0"
                             Padding="0"
                             ColumnSpacing="0"
-                            HeightRequest="30"
+                            HeightRequest="36"
                             HorizontalOptions="Fill"
                             VerticalOptions="Center">
                             <Grid.ColumnDefinitions>
@@ -523,10 +524,10 @@
                             <Image
                                 x:Name="btn_buildingorder_limg"
                                 Grid.Column="0"
-                                Margin="0,0,15,0"
-                                HeightRequest="30"
+                                Margin="0,0,10,0"
+                                HeightRequest="32"
                                 VerticalOptions="Center"
-                                WidthRequest="30" />
+                                WidthRequest="33" />
                             <VerticalStackLayout
                                 Grid.Column="1"
                                 Margin="0,-4,0,0"
@@ -537,15 +538,15 @@
                                 <Label
                                     Margin="0"
                                     Padding="0"
-                                    FontSize="18"
+                                    FontSize="20"
                                     HorizontalOptions="Fill"
                                     HorizontalTextAlignment="Start"
                                     Text="Arbeiten auswählen"
                                     TextColor="#ffffff" />
                                 <Label
-                                    Margin="0,-3,0,0"
+                                    Margin="0,-4,0,0"
                                     Padding="0"
-                                    FontSize="12"
+                                    FontSize="13"
                                     HorizontalOptions="Fill"
                                     HorizontalTextAlignment="Start"
                                     Text="zum ausgewählten Objekt"
@@ -588,16 +589,17 @@
                     Padding="1"
                     BackgroundColor="#04431d"
                     HorizontalOptions="Fill"
+                        HeightRequest="48"
                     IsVisible="False">
                     <StackLayout
                         x:Name="btn_inwork"
                         Margin="0"
-                        Padding="5"
+                        Padding="4"
                         BackgroundColor="#04532d"
-                        HeightRequest="40"
+                        VerticalOptions= "Fill"
                         HorizontalOptions="Fill">
                         <Grid
-                            Margin="10,0,0,0"
+                            Margin="2,0,0,0"
                             Padding="0"
                             ColumnSpacing="0"
                             HeightRequest="30"
@@ -612,7 +614,7 @@
                             <Image
                                 x:Name="btn_inwork_limg"
                                 Grid.Column="0"
-                                Margin="0,0,15,0"
+                                Margin="0,0,10,0"
                                 HeightRequest="30"
                                 VerticalOptions="Center"
                                 WidthRequest="30" />
@@ -626,7 +628,7 @@
                                 <Label
                                     Margin="0"
                                     Padding="0"
-                                    FontSize="18"
+                                    FontSize="20"
                                     HorizontalOptions="Fill"
                                     HorizontalTextAlignment="Start"
                                     Text="Aktuelle Arbeiten"
@@ -634,7 +636,7 @@
                                 <Label
                                     Margin="0,-3,0,0"
                                     Padding="0"
-                                    FontSize="12"
+                                    FontSize="13"
                                     HorizontalOptions="Fill"
                                     HorizontalTextAlignment="Start"
                                     Text="Hier sind Sie gerade dabei"
@@ -704,13 +706,14 @@
                     Padding="1"
                     BackgroundColor="#041d43"
                     HorizontalOptions="Fill"
+                        HeightRequest="48"
                     IsVisible="False">
                     <StackLayout
                         x:Name="btn_nachbuchen"
                         Margin="0"
-                        Padding="5"
+                        Padding="4"
                         BackgroundColor="#042d53"
-                        HeightRequest="40"
+                        VerticalOptions="Fill"
                         HorizontalOptions="Fill">
                         <Grid
                             Margin="10,0,0,0"
@@ -749,7 +752,7 @@
                                 <Label
                                     Margin="0"
                                     Padding="0"
-                                    FontSize="18"
+                                    FontSize="20"
                                     HorizontalOptions="Fill"
                                     HorizontalTextAlignment="Start"
                                     Text="Nachbuchen"
@@ -757,7 +760,7 @@
                                 <Label
                                     Margin="0,-3,0,0"
                                     Padding="0"
-                                    FontSize="12"
+                                    FontSize="13"
                                     HorizontalOptions="Fill"
                                     HorizontalTextAlignment="Start"
                                     Text="zu aktuellen Ausführungen"
@@ -800,15 +803,17 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
-                    <RowDefinition Height="*" />
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
+                
+                <!-- Feierabend Button usw...-->
                 <Grid
                     Grid.Row="0"
-                    Margin="10,5,10,10"
-                    Padding="0"
+                    Margin="0"
+                    Padding="5,10"
                     BackgroundColor="Transparent"
                     ColumnSpacing="0"
                     HorizontalOptions="Fill"
@@ -823,14 +828,14 @@
                     <Border
                         x:Name="btn_exitwork"
                         Grid.Column="0"
-                        Margin="2,0,0,0"
+                        Margin="0,0,0,0"
                         Padding="1"
                         BackgroundColor="#04431d"
                         HorizontalOptions="Fill"
-                        IsVisible="False">
+                        IsVisible="True">
                         <StackLayout
                             Margin="0"
-                            Padding="5"
+                            Padding="4"
                             BackgroundColor="#04532d"
                             HeightRequest="40"
                             HorizontalOptions="Fill">
@@ -848,10 +853,10 @@
                                 <Image
                                     x:Name="btn_exitwork_limg"
                                     Grid.Column="0"
-                                    Margin="0,0,6,0"
-                                    HeightRequest="26"
+                                    Margin="0,2,6,0"
+                                    HeightRequest="28"
                                     VerticalOptions="Center"
-                                    WidthRequest="26" />
+                                    WidthRequest="28" />
                                 <VerticalStackLayout
                                     Grid.Column="1"
                                     Margin="0,-4,0,0"
@@ -862,7 +867,7 @@
                                     <Label
                                         Margin="0"
                                         Padding="0"
-                                        FontSize="18"
+                                        FontSize="20"
                                         HorizontalOptions="Fill"
                                         HorizontalTextAlignment="Start"
                                         Text="Feierabend"
@@ -881,7 +886,7 @@
                                             Grid.Column="0"
                                             Margin="0,0,0,0"
                                             Padding="0"
-                                            FontSize="10"
+                                            FontSize="11"
                                             HorizontalOptions="Fill"
                                             HorizontalTextAlignment="Start"
                                             Text="Zuletzt Datum/Zeit"
@@ -900,7 +905,7 @@
                         HorizontalOptions="Fill">
                         <StackLayout
                             Margin="0"
-                            Padding="5"
+                            Padding="4"
                             BackgroundColor="#043d63"
                             HeightRequest="40"
                             HorizontalOptions="Fill">
@@ -919,10 +924,10 @@
                                 <Image
                                     x:Name="btn_objScan_limg"
                                     Grid.Column="0"
-                                    Margin="0,0,8,0"
-                                    HeightRequest="26"
+                                    Margin="0,2,8,0"
+                                    HeightRequest="30"
                                     VerticalOptions="Center"
-                                    WidthRequest="26" />
+                                    WidthRequest="30" />
                                 <VerticalStackLayout
                                     Grid.Column="1"
                                     Margin="0,-4,0,0"
@@ -933,15 +938,15 @@
                                     <Label
                                         Margin="0"
                                         Padding="0"
-                                        FontSize="16"
+                                        FontSize="18"
                                         HorizontalOptions="Fill"
                                         HorizontalTextAlignment="Start"
                                         Text="Objekt scannen"
                                         TextColor="#ffffff" />
                                     <Label
-                                        Margin="0,-3,0,0"
+                                        Margin="0,-4,0,0"
                                         Padding="0"
-                                        FontSize="12"
+                                        FontSize="13"
                                         HorizontalOptions="Fill"
                                         HorizontalTextAlignment="Start"
                                         Text="QR-Code einlesen"
@@ -967,7 +972,7 @@
                         IsVisible="False">
                         <StackLayout
                             Margin="0"
-                            Padding="5"
+                            Padding="4"
                             BackgroundColor="#043d63"
                             HeightRequest="40"
                             HorizontalOptions="Fill">
@@ -987,9 +992,9 @@
                                     x:Name="btn_objNotScan_limg"
                                     Grid.Column="0"
                                     Margin="0,0,8,0"
-                                    HeightRequest="26"
+                                    HeightRequest="28"
                                     VerticalOptions="Center"
-                                    WidthRequest="26" />
+                                    WidthRequest="28" />
                                 <VerticalStackLayout
                                     Grid.Column="1"
                                     Margin="0,-4,0,0"
@@ -1000,18 +1005,18 @@
                                     <Label
                                         Margin="0"
                                         Padding="0"
-                                        FontSize="16"
+                                        FontSize="18"
                                         HorizontalOptions="Fill"
                                         HorizontalTextAlignment="Start"
                                         Text="Objekt"
                                         TextColor="#ffffff" />
                                     <Label
-                                        Margin="0,-3,0,0"
+                                        Margin="0,-4,0,0"
                                         Padding="0"
                                         FontSize="12"
                                         HorizontalOptions="Fill"
                                         HorizontalTextAlignment="Start"
-                                        Text="Auswahl"
+                                        Text="Auswahl ohne Scan"
                                         TextColor="#aaaaaa" />
                                 </VerticalStackLayout>
                                 <Image
@@ -1057,15 +1062,15 @@
                 </Grid>
 
 
-
+                <!-- Tabreiter -->
                 <HorizontalStackLayout
                     x:Name="ObjektPlanWeekMobil_Stack_A"
                     Grid.Row="1"
-                    Margin="2,30,2,0"
+                    Margin="0,20,0,0"
                     Padding="0"
                     HeightRequest="40"
                     HorizontalOptions="Fill"
-                    Spacing="1"
+                    Spacing="2"
                     VerticalOptions="Start">
                     <Border
                         x:Name="frame_plantabA"
@@ -1116,25 +1121,25 @@
                                 <AbsoluteLayout
                                     x:Name="frame_plantabA_badge"
                                     Grid.Column="1"
-                                    Margin="-7,-4,-5,0"
+                                    Margin="-7,-1,-4,0"
                                     AbsoluteLayout.LayoutBounds="0,0,1,1"
                                     AbsoluteLayout.LayoutFlags="None"
                                     BackgroundColor="Transparent"
                                     IsVisible="False">
                                     <Border
                                         Margin="0"
-                                        Padding="1,1,0,0"
+                                        Padding="2"
                                         BackgroundColor="#ff0000"
-                                        HeightRequest="14"
+                                        HeightRequest="15"
                                         HorizontalOptions="Start"
                                         StrokeShape="RoundRectangle 10"
                                         VerticalOptions="Start"
-                                        WidthRequest="14">
+                                        >
                                         <Label
                                             x:Name="frame_plantabA_badge_count"
-                                            Margin="0"
+                                            Margin="0,-2,0,0"
                                             Padding="0"
-                                            FontSize="8"
+                                            FontSize="9"
                                             HorizontalOptions="Center"
                                             HorizontalTextAlignment="Center"
                                             Text="65"
@@ -1190,16 +1195,6 @@
                                         Text="z.B.Winterdienst"
                                         TextColor="#cccccc" />
                                 </VerticalStackLayout>
-                                <!--<AbsoluteLayout x:Name="frame_plantabB_badge" AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="None"
-                                                IsVisible="False" BackgroundColor="Transparent" Margin="-7,-4,-5,0">
-                                    <Border  BackgroundColor="#ff0000"
-                                            HorizontalOptions="Start" VerticalOptions="Start" HeightRequest="14" WidthRequest="14" Margin="0,0,0,0"
-                                            Padding="1" StrokeShape="RoundRectangle 10">
-                                        <Label x:Name="frame_plantabB_badge_count" Text="44"
-                                               Margin="0" Padding="0" HorizontalOptions="Center" VerticalOptions="Center"
-                                               FontSize="8" TextColor="#ffffff" HorizontalTextAlignment="Center" />
-                                    </Border>
-                                </AbsoluteLayout>-->
                             </Grid>
                         </StackLayout>
                     </Border>
@@ -1253,29 +1248,29 @@
                                 <AbsoluteLayout
                                     x:Name="frame_plantabCe_badge"
                                     Grid.Column="1"
-                                    Margin="-6,-4,-5,0"
+                                    Margin="-7,-1,-6,0"
                                     AbsoluteLayout.LayoutBounds="0,0,1,1"
                                     AbsoluteLayout.LayoutFlags="None"
                                     BackgroundColor="Transparent"
                                     IsVisible="True">
                                     <Border
                                         x:Name="frame_plantabCe_badge_col"
-                                        Margin="0,0,0,0"
-                                        Padding="1,1,0,0"
+                                        Margin="0"
+                                        Padding="2"
                                         BackgroundColor="#ff0000"
-                                        HeightRequest="14"
+                                        HeightRequest="15"
                                         HorizontalOptions="Start"
                                         StrokeShape="RoundRectangle 10"
                                         VerticalOptions="Start"
-                                        WidthRequest="14">
+                                        >
                                         <Label
                                             x:Name="frame_plantabCe_badge_count"
-                                            Margin="0"
+                                            Margin="0,-2,0,0"
                                             Padding="0"
-                                            FontSize="8"
+                                            FontSize="9"
                                             HorizontalOptions="Center"
                                             HorizontalTextAlignment="Center"
-                                            Text="1"
+                                            Text="65"
                                             TextColor="#ffffff"
                                             VerticalOptions="Center" />
                                     </Border>
@@ -1283,29 +1278,28 @@
                                 <AbsoluteLayout
                                     x:Name="frame_plantabCe_badge_g"
                                     Grid.Column="2"
-                                    Margin="-10,8,-5,0"
+                                    Margin="-9,-1,-5,0"
                                     AbsoluteLayout.LayoutBounds="0,0,1,1"
                                     AbsoluteLayout.LayoutFlags="None"
                                     BackgroundColor="Transparent"
                                     IsVisible="True">
                                     <Border
                                         x:Name="frame_plantabCe_badge_col_g"
-                                        Margin="0,0,0,0"
-                                        Padding="1,1,0,0"
+                                        Margin="0"
+                                        Padding="2"
                                         BackgroundColor="#009900"
-                                        HeightRequest="14"
+                                        HeightRequest="15"
                                         HorizontalOptions="Start"
                                         StrokeShape="RoundRectangle 10"
-                                        VerticalOptions="Start"
-                                        WidthRequest="14">
+                                        VerticalOptions="Start">
                                         <Label
                                             x:Name="frame_plantabCe_badge_count_g"
-                                            Margin="0"
+                                            Margin="0,-2,0,0"
                                             Padding="0"
-                                            FontSize="8"
+                                            FontSize="9"
                                             HorizontalOptions="Center"
                                             HorizontalTextAlignment="Center"
-                                            Text="1"
+                                            Text="65"
                                             TextColor="#ffffff"
                                             VerticalOptions="Center" />
                                     </Border>
@@ -1362,29 +1356,28 @@
                                 <AbsoluteLayout
                                     x:Name="frame_plantabC_badge"
                                     Grid.Column="1"
-                                    Margin="-7,-4,-5,0"
+                                    Margin="-7,-1,-4,0"
                                     AbsoluteLayout.LayoutBounds="0,0,1,1"
                                     AbsoluteLayout.LayoutFlags="None"
                                     BackgroundColor="Transparent"
                                     IsVisible="False">
                                     <Border
                                         x:Name="frame_plantabC_badge_col"
-                                        Margin="0,0,0,0"
-                                        Padding="1,1,0,0"
+                                        Margin="0"
+                                        Padding="2"
                                         BackgroundColor="#ff0000"
-                                        HeightRequest="14"
+                                        HeightRequest="15"
                                         HorizontalOptions="Start"
                                         StrokeShape="RoundRectangle 10"
-                                        VerticalOptions="Start"
-                                        WidthRequest="14">
+                                        VerticalOptions="Start">
                                         <Label
                                             x:Name="frame_plantabC_badge_count"
-                                            Margin="0"
+                                            Margin="0,-2,0,0"
                                             Padding="0"
-                                            FontSize="8"
+                                            FontSize="9"
                                             HorizontalOptions="Center"
                                             HorizontalTextAlignment="Center"
-                                            Text="44"
+                                            Text="65"
                                             TextColor="#ffffff"
                                             VerticalOptions="Center" />
                                     </Border>
@@ -1397,9 +1390,9 @@
                 <Grid
                     x:Name="ObjektPlanWeekMobil_Stack_B"
                     Grid.Row="2"
-                    Margin="2,-4,2,0"
-                    Padding="1,1,1,1"
-                    BackgroundColor="#041d43"
+                    Margin="0,-4,0,0"
+                    Padding="0"
+                    BackgroundColor="#141d43"
                     HorizontalOptions="Fill"
                     RowSpacing="0"
                     VerticalOptions="Fill">
@@ -1416,9 +1409,9 @@
                         VerticalOptions="Fill">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <Grid
                             x:Name="frame_planConA"
@@ -1441,10 +1434,11 @@
                                 Margin="0"
                                 Padding="0"
                                 BackgroundColor="#99042d53"
-                                ColumnSpacing="0"
+                                ColumnSpacing="5"
+                                    HeightRequest="42"
                                 HorizontalOptions="Fill">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="Auto" />
@@ -1452,7 +1446,7 @@
                                 <HorizontalStackLayout
                                     x:Name="popupContainer_ObjektPlanWeek_Type"
                                     Grid.Column="0"
-                                    Margin="0"
+                                    Margin="0,0,5,0"
                                     Padding="8,3,8,3"
                                     BackgroundColor="#041d43"
                                     HorizontalOptions="Start"
@@ -1460,54 +1454,53 @@
                                     <Image
                                         x:Name="frame_planConA_img_reloadx"
                                         Margin="0,0,0,0"
-                                        HeightRequest="26"
+                                        HeightRequest="28"
                                         HorizontalOptions="Center"
                                         VerticalOptions="Center"
-                                        WidthRequest="26" />
+                                        WidthRequest="28" />
                                     <Border
                                         x:Name="frame_planConA_offen_typecount_con"
                                         Margin="-3,0,0,0"
-                                        Padding="1,1,0,0"
+                                        Padding="1"
                                         BackgroundColor="#ff0000"
                                         HeightRequest="14"
                                         HorizontalOptions="Start"
-                                        IsVisible="False"
+                                        IsVisible="True"
                                         StrokeShape="RoundRectangle 10"
-                                        VerticalOptions="Start"
-                                        WidthRequest="14">
+                                        VerticalOptions="Start">
                                         <Label
                                             x:Name="frame_planConA_typeoffen"
-                                            Margin="0"
-                                            Padding="0"
-                                            FontSize="8"
+                                            Margin="0,-1,0,0"
+                                            Padding="1,0,1,0"
+                                            FontSize="9"
                                             HorizontalOptions="Center"
                                             HorizontalTextAlignment="Center"
-                                            Text="44"
-                                            TextColor="#ffffff"
-                                            VerticalOptions="Center" />
+                                            Text="65"
+                                            TextColor="#ffffff" />
                                     </Border>
                                 </HorizontalStackLayout>
                                 <HorizontalStackLayout
                                     x:Name="popupContainer_ObjektPlanWeek_Reload"
                                     Grid.Column="1"
-                                    Margin="0"
-                                    Padding="5,5,10,5"
-                                    BackgroundColor="Transparent"
-                                    HorizontalOptions="Start"
+                                    Margin="0,0,5,0"
+                                    Padding="5,0,5,5"
+                                    HorizontalOptions="Fill"
+                                    VerticalOptions="Fill"
                                     Spacing="0">
                                     <Image
                                         x:Name="frame_planConA_img_reload"
-                                        Margin="0,3,2,0"
+                                        Margin="5,5,0,0"
                                         HeightRequest="18"
-                                        HorizontalOptions="End"
-                                        VerticalOptions="Start"
+                                        HorizontalOptions="Center"
+                                        VerticalOptions="Center"
                                         WidthRequest="18" />
                                     <Label
                                         x:Name="frame_planConA_reload_text"
-                                        Margin="0"
+                                        Margin="3,3,5,0"
                                         Padding="0,2,2,0"
-                                        FontSize="14"
-                                        LineBreakMode="TailTruncation"
+                                        FontSize="15"
+                                        HorizontalOptions="Center"                                        
+                                        VerticalOptions="Center"
                                         Text="Neu laden"
                                         TextColor="#ffffff" />
                                 </HorizontalStackLayout>
@@ -1515,23 +1508,24 @@
                                     x:Name="popupContainer_ObjektPlanWeek_otherperson"
                                     Grid.Column="2"
                                     Margin="0"
-                                    Padding="5,5,10,5"
-                                    BackgroundColor="Transparent"
-                                    HorizontalOptions="Center"
+                                    Padding="5,0,10,5"
+                                    HorizontalOptions="Fill"
+                                    VerticalOptions="Fill"
                                     Spacing="0">
                                     <Image
                                         x:Name="frame_planConA_img_otherperson"
-                                        Margin="0,3,2,0"
+                                        Margin="5,5,0,0"
                                         HeightRequest="18"
                                         HorizontalOptions="End"
-                                        VerticalOptions="Start"
+                                        VerticalOptions="Center"
                                         WidthRequest="18" />
                                     <Label
                                         x:Name="frame_planConA_otherperson_name"
-                                        Margin="0"
+                                        Margin="3,3,5,0"
                                         Padding="0,2,2,0"
-                                        FontSize="14"
+                                        FontSize="15"
                                         LineBreakMode="TailTruncation"
+                                        VerticalOptions="Center"
                                         Text="Arbeiter"
                                         TextColor="#ffffff" />
                                 </HorizontalStackLayout>
@@ -1539,35 +1533,41 @@
                                     x:Name="popupContainer_quest_daypicker_open"
                                     Grid.Column="3"
                                     Margin="0"
-                                    Padding="5,5,10,5"
-                                    BackgroundColor="Transparent"
-                                    HorizontalOptions="End"
+                                    Padding="5,0,10,5"
+                                    HorizontalOptions="Fill"
+                                    VerticalOptions="Fill"
                                     Spacing="0">
                                     <Label
                                         x:Name="frame_planConA_daytext"
-                                        Margin="0"
-                                        Padding="0,1,2,0"
-                                        FontSize="14"
+                                        Margin="4,3,5,0"
+                                        Padding="0,2,2,0"
+                                        FontSize="15"
                                         LineBreakMode="TailTruncation"
                                         Text="Montag"
-                                        TextColor="#ffffff" />
+                                        TextColor="#ffffff" 
+                                        HorizontalOptions="Start"
+                                        VerticalOptions="Center"/>
                                     <Image
                                         x:Name="frame_planConA_img_down"
-                                        Margin="3,3,0,2"
-                                        HeightRequest="18"
-                                        HorizontalOptions="End"
-                                        VerticalOptions="Start"
-                                        WidthRequest="18" />
+                                        Margin="3,7,0,2"
+                                        HeightRequest="22"
+                                        HorizontalOptions="Start"
+                                        VerticalOptions="Center"
+                                        WidthRequest="22" />
                                 </HorizontalStackLayout>
                             </Grid>
-                            <ScrollView
+                            <!--<ScrollView
                                 x:Name="tourScroller"
                                 Grid.Row="1"
                                 Margin="0"
                                 Padding="0"
                                 HorizontalOptions="Fill"
                                 Orientation="Horizontal"
-                                VerticalOptions="Fill">
+                                VerticalOptions="Fill">-->
+                                <CarouselView Grid.Row="1"
+              x:Name="tourCarousel" x:Name="tourScroller"
+              ItemsSource="{Binding Columns}"
+              IsSwipeEnabled="True">
                                 <Grid
                                     Margin="0"
                                     Padding="0"
@@ -1585,12 +1585,13 @@
                                         HorizontalOptions="Fill"
                                         VerticalOptions="Fill">
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition Width="Auto" />
                                         </Grid.ColumnDefinitions>
                                         <Grid
                                             Grid.Column="0"
+                                            Grid.Row="0"
                                             Margin="0"
                                             Padding="0"
                                             HorizontalOptions="Fill"
@@ -1613,7 +1614,7 @@
                                                     x:Name="frame_planConA_offenheadtxt"
                                                     Margin="3,0,0,1"
                                                     Padding="0"
-                                                    FontSize="18"
+                                                    FontSize="16"
                                                     HorizontalOptions="Start"
                                                     Text="Offene"
                                                     TextColor="#ffffff"
@@ -1632,6 +1633,7 @@
                                                     Padding="0"
                                                     HorizontalOptions="Fill"
                                                     IsVisible="True"
+                                            WidthRequest="388"
                                                     Spacing="0"
                                                     VerticalOptions="Fill" />
                                             </ScrollView>
@@ -1660,7 +1662,7 @@
                                                     x:Name="frame_planConA_erlheadtxt"
                                                     Margin="3,0,0,1"
                                                     Padding="0"
-                                                    FontSize="18"
+                                                    FontSize="16"
                                                     HorizontalOptions="Start"
                                                     Text="Heute Erledigte"
                                                     TextColor="#ffffff"
@@ -1669,7 +1671,7 @@
                                             <ScrollView
                                                 Grid.Row="1"
                                                 Margin="0"
-                                                Padding="0"
+                                                Padding="0" 
                                                 HorizontalOptions="Fill"
                                                 Orientation="Vertical"
                                                 VerticalOptions="Fill">
@@ -1677,6 +1679,7 @@
                                                     x:Name="frame_planListAb"
                                                     Margin="0"
                                                     Padding="0"
+                                            WidthRequest="388"
                                                     HorizontalOptions="Fill"
                                                     IsVisible="True"
                                                     Spacing="0"
@@ -1707,7 +1710,7 @@
                                                     x:Name="frame_planConA_veroffenheadtxt"
                                                     Margin="3,0,0,1"
                                                     Padding="0"
-                                                    FontSize="18"
+                                                    FontSize="16"
                                                     HorizontalOptions="Start"
                                                     Text="Vergangene Offene"
                                                     TextColor="#ffffff"
@@ -1724,6 +1727,7 @@
                                                     x:Name="frame_planListAc"
                                                     Margin="0"
                                                     Padding="0"
+                                            WidthRequest="388"
                                                     HorizontalOptions="Fill"
                                                     IsVisible="True"
                                                     Spacing="0"
@@ -1732,7 +1736,8 @@
                                         </Grid>
                                     </Grid>
                                 </Grid>
-                            </ScrollView>
+                                <!--</ScrollView>-->
+                            </CarouselView>
                             <Grid
                                 Grid.Row="2"
                                 Margin="0"
@@ -1741,8 +1746,8 @@
                                 HorizontalOptions="Fill">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
                                 <Grid
                                     x:Name="frame_planConA_offenbtn"
@@ -2789,7 +2794,6 @@
                         FontSize="12"
                         HorizontalOptions="Fill"
                         HorizontalTextAlignment="Start"
-                        Opacity="0.5"
                         Text="Meine Planliste: - Nicht geladen!"
                         TextColor="Yellow" />
                 </StackLayout>
@@ -5274,14 +5278,62 @@
             RowSpacing="0"
             VerticalOptions="Fill">
             <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
+                <RowDefinition Height="54" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-
+            <Grid
+                Grid.Row="0"
+                Margin="0"
+                Padding="10,10,10,10"
+                ColumnSpacing="0"
+                HeightRequest="48"
+                HorizontalOptions="Fill">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <HorizontalStackLayout
+                    x:Name="btn_back_ObjectValues"
+                    Grid.Column="0"
+                    Margin="0"
+                    Padding="0"
+                    HeightRequest="54"
+                    HorizontalOptions="Start"
+                    VerticalOptions="Center">
+                    <Image
+                        x:Name="btn_back_ObjectValues_img"
+                        Grid.Column="0"
+                        Margin="0,0,0,0"
+                        HeightRequest="30"
+                        HorizontalOptions="Start"
+                        VerticalOptions="Center"
+                        WidthRequest="30" />
+                    <Label
+                        Grid.Column="1"
+                        Margin="0"
+                        FontSize="20"
+                        HorizontalOptions="Start"
+                        HorizontalTextAlignment="Start"
+                        LineBreakMode="TailTruncation"
+                        Text="ZURÜCK"
+                        TextColor="#3f94cd"
+                        VerticalOptions="Center" />
+                </HorizontalStackLayout>
+                <Label
+                    Grid.Column="1"
+                    Margin="0,0,10,0"
+                    FontSize="24"
+                    HorizontalOptions="End"
+                    HorizontalTextAlignment="End"
+                    LineBreakMode="TailTruncation"
+                    Text="Zählerstände"
+                    TextColor="#ffffff"
+                    VerticalOptions="Center" />
+            </Grid>
 
             <Grid
                 x:Name="ObjectValuesPage_position_Container"
-                Grid.Row="0"
+                Grid.Row="1"
                 Margin="0"
                 Padding="0"
                 HorizontalOptions="Fill"
@@ -5292,76 +5344,11 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                <Grid
-                    Grid.Row="0"
-                    Margin="0"
-                    Padding="10,10,10,10"
-                    ColumnSpacing="0"
-                    HeightRequest="48"
-                    HorizontalOptions="Fill">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Border
-                        x:Name="btn_back_ObjectValues"
-                        Grid.Column="0"
-                        Margin="3,2,2,2"
-                        Padding="1"
-                        BackgroundColor="Transparent"
-                        HorizontalOptions="Start"
-                        Stroke="Transparent"
-                        VerticalOptions="Center">
-                        <Grid
-                            Margin="0"
-                            Padding="0"
-                            ColumnSpacing="0"
-                            HeightRequest="38"
-                            HorizontalOptions="Start"
-                            VerticalOptions="Center">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Image
-                                x:Name="btn_back_ObjectValues_img"
-                                Grid.Column="0"
-                                Margin="0,0,0,0"
-                                HeightRequest="30"
-                                HorizontalOptions="Start"
-                                VerticalOptions="Center"
-                                WidthRequest="30" />
-                            <Label
-                                Grid.Column="1"
-                                Margin="0"
-                                FontSize="18"
-                                HorizontalOptions="Start"
-                                HorizontalTextAlignment="Start"
-                                LineBreakMode="TailTruncation"
-                                Text="ZURÜCK"
-                                TextColor="#2f84bd"
-                                VerticalOptions="Center" />
-                        </Grid>
-                    </Border>
-                    <Label
-                        Grid.Column="1"
-                        Margin="0,0,10,0"
-                        FontSize="24"
-                        HorizontalOptions="End"
-                        HorizontalTextAlignment="End"
-                        LineBreakMode="TailTruncation"
-                        Text="Zählerstände"
-                        TextColor="#ffffff"
-                        VerticalOptions="Center" />
-                </Grid>
                 <BoxView
-                    Grid.Row="1"
+                    Grid.Row="0"
                     Margin="0,0,0,0"
                     BackgroundColor="Gray"
                     HeightRequest="1"
@@ -5370,14 +5357,14 @@
 
                 <VerticalStackLayout
                     x:Name="ObjectValues_BuildingInfo"
-                    Grid.Row="2"
+                    Grid.Row="1"
                     Margin="0"
                     Padding="0"
                     HorizontalOptions="Fill"
                     Spacing="0" />
 
                 <Grid
-                    Grid.Row="3"
+                    Grid.Row="2"
                     Margin="0,5,0,0"
                     Padding="0"
                     ColumnSpacing="0"
@@ -5400,6 +5387,7 @@
                         TextColor="#ffffff"
                         VerticalTextAlignment="End" />
                     <Border
+                            x:Name="btn_objectValuesNow"
                         Grid.Column="1"
                         Margin="3,2,2,2"
                         Padding="1"
@@ -5408,18 +5396,17 @@
                         HorizontalOptions="End"
                         VerticalOptions="Center">
                         <StackLayout
-                            x:Name="btn_objectValuesNow"
                             Margin="0"
-                            Padding="4"
+                            Padding="4,3,4,4"
                             BackgroundColor="#999999"
                             HeightRequest="38"
-                            HorizontalOptions="End"
+                            HorizontalOptions="Center"
                             Spacing="0"
                             VerticalOptions="Center">
                             <Label
-                                Margin="0"
+                                Margin="0,5,0,0"
                                 Padding="5,0,5,0"
-                                FontSize="16"
+                                FontSize="18"
                                 HorizontalOptions="Center"
                                 Text="Aktuell"
                                 TextColor="#ffffff"
@@ -5427,26 +5414,26 @@
                         </StackLayout>
                     </Border>
                     <Border
+                            x:Name="btn_objectValuesToday"
                         Grid.Column="2"
-                        Margin="3,2,2,2"
+                        Margin="13,2,2,2"
                         Padding="1"
                         BackgroundColor="#041d43"
                         HeightRequest="38"
                         HorizontalOptions="End"
                         VerticalOptions="Center">
                         <StackLayout
-                            x:Name="btn_objectValuesToday"
-                            Margin="0"
-                            Padding="4"
+                            Margin="0,5,0,0"
+                            Padding="4,3,4,4"
                             BackgroundColor="#042d53"
                             HeightRequest="38"
-                            HorizontalOptions="End"
+                            HorizontalOptions="Center"
                             Spacing="0"
                             VerticalOptions="Center">
                             <Label
                                 Margin="0"
                                 Padding="5,0,5,0"
-                                FontSize="16"
+                                FontSize="18"
                                 HorizontalOptions="Center"
                                 Text="Heute abgelesen"
                                 TextColor="#ffffff"
@@ -5455,19 +5442,13 @@
                     </Border>
                 </Grid>
 
-                <BoxView
-                    Grid.Row="4"
-                    Margin="0,0,0,0"
-                    BackgroundColor="Gray"
-                    HeightRequest="1"
-                    HorizontalOptions="Fill"
-                    VerticalOptions="Start" />
 
                 <ScrollView
                     x:Name="scroll_ObjectValuesStack"
-                    Grid.Row="5"
+                    Grid.Row="3"
                     Margin="0,0,0,17"
                     Padding="0"
+                    BackgroundColor="Black"
                     HorizontalOptions="Fill"
                     VerticalOptions="Fill">
                     <VerticalStackLayout
@@ -5481,7 +5462,7 @@
                 </ScrollView>
                 <ScrollView
                     x:Name="scroll_ObjectValuesStackChangedToday"
-                    Grid.Row="6"
+                    Grid.Row="3"
                     Margin="0,0,0,17"
                     Padding="0"
                     HorizontalOptions="Fill"
@@ -5499,77 +5480,57 @@
             </Grid>
 
 
-            <StackLayout
+            <VerticalStackLayout
                 x:Name="ObjectValuesPage_Edit_Container"
                 Grid.Row="1"
                 Margin="0"
                 Padding="0"
                 HorizontalOptions="Fill"
                 IsVisible="False"
-                Spacing="0"
+                Spacing="0" 
+                BackgroundColor="Black"
                 VerticalOptions="Fill">
 
                 <Grid
-                    Margin="0"
-                    Padding="10,10,10,10"
+                    Margin="0,-54,0,0"
+                    Padding="6,10,10,10"
                     ColumnSpacing="0"
-                    HeightRequest="48"
+                    HeightRequest="54"
+                    BackgroundColor="Black"
                     HorizontalOptions="Fill">
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <Border
+                    
+                    <HorizontalStackLayout
+                        x:Name="btn_back_ObjectValues_edit"
                         Grid.Column="0"
-                        Margin="3,2,2,2"
-                        Padding="1"
-                        BackgroundColor="Transparent"
+                        Margin="0"
+                        Padding="0"
+                        HeightRequest="54"
                         HorizontalOptions="Start"
-                        Stroke="Transparent"
                         VerticalOptions="Center">
-                        <Grid
-                            x:Name="btn_back_ObjectValues_edit"
-                            Margin="0"
-                            Padding="0"
-                            ColumnSpacing="0"
-                            HeightRequest="38"
+                        <Image
+                            x:Name="btn_back_ObjectValues_edit_img"
+                            Margin="0,0,0,0"
+                            HeightRequest="30"
                             HorizontalOptions="Start"
-                            VerticalOptions="Center">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Image
-                                x:Name="btn_back_ObjectValues_edit_img"
-                                Grid.Column="0"
-                                Margin="0,0,0,0"
-                                HeightRequest="30"
-                                HorizontalOptions="Start"
-                                VerticalOptions="Center"
-                                WidthRequest="30" />
-                            <Label
-                                Grid.Column="1"
-                                Margin="0"
-                                FontSize="18"
-                                HorizontalOptions="Start"
-                                HorizontalTextAlignment="Start"
-                                LineBreakMode="TailTruncation"
-                                Text="ABBRECHEN"
-                                TextColor="#2f84bd"
-                                VerticalOptions="Center" />
-                        </Grid>
-                    </Border>
-                    <Image
-                        x:Name="objectValues_edit_img"
-                        Grid.Column="1"
-                        Margin="0,0,10,0"
-                        HeightRequest="30"
-                        HorizontalOptions="End"
-                        VerticalOptions="Center"
-                        WidthRequest="30" />
+                            VerticalOptions="Center"
+                            WidthRequest="30" />
+                        <Label
+                            Margin="0"
+                            FontSize="20"
+                            HorizontalOptions="Start"
+                            HorizontalTextAlignment="Start"
+                            LineBreakMode="TailTruncation"
+                            Text="ABBRECHEN"
+                            TextColor="#3f94cd"
+                            VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+                    
                     <Label
-                        Grid.Column="2"
+                        Grid.Column="1"
                         Margin="0,0,10,0"
                         FontSize="24"
                         HorizontalOptions="End"
@@ -5601,7 +5562,7 @@
                     Spacing="0" />
 
 
-            </StackLayout>
+            </VerticalStackLayout>
 
         </Grid>
 
@@ -5617,116 +5578,6 @@
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             AbsoluteLayout.LayoutFlags="All" />
 
-<!--
-
-        <Grid
-            x:Name="MapPage_Container"
-            Margin="0,0,0,0"
-            Padding="0"
-            AbsoluteLayout.LayoutBounds="0,0,1,1"
-            AbsoluteLayout.LayoutFlags="All"
-            HorizontalOptions="Fill"
-            IsVisible="False"
-            RowSpacing="0"
-            VerticalOptions="Fill">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-
-            <Grid
-                x:Name="MapPage_position_Container"
-                Grid.Row="0"
-                Margin="0"
-                Padding="0"
-                HorizontalOptions="Fill"
-                IsVisible="True"
-                RowSpacing="0"
-                VerticalOptions="Fill">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-
-                <Grid
-                    Grid.Row="0"
-                    Margin="0"
-                    Padding="10,10,10,10"
-                    ColumnSpacing="0"
-                    HeightRequest="54"
-                    HorizontalOptions="Fill">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <HorizontalStackLayout
-                        x:Name="btn_back_map"
-                        Grid.Column="0"
-                        Margin="0"
-                        Padding="0"
-                        HeightRequest="54"
-                        HorizontalOptions="Start"
-                        VerticalOptions="Fill">
-                        <Image
-                            x:Name="btn_back_map_img"
-                            Grid.Column="0"
-                            Margin="0,0,0,0"
-                            HeightRequest="30"
-                            HorizontalOptions="Start"
-                            VerticalOptions="Center"
-                            WidthRequest="30" />
-                        <Label
-                            Grid.Column="1"
-                            Margin="0"
-                            FontSize="20"
-                            HorizontalOptions="Start"
-                            HorizontalTextAlignment="Start"
-                            LineBreakMode="TailTruncation"
-                            Text="ZURÜCK"
-                            TextColor="#3f94cd"
-                            VerticalOptions="Center" />
-                    </HorizontalStackLayout>
-                    <Label
-                        Grid.Column="1"
-                        Margin="0,0,10,0"
-                        FontSize="24"
-                        HorizontalOptions="End"
-                        HorizontalTextAlignment="End"
-                        LineBreakMode="TailTruncation"
-                        Text="Tages-Route"
-                        TextColor="#ffffff"
-                        VerticalOptions="Center" />
-                </Grid>
-                <BoxView
-                    Grid.Row="1"
-                    Margin="0,0,0,0"
-                    BackgroundColor="Gray"
-                    HeightRequest="1"
-                    HorizontalOptions="Fill"
-                    VerticalOptions="Start" />
-
-
-                <VerticalStackLayout
-                    x:Name="MapPageStack"
-                    Grid.Row="2"
-                    Margin="0"
-                    Padding="0"
-                    BackgroundColor="Aqua"
-                    HorizontalOptions="Fill"
-                    MinimumHeightRequest="100"
-                    Spacing="0"
-                    VerticalOptions="Fill">
-                    <Grid x:Name="MapPage_Map" />
-                </VerticalStackLayout>
-
-
-
-
-            </Grid>
-
-        </Grid>
-
--->
 
         <views:DSGVOPageContainerView
             x:Name="DSGVOPageContainerView"
@@ -6940,11 +6791,9 @@
 
 
         <views:PopupContainerObjectValuesBildView
-            x:Name="popupContainer_objectvaluesbild"
+            x:Name="PopupContainerObjectValuesBild"
             AbsoluteLayout.LayoutBounds="0,0,1,1"
-            AbsoluteLayout.LayoutFlags="All"
-            BackgroundColor="#88000000"
-            IsVisible="False" />
+            AbsoluteLayout.LayoutFlags="All" />
 
         <AbsoluteLayout
             x:Name="panelShowSelectedPos_Container"
@@ -8710,6 +8559,7 @@
             </VerticalStackLayout>
 
         </AbsoluteLayout>
+
         <AbsoluteLayout
             x:Name="popupContainer_quest_sendlog_fail"
             AbsoluteLayout.LayoutBounds="0,0,1,1"

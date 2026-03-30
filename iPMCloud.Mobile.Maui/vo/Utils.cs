@@ -46,6 +46,27 @@ namespace iPMCloud.Mobile
 
         }
 
+
+        private static readonly CultureInfo De = CultureInfo.GetCultureInfo("de-DE");
+
+        public static DateTime GetCurrentGermanDateTime()
+        {
+            string timeZoneId = "Europe/Berlin";
+            var tz = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
+            var nowTz = TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, tz);
+            return nowTz.DateTime;
+        }
+
+        public static string GetCurrentGermanDateTimeString()
+        {
+            string format = "dd.MM.yyyy - HH:mm";
+            string timeZoneId = "Europe/Berlin";
+            var tz = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
+            var nowTz = TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, tz);
+            return nowTz.ToString(format, De);
+        }
+
+
         /*********************************************************************************/
         /*********************************************************************************/
         /*********************************************************************************/

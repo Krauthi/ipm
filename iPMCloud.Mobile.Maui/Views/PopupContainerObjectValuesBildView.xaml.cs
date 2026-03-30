@@ -1,3 +1,5 @@
+using iPMCloud.Mobile.vo;
+
 namespace iPMCloud.Mobile.Views
 {
     public partial class PopupContainerObjectValuesBildView : ContentView
@@ -15,5 +17,38 @@ namespace iPMCloud.Mobile.Views
         {
             InitializeComponent();
         }
+
+
+        public void SetVisible(bool visible)
+        {
+            //Zählerfoto
+            BtnNewPhotoImg.Source = AppModel.Instance.imagesBase.Cam;
+
+            //Flashlight in ObjektValuesEdit ...
+            BtnNewPhoto.GestureRecognizers.Clear();
+            var tgr_btn_newphoto_objectvaluesbild = new TapGestureRecognizer();
+            tgr_btn_newphoto_objectvaluesbild.Tapped += async (s, e) => 
+                await AppModel.Instance.MainPage.btn_takePhotoForMeterstand(s, e);
+            BtnNewPhoto.GestureRecognizers.Add(tgr_btn_newphoto_objectvaluesbild);
+
+            BtnSend.GestureRecognizers.Clear();
+            var tgr_btn_send_objectvaluesbild = new TapGestureRecognizer();
+            tgr_btn_send_objectvaluesbild.Tapped += AppModel.Instance.MainPage.btn_sendPhotoForMeterstand;
+            BtnSend.GestureRecognizers.Add(tgr_btn_send_objectvaluesbild);
+            
+            BtnCancel.GestureRecognizers.Clear();
+            var tgr_btn_cancel_objectvaluesbild = new TapGestureRecognizer();
+            tgr_btn_cancel_objectvaluesbild.Tapped += (object o, TappedEventArgs ev) =>
+                {
+                    AppModel.Instance.MainPage.RemoveObjektMeterStandBild(); 
+                    popupContainer_objectvaluesbild.IsVisible = false; 
+                };
+            BtnCancel.GestureRecognizers.Add(tgr_btn_cancel_objectvaluesbild);
+
+            popupContainer_objectvaluesbild.IsVisible = visible;
+
+        }
+
+
     }
 }

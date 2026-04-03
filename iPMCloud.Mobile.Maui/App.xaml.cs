@@ -37,6 +37,16 @@ namespace iPMCloud.Mobile
         {
 
             InitializeComponent();
+            var lad = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            System.Diagnostics.Debug.WriteLine("LAD=" + lad);
+
+            var logDir = Path.Combine(lad, "logs");
+            Directory.CreateDirectory(logDir);
+
+            File.AppendAllText(Path.Combine(logDir, "where-am-i.txt"), DateTime.Now.ToString("O") + " LAD=" + lad + "\n");
+
+
+
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             try
             {

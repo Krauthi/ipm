@@ -466,6 +466,8 @@ namespace iPMCloud.Mobile
         {
             try
             {
+                // NLog is initialized early in MauiProgram.CreateMauiApp().
+                // This call is kept for safety but is a no-op if already configured.
                 var assembly = GetType().Assembly;
                 var assemblyName = assembly.GetName().Name;
                 new LogService().Initialize(assembly, assemblyName);

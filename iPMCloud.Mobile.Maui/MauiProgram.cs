@@ -11,6 +11,17 @@ namespace iPMCloud.Mobile
     {
         public static MauiApp CreateMauiApp()
         {
+            // Initialize NLog as early as possible, before App() constructor runs,
+            // to ensure all startup log calls are captured.
+            try
+            {
+                new LogService().Initialize(typeof(MauiProgram).Assembly, "iPMCloud.Mobile.Maui");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"NLog initialization failed: {ex.Message}");
+            }
+
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
@@ -41,7 +52,6 @@ namespace iPMCloud.Mobile
             // TODO: Initialize Firebase
             // TODO: Initialize Maps
             // TODO: Initialize ZXing Scanner
-            // TODO: Initialize NLog
             // TODO: Configure Permissions
 
             return builder.Build();

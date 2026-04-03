@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Diagnostics;
 using Microsoft.Maui.Controls;
 using System.Threading.Tasks;
 using System.Threading;
@@ -78,7 +79,7 @@ namespace iPMCloud.Mobile.vo
                             AppModel.Instance.StartPage = StartPageObj;
                         }
                         var startPage = StartPageObj.GetPage(subPage);
-                        SetPage(startPage);
+                        await SetPageAsync(startPage);
                         AppModel.Instance.StartPage.StartPageAgain();
                     }
                     else
@@ -102,10 +103,21 @@ namespace iPMCloud.Mobile.vo
                             MainPageObj = new MainPage();
                             AppModel.Instance.MainPage = MainPageObj;
                         }
-                        var mainPageContent = MainPageObj.GetPage(subPage); 
-                        SetPage(mainPageContent);
-
+#if DEBUG
+                        var sw = Stopwatch.StartNew();
+                        var mainPageContent = MainPageObj.GetPage(subPage);
+                        AppModel.Logger.Debug($"[Timing] GetPage('{subPage}') done in {sw.ElapsedMilliseconds}ms");
+                        sw.Restart();
+                        await SetPageAsync(mainPageContent);
+                        AppModel.Logger.Debug($"[Timing] SetPageAsync done in {sw.ElapsedMilliseconds}ms");
+                        sw.Restart();
                         AppModel.Instance.MainPage.MainPageAgain();
+                        AppModel.Logger.Debug($"[Timing] MainPageAgain done in {sw.ElapsedMilliseconds}ms");
+#else
+                        var mainPageContent = MainPageObj.GetPage(subPage);
+                        await SetPageAsync(mainPageContent);
+                        AppModel.Instance.MainPage.MainPageAgain();
+#endif
                     }
                     else
                     {
@@ -140,34 +152,31 @@ namespace iPMCloud.Mobile.vo
             }
         }
 
-        private static void SetPage(Page targetPage)
+        private static async Task SetPageAsync(Page targetPage)
         {
-            var wA = AppModel.Instance?.App.Windows;
-            var wB = Application.Current?.Windows;
-
-            var appl = Application.Current != null ? Application.Current :AppModel.Instance?.App;
-            if (appl == null) { 
+            var appl = Application.Current ?? AppModel.Instance?.App;
+            if (appl == null)
+            {
                 AppModel.Logger.Error("ERROR: Unable to set page - Application instance is null.");
                 return;
             }
 
-
-            if (appl.Windows != null && appl.Windows.Count > 0)
+            await MainThread.InvokeOnMainThreadAsync(async () =>
             {
-                // ✅ Normalfall: Window bereits vorhanden
-                appl.Windows[0].Page = targetPage;
-                AppModel.Logger.Info("SetPage: Page gesetzt via Windows[0]");
-            }
-            else
-            {
-                // ⚠️ Window noch nicht bereit → kurz warten und nochmal versuchen
-                AppModel.Logger.Warn("SetPage: Windows noch leer – starte Retry...");
-                MainThread.BeginInvokeOnMainThread(async () =>
+                if (appl.Windows != null && appl.Windows.Count > 0)
                 {
+                    // ✅ Normalfall: Window bereits vorhanden
+                    appl.Windows[0].Page = targetPage;
+                    AppModel.Logger.Info("SetPage: Page gesetzt via Windows[0]");
+                }
+                else
+                {
+                    // ⚠️ Window noch nicht bereit → kurz warten und nochmal versuchen
+                    AppModel.Logger.Warn("SetPage: Windows noch leer – starte Retry...");
                     int retries = 0;
                     while ((appl.Windows == null || appl.Windows.Count == 0) && retries < 20)
                     {
-                        await Task.Delay(100); // 100ms warten
+                        await Task.Delay(50);
                         retries++;
                     }
 
@@ -181,8 +190,8 @@ namespace iPMCloud.Mobile.vo
                         AppModel.Logger.Error("SetPage: Windows auch nach Retry leer – Fallback MainPage");
                         appl.MainPage = targetPage;
                     }
-                });
-            }
+                }
+            });
         }
 
         public bool NavigateBackToPreviousPage()

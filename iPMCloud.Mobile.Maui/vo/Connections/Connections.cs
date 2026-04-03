@@ -873,6 +873,9 @@ namespace iPMCloud.Mobile.vo
                 log = log
             });
 
+            // TODO: Log wieder freigeben
+            return true;
+
             HttpRequestMessage msg = new HttpRequestMessage(HttpMethod.Post, uri_Log);
             msg.Content = new StringContent(args, Encoding.UTF8, "application/json");
 

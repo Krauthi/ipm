@@ -78,50 +78,58 @@ namespace iPMCloud.Mobile
             MainPageAgain();
         }
 
-        public void MainPageAgain()
+        public async void MainPageAgain()
         {
-            isInitialize = true;
-            //AppModel.Instance.anImage = backgroundIMG;
-
-            AppModel.Instance.MainPageOverlay = overlay;
-
-            AppModel.Instance._showall_again_OrderCategory_frame = btn_back_inBuildingOrder_category_showall_again;
-            AppModel.Instance._showall_OrderCategory_frame = btn_back_inBuildingOrder_category_showall;
-
-            AppModel.Instance.Lang = Lang.Load();
-
-            ShowDisconnected();
-
-            var checkPerm = CheckPermissions().Result;
-            if (checkPerm)
+            try
             {
-                CheckAllSyncFromUpload();
+                isInitialize = true;
+                //AppModel.Instance.anImage = backgroundIMG;
 
-                InitStartPageHandlers();
+                AppModel.Instance.MainPageOverlay = overlay;
 
+                AppModel.Instance._showall_again_OrderCategory_frame = btn_back_inBuildingOrder_category_showall_again;
+                AppModel.Instance._showall_OrderCategory_frame = btn_back_inBuildingOrder_category_showall;
 
-                //ObjektPlanWeekMobile.Delete(AppModel.Instance);
-                // Objekte sycnen erforderlich nach 4 Stunden
-                SyncBuilding();
-                // ***  Wird mit BuildSync ausgeführt !!! ***
-                // ***  Init_PlanTabs(((int)DateTime.Now.DayOfWeek));
-                // Gespeichert PlanPerson KW vom Mobile Laden wenn vorhanden.
-                if (AppModel.Instance.AppControll.showObjektPlans)
+                AppModel.Instance.Lang = Lang.Load();
+
+                ShowDisconnected();
+
+                var checkPerm = await CheckPermissions();
+                if (checkPerm)
                 {
-                    //var PlanResponse = ObjektPlanWeekMobile.Load(AppModel.Instance);
-                    //if (PlanResponse != null) { AppModel.Instance.PlanResponse = PlanResponse; }
-                    Fill_DayPicker();
+                    CheckAllSyncFromUpload();
+
+                    InitStartPageHandlers();
+
+
+                    //ObjektPlanWeekMobile.Delete(AppModel.Instance);
+                    // Objekte sycnen erforderlich nach 4 Stunden
+                    SyncBuilding();
+                    // ***  Wird mit BuildSync ausgeführt !!! ***
+                    // ***  Init_PlanTabs(((int)DateTime.Now.DayOfWeek));
+                    // Gespeichert PlanPerson KW vom Mobile Laden wenn vorhanden.
+                    if (AppModel.Instance.AppControll.showObjektPlans)
+                    {
+                        //var PlanResponse = ObjektPlanWeekMobile.Load(AppModel.Instance);
+                        //if (PlanResponse != null) { AppModel.Instance.PlanResponse = PlanResponse; }
+                        Fill_DayPicker();
+                    }
+
+                    GetChecksInfo(checkInfoLastView);
+
+
+                    AppModel.Instance.allPositionInWork = LeistungPackWSO.Load(AppModel.Instance);
+                    ShowMainPage();
                 }
-
-                GetChecksInfo(checkInfoLastView);
-
-
-                AppModel.Instance.allPositionInWork = LeistungPackWSO.Load(AppModel.Instance);
-                ShowMainPage();
+                else
+                {
+                    DisplayAlertAsync("Fehlende Berechtigungen!", "Bitte beenden Sie die App und starten diese neu!\n\nAktivieren Sie nach dem neustart die benötigten Berechtigungen!", "OK");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                DisplayAlertAsync("Fehlende Berechtigungen!", "Bitte beenden Sie die App und starten diese neu!\n\nAktivieren Sie nach dem neustart die benötigten Berechtigungen!", "OK");
+                AppModel.Logger.Error("Fehler in MainPageAgain: " + ex.Message + " | StackTrace: " + ex.StackTrace);
+                DisplayAlertAsync("Fehler!", "Es ist ein Fehler aufgetreten! Bitte senden Sie uns die Mobile LOG über die Einstellungen, damit wir das Problem analysieren können.", "OK");
             }
         }
 
@@ -176,20 +184,35 @@ namespace iPMCloud.Mobile
             frame_planListCefaellig.Children.Clear();// = null;
             frame_planListCeerl.Children.Clear();// = null;
 
-            frame_planListCeoffen.Children.Add(Check.GetOffeneList(
-                checks.Where(_ => _.lastStateOfCheck_a == "Offen").ToList(), frame_planListCeoffen.Width,
-                new Command<IntBoolParam>(StartOrOpenCheckA)
+            var oa = checks.Where(_ => _.lastStateOfCheck_a == "Offen").ToList();
+            var ob = checks.Where(_ => _.lastStateOfCheck_a != "Offen"
+                    && _.naeststeFaelligkeitDate < 8
+                    && _.berechnunginterval > 0).ToList();
+            var oc = checks.Where(_ => (_.lastStateOfCheck_a != "Offen" 
+                && _.naeststeFaelligkeitDate >= 8) 
+                || (_.lastStateOfCheck_a != "Offen" 
+                && _.berechnunginterval == 0)).ToList();
+
+            foreach (var oaI in oa)
+            {
+                frame_planListCeoffen.Children.Add(Check.GetOffeneList(
+                    oaI, screenWidthDp, new Command<IntBoolParam>(StartOrOpenCheckA)
+                    ));
+            }
+            foreach (var obI in ob)
+            {
+                frame_planListCefaellig.Children.Add(Check.GetOffeneList(
+                obI, screenWidthDp, new Command<IntBoolParam>(StartOrOpenCheckA)
                 ));
-            frame_planListCefaellig.Children.Add(Check.GetOffeneList(
-                checks.Where(_ => _.lastStateOfCheck_a != "Offen" && _.naeststeFaelligkeitDate < 8 && _.berechnunginterval > 0).ToList(), frame_planListCeoffen.Width,
-                new Command<IntBoolParam>(StartOrOpenCheckA)
-                ));
+            }
             if (checkInfoLastView == 99)
             {
-                frame_planListCeerl.Children.Add(Check.GetOffeneList(
-                    checks.Where(_ => (_.lastStateOfCheck_a != "Offen" && _.naeststeFaelligkeitDate >= 8) || (_.lastStateOfCheck_a != "Offen" && _.berechnunginterval == 0)).ToList(), frame_planListCeoffen.Width,
-                    new Command<IntBoolParam>(StartOrOpenCheckA)
+                foreach (var ocI in oc)
+                {
+                    frame_planListCeerl.Children.Add(Check.GetOffeneList(
+                    ocI, screenWidthDp, new Command<IntBoolParam>(StartOrOpenCheckA)
                     ));
+                }
                 frame_planConCe_erlhead.IsVisible = true;
             }
             else
@@ -2516,11 +2539,29 @@ namespace iPMCloud.Mobile
 
         private async void daypicker_SelectedIndexChanged(object o, int day)
         {
-            await tourScroller.ScrollToAsync(0, 0, false);
+            //await tourScroller.ScrollToAsync(0, 0, false);
+            frame_planConA_offenGrid.IsVisible = true;
+            frame_planConA_erlGrid.IsVisible = false;
+            frame_planConA_veroffenGrid.IsVisible = false;
+
             popupContainer_quest_daypicker.IsVisible = false;
             var xday = int.Parse(((Label)o).ClassId);
             Update_PlanTabs(xday);
         }
+
+        async Task FadeIn(View v)
+        {//frame_planConA_offenhead
+            v.Opacity = 0;
+            v.IsVisible = true;
+            await v.FadeToAsync(1, 800, Easing.CubicOut);
+        }
+
+        async Task FadeOut(View v)
+        {
+            await v.FadeToAsync(0, 200, Easing.CubicIn);
+            v.IsVisible = false;
+        }
+
         private void Fill_DayPicker()
         {
             double w = screenWidthDp - 13;
@@ -2565,29 +2606,57 @@ namespace iPMCloud.Mobile
 
             frame_planConA_offenbtn.GestureRecognizers.Clear();
             var t_frame_planConA_offentxt = new TapGestureRecognizer();
-            t_frame_planConA_offentxt.Tapped -= async (object o, TappedEventArgs ev) => { await tourScroller.ScrollToAsync(0, 0, true); };
-            t_frame_planConA_offentxt.Tapped += async (object o, TappedEventArgs ev) => { await tourScroller.ScrollToAsync(0, 0, true); };
+            t_frame_planConA_offentxt.Tapped += async (object o, TappedEventArgs ev) =>
+            {
+                frame_planConA_offenGrid.IsVisible = true;
+                frame_planConA_erlGrid.IsVisible = false;
+                frame_planConA_veroffenGrid.IsVisible = false;
+                frame_planConA_erlhead.IsVisible = false;
+                frame_planConA_veroffenhead.IsVisible = false;
+                FadeIn(frame_planConA_offenhead);
+            };
             frame_planConA_offenbtn.GestureRecognizers.Add(t_frame_planConA_offentxt);
+
             frame_planConA_erlbtn.GestureRecognizers.Clear();
             var t_frame_planConA_erltxt = new TapGestureRecognizer();
-            t_frame_planConA_erltxt.Tapped -= async (object o, TappedEventArgs ev) => { await tourScroller.ScrollToAsync(tabContentWidth * 1, 0, true); };
-            t_frame_planConA_erltxt.Tapped += async (object o, TappedEventArgs ev) => { await tourScroller.ScrollToAsync(tabContentWidth * 1, 0, true); };
+            t_frame_planConA_erltxt.Tapped += async (object o, TappedEventArgs ev) => {
+                frame_planConA_offenGrid.IsVisible = false;
+                frame_planConA_erlGrid.IsVisible = true;
+                frame_planConA_offenhead.IsVisible = false;
+                frame_planConA_veroffenhead.IsVisible = false;
+                FadeIn(frame_planConA_erlhead);
+                frame_planConA_veroffenGrid.IsVisible = false; 
+            };
             frame_planConA_erlbtn.GestureRecognizers.Add(t_frame_planConA_erltxt);
             frame_planConA_veroffenbtn.GestureRecognizers.Clear();
             var t_frame_planConA_veroffentxt = new TapGestureRecognizer();
-            t_frame_planConA_veroffentxt.Tapped -= async (object o, TappedEventArgs ev) => { await tourScroller.ScrollToAsync(tabContentWidth * 2, 0, true); };
-            t_frame_planConA_veroffentxt.Tapped += async (object o, TappedEventArgs ev) => { await tourScroller.ScrollToAsync(tabContentWidth * 2, 0, true); };
+            t_frame_planConA_veroffentxt.Tapped += async (object o, TappedEventArgs ev) => {
+                frame_planConA_offenGrid.IsVisible = false;
+                frame_planConA_erlGrid.IsVisible = false;
+                frame_planConA_veroffenGrid.IsVisible = true;
+                frame_planConA_offenhead.IsVisible = false;
+                frame_planConA_erlhead.IsVisible = false;
+                FadeIn(frame_planConA_veroffenhead);
+            };
             frame_planConA_veroffenbtn.GestureRecognizers.Add(t_frame_planConA_veroffentxt);
 
             frame_planConB_offenbtn.GestureRecognizers.Clear();
             var t_frame_planConB_offentxt = new TapGestureRecognizer();
-            t_frame_planConB_offentxt.Tapped -= async (object o, TappedEventArgs ev) => { await tourScrollerB.ScrollToAsync(0, 0, true); };
-            t_frame_planConB_offentxt.Tapped += async (object o, TappedEventArgs ev) => { await tourScrollerB.ScrollToAsync(0, 0, true); };
+            t_frame_planConB_offentxt.Tapped += async (object o, TappedEventArgs ev) => {
+                tourScrollerB_containerA.IsVisible = true;
+                tourScrollerB_containerB.IsVisible = false;
+                frame_planConB_erlhead.IsVisible = false;
+                FadeIn(frame_planConB_offenhead);
+            };
             frame_planConB_offenbtn.GestureRecognizers.Add(t_frame_planConB_offentxt);
             frame_planConB_erlbtn.GestureRecognizers.Clear();
             var t_frame_planConB_erltxt = new TapGestureRecognizer();
-            t_frame_planConB_erltxt.Tapped -= async (object o, TappedEventArgs ev) => { await tourScrollerB.ScrollToAsync(tabContentWidth * 1, 0, true); };
-            t_frame_planConB_erltxt.Tapped += async (object o, TappedEventArgs ev) => { await tourScrollerB.ScrollToAsync(tabContentWidth * 1, 0, true); };
+            t_frame_planConB_erltxt.Tapped += async (object o, TappedEventArgs ev) => {
+                tourScrollerB_containerA.IsVisible = false; 
+                tourScrollerB_containerB.IsVisible = true;
+                frame_planConB_offenhead.IsVisible = false; 
+                FadeIn(frame_planConB_erlhead);
+            };
             frame_planConB_erlbtn.GestureRecognizers.Add(t_frame_planConB_erltxt);
 
             frame_planConC_offenbtn.GestureRecognizers.Clear();
@@ -2938,7 +3007,7 @@ namespace iPMCloud.Mobile
 
         public void Init_PlanTabs()
         {
-            var w = screenWidthDp - 13;
+            var w = screenWidthDp;
             frame_planConA_veroffen.Text = "";//Badge Counter
             frame_planConA_veroffentxt.Text = "Vergangene\r\nOffene";
             frame_planConA_veroffen_count_con.IsVisible = false;
@@ -3070,23 +3139,21 @@ namespace iPMCloud.Mobile
 
                             var objekt = AppModel.Instance.AllBuildings.Find(ob => ob.id == p.objektid);
                             var stack = ObjektPlanWeekMobile.GetPlanedTodayList(p, new Command<IntBoolParam>(SelectedObjektAufterNotScan));
-                            var containerA = new StackLayout
+                            var containerA = new VerticalStackLayout
                             {
                                 Padding = new Thickness(0),
                                 Margin = new Thickness(0),
                                 Spacing = 0,
-                                Orientation = StackOrientation.Vertical,
                                 HorizontalOptions = LayoutOptions.Fill,
                                 Children = { stack },
                                 ClassId = p.muelltoid > 0 ? "Muell" : "",
                                 IsVisible = AppModel.Instance.AppSetModel.ViewOnlyMuell == 0 || AppModel.Instance.AppSetModel.ViewOnlyMuell == 1 && p.muelltoid == 0 || AppModel.Instance.AppSetModel.ViewOnlyMuell == 2 && p.muelltoid > 0
                             };
-                            var containerB = new StackLayout
+                            var containerB = new VerticalStackLayout
                             {
                                 Padding = new Thickness(0),
                                 Margin = new Thickness(0),
                                 Spacing = 0,
-                                Orientation = StackOrientation.Vertical,
                                 HorizontalOptions = LayoutOptions.Fill,
                                 IsVisible = false
                             };
@@ -3166,22 +3233,20 @@ namespace iPMCloud.Mobile
                                 {
                                     var build = AppModel.Instance.AllBuildings.Find(ob => ob.id == p.objektid);
                                     var stack = ObjektPlanWeekMobile.GetPlanedTodayList(p, new Command<IntBoolParam>(SelectedObjektAufterNotScan));
-                                    var containerA = new StackLayout
+                                    var containerA = new VerticalStackLayout
                                     {
                                         Padding = new Thickness(0),
                                         Margin = new Thickness(0),
                                         Spacing = 0,
-                                        Orientation = StackOrientation.Vertical,
                                         HorizontalOptions = LayoutOptions.Fill,
                                         Children = { stack },
                                         IsVisible = true
                                     };
-                                    var containerB = new StackLayout
+                                    var containerB = new VerticalStackLayout
                                     {
                                         Padding = new Thickness(0),
                                         Margin = new Thickness(0),
                                         Spacing = 0,
-                                        Orientation = StackOrientation.Vertical,
                                         HorizontalOptions = LayoutOptions.Fill,
                                         IsVisible = false
                                     };
@@ -3712,7 +3777,7 @@ namespace iPMCloud.Mobile
             _SelectedBemerkungForNoticeList_DirektPos = new List<IntBemerkungWSOPair>();
             btn_quest_direktbuchen_cancel.IsVisible = true;
             btn_quest_direktbuchenwinter_cancel.IsVisible = false;
-            var stack = ((value as List<Object>)[0] as StackLayout);
+            var stack = ((value as List<Object>)[0] as VerticalStackLayout);
             //var AppModel.Instance = ((value as List<Object>)[1] as AppModel);
             var obj = ((value as List<Object>)[2] as BuildingWSO);
             List<AuftragWSO> alist = null;
@@ -6710,723 +6775,729 @@ namespace iPMCloud.Mobile
 
         public void InitStartPageHandlers()
         {
-            //btn_regScanWarn_img.Source = imagesBase.AlertMessage;
-                        
-            frame_planConA_img_reloadx.Source = "muellInOutX" + AppModel.Instance.AppSetModel.ViewOnlyMuell + ".png";
-
-            popupContainer_quest_personpicker_img.Source = AppModel.Instance.imagesBase.Worker;
-            frame_planConA_img_down.Source = AppModel.Instance.imagesBase.DropDownImage;
-            frame_planConA_img_reload.Source = AppModel.Instance.imagesBase.Refresh;
-            frame_planConA_img_otherperson.Source = AppModel.Instance.imagesBase.Worker;
-            frame_planConA_img_reload2.Source = AppModel.Instance.imagesBase.Refresh;
-            frame_planConA_img_otherperson2.Source = AppModel.Instance.imagesBase.Worker;
-            frame_planConCe_img_reload2.Source = AppModel.Instance.imagesBase.Refresh;
-            frame_planConCe_img_LoadAll1.Source = AppModel.Instance.imagesBase.Refresh;
-            frame_planConCe_img_LoadAll2.Source = AppModel.Instance.imagesBase.Refresh;
-
-            //Top Buttons
-            btn_objScan_limg.Source = AppModel.Instance.imagesBase.QrScan;
-            btn_objScan_limgB.Source = AppModel.Instance.imagesBase.QrScan;
-            btn_objScan_rimg.Source = AppModel.Instance.imagesBase.DropRightImage;
-            btn_objNotScan_limg.Source = AppModel.Instance.imagesBase.SearchImage;
-            btn_objNotScan_rimg.Source = AppModel.Instance.imagesBase.DropRightImage;
-            btn_mainsettings_img.Source = AppModel.Instance.imagesBase.MenuImage;
-            btn_mainmenu_back.Source = AppModel.Instance.imagesBase.XImageBoldRed;
-            btn_panelShowSelectedPos_back.Source = AppModel.Instance.imagesBase.XImageBoldRed;
-
-            //Bottom Buttons
-            btn_worker_limg.Source = AppModel.Instance.imagesBase.Worker;
-            btn_worker_rimg.Source = AppModel.Instance.imagesBase.DropRightImage;
-            btn_exitwork_limg.Source = AppModel.Instance.imagesBase.Exit;
-            btn_todos_limg.Source = AppModel.Instance.imagesBase.Todos;
-            btn_todos_rimg.Source = AppModel.Instance.imagesBase.DropRightImage;
-            btn_persontimes_limg.Source = AppModel.Instance.imagesBase.Time;
-            btn_sync_limg.Source = AppModel.Instance.imagesBase.Refresh;
-            btn_sync_rimg.Source = AppModel.Instance.imagesBase.DropRightImage;
-            btn_regist_limg.Source = AppModel.Instance.imagesBase.QrScan;
-            btn_regist_rimg.Source = AppModel.Instance.imagesBase.DropRightImage;
-            btn_dsgvo_limg.Source = AppModel.Instance.imagesBase.Logo;
-            btn_dsgvo_rimg.Source = AppModel.Instance.imagesBase.DropRightImage;
-
-            btn_settings_limg.Source = AppModel.Instance.imagesBase.Setting;
-            btn_settings_rimg.Source = AppModel.Instance.imagesBase.DropRightImage;
-
-            // LastBuilding Buttons and init showing
-            btn_objektinfo_img.Source = AppModel.Instance.imagesBase.InfoCircle;
-
-            btn_alertmessage_img.Source = AppModel.Instance.imagesBase.WarnTriangleYellow;
-            btn_alertmessage_img2.Source = AppModel.Instance.imagesBase.WarnTriangleYellow;
-            btn_internmessage_img2.Source = AppModel.Instance.imagesBase.InternalNoCustomer;
-            //btn_alertmessage_img_DirektPos.Source = AppModel.Instance.imagesBase.WarnTriangleYellow;
-            btn_alertmessage_img2_DirektPos.Source = AppModel.Instance.imagesBase.WarnTriangleYellow;
-            btn_internmessage_img2_DirektPos.Source = AppModel.Instance.imagesBase.InternalNoCustomer;
-            btn_message_img.Source = AppModel.Instance.imagesBase.CamMessage;
-            btn_objvalues_img.Source = AppModel.Instance.imagesBase.ObjectValues;
-            btn_buildingout_img2.Source = AppModel.Instance.imagesBase.BuildingOut;
-
-            // LoginPerson and Version 
-            lb_LoginUser.Text = AppModel.Instance.Person.anrede + " " + (String.IsNullOrWhiteSpace(AppModel.Instance.Person.vorname) ? "" : (AppModel.Instance.Person.vorname.Length > 0 ? AppModel.Instance.Person.vorname.Substring(0, 1) + ". " : "")) + AppModel.Instance.Person.name;
-            lb_version.Text = "V" + AppModel.Instance.Version; //+ " (" + AppModel.Instance.Build + ")";
-            if (AppModel.Instance.Companies.Count > -1)
+            try
             {
-                lb_LoginCustomer.IsVisible = true;
-                lb_LoginCustomer.Text = AppModel.Instance.SettingModel.SettingDTO.CustomerName.Length > 30 ? (AppModel.Instance.SettingModel.SettingDTO.CustomerName.Substring(0, 30) + "...") : AppModel.Instance.SettingModel.SettingDTO.CustomerName;
-            }
-            else
-            {
-                lb_LoginCustomer.IsVisible = false;
-            }
-
-            frm_img_LoginUser.IsVisible = false;
-            if (AppModel.Instance.Person.userIcon != null)
-            {
-                ImageSource userIconImageSource = ImageSource.FromStream(() => new MemoryStream(AppModel.Instance.Person.userIcon));
-                img_LoginUser.Source = userIconImageSource;
-                frm_img_LoginUser.IsVisible = true;
-            }
-
-
-
-            // BuildingScan 
-            img_backBtn_inBuildingScan.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
-            btn_flashlight_img.Source = AppModel.Instance.imagesBase.Flashlight;
-            btn_regScan_limg.Source = AppModel.Instance.imagesBase.QrScan;
-            btn_flashlight_Out_img.Source = AppModel.Instance.imagesBase.Flashlight;
-            btn_regOutScan_limg.Source = AppModel.Instance.imagesBase.QrScan;
-            img_backBtn_inBuildingOutScan.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
-
-
-            // BuildingOrder 
-            img_backBtn_inBuildingOrder.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
-            img_backBtn_inBuildingOrder_category.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
-            img_backBtn_inBuildingOrder_position.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
-            img_inBuildingOrder_category_text.Source = AppModel.Instance.imagesBase.OrderFolderTools;
-            img_inBuildingOrder_categorypos_text.Source = AppModel.Instance.imagesBase.OrderFolderTools;
-            img_inBuildingOrder_position_text.Source = AppModel.Instance.imagesBase.KategorieSymbol;
-            img_inBuildingOrder_categorypos_text_Again.Source = AppModel.Instance.imagesBase.OrderFolderTools;
-            img_inBuildingOrder_position_text_Again.Source = AppModel.Instance.imagesBase.KategorieSymbol;
-            btn_buildingorder_limg.Source = AppModel.Instance.imagesBase.Work;
-            btn_buildingorder_rimg.Source = AppModel.Instance.imagesBase.DropRightImage;
-
-            //nachbuchen
-            btn_posnachbuchen_limg.Source = AppModel.Instance.imagesBase.LeistungSymbol;
-            btn_produktenachbuchen_limg.Source = AppModel.Instance.imagesBase.ProduktSymbol;
-            btn_nachbuchen_img.Source = AppModel.Instance.imagesBase.AddArrow;
-            btn_nachbuchen_rimg.Source = AppModel.Instance.imagesBase.DropRightImage;
-            btn_nachbuchen_back_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
-            btn_nachbuchen_cat_back_img.Source = AppModel.Instance.imagesBase.DropLeftWhiteDoubleImage;
-            btn_showselected_pos_img_Again.Source = AppModel.Instance.imagesBase.PosList;
-
-            // InWork
-            btn_inwork_limg.Source = AppModel.Instance.imagesBase.WorkerInProgressWarn;
-            btn_showselected_pos_img.Source = AppModel.Instance.imagesBase.PosList;
-            btn_showselected_pos_img2.Source = AppModel.Instance.imagesBase.PosList;
-            //btn_showselected_pos_img3.Source = AppModel.Instance.imagesBase.InfoImage;
-            btn_showselected_poslist_img.Source = AppModel.Instance.imagesBase.PosList;
-            btn_startselected_pos_img.Source = AppModel.Instance.imagesBase.CheckWhite;
-
-            //RunningWorks
-            btn_back_runningworks_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
-            btn_runningworks_over_img.Source = AppModel.Instance.imagesBase.CheckWhite;
-
-            //Bemerkung
-            btn_back_check_bem_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
-            btn_message_imgA_check_bem.Source = AppModel.Instance.imagesBase.Cam;
-            btn_message_imgB_check_bem.Source = AppModel.Instance.imagesBase.Attachment;
-            btn_notice_save_img_check_bem.Source = AppModel.Instance.imagesBase.CheckWhite;
-
-            btn_back_notice_img_DirektPos.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
-            btn_back_notice_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
-            btn_notice_save_img_DirektPos.Source = AppModel.Instance.imagesBase.CheckWhite;
-            btn_notice_save_img.Source = AppModel.Instance.imagesBase.CheckWhite;
-            btn_message_imgA_DirektPos.Source = AppModel.Instance.imagesBase.Cam;
-            btn_message_imgB_DirektPos.Source = AppModel.Instance.imagesBase.Attachment;
-            btn_message_imgA.Source = AppModel.Instance.imagesBase.Cam;
-            btn_message_imgB.Source = AppModel.Instance.imagesBase.Attachment;
-
-            // ObjectValues
-            btn_back_ObjectValues_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
-            btn_back_ObjectValues_edit_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
-            //objectValues_edit_img.Source = AppModel.Instance.imagesBase.Pen;
-
-           
-            //CheckContainer
-            btn_back_check_del_img.Source = AppModel.Instance.imagesBase.Trash;
-            btn_back_check_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
-            btn_info_check_img.Source = AppModel.Instance.imagesBase.CheckSymbol;
-            btn_back_check_signature_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
-
-
-            //Map
-            //btn_back_map_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
-            //btn_back_map.GestureRecognizers.Clear();
-            //var tgr_back_map = new TapGestureRecognizer();
-            //tgr_back_map.Tapped += btn_MapBackTapped;
-            //btn_back_map.GestureRecognizers.Add(tgr_back_map);
-
-
-
-            btn_back_pn_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
-
-
-            //NotScan
-            btn_notscan_back_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
-            btn_notscansearch_img.Source = AppModel.Instance.imagesBase.SearchImage;
-
-            //Sendlogfile Fail
-            popupContainer_container_sendlog_fail_img.Source = AppModel.Instance.imagesBase.WarnTriangleYellow;
-
-            //ifondialog
-            popupContainer_infodialog_img.Source = AppModel.Instance.imagesBase.InfoCircle;
-
-
-            //Persontimes
-            SetAppControll();
-            // btn_persontimes_back_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage; // moved into PersonTimesPageView
-            // warn_persontimes_limg.Source = AppModel.Instance.imagesBase.InfoCircle; // moved into PersonTimesPageView
-            PersonTimesPageView.BtnPersontimesBackImg.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
-            PersonTimesPageView.WarnPersontimesLimg.Source = AppModel.Instance.imagesBase.InfoCircle;
-
-            // Jetzt beenden
-            btn_endselectedwork.GestureRecognizers.Clear();
-            var tgr_over = new TapGestureRecognizer();
-            tgr_over.Tapped -= ScanRunningWorksOver;
-            tgr_over.Tapped += ScanRunningWorksOver;
-            btn_endselectedwork.GestureRecognizers.Add(tgr_over);
-            btn_endselectedcancel.GestureRecognizers.Clear();
-            var tgr_cancel = new TapGestureRecognizer();
-            tgr_cancel.Tapped -= (object o, TappedEventArgs ev) => { popupContainer_quest_endwork.IsVisible = false; };
-            tgr_cancel.Tapped += (object o, TappedEventArgs ev) => { popupContainer_quest_endwork.IsVisible = false; };
-            btn_endselectedcancel.GestureRecognizers.Add(tgr_cancel);
-
-
-            //****************************************
-            // Checks Bemerkung
-            btn_notice_save_check_ready.GestureRecognizers.Clear();
-            var tgr_btn_notice_save_check_ready = new TapGestureRecognizer();
-            tgr_btn_notice_save_check_ready.Tapped += btn_ReadyCheckAToUploadTapped_check_bem;
-            btn_notice_save_check_ready.GestureRecognizers.Add(tgr_btn_notice_save_check_ready);
-
-            btn_back_notice_check_bem.GestureRecognizers.Clear();
-            var tgr_back_notice_check_bem = new TapGestureRecognizer();
-            tgr_back_notice_check_bem.Tapped += btn_NoticeBackTapped_check_bem;
-            btn_back_notice_check_bem.GestureRecognizers.Add(tgr_back_notice_check_bem);
-
-            btn_notice_save_check_bem.GestureRecognizers.Clear();
-            var tgr_back_notice_save_check_bem = new TapGestureRecognizer();
-            tgr_back_notice_save_check_bem.Tapped += btn_NoticeSaveTapped_check_bem;
-            btn_notice_save_check_bem.GestureRecognizers.Add(tgr_back_notice_save_check_bem);
-
-            btn_takePhoto_frame_check_bem.GestureRecognizers.Clear();
-            var tgr_btn_takePhoto_check_bem = new TapGestureRecognizer();
-            tgr_btn_takePhoto_check_bem.Tapped += async (s, e) => await btn_takePhoto_check_bem(s, e);
-            btn_takePhoto_frame_check_bem.GestureRecognizers.Add(tgr_btn_takePhoto_check_bem);
-            btn_takePhotoAttachment_frame_check_bem.GestureRecognizers.Clear();
-            var tgr_btn_takePhotoAttachment_check_bem = new TapGestureRecognizer();
-            tgr_btn_takePhotoAttachment_check_bem.Tapped += async (s, e) => await btn_pickPhotos_check_bem(s, e);
-            btn_takePhotoAttachment_frame_check_bem.GestureRecognizers.Add(tgr_btn_takePhotoAttachment_check_bem);
-
-            btn_startcheckquest.GestureRecognizers.Clear();
-            var tgr_btn_startcheckquest = new TapGestureRecognizer();
-            tgr_btn_startcheckquest.Tapped += (object o, TappedEventArgs ev) => { StartOrOpenCheckA_next_start(); };
-            btn_startcheckquest.GestureRecognizers.Add(tgr_btn_startcheckquest);
-
-            btn_startcheckquestcancel.GestureRecognizers.Clear();
-            var tgr_btn_startcheckquestcancel = new TapGestureRecognizer();
-            tgr_btn_startcheckquestcancel.Tapped += (object o, TappedEventArgs ev) => { StartOrOpenCheckA_next_cancel(); };
-            btn_startcheckquestcancel.GestureRecognizers.Add(tgr_btn_startcheckquestcancel);
-
-
-            btn_check_del.GestureRecognizers.Clear();
-            var tgr_btn_check_del = new TapGestureRecognizer();
-            tgr_btn_check_del.Tapped += (object o, TappedEventArgs ev) => { OpenDelCheckA(); };
-            btn_check_del.GestureRecognizers.Add(tgr_btn_check_del);
-            btn_delcheckquest.GestureRecognizers.Clear();
-            var tgr_btn_delcheckquest = new TapGestureRecognizer();
-            tgr_btn_delcheckquest.Tapped += (object o, TappedEventArgs ev) => { DelCheckA_now(); };
-            btn_delcheckquest.GestureRecognizers.Add(tgr_btn_delcheckquest);
-
-            btn_delcheckquestcancel.GestureRecognizers.Clear();
-            var tgr_btn_delcheckquestcancel = new TapGestureRecognizer();
-            tgr_btn_delcheckquestcancel.Tapped += (object o, TappedEventArgs ev) => { DelCheckA_cancel(); };
-            btn_delcheckquestcancel.GestureRecognizers.Add(tgr_btn_delcheckquestcancel);
-
-
-            // Direktbuchen WINTER Dialog
-            btn_quest_direktbuchenwinter_cancel.GestureRecognizers.Clear();
-            var t_quest_direktbuchenwinter_cancel = new TapGestureRecognizer();
-            t_quest_direktbuchenwinter_cancel.Tapped -= (object o, TappedEventArgs ev) => { CloseDirektbuchenWinterAusPlanliste(); };
-            t_quest_direktbuchenwinter_cancel.Tapped += (object o, TappedEventArgs ev) => { CloseDirektbuchenWinterAusPlanliste(); };
-            btn_quest_direktbuchenwinter_cancel.GestureRecognizers.Add(t_quest_direktbuchenwinter_cancel);
-            btn_quest_direktbuchenwinter.GestureRecognizers.Clear();
-            var t_quest_direktbuchenwinter = new TapGestureRecognizer();
-            t_quest_direktbuchenwinter.Tapped -= (object o, TappedEventArgs ev) => { SaveDirektbuchenWinterAusPlanliste(); };
-            t_quest_direktbuchenwinter.Tapped += (object o, TappedEventArgs ev) => { SaveDirektbuchenWinterAusPlanliste(); };
-            btn_quest_direktbuchenwinter.GestureRecognizers.Add(t_quest_direktbuchenwinter);
-
-            // Direktbuchen Dialog
-            btn_quest_direktbuchen.GestureRecognizers.Clear();
-            var t_quest_direktbuchen = new TapGestureRecognizer();
-            t_quest_direktbuchen.Tapped -= (object o, TappedEventArgs ev) => { SaveDirektbuchenAusPlanliste(); };
-            t_quest_direktbuchen.Tapped += (object o, TappedEventArgs ev) => { SaveDirektbuchenAusPlanliste(); };
-            btn_quest_direktbuchen.GestureRecognizers.Add(t_quest_direktbuchen);
-            btn_quest_direktbuchen_cancel.GestureRecognizers.Clear();
-            var t_quest_direktbuchen_cancel = new TapGestureRecognizer();
-            t_quest_direktbuchen_cancel.Tapped -= (object o, TappedEventArgs ev) => { CloseDirektbuchenAusPlanliste(); };
-            t_quest_direktbuchen_cancel.Tapped += (object o, TappedEventArgs ev) => { CloseDirektbuchenAusPlanliste(); };
-            btn_quest_direktbuchen_cancel.GestureRecognizers.Add(t_quest_direktbuchen_cancel);
-
-
-
-            // StartPage
-            frame_plantabA.GestureRecognizers.Clear();
-            var t_frame_plantabA = new TapGestureRecognizer();
-            t_frame_plantabA.Tapped += btn_PlanTabATapped;
-            frame_plantabA.GestureRecognizers.Add(t_frame_plantabA);
-            frame_plantabB.GestureRecognizers.Clear();
-            var t_frame_plantabB = new TapGestureRecognizer();
-            t_frame_plantabB.Tapped += btn_PlanTabBTapped;
-            frame_plantabB.GestureRecognizers.Add(t_frame_plantabB);
-            frame_plantabCe.GestureRecognizers.Clear();
-            var t_frame_plantabCe = new TapGestureRecognizer();
-            t_frame_plantabCe.Tapped += btn_PlanTabCeTapped;
-            frame_plantabCe.GestureRecognizers.Add(t_frame_plantabCe);
-            frame_plantabC.GestureRecognizers.Clear();
-            var t_frame_plantabC = new TapGestureRecognizer();
-            t_frame_plantabC.Tapped += btn_PlanTabCTapped;
-            frame_plantabC.GestureRecognizers.Add(t_frame_plantabC);
-
-
-            btn_objektinfo.GestureRecognizers.Clear();
-            var t_btn_objektinfo = new TapGestureRecognizer();
-            t_btn_objektinfo.Tapped += (object o, TappedEventArgs ev) => { OpenObjektInfoDialog(); };
-            btn_objektinfo.GestureRecognizers.Add(t_btn_objektinfo);
-
-            popupContainer_infodialog_close.GestureRecognizers.Clear();
-            var t_popupContainer_infodialog_close = new TapGestureRecognizer();
-            t_popupContainer_infodialog_close.Tapped += (object o, TappedEventArgs ev) => { CloseInfoDialog(); };
-            popupContainer_infodialog_close.GestureRecognizers.Add(t_popupContainer_infodialog_close);
-
-
-            popupContainer_quest_daypicker_close.GestureRecognizers.Clear();
-            var t_popupContainer_quest_daypicker_close = new TapGestureRecognizer();
-            t_popupContainer_quest_daypicker_close.Tapped += (object o, TappedEventArgs ev) => { popupContainer_quest_daypicker.IsVisible = false; };
-            popupContainer_quest_daypicker_close.GestureRecognizers.Add(t_popupContainer_quest_daypicker_close);
-            popupContainer_quest_daypicker_open.GestureRecognizers.Clear();
-            var t_popupContainer_quest_daypicker_open = new TapGestureRecognizer();
-            t_popupContainer_quest_daypicker_open.Tapped += (object o, TappedEventArgs ev) => { popupContainer_quest_daypicker.IsVisible = true; };
-            popupContainer_quest_daypicker_open.GestureRecognizers.Add(t_popupContainer_quest_daypicker_open);
-
-            popupContainer_ObjektPlanWeek_otherperson.GestureRecognizers.Clear();
-            var t_popupContainer_ObjektPlanWeek_otherperson = new TapGestureRecognizer();
-            t_popupContainer_ObjektPlanWeek_otherperson.Tapped += (object o, TappedEventArgs ev) => { OpenOtherPerson(); };
-            popupContainer_ObjektPlanWeek_otherperson.GestureRecognizers.Add(t_popupContainer_ObjektPlanWeek_otherperson);
-
-            popupContainer_ObjektPlanWeek_otherperson2.GestureRecognizers.Clear();
-            var t_popupContainer_ObjektPlanWeek_otherperson2 = new TapGestureRecognizer();
-            t_popupContainer_ObjektPlanWeek_otherperson2.Tapped += (object o, TappedEventArgs ev) => { OpenOtherPerson(); };
-            popupContainer_ObjektPlanWeek_otherperson2.GestureRecognizers.Add(t_popupContainer_ObjektPlanWeek_otherperson2);
-
-            popupContainer_quest_personpicker_close.GestureRecognizers.Clear();
-            var t_popupContainer_ObjektPlanWeek_personpicker_close = new TapGestureRecognizer();
-            t_popupContainer_ObjektPlanWeek_personpicker_close.Tapped += (object o, TappedEventArgs ev) => { CloseOtherPerson(); };
-            popupContainer_quest_personpicker_close.GestureRecognizers.Add(t_popupContainer_ObjektPlanWeek_personpicker_close);
-
-            popupContainer_quest_langpicker_close.GestureRecognizers.Clear();
-            var t_popupContainer_langpicker_close = new TapGestureRecognizer();
-            t_popupContainer_langpicker_close.Tapped += (object o, TappedEventArgs ev) => { CloseLanguage(); };
-            popupContainer_quest_langpicker_close.GestureRecognizers.Add(t_popupContainer_langpicker_close);
-
-            popupContainer_ObjektPlanWeek_Type.GestureRecognizers.Clear();
-            var t_popupContainer_ObjektPlanWeek_Type = new TapGestureRecognizer();
-            t_popupContainer_ObjektPlanWeek_Type.Tapped += (object o, TappedEventArgs ev) => { PlanTypeChange(); };
-            popupContainer_ObjektPlanWeek_Type.GestureRecognizers.Add(t_popupContainer_ObjektPlanWeek_Type);
-
-            popupContainer_ObjektPlanWeek_Reload.GestureRecognizers.Clear();
-            var t_popupContainer_ObjektPlanWeek_Reload = new TapGestureRecognizer();
-            t_popupContainer_ObjektPlanWeek_Reload.Tapped += (object o, TappedEventArgs ev) => { ReloadPlanData(0); };
-            popupContainer_ObjektPlanWeek_Reload.GestureRecognizers.Add(t_popupContainer_ObjektPlanWeek_Reload);
-            popupContainer_ObjektPlanWeek_Reload2.GestureRecognizers.Clear();
-            var t_popupContainer_ObjektPlanWeek_Reload2 = new TapGestureRecognizer();
-            t_popupContainer_ObjektPlanWeek_Reload2.Tapped += (object o, TappedEventArgs ev) => { ReloadPlanData(1); };
-            popupContainer_ObjektPlanWeek_Reload2.GestureRecognizers.Add(t_popupContainer_ObjektPlanWeek_Reload2);
-
-
-            frame_planConCe_LoadAll.GestureRecognizers.Clear();
-            var t_frame_planConCe_LoadAll = new TapGestureRecognizer();
-            t_frame_planConCe_LoadAll.Tapped += (object o, TappedEventArgs ev) => { GetChecksInfo(checkInfoLastView, true); };
-            frame_planConCe_LoadAll.GestureRecognizers.Add(t_frame_planConCe_LoadAll);
-
-            frame_planConCe_LoadAll1.GestureRecognizers.Clear();
-            var t_frame_planConCe_LoadAll1 = new TapGestureRecognizer();
-            t_frame_planConCe_LoadAll1.Tapped += (object o, TappedEventArgs ev) => { GetChecksInfo(7, true); };
-            frame_planConCe_LoadAll1.GestureRecognizers.Add(t_frame_planConCe_LoadAll1);
-
-            frame_planConCe_LoadAll2.GestureRecognizers.Clear();
-            var t_frame_planConCe_LoadAll2 = new TapGestureRecognizer();
-            t_frame_planConCe_LoadAll2.Tapped += (object o, TappedEventArgs ev) => { GetChecksInfo(99, true); };
-            frame_planConCe_LoadAll2.GestureRecognizers.Add(t_frame_planConCe_LoadAll2);
-
-
-
-            popupContainerSyncFaild_btn.GestureRecognizers.Clear();
-            var tgr_popupContainerSyncFaild_btn = new TapGestureRecognizer();
-            tgr_popupContainerSyncFaild_btn.Tapped += btn_SyncTapped;
-            popupContainerSyncFaild_btn.GestureRecognizers.Add(tgr_popupContainerSyncFaild_btn);
-
-
-            btn_mainmenu.GestureRecognizers.Clear();
-            var tgr_MainMenu = new TapGestureRecognizer();
-            tgr_MainMenu.Tapped += btn_MainMenuTapped;
-            btn_mainmenu.GestureRecognizers.Add(tgr_MainMenu);
-
-            btn_objScan.GestureRecognizers.Clear();
-            var tgr_BuildingScan = new TapGestureRecognizer();
-            tgr_BuildingScan.Tapped += btn_BuildingScanTapped;
-            btn_objScan.GestureRecognizers.Add(tgr_BuildingScan);
-            btn_objScanB.GestureRecognizers.Clear();
-            var tgr_BuildingScanB = new TapGestureRecognizer();
-            tgr_BuildingScanB.Tapped += btn_BuildingScanTapped;
-            btn_objScanB.GestureRecognizers.Add(tgr_BuildingScanB);
-            btn_objNotScan.GestureRecognizers.Clear();
-            var tgr_BuildingNotScan = new TapGestureRecognizer();
-            tgr_BuildingNotScan.Tapped += btn_BuildingNotScanTapped;
-            btn_objNotScan.GestureRecognizers.Add(tgr_BuildingNotScan);
-
-            btn_workerlist.GestureRecognizers.Clear();
-            var tgr_WorkerList = new TapGestureRecognizer();
-            tgr_WorkerList.Tapped += btn_WorkerListTapped;
-            btn_workerlist.GestureRecognizers.Add(tgr_WorkerList);
-            btn_todos.GestureRecognizers.Clear();
-            var tgr_Todos = new TapGestureRecognizer();
-            tgr_Todos.Tapped += btn_TodosTapped;
-            btn_todos.GestureRecognizers.Add(tgr_Todos);
-
-            btn_persontimes.GestureRecognizers.Clear();
-            var tgr_persontimes = new TapGestureRecognizer();
-            tgr_persontimes.Tapped += btn_PersonTimesTapped;
-            btn_persontimes.GestureRecognizers.Add(tgr_persontimes);
-
-            btn_regist.GestureRecognizers.Clear();
-            var tgr_Regist = new TapGestureRecognizer();
-            tgr_Regist.Tapped += btn_RegistTapped;
-            btn_regist.GestureRecognizers.Add(tgr_Regist);
-
-            btn_settings.GestureRecognizers.Clear();
-            var tgr_Settings = new TapGestureRecognizer();
-            tgr_Settings.Tapped += btn_SettingsTapped;
-            btn_settings.GestureRecognizers.Add(tgr_Settings);
-
-
-
-
-            btn_sync.GestureRecognizers.Clear();
-            var tgr_sync = new TapGestureRecognizer();
-            tgr_sync.Tapped += btn_SyncTapped;
-            btn_sync.GestureRecognizers.Add(tgr_sync);
-
-            btn_dsgvo.GestureRecognizers.Clear();
-            var tgr_dsgvo = new TapGestureRecognizer();
-            tgr_dsgvo.Tapped += btn_DSGVOTapped;
-            btn_dsgvo.GestureRecognizers.Add(tgr_dsgvo);
-
-            btn_worker_back.GestureRecognizers.Clear();
-            var tgr_WorkerBack = new TapGestureRecognizer();
-            tgr_WorkerBack.Tapped += btn_WorkerBackTapped;
-            btn_worker_back.GestureRecognizers.Add(tgr_WorkerBack);
-
-            btn_todo_back.GestureRecognizers.Clear();
-            var tgr_TodoBack = new TapGestureRecognizer();
-            tgr_TodoBack.Tapped += btn_TodoBackTapped;
-            btn_todo_back.GestureRecognizers.Add(tgr_TodoBack);
-
-            btn_notscan_back.GestureRecognizers.Clear();
-            var tgr_NotScanBack = new TapGestureRecognizer();
-            tgr_NotScanBack.Tapped += btn_NotScanBackTapped;
-            btn_notscan_back.GestureRecognizers.Add(tgr_NotScanBack);
-
-            // btn_persontimes_back.GestureRecognizers.Clear(); // moved into PersonTimesPageView
-            // tgr_PersontimesBack.Tapped += btn_PersontimesBackTapped; // moved into PersonTimesPageView
-            // btn_persontimes_back.GestureRecognizers.Add(tgr_PersontimesBack); // moved into PersonTimesPageView
-            PersonTimesPageView.BtnPersontimesBack.GestureRecognizers.Clear();
-            var tgr_PersontimesBack = new TapGestureRecognizer();
-            tgr_PersontimesBack.Tapped += btn_PersontimesBackTapped;
-            PersonTimesPageView.BtnPersontimesBack.GestureRecognizers.Add(tgr_PersontimesBack);
-
-            // btn_persontime_load.GestureRecognizers.Clear(); // moved into PersonTimesPageView
-            // tgr_PersontimesLoad.Tapped += pick_persontimes_SelectedIndexChanged; // moved into PersonTimesPageView
-            // btn_persontime_load.GestureRecognizers.Add(tgr_PersontimesLoad); // moved into PersonTimesPageView
-            PersonTimesPageView.BtnPersontimeLoad.GestureRecognizers.Clear();
-            var tgr_PersontimesLoad = new TapGestureRecognizer();
-            tgr_PersontimesLoad.Tapped += pick_persontimes_SelectedIndexChanged;
-            PersonTimesPageView.BtnPersontimeLoad.GestureRecognizers.Add(tgr_PersontimesLoad);
-
-
-
-
-            popupContainer_Alert_btn.GestureRecognizers.Clear();
-            var tgr9 = new TapGestureRecognizer();
-            tgr9.Tapped -= HideAlertMessage;
-            tgr9.Tapped += HideAlertMessage;
-            popupContainer_Alert_btn.GestureRecognizers.Add(tgr9);
-
-            // Handwerker nach Kategorien suchen
-            btn_workercategorysearch.GestureRecognizers.Clear();
-            var tgr_workercategorysearch = new TapGestureRecognizer();
-            tgr_workercategorysearch.Tapped += btn_WorkerCategorySearchTapped;
-            btn_workercategorysearch.GestureRecognizers.Add(tgr_workercategorysearch);
-            // Handwerker nach Namen suchen
-            btn_workernamesearch.GestureRecognizers.Clear();
-            var tgr_WorkerNamesearch = new TapGestureRecognizer();
-            tgr_WorkerNamesearch.Tapped += btn_WorkerNameSearchTapped;
-            btn_workernamesearch.GestureRecognizers.Add(tgr_WorkerNamesearch);
-            // Handwerker nach Objekten suchen
-            btn_workerbuildingsearch.GestureRecognizers.Clear();
-            var tgr_WorkerBuildingsearch = new TapGestureRecognizer();
-            tgr_WorkerBuildingsearch.Tapped += btn_WorkerBuildingSearchTapped;
-            btn_workerbuildingsearch.GestureRecognizers.Add(tgr_WorkerBuildingsearch);
-
-
-            // BuidlingOutScan Back to MainPage
-            btn_overtootherBuildingSave.GestureRecognizers.Clear();
-            var tgr_overtootherBuildingSave = new TapGestureRecognizer();
-            tgr_overtootherBuildingSave.Tapped += btn_done_BuildingOutScanTapped;
-            btn_overtootherBuildingSave.GestureRecognizers.Add(tgr_overtootherBuildingSave);
-            btn_back_inBuildingOutScan.GestureRecognizers.Clear();
-            var tgr_back_inBuildingOutScan = new TapGestureRecognizer();
-            tgr_back_inBuildingOutScan.Tapped += btn_back_BuildingOutScanTapped;
-            btn_back_inBuildingOutScan.GestureRecognizers.Add(tgr_back_inBuildingOutScan);
-            btn_flashlight_Out_container.GestureRecognizers.Clear();
-            var tapGestureRecognizer1b = new TapGestureRecognizer();
-            tapGestureRecognizer1b.Tapped += AppModel.Instance.Scan.Btn_FlashlightTapped;
-            btn_flashlight_Out_container.GestureRecognizers.Add(tapGestureRecognizer1b);
-
-            // BuidlingScan Back to MainPage
-            btn_back_inBuildingScan.GestureRecognizers.Clear();
-            var tgr_back_inBuildingScan = new TapGestureRecognizer();
-            tgr_back_inBuildingScan.Tapped += btn_back_BuildingScanTapped;
-            btn_back_inBuildingScan.GestureRecognizers.Add(tgr_back_inBuildingScan);
-            btn_flashlight_container.GestureRecognizers.Clear();
-            var tapGestureRecognizer1 = new TapGestureRecognizer();
-            tapGestureRecognizer1.Tapped += AppModel.Instance.Scan.Btn_FlashlightTapped;
-            btn_flashlight_container.GestureRecognizers.Add(tapGestureRecognizer1);
-
-
-            // BuildingOrder 
-            btn_back_inBuildingOrder.GestureRecognizers.Clear();
-            var tapGestureRecognizer2 = new TapGestureRecognizer();
-            tapGestureRecognizer2.Tapped += btn_back_BuildingOrderTapped;
-            btn_back_inBuildingOrder.GestureRecognizers.Add(tapGestureRecognizer2);
-            btn_back_inBuildingOrder_category.GestureRecognizers.Clear();
-            var tapGestureRecognizer2b = new TapGestureRecognizer();
-            tapGestureRecognizer2b.Tapped += btn_back_OrderCategoryTapped;
-            btn_back_inBuildingOrder_category.GestureRecognizers.Add(tapGestureRecognizer2b);
-
-            btn_back_inBuildingOrder_category_showall.GestureRecognizers.Clear();
-            var tapGestureRecognizer2ball = new TapGestureRecognizer();
-            tapGestureRecognizer2ball.Tapped += btn_showall_OrderCategoryTapped;
-            btn_back_inBuildingOrder_category_showall.GestureRecognizers.Add(tapGestureRecognizer2ball);
-
-            btn_back_inBuildingOrder_category_showall_again.GestureRecognizers.Clear();
-            var tapGestureRecognizer2ball_again = new TapGestureRecognizer();
-            tapGestureRecognizer2ball_again.Tapped += btn_showall_again_OrderCategoryTapped;
-            btn_back_inBuildingOrder_category_showall_again.GestureRecognizers.Add(tapGestureRecognizer2ball_again);
-
-
-            btn_back_inBuildingOrder_position.GestureRecognizers.Clear();
-            var tapGestureRecognizer2c = new TapGestureRecognizer();
-            tapGestureRecognizer2c.Tapped += btn_back_CategoryPositionTapped;
-            btn_back_inBuildingOrder_position.GestureRecognizers.Add(tapGestureRecognizer2c);
-
-
-            btn_objvalues_container.GestureRecognizers.Clear();
-            var tgr_objvalues_container = new TapGestureRecognizer();
-            tgr_objvalues_container.Tapped += btn_ShowObjectValuesTapped;
-            btn_objvalues_container.GestureRecognizers.Add(tgr_objvalues_container);
-
-            btn_back_ObjectValues.GestureRecognizers.Clear();
-            var tgr_back_ObjectValue = new TapGestureRecognizer();
-            tgr_back_ObjectValue.Tapped += btn_CloseObjectValuesTapped;
-            btn_back_ObjectValues.GestureRecognizers.Add(tgr_back_ObjectValue);
-
-            btn_back_ObjectValues_edit.GestureRecognizers.Clear();
-            var tgr_back_ObjectValue_edit = new TapGestureRecognizer();
-            tgr_back_ObjectValue_edit.Tapped += btn_CloseObjectValuesEditTapped;
-            btn_back_ObjectValues_edit.GestureRecognizers.Add(tgr_back_ObjectValue_edit);
-
-            btn_buildingout_container.GestureRecognizers.Clear();
-            var tapGestureRecognizer4 = new TapGestureRecognizer();
-            tapGestureRecognizer4.Tapped += btn_ClearLastBuildingTapped;
-            btn_buildingout_container.GestureRecognizers.Add(tapGestureRecognizer4);
-
-            btn_buildingorder.GestureRecognizers.Clear();
-            var tapGestureRecognizer3 = new TapGestureRecognizer();
-            tapGestureRecognizer3.Tapped += btn_AuftraegeAuswaehlen;
-            btn_buildingorder.GestureRecognizers.Add(tapGestureRecognizer3);
-
-
-            btn_inwork.GestureRecognizers.Clear();
-            var tapGestureRecognizer6 = new TapGestureRecognizer();
-            tapGestureRecognizer6.Tapped += btn_ShowRunningWorks;
-            btn_inwork.GestureRecognizers.Add(tapGestureRecognizer6);
-
-            // Show Leistungen zur Ausführen ausgewählt
-            btn_showselected_pos.GestureRecognizers.Clear();
-            var tapGestureRecognizer7 = new TapGestureRecognizer();
-            tapGestureRecognizer7.Tapped += btn_AuswahlAnzeigen;
-            btn_showselected_pos.GestureRecognizers.Add(tapGestureRecognizer7);
-            btn_showselected_pos2.GestureRecognizers.Clear();
-            var tapGestureRecognizer8 = new TapGestureRecognizer();
-            tapGestureRecognizer8.Tapped += btn_AuswahlAnzeigen;
-            btn_showselected_pos2.GestureRecognizers.Add(tapGestureRecognizer8);
-
-
-            btn_startselected_pos.GestureRecognizers.Clear();
-            var tgr_startselected_pos = new TapGestureRecognizer();
-            tgr_startselected_pos.Tapped += StartSelectedPos;
-            btn_startselected_pos.GestureRecognizers.Add(tgr_startselected_pos);
-
-            // RunningWorks
-            btn_back_runningworks.GestureRecognizers.Clear();
-            var tgr_back_runningworks = new TapGestureRecognizer();
-            tgr_back_runningworks.Tapped += btn_RunningWorksBackTapped;
-            btn_back_runningworks.GestureRecognizers.Add(tgr_back_runningworks);
-            btn_runningworks_over.GestureRecognizers.Clear();
-            var tgr_runningworks_over = new TapGestureRecognizer();
-            tgr_runningworks_over.Tapped += btn_RunningWorksOverTapped;
-            btn_runningworks_over.GestureRecognizers.Add(tgr_runningworks_over);
-
-            // Bemerkung
-            btn_alertmessage_container.GestureRecognizers.Clear();
-            var tgr_alertmessage_container = new TapGestureRecognizer();
-            tgr_alertmessage_container.Tapped += btn_ShowNoticePrioTapped;
-            btn_alertmessage_container.GestureRecognizers.Add(tgr_alertmessage_container);
-            btn_message_container.GestureRecognizers.Clear();
-            var tgr_message_container = new TapGestureRecognizer();
-            tgr_message_container.Tapped += btn_ShowNoticeTapped;
-            btn_message_container.GestureRecognizers.Add(tgr_message_container);
-            btn_back_notice.GestureRecognizers.Clear();
-            var tgr_back_notice = new TapGestureRecognizer();
-            tgr_back_notice.Tapped += btn_NoticeBackTapped;
-            btn_back_notice.GestureRecognizers.Add(tgr_back_notice);
-            btn_notice_save.GestureRecognizers.Clear();
-            var tgr_back_notice_save = new TapGestureRecognizer();
-            tgr_back_notice_save.Tapped += btn_NoticeSaveTapped;
-            btn_notice_save.GestureRecognizers.Add(tgr_back_notice_save);
-
-            btn_takePhoto_frame.GestureRecognizers.Clear();
-            var tgr_btn_takePhoto = new TapGestureRecognizer();
-            tgr_btn_takePhoto.Tapped += async (s, e) => await btn_takePhoto(s, e);
-            btn_takePhoto_frame.GestureRecognizers.Add(tgr_btn_takePhoto);
-            btn_takePhotoAttachment_frame.GestureRecognizers.Clear();
-            var tgr_btn_takePhotoAttachment = new TapGestureRecognizer();
-            tgr_btn_takePhotoAttachment.Tapped += async (s, e) => await btn_pickPhotos(s, e);
-            btn_takePhotoAttachment_frame.GestureRecognizers.Add(tgr_btn_takePhotoAttachment);
-
-
-            /*btn_alertmessage_container_DirektPos.GestureRecognizers.Clear();
-            var tgr_alertmessage_container_DirektPos = new TapGestureRecognizer();
-            tgr_alertmessage_container_DirektPos.Tapped += btn_ShowNoticePrioTapped;
-            btn_alertmessage_container_DirektPos.GestureRecognizers.Add(tgr_alertmessage_container_DirektPos);
-            btn_message_container_DirektPos.GestureRecognizers.Clear();
-            var tgr_message_container_DirektPos = new TapGestureRecognizer();
-            tgr_message_container_DirektPos.Tapped += btn_ShowNoticeTapped;
-            btn_message_container_DirektPos.GestureRecognizers.Add(tgr_message_container_DirektPos);*/
-            btn_back_notice_DirektPos.GestureRecognizers.Clear();
-            var tgr_back_notice_DirektPos = new TapGestureRecognizer();
-            tgr_back_notice_DirektPos.Tapped += btn_NoticeBackTapped_DirektPos;
-            btn_back_notice_DirektPos.GestureRecognizers.Add(tgr_back_notice_DirektPos);
-
-            btn_notice_save_DirektPos.GestureRecognizers.Clear();
-            var tgr_back_notice_save_DirektPos = new TapGestureRecognizer();
-            tgr_back_notice_save_DirektPos.Tapped += btn_NoticeSaveTapped_DirektPos;
-            btn_notice_save_DirektPos.GestureRecognizers.Add(tgr_back_notice_save_DirektPos);
-
-            btn_notice_del_DirektPos.GestureRecognizers.Clear();
-            var tgr_back_notice_del_DirektPos = new TapGestureRecognizer();
-            tgr_back_notice_del_DirektPos.Tapped += btn_NoticeDelTapped_DirektPos;
-            btn_notice_del_DirektPos.GestureRecognizers.Add(tgr_back_notice_del_DirektPos);
-
-            btn_takePhoto_frame_DirektPos.GestureRecognizers.Clear();
-            var tgr_btn_takePhoto_DirektPos = new TapGestureRecognizer();
-            tgr_btn_takePhoto_DirektPos.Tapped += async (s, e) => await btn_takePhoto_DirektPos(s, e);
-            btn_takePhoto_frame_DirektPos.GestureRecognizers.Add(tgr_btn_takePhoto_DirektPos);
-            btn_takePhotoAttachment_frame_DirektPos.GestureRecognizers.Clear();
-            var tgr_btn_takePhotoAttachment_DirektPos = new TapGestureRecognizer();
-            tgr_btn_takePhotoAttachment_DirektPos.Tapped += async (s, e) => await btn_pickPhotos_DirektPos(s, e);
-            btn_takePhotoAttachment_frame_DirektPos.GestureRecognizers.Add(tgr_btn_takePhotoAttachment_DirektPos);
-
-            //ChecklistContainer
-            btn_back_check.GestureRecognizers.Clear();
-            var tgr_back_check = new TapGestureRecognizer();
-            tgr_back_check.Tapped += CloseCheckA;
-            btn_back_check.GestureRecognizers.Add(tgr_back_check);
-            btn_back_check_signature.GestureRecognizers.Clear();
-            var tgr_back_check_signature = new TapGestureRecognizer();
-            tgr_back_check_signature.Tapped += CloseCheckA_Singature;
-            btn_back_check_signature.GestureRecognizers.Add(tgr_back_check_signature);
-
-
-            btn_exitwork.GestureRecognizers.Clear();
-            var tgr_ExitWork = new TapGestureRecognizer();
-            tgr_ExitWork.Tapped += DayOverTapped;
-            btn_exitwork.GestureRecognizers.Add(tgr_ExitWork);
-
-
-
-            btn_back_pn.GestureRecognizers.Clear();
-            var tgr_back_pn = new TapGestureRecognizer();
-            tgr_back_pn.Tapped += btn_PN_BackTapped;
-            btn_back_pn.GestureRecognizers.Add(tgr_back_pn);
-
-
-            btn_nachbuchen_back.GestureRecognizers.Clear();
-            var tgr_btn_nachbuchen_back = new TapGestureRecognizer();
-            tgr_btn_nachbuchen_back.Tapped += (object o, TappedEventArgs ev) =>
-            {
-                if (AppModel.Instance.LastSelectedCategoryAgain == null)
+                //btn_regScanWarn_img.Source = imagesBase.AlertMessage;
+
+                frame_planConA_img_reloadx.Source = "muellInOutX" + AppModel.Instance.AppSetModel.ViewOnlyMuell + ".png";
+
+                popupContainer_quest_personpicker_img.Source = AppModel.Instance.imagesBase.Worker;
+                frame_planConA_img_down.Source = AppModel.Instance.imagesBase.DropDownImage;
+                frame_planConA_img_reload.Source = AppModel.Instance.imagesBase.Refresh;
+                frame_planConA_img_otherperson.Source = AppModel.Instance.imagesBase.Worker;
+                frame_planConA_img_reload2.Source = AppModel.Instance.imagesBase.Refresh;
+                frame_planConA_img_otherperson2.Source = AppModel.Instance.imagesBase.Worker;
+                frame_planConCe_img_reload2.Source = AppModel.Instance.imagesBase.Refresh;
+                frame_planConCe_img_LoadAll1.Source = AppModel.Instance.imagesBase.Refresh;
+                frame_planConCe_img_LoadAll2.Source = AppModel.Instance.imagesBase.Refresh;
+
+                //Top Buttons
+                btn_objScan_limg.Source = AppModel.Instance.imagesBase.QrScan;
+                btn_objScan_limgB.Source = AppModel.Instance.imagesBase.QrScan;
+                btn_objScan_rimg.Source = AppModel.Instance.imagesBase.DropRightImage;
+                btn_objNotScan_limg.Source = AppModel.Instance.imagesBase.SearchImage;
+                btn_objNotScan_rimg.Source = AppModel.Instance.imagesBase.DropRightImage;
+                btn_mainsettings_img.Source = AppModel.Instance.imagesBase.MenuImage;
+                btn_mainmenu_back.Source = AppModel.Instance.imagesBase.XImageBoldRed;
+                btn_panelShowSelectedPos_back.Source = AppModel.Instance.imagesBase.XImageBoldRed;
+
+                //Bottom Buttons
+                btn_worker_limg.Source = AppModel.Instance.imagesBase.Worker;
+                btn_worker_rimg.Source = AppModel.Instance.imagesBase.DropRightImage;
+                btn_exitwork_limg.Source = AppModel.Instance.imagesBase.Exit;
+                btn_todos_limg.Source = AppModel.Instance.imagesBase.Todos;
+                btn_todos_rimg.Source = AppModel.Instance.imagesBase.DropRightImage;
+                btn_persontimes_limg.Source = AppModel.Instance.imagesBase.Time;
+                btn_sync_limg.Source = AppModel.Instance.imagesBase.Refresh;
+                btn_sync_rimg.Source = AppModel.Instance.imagesBase.DropRightImage;
+                btn_regist_limg.Source = AppModel.Instance.imagesBase.QrScan;
+                btn_regist_rimg.Source = AppModel.Instance.imagesBase.DropRightImage;
+                btn_dsgvo_limg.Source = AppModel.Instance.imagesBase.Logo;
+                btn_dsgvo_rimg.Source = AppModel.Instance.imagesBase.DropRightImage;
+
+                btn_settings_limg.Source = AppModel.Instance.imagesBase.Setting;
+                btn_settings_rimg.Source = AppModel.Instance.imagesBase.DropRightImage;
+
+                // LastBuilding Buttons and init showing
+                btn_objektinfo_img.Source = AppModel.Instance.imagesBase.InfoCircle;
+
+                btn_alertmessage_img.Source = AppModel.Instance.imagesBase.WarnTriangleYellow;
+                btn_alertmessage_img2.Source = AppModel.Instance.imagesBase.WarnTriangleYellow;
+                btn_internmessage_img2.Source = AppModel.Instance.imagesBase.InternalNoCustomer;
+                //btn_alertmessage_img_DirektPos.Source = AppModel.Instance.imagesBase.WarnTriangleYellow;
+                btn_alertmessage_img2_DirektPos.Source = AppModel.Instance.imagesBase.WarnTriangleYellow;
+                btn_internmessage_img2_DirektPos.Source = AppModel.Instance.imagesBase.InternalNoCustomer;
+                btn_message_img.Source = AppModel.Instance.imagesBase.CamMessage;
+                btn_objvalues_img.Source = AppModel.Instance.imagesBase.ObjectValues;
+                btn_buildingout_img2.Source = AppModel.Instance.imagesBase.BuildingOut;
+
+                // LoginPerson and Version 
+                lb_LoginUser.Text = AppModel.Instance.Person.anrede + " " + (String.IsNullOrWhiteSpace(AppModel.Instance.Person.vorname) ? "" : (AppModel.Instance.Person.vorname.Length > 0 ? AppModel.Instance.Person.vorname.Substring(0, 1) + ". " : "")) + AppModel.Instance.Person.name;
+                lb_version.Text = "V" + AppModel.Instance.Version; //+ " (" + AppModel.Instance.Build + ")";
+                if (AppModel.Instance.Companies.Count > -1)
                 {
-                    btn_back_inBuildingOrder_category_showall_again_txt.Text = "Alle zeigen";
-                    AppModel.Instance._showall_again_OrderCategory = false;
-                    this.Focus(); ShowMainPage();
+                    lb_LoginCustomer.IsVisible = true;
+                    lb_LoginCustomer.Text = AppModel.Instance.SettingModel.SettingDTO.CustomerName.Length > 30 ? (AppModel.Instance.SettingModel.SettingDTO.CustomerName.Substring(0, 30) + "...") : AppModel.Instance.SettingModel.SettingDTO.CustomerName;
                 }
                 else
                 {
-                    btn_nachbuchen_Tapped(AppModel.Instance.posAgain);
+                    lb_LoginCustomer.IsVisible = false;
                 }
-            };
-            btn_nachbuchen_back.GestureRecognizers.Add(tgr_btn_nachbuchen_back);
-            btn_nachbuchen_cat_back.GestureRecognizers.Clear();
-            var tgr_nachbuchen_cat_back = new TapGestureRecognizer();
-            tgr_nachbuchen_cat_back.Tapped += (object o, TappedEventArgs ev) => { btn_nachbuchen_Tapped(AppModel.Instance.posAgain); };
-            btn_nachbuchen_cat_back.GestureRecognizers.Add(tgr_nachbuchen_cat_back);
-            btn_nachbuchen.GestureRecognizers.Clear();
-            var tgr_nachbuchen = new TapGestureRecognizer();
-            tgr_nachbuchen.Tapped += (object o, TappedEventArgs ev) => { ShowNachbuchenPage(AppModel.Instance.posAgain); };
-            btn_nachbuchen.GestureRecognizers.Add(tgr_nachbuchen);
-            btn_nachbuchen_Produkte.GestureRecognizers.Clear();
-            var tgr_produkt_nachbuchen = new TapGestureRecognizer();
-            tgr_produkt_nachbuchen.Tapped += (object o, TappedEventArgs ev) => { btn_nachbuchen_Tapped(0); };
-            btn_nachbuchen_Produkte.GestureRecognizers.Add(tgr_produkt_nachbuchen);
-            btn_nachbuchen_Pos.GestureRecognizers.Clear();
-            var tgr_nachbuchen_Pos = new TapGestureRecognizer();
-            tgr_nachbuchen_Pos.Tapped += (object o, TappedEventArgs ev) => { btn_nachbuchen_Tapped(1); };
-            btn_nachbuchen_Pos.GestureRecognizers.Add(tgr_nachbuchen_Pos);
-            btn_showselected_pos_Again.GestureRecognizers.Clear();
-            var tgr_showselected_pos_Again = new TapGestureRecognizer();
-            tgr_showselected_pos_Again.Tapped += btn_AuswahlAnzeigen_Again;
-            btn_showselected_pos_Again.GestureRecognizers.Add(tgr_showselected_pos_Again);
+
+                frm_img_LoginUser.IsVisible = false;
+                if (AppModel.Instance.Person.userIcon != null)
+                {
+                    ImageSource userIconImageSource = ImageSource.FromStream(() => new MemoryStream(AppModel.Instance.Person.userIcon));
+                    img_LoginUser.Source = userIconImageSource;
+                    frm_img_LoginUser.IsVisible = true;
+                }
 
 
-            btn_objectValuesNow.GestureRecognizers.Clear();
-            var tgr_btn_objectValuesNow = new TapGestureRecognizer();
-            tgr_btn_objectValuesNow.Tapped += btn_objectValuesNowTapped;
-            btn_objectValuesNow.GestureRecognizers.Add(tgr_btn_objectValuesNow);
-            btn_objectValuesToday.GestureRecognizers.Clear();
-            var tgr_btn_objectValuesToday = new TapGestureRecognizer();
-            tgr_btn_objectValuesToday.Tapped += btn_objectValuesTodayTapped;
-            btn_objectValuesToday.GestureRecognizers.Add(tgr_btn_objectValuesToday);
 
+                // BuildingScan 
+                img_backBtn_inBuildingScan.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
+                btn_flashlight_img.Source = AppModel.Instance.imagesBase.Flashlight;
+                btn_regScan_limg.Source = AppModel.Instance.imagesBase.QrScan;
+                btn_flashlight_Out_img.Source = AppModel.Instance.imagesBase.Flashlight;
+                btn_regOutScan_limg.Source = AppModel.Instance.imagesBase.QrScan;
+                img_backBtn_inBuildingOutScan.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
+
+
+                // BuildingOrder 
+                img_backBtn_inBuildingOrder.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
+                img_backBtn_inBuildingOrder_category.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
+                img_backBtn_inBuildingOrder_position.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
+                img_inBuildingOrder_category_text.Source = AppModel.Instance.imagesBase.OrderFolderTools;
+                img_inBuildingOrder_categorypos_text.Source = AppModel.Instance.imagesBase.OrderFolderTools;
+                img_inBuildingOrder_position_text.Source = AppModel.Instance.imagesBase.KategorieSymbol;
+                img_inBuildingOrder_categorypos_text_Again.Source = AppModel.Instance.imagesBase.OrderFolderTools;
+                img_inBuildingOrder_position_text_Again.Source = AppModel.Instance.imagesBase.KategorieSymbol;
+                btn_buildingorder_limg.Source = AppModel.Instance.imagesBase.Work;
+                btn_buildingorder_rimg.Source = AppModel.Instance.imagesBase.DropRightImage;
+
+                //nachbuchen
+                btn_posnachbuchen_limg.Source = AppModel.Instance.imagesBase.LeistungSymbol;
+                btn_produktenachbuchen_limg.Source = AppModel.Instance.imagesBase.ProduktSymbol;
+                btn_nachbuchen_img.Source = AppModel.Instance.imagesBase.AddArrow;
+                btn_nachbuchen_rimg.Source = AppModel.Instance.imagesBase.DropRightImage;
+                btn_nachbuchen_back_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
+                btn_nachbuchen_cat_back_img.Source = AppModel.Instance.imagesBase.DropLeftWhiteDoubleImage;
+                btn_showselected_pos_img_Again.Source = AppModel.Instance.imagesBase.PosList;
+
+                // InWork
+                btn_inwork_limg.Source = AppModel.Instance.imagesBase.WorkerInProgressWarn;
+                btn_showselected_pos_img.Source = AppModel.Instance.imagesBase.PosList;
+                btn_showselected_pos_img2.Source = AppModel.Instance.imagesBase.PosList;
+                //btn_showselected_pos_img3.Source = AppModel.Instance.imagesBase.InfoImage;
+                btn_showselected_poslist_img.Source = AppModel.Instance.imagesBase.PosList;
+                btn_startselected_pos_img.Source = AppModel.Instance.imagesBase.CheckWhite;
+
+                //RunningWorks
+                btn_back_runningworks_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
+                btn_runningworks_over_img.Source = AppModel.Instance.imagesBase.CheckWhite;
+
+                //Bemerkung
+                btn_back_check_bem_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
+                btn_message_imgA_check_bem.Source = AppModel.Instance.imagesBase.Cam;
+                btn_message_imgB_check_bem.Source = AppModel.Instance.imagesBase.Attachment;
+                btn_notice_save_img_check_bem.Source = AppModel.Instance.imagesBase.CheckWhite;
+
+                btn_back_notice_img_DirektPos.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
+                btn_back_notice_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
+                btn_notice_save_img_DirektPos.Source = AppModel.Instance.imagesBase.CheckWhite;
+                btn_notice_save_img.Source = AppModel.Instance.imagesBase.CheckWhite;
+                btn_message_imgA_DirektPos.Source = AppModel.Instance.imagesBase.Cam;
+                btn_message_imgB_DirektPos.Source = AppModel.Instance.imagesBase.Attachment;
+                btn_message_imgA.Source = AppModel.Instance.imagesBase.Cam;
+                btn_message_imgB.Source = AppModel.Instance.imagesBase.Attachment;
+
+                // ObjectValues
+                btn_back_ObjectValues_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
+                btn_back_ObjectValues_edit_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
+                //objectValues_edit_img.Source = AppModel.Instance.imagesBase.Pen;
+
+
+                //CheckContainer
+                btn_back_check_del_img.Source = AppModel.Instance.imagesBase.Trash;
+                btn_back_check_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
+                btn_info_check_img.Source = AppModel.Instance.imagesBase.CheckSymbol;
+                btn_back_check_signature_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
+
+
+                //Map
+                //btn_back_map_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
+                //btn_back_map.GestureRecognizers.Clear();
+                //var tgr_back_map = new TapGestureRecognizer();
+                //tgr_back_map.Tapped += btn_MapBackTapped;
+                //btn_back_map.GestureRecognizers.Add(tgr_back_map);
+
+
+
+                btn_back_pn_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
+
+
+                //NotScan
+                btn_notscan_back_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
+                btn_notscansearch_img.Source = AppModel.Instance.imagesBase.SearchImage;
+
+                //Sendlogfile Fail
+                popupContainer_container_sendlog_fail_img.Source = AppModel.Instance.imagesBase.WarnTriangleYellow;
+
+                //ifondialog
+                popupContainer_infodialog_img.Source = AppModel.Instance.imagesBase.InfoCircle;
+
+
+                //Persontimes
+                SetAppControll();
+                // btn_persontimes_back_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage; // moved into PersonTimesPageView
+                // warn_persontimes_limg.Source = AppModel.Instance.imagesBase.InfoCircle; // moved into PersonTimesPageView
+                PersonTimesPageView.BtnPersontimesBackImg.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
+                PersonTimesPageView.WarnPersontimesLimg.Source = AppModel.Instance.imagesBase.InfoCircle;
+
+                // Jetzt beenden
+                btn_endselectedwork.GestureRecognizers.Clear();
+                var tgr_over = new TapGestureRecognizer();
+                tgr_over.Tapped -= ScanRunningWorksOver;
+                tgr_over.Tapped += ScanRunningWorksOver;
+                btn_endselectedwork.GestureRecognizers.Add(tgr_over);
+                btn_endselectedcancel.GestureRecognizers.Clear();
+                var tgr_cancel = new TapGestureRecognizer();
+                tgr_cancel.Tapped -= (object o, TappedEventArgs ev) => { popupContainer_quest_endwork.IsVisible = false; };
+                tgr_cancel.Tapped += (object o, TappedEventArgs ev) => { popupContainer_quest_endwork.IsVisible = false; };
+                btn_endselectedcancel.GestureRecognizers.Add(tgr_cancel);
+
+
+                //****************************************
+                // Checks Bemerkung
+                btn_notice_save_check_ready.GestureRecognizers.Clear();
+                var tgr_btn_notice_save_check_ready = new TapGestureRecognizer();
+                tgr_btn_notice_save_check_ready.Tapped += btn_ReadyCheckAToUploadTapped_check_bem;
+                btn_notice_save_check_ready.GestureRecognizers.Add(tgr_btn_notice_save_check_ready);
+
+                btn_back_notice_check_bem.GestureRecognizers.Clear();
+                var tgr_back_notice_check_bem = new TapGestureRecognizer();
+                tgr_back_notice_check_bem.Tapped += btn_NoticeBackTapped_check_bem;
+                btn_back_notice_check_bem.GestureRecognizers.Add(tgr_back_notice_check_bem);
+
+                btn_notice_save_check_bem.GestureRecognizers.Clear();
+                var tgr_back_notice_save_check_bem = new TapGestureRecognizer();
+                tgr_back_notice_save_check_bem.Tapped += btn_NoticeSaveTapped_check_bem;
+                btn_notice_save_check_bem.GestureRecognizers.Add(tgr_back_notice_save_check_bem);
+
+                btn_takePhoto_frame_check_bem.GestureRecognizers.Clear();
+                var tgr_btn_takePhoto_check_bem = new TapGestureRecognizer();
+                tgr_btn_takePhoto_check_bem.Tapped += async (s, e) => await btn_takePhoto_check_bem(s, e);
+                btn_takePhoto_frame_check_bem.GestureRecognizers.Add(tgr_btn_takePhoto_check_bem);
+                btn_takePhotoAttachment_frame_check_bem.GestureRecognizers.Clear();
+                var tgr_btn_takePhotoAttachment_check_bem = new TapGestureRecognizer();
+                tgr_btn_takePhotoAttachment_check_bem.Tapped += async (s, e) => await btn_pickPhotos_check_bem(s, e);
+                btn_takePhotoAttachment_frame_check_bem.GestureRecognizers.Add(tgr_btn_takePhotoAttachment_check_bem);
+
+                btn_startcheckquest.GestureRecognizers.Clear();
+                var tgr_btn_startcheckquest = new TapGestureRecognizer();
+                tgr_btn_startcheckquest.Tapped += (object o, TappedEventArgs ev) => { StartOrOpenCheckA_next_start(); };
+                btn_startcheckquest.GestureRecognizers.Add(tgr_btn_startcheckquest);
+
+                btn_startcheckquestcancel.GestureRecognizers.Clear();
+                var tgr_btn_startcheckquestcancel = new TapGestureRecognizer();
+                tgr_btn_startcheckquestcancel.Tapped += (object o, TappedEventArgs ev) => { StartOrOpenCheckA_next_cancel(); };
+                btn_startcheckquestcancel.GestureRecognizers.Add(tgr_btn_startcheckquestcancel);
+
+
+                btn_check_del.GestureRecognizers.Clear();
+                var tgr_btn_check_del = new TapGestureRecognizer();
+                tgr_btn_check_del.Tapped += (object o, TappedEventArgs ev) => { OpenDelCheckA(); };
+                btn_check_del.GestureRecognizers.Add(tgr_btn_check_del);
+                btn_delcheckquest.GestureRecognizers.Clear();
+                var tgr_btn_delcheckquest = new TapGestureRecognizer();
+                tgr_btn_delcheckquest.Tapped += (object o, TappedEventArgs ev) => { DelCheckA_now(); };
+                btn_delcheckquest.GestureRecognizers.Add(tgr_btn_delcheckquest);
+
+                btn_delcheckquestcancel.GestureRecognizers.Clear();
+                var tgr_btn_delcheckquestcancel = new TapGestureRecognizer();
+                tgr_btn_delcheckquestcancel.Tapped += (object o, TappedEventArgs ev) => { DelCheckA_cancel(); };
+                btn_delcheckquestcancel.GestureRecognizers.Add(tgr_btn_delcheckquestcancel);
+
+
+                // Direktbuchen WINTER Dialog
+                btn_quest_direktbuchenwinter_cancel.GestureRecognizers.Clear();
+                var t_quest_direktbuchenwinter_cancel = new TapGestureRecognizer();
+                t_quest_direktbuchenwinter_cancel.Tapped -= (object o, TappedEventArgs ev) => { CloseDirektbuchenWinterAusPlanliste(); };
+                t_quest_direktbuchenwinter_cancel.Tapped += (object o, TappedEventArgs ev) => { CloseDirektbuchenWinterAusPlanliste(); };
+                btn_quest_direktbuchenwinter_cancel.GestureRecognizers.Add(t_quest_direktbuchenwinter_cancel);
+                btn_quest_direktbuchenwinter.GestureRecognizers.Clear();
+                var t_quest_direktbuchenwinter = new TapGestureRecognizer();
+                t_quest_direktbuchenwinter.Tapped -= (object o, TappedEventArgs ev) => { SaveDirektbuchenWinterAusPlanliste(); };
+                t_quest_direktbuchenwinter.Tapped += (object o, TappedEventArgs ev) => { SaveDirektbuchenWinterAusPlanliste(); };
+                btn_quest_direktbuchenwinter.GestureRecognizers.Add(t_quest_direktbuchenwinter);
+
+                // Direktbuchen Dialog
+                btn_quest_direktbuchen.GestureRecognizers.Clear();
+                var t_quest_direktbuchen = new TapGestureRecognizer();
+                t_quest_direktbuchen.Tapped -= (object o, TappedEventArgs ev) => { SaveDirektbuchenAusPlanliste(); };
+                t_quest_direktbuchen.Tapped += (object o, TappedEventArgs ev) => { SaveDirektbuchenAusPlanliste(); };
+                btn_quest_direktbuchen.GestureRecognizers.Add(t_quest_direktbuchen);
+                btn_quest_direktbuchen_cancel.GestureRecognizers.Clear();
+                var t_quest_direktbuchen_cancel = new TapGestureRecognizer();
+                t_quest_direktbuchen_cancel.Tapped -= (object o, TappedEventArgs ev) => { CloseDirektbuchenAusPlanliste(); };
+                t_quest_direktbuchen_cancel.Tapped += (object o, TappedEventArgs ev) => { CloseDirektbuchenAusPlanliste(); };
+                btn_quest_direktbuchen_cancel.GestureRecognizers.Add(t_quest_direktbuchen_cancel);
+
+
+
+                // StartPage
+                frame_plantabA.GestureRecognizers.Clear();
+                var t_frame_plantabA = new TapGestureRecognizer();
+                t_frame_plantabA.Tapped += btn_PlanTabATapped;
+                frame_plantabA.GestureRecognizers.Add(t_frame_plantabA);
+                frame_plantabB.GestureRecognizers.Clear();
+                var t_frame_plantabB = new TapGestureRecognizer();
+                t_frame_plantabB.Tapped += btn_PlanTabBTapped;
+                frame_plantabB.GestureRecognizers.Add(t_frame_plantabB);
+                frame_plantabCe.GestureRecognizers.Clear();
+                var t_frame_plantabCe = new TapGestureRecognizer();
+                t_frame_plantabCe.Tapped += btn_PlanTabCeTapped;
+                frame_plantabCe.GestureRecognizers.Add(t_frame_plantabCe);
+                frame_plantabC.GestureRecognizers.Clear();
+                var t_frame_plantabC = new TapGestureRecognizer();
+                t_frame_plantabC.Tapped += btn_PlanTabCTapped;
+                frame_plantabC.GestureRecognizers.Add(t_frame_plantabC);
+
+
+                btn_objektinfo.GestureRecognizers.Clear();
+                var t_btn_objektinfo = new TapGestureRecognizer();
+                t_btn_objektinfo.Tapped += (object o, TappedEventArgs ev) => { OpenObjektInfoDialog(); };
+                btn_objektinfo.GestureRecognizers.Add(t_btn_objektinfo);
+
+                popupContainer_infodialog_close.GestureRecognizers.Clear();
+                var t_popupContainer_infodialog_close = new TapGestureRecognizer();
+                t_popupContainer_infodialog_close.Tapped += (object o, TappedEventArgs ev) => { CloseInfoDialog(); };
+                popupContainer_infodialog_close.GestureRecognizers.Add(t_popupContainer_infodialog_close);
+
+
+                popupContainer_quest_daypicker_close.GestureRecognizers.Clear();
+                var t_popupContainer_quest_daypicker_close = new TapGestureRecognizer();
+                t_popupContainer_quest_daypicker_close.Tapped += (object o, TappedEventArgs ev) => { popupContainer_quest_daypicker.IsVisible = false; };
+                popupContainer_quest_daypicker_close.GestureRecognizers.Add(t_popupContainer_quest_daypicker_close);
+                popupContainer_quest_daypicker_open.GestureRecognizers.Clear();
+                var t_popupContainer_quest_daypicker_open = new TapGestureRecognizer();
+                t_popupContainer_quest_daypicker_open.Tapped += (object o, TappedEventArgs ev) => { popupContainer_quest_daypicker.IsVisible = true; };
+                popupContainer_quest_daypicker_open.GestureRecognizers.Add(t_popupContainer_quest_daypicker_open);
+
+                popupContainer_ObjektPlanWeek_otherperson.GestureRecognizers.Clear();
+                var t_popupContainer_ObjektPlanWeek_otherperson = new TapGestureRecognizer();
+                t_popupContainer_ObjektPlanWeek_otherperson.Tapped += (object o, TappedEventArgs ev) => { OpenOtherPerson(); };
+                popupContainer_ObjektPlanWeek_otherperson.GestureRecognizers.Add(t_popupContainer_ObjektPlanWeek_otherperson);
+
+                popupContainer_ObjektPlanWeek_otherperson2.GestureRecognizers.Clear();
+                var t_popupContainer_ObjektPlanWeek_otherperson2 = new TapGestureRecognizer();
+                t_popupContainer_ObjektPlanWeek_otherperson2.Tapped += (object o, TappedEventArgs ev) => { OpenOtherPerson(); };
+                popupContainer_ObjektPlanWeek_otherperson2.GestureRecognizers.Add(t_popupContainer_ObjektPlanWeek_otherperson2);
+
+                popupContainer_quest_personpicker_close.GestureRecognizers.Clear();
+                var t_popupContainer_ObjektPlanWeek_personpicker_close = new TapGestureRecognizer();
+                t_popupContainer_ObjektPlanWeek_personpicker_close.Tapped += (object o, TappedEventArgs ev) => { CloseOtherPerson(); };
+                popupContainer_quest_personpicker_close.GestureRecognizers.Add(t_popupContainer_ObjektPlanWeek_personpicker_close);
+
+                popupContainer_quest_langpicker_close.GestureRecognizers.Clear();
+                var t_popupContainer_langpicker_close = new TapGestureRecognizer();
+                t_popupContainer_langpicker_close.Tapped += (object o, TappedEventArgs ev) => { CloseLanguage(); };
+                popupContainer_quest_langpicker_close.GestureRecognizers.Add(t_popupContainer_langpicker_close);
+
+                popupContainer_ObjektPlanWeek_Type.GestureRecognizers.Clear();
+                var t_popupContainer_ObjektPlanWeek_Type = new TapGestureRecognizer();
+                t_popupContainer_ObjektPlanWeek_Type.Tapped += (object o, TappedEventArgs ev) => { PlanTypeChange(); };
+                popupContainer_ObjektPlanWeek_Type.GestureRecognizers.Add(t_popupContainer_ObjektPlanWeek_Type);
+
+                popupContainer_ObjektPlanWeek_Reload.GestureRecognizers.Clear();
+                var t_popupContainer_ObjektPlanWeek_Reload = new TapGestureRecognizer();
+                t_popupContainer_ObjektPlanWeek_Reload.Tapped += (object o, TappedEventArgs ev) => { ReloadPlanData(0); };
+                popupContainer_ObjektPlanWeek_Reload.GestureRecognizers.Add(t_popupContainer_ObjektPlanWeek_Reload);
+                popupContainer_ObjektPlanWeek_Reload2.GestureRecognizers.Clear();
+                var t_popupContainer_ObjektPlanWeek_Reload2 = new TapGestureRecognizer();
+                t_popupContainer_ObjektPlanWeek_Reload2.Tapped += (object o, TappedEventArgs ev) => { ReloadPlanData(1); };
+                popupContainer_ObjektPlanWeek_Reload2.GestureRecognizers.Add(t_popupContainer_ObjektPlanWeek_Reload2);
+
+
+                frame_planConCe_LoadAll.GestureRecognizers.Clear();
+                var t_frame_planConCe_LoadAll = new TapGestureRecognizer();
+                t_frame_planConCe_LoadAll.Tapped += (object o, TappedEventArgs ev) => { GetChecksInfo(checkInfoLastView, true); };
+                frame_planConCe_LoadAll.GestureRecognizers.Add(t_frame_planConCe_LoadAll);
+
+                frame_planConCe_LoadAll1.GestureRecognizers.Clear();
+                var t_frame_planConCe_LoadAll1 = new TapGestureRecognizer();
+                t_frame_planConCe_LoadAll1.Tapped += (object o, TappedEventArgs ev) => { GetChecksInfo(7, true); };
+                frame_planConCe_LoadAll1.GestureRecognizers.Add(t_frame_planConCe_LoadAll1);
+
+                frame_planConCe_LoadAll2.GestureRecognizers.Clear();
+                var t_frame_planConCe_LoadAll2 = new TapGestureRecognizer();
+                t_frame_planConCe_LoadAll2.Tapped += (object o, TappedEventArgs ev) => { GetChecksInfo(99, true); };
+                frame_planConCe_LoadAll2.GestureRecognizers.Add(t_frame_planConCe_LoadAll2);
+
+
+
+                popupContainerSyncFaild_btn.GestureRecognizers.Clear();
+                var tgr_popupContainerSyncFaild_btn = new TapGestureRecognizer();
+                tgr_popupContainerSyncFaild_btn.Tapped += btn_SyncTapped;
+                popupContainerSyncFaild_btn.GestureRecognizers.Add(tgr_popupContainerSyncFaild_btn);
+
+
+                btn_mainmenu.GestureRecognizers.Clear();
+                var tgr_MainMenu = new TapGestureRecognizer();
+                tgr_MainMenu.Tapped += btn_MainMenuTapped;
+                btn_mainmenu.GestureRecognizers.Add(tgr_MainMenu);
+
+                btn_objScan.GestureRecognizers.Clear();
+                var tgr_BuildingScan = new TapGestureRecognizer();
+                tgr_BuildingScan.Tapped += btn_BuildingScanTapped;
+                btn_objScan.GestureRecognizers.Add(tgr_BuildingScan);
+                btn_objScanB.GestureRecognizers.Clear();
+                var tgr_BuildingScanB = new TapGestureRecognizer();
+                tgr_BuildingScanB.Tapped += btn_BuildingScanTapped;
+                btn_objScanB.GestureRecognizers.Add(tgr_BuildingScanB);
+                btn_objNotScan.GestureRecognizers.Clear();
+                var tgr_BuildingNotScan = new TapGestureRecognizer();
+                tgr_BuildingNotScan.Tapped += btn_BuildingNotScanTapped;
+                btn_objNotScan.GestureRecognizers.Add(tgr_BuildingNotScan);
+
+                btn_workerlist.GestureRecognizers.Clear();
+                var tgr_WorkerList = new TapGestureRecognizer();
+                tgr_WorkerList.Tapped += btn_WorkerListTapped;
+                btn_workerlist.GestureRecognizers.Add(tgr_WorkerList);
+                btn_todos.GestureRecognizers.Clear();
+                var tgr_Todos = new TapGestureRecognizer();
+                tgr_Todos.Tapped += btn_TodosTapped;
+                btn_todos.GestureRecognizers.Add(tgr_Todos);
+
+                btn_persontimes.GestureRecognizers.Clear();
+                var tgr_persontimes = new TapGestureRecognizer();
+                tgr_persontimes.Tapped += btn_PersonTimesTapped;
+                btn_persontimes.GestureRecognizers.Add(tgr_persontimes);
+
+                btn_regist.GestureRecognizers.Clear();
+                var tgr_Regist = new TapGestureRecognizer();
+                tgr_Regist.Tapped += btn_RegistTapped;
+                btn_regist.GestureRecognizers.Add(tgr_Regist);
+
+                btn_settings.GestureRecognizers.Clear();
+                var tgr_Settings = new TapGestureRecognizer();
+                tgr_Settings.Tapped += btn_SettingsTapped;
+                btn_settings.GestureRecognizers.Add(tgr_Settings);
+
+
+
+
+                btn_sync.GestureRecognizers.Clear();
+                var tgr_sync = new TapGestureRecognizer();
+                tgr_sync.Tapped += btn_SyncTapped;
+                btn_sync.GestureRecognizers.Add(tgr_sync);
+
+                btn_dsgvo.GestureRecognizers.Clear();
+                var tgr_dsgvo = new TapGestureRecognizer();
+                tgr_dsgvo.Tapped += btn_DSGVOTapped;
+                btn_dsgvo.GestureRecognizers.Add(tgr_dsgvo);
+
+                btn_worker_back.GestureRecognizers.Clear();
+                var tgr_WorkerBack = new TapGestureRecognizer();
+                tgr_WorkerBack.Tapped += btn_WorkerBackTapped;
+                btn_worker_back.GestureRecognizers.Add(tgr_WorkerBack);
+
+                btn_todo_back.GestureRecognizers.Clear();
+                var tgr_TodoBack = new TapGestureRecognizer();
+                tgr_TodoBack.Tapped += btn_TodoBackTapped;
+                btn_todo_back.GestureRecognizers.Add(tgr_TodoBack);
+
+                btn_notscan_back.GestureRecognizers.Clear();
+                var tgr_NotScanBack = new TapGestureRecognizer();
+                tgr_NotScanBack.Tapped += btn_NotScanBackTapped;
+                btn_notscan_back.GestureRecognizers.Add(tgr_NotScanBack);
+
+                // btn_persontimes_back.GestureRecognizers.Clear(); // moved into PersonTimesPageView
+                // tgr_PersontimesBack.Tapped += btn_PersontimesBackTapped; // moved into PersonTimesPageView
+                // btn_persontimes_back.GestureRecognizers.Add(tgr_PersontimesBack); // moved into PersonTimesPageView
+                PersonTimesPageView.BtnPersontimesBack.GestureRecognizers.Clear();
+                var tgr_PersontimesBack = new TapGestureRecognizer();
+                tgr_PersontimesBack.Tapped += btn_PersontimesBackTapped;
+                PersonTimesPageView.BtnPersontimesBack.GestureRecognizers.Add(tgr_PersontimesBack);
+
+                // btn_persontime_load.GestureRecognizers.Clear(); // moved into PersonTimesPageView
+                // tgr_PersontimesLoad.Tapped += pick_persontimes_SelectedIndexChanged; // moved into PersonTimesPageView
+                // btn_persontime_load.GestureRecognizers.Add(tgr_PersontimesLoad); // moved into PersonTimesPageView
+                PersonTimesPageView.BtnPersontimeLoad.GestureRecognizers.Clear();
+                var tgr_PersontimesLoad = new TapGestureRecognizer();
+                tgr_PersontimesLoad.Tapped += pick_persontimes_SelectedIndexChanged;
+                PersonTimesPageView.BtnPersontimeLoad.GestureRecognizers.Add(tgr_PersontimesLoad);
+
+
+
+
+                popupContainer_Alert_btn.GestureRecognizers.Clear();
+                var tgr9 = new TapGestureRecognizer();
+                tgr9.Tapped -= HideAlertMessage;
+                tgr9.Tapped += HideAlertMessage;
+                popupContainer_Alert_btn.GestureRecognizers.Add(tgr9);
+
+                // Handwerker nach Kategorien suchen
+                btn_workercategorysearch.GestureRecognizers.Clear();
+                var tgr_workercategorysearch = new TapGestureRecognizer();
+                tgr_workercategorysearch.Tapped += btn_WorkerCategorySearchTapped;
+                btn_workercategorysearch.GestureRecognizers.Add(tgr_workercategorysearch);
+                // Handwerker nach Namen suchen
+                btn_workernamesearch.GestureRecognizers.Clear();
+                var tgr_WorkerNamesearch = new TapGestureRecognizer();
+                tgr_WorkerNamesearch.Tapped += btn_WorkerNameSearchTapped;
+                btn_workernamesearch.GestureRecognizers.Add(tgr_WorkerNamesearch);
+                // Handwerker nach Objekten suchen
+                btn_workerbuildingsearch.GestureRecognizers.Clear();
+                var tgr_WorkerBuildingsearch = new TapGestureRecognizer();
+                tgr_WorkerBuildingsearch.Tapped += btn_WorkerBuildingSearchTapped;
+                btn_workerbuildingsearch.GestureRecognizers.Add(tgr_WorkerBuildingsearch);
+
+
+                // BuidlingOutScan Back to MainPage
+                btn_overtootherBuildingSave.GestureRecognizers.Clear();
+                var tgr_overtootherBuildingSave = new TapGestureRecognizer();
+                tgr_overtootherBuildingSave.Tapped += btn_done_BuildingOutScanTapped;
+                btn_overtootherBuildingSave.GestureRecognizers.Add(tgr_overtootherBuildingSave);
+                btn_back_inBuildingOutScan.GestureRecognizers.Clear();
+                var tgr_back_inBuildingOutScan = new TapGestureRecognizer();
+                tgr_back_inBuildingOutScan.Tapped += btn_back_BuildingOutScanTapped;
+                btn_back_inBuildingOutScan.GestureRecognizers.Add(tgr_back_inBuildingOutScan);
+                btn_flashlight_Out_container.GestureRecognizers.Clear();
+                var tapGestureRecognizer1b = new TapGestureRecognizer();
+                tapGestureRecognizer1b.Tapped += AppModel.Instance.Scan.Btn_FlashlightTapped;
+                btn_flashlight_Out_container.GestureRecognizers.Add(tapGestureRecognizer1b);
+
+                // BuidlingScan Back to MainPage
+                btn_back_inBuildingScan.GestureRecognizers.Clear();
+                var tgr_back_inBuildingScan = new TapGestureRecognizer();
+                tgr_back_inBuildingScan.Tapped += btn_back_BuildingScanTapped;
+                btn_back_inBuildingScan.GestureRecognizers.Add(tgr_back_inBuildingScan);
+                btn_flashlight_container.GestureRecognizers.Clear();
+                var tapGestureRecognizer1 = new TapGestureRecognizer();
+                tapGestureRecognizer1.Tapped += AppModel.Instance.Scan.Btn_FlashlightTapped;
+                btn_flashlight_container.GestureRecognizers.Add(tapGestureRecognizer1);
+
+
+                // BuildingOrder 
+                btn_back_inBuildingOrder.GestureRecognizers.Clear();
+                var tapGestureRecognizer2 = new TapGestureRecognizer();
+                tapGestureRecognizer2.Tapped += btn_back_BuildingOrderTapped;
+                btn_back_inBuildingOrder.GestureRecognizers.Add(tapGestureRecognizer2);
+                btn_back_inBuildingOrder_category.GestureRecognizers.Clear();
+                var tapGestureRecognizer2b = new TapGestureRecognizer();
+                tapGestureRecognizer2b.Tapped += btn_back_OrderCategoryTapped;
+                btn_back_inBuildingOrder_category.GestureRecognizers.Add(tapGestureRecognizer2b);
+
+                btn_back_inBuildingOrder_category_showall.GestureRecognizers.Clear();
+                var tapGestureRecognizer2ball = new TapGestureRecognizer();
+                tapGestureRecognizer2ball.Tapped += btn_showall_OrderCategoryTapped;
+                btn_back_inBuildingOrder_category_showall.GestureRecognizers.Add(tapGestureRecognizer2ball);
+
+                btn_back_inBuildingOrder_category_showall_again.GestureRecognizers.Clear();
+                var tapGestureRecognizer2ball_again = new TapGestureRecognizer();
+                tapGestureRecognizer2ball_again.Tapped += btn_showall_again_OrderCategoryTapped;
+                btn_back_inBuildingOrder_category_showall_again.GestureRecognizers.Add(tapGestureRecognizer2ball_again);
+
+
+                btn_back_inBuildingOrder_position.GestureRecognizers.Clear();
+                var tapGestureRecognizer2c = new TapGestureRecognizer();
+                tapGestureRecognizer2c.Tapped += btn_back_CategoryPositionTapped;
+                btn_back_inBuildingOrder_position.GestureRecognizers.Add(tapGestureRecognizer2c);
+
+
+                btn_objvalues_container.GestureRecognizers.Clear();
+                var tgr_objvalues_container = new TapGestureRecognizer();
+                tgr_objvalues_container.Tapped += btn_ShowObjectValuesTapped;
+                btn_objvalues_container.GestureRecognizers.Add(tgr_objvalues_container);
+
+                btn_back_ObjectValues.GestureRecognizers.Clear();
+                var tgr_back_ObjectValue = new TapGestureRecognizer();
+                tgr_back_ObjectValue.Tapped += btn_CloseObjectValuesTapped;
+                btn_back_ObjectValues.GestureRecognizers.Add(tgr_back_ObjectValue);
+
+                btn_back_ObjectValues_edit.GestureRecognizers.Clear();
+                var tgr_back_ObjectValue_edit = new TapGestureRecognizer();
+                tgr_back_ObjectValue_edit.Tapped += btn_CloseObjectValuesEditTapped;
+                btn_back_ObjectValues_edit.GestureRecognizers.Add(tgr_back_ObjectValue_edit);
+
+                btn_buildingout_container.GestureRecognizers.Clear();
+                var tapGestureRecognizer4 = new TapGestureRecognizer();
+                tapGestureRecognizer4.Tapped += btn_ClearLastBuildingTapped;
+                btn_buildingout_container.GestureRecognizers.Add(tapGestureRecognizer4);
+
+                btn_buildingorder.GestureRecognizers.Clear();
+                var tapGestureRecognizer3 = new TapGestureRecognizer();
+                tapGestureRecognizer3.Tapped += btn_AuftraegeAuswaehlen;
+                btn_buildingorder.GestureRecognizers.Add(tapGestureRecognizer3);
+
+
+                btn_inwork.GestureRecognizers.Clear();
+                var tapGestureRecognizer6 = new TapGestureRecognizer();
+                tapGestureRecognizer6.Tapped += btn_ShowRunningWorks;
+                btn_inwork.GestureRecognizers.Add(tapGestureRecognizer6);
+
+                // Show Leistungen zur Ausführen ausgewählt
+                btn_showselected_pos.GestureRecognizers.Clear();
+                var tapGestureRecognizer7 = new TapGestureRecognizer();
+                tapGestureRecognizer7.Tapped += btn_AuswahlAnzeigen;
+                btn_showselected_pos.GestureRecognizers.Add(tapGestureRecognizer7);
+                btn_showselected_pos2.GestureRecognizers.Clear();
+                var tapGestureRecognizer8 = new TapGestureRecognizer();
+                tapGestureRecognizer8.Tapped += btn_AuswahlAnzeigen;
+                btn_showselected_pos2.GestureRecognizers.Add(tapGestureRecognizer8);
+
+
+                btn_startselected_pos.GestureRecognizers.Clear();
+                var tgr_startselected_pos = new TapGestureRecognizer();
+                tgr_startselected_pos.Tapped += StartSelectedPos;
+                btn_startselected_pos.GestureRecognizers.Add(tgr_startselected_pos);
+
+                // RunningWorks
+                btn_back_runningworks.GestureRecognizers.Clear();
+                var tgr_back_runningworks = new TapGestureRecognizer();
+                tgr_back_runningworks.Tapped += btn_RunningWorksBackTapped;
+                btn_back_runningworks.GestureRecognizers.Add(tgr_back_runningworks);
+                btn_runningworks_over.GestureRecognizers.Clear();
+                var tgr_runningworks_over = new TapGestureRecognizer();
+                tgr_runningworks_over.Tapped += btn_RunningWorksOverTapped;
+                btn_runningworks_over.GestureRecognizers.Add(tgr_runningworks_over);
+
+                // Bemerkung
+                btn_alertmessage_container.GestureRecognizers.Clear();
+                var tgr_alertmessage_container = new TapGestureRecognizer();
+                tgr_alertmessage_container.Tapped += btn_ShowNoticePrioTapped;
+                btn_alertmessage_container.GestureRecognizers.Add(tgr_alertmessage_container);
+                btn_message_container.GestureRecognizers.Clear();
+                var tgr_message_container = new TapGestureRecognizer();
+                tgr_message_container.Tapped += btn_ShowNoticeTapped;
+                btn_message_container.GestureRecognizers.Add(tgr_message_container);
+                btn_back_notice.GestureRecognizers.Clear();
+                var tgr_back_notice = new TapGestureRecognizer();
+                tgr_back_notice.Tapped += btn_NoticeBackTapped;
+                btn_back_notice.GestureRecognizers.Add(tgr_back_notice);
+                btn_notice_save.GestureRecognizers.Clear();
+                var tgr_back_notice_save = new TapGestureRecognizer();
+                tgr_back_notice_save.Tapped += btn_NoticeSaveTapped;
+                btn_notice_save.GestureRecognizers.Add(tgr_back_notice_save);
+
+                btn_takePhoto_frame.GestureRecognizers.Clear();
+                var tgr_btn_takePhoto = new TapGestureRecognizer();
+                tgr_btn_takePhoto.Tapped += async (s, e) => await btn_takePhoto(s, e);
+                btn_takePhoto_frame.GestureRecognizers.Add(tgr_btn_takePhoto);
+                btn_takePhotoAttachment_frame.GestureRecognizers.Clear();
+                var tgr_btn_takePhotoAttachment = new TapGestureRecognizer();
+                tgr_btn_takePhotoAttachment.Tapped += async (s, e) => await btn_pickPhotos(s, e);
+                btn_takePhotoAttachment_frame.GestureRecognizers.Add(tgr_btn_takePhotoAttachment);
+
+
+                /*btn_alertmessage_container_DirektPos.GestureRecognizers.Clear();
+                var tgr_alertmessage_container_DirektPos = new TapGestureRecognizer();
+                tgr_alertmessage_container_DirektPos.Tapped += btn_ShowNoticePrioTapped;
+                btn_alertmessage_container_DirektPos.GestureRecognizers.Add(tgr_alertmessage_container_DirektPos);
+                btn_message_container_DirektPos.GestureRecognizers.Clear();
+                var tgr_message_container_DirektPos = new TapGestureRecognizer();
+                tgr_message_container_DirektPos.Tapped += btn_ShowNoticeTapped;
+                btn_message_container_DirektPos.GestureRecognizers.Add(tgr_message_container_DirektPos);*/
+                btn_back_notice_DirektPos.GestureRecognizers.Clear();
+                var tgr_back_notice_DirektPos = new TapGestureRecognizer();
+                tgr_back_notice_DirektPos.Tapped += btn_NoticeBackTapped_DirektPos;
+                btn_back_notice_DirektPos.GestureRecognizers.Add(tgr_back_notice_DirektPos);
+
+                btn_notice_save_DirektPos.GestureRecognizers.Clear();
+                var tgr_back_notice_save_DirektPos = new TapGestureRecognizer();
+                tgr_back_notice_save_DirektPos.Tapped += btn_NoticeSaveTapped_DirektPos;
+                btn_notice_save_DirektPos.GestureRecognizers.Add(tgr_back_notice_save_DirektPos);
+
+                btn_notice_del_DirektPos.GestureRecognizers.Clear();
+                var tgr_back_notice_del_DirektPos = new TapGestureRecognizer();
+                tgr_back_notice_del_DirektPos.Tapped += btn_NoticeDelTapped_DirektPos;
+                btn_notice_del_DirektPos.GestureRecognizers.Add(tgr_back_notice_del_DirektPos);
+
+                btn_takePhoto_frame_DirektPos.GestureRecognizers.Clear();
+                var tgr_btn_takePhoto_DirektPos = new TapGestureRecognizer();
+                tgr_btn_takePhoto_DirektPos.Tapped += async (s, e) => await btn_takePhoto_DirektPos(s, e);
+                btn_takePhoto_frame_DirektPos.GestureRecognizers.Add(tgr_btn_takePhoto_DirektPos);
+                btn_takePhotoAttachment_frame_DirektPos.GestureRecognizers.Clear();
+                var tgr_btn_takePhotoAttachment_DirektPos = new TapGestureRecognizer();
+                tgr_btn_takePhotoAttachment_DirektPos.Tapped += async (s, e) => await btn_pickPhotos_DirektPos(s, e);
+                btn_takePhotoAttachment_frame_DirektPos.GestureRecognizers.Add(tgr_btn_takePhotoAttachment_DirektPos);
+
+                //ChecklistContainer
+                btn_back_check.GestureRecognizers.Clear();
+                var tgr_back_check = new TapGestureRecognizer();
+                tgr_back_check.Tapped += CloseCheckA;
+                btn_back_check.GestureRecognizers.Add(tgr_back_check);
+                btn_back_check_signature.GestureRecognizers.Clear();
+                var tgr_back_check_signature = new TapGestureRecognizer();
+                tgr_back_check_signature.Tapped += CloseCheckA_Singature;
+                btn_back_check_signature.GestureRecognizers.Add(tgr_back_check_signature);
+
+
+                btn_exitwork.GestureRecognizers.Clear();
+                var tgr_ExitWork = new TapGestureRecognizer();
+                tgr_ExitWork.Tapped += DayOverTapped;
+                btn_exitwork.GestureRecognizers.Add(tgr_ExitWork);
+
+
+
+                btn_back_pn.GestureRecognizers.Clear();
+                var tgr_back_pn = new TapGestureRecognizer();
+                tgr_back_pn.Tapped += btn_PN_BackTapped;
+                btn_back_pn.GestureRecognizers.Add(tgr_back_pn);
+
+
+                btn_nachbuchen_back.GestureRecognizers.Clear();
+                var tgr_btn_nachbuchen_back = new TapGestureRecognizer();
+                tgr_btn_nachbuchen_back.Tapped += (object o, TappedEventArgs ev) =>
+                {
+                    if (AppModel.Instance.LastSelectedCategoryAgain == null)
+                    {
+                        btn_back_inBuildingOrder_category_showall_again_txt.Text = "Alle zeigen";
+                        AppModel.Instance._showall_again_OrderCategory = false;
+                        this.Focus(); ShowMainPage();
+                    }
+                    else
+                    {
+                        btn_nachbuchen_Tapped(AppModel.Instance.posAgain);
+                    }
+                };
+                btn_nachbuchen_back.GestureRecognizers.Add(tgr_btn_nachbuchen_back);
+                btn_nachbuchen_cat_back.GestureRecognizers.Clear();
+                var tgr_nachbuchen_cat_back = new TapGestureRecognizer();
+                tgr_nachbuchen_cat_back.Tapped += (object o, TappedEventArgs ev) => { btn_nachbuchen_Tapped(AppModel.Instance.posAgain); };
+                btn_nachbuchen_cat_back.GestureRecognizers.Add(tgr_nachbuchen_cat_back);
+                btn_nachbuchen.GestureRecognizers.Clear();
+                var tgr_nachbuchen = new TapGestureRecognizer();
+                tgr_nachbuchen.Tapped += (object o, TappedEventArgs ev) => { ShowNachbuchenPage(AppModel.Instance.posAgain); };
+                btn_nachbuchen.GestureRecognizers.Add(tgr_nachbuchen);
+                btn_nachbuchen_Produkte.GestureRecognizers.Clear();
+                var tgr_produkt_nachbuchen = new TapGestureRecognizer();
+                tgr_produkt_nachbuchen.Tapped += (object o, TappedEventArgs ev) => { btn_nachbuchen_Tapped(0); };
+                btn_nachbuchen_Produkte.GestureRecognizers.Add(tgr_produkt_nachbuchen);
+                btn_nachbuchen_Pos.GestureRecognizers.Clear();
+                var tgr_nachbuchen_Pos = new TapGestureRecognizer();
+                tgr_nachbuchen_Pos.Tapped += (object o, TappedEventArgs ev) => { btn_nachbuchen_Tapped(1); };
+                btn_nachbuchen_Pos.GestureRecognizers.Add(tgr_nachbuchen_Pos);
+                btn_showselected_pos_Again.GestureRecognizers.Clear();
+                var tgr_showselected_pos_Again = new TapGestureRecognizer();
+                tgr_showselected_pos_Again.Tapped += btn_AuswahlAnzeigen_Again;
+                btn_showselected_pos_Again.GestureRecognizers.Add(tgr_showselected_pos_Again);
+
+
+                btn_objectValuesNow.GestureRecognizers.Clear();
+                var tgr_btn_objectValuesNow = new TapGestureRecognizer();
+                tgr_btn_objectValuesNow.Tapped += btn_objectValuesNowTapped;
+                btn_objectValuesNow.GestureRecognizers.Add(tgr_btn_objectValuesNow);
+                btn_objectValuesToday.GestureRecognizers.Clear();
+                var tgr_btn_objectValuesToday = new TapGestureRecognizer();
+                tgr_btn_objectValuesToday.Tapped += btn_objectValuesTodayTapped;
+                btn_objectValuesToday.GestureRecognizers.Add(tgr_btn_objectValuesToday);
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger.Error("Error in InitStartPageHandlers(MainPage): " + ex.Message + " | Stacktrace: " + ex.StackTrace);
+            }
         }
 
         /*******************/

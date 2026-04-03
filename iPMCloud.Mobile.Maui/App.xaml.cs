@@ -79,13 +79,16 @@ namespace iPMCloud.Mobile
             {
                 AppModel.Logger.Warn("WARN: App neu gestartet (Person noch nicht bekannt - Neuinstallation)");
             }
-            
+
             //AppModel.Instance.SendLogZipFile();
-            
+
+            AppModel.Logger.Info("0001");
             if (AppModel.Instance.StartPage == null)
             {
+                AppModel.Logger.Info("0001");
                 var startPage = new StartPage();
                 AppModel.Instance.StartPage = startPage;
+                AppModel.Logger.Info("0002");
             }
             //if (AppModel.Instance.MainPage == null)
             //{
@@ -101,7 +104,7 @@ namespace iPMCloud.Mobile
             // InitApp wurde schon im Konstruktor aufgerufen,
             // PageNavigator hat die Startseite bereits vorbereitet
             var page = AppModel.Instance.StartPage ?? 
-                new ContentPage { BackgroundColor = Colors.DarkGreen };
+                new ContentPage { BackgroundColor = Colors.DarkRed };
             return new Window(page);
         }
 
@@ -194,46 +197,53 @@ namespace iPMCloud.Mobile
 
         protected override void OnResume()
         {
-
-            if (AppModel.Instance.DeviceSystem == "ios")
+            try
             {
-                // TODO: Replace DependencyService with DI
-                // DependencyService.Get<IImageResizer>().ClearBadge();
+                if (AppModel.Instance.DeviceSystem == "ios")
+                {
+                    // TODO: Replace DependencyService with DI
+                    // DependencyService.Get<IImageResizer>().ClearBadge();
+                }
+
+                AppModel.Instance.AppOnResume = DateTime.Now;
+                AppModel.Instance.isInBackground = false;
+
+                //if (AppModel.Instance.AppOnResume > AppModel.Instance.AppOnSleep.AddSeconds(10) || AppModel.Instance.UseExternHardware)
+                //{
+
+                //    if (AppModel.Instance.DeviceSystem == "android")
+                //    {
+                //        //DependencyService.Get<IDependentService>().Start();
+                //    }
+                ////if (AppModel.Instance.DeviceSystem == "ios")
+                ////{
+
+                //StartBackgroundService();
+
+                ////}
+                ////AppModel.Logger.Info("App aus dem Hintergrund wieder hervorgerufen");
+                //AppModel.Instance.isInBackground = false;
+
+                // ⬇️ Schutz: Nicht ausführen wenn App gerade erst gestartet wurde (< 5 Sekunden)
+                var timeSinceStart = (DateTime.Now - AppModel.Instance.AppOnStart).TotalSeconds;
+                if (timeSinceStart < 5)
+                {
+                    base.OnResume();
+                    return;
+                }
+
+                var dt = String.IsNullOrEmpty(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks) ? DateTime.Now.AddDays(-2) : new DateTime(long.Parse(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks));
+                if (dt.AddHours(AppModel.Instance.SettingModel.SettingDTO.SyncTimeHours) < DateTime.Now && !AppModel.Instance.UseExternHardware) //(dt.AddHours(4) < DateTime.Now || manuellSync)
+                {
+                    InitApp();
+                }
+                AppModel.Instance.UseExternHardware = false;
             }
-
-            AppModel.Instance.AppOnResume = DateTime.Now;
-            AppModel.Instance.isInBackground = false;
-
-            //if (AppModel.Instance.AppOnResume > AppModel.Instance.AppOnSleep.AddSeconds(10) || AppModel.Instance.UseExternHardware)
-            //{
-
-            //    if (AppModel.Instance.DeviceSystem == "android")
-            //    {
-            //        //DependencyService.Get<IDependentService>().Start();
-            //    }
-            ////if (AppModel.Instance.DeviceSystem == "ios")
-            ////{
-
-            //StartBackgroundService();
-
-            ////}
-            ////AppModel.Logger.Info("App aus dem Hintergrund wieder hervorgerufen");
-            //AppModel.Instance.isInBackground = false;
-
-            // ⬇️ Schutz: Nicht ausführen wenn App gerade erst gestartet wurde (< 5 Sekunden)
-            var timeSinceStart = (DateTime.Now - AppModel.Instance.AppOnStart).TotalSeconds;
-            if (timeSinceStart < 5)
+            catch (Exception ex)
             {
-                base.OnResume();
-                return;
+                AppModel.Logger.Error("ERROR in OnResume (App.xaml.cs)");
+                AppModel.Logger.Error(ex);
             }
-
-            var dt = String.IsNullOrEmpty(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks) ? DateTime.Now.AddDays(-2) : new DateTime(long.Parse(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks));
-            if (dt.AddHours(AppModel.Instance.SettingModel.SettingDTO.SyncTimeHours) < DateTime.Now && !AppModel.Instance.UseExternHardware) //(dt.AddHours(4) < DateTime.Now || manuellSync)
-            {
-                InitApp();
-            }
-            AppModel.Instance.UseExternHardware = false;
             //}
             base.OnResume();
         }

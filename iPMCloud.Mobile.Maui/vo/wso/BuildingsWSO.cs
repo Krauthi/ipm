@@ -427,7 +427,7 @@ namespace iPMCloud.Mobile
 
         public async static void ShowOrderContainerOnlyKat(Object value)
         {
-            var stack = ((value as List<Object>)[0] as StackLayout);
+            var stack = ((value as List<Object>)[0] as VerticalStackLayout);
             var model = ((value as List<Object>)[1] as AppModel);
             //var list = ((value as List<Object>)[2] as BuildingWSO).ArrayOfAuftrag;
             var obj = ((value as List<Object>)[2] as BuildingWSO);
@@ -488,7 +488,7 @@ namespace iPMCloud.Mobile
                                         {
                                             //if (prioPos < 8)  // vorschau 1 Woche
                                             //{
-                                            (categories.Children[1] as StackLayout).Children.Add(LeistungWSO.GetPositionTodoCardView(l, model, onlyText));
+                                            (categories.Children[1] as VerticalStackLayout).Children.Add(LeistungWSO.GetPositionTodoCardView(l, model, onlyText));
                                             //}
                                         }
                                     });
@@ -513,7 +513,7 @@ namespace iPMCloud.Mobile
                 BuildingWSO.ShowOrderContainerOnlyKat(value);
                 return;
             }
-            var stack = ((value as List<Object>)[0] as StackLayout);
+            var stack = ((value as List<Object>)[0] as VerticalStackLayout);
             var model = ((value as List<Object>)[1] as AppModel);
             //var list = ((value as List<Object>)[2] as BuildingWSO).ArrayOfAuftrag;
             var obj = ((value as List<Object>)[2] as BuildingWSO);
@@ -561,7 +561,7 @@ namespace iPMCloud.Mobile
                                 //if (prioCat < 8) // vorschau 1 Woche
                                 //{
                                 var categories = KategorieWSO.GetCategoryTodoCardView(c, model, prioCat, onlyText);
-                                (order.Children[1] as StackLayout).Children.Add(categories);
+                                (order.Children[1] as VerticalStackLayout).Children.Add(categories);
                                 c.leistungen.ForEach(l =>
                                 {
                                     var prioPos = AuftragWSO.CalcLeistungOverdueTodo(l, model);
@@ -569,7 +569,7 @@ namespace iPMCloud.Mobile
                                     {
                                         //if (prioPos < 8)  // vorschau 1 Woche
                                         //{
-                                        (categories.Children[1] as StackLayout).Children.Add(LeistungWSO.GetPositionTodoCardView(l, model, onlyText));
+                                        (categories.Children[1] as VerticalStackLayout).Children.Add(LeistungWSO.GetPositionTodoCardView(l, model, onlyText));
                                         //}
                                     }
                                 });

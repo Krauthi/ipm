@@ -6,10 +6,8 @@ namespace iPMCloud.Mobile.vo
 {
     public class State
     {
-        AppModel model = null;
-        public State(AppModel _model)
+        public State()
         {
-            model = _model;
         }
 
         // Wenn wieder zurück zur Login Page und damit nicht das Autologin reagiert!

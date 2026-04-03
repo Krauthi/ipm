@@ -105,7 +105,7 @@ namespace iPMCloud.Mobile.vo
                         var mainPageContent = MainPageObj.GetPage(subPage); 
                         SetPage(mainPageContent);
 
-                        //AppModel.Instance.MainPage.MainPageAgain();
+                        AppModel.Instance.MainPage.MainPageAgain();
                     }
                     else
                     {

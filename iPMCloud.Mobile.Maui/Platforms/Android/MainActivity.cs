@@ -57,6 +57,9 @@ namespace iPMCloud.Mobile
                 // ✅ MAUI Platform initialisieren (WICHTIG!)
                 Platform.Init(this, savedInstanceState);
 
+                // NLog initialisieren
+                InitializeNLog();
+
                 // AppModel initialisieren
                 model = AppModel.Instance;
                 //model.Activity = this;
@@ -66,8 +69,6 @@ namespace iPMCloud.Mobile
                 // Font Scale vor base.OnCreate setzen
                 InitFontScale();
 
-                // NLog initialisieren
-                InitializeNLog();
 
                 // UI Konfiguration
                 ConfigureUI();

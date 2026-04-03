@@ -257,37 +257,46 @@ namespace iPMCloud.Mobile.vo
 
         public bool InitAppModel()
         {
-            if(HasInitAppmodel) { return true; }
-            AppOnStart = DateTime.Now;
-
-            AppSet.Load();
-            SettingModel.model = this;
-            SettingModel.InitializeSettings();
-            Lang = Lang.Load();
-            Companies = Company.LoadCompanies();
-            PageNavigator = new TFPageNavigator();
-            State = new State(this);
-            Connections = new Connections(this);
-            Scan = new Scanner(this);
-            Person = PersonWSO.LoadPerson(this);// Wenn keine Person dann "null" !!
-            InitBuildings();
-            SetAllKategorieNames();
-            AppControll = AppControll.Load(this);
-            InitLangs();
-
-            _ = IsInternet; // Initial abfragen 
-            connectionProfiles = new List<string>();
-            var profiles = Connectivity.Current.ConnectionProfiles;
-            if (profiles != null && profiles.Any())
+            try
             {
-                connectionProfiles = profiles.Select(p => p.ToString()).ToList();
+                if (HasInitAppmodel) { return true; }
+                AppOnStart = DateTime.Now;
+
+                AppSet.Load();
+                SettingModel.model = this;
+                SettingModel.InitializeSettings();
+                Lang = Lang.Load();
+                Companies = Company.LoadCompanies();
+                PageNavigator = new TFPageNavigator();
+                State = new State();
+                Connections = new Connections(this);
+                Scan = new Scanner(this);
+                Person = PersonWSO.LoadPerson(this);// Wenn keine Person dann "null" !!
+                InitBuildings();
+                SetAllKategorieNames();
+                AppControll = AppControll.Load(this);
+                InitLangs();
+
+                _ = IsInternet; // Initial abfragen 
+                connectionProfiles = new List<string>();
+                var profiles = Connectivity.Current.ConnectionProfiles;
+                if (profiles != null && profiles.Any())
+                {
+                    connectionProfiles = profiles.Select(p => p.ToString()).ToList();
+                }
+
+                Connectivity.Current.ConnectivityChanged -= OnConnectivityChanged;
+                Connectivity.Current.ConnectivityChanged += OnConnectivityChanged;
+
+                //ChekAppVersion();
+
+                return true;
             }
-
-            Connectivity.Current.ConnectivityChanged += OnConnectivityChanged;
-
-            //ChekAppVersion();
-
-            return true;
+            catch (Exception ex)
+            {
+                Logger.Error("ERROR: InitAppModel -> " + ex.Message + " | StackTrace: " + ex.StackTrace);
+                return false;
+            }
         }
 
 
@@ -305,7 +314,9 @@ namespace iPMCloud.Mobile.vo
                     }
                 }
             }
-            catch (Exception) { }
+            catch (Exception ex) {
+                Logger.Error("ERROR: OnConnectivityChanged -> " + ex.Message + " | StackTrace: " + ex.StackTrace);
+            }
 
             // UI-Updates auf Main Thread
             //if (this.App.MainPage != null) 
@@ -326,8 +337,13 @@ namespace iPMCloud.Mobile.vo
                                     (mainPage as StartPage)?.ShowDisconnected();
                                     break;
                             }
+
                         }
-                        catch (Exception) { }
+                        catch (Exception ex)
+                        {
+                            Logger.Error("ERROR: OnConnectivityChanged (BeginInvokeOnMainThread) -> " + ex.Message + " | StackTrace: " + ex.StackTrace);
+                        }
+
                     });
                 }
             }
@@ -1169,7 +1185,7 @@ namespace iPMCloud.Mobile.vo
 
             if (AppModel.Instance.Person != null)
             {
-                AppModel.Logger.Info("INFO: App neu gestartet V" + AppModel.Instance.Version + " (" + AppModel.Instance.Person.name + " " + AppModel.Instance.Person.vorname + ")");
+                AppModel.Logger.Info("INFO: V" + AppModel.Instance.Version + " (" + AppModel.Instance.Person.name + " " + AppModel.Instance.Person.vorname + ")");
             }
 
             headstr += "<p style=\"margin:2px 5px;\">Von:" +

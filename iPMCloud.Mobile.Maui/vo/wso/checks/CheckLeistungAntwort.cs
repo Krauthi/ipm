@@ -88,9 +88,9 @@ namespace iPMCloud.Mobile
         public StackLayout signPad = null;
 
         [NonSerialized]
-        public StackLayout stack_Badge = null;
+        public HorizontalStackLayout stack_Badge = null;
         [NonSerialized]
-        public StackLayout stack_Bem_Badge = null;
+        public HorizontalStackLayout stack_Bem_Badge = null;
 
 
 

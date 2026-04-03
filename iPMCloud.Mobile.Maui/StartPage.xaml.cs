@@ -22,10 +22,12 @@ namespace iPMCloud.Mobile
 
         public StartPage()
         {
+            AppModel.Logger.Info("0011");
             isInitialize = true;
             InitializeComponent();
                 InitStartPage();
                 ShowDisconnected();
+            AppModel.Logger.Info("0012");
         }
 
 
@@ -39,6 +41,7 @@ namespace iPMCloud.Mobile
         public void InitStartPage(bool switchCustomer = false)
         {
 
+            AppModel.Logger.Info("0013");
             //btn_regScan_limg.Source = AppModel.Instance.imagesBase.QrScan;
             //btn_regScanWarn_img.Source = AppModel.Instance.imagesBase.WarnTriangleYellow;
 
@@ -59,16 +62,21 @@ namespace iPMCloud.Mobile
 
             lb_version.Text = "V" + AppModel.Instance.Version;// + " (" + AppModel.Instance.Build + ")";
 
+            AppModel.Logger.Info("0014");
             InitStartPageHandlers();
 
+            AppModel.Logger.Info("0015");
             InitPermission();
 
+            AppModel.Logger.Info("0016");
             if (AppModel.Instance.SettingModel.IsCredentialsSettingsReady)//|| AppModel.Instance.IsTest)
             {
+                AppModel.Logger.Info("0017a");
                 ShowLoginPage(switchCustomer);
             }
             else
             {
+                AppModel.Logger.Info("0017b");
                 ShowBeforeRegScan();
                 //ShowRegScan();
             }
@@ -155,53 +163,67 @@ namespace iPMCloud.Mobile
 
         private async Task<bool> CheckPermissions(bool inclGPS, bool showAlert)
         {
-            AppModel.Instance.CheckPermissions();
-            if (!String.IsNullOrWhiteSpace(AppModel.Instance.checkPermissionsMessage))
+            try
             {
-                if (showAlert)
-                {
-                    AppModel.Instance.checkPermissionsMessage = AppModel.Instance.checkPermissionsMessage.Replace(";", "\n\n");
-                    await DisplayAlertAsync("Folgendes wird benötigt!", AppModel.Instance.checkPermissionsMessage, "OK");
-                    //model.PageNavigator.NavigateTo(TFPageNavigator.PAGE_CLOSEAPP);
-                }
-                return false;
-            }
-            if (inclGPS)
-            {
-                AppModel.Instance.CheckPermissionGPS();
-                if (!String.IsNullOrWhiteSpace(AppModel.Instance.checkPermissionGPSMessage))
+                AppModel.Instance.CheckPermissions();
+                if (!String.IsNullOrWhiteSpace(AppModel.Instance.checkPermissionsMessage))
                 {
                     if (showAlert)
                     {
-                        AppModel.Instance.checkPermissionGPSMessage = AppModel.Instance.checkPermissionGPSMessage.Replace(";", "\n\n");
-                        await DisplayAlertAsync("Berechtigungsproblem!", AppModel.Instance.checkPermissionGPSMessage, "OK");
+                        AppModel.Instance.checkPermissionsMessage = AppModel.Instance.checkPermissionsMessage.Replace(";", "\n\n");
+                        await DisplayAlertAsync("Folgendes wird benötigt!", AppModel.Instance.checkPermissionsMessage, "OK");
                         //model.PageNavigator.NavigateTo(TFPageNavigator.PAGE_CLOSEAPP);
                     }
                     return false;
                 }
-                //AppModel.Instance.InitGPSTimer();
+                if (inclGPS)
+                {
+                    AppModel.Instance.CheckPermissionGPS();
+                    if (!String.IsNullOrWhiteSpace(AppModel.Instance.checkPermissionGPSMessage))
+                    {
+                        if (showAlert)
+                        {
+                            AppModel.Instance.checkPermissionGPSMessage = AppModel.Instance.checkPermissionGPSMessage.Replace(";", "\n\n");
+                            await DisplayAlertAsync("Berechtigungsproblem!", AppModel.Instance.checkPermissionGPSMessage, "OK");
+                            //model.PageNavigator.NavigateTo(TFPageNavigator.PAGE_CLOSEAPP);
+                        }
+                        return false;
+                    }
+                    //AppModel.Instance.InitGPSTimer();
+                }
+                return true;
             }
-            return true;
+            catch (Exception ex)
+            {
+                AppModel.Logger.Error("ERROR: CheckPermissions failed: " + ex.Message + " - " + ex.StackTrace);
+                return false;
+            }
         }
 
 
 
         public void ShowDisconnected()
         {
-            img_onlinestate.Source = AppModel.Instance.IsInternet ? "isonlineB.png" : "isofflineB.png";
-            string statetext = "";
-            int l = AppModel.Instance.connectionProfiles.Count;
-            AppModel.Instance.connectionProfiles.ForEach(profile =>
+            try
             {
-                var s = profile;
-                if (s.ToLower() == "cellular") { s = "G|LTE"; }
-                if (s.ToLower() == "desktop") { s = "Ethernet"; }
-                if (!statetext.Contains(s))
+                img_onlinestate.Source = AppModel.Instance.IsInternet ? "isonlineB.png" : "isofflineB.png";
+                string statetext = "";
+                int l = AppModel.Instance.connectionProfiles.Count;
+                AppModel.Instance.connectionProfiles.ForEach(profile =>
                 {
-                    statetext = statetext + (statetext.Length > 0 ? "/" : "") + s;
-                }
-            });
-            lb_onlinestate.Text = statetext;
+                    var s = profile;
+                    if (s.ToLower() == "cellular") { s = "G|LTE"; }
+                    if (s.ToLower() == "desktop") { s = "Ethernet"; }
+                    if (!statetext.Contains(s))
+                    {
+                        statetext = statetext + (statetext.Length > 0 ? "/" : "") + s;
+                    }
+                });
+                lb_onlinestate.Text = statetext;
+            } 
+            catch (Exception ex) { 
+                AppModel.Logger.Error("ERROR: ShowDisconnected failed: " + ex.Message + " - " + ex.StackTrace);
+            }
         }
 
         public void ShowDisGPS()
@@ -356,83 +378,106 @@ namespace iPMCloud.Mobile
 
         private async void ShowLoginPage(bool switchCustomer = false)
         {
-            //AppModel.Instance.InitGPSTimer();
-            if (AppModel.Instance.Companies != null && AppModel.Instance.Companies.Count > 1)
+            try
             {
-                btn_addRegScan_frame.IsVisible = false;
-                btn_ToRegScanManagement_frame.IsVisible = true;
-            }
-            else
-            {
-                btn_addRegScan_frame.IsVisible = true;
-                btn_ToRegScanManagement_frame.IsVisible = false;
-            }
-
-            if (AppModel.Instance.SettingModel.SettingDTO.Autologin && !String.IsNullOrWhiteSpace(AppModel.Instance.SettingModel.SettingDTO.LoginToken) &&
-                !AppModel.Instance.State.IsBackTappedToLogin && !switchCustomer)
-            {
-                //Es gibt ein Token und Autologin
-                CheckLogin(true);//SmallLoginCheck
-            }
-            else
-            {
-                // Kein Autologin - Anmeldeseite zeigen
-                isInitialize = true;
-                overlay.IsVisible = true;
-                await Task.Delay(1);
-
-                AppModel.Instance.State.IsBackTappedToLogin = false;
-
-                RegScan_Container.IsVisible = false;
-                Login_Container.IsVisible = true;
-                AddRegScan_Container.IsVisible = false;
-                RegManagement_Container.IsVisible = false;
-
-                InitStartPageHandlers();
-                lb_login_mandant.Text = AppModel.Instance.SettingModel.SettingDTO.CustomerName;
-
-                if (switchCustomer)
+                //AppModel.Instance.InitGPSTimer();
+                if (AppModel.Instance.Companies != null && AppModel.Instance.Companies.Count > 1)
                 {
-                    AppModel.Instance.InitBuildings();
-                    AppModel.Instance.SetAllKategorieNames();
-                    Btn_LoginTapped(null, null);
+                    btn_addRegScan_frame.IsVisible = false;
+                    btn_ToRegScanManagement_frame.IsVisible = true;
                 }
                 else
                 {
-                    await Task.Delay(1);
-                    overlay.IsVisible = false;
-                    isInitialize = false;
+                    btn_addRegScan_frame.IsVisible = true;
+                    btn_ToRegScanManagement_frame.IsVisible = false;
                 }
+
+                AppModel.Logger.Info("0018");
+                if (AppModel.Instance.SettingModel.SettingDTO.Autologin && !String.IsNullOrWhiteSpace(AppModel.Instance.SettingModel.SettingDTO.LoginToken) &&
+                    !AppModel.Instance.State.IsBackTappedToLogin && !switchCustomer)
+                {
+                    AppModel.Logger.Info("0018a");
+                    //Es gibt ein Token und Autologin
+                    CheckLogin(true);//SmallLoginCheck
+                }
+                else
+                {
+                    AppModel.Logger.Info("0018b");
+                    // Kein Autologin - Anmeldeseite zeigen
+                    isInitialize = true;
+                    overlay.IsVisible = true;
+                    await Task.Delay(1);
+
+                    AppModel.Instance.State.IsBackTappedToLogin = false;
+
+                    RegScan_Container.IsVisible = false;
+                    Login_Container.IsVisible = true;
+                    AddRegScan_Container.IsVisible = false;
+                    RegManagement_Container.IsVisible = false;
+
+                    InitStartPageHandlers();
+                    AppModel.Logger.Info("0018c");
+                    lb_login_mandant.Text = AppModel.Instance.SettingModel.SettingDTO.CustomerName;
+
+                    if (switchCustomer)
+                    {
+                        AppModel.Logger.Info("0018d");
+                        AppModel.Instance.InitBuildings();
+                        AppModel.Instance.SetAllKategorieNames();
+                        Btn_LoginTapped(null, null);
+                    }
+                    else
+                    {
+                        AppModel.Logger.Info("0018e");
+                        await Task.Delay(1);
+                        overlay.IsVisible = false;
+                        isInitialize = false;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger.Error("ERROR: ShowLoginPage failed: " + ex.Message + " - " + ex.StackTrace);
+                overlay.IsVisible = false;  // ⬇️ Safety-Reset
+                isInitialize = false;
             }
         }
 
         private void CompanySelected(object s, EventArgs e)
         {
-            // Vorherige aktive Company/SettingDTO speichern
-            Company.AddUpdateCompany(AppModel.Instance, AppModel.Instance.SettingModel.SettingDTO);
-
-            var child = ((HorizontalStackLayout)((Border)s).Content);
-            var customerNumber = child.ClassId;
-            var company = AppModel.Instance.Companies.Find(c => c.CustomerNumber == customerNumber);
-            if (company != null)
+            try
             {
-                AppModel.Instance.SettingModel.SettingDTO = Company.ToSettingDTO(company);
-                string directoryPath = Path.Combine(Environment.GetFolderPath(
-                    Environment.SpecialFolder.LocalApplicationData), "ipm/" + AppModel.Instance.SettingModel.SettingDTO.CustomerNumber + "");
-                if (!Directory.Exists(directoryPath)) { Directory.CreateDirectory(directoryPath); }
+                // Vorherige aktive Company/SettingDTO speichern
+                Company.AddUpdateCompany(AppModel.Instance, AppModel.Instance.SettingModel.SettingDTO);
 
-                AppModel.Instance.SettingModel.SettingDTO.LoginToken = "";
-                AppModel.Instance.SettingModel.SettingDTO.LastTokenDateTimeTicks = "";
-                entry_login_name.Text = AppModel.Instance.SettingModel.SettingDTO.LoginName;
-                entry_login_password.Text = AppModel.Instance.SettingModel.SettingDTO.LoginPassword;
-                sw_autologin.IsToggled = false;                //
-                AppModel.Instance.SettingModel.SaveSettings();
+                var child = ((HorizontalStackLayout)((Border)s).Content);
+                var customerNumber = child.ClassId;
+                var company = AppModel.Instance.Companies.Find(c => c.CustomerNumber == customerNumber);
+                if (company != null)
+                {
+                    AppModel.Instance.SettingModel.SettingDTO = Company.ToSettingDTO(company);
+                    string directoryPath = Path.Combine(Environment.GetFolderPath(
+                        Environment.SpecialFolder.LocalApplicationData), "ipm/" + AppModel.Instance.SettingModel.SettingDTO.CustomerNumber + "");
+                    if (!Directory.Exists(directoryPath)) { Directory.CreateDirectory(directoryPath); }
 
-                AppModel.Instance.Connections.InitConnections();
-                AppModel.Instance.Connections.InitPNConnections();
-                InitStartPage(true);
+                    AppModel.Instance.SettingModel.SettingDTO.LoginToken = "";
+                    AppModel.Instance.SettingModel.SettingDTO.LastTokenDateTimeTicks = "";
+                    entry_login_name.Text = AppModel.Instance.SettingModel.SettingDTO.LoginName;
+                    entry_login_password.Text = AppModel.Instance.SettingModel.SettingDTO.LoginPassword;
+                    sw_autologin.IsToggled = false;                //
+                    AppModel.Instance.SettingModel.SaveSettings();
+
+                    AppModel.Instance.Connections.InitConnections();
+                    AppModel.Instance.Connections.InitPNConnections();
+                    InitStartPage(true);
+                }
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger.Error("ERROR: CompanySelected failed: " + ex.Message + " - " + (ex.StackTrace ?? ""));
             }
         }
+
         private async void CompanyDeleted(object s, EventArgs e)
         {
 
@@ -458,9 +503,10 @@ namespace iPMCloud.Mobile
             {
                 await Browser.OpenAsync("http://www.ipm-cloud.de/", BrowserLaunchMode.SystemPreferred);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 // An unexpected error occured. No browser may be installed on the device.
+                AppModel.Logger.Error("ERROR: Btn_toregist_more_Tapped failed: " + ex.Message + " - " + (ex.StackTrace ?? ""));
             }
         }
 
@@ -474,30 +520,38 @@ namespace iPMCloud.Mobile
             {
                 await Browser.OpenAsync("http://www.ipm-cloud.de/", BrowserLaunchMode.SystemPreferred);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 // An unexpected error occured. No browser may be installed on the device.
+                AppModel.Logger.Error("ERROR: Btn_toregistMoreTapped failed: " + ex.Message + " - " + (ex.StackTrace ?? ""));
             }
         }
 
 
         public async void Btn_LoginTapped(object sender, EventArgs e)
         {
-            if (AppModel.Instance.IsInternet)
+            try
             {
-                AppModel.Instance.SettingModel.SettingDTO.LoginName = entry_login_name.Text;
-                AppModel.Instance.SettingModel.SettingDTO.LoginPassword = entry_login_password.Text;
-                //model.SettingModel.SettingDTO.LoginToken = "";
-                AppModel.Instance.SettingModel.SettingDTO.Autologin = sw_autologin.IsToggled;
-                AppModel.Instance.SettingModel.SaveSettings();
-                CheckLogin();
+                if (AppModel.Instance.IsInternet)
+                {
+                    AppModel.Instance.SettingModel.SettingDTO.LoginName = entry_login_name.Text;
+                    AppModel.Instance.SettingModel.SettingDTO.LoginPassword = entry_login_password.Text;
+                    //model.SettingModel.SettingDTO.LoginToken = "";
+                    AppModel.Instance.SettingModel.SettingDTO.Autologin = sw_autologin.IsToggled;
+                    AppModel.Instance.SettingModel.SaveSettings();
+                    CheckLogin();
+                }
+                else
+                {
+                    await DisplayAlertAsync("KEIN INTERNET!", "Für diese Aktion brauchen Sie eine Internetverbindung!", "OK");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                await DisplayAlertAsync("KEIN INTERNET!", "Für diese Aktion brauchen Sie eine Internetverbindung!", "OK");
+                AppModel.Logger.Error("ERROR: Btn_LoginTapped failed: " + ex.Message + " - " + (ex.StackTrace ?? ""));
+                await DisplayAlertAsync("FEHLER!", "Beim Anmelden ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut!", "OK");
             }
         }
-
 
         public bool showAddRegScanTapped = false;
         public async void Btn_AddRegScanTapped(object sender, EventArgs e)
@@ -556,14 +610,30 @@ namespace iPMCloud.Mobile
 
         public void LoginNameChangedHandeler(object sender, TextChangedEventArgs e)
         {
-            if (e.NewTextValue.IndexOf(" ") > -1) { entry_login_name.Text = e.NewTextValue.Replace(" ", String.Empty); };
-            AppModel.Instance.SettingModel.SettingDTO.LoginName = entry_login_name.Text;
+            try
+            {
+                if (e.NewTextValue.IndexOf(" ") > -1) { entry_login_name.Text = e.NewTextValue.Replace(" ", String.Empty); }
+                ;
+                AppModel.Instance.SettingModel.SettingDTO.LoginName = entry_login_name.Text;
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger.Error("ERROR: LoginNameChangedHandeler failed: " + ex.Message + " - " + (ex.StackTrace ?? ""));
+            }
         }
 
         public void LoginPasswordChangedHandeler(object sender, TextChangedEventArgs e)
         {
-            if (e.NewTextValue.IndexOf(" ") > -1) { entry_login_password.Text = e.NewTextValue.Replace(" ", String.Empty); };
-            AppModel.Instance.SettingModel.SettingDTO.LoginPassword = entry_login_password.Text;
+            try
+            {
+                if (e.NewTextValue.IndexOf(" ") > -1) { entry_login_password.Text = e.NewTextValue.Replace(" ", String.Empty); }
+                ;
+                AppModel.Instance.SettingModel.SettingDTO.LoginPassword = entry_login_password.Text;
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger.Error("ERROR: LoginPasswordChangedHandeler failed: " + ex.Message + " - " + (ex.StackTrace ?? ""));
+            }
         }
 
         public bool hasInitializedHandlers { get; set; } = false;
@@ -571,96 +641,103 @@ namespace iPMCloud.Mobile
         {
             if (hasInitializedHandlers) { return; }
 
-            btn_endselectedwork.GestureRecognizers.Clear();
-            var tgr1btn_endselectedwork = new TapGestureRecognizer();
-            tgr1btn_endselectedwork.Tapped -= Btn_GPSInfoTapped;
-            tgr1btn_endselectedwork.Tapped += Btn_GPSInfoTapped;
-            btn_endselectedwork.GestureRecognizers.Add(tgr1btn_endselectedwork);
+            try
+            {
 
-            //btn_flashlight_container.GestureRecognizers.Clear();
-            //var tgr1 = new TapGestureRecognizer();
-            //tgr1.Tapped -= AppModel.Instance.Scan.Btn_FlashlightTapped;
-            //tgr1.Tapped += AppModel.Instance.Scan.Btn_FlashlightTapped;
-            //btn_flashlight_container.GestureRecognizers.Add(tgr1);
+                btn_endselectedwork.GestureRecognizers.Clear();
+                var tgr1btn_endselectedwork = new TapGestureRecognizer();
+                tgr1btn_endselectedwork.Tapped -= Btn_GPSInfoTapped;
+                tgr1btn_endselectedwork.Tapped += Btn_GPSInfoTapped;
+                btn_endselectedwork.GestureRecognizers.Add(tgr1btn_endselectedwork);
 
-            //btn_flashlight_AddRegScan_container.GestureRecognizers.Clear();
-            //var tgr2 = new TapGestureRecognizer();
-            //tgr2.Tapped -= AppModel.Instance.Scan.Btn_FlashlightTapped;
-            //tgr2.Tapped += AppModel.Instance.Scan.Btn_FlashlightTapped;
-            //btn_flashlight_AddRegScan_container.GestureRecognizers.Add(tgr2);
+                //btn_flashlight_container.GestureRecognizers.Clear();
+                //var tgr1 = new TapGestureRecognizer();
+                //tgr1.Tapped -= AppModel.Instance.Scan.Btn_FlashlightTapped;
+                //tgr1.Tapped += AppModel.Instance.Scan.Btn_FlashlightTapped;
+                //btn_flashlight_container.GestureRecognizers.Add(tgr1);
 
-            btn_loginlogin_container.GestureRecognizers.Clear();
-            var tgr3 = new TapGestureRecognizer();
-            tgr3.Tapped -= Btn_LoginTapped;
-            tgr3.Tapped += Btn_LoginTapped;
-            btn_loginlogin_container.GestureRecognizers.Add(tgr3);
+                //btn_flashlight_AddRegScan_container.GestureRecognizers.Clear();
+                //var tgr2 = new TapGestureRecognizer();
+                //tgr2.Tapped -= AppModel.Instance.Scan.Btn_FlashlightTapped;
+                //tgr2.Tapped += AppModel.Instance.Scan.Btn_FlashlightTapped;
+                //btn_flashlight_AddRegScan_container.GestureRecognizers.Add(tgr2);
 
-
-            //btn_toregistmore_container.GestureRecognizers.Clear();
-            //var tgr3bmore = new TapGestureRecognizer();
-            //tgr3bmore.Tapped -= Btn_toregistMoreTapped;
-            //tgr3bmore.Tapped += Btn_toregistMoreTapped;
-            //btn_toregistmore_container.GestureRecognizers.Add(tgr3bmore);
-
-            btn_toregist_container.GestureRecognizers.Clear();
-            var tgr3b = new TapGestureRecognizer();
-            tgr3b.Tapped -= Btn_toregistTapped;
-            tgr3b.Tapped += Btn_toregistTapped;
-            btn_toregist_container.GestureRecognizers.Add(tgr3b);
-
-            btn_toregist_more_container.GestureRecognizers.Clear();
-            var tgr3c = new TapGestureRecognizer();
-            tgr3c.Tapped -= Btn_toregist_more_Tapped;
-            tgr3c.Tapped += Btn_toregist_more_Tapped;
-            btn_toregist_more_container.GestureRecognizers.Add(tgr3c);
+                btn_loginlogin_container.GestureRecognizers.Clear();
+                var tgr3 = new TapGestureRecognizer();
+                tgr3.Tapped -= Btn_LoginTapped;
+                tgr3.Tapped += Btn_LoginTapped;
+                btn_loginlogin_container.GestureRecognizers.Add(tgr3);
 
 
-            btn_addRegScan_container.GestureRecognizers.Clear();
-            var tgr4 = new TapGestureRecognizer();
-            tgr4.Tapped -= Btn_AddRegScanTapped;
-            tgr4.Tapped += Btn_AddRegScanTapped;
-            btn_addRegScan_container.GestureRecognizers.Add(tgr4);
+                //btn_toregistmore_container.GestureRecognizers.Clear();
+                //var tgr3bmore = new TapGestureRecognizer();
+                //tgr3bmore.Tapped -= Btn_toregistMoreTapped;
+                //tgr3bmore.Tapped += Btn_toregistMoreTapped;
+                //btn_toregistmore_container.GestureRecognizers.Add(tgr3bmore);
 
-            btn_addRegScan2_container.GestureRecognizers.Clear();
-            var tgr5 = new TapGestureRecognizer();
-            tgr5.Tapped -= Btn_AddRegScanTapped;
-            tgr5.Tapped += Btn_AddRegScanTapped;
-            btn_addRegScan2_container.GestureRecognizers.Add(tgr5);
+                btn_toregist_container.GestureRecognizers.Clear();
+                var tgr3b = new TapGestureRecognizer();
+                tgr3b.Tapped -= Btn_toregistTapped;
+                tgr3b.Tapped += Btn_toregistTapped;
+                btn_toregist_container.GestureRecognizers.Add(tgr3b);
 
-            btn_ToRegScanManagement_container.GestureRecognizers.Clear();
-            var tgr6 = new TapGestureRecognizer();
-            tgr6.Tapped -= Btn_ToRegScanManagementTapped;
-            tgr6.Tapped += Btn_ToRegScanManagementTapped;
-            btn_ToRegScanManagement_container.GestureRecognizers.Add(tgr6);
+                btn_toregist_more_container.GestureRecognizers.Clear();
+                var tgr3c = new TapGestureRecognizer();
+                tgr3c.Tapped -= Btn_toregist_more_Tapped;
+                tgr3c.Tapped += Btn_toregist_more_Tapped;
+                btn_toregist_more_container.GestureRecognizers.Add(tgr3c);
 
-            btn_back_inAddRegScan.GestureRecognizers.Clear();
-            var tgr7 = new TapGestureRecognizer();
-            tgr7.Tapped -= BackToLoginPage;
-            tgr7.Tapped += BackToLoginPage;
-            btn_back_inAddRegScan.GestureRecognizers.Add(tgr7);
 
-            btn_back_RegManagement.GestureRecognizers.Clear();
-            var tgr8 = new TapGestureRecognizer();
-            tgr8.Tapped -= BackToLoginPage;
-            tgr8.Tapped += BackToLoginPage;
-            btn_back_RegManagement.GestureRecognizers.Add(tgr8);
+                btn_addRegScan_container.GestureRecognizers.Clear();
+                var tgr4 = new TapGestureRecognizer();
+                tgr4.Tapped -= Btn_AddRegScanTapped;
+                tgr4.Tapped += Btn_AddRegScanTapped;
+                btn_addRegScan_container.GestureRecognizers.Add(tgr4);
 
-            popupContainer_Alert_btn.GestureRecognizers.Clear();
-            var tgr9 = new TapGestureRecognizer();
-            tgr9.Tapped -= HideAlertMessage;
-            tgr9.Tapped += HideAlertMessage;
-            popupContainer_Alert_btn.GestureRecognizers.Add(tgr9);
+                btn_addRegScan2_container.GestureRecognizers.Clear();
+                var tgr5 = new TapGestureRecognizer();
+                tgr5.Tapped -= Btn_AddRegScanTapped;
+                tgr5.Tapped += Btn_AddRegScanTapped;
+                btn_addRegScan2_container.GestureRecognizers.Add(tgr5);
 
-            sw_autologin.IsToggled = AppModel.Instance.SettingModel.IsLoginSettingsReady && AppModel.Instance.SettingModel.SettingDTO.Autologin;
-            entry_login_name.Text = AppModel.Instance.SettingModel.SettingDTO.LoginName;
-            entry_login_password.Text = AppModel.Instance.SettingModel.SettingDTO.LoginPassword;
+                btn_ToRegScanManagement_container.GestureRecognizers.Clear();
+                var tgr6 = new TapGestureRecognizer();
+                tgr6.Tapped -= Btn_ToRegScanManagementTapped;
+                tgr6.Tapped += Btn_ToRegScanManagementTapped;
+                btn_ToRegScanManagement_container.GestureRecognizers.Add(tgr6);
 
-            await Task.Delay(1);
-            entry_login_name.TextChanged -= LoginNameChangedHandeler;
-            entry_login_name.TextChanged += LoginNameChangedHandeler;
-            entry_login_password.TextChanged -= LoginPasswordChangedHandeler;
-            entry_login_password.TextChanged += LoginPasswordChangedHandeler;
+                btn_back_inAddRegScan.GestureRecognizers.Clear();
+                var tgr7 = new TapGestureRecognizer();
+                tgr7.Tapped -= BackToLoginPage;
+                tgr7.Tapped += BackToLoginPage;
+                btn_back_inAddRegScan.GestureRecognizers.Add(tgr7);
 
+                btn_back_RegManagement.GestureRecognizers.Clear();
+                var tgr8 = new TapGestureRecognizer();
+                tgr8.Tapped -= BackToLoginPage;
+                tgr8.Tapped += BackToLoginPage;
+                btn_back_RegManagement.GestureRecognizers.Add(tgr8);
+
+                popupContainer_Alert_btn.GestureRecognizers.Clear();
+                var tgr9 = new TapGestureRecognizer();
+                tgr9.Tapped -= HideAlertMessage;
+                tgr9.Tapped += HideAlertMessage;
+                popupContainer_Alert_btn.GestureRecognizers.Add(tgr9);
+
+                sw_autologin.IsToggled = AppModel.Instance.SettingModel.IsLoginSettingsReady && AppModel.Instance.SettingModel.SettingDTO.Autologin;
+                entry_login_name.Text = AppModel.Instance.SettingModel.SettingDTO.LoginName;
+                entry_login_password.Text = AppModel.Instance.SettingModel.SettingDTO.LoginPassword;
+
+                await Task.Delay(1);
+                entry_login_name.TextChanged -= LoginNameChangedHandeler;
+                entry_login_name.TextChanged += LoginNameChangedHandeler;
+                entry_login_password.TextChanged -= LoginPasswordChangedHandeler;
+                entry_login_password.TextChanged += LoginPasswordChangedHandeler;
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger.Error("ERROR: InitStartPageHandlers failed: " + ex.Message + " - " + ex.StackTrace);
+            }
             hasInitializedHandlers = true;
         }
 
@@ -706,15 +783,28 @@ namespace iPMCloud.Mobile
             }
             catch (Exception ex)
             {
-                AppModel.Logger.Error("ERROR: CheckLogin failed: " + ex.Message);
+                AppModel.Logger.Error("ERROR: CheckLogin failed: " + ex.Message + " - " + ex.StackTrace);
                 overlay.IsVisible = false;  // ⬇️ Safety-Reset
                 isInitialize = false;
             }
         }
         private async void LoginNow()
         {
-            IpmLoginResponse ipmLoginResponse = await Task.Run(() => { return AppModel.Instance.Connections.IpmLogin(false); });
+            IpmLoginResponse ipmLoginResponse = null;
 
+            try
+            {
+                ipmLoginResponse = await Task.Run(() => { return AppModel.Instance.Connections.IpmLogin(false); });
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger.Error("ERROR: LoginNow failed: " + ex.Message + " - " + (ex.StackTrace ?? ""));
+                // ⬇️ WICHTIG: overlay immer zurücksetzen!
+                overlay.IsVisible = false;
+                isInitialize = false;
+                LoginFaild(null);
+                return;
+            }
 
             if (ipmLoginResponse == null || !ipmLoginResponse.success)
             {

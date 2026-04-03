@@ -1,3 +1,4 @@
+using AndroidX.Startup;
 using iPMCloud.Mobile.vo;
 
 namespace iPMCloud.Mobile.Views
@@ -37,6 +38,11 @@ namespace iPMCloud.Mobile.Views
 
             string lang = AppModel.Instance.Langs.Find(l => l.lang == AppModel.Instance.AppControll.lang)?.text;
             lb_settings_sel_trans.Text = lang != null ? lang: "Deutsch";
+        }
+
+        private void Settings_Log_includeCache_Switch_Toggled(object sender, ToggledEventArgs e)
+        {
+            AppModel.Instance.InclFilesAsJson = e.Value;            
         }
 
         public void SetVisible(bool visible)

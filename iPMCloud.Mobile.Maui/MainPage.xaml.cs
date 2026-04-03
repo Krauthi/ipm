@@ -2481,13 +2481,6 @@ namespace iPMCloud.Mobile
             //MapPage_Container.IsVisible = false;
         }
 
-        private void Settings_Log_includeCache_Switch_Toggled(object sender, ToggledEventArgs e)
-        {
-            if (!isInitialize)
-            {
-                AppModel.Instance.InclFilesAsJson = e.Value;
-            }
-        }
 
         ////private void Settings_Hintergrundprozess_Switch_Toggled(object sender, ToggledEventArgs e)
         ////{

@@ -86,7 +86,7 @@
                     </StackLayout>
                 </Border>
             </Grid>
-            <BoxView 
+            <BoxView
                 Margin="0,5,0,5"
                 BackgroundColor="Gray"
                 HeightRequest="1"

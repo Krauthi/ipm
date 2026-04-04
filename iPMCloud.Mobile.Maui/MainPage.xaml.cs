@@ -6,6 +6,7 @@ using iPMCloud.Mobile.Views;
 using iPMCloud.Mobile.vo;
 using iPMCloud.Mobile.vo.GlobalObjects;
 using iPMCloud.Mobile.vo.wso;
+using MetadataExtractor.Formats.Photoshop;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls;
@@ -15,6 +16,7 @@ using Microsoft.Maui.Devices;
 
 //using Microsoft.Maui.Storage;
 using Microsoft.Maui.Devices;
+using Microsoft.Maui.Devices;
 using Microsoft.Maui.Layouts;
 using Microsoft.Maui.Storage;
 // TODO: NativeMedia not MAUI-compatible - needs replacement with Microsoft.Maui.Media
@@ -23,6 +25,7 @@ using Microsoft.Maui.Storage;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -75,13 +78,16 @@ namespace iPMCloud.Mobile
             density = di.Density;
             screenWidthDp = di.Width / di.Density;
             screenHeightDp = di.Height / di.Density;
-            MainPageAgain();
+            //MainPageAgain();
         }
 
         public async void MainPageAgain()
         {
             try
             {
+#if DEBUG
+                var sw = Stopwatch.StartNew();
+#endif
                 isInitialize = true;
                 //AppModel.Instance.anImage = backgroundIMG;
 
@@ -90,21 +96,54 @@ namespace iPMCloud.Mobile
                 AppModel.Instance._showall_again_OrderCategory_frame = btn_back_inBuildingOrder_category_showall_again;
                 AppModel.Instance._showall_OrderCategory_frame = btn_back_inBuildingOrder_category_showall;
 
+#if DEBUG
+                AppModel.Logger.Info($"[Timing] 1 done in {sw.ElapsedMilliseconds}ms");
+                sw.Restart();
+#endif
+
                 AppModel.Instance.Lang = Lang.Load();
+#if DEBUG
+                AppModel.Logger.Info($"[Timing] 2 done in {sw.ElapsedMilliseconds}ms");
+                sw.Restart();
+#endif
+
 
                 ShowDisconnected();
 
+#if DEBUG
+                AppModel.Logger.Info($"[Timing] 3 done in {sw.ElapsedMilliseconds}ms");
+                sw.Restart();
+#endif
                 var checkPerm = await CheckPermissions();
+
+#if DEBUG
+                AppModel.Logger.Info($"[Timing] 4 done in {sw.ElapsedMilliseconds}ms");
+                sw.Restart();
+#endif
                 if (checkPerm)
                 {
+#if DEBUG
+                    AppModel.Logger.Info($"[Timing] 5 done in {sw.ElapsedMilliseconds}ms");
+                    sw.Restart();
+#endif
                     CheckAllSyncFromUpload();
-
+#if DEBUG
+                    AppModel.Logger.Info($"[Timing] 6 done in {sw.ElapsedMilliseconds}ms");
+                    sw.Restart();
+#endif
                     InitStartPageHandlers();
-
+#if DEBUG
+                    AppModel.Logger.Info($"[Timing] 7 done in {sw.ElapsedMilliseconds}ms");
+                    sw.Restart();
+#endif
 
                     //ObjektPlanWeekMobile.Delete(AppModel.Instance);
                     // Objekte sycnen erforderlich nach 4 Stunden
                     SyncBuilding();
+#if DEBUG
+                    AppModel.Logger.Info($"[Timing] 8 done in {sw.ElapsedMilliseconds}ms");
+                    sw.Restart();
+#endif
                     // ***  Wird mit BuildSync ausgeführt !!! ***
                     // ***  Init_PlanTabs(((int)DateTime.Now.DayOfWeek));
                     // Gespeichert PlanPerson KW vom Mobile Laden wenn vorhanden.
@@ -115,11 +154,22 @@ namespace iPMCloud.Mobile
                         Fill_DayPicker();
                     }
 
+#if DEBUG
+                    AppModel.Logger.Info($"[Timing] 9 done in {sw.ElapsedMilliseconds}ms");
+                    sw.Restart();
+#endif
                     GetChecksInfo(checkInfoLastView);
 
-
+#if DEBUG
+                    AppModel.Logger.Info($"[Timing] 10 done in {sw.ElapsedMilliseconds}ms");
+                    sw.Restart();
+#endif
                     AppModel.Instance.allPositionInWork = LeistungPackWSO.Load(AppModel.Instance);
                     ShowMainPage();
+#if DEBUG
+                    AppModel.Logger.Info($"[Timing] 11 done in {sw.ElapsedMilliseconds}ms");
+                    sw.Restart();
+#endif
                 }
                 else
                 {

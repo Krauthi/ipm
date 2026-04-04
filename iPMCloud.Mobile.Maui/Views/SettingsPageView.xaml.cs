@@ -1,4 +1,3 @@
-using AndroidX.Startup;
 using iPMCloud.Mobile.vo;
 
 namespace iPMCloud.Mobile.Views

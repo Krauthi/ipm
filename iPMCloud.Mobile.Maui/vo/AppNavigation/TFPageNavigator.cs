@@ -108,17 +108,17 @@ namespace iPMCloud.Mobile.vo
 #endif
                         var mainPageContent = MainPageObj.GetPage(subPage);
 #if DEBUG
-                        AppModel.Logger.Debug($"[Timing] GetPage('{subPage}') done in {sw.ElapsedMilliseconds}ms");
+                        AppModel.Logger.Info($"[Timing] GetPage('{subPage}') done in {sw.ElapsedMilliseconds}ms");
                         sw.Restart();
 #endif
                         await SetPageAsync(mainPageContent);
 #if DEBUG
-                        AppModel.Logger.Debug($"[Timing] SetPageAsync done in {sw.ElapsedMilliseconds}ms");
+                        AppModel.Logger.Info($"[Timing] SetPageAsync done in {sw.ElapsedMilliseconds}ms");
                         sw.Restart();
 #endif
                         AppModel.Instance.MainPage.MainPageAgain();
 #if DEBUG
-                        AppModel.Logger.Debug($"[Timing] MainPageAgain done in {sw.ElapsedMilliseconds}ms");
+                        AppModel.Logger.Info($"[Timing] MainPageAgain done in {sw.ElapsedMilliseconds}ms");
 #endif
                     }
                     else

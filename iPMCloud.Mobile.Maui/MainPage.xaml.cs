@@ -96,54 +96,20 @@ namespace iPMCloud.Mobile
                 AppModel.Instance._showall_again_OrderCategory_frame = btn_back_inBuildingOrder_category_showall_again;
                 AppModel.Instance._showall_OrderCategory_frame = btn_back_inBuildingOrder_category_showall;
 
-#if DEBUG
-                AppModel.Logger.Info($"[Timing] 1 done in {sw.ElapsedMilliseconds}ms");
-                sw.Restart();
-#endif
-
                 AppModel.Instance.Lang = Lang.Load();
-#if DEBUG
-                AppModel.Logger.Info($"[Timing] 2 done in {sw.ElapsedMilliseconds}ms");
-                sw.Restart();
-#endif
-
 
                 ShowDisconnected();
 
-#if DEBUG
-                AppModel.Logger.Info($"[Timing] 3 done in {sw.ElapsedMilliseconds}ms");
-                sw.Restart();
-#endif
                 var checkPerm = await CheckPermissions();
 
-#if DEBUG
-                AppModel.Logger.Info($"[Timing] 4 done in {sw.ElapsedMilliseconds}ms");
-                sw.Restart();
-#endif
                 if (checkPerm)
                 {
-#if DEBUG
-                    AppModel.Logger.Info($"[Timing] 5 done in {sw.ElapsedMilliseconds}ms");
-                    sw.Restart();
-#endif
                     CheckAllSyncFromUpload();
-#if DEBUG
-                    AppModel.Logger.Info($"[Timing] 6 done in {sw.ElapsedMilliseconds}ms");
-                    sw.Restart();
-#endif
                     InitStartPageHandlers();
-#if DEBUG
-                    AppModel.Logger.Info($"[Timing] 7 done in {sw.ElapsedMilliseconds}ms");
-                    sw.Restart();
-#endif
-
                     //ObjektPlanWeekMobile.Delete(AppModel.Instance);
                     // Objekte sycnen erforderlich nach 4 Stunden
                     SyncBuilding();
-#if DEBUG
-                    AppModel.Logger.Info($"[Timing] 8 done in {sw.ElapsedMilliseconds}ms");
-                    sw.Restart();
-#endif
+
                     // ***  Wird mit BuildSync ausgeführt !!! ***
                     // ***  Init_PlanTabs(((int)DateTime.Now.DayOfWeek));
                     // Gespeichert PlanPerson KW vom Mobile Laden wenn vorhanden.
@@ -166,20 +132,16 @@ namespace iPMCloud.Mobile
 #endif
                     AppModel.Instance.allPositionInWork = LeistungPackWSO.Load(AppModel.Instance);
                     ShowMainPage();
-#if DEBUG
-                    AppModel.Logger.Info($"[Timing] 11 done in {sw.ElapsedMilliseconds}ms");
-                    sw.Restart();
-#endif
                 }
                 else
                 {
-                    DisplayAlertAsync("Fehlende Berechtigungen!", "Bitte beenden Sie die App und starten diese neu!\n\nAktivieren Sie nach dem neustart die benötigten Berechtigungen!", "OK");
+                    await DisplayAlertAsync("Fehlende Berechtigungen!", "Bitte beenden Sie die App und starten diese neu!\n\nAktivieren Sie nach dem neustart die benötigten Berechtigungen!", "OK");
                 }
             }
             catch (Exception ex)
             {
                 AppModel.Logger.Error("Fehler in MainPageAgain: " + ex.Message + " | StackTrace: " + ex.StackTrace);
-                DisplayAlertAsync("Fehler!", "Es ist ein Fehler aufgetreten! Bitte senden Sie uns die Mobile LOG über die Einstellungen, damit wir das Problem analysieren können.", "OK");
+                await DisplayAlertAsync("Fehler!", "Es ist ein Fehler aufgetreten! Bitte senden Sie uns die Mobile LOG über die Einstellungen, damit wir das Problem analysieren können.", "OK");
             }
         }
 

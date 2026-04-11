@@ -103,23 +103,9 @@ namespace iPMCloud.Mobile.vo
                             MainPageObj = new MainPage();
                             AppModel.Instance.MainPage = MainPageObj;
                         }
-#if DEBUG
-                        var sw = Stopwatch.StartNew();
-#endif
                         var mainPageContent = MainPageObj.GetPage(subPage);
-#if DEBUG
-                        AppModel.Logger.Info($"[Timing] GetPage('{subPage}') done in {sw.ElapsedMilliseconds}ms");
-                        sw.Restart();
-#endif
                         await SetPageAsync(mainPageContent);
-#if DEBUG
-                        AppModel.Logger.Info($"[Timing] SetPageAsync done in {sw.ElapsedMilliseconds}ms");
-                        sw.Restart();
-#endif
                         AppModel.Instance.MainPage.MainPageAgain();
-#if DEBUG
-                        AppModel.Logger.Info($"[Timing] MainPageAgain done in {sw.ElapsedMilliseconds}ms");
-#endif
                     }
                     else
                     {
@@ -167,25 +153,20 @@ namespace iPMCloud.Mobile.vo
             {
                 if (appl.Windows != null && appl.Windows.Count > 0)
                 {
-                    // ✅ Normalfall: Window bereits vorhanden
                     appl.Windows[0].Page = targetPage;
-                    AppModel.Logger.Info("SetPage: Page gesetzt via Windows[0]");
                 }
                 else
                 {
-                    // ⚠️ Window noch nicht bereit → kurz warten und nochmal versuchen
-                    AppModel.Logger.Warn("SetPage: Windows noch leer – starte Retry...");
                     int retries = 0;
                     while ((appl.Windows == null || appl.Windows.Count == 0) && retries < 20)
                     {
-                        await Task.Delay(50);
+                        await Task.Delay(25);
                         retries++;
                     }
 
                     if (appl.Windows != null && appl.Windows.Count > 0)
                     {
                         appl.Windows[0].Page = targetPage;
-                        AppModel.Logger.Info($"SetPage: Page gesetzt nach {retries} Retries");
                     }
                     else
                     {

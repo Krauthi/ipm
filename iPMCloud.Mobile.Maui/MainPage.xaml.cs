@@ -182,8 +182,13 @@ namespace iPMCloud.Mobile
                 }
             }
         }
+
+
         private async void BuildChecksInfoList()
         {
+
+
+
             //Checklisten nicht anzeigen wenn diese nochim UpladStack sind!
             var stackChecks = CheckClass.LoadAllFromUploadStack();
             List<Int32> inStackIds = new List<Int32>();
@@ -231,6 +236,7 @@ namespace iPMCloud.Mobile
             {
                 frame_planConCe_erlhead.IsVisible = false;
             }
+
 
             SetChecksCount();
             overlay.IsVisible = false;
@@ -2822,8 +2828,8 @@ namespace iPMCloud.Mobile
 
                     //ObjektPlanWeekMobile.Save(AppModel.Instance, AppModel.Instance.PlanResponse);
                     frame_planConA_img_reloadx.Source = "muellInOutX" + AppModel.Instance.AppSetModel.ViewOnlyMuell + ".png";
-                    frame_planConA_img_reload.Source = AppModel.Instance.imagesBase.DropLeftImage;
-                    frame_planConA_img_reload2.Source = AppModel.Instance.imagesBase.DropLeftImage;
+                    //frame_planConA_img_reload.Source = AppModel.Instance.imagesBase.DropLeftImage;
+                    //frame_planConA_img_reload2.Source = AppModel.Instance.imagesBase.DropLeftImage;
 
                     frame_planConA_reload_text.Text = "Mein Plan";
                     frame_planConA_reload2_text.Text = "Mein Plan";
@@ -2917,8 +2923,6 @@ namespace iPMCloud.Mobile
             bool reloadOr = frame_planConA_reload_text.Text == "Mein Plan";
             if (!AppModel.Instance.AppControll.showObjektPlans) { return; }
             frame_planConA_img_reloadx.Source = "muellInOutX" + AppModel.Instance.AppSetModel.ViewOnlyMuell + ".png";
-            frame_planConA_img_reload.Source = AppModel.Instance.imagesBase.Refresh;
-            frame_planConA_img_reload2.Source = AppModel.Instance.imagesBase.Refresh;
             frame_planConA_reload_text.Text = "Neu laden";
             frame_planConA_reload2_text.Text = "Neu laden";
             frame_planConA_otherperson_name.Text = "Arbeiter";
@@ -6788,13 +6792,8 @@ namespace iPMCloud.Mobile
 
                 popupContainer_quest_personpicker_img.Source = AppModel.Instance.imagesBase.Worker;
                 frame_planConA_img_down.Source = AppModel.Instance.imagesBase.DropDownImage;
-                frame_planConA_img_reload.Source = AppModel.Instance.imagesBase.Refresh;
                 frame_planConA_img_otherperson.Source = AppModel.Instance.imagesBase.Worker;
-                frame_planConA_img_reload2.Source = AppModel.Instance.imagesBase.Refresh;
                 frame_planConA_img_otherperson2.Source = AppModel.Instance.imagesBase.Worker;
-                frame_planConCe_img_reload2.Source = AppModel.Instance.imagesBase.Refresh;
-                frame_planConCe_img_LoadAll1.Source = AppModel.Instance.imagesBase.Refresh;
-                frame_planConCe_img_LoadAll2.Source = AppModel.Instance.imagesBase.Refresh;
 
                 //Top Buttons
                 btn_objScan_limg.Source = AppModel.Instance.imagesBase.QrScan;
@@ -6813,7 +6812,6 @@ namespace iPMCloud.Mobile
                 btn_todos_limg.Source = AppModel.Instance.imagesBase.Todos;
                 btn_todos_rimg.Source = AppModel.Instance.imagesBase.DropRightImage;
                 btn_persontimes_limg.Source = AppModel.Instance.imagesBase.Time;
-                btn_sync_limg.Source = AppModel.Instance.imagesBase.Refresh;
                 btn_sync_rimg.Source = AppModel.Instance.imagesBase.DropRightImage;
                 btn_regist_limg.Source = AppModel.Instance.imagesBase.QrScan;
                 btn_regist_rimg.Source = AppModel.Instance.imagesBase.DropRightImage;

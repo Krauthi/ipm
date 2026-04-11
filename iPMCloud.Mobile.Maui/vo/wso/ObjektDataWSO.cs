@@ -483,9 +483,9 @@ namespace iPMCloud.Mobile
                     Margin = new Thickness(3, 0, 0, 0),
                     HeightRequest = 28,
                     WidthRequest = 28,
-                    VerticalOptions = LayoutOptions.CenterAndExpand,
-                    HorizontalOptions = LayoutOptions.CenterAndExpand,
-                    Source = model.imagesBase.Refresh
+                    VerticalOptions = LayoutOptions.Center,
+                    HorizontalOptions = LayoutOptions.Center,
+                    Source="refresh.png"
                 } }
             };
 

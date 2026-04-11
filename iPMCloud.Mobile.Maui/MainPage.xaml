@@ -1385,7 +1385,7 @@
                                     Spacing="0"
                                     VerticalOptions="Fill">
                                     <Image
-                                        x:Name="frame_planConA_img_reload"
+                                        Source="refresh2.png"
                                         Margin="5,5,0,0"
                                         HeightRequest="18"
                                         HorizontalOptions="Center"
@@ -1875,7 +1875,7 @@
                                     Spacing="0"
                                     VerticalOptions="Fill">
                                     <Image
-                                        x:Name="frame_planConA_img_reload2"
+                                        Source="refresh2.png"
                                         Margin="5,5,0,0"
                                         HeightRequest="18"
                                         HorizontalOptions="Center"
@@ -2229,7 +2229,7 @@
                                     Spacing="0"
                                     VerticalOptions="Fill">
                                     <Image
-                                        x:Name="frame_planConCe_img_reload2"
+                                        Source="refresh2.png"
                                         Margin="5,5,0,0"
                                         HeightRequest="18"
                                         HorizontalOptions="Center"
@@ -2254,7 +2254,7 @@
                                     Spacing="0"
                                     VerticalOptions="Fill">
                                     <Image
-                                        x:Name="frame_planConCe_img_LoadAll1"
+                                        Source="refresh2.png"
                                         Margin="5,5,0,0"
                                         HeightRequest="18"
                                         HorizontalOptions="Center"
@@ -2280,9 +2280,9 @@
                                     Spacing="0"
                                     VerticalOptions="Center">
                                     <Image
-                                        x:Name="frame_planConCe_img_LoadAll2"
                                         Margin="5,5,0,0"
                                         HeightRequest="18"
+                                        Source="refresh2.png"
                                         HorizontalOptions="Center"
                                         VerticalOptions="Center"
                                         WidthRequest="18" />
@@ -2315,77 +2315,136 @@
                                 HorizontalOptions="Fill"
                                 Orientation="Vertical"
                                 VerticalOptions="Fill">
-                                <VerticalStackLayout
-                                    Margin="0"
-                                    Padding="0"
-                                    HorizontalOptions="Fill"
-                                    Spacing="1">
-                                    <HorizontalStackLayout
+                                <Grid
+                                        Margin="0"
+                                        Padding="0"
+                                        HorizontalOptions="Fill"
+                                        RowSpacing="0">
+
+                                    <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions> 
+
+                                    <Grid
                                         x:Name="frame_planConCe_offenhead"
                                         Margin="0"
-                                        Padding="3"
-                                        BackgroundColor="#55ff0000"
-                                        HorizontalOptions="Fill"
-                                        Spacing="0">
-                                        <Label
-                                            x:Name="frame_planConCe_offenheadtxt"
-                                            Margin="3,0,0,1"
-                                            Padding="0"
-                                            FontSize="20"
-                                            Text="Offene"
-                                            TextColor="#ffffff" />
-                                    </HorizontalStackLayout>
-                                    <VerticalStackLayout
-                                        x:Name="frame_planListCeoffen"
-                                        Margin="0"
+                                        Grid.Row="0"
                                         Padding="0"
                                         HorizontalOptions="Fill"
-                                        Spacing="0" />
-                                    <HorizontalStackLayout
+                                        RowSpacing="0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+                                        <HorizontalStackLayout
+                                            Grid.Row="0"
+                                            Margin="0"
+                                            Padding="3"
+                                            BackgroundColor="#55ff0000"
+                                            HorizontalOptions="Fill"
+                                            Spacing="0">
+                                            <Label
+                                                x:Name="frame_planConCe_offenheadtxt"
+                                                Margin="3,0,0,1"
+                                                Padding="0"
+                                                FontSize="20"
+                                                Text="Offene"
+                                                TextColor="#ffffff" />
+                                        </HorizontalStackLayout>
+                                        <VerticalStackLayout
+                                            x:Name="frame_planListCeoffen"
+                                            Grid.Row="1"
+                                            Margin="0"
+                                            Padding="0"
+                                            HorizontalOptions="Fill"
+                                            Spacing="0" />
+                                    </Grid>
+                                    <Grid
                                         x:Name="frame_planConCe_workhead"
-                                        Margin="0,25,0,0"
-                                        Padding="3"
-                                        BackgroundColor="#66ffcc00"
-                                        HorizontalOptions="Fill"
-                                        Spacing="0">
-                                        <Label
-                                            x:Name="frame_planConCe_workheadtxt"
-                                            Margin="3,0,0,1"
-                                            Padding="0"
-                                            FontSize="20"
-                                            Text="Fällig innerhalb 7 Tagen"
-                                            TextColor="#ffffff" />
-                                    </HorizontalStackLayout>
-                                    <VerticalStackLayout
-                                        x:Name="frame_planListCefaellig"
                                         Margin="0"
                                         Padding="0"
+                                        Grid.Row="1"
                                         HorizontalOptions="Fill"
-                                        Spacing="0" />
-                                    <HorizontalStackLayout
+                                        RowSpacing="0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+                                        <HorizontalStackLayout
+                                            Grid.Row="0"
+                                            Margin="0,25,0,0"
+                                            Padding="3"
+                                            BackgroundColor="#66ffcc00"
+                                            HorizontalOptions="Fill"
+                                            Spacing="0">
+                                            <Label
+                                                x:Name="frame_planConCe_workheadtxt"
+                                                Margin="3,0,0,1"
+                                                Padding="0"
+                                                FontSize="20"
+                                                Text="Fällig innerhalb 7 Tagen"
+                                                TextColor="#ffffff" />
+                                        </HorizontalStackLayout>
+                                        <VerticalStackLayout
+                                            x:Name="frame_planListCefaellig"
+                                            Grid.Row="1"
+                                            Margin="0"
+                                            Padding="0"
+                                            HorizontalOptions="Fill"
+                                            Spacing="0" />
+                                    </Grid>
+                                    <Grid
                                         x:Name="frame_planConCe_erlhead"
-                                        Margin="0,15,0,0"
-                                        Padding="3"
-                                        BackgroundColor="#4400ff00"
-                                        HorizontalOptions="Fill"
-                                        IsVisible="True"
-                                        Spacing="0">
-                                        <Label
-                                            x:Name="frame_planConCe_erlheadtxt"
-                                            Margin="3,0,0,1"
-                                            Padding="0"
-                                            FontSize="20"
-                                            Text="Weitere"
-                                            TextColor="#ffffff" />
-                                    </HorizontalStackLayout>
-                                    <VerticalStackLayout
-                                        x:Name="frame_planListCeerl"
                                         Margin="0"
                                         Padding="0"
+                                        Grid.Row="2"
                                         HorizontalOptions="Fill"
-                                        Spacing="0" />
-                                </VerticalStackLayout>
+                                        RowSpacing="0"
+                                            IsVisible="True">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+                                        <HorizontalStackLayout
+                                            Margin="0,15,0,0"
+                                            Padding="3"
+                                            Grid.Row="0"
+                                            BackgroundColor="#4400ff00"
+                                            HorizontalOptions="Fill"
+                                            Spacing="0">
+                                            <Label
+                                                x:Name="frame_planConCe_erlheadtxt"
+                                                Margin="3,0,0,1"
+                                                Padding="0"
+                                                FontSize="20"
+                                                Text="Weitere"
+                                                TextColor="#ffffff" />
+                                        </HorizontalStackLayout>
+                                        <VerticalStackLayout
+                                            x:Name="frame_planListCeerl"
+                                            Margin="0"
+                                            Grid.Row="1"
+                                            Padding="0"
+                                            HorizontalOptions="Fill"
+                                            Spacing="0" />
+                                    </Grid>
+                                </Grid>
                             </ScrollView>
+
 
                             <BoxView
                                 Grid.Row="3"
@@ -2403,16 +2462,65 @@
                             Padding="0"
                             BackgroundColor="#55042d53"
                             HorizontalOptions="Fill"
-                            IsVisible="False"
+                            IsVisible="True"
                             RowSpacing="0"
                             VerticalOptions="Fill">
                             <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
                                 <RowDefinition Height="*" />
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
+                            <Grid
+                                x:Name="plan_tab_ticket_open"
+                                Grid.Row="0"
+                                Margin="0"
+                                Padding="0"
+                                BackgroundColor="#99042d53"
+                                ColumnSpacing="5"
+                                HeightRequest="42"
+                                HorizontalOptions="Fill">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                
+                                <HorizontalStackLayout
+                                    Grid.Row="0"
+                                    Margin="0,0,5,0"
+                                    Padding="5,0,5,5"
+                                    HorizontalOptions="Fill"
+                                    Spacing="0"
+                                    VerticalOptions="Fill">
+                                    <Image
+                                        Margin="5,5,0,0"
+                                        HeightRequest="18"
+                                        HorizontalOptions="Center"
+                                        VerticalOptions="Center"
+                                        Source="refresh2.png"
+                                        WidthRequest="18" />
+                                    <Label
+                                        x:Name="frame_planConC_reload_text"
+                                        Margin="3,3,5,0"
+                                        Padding="0,2,2,0"
+                                        FontSize="15"
+                                        HorizontalOptions="Center"
+                                        Text="Neu laden"
+                                        TextColor="#ffffff"
+                                        VerticalOptions="Center" />
+                                </HorizontalStackLayout>
+                            </Grid>
+
+                            <BoxView
+                                Grid.Row="1"
+                                Margin="0"
+                                BackgroundColor="#ccc"
+                                HeightRequest="1"
+                                HorizontalOptions="Fill"
+                                VerticalOptions="Start" />
+                            
                             <ScrollView
                                 x:Name="tourScrollerC"
-                                Grid.Row="0"
+                                Grid.Row="2"
                                 Margin="0"
                                 Padding="0"
                                 HorizontalOptions="Fill"
@@ -2609,15 +2717,15 @@
                             </ScrollView>
 
                             <Grid
-                                Grid.Row="1"
+                                Grid.Row="3"
                                 Margin="0"
                                 Padding="0"
                                 ColumnSpacing="2"
                                 HorizontalOptions="Fill">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
                                 <Grid
                                     x:Name="frame_planConC_offenbtn"
@@ -2694,7 +2802,7 @@
                                         Grid.Column="1"
                                         Margin="0"
                                         Padding="1"
-                                        BackgroundColor="#00bb00"
+                                        BackgroundColor="#ffcc00"
                                         HeightRequest="18"
                                         HorizontalOptions="Start"
                                         IsVisible="True"
@@ -7283,10 +7391,10 @@
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
                                     <Image
-                                        x:Name="btn_sync_limg"
                                         Grid.Column="0"
                                         Margin="0,0,8,0"
                                         HeightRequest="33"
+                                        Source="refresh2.png"
                                         VerticalOptions="Center"
                                         WidthRequest="33" />
                                     <VerticalStackLayout

@@ -143,7 +143,8 @@ namespace iPMCloud.Mobile
                                 {
                                     listA.Add((int.Parse(an) + 1));
                                 }
-                            };
+                            }
+                            ;
                             item.a4 = string.Join(";", listA.Select(n => n.ToString()).ToArray());
                         }
                         break;
@@ -179,7 +180,7 @@ namespace iPMCloud.Mobile
         }
 
 
-        public static HorizontalStackLayout GetOffeneList(CheckInfo checkInfo, double width, ICommand func, ICommand funcEdit = null)
+        public static VerticalStackLayout GetOffeneLis_t(CheckInfo checkInfo, double width, ICommand func, ICommand funcEdit = null)
         {
 
             var pinBtn = new HorizontalStackLayout
@@ -200,90 +201,38 @@ namespace iPMCloud.Mobile
             };
 
 
-            var mainH = new HorizontalStackLayout
+
+            var objektInfoPin = new HorizontalStackLayout()
             {
-                Padding = new Thickness(0),
-                Margin = new Thickness(0, 0, 0, 3),
+                Padding = new Thickness(0, 1, 0, 2),
+                Margin = new Thickness(0, 2, 0, 0),
                 Spacing = 0,
                 HorizontalOptions = LayoutOptions.Fill,
-                BackgroundColor = Color.FromArgb("#144d73"),
             };
-
-            //if (checks != null && checks.Count > 0)
-            //{
-            //    foreach (var checkInfo in checks)
-            //    {
-                    var stv = new VerticalStackLayout()
-                    {
-                        Padding = new Thickness(0, 0, 0, 3),
-                        Margin = new Thickness(0, 2, 0, 0),
-                        Spacing = 0,
-                        HorizontalOptions = LayoutOptions.Fill,
-                    };
-
-
-                    var sth_BadgeDescription = new HorizontalStackLayout()
-                    {
-                        Padding = new Thickness(0),
-                        Margin = new Thickness(0),
-                        Spacing = 0,
-                        HorizontalOptions = LayoutOptions.Fill,
-                    };
-
-                    if (checkInfo.berechnunginterval > 0)
-                    {
-                        sth_BadgeDescription.Children.Add(GetBadgeFrame(checkInfo.naeststeFaelligkeitDate, 24));
-                    }
-                    else
-                    {
-                        sth_BadgeDescription.Children.Add(GetBadgeFrameForNachBedarf());
-                    }
-                    var sth_btn = new HorizontalStackLayout()
-                    {
-                        Padding = new Thickness(8, 5, 8, 5),
-                        Margin = new Thickness(10, 0, 3, 0),
-                        Spacing = 0,
-                        HorizontalOptions = LayoutOptions.End,
-                        VerticalOptions = LayoutOptions.End,
-                        BackgroundColor = checkInfo.lastStateOfCheck_a == "Offen" ? Color.FromArgb("#73042d") : Color.FromArgb("#04732d"),
-                    };
-                    sth_btn.Children.Add(new Label()
-                    {
-                        Padding = new Thickness(0),
-                        Text = checkInfo.lastStateOfCheck_a == "Offen" ? "BEARBEITEN" : "STARTEN",
-                        TextColor = Color.FromArgb("#ffffff"),
-                        Margin = new Thickness(0),
-                        FontSize = 13,
-                        HorizontalOptions = LayoutOptions.Center,
-                        VerticalOptions = LayoutOptions.Center,
-                        LineBreakMode = LineBreakMode.NoWrap,
-                    });
+            var b = AppModel.Instance.AllBuildings.Find(o => o.id == checkInfo.objektid);
+            if (b != null)
+            {
+                objektInfoPin.Children.Add(new Label()
+                {
+                    Padding = new Thickness(0),
+                    Text = b.plz + " " + b.ort + " - " + b.strasse + " " + b.hsnr,
+                    TextColor = Color.FromArgb("#ffffff"),
+                    Margin = new Thickness(3, 3, 5, 3),
+                    FontSize = 14,
+                    MaximumWidthRequest = width * 0.69,
+                    HorizontalOptions = LayoutOptions.Start,
+                    LineBreakMode = LineBreakMode.WordWrap,
+                });
 
 
-                    var b = AppModel.Instance.AllBuildings.Find(o => o.id == checkInfo.objektid);
-                    if (b != null)
-                    {
-                        stv.Children.Add(new Label()
-                        {
-                            Padding = new Thickness(0),
-                            Text = b.plz + " " + b.ort + " - " + b.strasse + " " + b.hsnr,
-                            TextColor = Color.FromArgb("#ffffff"),
-                            Margin = new Thickness(3, 3, 5, 3),
-                            FontSize = 13,
-                            MaximumWidthRequest = width * 0.69,
-                            HorizontalOptions = LayoutOptions.Start,
-                            LineBreakMode = LineBreakMode.WordWrap,
-                        });
-
-
-                        pinBtn = new HorizontalStackLayout
-                        {
-                            Padding = new Thickness(1),
-                            Margin = new Thickness(0, 0, 10, 0),
-                            Spacing = 0,
-                            VerticalOptions = LayoutOptions.Start,
-                            HorizontalOptions = LayoutOptions.End,
-                            Children = {
+                pinBtn = new HorizontalStackLayout
+                {
+                    Padding = new Thickness(1),
+                    Margin = new Thickness(0, 0, 10, 0),
+                    Spacing = 0,
+                    VerticalOptions = LayoutOptions.Start,
+                    HorizontalOptions = LayoutOptions.End,
+                    Children = {
                                         new Image {
                                             Source = AppModel.Instance.imagesBase.Pin,
                                             HeightRequest = 28,
@@ -292,25 +241,24 @@ namespace iPMCloud.Mobile
                                             HorizontalOptions = LayoutOptions.Center,
                                         }
                             }
-                        };
-                        pinBtn.GestureRecognizers.Clear();
-                        var tgr_imgPin = new TapGestureRecognizer();
-                        tgr_imgPin.Tapped -= (object o, TappedEventArgs ev) => { BuildingWSO.btn_MapTapped(b); };
-                        tgr_imgPin.Tapped += (object o, TappedEventArgs ev) => { BuildingWSO.btn_MapTapped(b); };
-                        pinBtn.GestureRecognizers.Add(tgr_imgPin);
+                };
+                pinBtn.GestureRecognizers.Clear();
+                var tgr_imgPin = new TapGestureRecognizer();
+                tgr_imgPin.Tapped += (object o, TappedEventArgs ev) => { BuildingWSO.btn_MapTapped(b); };
+                pinBtn.GestureRecognizers.Add(tgr_imgPin);
 
-                        //b.notiz = "ksjkskl sdkljsdkjlsd sdklj sd kl";
-                        if (!String.IsNullOrWhiteSpace(b.notiz))
-                        {
-                            infoBtn = new HorizontalStackLayout
-                            {
-                                Padding = new Thickness(1),
-                                Margin = new Thickness(0, 0, 10, 0),
-                                Spacing = 0,
-                                VerticalOptions = LayoutOptions.Start,
-                                HorizontalOptions = LayoutOptions.End,
-                                IsVisible = !String.IsNullOrWhiteSpace(b.notiz),
-                                Children = {
+                //b.notiz = "ksjkskl sdkljsdkjlsd sdklj sd kl";
+                if (!String.IsNullOrWhiteSpace(b.notiz))
+                {
+                    infoBtn = new HorizontalStackLayout
+                    {
+                        Padding = new Thickness(1),
+                        Margin = new Thickness(0, 0, 10, 0),
+                        Spacing = 0,
+                        VerticalOptions = LayoutOptions.Start,
+                        HorizontalOptions = LayoutOptions.End,
+                        IsVisible = !String.IsNullOrWhiteSpace(b.notiz),
+                        Children = {
                                         new Image {
                                             Source = AppModel._Instance.imagesBase.InfoCircle,
                                             HeightRequest = 26,
@@ -319,65 +267,316 @@ namespace iPMCloud.Mobile
                                             HorizontalOptions = LayoutOptions.Center,
                                         }
                                 }
-                            };
-                            infoBtn.GestureRecognizers.Clear();
-                            var t_btn_objektinfo = new TapGestureRecognizer();
-                            t_btn_objektinfo.Tapped += (object ooo, TappedEventArgs ev) => { AppModel._Instance.MainPage.OpenObjektInfoDialogB(b.notiz); };
-                            infoBtn.GestureRecognizers.Add(t_btn_objektinfo);
-                        }
+                    };
+                    infoBtn.GestureRecognizers.Clear();
+                    var t_btn_objektinfo = new TapGestureRecognizer();
+                    t_btn_objektinfo.Tapped += (object ooo, TappedEventArgs ev) => { AppModel._Instance.MainPage.OpenObjektInfoDialogB(b.notiz); };
+                    infoBtn.GestureRecognizers.Add(t_btn_objektinfo);
+                }
 
 
 
-                    }
-                    else
+            }
+            else
+            {
+                objektInfoPin.Children.Add(new Label()
+                {
+                    Padding = new Thickness(0),
+                    Text = "Nicht gefunden! (" + checkInfo.objektid + ")(Synchronisieren)",
+                    TextColor = Color.FromArgb("#ffcc00"),
+                    Margin = new Thickness(3),
+                    FontSize = 13,
+                    MaximumWidthRequest = width * 0.69,
+                    HorizontalOptions = LayoutOptions.Start,
+                    LineBreakMode = LineBreakMode.WordWrap,
+                });
+            }
+
+
+
+            objektInfoPin.Children.Add(infoBtn);
+            objektInfoPin.Children.Add(pinBtn);
+
+            var sth_BadgeDescription = new HorizontalStackLayout()
+            {
+                Padding = new Thickness(0,0,0,1),
+                Margin = new Thickness(0),
+                Spacing = 0,
+                HorizontalOptions = LayoutOptions.Fill,
+            };
+            if (checkInfo.berechnunginterval > 0)
+            {
+                sth_BadgeDescription.Children.Add(GetBadgeFrame(checkInfo.naeststeFaelligkeitDate, 24));
+            }
+            else
+            {
+                sth_BadgeDescription.Children.Add(GetBadgeFrameForNachBedarf());
+            }
+            sth_BadgeDescription.Children.Add(new Label()
+            {
+                Padding = new Thickness(0),
+                Text = checkInfo.bezeichnung,
+                TextColor = Color.FromArgb("#ffffff"),
+                Margin = new Thickness(3),
+                FontSize = 14,
+                MaximumWidthRequest = (width * 0.70) - 55,
+                HorizontalOptions = LayoutOptions.Start,
+                VerticalOptions = LayoutOptions.Start,
+                LineBreakMode = LineBreakMode.WordWrap,
+            });
+
+            var button = new HorizontalStackLayout()
+            {
+                Padding = new Thickness(8, 5, 8, 5),
+                Margin = new Thickness(10, 0, 3, 0),
+                Spacing = 0,
+                HorizontalOptions = LayoutOptions.End,
+                VerticalOptions = LayoutOptions.End,
+                BackgroundColor = checkInfo.lastStateOfCheck_a == "Offen" ? Color.FromArgb("#73042d") : Color.FromArgb("#04732d"),
+            };
+            button.Children.Add(new Label()
+            {
+                Padding = new Thickness(0),
+                Text = checkInfo.lastStateOfCheck_a == "Offen" ? "BEARBEITEN" : "STARTEN",
+                TextColor = Color.FromArgb("#ffffff"),
+                Margin = new Thickness(0),
+                FontSize = 13,
+                HorizontalOptions = LayoutOptions.Center,
+                VerticalOptions = LayoutOptions.Center,
+                LineBreakMode = LineBreakMode.NoWrap,
+            });
+            sth_BadgeDescription.Children.Add(button);
+            if (func != null)
+            {
+                button.GestureRecognizers.Clear();
+                button.GestureRecognizers.Add(new TapGestureRecognizer()
+                {
+                    Command = func,
+                    CommandParameter = new IntBoolParam { val = checkInfo.id, bol = checkInfo.lastStateOfCheck_a == "Offen" }
+                });
+            }
+
+            var mainH = new VerticalStackLayout
+            {
+                Padding = new Thickness(0),
+                Margin = new Thickness(0, 0, 0, 3),
+                Spacing = 0,
+                HorizontalOptions = LayoutOptions.Fill,
+                BackgroundColor = Color.FromArgb("#144d73"),
+            };
+            mainH.Children.Add(objektInfoPin);
+            mainH.Children.Add(sth_BadgeDescription);
+
+            return mainH;
+        }
+
+        public static VerticalStackLayout GetOffeneList(CheckInfo checkInfo, double wid6th, ICommand func, ICommand funcEdit = null)
+        {
+            var pinBtn = new HorizontalStackLayout
+            {
+                Padding = new Thickness(0),
+                Margin = new Thickness(0),
+                Spacing = 0,
+                HeightRequest = 0,
+                WidthRequest = 0,
+            };
+            var infoBtn = new HorizontalStackLayout
+            {
+                Padding = new Thickness(0),
+                Margin = new Thickness(0),
+                Spacing = 0,
+                HeightRequest = 0,
+                WidthRequest = 0,
+            };
+
+            // ===== objektInfoPin: Umbau auf Grid (Text | info | pin) =====
+            var objektInfoPin = new Grid()
+            {
+                Padding = new Thickness(0),
+                Margin = new Thickness(0,0,0,6),
+                ColumnSpacing = 0,
+                RowSpacing = 0,
+                HorizontalOptions = LayoutOptions.Fill,
+                VerticalOptions = LayoutOptions.Start,
+                ColumnDefinitions =
+        {
+            new ColumnDefinition { Width = GridLength.Star }, // Objekt-Text
+            new ColumnDefinition { Width = 50 }, // infoBtn
+            new ColumnDefinition { Width = 50 }, // pinBtn
+        },
+                RowDefinitions =
+        {
+            new RowDefinition { Height = GridLength.Auto }
+        }
+            };
+
+            var b = AppModel.Instance.AllBuildings.Find(o => o.id == checkInfo.objektid);
+            if (b != null)
+            {
+                objektInfoPin.Add(new Label()
+                {
+                    Padding = new Thickness(0),
+                    Text = b.plz + " " + b.ort + " - " + b.strasse + " " + b.hsnr,
+                    TextColor = Color.FromArgb("#ffffff"),
+                    Margin = new Thickness(3, 3, 5, 3),
+                    FontSize = 14,
+                    HorizontalOptions = LayoutOptions.Fill,
+                    LineBreakMode = LineBreakMode.WordWrap,
+                }, 0, 0);
+
+                pinBtn = new HorizontalStackLayout
+                {
+                    Padding = new Thickness(1),
+                    Margin = new Thickness(0, 0, 10, 0),
+                    Spacing = 0,
+                    VerticalOptions = LayoutOptions.Start,
+                    HorizontalOptions = LayoutOptions.End,
+                    Children =
+            {
+                new Image {
+                    Source = AppModel.Instance.imagesBase.Pin,
+                    HeightRequest = 28,
+                    WidthRequest = 28,
+                    VerticalOptions = LayoutOptions.Center,
+                    HorizontalOptions = LayoutOptions.Center,
+                }
+            }
+                };
+                pinBtn.GestureRecognizers.Clear();
+                var tgr_imgPin = new TapGestureRecognizer();
+                tgr_imgPin.Tapped += (object o, TappedEventArgs ev) => { BuildingWSO.btn_MapTapped(b); };
+                pinBtn.GestureRecognizers.Add(tgr_imgPin);
+
+                if (!String.IsNullOrWhiteSpace(b.notiz))
+                {
+                    infoBtn = new HorizontalStackLayout
                     {
-                        // Nicht alle Objekte sind synchronisiert!
-                        stv.Children.Add(new Label()
-                        {
-                            Padding = new Thickness(0),
-                            Text = "Nicht gefunden! (" + checkInfo.objektid + ")(Synchronisieren)",
-                            TextColor = Color.FromArgb("#ffcc00"),
-                            Margin = new Thickness(3),
-                            FontSize = 13,
-                            MaximumWidthRequest = width * 0.69,
-                            HorizontalOptions = LayoutOptions.Start,
-                            LineBreakMode = LineBreakMode.WordWrap,
-                        });
-                    }
-
-                    // Check Bezeichnung (Lable)
-                    sth_BadgeDescription.Children.Add(new Label()
-                    {
-                        Padding = new Thickness(0),
-                        Text = checkInfo.bezeichnung,
-                        TextColor = Color.FromArgb("#ffffff"),
-                        Margin = new Thickness(3),
-                        FontSize = 13,
-                        MaximumWidthRequest = (width * 0.70) - 55,
-                        HorizontalOptions = LayoutOptions.Start,
+                        Padding = new Thickness(1),
+                        Margin = new Thickness(0, 0, 10, 0),
+                        Spacing = 0,
                         VerticalOptions = LayoutOptions.Start,
-                        LineBreakMode = LineBreakMode.WordWrap,
-                    });
-
-                    sth_BadgeDescription.Children.Add(sth_btn);
-
-                    stv.Children.Add(sth_BadgeDescription);
-
-                    if (func != null)
-                    {
-                        sth_btn.GestureRecognizers.Clear();
-                        sth_btn.GestureRecognizers.Add(new TapGestureRecognizer()
-                        {
-                            Command = func,
-                            CommandParameter = new IntBoolParam { val = checkInfo.id, bol = checkInfo.lastStateOfCheck_a == "Offen" }
-                        });
+                        HorizontalOptions = LayoutOptions.End,
+                        IsVisible = !String.IsNullOrWhiteSpace(b.notiz),
+                        Children =
+                {
+                    new Image {
+                        Source = AppModel._Instance.imagesBase.InfoCircle,
+                        HeightRequest = 26,
+                        WidthRequest = 26,
+                        VerticalOptions = LayoutOptions.Center,
+                        HorizontalOptions = LayoutOptions.Center,
                     }
+                }
+                    };
+                    infoBtn.GestureRecognizers.Clear();
+                    var t_btn_objektinfo = new TapGestureRecognizer();
+                    t_btn_objektinfo.Tapped += (object ooo, TappedEventArgs ev) => { AppModel._Instance.MainPage.OpenObjektInfoDialogB(b.notiz); };
+                    infoBtn.GestureRecognizers.Add(t_btn_objektinfo);
+                }
+            }
+            else
+            {
+                objektInfoPin.Add(new Label()
+                {
+                    Padding = new Thickness(0),
+                    Text = "Nicht gefunden! (" + checkInfo.objektid + ")(Synchronisieren)",
+                    TextColor = Color.FromArgb("#ffcc00"),
+                    Margin = new Thickness(3),
+                    FontSize = 13,
+                    HorizontalOptions = LayoutOptions.Fill,
+                    LineBreakMode = LineBreakMode.WordWrap,
+                }, 0, 0);
+            }
 
-                    mainH.Children.Add(stv);
-                    mainH.Children.Add(infoBtn);
-                    mainH.Children.Add(pinBtn);
-            //    }
-            //}
+            // Grid: rechts anfügen (info/pin)
+            objektInfoPin.Add(infoBtn, 1, 0);
+            objektInfoPin.Add(pinBtn, 2, 0);
+
+            // ===== sth_BadgeDescription: Umbau auf Grid (Badge | Text | Button) =====
+            var sth_BadgeDescription = new Grid()
+            {
+                Padding = new Thickness(0, 0, 0, 1),
+                Margin = new Thickness(0),
+                ColumnSpacing = 0,
+                RowSpacing = 0,
+                HorizontalOptions = LayoutOptions.Fill,
+                VerticalOptions = LayoutOptions.Start,
+                ColumnDefinitions =
+        {
+            new ColumnDefinition { Width = GridLength.Auto }, // Badge
+            new ColumnDefinition { Width = GridLength.Star }, // Beschreibung
+            new ColumnDefinition { Width = GridLength.Auto }, // Button
+        },
+                RowDefinitions =
+        {
+            new RowDefinition { Height = GridLength.Auto }
+        }
+            };
+
+            if (checkInfo.berechnunginterval > 0)
+            {
+                sth_BadgeDescription.Add(GetBadgeFrame(checkInfo.naeststeFaelligkeitDate, 24), 0, 0);
+            }
+            else
+            {
+                sth_BadgeDescription.Add(GetBadgeFrameForNachBedarf(), 0, 0);
+            }
+
+            sth_BadgeDescription.Add(new Label()
+            {
+                Padding = new Thickness(0),
+                Text = checkInfo.bezeichnung,
+                TextColor = Color.FromArgb("#ffffff"),
+                Margin = new Thickness(0),
+                FontSize = 16,
+                HorizontalOptions = LayoutOptions.Fill,
+                VerticalOptions = LayoutOptions.Center,
+                LineBreakMode = LineBreakMode.WordWrap,
+            }, 1, 0);
+
+            var button = new HorizontalStackLayout()
+            {
+                Padding = new Thickness(8, 5, 8, 5),
+                Margin = new Thickness(1, 0, 1, 0),
+                Spacing = 0,
+                HorizontalOptions = LayoutOptions.End,
+                VerticalOptions = LayoutOptions.Center,
+                BackgroundColor = checkInfo.lastStateOfCheck_a == "Offen" ? Color.FromArgb("#73042d") : Color.FromArgb("#04732d"),
+            };
+            button.Children.Add(new Label()
+            {
+                Padding = new Thickness(0),
+                Text = checkInfo.lastStateOfCheck_a == "Offen" ? "BEARBEITEN" : "STARTEN",
+                TextColor = Color.FromArgb("#ffffff"),
+                Margin = new Thickness(0),
+                FontSize = 14,
+                HorizontalOptions = LayoutOptions.Center,
+                VerticalOptions = LayoutOptions.Center,
+                LineBreakMode = LineBreakMode.NoWrap,
+            });
+
+            sth_BadgeDescription.Add(button, 2, 0);
+
+            if (func != null)
+            {
+                button.GestureRecognizers.Clear();
+                button.GestureRecognizers.Add(new TapGestureRecognizer()
+                {
+                    Command = func,
+                    CommandParameter = new IntBoolParam { val = checkInfo.id, bol = checkInfo.lastStateOfCheck_a == "Offen" }
+                });
+            }
+
+            var mainH = new VerticalStackLayout
+            {
+                Padding = new Thickness(2),
+                Margin = new Thickness(0, 0, 0, 3),
+                Spacing = 0,
+                HorizontalOptions = LayoutOptions.Fill,
+                BackgroundColor = Color.FromArgb("#144d73"),
+            };
+            mainH.Children.Add(objektInfoPin);
+            mainH.Children.Add(sth_BadgeDescription);
 
             return mainH;
         }
@@ -389,7 +588,6 @@ namespace iPMCloud.Mobile
             return new Border
             {
                 BackgroundColor = Color.FromArgb(value < 0 ? "#ff0000" : (value < 1 ? "#ffcc00" : "#009900")),
-                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Center,
                 Margin = new Thickness(3, 0, 3, 0),
@@ -412,7 +610,7 @@ namespace iPMCloud.Mobile
             };
         }
 
-       public static Border GetBadgeFrameForNachBedarf()
+        public static Border GetBadgeFrameForNachBedarf()
         {
 
             return new Border
@@ -448,7 +646,7 @@ namespace iPMCloud.Mobile
             return new Border
             {
                 BackgroundColor = Color.FromArgb(isRed ? "#ff0000" : (isGray ? "#999999" : "#009900")),
-                
+
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Center,
@@ -482,15 +680,16 @@ namespace iPMCloud.Mobile
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Fill,
                 StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 10 },
-                Content = 
-                    new Label {
+                Content =
+                    new Label
+                    {
                         Text = title,
                         HorizontalOptions = LayoutOptions.Fill,
                         FontSize = 16,
                         TextColor = Color.FromArgb("#ffffff"),
                         HorizontalTextAlignment = TextAlignment.Start,
                         Margin = new Thickness(0),
-                        Padding = new Thickness(10,5,10,5)
+                        Padding = new Thickness(10, 5, 10, 5)
                     }
             };
         }
@@ -685,7 +884,7 @@ namespace iPMCloud.Mobile
                 BackgroundColor = Color.FromArgb("#99042d53"),
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Fill,
-                StrokeShape = new   Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 10 },
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 10 },
                 Content = new VerticalStackLayout
                 {
                     Padding = new Thickness(5),
@@ -876,7 +1075,7 @@ namespace iPMCloud.Mobile
                 BackgroundColor = Color.FromArgb("#99042d53"),
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Fill,
-                StrokeShape = new   Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 10 },
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 10 },
                 Content = new VerticalStackLayout
                 {
                     Padding = new Thickness(5),
@@ -1461,7 +1660,8 @@ namespace iPMCloud.Mobile
             foreach (var item in quest.frame_ants)
             {
                 questStack.Children.Add(item);
-            };
+            }
+            ;
 
 
             var tapNone = new TapGestureRecognizer();
@@ -1714,7 +1914,8 @@ namespace iPMCloud.Mobile
             foreach (var item in quest.frame_ants)
             {
                 questStack.Children.Add(item);
-            };
+            }
+            ;
 
 
             var tapNone = new TapGestureRecognizer();
@@ -2207,7 +2408,7 @@ namespace iPMCloud.Mobile
                 BackgroundColor = Color.FromArgb("#99042d53"),
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Fill,
-                StrokeShape = new   Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 10 },
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 10 },
                 Content = new VerticalStackLayout
                 {
                     Padding = new Thickness(5),

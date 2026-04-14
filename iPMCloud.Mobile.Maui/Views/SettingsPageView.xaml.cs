@@ -68,9 +68,6 @@ namespace iPMCloud.Mobile.Views
 
             btn_settings_sendlog.IsVisible = true; // BTN SendLOG wieder aneigen!
 
-            //Einstellungen
-            btn_back_settings_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
-
             // Einstellungen Defaults
             lb_settings_synctimehours.Text = "" + AppModel.Instance.SettingModel.SettingDTO.SyncTimeHours;
 

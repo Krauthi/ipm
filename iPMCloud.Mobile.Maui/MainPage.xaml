@@ -152,10 +152,10 @@
                         WidthRequest="38">
 
                         <Image
-                            x:Name="btn_mainsettings_img"
                             Margin="0"
                             HeightRequest="30"
                             HorizontalOptions="Start"
+                            Source="MenuImage.png"
                             VerticalOptions="Center"
                             WidthRequest="30" />
                     </Grid>
@@ -348,10 +348,10 @@
                                     VerticalOptions="Center"
                                     WidthRequest="26">
                                     <Image
-                                        x:Name="btn_objektinfo_img"
                                         Margin="0,3,0,0"
                                         HeightRequest="26"
                                         HorizontalOptions="Center"
+                                        Source="ic_info.png"
                                         VerticalOptions="Center"
                                         WidthRequest="26" />
                                 </StackLayout>
@@ -398,6 +398,7 @@
                             Margin="0"
                             HeightRequest="30"
                             HorizontalOptions="Center"
+                            Source="WarnTriangleYellow.png"
                             VerticalOptions="Center"
                             WidthRequest="30" />
                     </Border>
@@ -412,10 +413,10 @@
                         VerticalOptions="Start"
                         WidthRequest="44">
                         <Image
-                            x:Name="btn_message_img"
                             Margin="0"
                             HeightRequest="30"
                             HorizontalOptions="Center"
+                            Source="CamMessage.png"
                             VerticalOptions="Center"
                             WidthRequest="30" />
                     </Border>
@@ -430,10 +431,10 @@
                         VerticalOptions="Start"
                         WidthRequest="44">
                         <Image
-                            x:Name="btn_objvalues_img"
                             Margin="0"
                             HeightRequest="30"
                             HorizontalOptions="Center"
+                            Source="ObjectValues.png"
                             VerticalOptions="Center"
                             WidthRequest="30" />
                     </Border>
@@ -448,9 +449,9 @@
                         VerticalOptions="Start"
                         WidthRequest="44">
                         <Image
-                            x:Name="btn_buildingout_img2"
                             HeightRequest="30"
                             HorizontalOptions="Center"
+                            Source="BuildingOut.png"
                             VerticalOptions="Center"
                             WidthRequest="30" />
                     </Border>
@@ -480,10 +481,10 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <Image
-                            x:Name="btn_buildingorder_limg"
                             Grid.Column="0"
                             Margin="0,0,10,0"
                             HeightRequest="32"
+                            Source="Work.png"
                             VerticalOptions="Center"
                             WidthRequest="33" />
                         <VerticalStackLayout
@@ -531,10 +532,10 @@
                                 VerticalOptions="Center" />
                         </Border>
                         <Image
-                            x:Name="btn_buildingorder_rimg"
                             Grid.Column="3"
                             Margin="10,0,0,0"
                             HeightRequest="30"
+                            Source="DropRightImage.png"
                             VerticalOptions="Center"
                             WidthRequest="30" />
                     </Grid>
@@ -563,10 +564,10 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <Image
-                            x:Name="btn_inwork_limg"
                             Grid.Column="0"
                             Margin="0,0,10,0"
                             HeightRequest="30"
+                            Source="WorkerInProgressWarn.png"
                             VerticalOptions="Center"
                             WidthRequest="30" />
                         <VerticalStackLayout
@@ -641,12 +642,12 @@
 
 
                 <Image
-                    x:Name="btn_nachbuchen_img"
                     Margin="5,-19,0,-60"
                     BindingContext="{x:Reference btn_nachbuchen_container}"
                     HeightRequest="70"
                     HorizontalOptions="Start"
                     IsVisible="{Binding Path=IsVisible}"
+                    Source="AddArrow.png"
                     VerticalOptions="Start"
                     WidthRequest="90" />
 
@@ -673,17 +674,17 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <Image
-                            x:Name="btn_posnachbuchen_limg"
                             Grid.Column="0"
                             Margin="0,-3,0,0"
                             HeightRequest="30"
+                            Source="LeistungSymbol.png"
                             VerticalOptions="Center"
                             WidthRequest="30" />
                         <Image
-                            x:Name="btn_produktenachbuchen_limg"
                             Grid.Column="1"
                             Margin="-10,3,10,0"
                             HeightRequest="30"
+                            Source="ProduktSymbol.png"
                             VerticalOptions="Center"
                             WidthRequest="30" />
                         <VerticalStackLayout
@@ -711,10 +712,10 @@
                                 TextColor="#aaaaaa" />
                         </VerticalStackLayout>
                         <Image
-                            x:Name="btn_nachbuchen_rimg"
                             Grid.Column="3"
                             Margin="10,0,0,0"
                             HeightRequest="30"
+                            Source="DropRightImage.png"
                             VerticalOptions="Center"
                             WidthRequest="30" />
                     </Grid>
@@ -785,10 +786,10 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Image
-                                x:Name="btn_exitwork_limg"
                                 Grid.Column="0"
                                 Margin="0,2,6,0"
                                 HeightRequest="28"
+                                Source="Exit.png"
                                 VerticalOptions="Center"
                                 WidthRequest="28" />
                             <VerticalStackLayout
@@ -847,10 +848,10 @@
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <Image
-                                x:Name="btn_objScan_limg"
                                 Grid.Column="0"
                                 Margin="0,2,8,0"
                                 HeightRequest="30"
+                                Source="qr.png"
                                 VerticalOptions="Center"
                                 WidthRequest="30" />
                             <VerticalStackLayout
@@ -878,10 +879,10 @@
                                     TextColor="#aaaaaa" />
                             </VerticalStackLayout>
                             <Image
-                                x:Name="btn_objScan_rimg"
                                 Grid.Column="2"
                                 Margin="5,0,0,0"
                                 HeightRequest="30"
+                                Source="DropRightImage.png"
                                 VerticalOptions="Center"
                                 WidthRequest="30" />
                         </Grid>
@@ -905,10 +906,10 @@
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <Image
-                                x:Name="btn_objNotScan_limg"
                                 Grid.Column="0"
                                 Margin="0,0,8,0"
                                 HeightRequest="28"
+                                Source="SearchImage.png"
                                 VerticalOptions="Center"
                                 WidthRequest="28" />
                             <VerticalStackLayout
@@ -936,10 +937,10 @@
                                     TextColor="#aaaaaa" />
                             </VerticalStackLayout>
                             <Image
-                                x:Name="btn_objNotScan_rimg"
                                 Grid.Column="2"
                                 Margin="5,0,0,0"
                                 HeightRequest="30"
+                                Source="DropRightImage.png"
                                 VerticalOptions="Center"
                                 WidthRequest="30" />
                         </Grid>
@@ -953,8 +954,8 @@
                         HorizontalOptions="Center"
                         IsVisible="False">
                         <Image
-                            x:Name="btn_objScan_limgB"
                             HeightRequest="34"
+                            Source="qr.png"
                             VerticalOptions="Center"
                             WidthRequest="34" />
                     </Border>
@@ -969,240 +970,228 @@
                     Padding="0"
                     HeightRequest="40"
                     HorizontalOptions="Fill"
-                    Spacing="2"
+                    Spacing="8"
                     VerticalOptions="Start">
                     <Border
                         x:Name="frame_plantabA"
                         Margin="0,-8,3,0"
-                        Padding="1"
-                        BackgroundColor="#041d43"
+                        Padding="0"
+                        BackgroundColor="#333333"
                         HorizontalOptions="Start">
-                        <StackLayout
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="btn_PlanTabATapped" />
+                        </Border.GestureRecognizers>
+                        <Grid
                             Margin="0"
                             Padding="5,2,5,2"
-                            BackgroundColor="#333333"
+                            ColumnSpacing="0"
                             HeightRequest="40"
-                            HorizontalOptions="Fill">
-                            <Grid
-                                Margin="0"
+                            HorizontalOptions="Fill"
+                            VerticalOptions="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <VerticalStackLayout
+                                Grid.Column="0"
+                                Margin="0,-4,0,0"
                                 Padding="0"
-                                ColumnSpacing="0"
-                                HeightRequest="30"
                                 HorizontalOptions="Fill"
+                                Spacing="0"
                                 VerticalOptions="Center">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <VerticalStackLayout
-                                    Grid.Column="0"
-                                    Margin="0,-4,0,0"
+                                <Label
+                                    Margin="0"
                                     Padding="0"
-                                    HorizontalOptions="Fill"
-                                    Spacing="0"
-                                    VerticalOptions="Center">
+                                    FontSize="14"
+                                    HorizontalTextAlignment="Start"
+                                    Text="Meine Tour"
+                                    TextColor="#ffffff" />
+                                <Label
+                                    Margin="0,-2,0,0"
+                                    Padding="0"
+                                    FontSize="9.5"
+                                    HorizontalTextAlignment="Start"
+                                    Text="Geplante Aufgaben"
+                                    TextColor="#cccccc" />
+                            </VerticalStackLayout>
+
+                            <AbsoluteLayout
+                                x:Name="frame_plantabA_badge"
+                                Grid.Column="1"
+                                Margin="-7,-1,-4,0"
+                                AbsoluteLayout.LayoutBounds="0,0,1,1"
+                                AbsoluteLayout.LayoutFlags="None"
+                                BackgroundColor="Transparent"
+                                IsVisible="False">
+                                <Border
+                                    Margin="0"
+                                    Padding="4,2"
+                                    BackgroundColor="#ff0000"
+                                    HeightRequest="15"
+                                    HorizontalOptions="Start"
+                                    StrokeShape="RoundRectangle 10"
+                                    VerticalOptions="Start">
                                     <Label
-                                        Margin="0"
-                                        Padding="0"
-                                        FontSize="14"
-                                        HorizontalTextAlignment="Start"
-                                        Text="Meine Tour"
-                                        TextColor="#ffffff" />
-                                    <Label
+                                        x:Name="frame_plantabA_badge_count"
                                         Margin="0,-2,0,0"
                                         Padding="0"
-                                        FontSize="9.5"
-                                        HorizontalTextAlignment="Start"
-                                        Text="Geplante Aufgaben"
-                                        TextColor="#cccccc" />
-                                </VerticalStackLayout>
-
-                                <AbsoluteLayout
-                                    x:Name="frame_plantabA_badge"
-                                    Grid.Column="1"
-                                    Margin="-7,-1,-4,0"
-                                    AbsoluteLayout.LayoutBounds="0,0,1,1"
-                                    AbsoluteLayout.LayoutFlags="None"
-                                    BackgroundColor="Transparent"
-                                    IsVisible="False">
-                                    <Border
-                                        Margin="0"
-                                        Padding="2"
-                                        BackgroundColor="#ff0000"
-                                        HeightRequest="15"
-                                        HorizontalOptions="Start"
-                                        StrokeShape="RoundRectangle 10"
-                                        VerticalOptions="Start">
-                                        <Label
-                                            x:Name="frame_plantabA_badge_count"
-                                            Margin="0,-2,0,0"
-                                            Padding="0"
-                                            FontSize="9"
-                                            HorizontalOptions="Center"
-                                            HorizontalTextAlignment="Center"
-                                            Text="65"
-                                            TextColor="#ffffff"
-                                            VerticalOptions="Center" />
-                                    </Border>
-                                </AbsoluteLayout>
-                            </Grid>
-                        </StackLayout>
+                                        FontSize="9"
+                                        HorizontalOptions="Center"
+                                        HorizontalTextAlignment="Center"
+                                        Text="65"
+                                        TextColor="#ffffff"
+                                        VerticalOptions="Center" />
+                                </Border>
+                            </AbsoluteLayout>
+                        </Grid>
                     </Border>
                     <Border
                         x:Name="frame_plantabB"
                         Margin="0,0,3,0"
-                        Padding="1"
-                        BackgroundColor="#041d43"
+                        Padding="0"
+                        BackgroundColor="#545454"
                         HorizontalOptions="Start">
-                        <StackLayout
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="btn_PlanTabBTapped" />
+                        </Border.GestureRecognizers>
+                        <Grid
                             Margin="0"
                             Padding="5,2,5,2"
-                            BackgroundColor="#444444"
+                            ColumnSpacing="0"
                             HeightRequest="40"
-                            HorizontalOptions="Fill">
-                            <Grid
-                                Margin="0"
+                            HorizontalOptions="Fill"
+                            VerticalOptions="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <VerticalStackLayout
+                                Grid.Column="0"
+                                Margin="0,-4,0,0"
                                 Padding="0"
-                                ColumnSpacing="0"
-                                HeightRequest="30"
                                 HorizontalOptions="Fill"
+                                Spacing="0"
                                 VerticalOptions="Center">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <VerticalStackLayout
-                                    Grid.Column="0"
-                                    Margin="0,-4,0,0"
+                                <Label
+                                    Margin="0"
                                     Padding="0"
-                                    HorizontalOptions="Fill"
-                                    Spacing="0"
-                                    VerticalOptions="Center">
-                                    <Label
-                                        Margin="0"
-                                        Padding="0"
-                                        FontSize="14"
-                                        HorizontalTextAlignment="Start"
-                                        Text="Optionale"
-                                        TextColor="#ffffff" />
-                                    <Label
-                                        Margin="0,-2,0,0"
-                                        Padding="0"
-                                        FontSize="9.5"
-                                        HorizontalTextAlignment="Start"
-                                        LineBreakMode="NoWrap"
-                                        Text="z.B.Winterdienst"
-                                        TextColor="#cccccc" />
-                                </VerticalStackLayout>
-                            </Grid>
-                        </StackLayout>
+                                    FontSize="14"
+                                    HorizontalTextAlignment="Start"
+                                    Text="Optionale"
+                                    TextColor="#ffffff" />
+                                <Label
+                                    Margin="0,-2,0,0"
+                                    Padding="0"
+                                    FontSize="9.5"
+                                    HorizontalTextAlignment="Start"
+                                    LineBreakMode="NoWrap"
+                                    Text="z.B.Winterdienst"
+                                    TextColor="#cccccc" />
+                            </VerticalStackLayout>
+                        </Grid>
                     </Border>
                     <Border
                         x:Name="frame_plantabCe"
                         Margin="0,0,3,0"
-                        Padding="1"
-                        BackgroundColor="#041d43"
+                        Padding="0"
+                        BackgroundColor="#a38d04"
                         HorizontalOptions="Start"
                         IsVisible="True">
-                        <StackLayout
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="btn_PlanTabCeTapped" />
+                        </Border.GestureRecognizers>
+                        <Grid
                             Margin="0"
                             Padding="5,2,5,2"
-                            BackgroundColor="#a38d04"
+                            ColumnSpacing="0"
                             HeightRequest="40"
-                            HorizontalOptions="Fill">
-                            <Grid
-                                Margin="0,0,0,0"
+                            HorizontalOptions="Fill"
+                            VerticalOptions="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <VerticalStackLayout
+                                Grid.Column="0"
+                                Margin="0,-4,0,0"
                                 Padding="0"
-                                ColumnSpacing="0"
-                                HeightRequest="30"
                                 HorizontalOptions="Fill"
+                                Spacing="0"
                                 VerticalOptions="Center">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <VerticalStackLayout
-                                    Grid.Column="0"
-                                    Margin="0,-4,0,0"
+                                <Label
+                                    Margin="0"
                                     Padding="0"
-                                    HorizontalOptions="Fill"
-                                    Spacing="0"
-                                    VerticalOptions="Center">
+                                    FontSize="14"
+                                    HorizontalTextAlignment="Start"
+                                    Text="Checklisten"
+                                    TextColor="#ffffff" />
+                                <Label
+                                    Margin="0,-2,0,0"
+                                    Padding="0"
+                                    FontSize="9.5"
+                                    HorizontalTextAlignment="Start"
+                                    Text="Kontrollaufgaben"
+                                    TextColor="#ffffff" />
+                            </VerticalStackLayout>
+                            <AbsoluteLayout
+                                x:Name="frame_plantabCe_badge"
+                                Grid.Column="1"
+                                Margin="-2,-1,-5,0"
+                                AbsoluteLayout.LayoutBounds="0,0,1,1"
+                                AbsoluteLayout.LayoutFlags="None"
+                                BackgroundColor="Transparent"
+                                IsVisible="True">
+                                <Border
+                                    x:Name="frame_plantabCe_badge_col"
+                                    Margin="0"
+                                    Padding="4,2"
+                                    BackgroundColor="#ff0000"
+                                    HeightRequest="15"
+                                    HorizontalOptions="Start"
+                                    StrokeShape="RoundRectangle 10"
+                                    VerticalOptions="Start">
                                     <Label
-                                        Margin="0"
-                                        Padding="0"
-                                        FontSize="14"
-                                        HorizontalTextAlignment="Start"
-                                        Text="Checklisten"
-                                        TextColor="#ffffff" />
-                                    <Label
+                                        x:Name="frame_plantabCe_badge_count"
                                         Margin="0,-2,0,0"
                                         Padding="0"
-                                        FontSize="9.5"
-                                        HorizontalTextAlignment="Start"
-                                        Text="Kontrollaufgaben"
-                                        TextColor="#ffffff" />
-                                </VerticalStackLayout>
-                                <AbsoluteLayout
-                                    x:Name="frame_plantabCe_badge"
-                                    Grid.Column="1"
-                                    Margin="-7,-1,-6,0"
-                                    AbsoluteLayout.LayoutBounds="0,0,1,1"
-                                    AbsoluteLayout.LayoutFlags="None"
-                                    BackgroundColor="Transparent"
-                                    IsVisible="True">
-                                    <Border
-                                        x:Name="frame_plantabCe_badge_col"
-                                        Margin="0"
-                                        Padding="2"
-                                        BackgroundColor="#ff0000"
-                                        HeightRequest="15"
-                                        HorizontalOptions="Start"
-                                        StrokeShape="RoundRectangle 10"
-                                        VerticalOptions="Start">
-                                        <Label
-                                            x:Name="frame_plantabCe_badge_count"
-                                            Margin="0,-2,0,0"
-                                            Padding="0"
-                                            FontSize="9"
-                                            HorizontalOptions="Center"
-                                            HorizontalTextAlignment="Center"
-                                            Text="65"
-                                            TextColor="#ffffff"
-                                            VerticalOptions="Center" />
-                                    </Border>
-                                </AbsoluteLayout>
-                                <AbsoluteLayout
-                                    x:Name="frame_plantabCe_badge_g"
-                                    Grid.Column="2"
-                                    Margin="-9,-1,-5,0"
-                                    AbsoluteLayout.LayoutBounds="0,0,1,1"
-                                    AbsoluteLayout.LayoutFlags="None"
-                                    BackgroundColor="Transparent"
-                                    IsVisible="True">
-                                    <Border
-                                        x:Name="frame_plantabCe_badge_col_g"
-                                        Margin="0"
-                                        Padding="2"
-                                        BackgroundColor="#009900"
-                                        HeightRequest="15"
-                                        HorizontalOptions="Start"
-                                        StrokeShape="RoundRectangle 10"
-                                        VerticalOptions="Start">
-                                        <Label
-                                            x:Name="frame_plantabCe_badge_count_g"
-                                            Margin="0,-2,0,0"
-                                            Padding="0"
-                                            FontSize="9"
-                                            HorizontalOptions="Center"
-                                            HorizontalTextAlignment="Center"
-                                            Text="65"
-                                            TextColor="#ffffff"
-                                            VerticalOptions="Center" />
-                                    </Border>
-                                </AbsoluteLayout>
-                            </Grid>
-                        </StackLayout>
+                                        FontSize="9"
+                                        HorizontalOptions="Center"
+                                        HorizontalTextAlignment="Center"
+                                        Text="8"
+                                        TextColor="#ffffff"
+                                        VerticalOptions="Center" />
+                                </Border>
+                            </AbsoluteLayout>
+                            <AbsoluteLayout
+                                x:Name="frame_plantabCe_badge_g"
+                                Grid.Column="1"
+                                Margin="-2,11,-5,0"
+                                AbsoluteLayout.LayoutBounds="0,0,1,1"
+                                AbsoluteLayout.LayoutFlags="None"
+                                BackgroundColor="Transparent"
+                                IsVisible="True">
+                                <Border
+                                    x:Name="frame_plantabCe_badge_col_g"
+                                    Margin="0"
+                                    Padding="4,2"
+                                    BackgroundColor="#009900"
+                                    HeightRequest="15"
+                                    HorizontalOptions="Start"
+                                    StrokeShape="RoundRectangle 10"
+                                    VerticalOptions="Start">
+                                    <Label
+                                        x:Name="frame_plantabCe_badge_count_g"
+                                        Margin="0,-2,0,0"
+                                        Padding="0"
+                                        FontSize="9"
+                                        HorizontalOptions="Center"
+                                        HorizontalTextAlignment="Center"
+                                        Text="8"
+                                        TextColor="#ffffff"
+                                        VerticalOptions="Center" />
+                                </Border>
+                            </AbsoluteLayout>
+                        </Grid>
                     </Border>
                     <Border
                         x:Name="frame_plantabC"
@@ -1211,6 +1200,9 @@
                         BackgroundColor="#041d43"
                         HorizontalOptions="Start"
                         IsVisible="False">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="btn_PlanTabCTapped" />
+                        </Border.GestureRecognizers>
                         <StackLayout
                             Margin="0"
                             Padding="5,2,5,2"
@@ -1385,10 +1377,10 @@
                                     Spacing="0"
                                     VerticalOptions="Fill">
                                     <Image
-                                        Source="refresh2.png"
                                         Margin="5,5,0,0"
                                         HeightRequest="18"
                                         HorizontalOptions="Center"
+                                        Source="refresh2.png"
                                         VerticalOptions="Center"
                                         WidthRequest="18" />
                                     <Label
@@ -1410,10 +1402,10 @@
                                     Spacing="0"
                                     VerticalOptions="Fill">
                                     <Image
-                                        x:Name="frame_planConA_img_otherperson"
                                         Margin="5,5,0,0"
                                         HeightRequest="18"
                                         HorizontalOptions="End"
+                                        Source="Worker.png"
                                         VerticalOptions="Center"
                                         WidthRequest="18" />
                                     <Label
@@ -1445,10 +1437,10 @@
                                         TextColor="#ffffff"
                                         VerticalOptions="Center" />
                                     <Image
-                                        x:Name="frame_planConA_img_down"
                                         Margin="3,7,0,2"
                                         HeightRequest="22"
                                         HorizontalOptions="Start"
+                                        Source="DropDownImage.png"
                                         VerticalOptions="Center"
                                         WidthRequest="22" />
                                 </HorizontalStackLayout>
@@ -1875,10 +1867,10 @@
                                     Spacing="0"
                                     VerticalOptions="Fill">
                                     <Image
-                                        Source="refresh2.png"
                                         Margin="5,5,0,0"
                                         HeightRequest="18"
                                         HorizontalOptions="Center"
+                                        Source="refresh2.png"
                                         VerticalOptions="Center"
                                         WidthRequest="18" />
                                     <Label
@@ -1901,10 +1893,10 @@
                                     Spacing="0"
                                     VerticalOptions="Fill">
                                     <Image
-                                        x:Name="frame_planConA_img_otherperson2"
                                         Margin="5,5,0,0"
                                         HeightRequest="18"
                                         HorizontalOptions="End"
+                                        Source="Worker.png"
                                         VerticalOptions="Center"
                                         WidthRequest="18" />
                                     <Label
@@ -2229,10 +2221,10 @@
                                     Spacing="0"
                                     VerticalOptions="Fill">
                                     <Image
-                                        Source="refresh2.png"
                                         Margin="5,5,0,0"
                                         HeightRequest="18"
                                         HorizontalOptions="Center"
+                                        Source="refresh2.png"
                                         VerticalOptions="Center"
                                         WidthRequest="18" />
                                     <Label
@@ -2254,10 +2246,10 @@
                                     Spacing="0"
                                     VerticalOptions="Fill">
                                     <Image
-                                        Source="refresh2.png"
                                         Margin="5,5,0,0"
                                         HeightRequest="18"
                                         HorizontalOptions="Center"
+                                        Source="refresh2.png"
                                         VerticalOptions="Center"
                                         WidthRequest="18" />
                                     <Label
@@ -2282,8 +2274,8 @@
                                     <Image
                                         Margin="5,5,0,0"
                                         HeightRequest="18"
-                                        Source="refresh2.png"
                                         HorizontalOptions="Center"
+                                        Source="refresh2.png"
                                         VerticalOptions="Center"
                                         WidthRequest="18" />
                                     <Label
@@ -2316,24 +2308,24 @@
                                 Orientation="Vertical"
                                 VerticalOptions="Fill">
                                 <Grid
-                                        Margin="0"
-                                        Padding="0"
-                                        HorizontalOptions="Fill"
-                                        RowSpacing="0">
+                                    Margin="0"
+                                    Padding="0"
+                                    HorizontalOptions="Fill"
+                                    RowSpacing="0">
 
                                     <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions> 
+                                    </Grid.RowDefinitions>
 
                                     <Grid
                                         x:Name="frame_planConCe_offenhead"
-                                        Margin="0"
                                         Grid.Row="0"
+                                        Margin="0"
                                         Padding="0"
                                         HorizontalOptions="Fill"
                                         RowSpacing="0">
@@ -2369,9 +2361,9 @@
                                     </Grid>
                                     <Grid
                                         x:Name="frame_planConCe_workhead"
+                                        Grid.Row="1"
                                         Margin="0"
                                         Padding="0"
-                                        Grid.Row="1"
                                         HorizontalOptions="Fill"
                                         RowSpacing="0">
                                         <Grid.ColumnDefinitions>
@@ -2406,12 +2398,12 @@
                                     </Grid>
                                     <Grid
                                         x:Name="frame_planConCe_erlhead"
+                                        Grid.Row="2"
                                         Margin="0"
                                         Padding="0"
-                                        Grid.Row="2"
                                         HorizontalOptions="Fill"
-                                        RowSpacing="0"
-                                            IsVisible="True">
+                                        IsVisible="True"
+                                        RowSpacing="0">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*" />
                                         </Grid.ColumnDefinitions>
@@ -2420,9 +2412,9 @@
                                             <RowDefinition Height="Auto" />
                                         </Grid.RowDefinitions>
                                         <HorizontalStackLayout
+                                            Grid.Row="0"
                                             Margin="0,15,0,0"
                                             Padding="3"
-                                            Grid.Row="0"
                                             BackgroundColor="#4400ff00"
                                             HorizontalOptions="Fill"
                                             Spacing="0">
@@ -2436,8 +2428,8 @@
                                         </HorizontalStackLayout>
                                         <VerticalStackLayout
                                             x:Name="frame_planListCeerl"
-                                            Margin="0"
                                             Grid.Row="1"
+                                            Margin="0"
                                             Padding="0"
                                             HorizontalOptions="Fill"
                                             Spacing="0" />
@@ -2483,7 +2475,7 @@
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                
+
                                 <HorizontalStackLayout
                                     Grid.Row="0"
                                     Margin="0,0,5,0"
@@ -2495,8 +2487,8 @@
                                         Margin="5,5,0,0"
                                         HeightRequest="18"
                                         HorizontalOptions="Center"
-                                        VerticalOptions="Center"
                                         Source="refresh2.png"
+                                        VerticalOptions="Center"
                                         WidthRequest="18" />
                                     <Label
                                         x:Name="frame_planConC_reload_text"
@@ -2517,7 +2509,7 @@
                                 HeightRequest="1"
                                 HorizontalOptions="Fill"
                                 VerticalOptions="Start" />
-                            
+
                             <ScrollView
                                 x:Name="tourScrollerC"
                                 Grid.Row="2"
@@ -2974,9 +2966,9 @@
                                 Spacing="0"
                                 VerticalOptions="Center">
                                 <Image
-                                    x:Name="btn_showselected_pos_img2"
                                     Margin="0,0,8,0"
                                     HeightRequest="30"
+                                    Source="PosList.png"
                                     VerticalOptions="Center"
                                     WidthRequest="30" />
                                 <VerticalStackLayout
@@ -3078,11 +3070,11 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <Image
-                            x:Name="btn_nachbuchen_back_img"
                             Grid.Column="0"
                             Margin="0,0,0,0"
                             HeightRequest="30"
                             HorizontalOptions="Start"
+                            Source="DropLeftBlueDoubleImage.png"
                             VerticalOptions="Center"
                             WidthRequest="30" />
                         <Label
@@ -3206,10 +3198,10 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Image
-                    x:Name="img_inBuildingOrder_categorypos_text_Again"
                     Grid.Column="0"
                     Margin="3,0,8,0"
                     HeightRequest="24"
+                    Source="OrderFolderTools.png"
                     VerticalOptions="Start"
                     WidthRequest="24" />
                 <Label
@@ -3263,10 +3255,10 @@
                         Spacing="0"
                         VerticalOptions="Center">
                         <Image
-                            x:Name="btn_nachbuchen_cat_back_img"
                             Margin="0,0,0,0"
                             HeightRequest="30"
                             HorizontalOptions="Start"
+                            Source="DropLeftWhiteDoubleImage.png"
                             VerticalOptions="Center"
                             WidthRequest="30" />
                     </HorizontalStackLayout>
@@ -3285,10 +3277,10 @@
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <Image
-                        x:Name="img_inBuildingOrder_position_text_Again"
                         Grid.Column="0"
                         Margin="3,0,8,0"
                         HeightRequest="30"
+                        Source="KategorieSymbol.png"
                         VerticalOptions="Start"
                         WidthRequest="30" />
                     <Label
@@ -3526,9 +3518,9 @@
                                 Spacing="0"
                                 VerticalOptions="Center">
                                 <Image
-                                    x:Name="btn_showselected_pos_img_Again"
                                     Margin="0,0,8,0"
                                     HeightRequest="30"
+                                    Source="PosList.png"
                                     VerticalOptions="Center"
                                     WidthRequest="30" />
                                 <VerticalStackLayout
@@ -3631,11 +3623,11 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <Image
-                            x:Name="btn_notscan_back_img"
                             Grid.Column="0"
                             Margin="0,0,0,0"
                             HeightRequest="30"
                             HorizontalOptions="Start"
+                            Source="DropLeftBlueDoubleImage.png"
                             VerticalOptions="Center"
                             WidthRequest="30" />
                         <Label
@@ -3726,10 +3718,10 @@
                     Spacing="0"
                     VerticalOptions="Fill">
                     <Image
-                        x:Name="btn_notscansearch_img"
                         Margin="0,0,0,0"
                         HeightRequest="30"
                         HorizontalOptions="Center"
+                        Source="SearchImage.png"
                         VerticalOptions="Center"
                         WidthRequest="30" />
                 </StackLayout>
@@ -3859,11 +3851,11 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <Image
-                            x:Name="img_backBtn_inBuildingScan"
                             Grid.Column="0"
                             Margin="0,0,0,0"
                             HeightRequest="30"
                             HorizontalOptions="Start"
+                            Source="DropLeftBlueDoubleImage.png"
                             VerticalOptions="Center"
                             WidthRequest="30" />
                         <Label
@@ -3901,51 +3893,13 @@
                     RowSpacing="0"
                     VerticalOptions="Fill">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <Grid
-                        Grid.Row="0"
-                        Margin="10,0,10,0"
-                        Padding="0"
-                        ColumnSpacing="0"
-                        HorizontalOptions="Fill">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Border
-                            Grid.Column="0"
-                            Margin="0"
-                            Padding="1"
-                            BackgroundColor="#041d43"
-                            HorizontalOptions="End"
-                            VerticalOptions="Center">
-                            <StackLayout
-                                x:Name="btn_flashlight_container"
-                                Margin="0"
-                                Padding="0"
-                                BackgroundColor="#042d53"
-                                HeightRequest="40"
-                                HorizontalOptions="End"
-                                Spacing="0"
-                                VerticalOptions="Center"
-                                WidthRequest="40">
-                                <Image
-                                    x:Name="btn_flashlight_img"
-                                    Margin="0,0,0,0"
-                                    HeightRequest="30"
-                                    HorizontalOptions="Center"
-                                    VerticalOptions="Center"
-                                    WidthRequest="30" />
-                            </StackLayout>
-                        </Border>
-                    </Grid>
-
                     <StackLayout
                         x:Name="lay_buildingscan"
-                        Grid.Row="1"
+                        Grid.Row="0"
                         Margin="10,0,10,20"
                         Padding="0"
                         HorizontalOptions="Fill"
@@ -3953,7 +3907,7 @@
                         VerticalOptions="Fill" />
 
                     <Grid
-                        Grid.Row="2"
+                        Grid.Row="1"
                         Margin="10,0,10,5"
                         Padding="5"
                         BackgroundColor="#70144d73"
@@ -3964,12 +3918,12 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <Image
-                            x:Name="btn_regScan_limg"
                             Grid.Column="0"
                             Margin="0,0,10,0"
-                            HeightRequest="30"
+                            HeightRequest="36"
+                            Source="qr.png"
                             VerticalOptions="Start"
-                            WidthRequest="30" />
+                            WidthRequest="36" />
                         <Label
                             Grid.Column="1"
                             Margin="0"
@@ -4034,11 +3988,11 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <Image
-                            x:Name="img_backBtn_inBuildingOutScan"
                             Grid.Column="0"
                             Margin="0,0,0,0"
                             HeightRequest="30"
                             HorizontalOptions="Start"
+                            Source="DropLeftBlueDoubleImage.png"
                             VerticalOptions="Center"
                             WidthRequest="30" />
                         <Label
@@ -4074,10 +4028,10 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Image
-                    x:Name="btn_regOutScan_limg"
                     Grid.Column="0"
                     Margin="0,0,10,0"
                     HeightRequest="30"
+                    Source="qr.png"
                     VerticalOptions="Start"
                     WidthRequest="30" />
                 <Label
@@ -4136,10 +4090,10 @@
                                 VerticalOptions="Center"
                                 WidthRequest="40">
                                 <Image
-                                    x:Name="btn_flashlight_Out_img"
                                     Margin="0,0,0,0"
                                     HeightRequest="30"
                                     HorizontalOptions="Center"
+                                    Source="Flashlight.png"
                                     VerticalOptions="Center"
                                     WidthRequest="30" />
                             </StackLayout>
@@ -4227,11 +4181,11 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Image
-                                x:Name="img_backBtn_inBuildingOrder"
                                 Grid.Column="0"
                                 Margin="0,0,0,0"
                                 HeightRequest="30"
                                 HorizontalOptions="Start"
+                                Source="DropLeftBlueDoubleImage.png"
                                 VerticalOptions="Center"
                                 WidthRequest="30" />
                             <Label
@@ -4334,11 +4288,11 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Image
-                                x:Name="img_backBtn_inBuildingOrder_category"
                                 Grid.Column="0"
                                 Margin="0,0,0,0"
                                 HeightRequest="30"
                                 HorizontalOptions="Start"
+                                Source="DropLeftBlueDoubleImage.png"
                                 VerticalOptions="Center"
                                 WidthRequest="30" />
                             <Label
@@ -4412,10 +4366,10 @@
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <Image
-                        x:Name="img_inBuildingOrder_category_text"
                         Grid.Column="0"
                         Margin="3,0,8,0"
                         HeightRequest="24"
+                        Source="OrderFolderTools.png"
                         VerticalOptions="Start"
                         WidthRequest="24" />
                     <Label
@@ -4509,11 +4463,11 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Image
-                                x:Name="img_backBtn_inBuildingOrder_position"
                                 Grid.Column="0"
                                 Margin="0,0,0,0"
                                 HeightRequest="30"
                                 HorizontalOptions="Start"
+                                Source="DropLeftBlueDoubleImage.png"
                                 VerticalOptions="Center"
                                 WidthRequest="30" />
                             <Label
@@ -4558,10 +4512,10 @@
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <Image
-                        x:Name="img_inBuildingOrder_categorypos_text"
                         Grid.Column="0"
                         Margin="4,0,6,0"
                         HeightRequest="24"
+                        Source="OrderFolderTools.png"
                         VerticalOptions="Start"
                         WidthRequest="24" />
                     <Label
@@ -4595,10 +4549,10 @@
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <Image
-                        x:Name="img_inBuildingOrder_position_text"
                         Grid.Column="0"
                         Margin="3,0,8,0"
                         HeightRequest="24"
+                        Source="KategorieSymbol.png"
                         VerticalOptions="Start"
                         WidthRequest="24" />
                     <Label
@@ -4692,9 +4646,9 @@
                                 Spacing="0"
                                 VerticalOptions="Center">
                                 <Image
-                                    x:Name="btn_showselected_pos_img"
                                     Margin="0,0,8,0"
                                     HeightRequest="30"
+                                    Source="PosList.png"
                                     VerticalOptions="Center"
                                     WidthRequest="30" />
                                 <VerticalStackLayout
@@ -4803,11 +4757,11 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Image
-                                x:Name="btn_back_runningworks_img"
                                 Grid.Column="0"
                                 Margin="0,0,0,0"
                                 HeightRequest="30"
                                 HorizontalOptions="Start"
+                                Source="DropLeftBlueDoubleImage.png"
                                 VerticalOptions="Center"
                                 WidthRequest="30" />
                             <Label
@@ -4908,9 +4862,9 @@
                             Spacing="0"
                             VerticalOptions="Center">
                             <Image
-                                x:Name="btn_runningworks_over_img"
                                 Margin="0,0,8,0"
                                 HeightRequest="30"
+                                Source="CheckWhite.png"
                                 VerticalOptions="Center"
                                 WidthRequest="30" />
                             <VerticalStackLayout
@@ -4955,21 +4909,34 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <StackLayout
+            <Grid
                 x:Name="NoticePage_position_Container"
                 Grid.Row="0"
                 Margin="0"
                 Padding="0"
                 HorizontalOptions="Fill"
                 IsVisible="True"
-                Spacing="0"
+                RowSpacing="0"
                 VerticalOptions="Fill">
 
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
                 <Grid
+                    Grid.Row="0"
                     Margin="0"
-                    Padding="10,10,10,10"
+                    Padding="1"
                     ColumnSpacing="0"
-                    HeightRequest="48"
+                    HeightRequest="54"
                     HorizontalOptions="Fill">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
@@ -4998,11 +4965,11 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Image
-                                x:Name="btn_back_notice_img"
                                 Grid.Column="0"
                                 Margin="0,0,0,0"
                                 HeightRequest="30"
                                 HorizontalOptions="Start"
+                                Source="DropLeftBlueDoubleImage.png"
                                 VerticalOptions="Center"
                                 WidthRequest="30" />
                             <Label
@@ -5013,7 +4980,7 @@
                                 HorizontalTextAlignment="Start"
                                 LineBreakMode="TailTruncation"
                                 Text="ABBRECHEN"
-                                TextColor="#2f84bd"
+                                TextColor="#3f94cd"
                                 VerticalOptions="Center" />
                         </Grid>
                     </Border>
@@ -5021,7 +4988,7 @@
                         x:Name="btn_alertmessage_tit"
                         Grid.Column="1"
                         Margin="0,0,10,0"
-                        FontSize="24"
+                        FontSize="22"
                         HorizontalOptions="End"
                         HorizontalTextAlignment="End"
                         LineBreakMode="TailTruncation"
@@ -5035,6 +5002,7 @@
                         HeightRequest="34"
                         HorizontalOptions="End"
                         IsVisible="False"
+                        Source="WarnTriangleYellow.png"
                         VerticalOptions="Center"
                         WidthRequest="34" />
                     <Image
@@ -5044,34 +5012,39 @@
                         HeightRequest="30"
                         HorizontalOptions="End"
                         IsVisible="True"
+                        Source="InternalNoCustomer.png"
                         VerticalOptions="Center"
                         WidthRequest="30" />
                 </Grid>
+
                 <BoxView
-                    Margin="0,0,0,0"
+                    Grid.Row="1"
+                    Margin="0"
                     BackgroundColor="Gray"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
 
-                <HorizontalStackLayout
+                <VerticalStackLayout
+                    Grid.Row="2"
                     Margin="0"
-                    Padding="10"
-                    BackgroundColor="#55042d53"
+                    Padding="10,15"
+                    BackgroundColor="#99042d53"
                     HorizontalOptions="Fill"
                     Spacing="0">
                     <Label
                         Margin="0"
                         Padding="0"
-                        FontSize="14"
+                        FontSize="15"
                         HorizontalOptions="Start"
                         LineBreakMode="WordWrap"
-                        Text="Erstellen Sie hier eine Meldung zum Objekt. Fügen Sie Fotos aus Ihrer Galerie hinzu oder direkt über Ihre Kamera."
+                        Text="Erstellen Sie eine Meldung zum Objekt. Fügen Sie Fotos aus der Galerie oder über Ihre Kamera hinzu."
                         TextColor="#cccccc"
                         VerticalOptions="Center" />
-                </HorizontalStackLayout>
+                </VerticalStackLayout>
                 <VerticalStackLayout
                     x:Name="noticeFor"
+                    Grid.Row="3"
                     Margin="0"
                     Padding="10"
                     BackgroundColor="#55042d53"
@@ -5095,14 +5068,16 @@
                         Spacing="0" />
                 </VerticalStackLayout>
                 <BoxView
+                    Grid.Row="4"
                     Margin="0,0,0,0"
                     BackgroundColor="Gray"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <VerticalStackLayout
+                    Grid.Row="5"
                     Margin="0"
-                    Padding="5,15,5,10"
+                    Padding="5,5,5,10"
                     BackgroundColor="#144d73"
                     HeightRequest="92"
                     HorizontalOptions="Fill"
@@ -5130,19 +5105,22 @@
                         TextColor="#ffffff" />
                 </VerticalStackLayout>
                 <BoxView
+                    Grid.Row="6"
                     Margin="0,0,0,0"
                     BackgroundColor="Gray"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Grid
+                    Grid.Row="7"
                     Margin="0"
                     Padding="0"
-                    BackgroundColor="#55042d53"
-                    ColumnSpacing="0"
+                    BackgroundColor="#99042d53"
+                    ColumnSpacing="10"
                     HorizontalOptions="Fill">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <VerticalStackLayout
@@ -5151,7 +5129,7 @@
                         Padding="0"
                         HorizontalOptions="Fill"
                         Spacing="0">
-                        <Grid
+                        <!--<Grid
                             Margin="0"
                             Padding="10,5,0,0"
                             ColumnSpacing="10"
@@ -5178,7 +5156,7 @@
                                 HorizontalOptions="Start"
                                 Toggled="AlertMessage_Switch_Toggled"
                                 VerticalOptions="Center" />
-                        </Grid>
+                        </Grid>-->
                         <Grid
                             Margin="0"
                             Padding="10,5,0,10"
@@ -5205,6 +5183,13 @@
                                 HorizontalOptions="Start"
                                 Toggled="InternMessage_Switch_Toggled"
                                 VerticalOptions="Center" />
+                            <Switch
+                                IsVisible="False"
+                                x:Name="sw_alertmessage"
+                                Grid.Column="1"
+                                HorizontalOptions="Start"
+                                Toggled="AlertMessage_Switch_Toggled"
+                                VerticalOptions="Center" />
                         </Grid>
                         <Label
                             Margin="10,0,0,6"
@@ -5216,79 +5201,75 @@
                             TextColor="#ffcc00"
                             VerticalOptions="Center" />
                     </VerticalStackLayout>
-                    <Grid
+
+                    <Border
+                        x:Name="btn_takePhoto_frame"
                         Grid.Column="1"
-                        Margin="0"
-                        Padding="0,0,10,10"
-                        ColumnSpacing="10"
-                        HorizontalOptions="Fill"
-                        VerticalOptions="End">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <Border
-                            x:Name="btn_takePhoto_frame"
-                            Grid.Column="0"
-                            Margin="3,0,3,0"
-                            Padding="1"
-                            BackgroundColor="#041d43"
-                            HorizontalOptions="End"
-                            VerticalOptions="Center">
-                            <StackLayout
-                                Margin="0"
-                                Padding="0"
-                                BackgroundColor="#042d53"
-                                HeightRequest="40"
+                        Margin="3,10,3,0"
+                        Padding="0"
+                        HorizontalOptions="End"
+                        VerticalOptions="Center">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="btn_takePhotos" />
+                        </Border.GestureRecognizers>
+                        <VerticalStackLayout
+                            Margin="0"
+                            Padding="0"
+                            BackgroundColor="#244d73"
+                            HeightRequest="44"
+                            HorizontalOptions="Center"
+                            Spacing="0"
+                            VerticalOptions="Center"
+                            WidthRequest="44">
+                            <Image
+                                Margin="0,6,0,0"
+                                HeightRequest="32"
                                 HorizontalOptions="Center"
-                                Spacing="0"
+                                Source="Cam.png"
                                 VerticalOptions="Center"
-                                WidthRequest="40">
-                                <Image
-                                    x:Name="btn_message_imgA"
-                                    Margin="0,0,0,0"
-                                    HeightRequest="30"
-                                    HorizontalOptions="Center"
-                                    VerticalOptions="Center"
-                                    WidthRequest="30" />
-                            </StackLayout>
-                        </Border>
-                        <Border
-                            x:Name="btn_takePhotoAttachment_frame"
-                            Grid.Column="1"
-                            Margin="3,0,3,0"
-                            Padding="1"
-                            BackgroundColor="#041d43"
-                            HorizontalOptions="End"
-                            VerticalOptions="Center">
-                            <StackLayout
-                                Margin="0"
-                                Padding="0"
-                                BackgroundColor="#042d53"
-                                HeightRequest="40"
+                                WidthRequest="32" />
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border
+                        x:Name="btn_takePhotoAttachment_frame"
+                        Grid.Column="2"
+                        Margin="10,10,10,0"
+                        Padding="0"
+                        HorizontalOptions="End"
+                        VerticalOptions="Center">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="btn_pickPhotosForNotice" />
+                        </Border.GestureRecognizers>
+                        <StackLayout
+                            Margin="0"
+                            Padding="0"
+                            BackgroundColor="#244d73"
+                            HeightRequest="44"
+                            HorizontalOptions="Center"
+                            Spacing="0"
+                            VerticalOptions="Center"
+                            WidthRequest="44">
+                            <Image
+                                Margin="0,6,0,0"
+                                HeightRequest="32"
                                 HorizontalOptions="Center"
-                                Spacing="0"
+                                Source="Attachment.png"
                                 VerticalOptions="Center"
-                                WidthRequest="40">
-                                <Image
-                                    x:Name="btn_message_imgB"
-                                    Margin="0,0,0,0"
-                                    HeightRequest="30"
-                                    HorizontalOptions="Center"
-                                    VerticalOptions="Center"
-                                    WidthRequest="30" />
-                            </StackLayout>
-                        </Border>
-                    </Grid>
+                                WidthRequest="32" />
+                        </StackLayout>
+                    </Border>
+
                 </Grid>
 
                 <BoxView
+                    Grid.Row="8"
                     Margin="0,0,0,0"
                     BackgroundColor="Gray"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <ScrollView
+                    Grid.Row="9"
                     Margin="0"
                     Padding="0"
                     HorizontalOptions="Fill"
@@ -5302,17 +5283,17 @@
                         Spacing="0"
                         VerticalOptions="Fill" />
                 </ScrollView>
-            </StackLayout>
+            </Grid>
 
             <VerticalStackLayout
                 x:Name="notizSave_stack"
-                Grid.Row="1"
-                Margin="0,0,0,12"
+                Grid.Row="2"
+                Margin="0,0,0,15"
                 Padding="0"
                 BackgroundColor="#333333"
-                HeightRequest="50"
+                HeightRequest="60"
                 HorizontalOptions="Fill"
-                IsVisible="False"
+                IsVisible="True"
                 Spacing="0"
                 VerticalOptions="End">
                 <BoxView
@@ -5323,15 +5304,15 @@
                     VerticalOptions="End" />
                 <Border
                     x:Name="btn_notice_save"
-                    Margin="5"
+                    Margin="7,5,0,0"
                     Padding="1"
                     BackgroundColor="#04432d"
                     HorizontalOptions="Start">
-                    <StackLayout
+                    <VerticalStackLayout
                         Margin="0"
-                        Padding="2,2,10,2"
+                        Padding="2,5,10,2"
                         BackgroundColor="#04532d"
-                        HeightRequest="40"
+                        HeightRequest="44"
                         HorizontalOptions="Fill">
                         <HorizontalStackLayout
                             Margin="0,0,0,0"
@@ -5341,9 +5322,9 @@
                             Spacing="0"
                             VerticalOptions="Center">
                             <Image
-                                x:Name="btn_notice_save_img"
-                                Margin="0,0,8,0"
+                                Margin="0,3,8,0"
                                 HeightRequest="30"
+                                Source="CheckWhite.png"
                                 VerticalOptions="Center"
                                 WidthRequest="30" />
                             <VerticalStackLayout
@@ -5354,18 +5335,18 @@
                                 <Label
                                     Margin="0"
                                     Padding="0"
-                                    FontSize="16"
+                                    FontSize="18"
                                     Text="JETZT HINZUFÜGEN"
                                     TextColor="#ffffff" />
                                 <Label
                                     Margin="0,-2,0,0"
                                     Padding="0"
-                                    FontSize="8"
+                                    FontSize="11"
                                     Text="Bemerkung zum gewählten Bereich hinzufügen"
                                     TextColor="#ffffff" />
                             </VerticalStackLayout>
                         </HorizontalStackLayout>
-                    </StackLayout>
+                    </VerticalStackLayout>
                 </Border>
             </VerticalStackLayout>
 
@@ -5390,9 +5371,9 @@
             <Grid
                 Grid.Row="0"
                 Margin="0"
-                Padding="10,10,10,10"
+                Padding="10"
                 ColumnSpacing="0"
-                HeightRequest="48"
+                HeightRequest="54"
                 HorizontalOptions="Fill">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
@@ -5407,11 +5388,11 @@
                     HorizontalOptions="Start"
                     VerticalOptions="Center">
                     <Image
-                        x:Name="btn_back_ObjectValues_img"
                         Grid.Column="0"
                         Margin="0,0,0,0"
                         HeightRequest="30"
                         HorizontalOptions="Start"
+                        Source="DropLeftBlueDoubleImage.png"
                         VerticalOptions="Center"
                         WidthRequest="30" />
                     <Label
@@ -5618,10 +5599,10 @@
                         HorizontalOptions="Start"
                         VerticalOptions="Center">
                         <Image
-                            x:Name="btn_back_ObjectValues_edit_img"
                             Margin="0,0,0,0"
                             HeightRequest="30"
                             HorizontalOptions="Start"
+                            Source="DropLeftBlueDoubleImage.png"
                             VerticalOptions="Center"
                             WidthRequest="30" />
                         <Label
@@ -5761,11 +5742,11 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Image
-                                x:Name="btn_back_check_img"
                                 Grid.Column="0"
                                 Margin="0,0,0,0"
                                 HeightRequest="30"
                                 HorizontalOptions="Start"
+                                Source="DropLeftBlueDoubleImage.png"
                                 VerticalOptions="Center"
                                 WidthRequest="30" />
                             <VerticalStackLayout
@@ -5831,11 +5812,11 @@
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <Image
-                        x:Name="btn_info_check_img"
                         Grid.Column="0"
                         Margin="0"
                         HeightRequest="30"
                         HorizontalOptions="Start"
+                        Source="CheckSymbol.png"
                         VerticalOptions="Start"
                         WidthRequest="30" />
                     <VerticalStackLayout
@@ -5891,10 +5872,10 @@
                             VerticalOptions="Center"
                             WidthRequest="40">
                             <Image
-                                x:Name="btn_back_check_del_img"
                                 Margin="0,0,0,0"
                                 HeightRequest="29"
                                 HorizontalOptions="Center"
+                                Source="Trash.png"
                                 VerticalOptions="Center"
                                 WidthRequest="30" />
                         </HorizontalStackLayout>
@@ -6158,11 +6139,11 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Image
-                                x:Name="btn_back_check_signature_img"
                                 Grid.Column="0"
                                 Margin="0,0,0,0"
                                 HeightRequest="30"
                                 HorizontalOptions="Start"
+                                Source="DropLeftBlueDoubleImage.png"
                                 VerticalOptions="Center"
                                 WidthRequest="30" />
                             <Label
@@ -6274,11 +6255,11 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Image
-                                x:Name="btn_back_check_bem_img"
                                 Grid.Column="0"
                                 Margin="0,0,0,0"
                                 HeightRequest="30"
                                 HorizontalOptions="Start"
+                                Source="DropLeftBlueDoubleImage.png"
                                 VerticalOptions="Center"
                                 WidthRequest="30" />
                             <Label
@@ -6424,10 +6405,10 @@
                                 VerticalOptions="Center"
                                 WidthRequest="40">
                                 <Image
-                                    x:Name="btn_message_imgA_check_bem"
                                     Margin="0,0,0,0"
                                     HeightRequest="30"
                                     HorizontalOptions="Center"
+                                    Source="Cam.png"
                                     VerticalOptions="Center"
                                     WidthRequest="30" />
                             </StackLayout>
@@ -6450,10 +6431,10 @@
                                 VerticalOptions="Center"
                                 WidthRequest="40">
                                 <Image
-                                    x:Name="btn_message_imgB_check_bem"
                                     Margin="0,0,0,0"
                                     HeightRequest="30"
                                     HorizontalOptions="Center"
+                                    Source="Attachment.png"
                                     VerticalOptions="Center"
                                     WidthRequest="30" />
                             </StackLayout>
@@ -6526,9 +6507,9 @@
                                 Spacing="0"
                                 VerticalOptions="Center">
                                 <Image
-                                    x:Name="btn_notice_save_img_check_bem"
                                     Margin="0,0,8,0"
                                     HeightRequest="30"
+                                    Source="CheckWhite.png"
                                     VerticalOptions="Center"
                                     WidthRequest="30" />
                                 <VerticalStackLayout
@@ -6948,11 +6929,11 @@
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <Image
-                                x:Name="btn_showselected_poslist_img"
                                 Grid.Column="0"
                                 Margin="0,0,10,0"
                                 HeightRequest="30"
                                 HorizontalOptions="Start"
+                                Source="PosList.png"
                                 VerticalOptions="Center"
                                 WidthRequest="30" />
                             <Label
@@ -6966,7 +6947,6 @@
                                 TextColor="#ffffff"
                                 VerticalOptions="Center" />
                             <ImageButton
-                                x:Name="btn_panelShowSelectedPos_back"
                                 Grid.Column="2"
                                 Margin="0"
                                 Padding="1"
@@ -6974,6 +6954,7 @@
                                 Clicked="btn_AuswahlAnzeigen"
                                 HeightRequest="32"
                                 HorizontalOptions="End"
+                                Source="XImageBoldRed.png"
                                 VerticalOptions="Center"
                                 WidthRequest="32" />
                         </Grid>
@@ -7029,9 +7010,9 @@
                                     Spacing="0"
                                     VerticalOptions="Center">
                                     <Image
-                                        x:Name="btn_startselected_pos_img"
                                         Margin="0,0,8,0"
                                         HeightRequest="30"
+                                        Source="CheckWhite.png"
                                         VerticalOptions="Center"
                                         WidthRequest="30" />
                                     <VerticalStackLayout
@@ -7125,7 +7106,6 @@
                                 VerticalOptions="Start" />
 
                             <ImageButton
-                                x:Name="btn_mainmenu_back"
                                 Grid.Column="1"
                                 Margin="10"
                                 Padding="3"
@@ -7133,6 +7113,7 @@
                                 Clicked="btn_MainMenuTapped"
                                 HeightRequest="32"
                                 HorizontalOptions="End"
+                                Source="XImageBoldRed.png"
                                 VerticalOptions="Center"
                                 WidthRequest="32" />
                         </Grid>
@@ -7170,10 +7151,10 @@
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
                                     <Image
-                                        x:Name="btn_todos_limg"
                                         Grid.Column="0"
                                         Margin="0,0,8,0"
                                         HeightRequest="33"
+                                        Source="Todos.png"
                                         VerticalOptions="Center"
                                         WidthRequest="33" />
                                     <VerticalStackLayout
@@ -7198,11 +7179,11 @@
                                             TextColor="#aaaaaa" />
                                     </VerticalStackLayout>
                                     <Image
-                                        x:Name="btn_todos_rimg"
                                         Grid.Column="2"
                                         Margin="5,0,0,0"
                                         HeightRequest="30"
                                         HorizontalOptions="End"
+                                        Source="DropRightImage.png"
                                         VerticalOptions="Center"
                                         WidthRequest="30" />
                                 </Grid>
@@ -7236,10 +7217,10 @@
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
                                     <Image
-                                        x:Name="btn_persontimes_limg"
                                         Grid.Column="0"
                                         Margin="0,0,8,0"
                                         HeightRequest="33"
+                                        Source="Time.png"
                                         VerticalOptions="Center"
                                         WidthRequest="33" />
                                     <VerticalStackLayout
@@ -7309,10 +7290,10 @@
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
                                     <Image
-                                        x:Name="btn_worker_limg"
                                         Grid.Column="0"
                                         Margin="0,0,8,0"
                                         HeightRequest="33"
+                                        Source="Worker.png"
                                         VerticalOptions="Center"
                                         WidthRequest="33" />
                                     <VerticalStackLayout
@@ -7337,11 +7318,11 @@
                                             TextColor="#aaaaaa" />
                                     </VerticalStackLayout>
                                     <Image
-                                        x:Name="btn_worker_rimg"
                                         Grid.Column="2"
                                         Margin="5,0,0,0"
                                         HeightRequest="30"
                                         HorizontalOptions="End"
+                                        Source="DropRightImage.png"
                                         VerticalOptions="Center"
                                         WidthRequest="30" />
                                 </Grid>
@@ -7419,11 +7400,11 @@
                                             TextColor="#aaaaaa" />
                                     </VerticalStackLayout>
                                     <Image
-                                        x:Name="btn_sync_rimg"
                                         Grid.Column="2"
                                         Margin="5,0,0,0"
                                         HeightRequest="30"
                                         HorizontalOptions="End"
+                                        Source="DropRightImage.png"
                                         VerticalOptions="Center"
                                         WidthRequest="30" />
                                 </Grid>
@@ -7465,11 +7446,11 @@
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
                                     <Image
-                                        x:Name="btn_settings_limg"
                                         Grid.Column="0"
                                         Margin="0,0,8,0"
                                         HeightRequest="33"
                                         HorizontalOptions="Start"
+                                        Source="Setting.png"
                                         VerticalOptions="Center"
                                         WidthRequest="33" />
                                     <VerticalStackLayout
@@ -7542,11 +7523,11 @@
                                         </VerticalStackLayout>
                                     </HorizontalStackLayout>
                                     <Image
-                                        x:Name="btn_settings_rimg"
                                         Grid.Column="3"
                                         Margin="5,0,0,0"
                                         HeightRequest="30"
                                         HorizontalOptions="End"
+                                        Source="DropRightImage.png"
                                         VerticalOptions="Center"
                                         WidthRequest="30" />
                                 </Grid>
@@ -7586,10 +7567,10 @@
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
                                     <Image
-                                        x:Name="btn_dsgvo_limg"
                                         Grid.Column="0"
                                         Margin="0,0,8,0"
                                         HeightRequest="33"
+                                        Source="Logo2.png"
                                         VerticalOptions="Center"
                                         WidthRequest="33" />
                                     <VerticalStackLayout
@@ -7613,11 +7594,11 @@
                                             TextColor="#aaaaaa" />
                                     </VerticalStackLayout>
                                     <Image
-                                        x:Name="btn_dsgvo_rimg"
                                         Grid.Column="2"
                                         Margin="15,0,0,0"
                                         HeightRequest="30"
                                         HorizontalOptions="End"
+                                        Source="DropRightImage.png"
                                         VerticalOptions="Center"
                                         WidthRequest="30" />
                                 </Grid>
@@ -7657,10 +7638,10 @@
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
                                     <Image
-                                        x:Name="btn_regist_limg"
                                         Grid.Column="0"
                                         Margin="0,0,8,0"
                                         HeightRequest="33"
+                                        Source="qr.png"
                                         VerticalOptions="Center"
                                         WidthRequest="33" />
                                     <VerticalStackLayout
@@ -7685,11 +7666,11 @@
                                             TextColor="#cccccc" />
                                     </VerticalStackLayout>
                                     <Image
-                                        x:Name="btn_regist_rimg"
                                         Grid.Column="2"
                                         Margin="5,0,0,0"
                                         HeightRequest="30"
                                         HorizontalOptions="End"
+                                        Source="DropRightImage.png"
                                         VerticalOptions="Center"
                                         WidthRequest="30" />
                                 </Grid>
@@ -8689,11 +8670,11 @@
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <Image
-                        x:Name="popupContainer_container_sendlog_fail_img"
                         Grid.Column="0"
                         Margin="0,0,10,0"
                         HeightRequest="30"
                         HorizontalOptions="Start"
+                        Source="WarnTriangleYellow.png"
                         VerticalOptions="Center"
                         WidthRequest="30" />
                     <Label
@@ -9347,11 +9328,11 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Image
-                                x:Name="btn_back_notice_img_DirektPos"
                                 Grid.Column="0"
                                 Margin="0,0,0,0"
                                 HeightRequest="30"
                                 HorizontalOptions="Start"
+                                Source="DropLeftBlueDoubleImage.png"
                                 VerticalOptions="Center"
                                 WidthRequest="30" />
                             <Label
@@ -9384,6 +9365,7 @@
                         HeightRequest="34"
                         HorizontalOptions="End"
                         IsVisible="False"
+                        Source="WarnTriangleYellow.png"
                         VerticalOptions="Center"
                         WidthRequest="34" />
                     <Image
@@ -9393,6 +9375,7 @@
                         HeightRequest="30"
                         HorizontalOptions="End"
                         IsVisible="False"
+                        Source="InternalNoCustomer.png"
                         VerticalOptions="Center"
                         WidthRequest="30" />
                 </Grid>
@@ -9583,10 +9566,10 @@
                                 VerticalOptions="Center"
                                 WidthRequest="40">
                                 <Image
-                                    x:Name="btn_message_imgA_DirektPos"
                                     Margin="0,0,0,0"
                                     HeightRequest="30"
                                     HorizontalOptions="Center"
+                                    Source="Cam.png"
                                     VerticalOptions="Center"
                                     WidthRequest="30" />
                             </StackLayout>
@@ -9609,10 +9592,10 @@
                                 VerticalOptions="Center"
                                 WidthRequest="40">
                                 <Image
-                                    x:Name="btn_message_imgB_DirektPos"
                                     Margin="0,0,0,0"
                                     HeightRequest="30"
                                     HorizontalOptions="Center"
+                                    Source="Attachment.png"
                                     VerticalOptions="Center"
                                     WidthRequest="30" />
                             </StackLayout>
@@ -9686,9 +9669,9 @@
                                 Spacing="0"
                                 VerticalOptions="Center">
                                 <Image
-                                    x:Name="btn_notice_save_img_DirektPos"
                                     Margin="0,0,8,0"
                                     HeightRequest="30"
+                                    Source="CheckWhite.png"
                                     VerticalOptions="Center"
                                     WidthRequest="30" />
                                 <VerticalStackLayout
@@ -9772,11 +9755,11 @@
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <Image
-                        x:Name="popupContainer_infodialog_img"
                         Grid.Column="0"
                         Margin="0,0,10,0"
                         HeightRequest="24"
                         HorizontalOptions="Start"
+                        Source="ic_info.png"
                         VerticalOptions="Center"
                         WidthRequest="24" />
                     <Label
@@ -9870,11 +9853,11 @@
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <Image
-                        x:Name="popupContainer_quest_personpicker_img"
                         Grid.Column="0"
                         Margin="0"
                         HeightRequest="28"
                         HorizontalOptions="Start"
+                        Source="Worker.png"
                         VerticalOptions="Center"
                         WidthRequest="28" />
                     <Label
@@ -10177,11 +10160,11 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Image
-                                x:Name="btn_back_pn_img"
                                 Grid.Column="0"
                                 Margin="0,0,0,0"
                                 HeightRequest="30"
                                 HorizontalOptions="Start"
+                                Source="DropLeftBlueDoubleImage.png"
                                 VerticalOptions="Center"
                                 WidthRequest="30" />
                             <Label

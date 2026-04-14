@@ -77,10 +77,10 @@
                         VerticalOptions="Center"
                         WidthRequest="40">
                         <Image
-                            x:Name="btn_newphoto_objectvaluesbild_img"
                             Margin="0,0,0,0"
                             HeightRequest="30"
                             HorizontalOptions="Center"
+                            Source="Cam.png"
                             VerticalOptions="Center"
                             WidthRequest="30" />
                     </StackLayout>

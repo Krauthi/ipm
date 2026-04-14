@@ -215,7 +215,7 @@ namespace iPMCloud.Mobile
                     WidthRequest = 28,
                     VerticalOptions = LayoutOptions.CenterAndExpand,
                     HorizontalOptions = LayoutOptions.CenterAndExpand,
-                    Source = model.imagesBase.Pen
+                    Source = "Pen.png"
                 } }
             };
 
@@ -832,7 +832,7 @@ namespace iPMCloud.Mobile
                     Margin = new Thickness(0),
                     HeightRequest = 40,
                     BackgroundColor = Color.FromArgb("#04532d"),
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    HorizontalOptions = LayoutOptions.Fill,
                     Orientation = StackOrientation.Horizontal,
                     Children =
                     {
@@ -841,8 +841,8 @@ namespace iPMCloud.Mobile
                             Margin = new Thickness(5,0,5,0),
                             HeightRequest = 30,
                             WidthRequest = 30,
-                            Source = model.imagesBase.CheckWhite,
-                            VerticalOptions = LayoutOptions.CenterAndExpand,
+                            Source = "CheckWhite.png",
+                            VerticalOptions = LayoutOptions.Center,
                         },
                         new Label
                         {
@@ -886,7 +886,7 @@ namespace iPMCloud.Mobile
                             Margin = new Thickness(0),
                             HeightRequest = 30,
                             WidthRequest = 30,
-                            Source = AppModel.Instance.imagesBase.Flashlight
+                            Source = "Flashlight.png"
                         }
                     }
                 }
@@ -922,7 +922,7 @@ namespace iPMCloud.Mobile
                             Margin = new Thickness(0),
                             HeightRequest = 30,
                             WidthRequest = 30,
-                            Source = AppModel.Instance.imagesBase.Cam
+                            Source = "Cam.png"
                         }
                     }
                 }
@@ -1049,25 +1049,25 @@ namespace iPMCloud.Mobile
             switch (typ)
             {
                 case "Strom":
-                    return model.imagesBase.ZStrom;
+                    return "ZStrom.png";
 
                 case "Gas":
-                    return model.imagesBase.ZGas;
+                    return "ZGas.png";
 
                 case "Wasser":
-                    return model.imagesBase.ZWasser;
+                    return "ZWasser.png";
 
                 case "Öl":
-                    return model.imagesBase.ZOil;
+                    return "ZOil.png";
 
                 case "Heizung":
-                    return model.imagesBase.ZHeizung;
+                    return "ZHeizung.png";
 
                 case "Fernwärme":
-                    return model.imagesBase.ZFernwaerme;
+                    return "ZFernwaerme.png";
 
                 default:
-                    return model.imagesBase.ObjectValues;
+                    return "ObjectValues.png";
             }
         }
 

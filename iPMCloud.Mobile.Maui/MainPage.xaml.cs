@@ -31,6 +31,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using static Android.Net.Wifi.WifiEnterpriseConfig;
 //using static Android.Graphics.ColorSpace;
 //https://docs.microsoft.com/de-de/xamarin/essentials/preferences?tabs=android
 
@@ -132,6 +133,16 @@ namespace iPMCloud.Mobile
 #endif
                     AppModel.Instance.allPositionInWork = LeistungPackWSO.Load(AppModel.Instance);
                     ShowMainPage();
+
+
+                    frame_plantabA.Margin = new Thickness(0, -8, 2, 0);
+                    frame_plantabB.Margin = new Thickness(0, 0, 2, 0);
+                    frame_plantabCe.Margin = new Thickness(0, 0, 2, 0);
+                    frame_plantabC.Margin = new Thickness(0, 0, 2, 0);
+                    frame_planConA.IsVisible = true;
+                    frame_planConB.IsVisible = false;
+                    frame_planConCe.IsVisible = false;
+                    frame_planConC.IsVisible = false;
                 }
                 else
                 {
@@ -1840,7 +1851,7 @@ namespace iPMCloud.Mobile
                     HeightRequest = 30,
                     WidthRequest = 30,
                     VerticalOptions = LayoutOptions.Center,
-                    Source = AppModel.Instance.imagesBase.Time
+                    Source = "Time.png"
                 });
                 timespan_inwork.Children.Add(new Label
                 {
@@ -4207,7 +4218,7 @@ namespace iPMCloud.Mobile
             frame_planConC.IsVisible = false;
             if (sender != null)
             {
-                Load_PlanTabs((int)DateTime.Now.DayOfWeek);
+                //Load_PlanTabs((int)DateTime.Now.DayOfWeek);
             }
         }
         public void btn_PlanTabBTapped(object sender, EventArgs e)
@@ -4376,8 +4387,8 @@ namespace iPMCloud.Mobile
         {
             // !!! Hier ist der Status INVERS   - rausstellen heist hier status = 0!
             obj.pos.inout.inout = status; //obj.pos.inout.inout == 1 ? 0 : 1;
-            obj.img.Source = obj.pos.inout.inout == 0 ? AppModel.Instance.imagesBase.Muell_OutTonne : AppModel.Instance.imagesBase.Muell_In;
-            obj.img2.Source = obj.pos.inout.inout == 0 ? AppModel.Instance.imagesBase.Muell_Out : AppModel.Instance.imagesBase.Muell_InTonne;
+            obj.img.Source = obj.pos.inout.inout == 0 ? "Muell_OutTonne.png" : "Muell_In.png";
+            obj.img2.Source = obj.pos.inout.inout == 0 ? "Muell_Out.png" : "Muell_InTonne.png";
             obj.lb.Text = obj.pos.inout.inout == 0 ? "Ich werde RAUSSTELLEN" : "Ich werde REINSTELLEN";
             obj.lb.TextColor = Color.FromArgb(obj.pos.inout.inout == 0 ? "#dd0000" : "#00aa00");
 
@@ -5905,7 +5916,7 @@ namespace iPMCloud.Mobile
             overlay.IsVisible = false;
         }
 
-        public async Task btn_takePhoto(object sender, EventArgs e)  // ✅ Task statt void
+        public async Task btn_takePhotos(object sender, EventArgs e)  // ✅ Task statt void
         {
             // ✅ Limit prüfen
             if (_SelectedBemerkungForNotice.photos.Count >= 5)
@@ -5944,11 +5955,119 @@ namespace iPMCloud.Mobile
         }
 
 
-        public async Task btn_pickPhotos(object sender, EventArgs e)
+
+
+        public void btn_pickPhotosForNotice(object sender, EventArgs e)  // ✅ async Task statt async void
         {
             if (_SelectedBemerkungForNotice.photos.Count >= 5)
             {
-                await DisplayAlertAsync("Limit erreicht", "Maximal 5 Fotos erlaubt", "OK");
+                DisplayAlertAsync("Limit erreicht", "Maximal 5 Fotos erlaubt", "OK");
+                return;
+            }
+
+            notizSave_stack.IsVisible = false;
+            AppModel.Instance.UseExternHardware = true;
+
+            try
+            {
+                AppModel.Instance.UseExternHardware = true;
+
+                // ✅ Prüfen ob Kamera verfügbar
+                if (!MediaPicker.Default.IsCaptureSupported)
+                {
+                    DisplayAlertAsync("Fehler", "Kamera nicht verfügbar", "OK");
+                    return;
+                }
+
+                overlay.IsVisible = true;
+                _ = Task.Delay(1);
+                // ✅ MAUI MediaPicker verwenden
+                var photos = MediaPicker.PickPho tosAsync(new MediaPickerOptions
+                {
+                    CompressionQuality = 50,
+                    MaximumHeight = 1024,
+                    MaximumWidth = 1024,
+                    RotateImage = true,
+                    SelectionLimit = 5 - _SelectedBemerkungForNotice.photos.Count,
+                    PreserveMetaData = true,
+                }).Result;
+
+                if (photos != null && photos.Count() > 0)
+                {
+                    foreach (var photo in photos)
+                    {
+                        var reCo = new Command<BildWSO>(RemoveBildInWork);
+                        //using var stream = await photo.OpenReadAsync();  
+                        var photoResponse = PhotoResize.CreatePhotoResponseAsync(photo)
+                            .GetAwaiter().GetResult();
+
+                        // TODO: Später wieder aktivieren bzw. Testen - dauer zu lange!!
+                        //photoResponse = PhotoUtils.AddInfoToImage(
+                        //    photoResponse,
+                        //    building,
+                        //    customBuildingText);
+
+                        long bildName = DateTime.Now.Ticks;
+                        var bildWSO = new BildWSO(_SelectedBemerkungForNotice.guid)
+                        {
+                            bytes = photoResponse.imageBytes,
+                            name = bildName.ToString(),
+                            stack = BildWSO.GetAttachmentForNoticeElement(
+                                photoResponse.GetImageSourceAsThumb(),
+                                new DateTime(bildName).ToString("dd.MM.yyyy-HH:mm:ss"),
+                                reCo)
+                        };
+                        var frame = (Border)((StackLayout)(bildWSO.stack.Children[0])).Children[2];
+                        frame.GestureRecognizers.Clear();
+                        frame.GestureRecognizers.Add(new TapGestureRecognizer()
+                        {
+                            Command = reCo,
+                            CommandParameter = bildWSO
+                        });
+
+                        BildWSO.Save(AppModel.Instance, bildWSO);
+                        _SelectedBemerkungForNotice.photos.Add(bildWSO);
+                        noticePhotoStack.Children.Add(bildWSO.stack);                     
+                    }
+                    _ = Task.Delay(1);
+                    overlay.IsVisible = false;
+                }
+            }
+            catch (FeatureNotSupportedException exn)
+            {
+                // Kamera wird nicht unterstützt
+                AppModel.Logger.Error($"Fehler Kamera wird nicht unterstützt: {exn.Message}");
+            }
+            catch (PermissionException exp)
+            {
+                // Berechtigungen wurden nicht erteilt
+                AppModel.Logger.Error($"Fehler Keine Kamera-Berechtigung: {exp.Message}");
+            }
+            catch (OperationCanceledException)
+            {
+                // Benutzer hat abgebrochen
+            }
+            catch (Exception ex)
+            {
+                // Andere Fehler
+                AppModel.Logger.Error($"Fehler beim Foto aufnehmen: {ex.Message}");            
+            }
+            finally
+            {
+                CheckNoticeFalid();
+                AppModel.Instance.UseExternHardware = false;
+                overlay.IsVisible = false;  // ✅ Sicherstellen dass Overlay ausgeblendet wird                
+            }
+        }
+
+
+
+
+        public void btn_pickPhotos(object sender, EventArgs e)
+        {
+            if (_SelectedBemerkungForNotice.photos.Count >= 5)
+            {
+                DisplayAlertAsync("Limit erreicht", "Maximal 5 Fotos erlaubt", "OK");
                 return;
             }
 
@@ -5958,7 +6077,7 @@ namespace iPMCloud.Mobile
 
             try
             {
-                await PhotoPickerHelper.PickAndProcessPhotosAsync(
+                _ = PhotoPickerHelper.PickAndProcessPhotosAsync(
                     maxPhotos: 5,
                     photoList: _SelectedBemerkungForNotice.photos,
                     targetStack: noticePhotoStack,
@@ -6086,7 +6205,7 @@ namespace iPMCloud.Mobile
 
                 var tapGestureRecognizer = new TapGestureRecognizer();
                 tapGestureRecognizer.Tapped += (s, e) => { _CategoryCommand(s, e); };
-                Border sfb = Elements.GetWorkerCategoryTreeItem(item.Key, "" + item.Value.Count, AppModel.Instance.imagesBase.Tools, null);
+                Border sfb = Elements.GetWorkerCategoryTreeItem(item.Key, "" + item.Value.Count, null);
                 sfb.GestureRecognizers.Clear();
                 sfb.GestureRecognizers.Add(tapGestureRecognizer);
                 sfb.ClassId = ("##" + item.Key).ToLower();
@@ -6120,7 +6239,7 @@ namespace iPMCloud.Mobile
                     {
                         if (category == ha.kategorie)
                         {
-                            var sfbgf = Elements.GetWorkerTreeItem(ha, AppModel.Instance.imagesBase.Worker, null, _navigationCommand);
+                            var sfbgf = Elements.GetWorkerTreeItem(ha, "Worker.png", null, _navigationCommand);
                             //sfbgf.ClassId = ("bu_" + ha.firma + "," + ha.name + "," + ha.vorname + "," + ha.strasse + "," + ha.plz + "," + ha.ort + "," + ha.kategorie).ToLower();
                             sfbgf.IsVisible = true;
                             sfbgf.HorizontalOptions = LayoutOptions.Fill;
@@ -6200,7 +6319,7 @@ namespace iPMCloud.Mobile
 
                 var tapGestureRecognizer = new TapGestureRecognizer();
                 tapGestureRecognizer.Tapped += (s, e) => { _NamesCommand(s, e); };
-                Border sfb = Elements.GetWorkerNamesTreeItem(item.Value, AppModel.Instance.imagesBase.Worker, null);
+                Border sfb = Elements.GetWorkerNamesTreeItem(item.Value, "Worker.png", null);
                 sfb.GestureRecognizers.Clear();
                 sfb.GestureRecognizers.Add(tapGestureRecognizer);
                 sfb.ClassId = ("##" + (String.IsNullOrEmpty(item.Value.firma) ? item.Value.name : item.Value.firma) + ";" + item.Value.strasse + ";" + item.Value.plz + ";" + item.Value.ort + ";" + item.Value.kategorie).ToLower();
@@ -6232,7 +6351,7 @@ namespace iPMCloud.Mobile
                     {
                         if (workerid == ("" + ha.id))
                         {
-                            var sfbgf = Elements.GetWorkerDetailsTreeItem(ha, AppModel.Instance.imagesBase.Worker, null, _navigationCommand);
+                            var sfbgf = Elements.GetWorkerDetailsTreeItem(ha, "Worker.png", null, _navigationCommand);
                             sfbgf.IsVisible = true;
                             sfbgf.HorizontalOptions = LayoutOptions.Fill;
                             container.Children.Add(sfbgf);
@@ -6306,7 +6425,7 @@ namespace iPMCloud.Mobile
 
                     var tapGestureRecognizer = new TapGestureRecognizer();
                     tapGestureRecognizer.Tapped += (s, e) => { WorkerBuildingCommand(s, e); };
-                    Border sfb = Elements.GetWorkerBuildingTreeItem(item.Value, AppModel.Instance.imagesBase.Building, null);
+                    Border sfb = Elements.GetWorkerBuildingTreeItem(item.Value, "Building.png", null);
                     sfb.GestureRecognizers.Clear();
                     sfb.GestureRecognizers.Add(tapGestureRecognizer);
                     sfb.ClassId = ("bu_" + item.Value.strasse + ";" + item.Value.hsnr + ";" + item.Value.plz + ";" + item.Value.ort + ";" + item.Value.objektname + ";" + item.Value.objektnr).ToLower();
@@ -6345,7 +6464,7 @@ namespace iPMCloud.Mobile
                 {
                     AppModel.Instance.AllBuildings.Find(b => ("" + b.id) == buildingid).ArrayOfHandwerker.ForEach(ha =>
                     {
-                        var sfbgf = Elements.GetWorkerTreeItem(ha, AppModel.Instance.imagesBase.Worker, null, _navigationCommand);
+                        var sfbgf = Elements.GetWorkerTreeItem(ha, "Worker.png", null, _navigationCommand);
                         sfbgf.IsVisible = true;
                         sfbgf.HorizontalOptions = LayoutOptions.Fill;
                         container.Children.Add(sfbgf);
@@ -6789,51 +6908,7 @@ namespace iPMCloud.Mobile
                 //btn_regScanWarn_img.Source = imagesBase.AlertMessage;
 
                 frame_planConA_img_reloadx.Source = "muellInOutX" + AppModel.Instance.AppSetModel.ViewOnlyMuell + ".png";
-
-                popupContainer_quest_personpicker_img.Source = AppModel.Instance.imagesBase.Worker;
-                frame_planConA_img_down.Source = AppModel.Instance.imagesBase.DropDownImage;
-                frame_planConA_img_otherperson.Source = AppModel.Instance.imagesBase.Worker;
-                frame_planConA_img_otherperson2.Source = AppModel.Instance.imagesBase.Worker;
-
-                //Top Buttons
-                btn_objScan_limg.Source = AppModel.Instance.imagesBase.QrScan;
-                btn_objScan_limgB.Source = AppModel.Instance.imagesBase.QrScan;
-                btn_objScan_rimg.Source = AppModel.Instance.imagesBase.DropRightImage;
-                btn_objNotScan_limg.Source = AppModel.Instance.imagesBase.SearchImage;
-                btn_objNotScan_rimg.Source = AppModel.Instance.imagesBase.DropRightImage;
-                btn_mainsettings_img.Source = AppModel.Instance.imagesBase.MenuImage;
-                btn_mainmenu_back.Source = AppModel.Instance.imagesBase.XImageBoldRed;
-                btn_panelShowSelectedPos_back.Source = AppModel.Instance.imagesBase.XImageBoldRed;
-
-                //Bottom Buttons
-                btn_worker_limg.Source = AppModel.Instance.imagesBase.Worker;
-                btn_worker_rimg.Source = AppModel.Instance.imagesBase.DropRightImage;
-                btn_exitwork_limg.Source = AppModel.Instance.imagesBase.Exit;
-                btn_todos_limg.Source = AppModel.Instance.imagesBase.Todos;
-                btn_todos_rimg.Source = AppModel.Instance.imagesBase.DropRightImage;
-                btn_persontimes_limg.Source = AppModel.Instance.imagesBase.Time;
-                btn_sync_rimg.Source = AppModel.Instance.imagesBase.DropRightImage;
-                btn_regist_limg.Source = AppModel.Instance.imagesBase.QrScan;
-                btn_regist_rimg.Source = AppModel.Instance.imagesBase.DropRightImage;
-                btn_dsgvo_limg.Source = AppModel.Instance.imagesBase.Logo;
-                btn_dsgvo_rimg.Source = AppModel.Instance.imagesBase.DropRightImage;
-
-                btn_settings_limg.Source = AppModel.Instance.imagesBase.Setting;
-                btn_settings_rimg.Source = AppModel.Instance.imagesBase.DropRightImage;
-
-                // LastBuilding Buttons and init showing
-                btn_objektinfo_img.Source = AppModel.Instance.imagesBase.InfoCircle;
-
-                btn_alertmessage_img.Source = AppModel.Instance.imagesBase.WarnTriangleYellow;
-                btn_alertmessage_img2.Source = AppModel.Instance.imagesBase.WarnTriangleYellow;
-                btn_internmessage_img2.Source = AppModel.Instance.imagesBase.InternalNoCustomer;
-                //btn_alertmessage_img_DirektPos.Source = AppModel.Instance.imagesBase.WarnTriangleYellow;
-                btn_alertmessage_img2_DirektPos.Source = AppModel.Instance.imagesBase.WarnTriangleYellow;
-                btn_internmessage_img2_DirektPos.Source = AppModel.Instance.imagesBase.InternalNoCustomer;
-                btn_message_img.Source = AppModel.Instance.imagesBase.CamMessage;
-                btn_objvalues_img.Source = AppModel.Instance.imagesBase.ObjectValues;
-                btn_buildingout_img2.Source = AppModel.Instance.imagesBase.BuildingOut;
-
+                                
                 // LoginPerson and Version 
                 lb_LoginUser.Text = AppModel.Instance.Person.anrede + " " + (String.IsNullOrWhiteSpace(AppModel.Instance.Person.vorname) ? "" : (AppModel.Instance.Person.vorname.Length > 0 ? AppModel.Instance.Person.vorname.Substring(0, 1) + ". " : "")) + AppModel.Instance.Person.name;
                 lb_version.Text = "V" + AppModel.Instance.Version; //+ " (" + AppModel.Instance.Build + ")";
@@ -6855,107 +6930,7 @@ namespace iPMCloud.Mobile
                     frm_img_LoginUser.IsVisible = true;
                 }
 
-
-
-                // BuildingScan 
-                img_backBtn_inBuildingScan.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
-                btn_flashlight_img.Source = AppModel.Instance.imagesBase.Flashlight;
-                btn_regScan_limg.Source = AppModel.Instance.imagesBase.QrScan;
-                btn_flashlight_Out_img.Source = AppModel.Instance.imagesBase.Flashlight;
-                btn_regOutScan_limg.Source = AppModel.Instance.imagesBase.QrScan;
-                img_backBtn_inBuildingOutScan.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
-
-
-                // BuildingOrder 
-                img_backBtn_inBuildingOrder.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
-                img_backBtn_inBuildingOrder_category.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
-                img_backBtn_inBuildingOrder_position.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
-                img_inBuildingOrder_category_text.Source = AppModel.Instance.imagesBase.OrderFolderTools;
-                img_inBuildingOrder_categorypos_text.Source = AppModel.Instance.imagesBase.OrderFolderTools;
-                img_inBuildingOrder_position_text.Source = AppModel.Instance.imagesBase.KategorieSymbol;
-                img_inBuildingOrder_categorypos_text_Again.Source = AppModel.Instance.imagesBase.OrderFolderTools;
-                img_inBuildingOrder_position_text_Again.Source = AppModel.Instance.imagesBase.KategorieSymbol;
-                btn_buildingorder_limg.Source = AppModel.Instance.imagesBase.Work;
-                btn_buildingorder_rimg.Source = AppModel.Instance.imagesBase.DropRightImage;
-
-                //nachbuchen
-                btn_posnachbuchen_limg.Source = AppModel.Instance.imagesBase.LeistungSymbol;
-                btn_produktenachbuchen_limg.Source = AppModel.Instance.imagesBase.ProduktSymbol;
-                btn_nachbuchen_img.Source = AppModel.Instance.imagesBase.AddArrow;
-                btn_nachbuchen_rimg.Source = AppModel.Instance.imagesBase.DropRightImage;
-                btn_nachbuchen_back_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
-                btn_nachbuchen_cat_back_img.Source = AppModel.Instance.imagesBase.DropLeftWhiteDoubleImage;
-                btn_showselected_pos_img_Again.Source = AppModel.Instance.imagesBase.PosList;
-
-                // InWork
-                btn_inwork_limg.Source = AppModel.Instance.imagesBase.WorkerInProgressWarn;
-                btn_showselected_pos_img.Source = AppModel.Instance.imagesBase.PosList;
-                btn_showselected_pos_img2.Source = AppModel.Instance.imagesBase.PosList;
-                //btn_showselected_pos_img3.Source = AppModel.Instance.imagesBase.InfoImage;
-                btn_showselected_poslist_img.Source = AppModel.Instance.imagesBase.PosList;
-                btn_startselected_pos_img.Source = AppModel.Instance.imagesBase.CheckWhite;
-
-                //RunningWorks
-                btn_back_runningworks_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
-                btn_runningworks_over_img.Source = AppModel.Instance.imagesBase.CheckWhite;
-
-                //Bemerkung
-                btn_back_check_bem_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
-                btn_message_imgA_check_bem.Source = AppModel.Instance.imagesBase.Cam;
-                btn_message_imgB_check_bem.Source = AppModel.Instance.imagesBase.Attachment;
-                btn_notice_save_img_check_bem.Source = AppModel.Instance.imagesBase.CheckWhite;
-
-                btn_back_notice_img_DirektPos.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
-                btn_back_notice_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
-                btn_notice_save_img_DirektPos.Source = AppModel.Instance.imagesBase.CheckWhite;
-                btn_notice_save_img.Source = AppModel.Instance.imagesBase.CheckWhite;
-                btn_message_imgA_DirektPos.Source = AppModel.Instance.imagesBase.Cam;
-                btn_message_imgB_DirektPos.Source = AppModel.Instance.imagesBase.Attachment;
-                btn_message_imgA.Source = AppModel.Instance.imagesBase.Cam;
-                btn_message_imgB.Source = AppModel.Instance.imagesBase.Attachment;
-
-                // ObjectValues
-                btn_back_ObjectValues_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
-                btn_back_ObjectValues_edit_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
-                //objectValues_edit_img.Source = AppModel.Instance.imagesBase.Pen;
-
-
-                //CheckContainer
-                btn_back_check_del_img.Source = AppModel.Instance.imagesBase.Trash;
-                btn_back_check_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
-                btn_info_check_img.Source = AppModel.Instance.imagesBase.CheckSymbol;
-                btn_back_check_signature_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
-
-
-                //Map
-                //btn_back_map_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
-                //btn_back_map.GestureRecognizers.Clear();
-                //var tgr_back_map = new TapGestureRecognizer();
-                //tgr_back_map.Tapped += btn_MapBackTapped;
-                //btn_back_map.GestureRecognizers.Add(tgr_back_map);
-
-
-
-                btn_back_pn_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
-
-
-                //NotScan
-                btn_notscan_back_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
-                btn_notscansearch_img.Source = AppModel.Instance.imagesBase.SearchImage;
-
-                //Sendlogfile Fail
-                popupContainer_container_sendlog_fail_img.Source = AppModel.Instance.imagesBase.WarnTriangleYellow;
-
-                //ifondialog
-                popupContainer_infodialog_img.Source = AppModel.Instance.imagesBase.InfoCircle;
-
-
-                //Persontimes
                 SetAppControll();
-                // btn_persontimes_back_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage; // moved into PersonTimesPageView
-                // warn_persontimes_limg.Source = AppModel.Instance.imagesBase.InfoCircle; // moved into PersonTimesPageView
-                PersonTimesPageView.BtnPersontimesBackImg.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
-                PersonTimesPageView.WarnPersontimesLimg.Source = AppModel.Instance.imagesBase.InfoCircle;
 
                 // Jetzt beenden
                 btn_endselectedwork.GestureRecognizers.Clear();
@@ -7049,22 +7024,22 @@ namespace iPMCloud.Mobile
 
 
                 // StartPage
-                frame_plantabA.GestureRecognizers.Clear();
-                var t_frame_plantabA = new TapGestureRecognizer();
-                t_frame_plantabA.Tapped += btn_PlanTabATapped;
-                frame_plantabA.GestureRecognizers.Add(t_frame_plantabA);
-                frame_plantabB.GestureRecognizers.Clear();
-                var t_frame_plantabB = new TapGestureRecognizer();
-                t_frame_plantabB.Tapped += btn_PlanTabBTapped;
-                frame_plantabB.GestureRecognizers.Add(t_frame_plantabB);
-                frame_plantabCe.GestureRecognizers.Clear();
-                var t_frame_plantabCe = new TapGestureRecognizer();
-                t_frame_plantabCe.Tapped += btn_PlanTabCeTapped;
-                frame_plantabCe.GestureRecognizers.Add(t_frame_plantabCe);
-                frame_plantabC.GestureRecognizers.Clear();
-                var t_frame_plantabC = new TapGestureRecognizer();
-                t_frame_plantabC.Tapped += btn_PlanTabCTapped;
-                frame_plantabC.GestureRecognizers.Add(t_frame_plantabC);
+                //frame_plantabA.GestureRecognizers.Clear();
+                //var t_frame_plantabA = new TapGestureRecognizer();
+                //t_frame_plantabA.Tapped += btn_PlanTabATapped;
+                //frame_plantabA.GestureRecognizers.Add(t_frame_plantabA);
+                //frame_plantabB.GestureRecognizers.Clear();
+                //var t_frame_plantabB = new TapGestureRecognizer();
+                //t_frame_plantabB.Tapped += btn_PlanTabBTapped;
+                //frame_plantabB.GestureRecognizers.Add(t_frame_plantabB);
+                //frame_plantabCe.GestureRecognizers.Clear();
+                //var t_frame_plantabCe = new TapGestureRecognizer();
+                //t_frame_plantabCe.Tapped += btn_PlanTabCeTapped;
+                //frame_plantabCe.GestureRecognizers.Add(t_frame_plantabCe);
+                //frame_plantabC.GestureRecognizers.Clear();
+                //var t_frame_plantabC = new TapGestureRecognizer();
+                //t_frame_plantabC.Tapped += btn_PlanTabCTapped;
+                //frame_plantabC.GestureRecognizers.Add(t_frame_plantabC);
 
 
                 btn_objektinfo.GestureRecognizers.Clear();
@@ -7276,10 +7251,10 @@ namespace iPMCloud.Mobile
                 var tgr_back_inBuildingScan = new TapGestureRecognizer();
                 tgr_back_inBuildingScan.Tapped += btn_back_BuildingScanTapped;
                 btn_back_inBuildingScan.GestureRecognizers.Add(tgr_back_inBuildingScan);
-                btn_flashlight_container.GestureRecognizers.Clear();
-                var tapGestureRecognizer1 = new TapGestureRecognizer();
-                tapGestureRecognizer1.Tapped += AppModel.Instance.Scan.Btn_FlashlightTapped;
-                btn_flashlight_container.GestureRecognizers.Add(tapGestureRecognizer1);
+                //btn_flashlight_container.GestureRecognizers.Clear();
+                //var tapGestureRecognizer1 = new TapGestureRecognizer();
+                //tapGestureRecognizer1.Tapped += AppModel.Instance.Scan.Btn_FlashlightTapped;
+                //btn_flashlight_container.GestureRecognizers.Add(tapGestureRecognizer1);
 
 
                 // BuildingOrder 
@@ -7384,14 +7359,14 @@ namespace iPMCloud.Mobile
                 tgr_back_notice_save.Tapped += btn_NoticeSaveTapped;
                 btn_notice_save.GestureRecognizers.Add(tgr_back_notice_save);
 
-                btn_takePhoto_frame.GestureRecognizers.Clear();
-                var tgr_btn_takePhoto = new TapGestureRecognizer();
-                tgr_btn_takePhoto.Tapped += async (s, e) => await btn_takePhoto(s, e);
-                btn_takePhoto_frame.GestureRecognizers.Add(tgr_btn_takePhoto);
-                btn_takePhotoAttachment_frame.GestureRecognizers.Clear();
-                var tgr_btn_takePhotoAttachment = new TapGestureRecognizer();
-                tgr_btn_takePhotoAttachment.Tapped += async (s, e) => await btn_pickPhotos(s, e);
-                btn_takePhotoAttachment_frame.GestureRecognizers.Add(tgr_btn_takePhotoAttachment);
+                //btn_takePhoto_frame.GestureRecognizers.Clear();
+                //var tgr_btn_takePhoto = new TapGestureRecognizer();
+                //tgr_btn_takePhoto.Tapped += async (s, e) => await btn_takePhoto(s, e);
+                //btn_takePhoto_frame.GestureRecognizers.Add(tgr_btn_takePhoto);
+                //btn_takePhotoAttachment_frame.GestureRecognizers.Clear();
+                //var tgr_btn_takePhotoAttachment = new TapGestureRecognizer();
+                //tgr_btn_takePhotoAttachment.Tapped += async (s, e) => await btn_pickPhotos(s, e);
+                //btn_takePhotoAttachment_frame.GestureRecognizers.Add(tgr_btn_takePhotoAttachment);
 
 
                 /*btn_alertmessage_container_DirektPos.GestureRecognizers.Clear();
@@ -9013,7 +8988,7 @@ namespace iPMCloud.Mobile
                     frame_plantabA.IsVisible = false;
                     frame_plantabB.IsVisible = false;
                     frame_plantabCe.IsVisible = AppModel.Instance.AppControll.showChecks;
-                    frame_plantabC.IsVisible = true;
+                    // TODO: frame_plantabC.IsVisible = true;
                     frame_planConA.IsVisible = false;
                     frame_planConB.IsVisible = false;
                     frame_planConCe.IsVisible = false;
@@ -9031,7 +9006,7 @@ namespace iPMCloud.Mobile
                     frame_plantabA.IsVisible = true;
                     frame_plantabB.IsVisible = true;
                     frame_plantabCe.IsVisible = AppModel.Instance.AppControll.showChecks;
-                    frame_plantabC.IsVisible = true;
+                    // TODO: frame_plantabC.IsVisible = true;
 
                     frame_planConA.IsVisible = true;
                     frame_planConB.IsVisible = false;

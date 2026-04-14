@@ -78,7 +78,7 @@ namespace iPMCloud.Mobile.vo
             };
         }
 
-        public static Border GetWorkerCategoryTreeItem(string category, string count, ImageSource imageLeftSource, ICommand command)
+        public static Border GetWorkerCategoryTreeItem(string category, string count, ICommand command)
         {
             var imageL = new Image
             {
@@ -87,7 +87,7 @@ namespace iPMCloud.Mobile.vo
                 WidthRequest = 24,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.Start,
-                Source = imageLeftSource
+                Source = "Tools.png"
             };
             var lb = new Label()
             {
@@ -529,7 +529,7 @@ namespace iPMCloud.Mobile.vo
                     Margin = new Thickness(2),
                     HeightRequest = 25,
                     WidthRequest = 25,
-                    Source = AppModel.Instance.imagesBase.InfoCircle,
+                        Source = "ic_info_b.png",//AppModel._Instance.imagesBase.InfoCircle,
                     HorizontalOptions = LayoutOptions.Center,
                     VerticalOptions = LayoutOptions.Start,
                     }
@@ -555,7 +555,7 @@ namespace iPMCloud.Mobile.vo
 
 
 
-        public static Border GetCompanySelectionItem(Company c, ImageSource imageLeftSource, bool isSelected)
+        public static Border GetCompanySelectionItem(Company c, bool isSelected)
         {
             var imageL = new Image
             {
@@ -564,7 +564,7 @@ namespace iPMCloud.Mobile.vo
                 WidthRequest = 36,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.Start,
-                Source = imageLeftSource
+                Source = "Building.png"
             };
             var lb = new Label()
             {

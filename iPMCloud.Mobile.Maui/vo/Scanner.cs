@@ -105,10 +105,10 @@ namespace iPMCloud.Mobile.vo
             if (showFlashButton)
             {
                 var img = new Image();
-                img.Source = AppModel.Instance.imagesBase.Flashlight;
+                img.Source = "Flashlight.png";
                 var flashButton = new Button
                 {
-                    ImageSource = AppModel.Instance.imagesBase.Flashlight,
+                    ImageSource = "Flashlight.png",
                     Padding = 5, 
                     //Text = "🔦",
                     BackgroundColor = Color.FromRgb(20, 77, 147),

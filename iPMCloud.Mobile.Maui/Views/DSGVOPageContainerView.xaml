@@ -51,11 +51,11 @@
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <Image
-                        x:Name="btn_back_dsgvo_img"
                         Grid.Column="0"
                         Margin="0,0,0,0"
                         HeightRequest="30"
                         HorizontalOptions="Start"
+                        Source="DropLeftBlueDoubleImage.png"
                         VerticalOptions="Center"
                         WidthRequest="30" />
                     <Label

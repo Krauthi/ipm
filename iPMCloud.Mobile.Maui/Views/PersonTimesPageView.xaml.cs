@@ -18,8 +18,6 @@ namespace iPMCloud.Mobile.Views
         public VerticalStackLayout ListPersontimes => list_persontimes;
         public VerticalStackLayout StackPersontimesTop => stack_persontimes_top;
         public StackLayout StackPersontimesBottom => stack_persontimes_bottom;
-        public Image BtnPersontimesBackImg => btn_persontimes_back_img;
-        public Image WarnPersontimesLimg => warn_persontimes_limg;
         public HorizontalStackLayout BtnPersontimesBack => btn_persontimes_back;
         public StackLayout BtnPersontimeLoad => btn_persontime_load;
     }

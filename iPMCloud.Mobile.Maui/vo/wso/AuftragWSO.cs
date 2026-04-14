@@ -223,7 +223,7 @@ namespace iPMCloud.Mobile
                 WidthRequest = 32,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.Start,
-                Source = model.imagesBase.OrderFolderTools
+                Source = "OrderFolderTools.png"
             };
             var lb = new Label()
             {
@@ -349,7 +349,7 @@ namespace iPMCloud.Mobile
                 WidthRequest = 32,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.Start,
-                Source = model.imagesBase.OrderFolderTools
+                Source = "OrderFolderTools.png"
             };
             var hi = new StackLayout()
             {
@@ -368,7 +368,7 @@ namespace iPMCloud.Mobile
                 WidthRequest = 32,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.End,
-                Source = model.imagesBase.DisableRed,
+                Source = "DisableRed.png",
             };
             hi.Children.Add(imageR);
             var lb = new Label()
@@ -491,7 +491,7 @@ namespace iPMCloud.Mobile
                 WidthRequest = 18,
                 VerticalOptions = LayoutOptions.Center,
                 HorizontalOptions = LayoutOptions.Start,
-                Source = model.imagesBase.WarnTriangleYellow
+                Source = "WarnTriangleYellow.png"
             };
             var lb = new Label()
             {
@@ -556,7 +556,7 @@ namespace iPMCloud.Mobile
                         HeightRequest = 30,
                         WidthRequest = 30,
                         VerticalOptions = LayoutOptions.StartAndExpand,
-                        Source = model.imagesBase.OrderFolderTools
+                        Source = "OrderFolderTools.png"
                     },
                     new Label {
                         Text = order.GetMobileText() + " \nNr.: " + order.id + "  Typ: " + order.typ,
@@ -609,7 +609,7 @@ namespace iPMCloud.Mobile
                 WidthRequest = 32,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.Start,
-                Source = model.imagesBase.OrderFolderTools
+                Source = "OrderFolderTools.png"
             };
             var lb = new Label()
             {
@@ -800,7 +800,7 @@ namespace iPMCloud.Mobile
                 WidthRequest = 24,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.Start,
-                Source = onlyText ? model.imagesBase.TextSymbol : model.imagesBase.OrderFolderTools
+                Source = onlyText ? "TextSymbol.png" : "OrderFolderTools.png"
             };
             var lb = new Label()
             {
@@ -887,7 +887,7 @@ namespace iPMCloud.Mobile
                 WidthRequest = 24,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.Start,
-                Source = onlyText ? model.imagesBase.TextSymbol : model.imagesBase.OrderFolderTools
+                Source = onlyText ? "TextSymbol.png" : "OrderFolderTools.png"
             };
             var lb = new Label()
             {
@@ -978,7 +978,7 @@ namespace iPMCloud.Mobile
                 WidthRequest = 18,
                 VerticalOptions = LayoutOptions.Center,
                 HorizontalOptions = LayoutOptions.Start,
-                Source = model.imagesBase.WarnTriangleYellow
+                Source = "WarnTriangleYellow.png"
             };
             var lb = new Label()
             {

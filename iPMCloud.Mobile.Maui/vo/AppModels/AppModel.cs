@@ -114,8 +114,6 @@ namespace iPMCloud.Mobile.vo
 
         public Dictionary<int, Switch> allAblesegrundStack = new Dictionary<int, Switch>();
 
-        // Images Base
-        public ImagesBase imagesBase = new ImagesBase();
 
         // State for NetworkConnection avilable
 

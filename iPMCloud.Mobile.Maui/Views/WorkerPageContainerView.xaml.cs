@@ -23,10 +23,7 @@ namespace iPMCloud.Mobile.Views
         public WorkerPageContainerView()
         {
             InitializeComponent();
-            btn_workercategorysearch_img.Source = AppModel.Instance.imagesBase.Tools;
-            btn_workernamesearch_img.Source = AppModel.Instance.imagesBase.Worker;
-            btn_workerbuildingsearch_img.Source = AppModel.Instance.imagesBase.Building;
-            btn_worker_back_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
+
         }
 
         private void Entry_workersearch_TextChanged(object sender, TextChangedEventArgs e)

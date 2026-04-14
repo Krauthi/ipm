@@ -381,14 +381,14 @@ namespace iPMCloud.Mobile
             if (ants.Contains(img.ClassId))
             {
                 ants.Remove(img.ClassId);
-                img.Source = AppModel.Instance.imagesBase.No;
+                img.Source = "No.png";
                 img.Opacity = 0.5;
                 foreach (var item in frame_ants) { if (item.ClassId == img.ClassId) item.Stroke = Colors.Transparent; };
             }
             else
             {
                 ants.Add(img.ClassId);
-                img.Source = AppModel.Instance.imagesBase.Yes;
+                img.Source = "Yes.png";
                 img.Opacity = 1;
                 foreach (var item in frame_ants) { if (item.ClassId == img.ClassId) item.Stroke = Colors.White; };
             }
@@ -403,7 +403,7 @@ namespace iPMCloud.Mobile
             {
                 item.Stroke = Colors.Transparent;
                 var img = (item.Content as StackLayout).Children[1] as Image;
-                img.Source = AppModel.Instance.imagesBase.No;
+                img.Source = "No.png";
                 img.Opacity = 0.5;
             };
             CheckIsReadyAndSet_a4a();
@@ -457,7 +457,7 @@ namespace iPMCloud.Mobile
             if (ants.Contains(img.ClassId))
             {
                 ants.Remove(img.ClassId);
-                img.Source = AppModel.Instance.imagesBase.No_Round;
+                img.Source = "No_Round.png";
                 img.Opacity = 0.5;
                 wasSet = true;
                 foreach (var item in frame_ants)
@@ -468,7 +468,7 @@ namespace iPMCloud.Mobile
             else
             {
                 ants.Add(img.ClassId);
-                img.Source = AppModel.Instance.imagesBase.Yes_Round;
+                img.Source = "Yes_Round.png";
                 img.Opacity = 1;
                 foreach (var item in frame_ants)
                 {
@@ -495,7 +495,7 @@ namespace iPMCloud.Mobile
                 item.IsVisible = true;
                 item.Stroke = Colors.Transparent;
                 var img = (item.Content as StackLayout).Children[1] as Image;
-                img.Source = AppModel.Instance.imagesBase.No_Round;
+                img.Source = "No_Round.png";
                 img.Opacity = 0.5;
             };
             CheckIsReadyAndSet_a4b();
@@ -569,7 +569,7 @@ namespace iPMCloud.Mobile
 
             img_sig.IsVisible = !none;
             img_sig.Source = String.IsNullOrWhiteSpace(a7) ?
-                AppModel.Instance.imagesBase.SignPad :
+                "SignPad.png" :
                 ImageSource.FromStream(() => new MemoryStream(Convert.FromBase64String(a7)));
 
             mainFrame.BackgroundColor = isReady ? Color.FromArgb("#66cccccc") : Color.FromArgb("#99042d53");

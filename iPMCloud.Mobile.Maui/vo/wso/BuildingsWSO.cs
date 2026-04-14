@@ -194,7 +194,7 @@ namespace iPMCloud.Mobile
                 Margin = new Thickness(5, 0, 20, 0),
                 HeightRequest = 24,
                 WidthRequest = 24,
-                Source = AppModel._Instance.imagesBase.InfoCircle,
+                Source = "ic_info_b.png",//AppModel._Instance.imagesBase.InfoCircle,
                 IsVisible = !String.IsNullOrWhiteSpace(obj.notiz),
             };
             if (!String.IsNullOrWhiteSpace(obj.notiz))
@@ -297,7 +297,7 @@ namespace iPMCloud.Mobile
                 Children =
                 {
                     new Image {
-                        Source = model.imagesBase.InfoImage,
+                        Source="ic_info.png",
                         Margin = new Thickness(0, 0, 5, 0),
                         HeightRequest = 18,
                         WidthRequest = 18,

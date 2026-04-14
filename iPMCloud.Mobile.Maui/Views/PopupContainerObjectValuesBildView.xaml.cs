@@ -7,7 +7,6 @@ namespace iPMCloud.Mobile.Views
         public VerticalStackLayout PopupStack => popupContainer_objectvaluesbild_stack;
         public Image ImgPhoto => img_photo_objectvaluesbild;
         public Border BtnNewPhoto => btn_newphoto_objectvaluesbild;
-        public Image BtnNewPhotoImg => btn_newphoto_objectvaluesbild_img;
         public Editor EditorNotice => editor_notice_objectvaluesbild;
         public Label LblSendErr => btn_send_objectvaluesbild_err;
         public Border BtnCancel => btn_cancel_objectvaluesbild;
@@ -21,9 +20,6 @@ namespace iPMCloud.Mobile.Views
 
         public void SetVisible(bool visible)
         {
-            //Zählerfoto
-            BtnNewPhotoImg.Source = AppModel.Instance.imagesBase.Cam;
-
             //Flashlight in ObjektValuesEdit ...
             BtnNewPhoto.GestureRecognizers.Clear();
             var tgr_btn_newphoto_objectvaluesbild = new TapGestureRecognizer();

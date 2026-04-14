@@ -75,7 +75,7 @@ namespace iPMCloud.Mobile
                             WidthRequest = 30,
                             HorizontalOptions = LayoutOptions.CenterAndExpand,
                             VerticalOptions = LayoutOptions.CenterAndExpand,
-                            Source = AppModel.Instance.imagesBase.Trash,
+                            Source = "Trash.png",
                         }
                     }
                 }

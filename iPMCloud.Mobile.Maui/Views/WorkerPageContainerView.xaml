@@ -54,11 +54,11 @@
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <Image
-                        x:Name="btn_worker_back_img"
                         Grid.Column="0"
                         Margin="0,0,0,0"
                         HeightRequest="30"
                         HorizontalOptions="Start"
+                        Source="DropLeftBlueDoubleImage.png"
                         VerticalOptions="Center"
                         WidthRequest="30" />
                     <Label
@@ -93,10 +93,10 @@
                     VerticalOptions="Center"
                     WidthRequest="38">
                     <Image
-                        x:Name="btn_workercategorysearch_img"
                         Margin="0,4,0,0"
                         HeightRequest="30"
                         HorizontalOptions="Center"
+                        Source="Tools.png"
                         VerticalOptions="Center"
                         WidthRequest="30" />
                 </VerticalStackLayout>
@@ -119,10 +119,10 @@
                     VerticalOptions="Center"
                     WidthRequest="38">
                     <Image
-                        x:Name="btn_workernamesearch_img"
                         Margin="0,4,0,0"
                         HeightRequest="30"
                         HorizontalOptions="Center"
+                        Source="Worker.png"
                         VerticalOptions="Center"
                         WidthRequest="30" />
                 </VerticalStackLayout>
@@ -145,10 +145,10 @@
                     VerticalOptions="Center"
                     WidthRequest="38">
                     <Image
-                        x:Name="btn_workerbuildingsearch_img"
                         Margin="0,4,0,0"
                         HeightRequest="30"
                         HorizontalOptions="Center"
+                        Source="Building.png"
                         VerticalOptions="Center"
                         WidthRequest="30" />
                 </VerticalStackLayout>

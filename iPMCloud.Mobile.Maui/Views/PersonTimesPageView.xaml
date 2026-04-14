@@ -45,11 +45,11 @@
                 HorizontalOptions="Fill"
                 VerticalOptions="Fill">
                 <Image
-                    x:Name="btn_persontimes_back_img"
                     Grid.Column="0"
                     Margin="0,0,0,0"
                     HeightRequest="30"
                     HorizontalOptions="Start"
+                    Source="DropLeftBlueDoubleImage.png"
                     VerticalOptions="Center"
                     WidthRequest="30" />
                 <Label
@@ -262,10 +262,10 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Image
-                    x:Name="warn_persontimes_limg"
                     Grid.Column="0"
                     Margin="0,0,5,0"
                     HeightRequest="22"
+                    Source="ic_info.png"
                     VerticalOptions="Start"
                     WidthRequest="22" />
                 <Label

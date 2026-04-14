@@ -1,15 +1,14 @@
 ﻿using iPMCloud.Mobile.vo;
+using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui.Controls;
+using Microsoft.Maui.Devices;
+//using Microsoft.Maui.Storage;
+using Microsoft.Maui.Devices;
+using Microsoft.Maui.Storage;
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using Microsoft.Maui.Storage;
-using Microsoft.Maui.Devices;
-using Microsoft.Maui.ApplicationModel;
-using Microsoft.Maui.Controls;
-
-//using Microsoft.Maui.Storage;
-using Microsoft.Maui.Devices;
-using Microsoft.Maui.ApplicationModel;
 //https://docs.microsoft.com/de-de/xamarin/essentials/preferences?tabs=android
 
 namespace iPMCloud.Mobile
@@ -22,12 +21,10 @@ namespace iPMCloud.Mobile
 
         public StartPage()
         {
-            AppModel.Logger.Info("0011");
             isInitialize = true;
             InitializeComponent();
                 InitStartPage();
                 ShowDisconnected();
-            AppModel.Logger.Info("0012");
         }
 
 
@@ -40,43 +37,18 @@ namespace iPMCloud.Mobile
 
         public void InitStartPage(bool switchCustomer = false)
         {
-
-            AppModel.Logger.Info("0013");
-            //btn_regScan_limg.Source = AppModel.Instance.imagesBase.QrScan;
-            //btn_regScanWarn_img.Source = AppModel.Instance.imagesBase.WarnTriangleYellow;
-
-            //btn_flashlight_img.Source = AppModel.Instance.imagesBase.Flashlight;
-            //btn_flashlight_AddRegScan_img.Source = AppModel.Instance.imagesBase.Flashlight;
-
-            img_gpsinfo.Source = AppModel.Instance.imagesBase.Pin;
-
-            btn_login_img.Source = AppModel.Instance.imagesBase.Login;
-            btn_toregist_img.Source = AppModel.Instance.imagesBase.QrScan;
-            btn_toregist_more_img.Source = AppModel.Instance.imagesBase.InfoCircle;
-            btn_addRegScan_img.Source = AppModel.Instance.imagesBase.AddImageWithe;
-            btn_addRegScan2_img.Source = AppModel.Instance.imagesBase.AddImageWithe;
-            btn_ToRegScanManagement_img.Source = AppModel.Instance.imagesBase.Change;
-            img_logo.Source = AppModel.Instance.imagesBase.Logo;
-            img_backBtn_RegManagement.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
-            img_backBtn_inRegAddScan_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
-
             lb_version.Text = "V" + AppModel.Instance.Version;// + " (" + AppModel.Instance.Build + ")";
 
-            AppModel.Logger.Info("0014");
             InitStartPageHandlers();
 
-            AppModel.Logger.Info("0015");
             InitPermission();
 
-            AppModel.Logger.Info("0016");
             if (AppModel.Instance.SettingModel.IsCredentialsSettingsReady)//|| AppModel.Instance.IsTest)
             {
-                AppModel.Logger.Info("0017a");
                 ShowLoginPage(switchCustomer);
             }
             else
             {
-                AppModel.Logger.Info("0017b");
                 ShowBeforeRegScan();
                 //ShowRegScan();
             }
@@ -308,7 +280,7 @@ namespace iPMCloud.Mobile
                     {
                         tgr.Tapped += (s, e) => { CompanySelected(s, e); };
                     }
-                    Border companyView = Elements.GetCompanySelectionItem(c, AppModel.Instance.imagesBase.Building, isSelected);
+                    Border companyView = Elements.GetCompanySelectionItem(c, isSelected);
                     companyView.GestureRecognizers.Clear();
                     companyView.GestureRecognizers.Add(tgr);
                     companyView.ClassId = c.CustomerNumber;

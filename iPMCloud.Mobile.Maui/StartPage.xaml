@@ -293,6 +293,7 @@
                                 Margin="0"
                                 HeightRequest="17"
                                 HorizontalOptions="Center"
+                                Source="ic_info_b.png"
                                 VerticalOptions="Center"
                                 WidthRequest="17" />
                             <Label
@@ -344,10 +345,10 @@
                             VerticalOptions="Center">
 
                             <Image
-                                x:Name="btn_toregist_img"
                                 Margin="0"
                                 HeightRequest="34"
                                 HorizontalOptions="Center"
+                                Source="qr.png"
                                 VerticalOptions="Center"
                                 WidthRequest="34" />
 
@@ -488,12 +489,12 @@
                     VerticalOptions="Center" />
 
                 <Image
-                    x:Name="img_logo"
                     Grid.Row="0"
                     Grid.Column="1"
                     Margin="0,2,0,1"
                     HeightRequest="37"
-                    HorizontalOptions="End" />
+                    HorizontalOptions="End"
+                    Source="Logo2.png" />
             </Grid>
             <BoxView
                 Grid.Row="1"
@@ -556,9 +557,9 @@
                             Spacing="0"
                             VerticalOptions="Center">
                             <Image
-                                x:Name="btn_addRegScan_img"
                                 Margin="0,0,8,0"
                                 HeightRequest="26"
+                                Source="AddImageWithe.png"
                                 VerticalOptions="Center"
                                 WidthRequest="26" />
                             <VerticalStackLayout
@@ -611,9 +612,9 @@
                             Spacing="0"
                             VerticalOptions="Center">
                             <Image
-                                x:Name="btn_ToRegScanManagement_img"
                                 Margin="0,2,8,0"
                                 HeightRequest="30"
+                                Source="Change.png"
                                 VerticalOptions="Center"
                                 WidthRequest="30" />
                             <VerticalStackLayout
@@ -767,10 +768,10 @@
                             Spacing="10"
                             VerticalOptions="Center">
                             <Image
-                                x:Name="btn_login_img"
                                 Margin="0"
                                 HeightRequest="24"
                                 HorizontalOptions="Center"
+                                Source="Login.png"
                                 VerticalOptions="Center"
                                 WidthRequest="24" />
                             <Label
@@ -865,10 +866,10 @@
                         Spacing="0"
                         VerticalOptions="Center">
                         <Image
-                            x:Name="img_backBtn_RegManagement"
                             Margin="0,0,0,0"
                             HeightRequest="30"
                             HorizontalOptions="Start"
+                            Source="DropLeftBlueDoubleImage.png"
                             VerticalOptions="Center"
                             WidthRequest="30" />
                         <Label
@@ -951,9 +952,9 @@
                                 Spacing="0"
                                 VerticalOptions="Center">
                                 <Image
-                                    x:Name="btn_addRegScan2_img"
                                     Margin="0,0,8,0"
                                     HeightRequest="30"
+                                    Source="AddImageWithe.png"
                                     VerticalOptions="Center"
                                     WidthRequest="30" />
                                 <VerticalStackLayout
@@ -1052,10 +1053,10 @@
                         Spacing="0"
                         VerticalOptions="Center">
                         <Image
-                            x:Name="img_backBtn_inRegAddScan_img"
                             Margin="0,0,10,0"
                             HeightRequest="26"
                             HorizontalOptions="Start"
+                            Source="DropLeftBlueDoubleImage.png"
                             VerticalOptions="Center"
                             WidthRequest="26" />
                         <Label
@@ -1148,10 +1149,10 @@
                         Spacing="0"
                         VerticalOptions="Center">
                         <Image
-                            x:Name="img_gpsinfo"
                             Margin="0,0,10,0"
                             HeightRequest="36"
                             HorizontalOptions="Center"
+                            Source="Pin.png"
                             VerticalOptions="Center"
                             WidthRequest="36" />
                         <Label

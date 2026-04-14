@@ -11,9 +11,7 @@ namespace iPMCloud.Mobile.Views
 
 
         public void SetVisible(bool visible)
-        {
-            btn_back_dsgvo_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
-            
+        {            
             btn_back_dsgvo.GestureRecognizers.Clear();
             var tgr_back_dsgvo = new TapGestureRecognizer();
             tgr_back_dsgvo.Tapped += AppModel.Instance.MainPage.btn_DSGVOBackTapped;

@@ -212,7 +212,7 @@ namespace iPMCloud.Mobile
                     HorizontalOptions = LayoutOptions.Fill,
                     Children = {
                         new Image {
-                            Source = p.haswork == 1 ? AppModel.Instance.imagesBase.CheckWhite : AppModel.Instance.imagesBase.Pin,
+                            Source = p.haswork == 1 ? "CheckWhite.png" : "gpson.png",
                             HeightRequest = 28,
                             WidthRequest = 28,
                             VerticalOptions = LayoutOptions.Center,
@@ -247,7 +247,7 @@ namespace iPMCloud.Mobile
                     HorizontalOptions = LayoutOptions.Fill,
                     Children = {
                         new Image {
-                            Source = AppModel._Instance.imagesBase.InfoCircle,
+                        Source = "ic_info_b.png",//AppModel._Instance.imagesBase.InfoCircle,
                             HeightRequest = 26,
                             WidthRequest = 26,
                             VerticalOptions = LayoutOptions.Center,
@@ -532,7 +532,7 @@ namespace iPMCloud.Mobile
             var b = AppModel.Instance.AllBuildings.Find(o => o.id == p.objektid);
             Image imgPin = new Image
             {
-                Source = p.haswork == 1 ? AppModel.Instance.imagesBase.CheckWhite : AppModel.Instance.imagesBase.Pin,
+                Source = p.haswork == 1 ? "CheckWhite.png" : "gpson.png",
                 Margin = new Thickness(5, 0, 5, 0),
                 HeightRequest = p.haswork == 1 ? 16 : 22,
                 WidthRequest = p.haswork == 1 ? 16 : 22,
@@ -554,7 +554,7 @@ namespace iPMCloud.Mobile
                 Margin = new Thickness(5, 0, 5, 0),
                 HeightRequest = 22,
                 WidthRequest = 22,
-                Source = AppModel._Instance.imagesBase.InfoCircle,
+                Source = "ic_info_b.png",//AppModel._Instance.imagesBase.InfoCircle,
                 IsVisible = !String.IsNullOrWhiteSpace(b.notiz),
             };
             if (!String.IsNullOrWhiteSpace(b.notiz))
@@ -916,7 +916,7 @@ namespace iPMCloud.Mobile
                     WidthRequest = 15,
                     VerticalOptions = LayoutOptions.Start,
                     HorizontalOptions = LayoutOptions.Start,
-                    Source = AppModel.Instance.imagesBase.OrderFolderTools
+                    Source = "OrderFolderTools.png"
                 };
                 var lbOrder = new Label()
                 {
@@ -949,11 +949,11 @@ namespace iPMCloud.Mobile
                         WidthRequest = 16,
                         VerticalOptions = LayoutOptions.Start,
                         HorizontalOptions = LayoutOptions.Start,
-                        Source = (c.art == "Leistung" ? AppModel.Instance.imagesBase.LeistungSymbol :
-                                    (c.art == "Produkt" ? AppModel.Instance.imagesBase.ProduktSymbol :
-                                        (c.art == "Texte" ? AppModel.Instance.imagesBase.TextSymbol :
-                                        (c.art == "Check" ? AppModel.Instance.imagesBase.CheckWhite :
-                                            AppModel.Instance.imagesBase.Quest
+                        Source = (c.art == "Leistung" ? "LeistungSymbol.png" :
+                                    (c.art == "Produkt" ? "ProduktSymbol.png" :
+                                        (c.art == "Texte" ? "TextSymbol.png" :
+                                        (c.art == "Check" ? "CheckWhite.png" :
+                                            "Quest.png"
                                     ))))
                     };
                     var imageLCat = new Image
@@ -963,11 +963,11 @@ namespace iPMCloud.Mobile
                         WidthRequest = 16,
                         VerticalOptions = LayoutOptions.Start,
                         HorizontalOptions = LayoutOptions.Start,
-                        Source = (c.art == "Leistung" ? AppModel.Instance.imagesBase.KLSymbol :
-                            (c.art == "Produkt" ? AppModel.Instance.imagesBase.KPSymbol :
-                                (c.art == "Texte" ? AppModel.Instance.imagesBase.KTSymbol :
-                                (c.art == "Check" ? AppModel.Instance.imagesBase.KCSymbol :
-                                    AppModel.Instance.imagesBase.Quest))))
+                        Source = (c.art == "Leistung" ? "KLSymbol.png" :
+                            (c.art == "Produkt" ? "KPSymbol.png" :
+                                (c.art == "Texte" ? "KTSymbol.png" :
+                                (c.art == "Check" ? "KCSymbol.png" :
+                                    "Quest.png"))))
                     };
                     var lbCat = new Label()
                     {
@@ -1096,7 +1096,7 @@ namespace iPMCloud.Mobile
                         WidthRequest = 32,
                         VerticalOptions = LayoutOptions.Center,
                         HorizontalOptions = LayoutOptions.Center,
-                        Source = AppModel.Instance.imagesBase.CamMessageWarn,
+                        Source = "CamMessageWarn.png",
                     }
 
                 }
@@ -1466,7 +1466,7 @@ namespace iPMCloud.Mobile
                         WidthRequest = 32,
                         VerticalOptions = LayoutOptions.Center,
                         HorizontalOptions = LayoutOptions.Center,
-                        Source = AppModel.Instance.imagesBase.CamMessageWarn,
+                        Source = "CamMessageWarn.png",
                     }
 
                 }
@@ -1672,7 +1672,7 @@ namespace iPMCloud.Mobile
             var b = AppModel.Instance.AllBuildings.Find(o => o.id == p.objektid);
             Image imgPin = new Image
             {
-                Source = AppModel.Instance.imagesBase.Pin,
+                Source = "Pin.png",
                 Margin = new Thickness(5, 0, 5, 0),
                 HeightRequest = 22,
                 WidthRequest = 22,
@@ -1703,7 +1703,7 @@ namespace iPMCloud.Mobile
                 Margin = new Thickness(5, 0, 5, 0),
                 HeightRequest = 22,
                 WidthRequest = 22,
-                Source = AppModel._Instance.imagesBase.InfoCircle,
+                Source = "ic_info_b.png",//AppModel._Instance.imagesBase.InfoCircle,
                 IsVisible = obj != null && !String.IsNullOrWhiteSpace(obj.notiz),
             };
             if (obj != null && !String.IsNullOrWhiteSpace(obj.notiz))
@@ -1799,7 +1799,7 @@ namespace iPMCloud.Mobile
                         WidthRequest = 15,
                         VerticalOptions = LayoutOptions.Start,
                         HorizontalOptions = LayoutOptions.Start,
-                        Source = AppModel.Instance.imagesBase.OrderFolderTools
+                        Source = "OrderFolderTools.png"
                     };
                     var lbOrder = new Label()
                     {
@@ -1832,11 +1832,11 @@ namespace iPMCloud.Mobile
                             WidthRequest = 16,
                             VerticalOptions = LayoutOptions.Start,
                             HorizontalOptions = LayoutOptions.Start,
-                            Source = (c.art == "Leistung" ? AppModel.Instance.imagesBase.LeistungSymbol :
-                                        (c.art == "Produkt" ? AppModel.Instance.imagesBase.ProduktSymbol :
-                                            (c.art == "Texte" ? AppModel.Instance.imagesBase.TextSymbol :
-                                            (c.art == "Check" ? AppModel.Instance.imagesBase.CheckWhite :
-                                                AppModel.Instance.imagesBase.Quest
+                            Source = (c.art == "Leistung" ? "LeistungSymbol.png" :
+                                        (c.art == "Produkt" ? "ProduktSymbol.png" :
+                                            (c.art == "Texte" ? "TextSymbol.png" :
+                                            (c.art == "Check" ? "CheckWhite.png" :
+                                                "Quest.png"
                                      ))))
                         };
                         var imageLCat = new Image
@@ -1846,11 +1846,11 @@ namespace iPMCloud.Mobile
                             WidthRequest = 16,
                             VerticalOptions = LayoutOptions.Start,
                             HorizontalOptions = LayoutOptions.Start,
-                            Source = (c.art == "Leistung" ? AppModel.Instance.imagesBase.KLSymbol :
-                              (c.art == "Produkt" ? AppModel.Instance.imagesBase.KPSymbol :
-                                  (c.art == "Texte" ? AppModel.Instance.imagesBase.KTSymbol :
-                                  (c.art == "Check" ? AppModel.Instance.imagesBase.KCSymbol :
-                                      AppModel.Instance.imagesBase.Quest))))
+                            Source = (c.art == "Leistung" ? "KLSymbol.png" :
+                              (c.art == "Produkt" ? "KPSymbol.png" :
+                                  (c.art == "Texte" ? "KTSymbol.png" :
+                                  (c.art == "Check" ? "KCSymbol.png" :
+                                      "Quest.png"))))
                         };
                         var lbCat = new Label()
                         {
@@ -1923,7 +1923,7 @@ namespace iPMCloud.Mobile
             var b = AppModel.Instance.AllBuildings.Find(o => o.id == p.objektid);
             Image imgPin = new Image
             {
-                Source = AppModel.Instance.imagesBase.Pin,
+                Source = "Pin.png",
                 Margin = new Thickness(5, 0, 5, 0),
                 HeightRequest = p.haswork == 1 ? 16 : 22,
                 WidthRequest = p.haswork == 1 ? 16 : 22,
@@ -1955,7 +1955,7 @@ namespace iPMCloud.Mobile
                 Margin = new Thickness(5, 0, 5, 0),
                 HeightRequest = 22,
                 WidthRequest = 22,
-                Source = AppModel._Instance.imagesBase.InfoCircle,
+                Source = "ic_info_b.png",//AppModel._Instance.imagesBase.InfoCircle,
                 IsVisible = b != null && !String.IsNullOrWhiteSpace(b.notiz),
             };
             if (b != null && !String.IsNullOrWhiteSpace(b.notiz))
@@ -2047,7 +2047,7 @@ namespace iPMCloud.Mobile
             var b = AppModel.Instance.AllBuildings.Find(o => o.id == p.objektid);
             Image imgPin = new Image
             {
-                Source = p.haswork == 1 ? AppModel.Instance.imagesBase.CheckWhite : AppModel.Instance.imagesBase.Pin,
+                Source = p.haswork == 1 ? "CheckWhite.png" : "gpson.png",
                 Margin = new Thickness(5, 0, 5, 0),
                 HeightRequest = p.haswork == 1 ? 16 : 22,
                 WidthRequest = p.haswork == 1 ? 16 : 22,

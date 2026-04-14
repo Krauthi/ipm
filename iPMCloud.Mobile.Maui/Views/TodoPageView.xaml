@@ -70,11 +70,11 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <Image
-                            x:Name="btn_todo_back_img"
                             Grid.Column="0"
                             Margin="0,0,0,0"
                             HeightRequest="30"
                             HorizontalOptions="Start"
+                            Source="DropLeftBlueDoubleImage.png"
                             VerticalOptions="Center"
                             WidthRequest="30" />
                         <Label
@@ -162,17 +162,17 @@
                         Spacing="0"
                         VerticalOptions="Center">
                         <Image
-                            x:Name="btn_todo_inout2_img"
                             Margin="5,0,0,0"
                             HeightRequest="30"
                             HorizontalOptions="Center"
+                            Source="Muell_Sign.png"
                             VerticalOptions="Center"
                             WidthRequest="30" />
                         <Image
-                            x:Name="btn_todo_inout_img"
                             Margin="1,0,8,0"
                             HeightRequest="30"
                             HorizontalOptions="Center"
+                            Source="Muell_Out.png"
                             VerticalOptions="Center"
                             WidthRequest="30" />
                     </StackLayout>
@@ -254,10 +254,10 @@
                     Spacing="0"
                     VerticalOptions="Fill">
                     <Image
-                        x:Name="btn_todosearch_img"
                         Margin="0,5,0,0"
                         HeightRequest="30"
                         HorizontalOptions="Center"
+                        Source="SearchImage.png"
                         VerticalOptions="Center"
                         WidthRequest="30" />
                 </StackLayout>

@@ -11,25 +11,6 @@ namespace iPMCloud.Mobile.Views
         {
             InitializeComponent();
 
-            //Todo
-
-            if (btn_todo_back_img.Source == null || btn_todo_back_img.Source.IsEmpty)
-            {
-                btn_todo_back_img.Source = AppModel.Instance.imagesBase.DropLeftBlueDoubleImage;
-            }
-            if (btn_todosearch_img.Source == null || btn_todosearch_img.Source.IsEmpty)
-            {
-                btn_todosearch_img.Source = AppModel.Instance.imagesBase.SearchImage;
-            }
-            if (btn_todo_inout2_img.Source == null || btn_todo_inout2_img.Source.IsEmpty)
-            {
-                btn_todo_inout2_img.Source = AppModel.Instance.imagesBase.Muell_Sign;
-            }
-            if (btn_todo_inout_img.Source == null || btn_todo_inout_img.Source.IsEmpty)
-            {
-                btn_todo_inout_img.Source = AppModel.Instance.imagesBase.Muell_Out;
-            }
-
 
             if (btn_todo_all.GestureRecognizers == null || btn_todo_all.GestureRecognizers.Count == 0)
             {
@@ -306,7 +287,7 @@ namespace iPMCloud.Mobile.Views
                             WidthRequest = 32,
                             VerticalOptions = LayoutOptions.Center,
                             HorizontalOptions = LayoutOptions.Start,
-                            Source = model.imagesBase.Building
+                            Source = "Building.png"
                         },
                         new Label {
                         Text = pos.objekt.plz + " " + pos.objekt.ort + "\n" + pos.objekt.strasse + " " + pos.objekt.hsnr,
@@ -421,7 +402,7 @@ namespace iPMCloud.Mobile.Views
                 WidthRequest = 32,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.EndAndExpand,
-                Source = pos.muell == 1 ? (pos.inout.inout == 1 ? model.imagesBase.Muell_Out : model.imagesBase.Muell_In) : null,
+                Source = pos.muell == 1 ? (pos.inout.inout == 1 ? "Muell_Out.png" : "Muell_In.png") : null,
             };
             hmuell.Children.Add(imageMuellSign);
             var v = new StackLayout()
@@ -444,7 +425,7 @@ namespace iPMCloud.Mobile.Views
                 WidthRequest = 24,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.Start,
-                Source = model.imagesBase.Muell_Sign
+                Source = "Muell_Sign.png"
             });
             h.Children.Add(v);
 
@@ -481,7 +462,7 @@ namespace iPMCloud.Mobile.Views
 
             Image imgPin = new Image
             {
-                Source = AppModel.Instance.imagesBase.Pin,
+                Source = "Pin.png",
                 Margin = new Thickness(10, 0, 5, 0),
                 HeightRequest = 24,
                 WidthRequest = 24,
@@ -502,7 +483,7 @@ namespace iPMCloud.Mobile.Views
                 Margin = new Thickness(5, 0, 5, 0),
                 HeightRequest = 24,
                 WidthRequest = 24,
-                Source = AppModel._Instance.imagesBase.InfoCircle,
+                Source = "ic_info_b.png",//AppModel._Instance.imagesBase.InfoCircle,
                 IsVisible = !String.IsNullOrWhiteSpace(obj.notiz),
             };
             if (!String.IsNullOrWhiteSpace(obj.notiz))
@@ -773,7 +754,7 @@ namespace iPMCloud.Mobile.Views
                     WidthRequest = 32,
                     VerticalOptions = LayoutOptions.Start,
                     HorizontalOptions = LayoutOptions.End,
-                    Source = model.imagesBase.Muell_Sign,
+                    Source = "Muell_Sign.png",
                 };
                 var imageMuellSign = new Image
                 {
@@ -782,7 +763,7 @@ namespace iPMCloud.Mobile.Views
                     WidthRequest = 32,
                     VerticalOptions = LayoutOptions.Start,
                     HorizontalOptions = LayoutOptions.End,
-                    Source = pos.muell == 1 ? (pos.inout.inout == 1 ? model.imagesBase.Muell_OutTonne : model.imagesBase.Muell_InTonne) : null,
+                    Source = pos.muell == 1 ? (pos.inout.inout == 1 ? "Muell_OutTonne.png" : "Muell_InTonne.png") : null,
                 };
                 hmuell.Children.Add(imageMuellSign);
                 hmuell.Children.Add(imageMuellSign2);
@@ -812,7 +793,7 @@ namespace iPMCloud.Mobile.Views
                 WidthRequest = 18,
                 VerticalOptions = LayoutOptions.Center,
                 HorizontalOptions = LayoutOptions.Start,
-                Source = AppModel.Instance.imagesBase.WarnTriangleYellow,
+                Source = "WarnTriangleYellow.png",
             };
             var lb = new Label()
             {
@@ -848,7 +829,7 @@ namespace iPMCloud.Mobile.Views
                 WidthRequest = 24,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.Start,
-                Source = model.imagesBase.OrderFolderTools
+                Source = "OrderFolderTools.png"
             };
             var lb = new Label()
             {
@@ -1002,11 +983,11 @@ namespace iPMCloud.Mobile.Views
                 WidthRequest = 24,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.Start,
-                Source = (cat.art == "Leistung" ? model.imagesBase.KLSymbol :
-                            (cat.art == "Produkt" ? model.imagesBase.KPSymbol :
-                                (cat.art == "Texte" ? model.imagesBase.KTSymbol :
-                                (cat.art == "Check" ? model.imagesBase.KCSymbol :
-                                    model.imagesBase.Quest))))
+                Source = (cat.art == "Leistung" ? "KLSymbol.png" :
+                            (cat.art == "Produkt" ? "KPSymbol.png" :
+                                (cat.art == "Texte" ? "KTSymbol.png" :
+                                (cat.art == "Check" ? "KCSymbol.png" :
+                                    "Quest.png"))))
             };
             var lb = new Label()
             {

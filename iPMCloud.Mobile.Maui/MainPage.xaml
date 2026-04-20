@@ -2953,57 +2953,37 @@
                         <HorizontalStackLayout
                             x:Name="btn_showselected_pos2"
                             Margin="0"
-                            Padding="2,2,10,2"
+                            Padding="2,2,10,3"
                             BackgroundColor="#1f74ad"
                             HeightRequest="40"
                             HorizontalOptions="Fill">
-                            <HorizontalStackLayout
-                                Margin="0,0,0,0"
-                                Padding="0"
+                            <Image
+                                Margin="0,0,8,0"
                                 HeightRequest="30"
-                                HorizontalOptions="Fill"
-                                Spacing="0"
-                                VerticalOptions="Center">
-                                <Image
-                                    Margin="0,0,8,0"
-                                    HeightRequest="30"
-                                    Source="PosList.png"
-                                    VerticalOptions="Center"
-                                    WidthRequest="30" />
-                                <VerticalStackLayout
-                                    Margin="0,-3,10,0"
-                                    Padding="0"
-                                    Spacing="0"
-                                    VerticalOptions="Center">
-                                    <Label
-                                        Margin="0"
-                                        Padding="0"
-                                        FontSize="16"
-                                        Text="Auswahl ansehen"
-                                        TextColor="#ffffff" />
-                                    <Label
-                                        Margin="0,-2,0,0"
-                                        Padding="0"
-                                        FontSize="8"
-                                        Text="Ausgewählte Arbeiten/Produkte"
-                                        TextColor="#ffffff" />
-                                </VerticalStackLayout>
-                            </HorizontalStackLayout>
+                                Source="PosList.png"
+                                VerticalOptions="Center"
+                                WidthRequest="30" />
+                            <Label
+                                Margin="0"
+                                Padding="0"
+                                FontSize="16"
+                                Text="Auswahl ansehen"
+                                TextColor="#ffffff"
+                                VerticalOptions="Center" />
                         </HorizontalStackLayout>
                     </Border>
                     <Label
                         x:Name="lb_PosSelectionType_text2"
                         Grid.Column="1"
-                        Margin="0"
+                        Margin="10,0,0,0"
                         Padding="0"
-                        FontSize="14"
+                        FontSize="13"
                         HorizontalOptions="End"
                         HorizontalTextAlignment="End"
                         LineBreakMode="WordWrap"
                         Text=""
                         TextColor="#1f74ad"
-                        VerticalOptions="Center"
-                        WidthRequest="155" />
+                        VerticalOptions="Center" />
                 </Grid>
             </VerticalStackLayout>
 
@@ -3493,8 +3473,8 @@
                     ColumnSpacing="0"
                     HorizontalOptions="Fill">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <Border
                         Grid.Column="0"
@@ -3502,61 +3482,47 @@
                         Padding="1"
                         BackgroundColor="#0f649d"
                         HorizontalOptions="Start">
-                        <StackLayout
+                        <HorizontalStackLayout
                             x:Name="btn_showselected_pos_Again"
                             Margin="0"
-                            Padding="2,2,10,2"
+                            Padding="2,2,10,3"
                             BackgroundColor="#1f74ad"
                             HeightRequest="40"
                             HorizontalOptions="Fill">
-                            <HorizontalStackLayout
-                                Margin="0,0,0,0"
-                                Padding="0"
+                            <Image
+                                Margin="0,0,8,0"
                                 HeightRequest="30"
-                                HorizontalOptions="Fill"
-                                Spacing="0"
-                                VerticalOptions="Center">
-                                <Image
-                                    Margin="0,0,8,0"
-                                    HeightRequest="30"
-                                    Source="PosList.png"
-                                    VerticalOptions="Center"
-                                    WidthRequest="30" />
-                                <VerticalStackLayout
-                                    Margin="0,-3,10,0"
-                                    Padding="0"
-                                    Spacing="0"
-                                    VerticalOptions="Center">
-                                    <Label
-                                        Margin="0"
-                                        Padding="0"
-                                        FontSize="16"
-                                        Text="Auswahl ansehen"
-                                        TextColor="#ffffff" />
-                                    <Label
-                                        Margin="0,-2,0,0"
-                                        Padding="0"
-                                        FontSize="8"
-                                        Text="Ausgewählte Arbeiten/Produkte"
-                                        TextColor="#ffffff" />
-                                </VerticalStackLayout>
-                            </HorizontalStackLayout>
-                        </StackLayout>
+                                Source="PosList.png"
+                                VerticalOptions="Center"
+                                WidthRequest="30" />
+                            <Label
+                                Margin="10,0,0,0"
+                                Padding="0"
+                                FontSize="16"
+                                Text="Auswahl ansehen"
+                                TextColor="#ffffff"
+                                VerticalOptions="Center" />
+                        </HorizontalStackLayout>
                     </Border>
+                    <VerticalStackLayout
+                        Grid.Column="1"
+                        Padding="0"
+                        HorizontalOptions="Start"
+                        Spacing="0"
+                        VerticalOptions="Center">
                     <Label
                         x:Name="lb_PosSelectionType_text_Again"
-                        Grid.Column="1"
-                        Margin="0"
+                        Margin="10,0,0,0"
                         Padding="0"
-                        FontSize="14"
-                        HorizontalOptions="End"
-                        HorizontalTextAlignment="End"
+                        FontSize="13"
+                            HorizontalOptions="Start"
                         LineBreakMode="WordWrap"
                         Text=""
                         TextColor="#1f74ad"
-                        VerticalOptions="Center"
-                        WidthRequest="155" />
+                        VerticalOptions="Center" />
+                    </VerticalStackLayout>
                 </Grid>
+
             </VerticalStackLayout>
 
 
@@ -4574,7 +4540,7 @@
 
                 <ScrollView
                     Grid.Row="6"
-                    Margin="0" 
+                    Margin="0"
                     Padding="0"
                     HorizontalOptions="Fill"
                     VerticalOptions="Fill">
@@ -4618,70 +4584,62 @@
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="End" />
-                <HorizontalStackLayout
+                <Grid
                     Margin="0"
                     Padding="0"
                     HorizontalOptions="Fill"
-                    Spacing="0">
+                    ColumnSpacing="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
                     <Border
+                            x:Name="btn_showselected_pos"
+                        Grid.Column="0"
                         Margin="5"
                         Padding="1"
                         BackgroundColor="#0f649d"
                         HorizontalOptions="Start">
-                        <StackLayout
-                            x:Name="btn_showselected_pos"
+                        <HorizontalStackLayout
                             Margin="0"
-                            Padding="2,2,10,2"
+                            Padding="2,2,10,3"
                             BackgroundColor="#1f74ad"
                             HeightRequest="40"
                             HorizontalOptions="Fill">
-                            <HorizontalStackLayout
-                                Margin="0,0,0,0"
-                                Padding="0"
+                            <Image
+                                Margin="0,0,8,0"
                                 HeightRequest="30"
-                                HorizontalOptions="Fill"
-                                Spacing="0"
-                                VerticalOptions="Center">
-                                <Image
-                                    Margin="0,0,8,0"
-                                    HeightRequest="30"
-                                    Source="PosList.png"
-                                    VerticalOptions="Center"
-                                    WidthRequest="30" />
-                                <VerticalStackLayout
-                                    Margin="0,-3,10,0"
-                                    Padding="0"
-                                    Spacing="0"
-                                    VerticalOptions="Center">
-                                    <Label
-                                        Margin="0"
-                                        Padding="0"
-                                        FontSize="16"
-                                        Text="Auswahl ansehen"
-                                        TextColor="#ffffff" />
-                                    <Label
-                                        Margin="0,-2,0,0"
-                                        Padding="0"
-                                        FontSize="8"
-                                        Text="Ausgewählte Arbeiten/Produkte"
-                                        TextColor="#ffffff" />
-                                </VerticalStackLayout>
-                            </HorizontalStackLayout>
-                        </StackLayout>
+                                Source="PosList.png"
+                                VerticalOptions="Center"
+                                WidthRequest="30" />
+                            <Label
+                                Margin="0"
+                                Padding="0"
+                                FontSize="16"
+                                Text="Auswahl ansehen"
+                                TextColor="#ffffff"
+                                VerticalOptions="Center" />
+                        </HorizontalStackLayout>
                     </Border>
-                    <Label
-                        x:Name="lb_PosSelectionType_text"
-                        Margin="0"
+                    <VerticalStackLayout
+                        Grid.Column="1"
                         Padding="0"
-                        FontSize="14"
-                        HorizontalOptions="End"
-                        HorizontalTextAlignment="End"
-                        LineBreakMode="WordWrap"
-                        Text=""
-                        TextColor="#1f74ad"
-                        VerticalOptions="Center"
-                        WidthRequest="155" />
-                </HorizontalStackLayout>
+                        HorizontalOptions="Start"
+                        Spacing="0"
+                        VerticalOptions="Center">
+                        <Label
+                            x:Name="lb_PosSelectionType_text"
+                            Margin="10,0,0,0"
+                            Padding="0"
+                            FontSize="13"
+                            HorizontalOptions="Start"
+                            HorizontalTextAlignment="Start"
+                            LineBreakMode="WordWrap"
+                            Text=""
+                            TextColor="#1f74ad"
+                            VerticalOptions="Center" />
+                    </VerticalStackLayout>
+                </Grid>
             </VerticalStackLayout>
 
 
@@ -6901,7 +6859,7 @@
                         RowSpacing="0"
                         VerticalOptions="Fill">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="54" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
                             <RowDefinition Height="Auto" />
@@ -6912,7 +6870,7 @@
                             Margin="0"
                             Padding="10,10,10,10"
                             ColumnSpacing="0"
-                            HeightRequest="48"
+                            HeightRequest="54"
                             HorizontalOptions="Fill">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
@@ -6986,17 +6944,12 @@
                             Padding="1"
                             BackgroundColor="#0f649d"
                             HorizontalOptions="Start">
-                            <StackLayout
+                                <HorizontalStackLayout
                                 x:Name="btn_startselected_pos"
-                                Margin="0"
+                                    Margin="0,0,0,0"
                                 Padding="2,2,10,2"
                                 BackgroundColor="#1f74ad"
                                 HeightRequest="40"
-                                HorizontalOptions="Fill">
-                                <HorizontalStackLayout
-                                    Margin="0,0,0,0"
-                                    Padding="0"
-                                    HeightRequest="26"
                                     HorizontalOptions="Fill"
                                     Spacing="0"
                                     VerticalOptions="Center">
@@ -7006,26 +6959,14 @@
                                         Source="CheckWhite.png"
                                         VerticalOptions="Center"
                                         WidthRequest="30" />
-                                    <VerticalStackLayout
-                                        Margin="0,-2,10,0"
-                                        Padding="0"
-                                        Spacing="0"
-                                        VerticalOptions="Center">
                                         <Label
                                             Margin="0"
                                             Padding="0"
                                             FontSize="16"
                                             Text="JETZT STARTEN"
-                                            TextColor="#ffffff" />
-                                        <Label
-                                            Margin="0,-2,0,0"
-                                            Padding="0"
-                                            FontSize="8"
-                                            Text="Arbeiten/Produkte jetzt beginnen"
-                                            TextColor="#aaaaaa" />
-                                    </VerticalStackLayout>
+                                            TextColor="#ffffff" 
+                                        VerticalOptions="Center"/>
                                 </HorizontalStackLayout>
-                            </StackLayout>
                         </Border>
 
 

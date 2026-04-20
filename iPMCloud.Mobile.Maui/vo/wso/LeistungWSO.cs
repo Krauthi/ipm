@@ -237,16 +237,6 @@ namespace iPMCloud.Mobile
             {
                 last = (pos.prio != null && pos.prio.lastWorkDate != null ? pos.prio.lastWorkDate.Value.ToString("dd.MM.yyyy") : "Nicht bekannt!");
             }
-            var typ = new Label
-            {
-                Text = pos.timeval + " --- Zuletzt: " + last,
-                TextColor = Color.FromArgb("#ffcc00"),
-                Margin = new Thickness(5, 0, 0, 0),
-                FontSize = 12,
-                LineBreakMode = LineBreakMode.WordWrap,
-                HorizontalOptions = LayoutOptions.Start,
-            };
-            hInfo.Children.Add(typ);
             hInfo.Children.Add(imgInfo);
 
             var grid = new Grid()
@@ -263,6 +253,7 @@ namespace iPMCloud.Mobile
                 {
                     new ColumnDefinition { Width = GridLength.Auto },
                     new ColumnDefinition { Width = GridLength.Star },
+                    new ColumnDefinition { Width = GridLength.Auto },
                     new ColumnDefinition { Width = GridLength.Auto },
                 },
             };
@@ -307,14 +298,21 @@ namespace iPMCloud.Mobile
             {
                 v.Children.Add(direkt);
             }
-            v.Children.Add(hInfo);
+            var typ = new Label
+            {
+                Text = pos.timeval + " --- Zuletzt: " + last,
+                TextColor = Color.FromArgb("#ffcc00"),
+                Margin = new Thickness(5, 0, 0, 0),
+                FontSize = 12,
+                LineBreakMode = LineBreakMode.WordWrap,
+                HorizontalOptions = LayoutOptions.Start,
+            };
+            v.Children.Add(typ);
 
             if (double.Parse(pos.lastwork) == 0 && pos.timevaldays > 0)
             {
                 v.Children.Add(GetWarningLineText(pos.prio.warnText, pos.prio.barColor));
             }
-
-            v.Children.Add(hmuell);
 
             var badge = new Border
             {
@@ -343,7 +341,8 @@ namespace iPMCloud.Mobile
             grid.Add(imageL,0,0);
             grid.Add(badge,0,0);
             grid.Add(v,1,0);
-            grid.Add(hInfo, 2, 0);
+            grid.Add(hmuell, 2, 0);
+            grid.Add(hInfo, 3, 0);
 
             if (func != null)
             {
@@ -427,6 +426,7 @@ namespace iPMCloud.Mobile
                     new ColumnDefinition { Width = GridLength.Auto },
                     new ColumnDefinition { Width = GridLength.Star },
                     new ColumnDefinition { Width = GridLength.Auto },
+                    new ColumnDefinition { Width = GridLength.Auto },
                 },
             };
             var hmuell = new HorizontalStackLayout()
@@ -465,7 +465,6 @@ namespace iPMCloud.Mobile
                 v.Children.Add(GetWarningLineText(pos.prio.warnText, pos.prio.badgeColor));
             }
 
-            v.Children.Add(hmuell);
 
             var badge = new Border
             {
@@ -494,7 +493,8 @@ namespace iPMCloud.Mobile
             h.Add(imageL,0,0);
             h.Add(badge,0,0);
             h.Add(v,1,0);
-            h.Add(imageR,2,0);
+            h.Add(hmuell, 2, 0);
+            h.Add(imageR,3,0);
 
             if (func != null)
             {
@@ -591,6 +591,7 @@ namespace iPMCloud.Mobile
                     new ColumnDefinition { Width = GridLength.Auto },
                     new ColumnDefinition { Width = GridLength.Star },
                     new ColumnDefinition { Width = GridLength.Auto },
+                    new ColumnDefinition { Width = GridLength.Auto },
                 },
             };
             var hmuell = new StackLayout()
@@ -639,7 +640,7 @@ namespace iPMCloud.Mobile
                 v.Children.Add(GetWarningLineText(pos.prio.warnText, pos.prio.badgeColor));
             }
 
-            v.Children.Add(hmuell);
+            //v.Children.Add(hmuell);
 
             var badge = new Border
             {
@@ -668,7 +669,8 @@ namespace iPMCloud.Mobile
             h.Add(imageL,0,0);
             h.Add(badge,0,0);
             h.Add(v,1,0);
-            h.Add(hi,2,0);
+            h.Add(hmuell, 2, 0);
+            h.Add(hi,3,0);
 
             if (func != null)
             {
@@ -743,7 +745,8 @@ namespace iPMCloud.Mobile
                 ColumnDefinitions =
                 {
                     new ColumnDefinition { Width = GridLength.Auto },
-                    new ColumnDefinition { Width = GridLength.Star }
+                    new ColumnDefinition { Width = GridLength.Star },
+                    new ColumnDefinition { Width = GridLength.Auto }
                 },
             };
             var hmuell = new HorizontalStackLayout()
@@ -789,10 +792,10 @@ namespace iPMCloud.Mobile
             var warn = GetPositionInWork(pos, model);
             warn.Margin = new Thickness(-35, 5, 0, 0);
             v.Children.Add(warn);
-            v.Children.Add(hmuell);
 
             grid.Add(imageL,0,0);
             grid.Add(v,1,0);
+            grid.Add(hmuell, 2, 0);
 
             if (func != null)
             {

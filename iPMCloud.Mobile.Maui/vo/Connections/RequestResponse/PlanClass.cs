@@ -1305,7 +1305,7 @@ namespace iPMCloud.Mobile
 
 
 
-        public static HorizontalStackLayout GetPlanedTodayCheckItem(bool sel, PlanPersonMobile p, Border btn, Label lb, PlanPersonMobile mainP, ICommand func, IntBemerkungWSOPair obj)
+        public static Grid GetPlanedTodayCheckItem(bool sel, PlanPersonMobile p, Border btn, Label lb, PlanPersonMobile mainP, ICommand func, IntBemerkungWSOPair obj)
         {
             var b = AppModel.Instance.AllBuildings.Find(o => o.id == p.objektid);
 
@@ -1318,14 +1318,18 @@ namespace iPMCloud.Mobile
                 VerticalOptions = LayoutOptions.Center,
                 HorizontalOptions = LayoutOptions.Start,
             };
-            var sth = new HorizontalStackLayout()
+            var sthg = new Grid()
             {
                 Padding = new Thickness(5, 6, 5, 6),
                 Margin = new Thickness(0, 2, 0, 0),
-                Spacing = 0,
+                RowSpacing = 0,
                 HorizontalOptions = LayoutOptions.Fill,
                 BackgroundColor = Color.FromArgb("#55042d53"),
+
             };
+            sthg.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
+            sthg.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Star });
+            sthg.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
             var stv = new VerticalStackLayout()
             {
                 Padding = new Thickness(0),
@@ -1405,8 +1409,8 @@ namespace iPMCloud.Mobile
                     LineBreakMode = LineBreakMode.WordWrap,
                 });
             }
-            sth.Children.Add(checkBox);
-            sth.Children.Add(stv);
+            sthg.Add(checkBox,0,0);
+            sthg.Add(stv,1,0);
 
 
 
@@ -1425,7 +1429,7 @@ namespace iPMCloud.Mobile
                 };
                 var badgeStack = new HorizontalStackLayout()
                 {
-                    Margin = new Thickness(-9, -4, 0, 0),
+                    Margin = new Thickness(-8, -4, 0, 0),
                     Padding = new Thickness(0),
                     Spacing = 0,
                     HorizontalOptions = LayoutOptions.End,
@@ -1438,9 +1442,9 @@ namespace iPMCloud.Mobile
                             HorizontalOptions = LayoutOptions.Start,
                             VerticalOptions = LayoutOptions.Start,
                             HeightRequest = 15,
-                            WidthRequest = 28,
+                            WidthRequest = 20,
                             Margin = new Thickness(0),
-                            Padding = new Thickness(1,1,0,0),
+                            Padding = new Thickness(1,0,0,0),
                             StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 10 },
                             Content = bemBadgeCount
                         },
@@ -1457,7 +1461,7 @@ namespace iPMCloud.Mobile
                     Spacing = 0,
                     Padding = new Thickness(1),
                     Margin = new Thickness(0),
-                    BackgroundColor = Color.FromArgb("#144d73"),
+                    BackgroundColor = Color.FromArgb("#144d53"),
                     Children = {
                     new Image
                     {
@@ -1477,7 +1481,7 @@ namespace iPMCloud.Mobile
                     Margin = new Thickness(2, 2, 2, 0),
                     HorizontalOptions = LayoutOptions.End,
                     VerticalOptions = LayoutOptions.Start,
-                    BackgroundColor = Color.FromArgb("#041d43"),
+                    BackgroundColor = Color.FromArgb("#144d53"),
                     Content = noticeStack,
                     Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 };
@@ -1487,8 +1491,8 @@ namespace iPMCloud.Mobile
                     btnNoticeFrame.GestureRecognizers.Add(new TapGestureRecognizer() { Command = func, CommandParameter = obj.lei });
                 }
 
-                sth.Children.Add(btnNoticeFrame);
-                sth.Children.Add(badgeStack);
+                sthg.Add(btnNoticeFrame,2,0);
+                sthg.Add(badgeStack,2,0);
             }
 
 
@@ -1503,7 +1507,7 @@ namespace iPMCloud.Mobile
             stv.GestureRecognizers.Add(t_quest_direktbuchen_cancel);
 
 
-            return sth;
+            return sthg;
         }
 
         public static VerticalStackLayout GetPlanedTodayNotMobileItem(PlanPersonMobile p)

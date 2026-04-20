@@ -93,10 +93,10 @@ namespace iPMCloud.Mobile.vo
 
 
         // Refresh this data by logout
-        public Dictionary<Int32, Border> allPositionInShowingListView = new Dictionary<Int32, Border>();
+        public Dictionary<Int32, Grid> allPositionInShowingListView = new Dictionary<Int32, Grid>();
         public Dictionary<Int32, SwipeView> allPositionInShowingSmallListView = new Dictionary<Int32, SwipeView>();
         public List<LeistungWSO> allSelectedPositionToWork = new List<LeistungWSO>();
-        public Dictionary<Int32, Border> allPositionAgainInShowingListView = new Dictionary<Int32, Border>();
+        public Dictionary<Int32, Grid> allPositionAgainInShowingListView = new Dictionary<Int32, Grid>();
         public Dictionary<Int32, SwipeView> allPositionAgainInShowingSmallListView = new Dictionary<Int32, SwipeView>();
         public List<LeistungWSO> allSelectedPositionAgainToWork = new List<LeistungWSO>();
         //public LeistungPackWSO allPositionInWork = null;
@@ -409,7 +409,7 @@ namespace iPMCloud.Mobile.vo
             LastSelectedOrder = null;
             LastSelectedCategory = null;
             LastSelectedPosition = null;
-            allPositionInShowingListView = new Dictionary<int, Border>();
+            allPositionInShowingListView = new Dictionary<int, Grid>();
             allPositionInShowingSmallListView = new Dictionary<int, SwipeView>();
             allSelectedPositionToWork = new List<LeistungWSO>();
             // alle selektionen und disabled zurücksetzen 

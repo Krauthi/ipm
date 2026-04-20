@@ -31,7 +31,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using static Android.Net.Wifi.WifiEnterpriseConfig;
+//using static System.Net.Mime.MediaTypeNames;
 //using static Android.Graphics.ColorSpace;
 //https://docs.microsoft.com/de-de/xamarin/essentials/preferences?tabs=android
 
@@ -2145,46 +2145,100 @@ namespace iPMCloud.Mobile
         {
             btn_internmessage_img2_DirektPos.IsVisible = e.Value;
         }
-        public async Task btn_takePhoto_DirektPos(object sender, EventArgs e)
+       
+
+
+        public async Task btn_takePhoto_DirektPos(object sender, TappedEventArgs e) 
         {
-            // Limit prüfen
             if (_SelectedBemerkungForNotice.photos.Count >= 5)
             {
                 await DisplayAlertAsync("Limit erreicht", "Maximal 5 Fotos erlaubt", "OK");
                 return;
             }
-
             notizSave_stack_DirektPos.IsVisible = false;
+            await Task.Delay(1);
+
             AppModel.Instance.UseExternHardware = true;
-            overlay.IsVisible = true;
 
             try
             {
-                string buildingText = null;
-                if (AppModel.Instance.LastBuilding == null && _SelectedPosForNotice != null)
+                overlay.IsVisible = true;
+                await Task.Delay(1);
+                var photo = await MediaPicker.CapturePhotoAsync(new MediaPickerOptions
                 {
-                    var bui = BuildingWSO.LoadBuilding(AppModel.Instance, _SelectedPosForNotice.objektid);
-                    if (bui != null)
+                    CompressionQuality = 75,
+                    MaximumHeight = 1024,
+                    MaximumWidth = 1024,
+                    RotateImage = true,
+                    SelectionLimit = 1,
+                    PreserveMetaData = true,
+                });
+
+                if (photo != null)
+                {
+                    var photoResponse = await PhotoResize.CreatePhotoResponseAsync(photo);
+
+                    // TODO: Später wieder aktivieren bzw. Testen - dauer zu lange!!
+                    //string buildingText = null;
+                    //if (AppModel.Instance.LastBuilding == null && _SelectedPosForNotice != null)
+                    //{
+                    //    var bui = BuildingWSO.LoadBuilding(AppModel.Instance, _SelectedPosForNotice.objektid);
+                    //    if (bui != null)
+                    //    {
+                    //        buildingText = $"{bui.plz} {bui.ort} - {bui.strasse} {bui.hsnr}";
+                    //    }
+                    //}
+                    //photoResponse = PhotoUtils.AddInfoToImage(photoResponse, AppModel.Instance.LastBuilding);
+
+                    var reCo = new Command<BildWSO>(RemoveBildInWork_DirektPos);
+
+                    long bildName = DateTime.Now.Ticks;
+                    var bildWSO = new BildWSO(_SelectedBemerkungForNotice.guid)
                     {
-                        buildingText = $"{bui.plz} {bui.ort} - {bui.strasse} {bui.hsnr}";
+                        bytes = photoResponse.imageBytes,
+                        name = bildName.ToString(),
+                        stack = BildWSO.GetAttachmentForNoticeElement(
+                            photoResponse.GetImageSourceAsThumb(),
+                            new DateTime(bildName).ToString("dd.MM.yyyy-HH:mm:ss"),
+                            reCo)
+                    };
+                    var frame = (Border)((StackLayout)(bildWSO.stack.Children[0])).Children[2];
+                    frame.GestureRecognizers.Clear();
+                    frame.GestureRecognizers.Add(new TapGestureRecognizer()
+                    {
+                        Command = reCo,
+                        CommandParameter = bildWSO
+                    });
+
+
+                    if (bildWSO != null)
+                    {
+                        BildWSO.Save(AppModel.Instance, bildWSO);
+                        _SelectedBemerkungForNotice.photos.Add(bildWSO);
+                        noticePhotoStack_DirektPos.Children.Add(bildWSO.stack);
+
+                        CheckNoticeFalid_DirektPos();
                     }
                 }
-
-                var bildWSO = await PhotoPickerHelper.TakeAndProcessPhotoAsync(
-                    parentGuid: _SelectedBemerkungForNotice.guid,
-                    removeCommand: new Command<BildWSO>(RemoveBildInWork_DirektPos),
-                    building: null,
-                    customBuildingText: buildingText
-                );
-
-                if (bildWSO != null)
-                {
-                    BildWSO.Save(AppModel.Instance, bildWSO);
-                    _SelectedBemerkungForNotice.photos.Add(bildWSO);
-                    noticePhotoStack_DirektPos.Children.Add(bildWSO.stack);
-
-                    CheckNoticeFalid_DirektPos();
-                }
+            }
+            catch (FeatureNotSupportedException)
+            {
+                // Kamera wird nicht unterstützt
+                await DisplayAlertAsync("Fehler", "Kamera wird nicht unterstützt", "OK");
+            }
+            catch (PermissionException)
+            {
+                // Berechtigungen wurden nicht erteilt
+                await DisplayAlertAsync("Fehler", "Keine Kamera-Berechtigung", "OK");
+            }
+            catch (OperationCanceledException)
+            {
+                // Benutzer hat abgebrochen
+            }
+            catch (Exception ex)
+            {
+                // Andere Fehler
+                System.Diagnostics.Debug.WriteLine($"Fehler beim Foto aufnehmen: {ex.Message}");
             }
             finally
             {
@@ -2193,7 +2247,9 @@ namespace iPMCloud.Mobile
             }
         }
 
-        public async Task btn_pickPhotos_DirektPos(object sender, EventArgs e)
+
+
+        public async Task btn_pickPhotos_DirektPos(object sender, TappedEventArgs e)  
         {
             if (_SelectedBemerkungForNotice.photos.Count >= 5)
             {
@@ -2203,39 +2259,106 @@ namespace iPMCloud.Mobile
 
             notizSave_stack_DirektPos.IsVisible = false;
             AppModel.Instance.UseExternHardware = true;
-            overlay.IsVisible = true;
 
             try
             {
-                // Building-Text vorbereiten
-                string buildingText = null;
-                if (AppModel.Instance.LastBuilding == null && _SelectedPosForNotice != null)
+                if (!MediaPicker.Default.IsCaptureSupported)
                 {
-                    var bui = BuildingWSO.LoadBuilding(AppModel.Instance, _SelectedPosForNotice.objektid);
-                    if (bui != null)
-                    {
-                        buildingText = $"{bui.plz} {bui.ort} - {bui.strasse} {bui.hsnr}";
-                    }
+                    await DisplayAlertAsync("Fehler", "Kamera nicht verfügbar", "OK");
+                    return;
                 }
 
-                await PhotoPickerHelper.PickAndProcessPhotosAsync(
-                    maxPhotos: 5,
-                    photoList: _SelectedBemerkungForNotice.photos,
-                    targetStack: noticePhotoStack_DirektPos,
-                    parentGuid: _SelectedBemerkungForNotice.guid,
-                    removeCommand: new Command<BildWSO>(RemoveBildInWork_DirektPos),
-                    building: null,
-                    customBuildingText: buildingText,
-                    onComplete: CheckNoticeFalid_DirektPos
-                );
+                overlay.IsVisible = true;
+                _ = Task.Delay(1);
+
+
+
+                var photos = await MediaPicker.PickPhotosAsync(new MediaPickerOptions
+                {
+                    CompressionQuality = 75,
+                    MaximumHeight = 1024,
+                    MaximumWidth = 1024,
+                    RotateImage = true,
+                    SelectionLimit = 5 - _SelectedBemerkungForNotice.photos.Count,
+                    PreserveMetaData = true,
+                });
+
+                if (photos != null && photos.Count() > 0)
+                {
+                    foreach (var photo in photos)
+                    {
+                        var reCo = new Command<BildWSO>(RemoveBildInWork_DirektPos);
+                        //using var stream = await photo.OpenReadAsync();  
+                        var photoResponse = await PhotoResize.CreatePhotoResponseAsync(photo);
+
+                        // TODO: Später wieder aktivieren bzw. Testen - dauer zu lange!!
+                        // Building-Text vorbereiten
+                        //string buildingText = null;
+                        //if (AppModel.Instance.LastBuilding == null && _SelectedPosForNotice != null)
+                        //{
+                        //    var bui = BuildingWSO.LoadBuilding(AppModel.Instance, _SelectedPosForNotice.objektid);
+                        //    if (bui != null)
+                        //    {
+                        //        buildingText = $"{bui.plz} {bui.ort} - {bui.strasse} {bui.hsnr}";
+                        //    }
+                        //}
+                        //photoResponse = PhotoUtils.AddInfoToImage(
+                        //    photoResponse,
+                        //    building,
+                        //    customBuildingText);
+
+                        long bildName = DateTime.Now.Ticks;
+                        var bildWSO = new BildWSO(_SelectedBemerkungForNotice.guid)
+                        {
+                            bytes = photoResponse.imageBytes,
+                            name = bildName.ToString(),
+                            stack = BildWSO.GetAttachmentForNoticeElement(
+                                photoResponse.GetImageSourceAsThumb(),
+                                new DateTime(bildName).ToString("dd.MM.yyyy-HH:mm:ss"),
+                                reCo)
+                        };
+                        var frame = (Border)((StackLayout)(bildWSO.stack.Children[0])).Children[2];
+                        frame.GestureRecognizers.Clear();
+                        frame.GestureRecognizers.Add(new TapGestureRecognizer()
+                        {
+                            Command = reCo,
+                            CommandParameter = bildWSO
+                        });
+
+                        BildWSO.Save(AppModel.Instance, bildWSO);
+                        _SelectedBemerkungForNotice.photos.Add(bildWSO);
+                        noticePhotoStack_DirektPos.Children.Add(bildWSO.stack);
+                    }
+                    _ = Task.Delay(1);
+                    overlay.IsVisible = false;
+                }
+            }
+            catch (FeatureNotSupportedException exn)
+            {
+                // Kamera wird nicht unterstützt
+                AppModel.Logger.Error($"Fehler Kamera wird nicht unterstützt: {exn.Message}");
+            }
+            catch (PermissionException exp)
+            {
+                // Berechtigungen wurden nicht erteilt
+                AppModel.Logger.Error($"Fehler Keine Kamera-Berechtigung: {exp.Message}");
+            }
+            catch (OperationCanceledException)
+            {
+                // Benutzer hat abgebrochen
+            }
+            catch (Exception ex)
+            {
+                // Andere Fehler
+                AppModel.Logger.Error($"Fehler beim Foto aufnehmen: {ex.Message}");
             }
             finally
             {
+                CheckNoticeFalid_DirektPos();
                 AppModel.Instance.UseExternHardware = false;
-                overlay.IsVisible = false;
+                overlay.IsVisible = false;  // ✅ Sicherstellen dass Overlay ausgeblendet wird                
             }
         }
-
 
         public async void RemoveBildInWork_DirektPos(BildWSO b)
         {
@@ -2767,7 +2890,7 @@ namespace iPMCloud.Mobile
                     .Select(e => new ObservablePersonSmallWSOCollection<string, PersonSmallWSO>(e))
                     .ToList();
 
-            BindingContext = new ObservableCollection<ObservablePersonSmallWSOCollection<string, PersonSmallWSO>>(groupedData);
+            empListView.ItemsSource = new ObservableCollection<ObservablePersonSmallWSOCollection<string, PersonSmallWSO>>(groupedData);
 
         }
         private void empListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -5826,7 +5949,7 @@ namespace iPMCloud.Mobile
                 // ✅ MAUI MediaPicker verwenden
                 var photo = await MediaPicker.CapturePhotoAsync(new MediaPickerOptions
                 {
-                    CompressionQuality = 50,
+                    CompressionQuality = 75,
                     MaximumHeight = 1024,
                     MaximumWidth = 1024,
                     RotateImage = true,
@@ -5916,7 +6039,7 @@ namespace iPMCloud.Mobile
             overlay.IsVisible = false;
         }
 
-        public async Task btn_takePhotos(object sender, EventArgs e)  // ✅ Task statt void
+        public async Task btn_takePhotos(object sender, TappedEventArgs e)  // ✅ Task statt void
         {
             // ✅ Limit prüfen
             if (_SelectedBemerkungForNotice.photos.Count >= 5)
@@ -5924,28 +6047,81 @@ namespace iPMCloud.Mobile
                 await DisplayAlertAsync("Limit erreicht", "Maximal 5 Fotos erlaubt", "OK");
                 return;
             }
-
             notizSave_stack.IsVisible = false;
+            await Task.Delay(1);
+
             AppModel.Instance.UseExternHardware = true;
-            overlay.IsVisible = true;
 
             try
             {
-                // ✅ Helper-Methode verwenden
-                var bildWSO = await PhotoPickerHelper.TakeAndProcessPhotoAsync(
-                    parentGuid: _SelectedBemerkungForNotice.guid,
-                    removeCommand: new Command<BildWSO>(RemoveBildInWork),
-                    building: AppModel.Instance.LastBuilding
-                );
-
-                if (bildWSO != null)
+                overlay.IsVisible = true;
+                await Task.Delay(1);
+                var photo = await MediaPicker.CapturePhotoAsync(new MediaPickerOptions
                 {
-                    BildWSO.Save(AppModel.Instance, bildWSO);
-                    _SelectedBemerkungForNotice.photos.Add(bildWSO);
-                    noticePhotoStack.Children.Add(bildWSO.stack);
+                    CompressionQuality = 75,
+                    MaximumHeight = 1024,
+                    MaximumWidth = 1024,
+                    RotateImage = true,
+                    SelectionLimit = 1,
+                    PreserveMetaData = true,
+                });
 
-                    CheckNoticeFalid();
+                if (photo != null)
+                {
+                    var photoResponse = await PhotoResize.CreatePhotoResponseAsync(photo);
+
+                    // TODO: Später wieder aktivieren bzw. Testen - dauer zu lange!!
+                    //photoResponse = PhotoUtils.AddInfoToImage(photoResponse, AppModel.Instance.LastBuilding);
+
+                    var reCo = new Command<BildWSO>(RemoveBildInWork);
+
+                    long bildName = DateTime.Now.Ticks;
+                    var bildWSO = new BildWSO(_SelectedBemerkungForNotice.guid)
+                    {
+                        bytes = photoResponse.imageBytes,
+                        name = bildName.ToString(),
+                        stack = BildWSO.GetAttachmentForNoticeElement(
+                            photoResponse.GetImageSourceAsThumb(),
+                            new DateTime(bildName).ToString("dd.MM.yyyy-HH:mm:ss"),
+                            reCo)
+                    };
+                    var frame = (Border)((StackLayout)(bildWSO.stack.Children[0])).Children[2];
+                    frame.GestureRecognizers.Clear();
+                    frame.GestureRecognizers.Add(new TapGestureRecognizer()
+                    {
+                        Command = reCo,
+                        CommandParameter = bildWSO
+                    });
+
+
+                    if (bildWSO != null)
+                    {
+                        BildWSO.Save(AppModel.Instance, bildWSO);
+                        _SelectedBemerkungForNotice.photos.Add(bildWSO);
+                        noticePhotoStack.Children.Add(bildWSO.stack);
+
+                        CheckNoticeFalid();
+                    }
                 }
+            }
+            catch (FeatureNotSupportedException)
+            {
+                // Kamera wird nicht unterstützt
+                await DisplayAlertAsync("Fehler", "Kamera wird nicht unterstützt", "OK");
+            }
+            catch (PermissionException)
+            {
+                // Berechtigungen wurden nicht erteilt
+                await DisplayAlertAsync("Fehler", "Keine Kamera-Berechtigung", "OK");
+            }
+            catch (OperationCanceledException)
+            {
+                // Benutzer hat abgebrochen
+            }
+            catch (Exception ex)
+            {
+                // Andere Fehler
+                System.Diagnostics.Debug.WriteLine($"Fehler beim Foto aufnehmen: {ex.Message}");
             }
             finally
             {
@@ -5956,12 +6132,11 @@ namespace iPMCloud.Mobile
 
 
 
-
-        public void btn_pickPhotosForNotice(object sender, EventArgs e)  // ✅ async Task statt async void
+        public async Task btn_pickPhotosForNotice(object sender, TappedEventArgs e)  // ✅ async Task statt async void
         {
             if (_SelectedBemerkungForNotice.photos.Count >= 5)
             {
-                DisplayAlertAsync("Limit erreicht", "Maximal 5 Fotos erlaubt", "OK");
+                await DisplayAlertAsync("Limit erreicht", "Maximal 5 Fotos erlaubt", "OK");
                 return;
             }
 
@@ -5975,22 +6150,22 @@ namespace iPMCloud.Mobile
                 // ✅ Prüfen ob Kamera verfügbar
                 if (!MediaPicker.Default.IsCaptureSupported)
                 {
-                    DisplayAlertAsync("Fehler", "Kamera nicht verfügbar", "OK");
+                    await DisplayAlertAsync("Fehler", "Kamera nicht verfügbar", "OK");
                     return;
                 }
 
                 overlay.IsVisible = true;
                 _ = Task.Delay(1);
                 // ✅ MAUI MediaPicker verwenden
-                var photos = MediaPicker.PickPho tosAsync(new MediaPickerOptions
+                var photos = await MediaPicker.PickPhotosAsync(new MediaPickerOptions
                 {
-                    CompressionQuality = 50,
+                    CompressionQuality = 75,
                     MaximumHeight = 1024,
                     MaximumWidth = 1024,
                     RotateImage = true,
                     SelectionLimit = 5 - _SelectedBemerkungForNotice.photos.Count,
                     PreserveMetaData = true,
-                }).Result;
+                });
 
                 if (photos != null && photos.Count() > 0)
                 {
@@ -5998,8 +6173,7 @@ namespace iPMCloud.Mobile
                     {
                         var reCo = new Command<BildWSO>(RemoveBildInWork);
                         //using var stream = await photo.OpenReadAsync();  
-                        var photoResponse = PhotoResize.CreatePhotoResponseAsync(photo)
-                            .GetAwaiter().GetResult();
+                        var photoResponse = await PhotoResize.CreatePhotoResponseAsync(photo);
 
                         // TODO: Später wieder aktivieren bzw. Testen - dauer zu lange!!
                         //photoResponse = PhotoUtils.AddInfoToImage(
@@ -7359,14 +7533,14 @@ namespace iPMCloud.Mobile
                 tgr_back_notice_save.Tapped += btn_NoticeSaveTapped;
                 btn_notice_save.GestureRecognizers.Add(tgr_back_notice_save);
 
-                //btn_takePhoto_frame.GestureRecognizers.Clear();
-                //var tgr_btn_takePhoto = new TapGestureRecognizer();
-                //tgr_btn_takePhoto.Tapped += async (s, e) => await btn_takePhoto(s, e);
-                //btn_takePhoto_frame.GestureRecognizers.Add(tgr_btn_takePhoto);
-                //btn_takePhotoAttachment_frame.GestureRecognizers.Clear();
-                //var tgr_btn_takePhotoAttachment = new TapGestureRecognizer();
-                //tgr_btn_takePhotoAttachment.Tapped += async (s, e) => await btn_pickPhotos(s, e);
-                //btn_takePhotoAttachment_frame.GestureRecognizers.Add(tgr_btn_takePhotoAttachment);
+                btn_takePhoto_frame.GestureRecognizers.Clear();
+                var tgr_btn_takePhoto = new TapGestureRecognizer();
+                tgr_btn_takePhoto.Tapped += async (s, e) => await btn_takePhotos(s, e);
+                btn_takePhoto_frame.GestureRecognizers.Add(tgr_btn_takePhoto);
+                btn_takePhotoAttachment_frame.GestureRecognizers.Clear();
+                var tgr_btn_takePhotoAttachment = new TapGestureRecognizer();
+                tgr_btn_takePhotoAttachment.Tapped += async (s, e) => await btn_pickPhotosForNotice(s, e);
+                btn_takePhotoAttachment_frame.GestureRecognizers.Add(tgr_btn_takePhotoAttachment);
 
 
                 /*btn_alertmessage_container_DirektPos.GestureRecognizers.Clear();

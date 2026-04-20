@@ -132,7 +132,7 @@ namespace iPMCloud.Mobile
             });
             return stack;
         }
-        public static Border GetCategoryCardView(KategorieWSO cat, AppModel model, ICommand func)
+        public static Grid GetCategoryCardView(KategorieWSO cat, AppModel model, ICommand func)
         {
             var _prio = CalcOverdue(cat, model);
             var imageL = new Image
@@ -151,9 +151,9 @@ namespace iPMCloud.Mobile
             var imgInfo = new Image
             {
                 Margin = new Thickness(2),
-                HeightRequest = 24,
-                WidthRequest = 24,
-                Opacity = 0.4,
+                HeightRequest = 32,
+                WidthRequest = 32,
+                Opacity = 0.7,
                 Source = "ic_info_b.png",//AppModel._Instance.imagesBase.InfoCircle,
                 HorizontalOptions = LayoutOptions.End,
                 VerticalOptions = LayoutOptions.Start,
@@ -178,8 +178,8 @@ namespace iPMCloud.Mobile
             {
                 Text = cat.GetMobileText(),
                 TextColor = Color.FromArgb("#cccccc"),
-                Margin = new Thickness(7, 0, 5, 1),
-                FontSize = 16,
+                Margin = new Thickness(3, 0, 5, 1),
+                FontSize = 18,
                 HorizontalOptions = LayoutOptions.Fill,
                 LineBreakMode = LineBreakMode.WordWrap,
             };
@@ -204,13 +204,21 @@ namespace iPMCloud.Mobile
                 LineBreakMode = LineBreakMode.TailTruncation,
                 HorizontalOptions = LayoutOptions.Start
             };
-            var h = new HorizontalStackLayout()
+            var grid = new Grid()
             {
                 Padding = new Thickness(5, 5, 5, 5),
-                Margin = new Thickness(0, 0, 0, 0),
-                Spacing = 0,
+                Margin = new Thickness(0, 15, 0, 5),
+                ColumnSpacing = 0,
                 HorizontalOptions = LayoutOptions.Fill,
                 BackgroundColor = Color.FromArgb("#042d53"),
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
+                ClassId = "" + cat.id,
+                ColumnDefinitions = new ColumnDefinitionCollection
+                {
+                    new ColumnDefinition { Width = 70 },
+                    new ColumnDefinition { Width = GridLength.Star },
+                    new ColumnDefinition { Width = GridLength.Auto },
+                }
             };
             var v = new VerticalStackLayout()
             {
@@ -232,9 +240,9 @@ namespace iPMCloud.Mobile
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
-                Margin = new Thickness(-14, -3, 0, 0),
+                Margin = new Thickness(28, -1, 0, 0),
                 Padding = new Thickness(4, 2, 4, 2),
-                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 5 },
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 9 },
                 IsVisible = (_prio < 1360),
                 Content = new Label
                 {
@@ -246,35 +254,23 @@ namespace iPMCloud.Mobile
                     FontSize = 11,
                     TextColor = Colors.White,
                     FontAttributes = FontAttributes.Bold,
-                    MinimumWidthRequest = 50,
                     LineBreakMode = LineBreakMode.NoWrap,
                     HorizontalTextAlignment = TextAlignment.Center
                 }
             };
-            h.Children.Add(imageL);
-            h.Children.Add(badge);
-            h.Children.Add(v);
-            h.Children.Add(hInfo);
-
-            var mainFrame = new Border()
-            {
-                Padding = new Thickness(1, 1, 1, 1),
-                Margin = new Thickness(0, 15, 0, 5),
-                HorizontalOptions = LayoutOptions.Fill,
-                BackgroundColor = Color.FromArgb("#041d43"),
-                Content = h,
-                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
-                ClassId = "" + cat.id,
-            };
+            grid.Add(imageL,0,0);
+            grid.Add(badge, 0, 0);
+            grid.Add(v, 1, 0);
+            grid.Add(hInfo, 2, 0);
 
             if (func != null)
             {
-                mainFrame.GestureRecognizers.Clear();
-                mainFrame.GestureRecognizers.Add(new TapGestureRecognizer() { Command = func, CommandParameter = cat });
+                grid.GestureRecognizers.Clear();
+                grid.GestureRecognizers.Add(new TapGestureRecognizer() { Command = func, CommandParameter = cat });
             }
 
 
-            return mainFrame;
+            return grid;
         }
 
         public static StackLayout GetCategoryWinterCardView(KategorieWSO cat)

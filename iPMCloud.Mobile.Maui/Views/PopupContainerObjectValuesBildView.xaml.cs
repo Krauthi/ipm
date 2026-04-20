@@ -9,8 +9,8 @@ namespace iPMCloud.Mobile.Views
         public Border BtnNewPhoto => btn_newphoto_objectvaluesbild;
         public Editor EditorNotice => editor_notice_objectvaluesbild;
         public Label LblSendErr => btn_send_objectvaluesbild_err;
-        public Border BtnCancel => btn_cancel_objectvaluesbild;
-        public Border BtnSend => btn_send_objectvaluesbild;
+        public HorizontalStackLayout BtnCancel => btn_cancel_objectvaluesbild;
+        public HorizontalStackLayout BtnSend => btn_send_objectvaluesbild;
 
         public PopupContainerObjectValuesBildView()
         {

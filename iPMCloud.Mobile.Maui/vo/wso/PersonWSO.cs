@@ -68,7 +68,7 @@ namespace iPMCloud.Mobile
             return stack;
         }
 
-        public static StackLayout GetPersonTimesViewItem(PersonTime pt)
+        public static HorizontalStackLayout GetPersonTimesViewItem(PersonTime pt)
         {
             var w = App.Current.Windows.FirstOrDefault().Width;
             bool isgleich = pt.start == pt.end;
@@ -79,9 +79,9 @@ namespace iPMCloud.Mobile
             {
                 Text = pt.tag + " " + pt.tagname,
                 TextColor = Color.FromArgb("#cccccc"),
-                Margin = new Thickness(5, 0, 0, 0),
+                Margin = new Thickness(2, 0, 0, 0),
                 FontSize = 12,
-                WidthRequest = w * 0.21,
+                WidthRequest = w * 0.20,
                 LineBreakMode = LineBreakMode.TailTruncation,
                 HorizontalTextAlignment = TextAlignment.Start,
             };
@@ -92,11 +92,11 @@ namespace iPMCloud.Mobile
                     ? "--:--"
                     : (pt.start + " - " + pt.end),
                 TextColor = Color.FromArgb("#cccccc"),
-                Margin = new Thickness(5, 0, 0, 0),
+                Margin = new Thickness(2, 0, 0, 0),
                 FontSize = 12,
                 LineBreakMode = LineBreakMode.TailTruncation,
                 HorizontalTextAlignment = TextAlignment.Start,
-                WidthRequest = w * 0.25,
+                WidthRequest = w * 0.24,
             };
 
             var pause = new Label
@@ -105,11 +105,11 @@ namespace iPMCloud.Mobile
                 TextColor = pt.pause.Contains("00:00") || pt.pause.Contains("--:--")
                     ? Color.FromArgb("#cccccc")
                     : Color.FromArgb("#ff7777"),
-                Margin = new Thickness(5, 0, 0, 0),
+                Margin = new Thickness(2, 0, 0, 0),
                 FontSize = 12,
                 LineBreakMode = LineBreakMode.TailTruncation,
                 HorizontalTextAlignment = TextAlignment.Start,
-                WidthRequest = w * 0.18,
+                WidthRequest = w * 0.17,
             };
 
             var updown = new Label
@@ -118,31 +118,30 @@ namespace iPMCloud.Mobile
                 TextColor = isZero
                     ? Color.FromArgb("#cccccc")
                     : (isMinus ? Color.FromArgb("#ff7777") : Color.FromArgb("#77cc77")),
-                Margin = new Thickness(5, 0, 0, 0),
+                Margin = new Thickness(2, 0, 0, 0),
                 FontSize = 12,
                 LineBreakMode = LineBreakMode.TailTruncation,
                 HorizontalTextAlignment = TextAlignment.Start,
-                WidthRequest = w * 0.18,
+                WidthRequest = w * 0.17,
             };
 
             var summe = new Label
             {
                 Text = pt.dauer,
                 TextColor = pt.dauer.Contains("-") ? Color.FromArgb("#ff7777") : Color.FromArgb("#ffffff"),
-                Margin = new Thickness(5, 0, 0, 0),
+                Margin = new Thickness(2, 0, 0, 0),
                 FontSize = 12,
                 LineBreakMode = LineBreakMode.TailTruncation,
                 HorizontalTextAlignment = TextAlignment.End,
-                WidthRequest = w * 0.18,
+                WidthRequest = w * 0.17,
             };
 
-            var h = new StackLayout()
+            var h = new HorizontalStackLayout()
             {
                 Padding = new Thickness(5, 5, 5, 5),
                 Margin = new Thickness(0, 0, 0, 1),
                 Spacing = 0,
-                Orientation = StackOrientation.Horizontal,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
                 BackgroundColor = Color.FromArgb("#aa042d53"),
             };
 
@@ -155,7 +154,7 @@ namespace iPMCloud.Mobile
             return h;
         }
 
-        public static StackLayout GetPersonTimesViewHeaderItem()
+        public static HorizontalStackLayout GetPersonTimesViewHeaderItem()
         {
             var w = App.Current.Windows.FirstOrDefault().Width;
 
@@ -163,9 +162,9 @@ namespace iPMCloud.Mobile
             {
                 Text = "Tag",
                 TextColor = Color.FromArgb("#cccccc"),
-                Margin = new Thickness(5, 0, 0, 0),
+                Margin = new Thickness(2, 0, 0, 0),
                 FontSize = 12,
-                WidthRequest = w * 0.21,
+                WidthRequest = w * 0.20,
                 LineBreakMode = LineBreakMode.TailTruncation,
                 HorizontalTextAlignment = TextAlignment.Start,
             };
@@ -174,50 +173,49 @@ namespace iPMCloud.Mobile
             {
                 Text = "Zeiten",
                 TextColor = Color.FromArgb("#cccccc"),
-                Margin = new Thickness(5, 0, 0, 0),
+                Margin = new Thickness(2, 0, 0, 0),
                 FontSize = 12,
                 LineBreakMode = LineBreakMode.TailTruncation,
-                WidthRequest = w * 0.25,
+                WidthRequest = w * 0.24,
             };
 
             var pause = new Label
             {
                 Text = "Pause",
                 TextColor = Color.FromArgb("#cccccc"),
-                Margin = new Thickness(5, 0, 0, 0),
+                Margin = new Thickness(2, 0, 0, 0),
                 FontSize = 12,
                 LineBreakMode = LineBreakMode.TailTruncation,
-                WidthRequest = w * 0.18,
+                WidthRequest = w * 0.17,
             };
 
             var fahrzeit = new Label
             {
                 Text = "+/-",
                 TextColor = Color.FromArgb("#cccccc"),
-                Margin = new Thickness(5, 0, 0, 0),
+                Margin = new Thickness(2, 0, 0, 0),
                 FontSize = 12,
                 LineBreakMode = LineBreakMode.TailTruncation,
-                WidthRequest = w * 0.18,
+                WidthRequest = w * 0.17,
             };
 
             var summe = new Label
             {
                 Text = "Gesamt",
                 TextColor = Color.FromArgb("#cccccc"),
-                Margin = new Thickness(5, 0, 0, 0),
+                Margin = new Thickness(2, 0, 0, 0),
                 FontSize = 12,
                 LineBreakMode = LineBreakMode.TailTruncation,
-                WidthRequest = w * 0.18,
+                WidthRequest = w * 0.17,
                 HorizontalTextAlignment = TextAlignment.End,
             };
 
-            var h = new StackLayout()
+            var h = new HorizontalStackLayout()
             {
                 Padding = new Thickness(5, 5, 5, 5),
                 Margin = new Thickness(0, 0, 0, 1),
                 Spacing = 0,
-                Orientation = StackOrientation.Horizontal,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
                 BackgroundColor = Color.FromArgb("#aa042d53"),
             };
 
@@ -230,17 +228,17 @@ namespace iPMCloud.Mobile
             return h;
         }
 
-        public static StackLayout GetPersonTimesViewAllItem(PersonTime pt)
+        public static Grid GetPersonTimesViewAllItem(PersonTime pt)
         {
             var w = App.Current.Windows.FirstOrDefault().Width;
 
             var day = new Label()
-            {
+            {                
                 Text = pt.monatname + " " + pt.jahr,
                 TextColor = Color.FromArgb("#cccccc"),
                 Margin = new Thickness(5, 0, 5, 0),
                 FontSize = 12,
-                HorizontalOptions = LayoutOptions.StartAndExpand,
+                HorizontalOptions = LayoutOptions.Start,
                 LineBreakMode = LineBreakMode.TailTruncation,
             };
 
@@ -254,18 +252,18 @@ namespace iPMCloud.Mobile
                 HorizontalOptions = LayoutOptions.End,
             };
 
-            var h = new StackLayout()
+            var h = new Grid()
             {
                 Padding = new Thickness(5, 5, 5, 5),
                 Margin = new Thickness(0, 0, 0, 0),
-                Spacing = 0,
-                Orientation = StackOrientation.Horizontal,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                ColumnSpacing = 0,
+                HorizontalOptions = LayoutOptions.Fill,
                 BackgroundColor = Color.FromArgb("#aa042d53"),
             };
-
-            h.Children.Add(day);
-            h.Children.Add(times);
+            h.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
+            h.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Auto));
+            h.Add(day,0,0);
+            h.Add(times,1,0);
 
             return h;
         }

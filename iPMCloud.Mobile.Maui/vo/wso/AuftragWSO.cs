@@ -184,15 +184,14 @@ namespace iPMCloud.Mobile
             return _prio;
         }
 
-        public static StackLayout GetOrderListView(AppModel model, ICommand func)
+        public static VerticalStackLayout GetOrderListView(AppModel model, ICommand func)
         {
-            var stack = new StackLayout
+            var stack = new VerticalStackLayout
             {
                 Padding = new Thickness(5, 0, 5, 0),
                 Margin = new Thickness(0, 0, 0, 0),
                 Spacing = 0,
-                Orientation = StackOrientation.Vertical,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
             };
             var selOrderId = -1;
             if (model.allSelectedPositionToWork != null && model.allSelectedPositionToWork.Count > 0)
@@ -213,15 +212,15 @@ namespace iPMCloud.Mobile
             });
             return stack;
         }
-        public static Border GetOrderCardView(AuftragWSO order, AppModel model, ICommand func)
+        public static Grid GetOrderCardView(AuftragWSO order, AppModel model, ICommand func)
         {
             var _prio = CalcOverdue(order, model);
             var imageL = new Image
             {
-                Margin = new Thickness(0, 0, 5, 0),
+                Margin = new Thickness(3, 0, 5, 0),
                 HeightRequest = 32,
                 WidthRequest = 32,
-                VerticalOptions = LayoutOptions.Start,
+                VerticalOptions = LayoutOptions.Center,
                 HorizontalOptions = LayoutOptions.Start,
                 Source = "OrderFolderTools.png"
             };
@@ -230,54 +229,50 @@ namespace iPMCloud.Mobile
                 Text = order.GetMobileText(),
                 TextColor = Color.FromArgb("#cccccc"),
                 Margin = new Thickness(5, 0, 5, 1),
-                FontSize = 16,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                FontSize = 18,
+                HorizontalOptions = LayoutOptions.Fill,
                 LineBreakMode = LineBreakMode.WordWrap,
             };
             var id = new Label
             {
-                Text = "Nr.: " + order.id,
+                Text = "" + order.id,
                 TextColor = Color.FromArgb("#999999"),
                 Margin = new Thickness(5, 0, 0, 0),
                 FontSize = 12,
-                MinimumWidthRequest = 100,
                 LineBreakMode = LineBreakMode.TailTruncation,
                 HorizontalOptions = LayoutOptions.End,
             };
-            //var status = new Label
-            //{
-            //    Text = "Status: " + order.status,
-            //    TextColor = Color.FromArgb("#999999"),
-            //    Margin = new Thickness(5, 0, 0, 0),
-            //    FontSize = 12,
-            //    LineBreakMode = LineBreakMode.TailTruncation,
-            //    HorizontalOptions = LayoutOptions.Start,
-            //};
             var typ = new Label
             {
                 Text = "Typ: " + order.typ,
                 TextColor = Color.FromArgb("#999999"),
-                Margin = new Thickness(6, 0, 0, 0),
+                Margin = new Thickness(6, -1, 0, 0),
                 FontSize = 12,
                 LineBreakMode = LineBreakMode.TailTruncation,
                 HorizontalOptions = LayoutOptions.Start,
             };
-            var h = new StackLayout()
+            var grid = new Grid()
             {
-                Padding = new Thickness(5, 5, 5, 5),
-                Margin = new Thickness(0, 0, 0, 0),
-                Spacing = 0,
-                Orientation = StackOrientation.Horizontal,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                ColumnSpacing = 0,
+                HorizontalOptions = LayoutOptions.Fill,
                 BackgroundColor = Color.FromArgb("#042d53"),
+                Padding = new Thickness(5),
+                Margin = new Thickness(0, 15, 0, 5),                
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
+                ClassId = "" + order.id,
+                ColumnDefinitions = new ColumnDefinitionCollection
+                {
+                    new ColumnDefinition { Width = 70 },
+                    new ColumnDefinition { Width = GridLength.Star },
+                    new ColumnDefinition { Width = GridLength.Auto },
+                }
             };
-            var v = new StackLayout()
+            var v = new VerticalStackLayout()
             {
                 Padding = new Thickness(0, 0, 0, 0),
                 Margin = new Thickness(0, 0, 0, 0),
                 Spacing = 0,
-                Orientation = StackOrientation.Vertical,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
             };
             v.Children.Add(lb);
             //v.Children.Add(status);
@@ -292,12 +287,11 @@ namespace iPMCloud.Mobile
             var badge = new Border
             {
                 BackgroundColor = Color.FromArgb(_prio < 0 ? "#ff0000" : (_prio < 1 ? "#ffcc00" : "#009900")),
-                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
-                Margin = new Thickness(-14, -3, 0, 0),
+                Margin = new Thickness(28, -1, 0, 0),
                 Padding = new Thickness(4, 2, 4, 2),
-                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 5 },
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 9 },
                 IsVisible = (_prio < 1360),
                 Content = new Label
                 {
@@ -309,45 +303,32 @@ namespace iPMCloud.Mobile
                     FontSize = 11,
                     TextColor = Colors.White,
                     FontAttributes = FontAttributes.Bold,
-                    MinimumWidthRequest = 50,
                     LineBreakMode = LineBreakMode.NoWrap,
                     HorizontalTextAlignment = TextAlignment.Center
                 }
             };
-            h.Children.Add(imageL);
-            h.Children.Add(badge);
-            h.Children.Add(v);
-            h.Children.Add(id);
-
-            var mainFrame = new Border()
-            {
-                Padding = new Thickness(1, 1, 1, 1),
-                Margin = new Thickness(0, 15, 0, 5),
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-                BackgroundColor = Color.FromArgb("#041d43"),
-                Content = h,
-                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
-                ClassId = "" + order.id,
-            };
+            grid.Add(imageL,0,0);
+            grid.Add(badge,0,0);
+            grid.Add(v,1,0);
+            grid.Add(id,2,0);
 
             if (func != null)
             {
-                mainFrame.GestureRecognizers.Clear();
-                mainFrame.GestureRecognizers.Add(new TapGestureRecognizer() { Command = func, CommandParameter = order });
+                grid.GestureRecognizers.Clear();
+                grid.GestureRecognizers.Add(new TapGestureRecognizer() { Command = func, CommandParameter = order });
             }
 
-
-            return mainFrame;
+            return grid;
         }
-        public static Border GetDisableOrderCardView(AuftragWSO order, AppModel model)
+        public static Grid GetDisableOrderCardView(AuftragWSO order, AppModel model)
         {
             var _prio = CalcOverdue(order, model);
             var imageL = new Image
             {
-                Margin = new Thickness(0, 0, 5, 0),
+                Margin = new Thickness(3, 0, 5, 0),
                 HeightRequest = 32,
                 WidthRequest = 32,
-                VerticalOptions = LayoutOptions.Start,
+                VerticalOptions = LayoutOptions.Center,
                 HorizontalOptions = LayoutOptions.Start,
                 Source = "OrderFolderTools.png"
             };
@@ -363,9 +344,9 @@ namespace iPMCloud.Mobile
             };
             var imageR = new Image
             {
-                Margin = new Thickness(-32, 20, 0, 0),
-                HeightRequest = 32,
-                WidthRequest = 32,
+                Margin = new Thickness(-32, 10, 0, 0),
+                HeightRequest = 24,
+                WidthRequest = 24,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.End,
                 Source = "DisableRed.png",
@@ -376,54 +357,51 @@ namespace iPMCloud.Mobile
                 Text = order.GetMobileText(),
                 TextColor = Color.FromArgb("#cccccc"),
                 Margin = new Thickness(5, 0, 5, 1),
-                FontSize = 16,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                FontSize = 18,
+                HorizontalOptions = LayoutOptions.Fill,
                 LineBreakMode = LineBreakMode.WordWrap,
             };
             var id = new Label
             {
-                Text = "Nr.: " + order.id,
+                Text = "" + order.id,
                 TextColor = Color.FromArgb("#999999"),
                 Margin = new Thickness(5, 0, 0, 0),
                 FontSize = 12,
-                MinimumWidthRequest = 100,
                 LineBreakMode = LineBreakMode.TailTruncation,
                 HorizontalOptions = LayoutOptions.End,
             };
-            //var status = new Label
-            //{
-            //    Text = "Status: " + order.status,
-            //    TextColor = Color.FromArgb("#999999"),
-            //    Margin = new Thickness(5, 0, 0, 0),
-            //    FontSize = 12,
-            //    LineBreakMode = LineBreakMode.TailTruncation,
-            //    HorizontalOptions = LayoutOptions.Start,
-            //};
             var typ = new Label
             {
                 Text = "Typ: " + order.typ,
                 TextColor = Color.FromArgb("#999999"),
-                Margin = new Thickness(6, 0, 0, 0),
+                Margin = new Thickness(6, -1, 0, 0),
                 FontSize = 12,
                 LineBreakMode = LineBreakMode.TailTruncation,
                 HorizontalOptions = LayoutOptions.Start,
             };
-            var h = new StackLayout()
+            var grid = new Grid()
             {
-                Padding = new Thickness(5, 5, 5, 5),
-                Margin = new Thickness(0, 0, 0, 0),
-                Spacing = 0,
-                Orientation = StackOrientation.Horizontal,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-                BackgroundColor = Color.FromArgb("#333333"),
+                ColumnSpacing = 0,
+                HorizontalOptions = LayoutOptions.Fill,
+                BackgroundColor = Color.FromArgb("#042d53"),
+                Padding = new Thickness(5),
+                Margin = new Thickness(0, 15, 0, 5),
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
+                ClassId = "" + order.id,
+                ColumnDefinitions = new ColumnDefinitionCollection
+        {
+            new ColumnDefinition { Width = 70 },
+            new ColumnDefinition { Width = GridLength.Star },
+            new ColumnDefinition { Width = GridLength.Auto },
+            new ColumnDefinition { Width = GridLength.Auto },
+        }
             };
-            var v = new StackLayout()
+            var v = new VerticalStackLayout()
             {
                 Padding = new Thickness(0, 0, 0, 0),
                 Margin = new Thickness(0, 0, 0, 0),
                 Spacing = 0,
-                Orientation = StackOrientation.Vertical,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
             };
             v.Children.Add(lb);
             //v.Children.Add(status);
@@ -438,12 +416,11 @@ namespace iPMCloud.Mobile
             var badge = new Border
             {
                 BackgroundColor = Color.FromArgb(_prio < 0 ? "#ff0000" : (_prio < 1 ? "#ffcc00" : "#009900")),
-                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
-                Margin = new Thickness(-14, -3, 0, 0),
+                Margin = new Thickness(28, -1, 0, 0),
                 Padding = new Thickness(4, 2, 4, 2),
-                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 5 },
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 9 },
                 IsVisible = (_prio < 1360),
                 Content = new Label
                 {
@@ -455,29 +432,17 @@ namespace iPMCloud.Mobile
                     FontSize = 11,
                     TextColor = Colors.White,
                     FontAttributes = FontAttributes.Bold,
-                    MinimumWidthRequest = 50,
                     LineBreakMode = LineBreakMode.NoWrap,
                     HorizontalTextAlignment = TextAlignment.Center
                 }
             };
-            h.Children.Add(imageL);
-            h.Children.Add(badge);
-            h.Children.Add(v);
-            h.Children.Add(id);
-            h.Children.Add(hi);
+            grid.Add(imageL, 0, 0);
+            grid.Add(badge, 0, 0);
+            grid.Add(v, 1, 0);
+            grid.Add(id, 2, 0);
+            grid.Add(hi, 3, 0);
 
-            var mainFrame = new Border()
-            {
-                Padding = new Thickness(1, 1, 1, 1),
-                Margin = new Thickness(0, 15, 0, 5),
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-                BackgroundColor = Color.FromArgb("#041d43"),
-                Content = h,
-                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
-                ClassId = "" + order.id,
-            };
-
-            return mainFrame;
+            return grid;
         }
         public static StackLayout GetOrderWarning(double count, AppModel model)
         {

@@ -157,7 +157,7 @@ namespace iPMCloud.Mobile
             });
             return stack;
         }
-        public static Grid GetPositionCardView(LeistungWSO pos, AppModel model, ICommand func)
+        public static Border GetPositionCardView(LeistungWSO pos, AppModel model, ICommand func)
         {
             //var _prio = CalcOverdue(pos);
             var imageL = new Image
@@ -178,9 +178,9 @@ namespace iPMCloud.Mobile
             var imgInfo = new Image
             {
                 Margin = new Thickness(5, 0, 5, 2),
-                HeightRequest = 24,
-                WidthRequest = 24,
-                Opacity = 0.4,
+                HeightRequest = 32,
+                WidthRequest = 32,
+                Opacity = 0.7,
                 Source = "ic_info_b.png",//AppModel._Instance.imagesBase.InfoCircle,
                 HorizontalOptions = LayoutOptions.End,
                 VerticalOptions = LayoutOptions.Start,
@@ -191,12 +191,11 @@ namespace iPMCloud.Mobile
             t_imgInfo.Tapped += (object o, TappedEventArgs ev) => { AppModel.Instance.MainPage.OpenLeistungInfoDialog(pos); };
             imgInfo.GestureRecognizers.Add(t_imgInfo);
 
-            var hInfo = new StackLayout()
+            var hInfo = new HorizontalStackLayout()
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(0),
                 Spacing = 0,
-                Orientation = StackOrientation.Horizontal,
                 HorizontalOptions = LayoutOptions.Fill,
                 BackgroundColor = Colors.Transparent
             };
@@ -252,8 +251,8 @@ namespace iPMCloud.Mobile
 
             var grid = new Grid()
             {
-                Padding = new Thickness(5, 5, 5, 5),
-                Margin = new Thickness(0, 15, 0, 5),
+                Padding = new Thickness(5),
+                Margin = new Thickness(0),
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 ClassId = "" + pos.id,
                 RowSpacing = 0,
@@ -344,6 +343,7 @@ namespace iPMCloud.Mobile
             grid.Add(imageL,0,0);
             grid.Add(badge,0,0);
             grid.Add(v,1,0);
+            grid.Add(hInfo, 2, 0);
 
             if (func != null)
             {
@@ -351,10 +351,16 @@ namespace iPMCloud.Mobile
                 grid.GestureRecognizers.Add(new TapGestureRecognizer() { Command = func, CommandParameter = pos });
             }
 
-
-            return grid;
+            return new Border
+            {
+                ClassId = "" + pos.id,
+                Content = grid,
+                Padding = new Thickness(0),
+                Margin = new Thickness(0, 15, 0, 5),
+                HorizontalOptions = LayoutOptions.Fill,
+            };
         }
-        public static Grid GetSelectedPositionCardView(LeistungWSO pos, AppModel model, ICommand func)
+        public static Border GetSelectedPositionCardView(LeistungWSO pos, AppModel model, ICommand func)
         {
             //var _prio = CalcOverdue(pos);
             var imageL = new Image
@@ -411,10 +417,10 @@ namespace iPMCloud.Mobile
             var h = new Grid()
             {
                 Padding = new Thickness(5, 5, 5, 5),
+                Margin = new Thickness(0),
                 ColumnSpacing = 0,
                 HorizontalOptions = LayoutOptions.Fill,
                 BackgroundColor = Color.FromArgb("#333333"),
-                Margin = new Thickness(0, 15, 0, 5),
                 ClassId = "" + pos.id,
                 ColumnDefinitions =
                 {
@@ -495,9 +501,17 @@ namespace iPMCloud.Mobile
                 h.GestureRecognizers.Clear();
                 h.GestureRecognizers.Add(new TapGestureRecognizer() { Command = func, CommandParameter = pos });
             }
-            return h;
+
+            return new Border
+            {
+                ClassId = "" + pos.id,
+                Content = h,
+                Padding = new Thickness(0),
+                Margin = new Thickness(0, 15, 0, 5),
+                HorizontalOptions = LayoutOptions.Fill,
+            };
         }
-        public static Grid GetDisabledPositionCardView(LeistungWSO pos, AppModel model, ICommand func)
+        public static Border GetDisabledPositionCardView(LeistungWSO pos, AppModel model, ICommand func)
         {
             //var _prio = CalcOverdue(pos);
             var imageL = new Image
@@ -564,13 +578,13 @@ namespace iPMCloud.Mobile
             };
             var h = new Grid()
             {
-                Padding = new Thickness(5, 5, 5, 5),
+                Padding = new Thickness(5),
+                Margin = new Thickness(0),
                 ColumnSpacing = 0,
                 HorizontalOptions = LayoutOptions.Fill,
                 BackgroundColor = Color.FromArgb("#333333"),
                 Opacity = 0.5,
                 IsEnabled = false,
-                Margin = new Thickness(0, 15, 0, 5),
                 ClassId = "" + pos.id,
                 ColumnDefinitions =
                 {
@@ -662,9 +676,16 @@ namespace iPMCloud.Mobile
                 h.GestureRecognizers.Add(new TapGestureRecognizer() { Command = func, CommandParameter = pos });
             }
 
-            return h;
+            return new Border
+            {
+                ClassId = "" + pos.id,
+                Content = h,
+                Padding = new Thickness(0),
+                Margin = new Thickness(0, 15, 0, 5),
+                HorizontalOptions = LayoutOptions.Fill,
+            };
         }
-        public static Grid GetInWorkPositionCardView(LeistungWSO pos, AppModel model, ICommand func)
+        public static Border GetInWorkPositionCardView(LeistungWSO pos, AppModel model, ICommand func)
         {
             //var _prio = CalcOverdue(pos);
             var imageL = new Image
@@ -711,8 +732,8 @@ namespace iPMCloud.Mobile
             };
             var grid = new Grid()
             {
-                Padding = new Thickness(5, 5, 5, 5),
-                Margin = new Thickness(0, 15, 0, 5),
+                Padding = new Thickness(5),
+                Margin = new Thickness(0),
                 ColumnSpacing = 0,
                 HorizontalOptions = LayoutOptions.Fill,
                 BackgroundColor = Color.FromArgb("#99000000"),
@@ -779,7 +800,14 @@ namespace iPMCloud.Mobile
                 grid.GestureRecognizers.Add(new TapGestureRecognizer() { Command = func, CommandParameter = pos });
             }
 
-            return grid;
+            return new Border
+            {
+                ClassId = "" + pos.id,
+                Content = grid,
+                Padding = new Thickness(0),
+                Margin = new Thickness(0, 15, 0, 5),
+                HorizontalOptions = LayoutOptions.Fill,
+            };
         }
 
 
@@ -805,7 +833,7 @@ namespace iPMCloud.Mobile
                     var foundInWork = model.allPositionInWork.leistungen.Find(l => l.id == pos.id);
                     inWork = foundInWork != null;
                 }
-                Grid stackPos = null;
+                Border stackPos = null;
                 isOptionalPos = (pos.art == "Leistung" && pos.nichtpauschal == 1 || pos.art == "Produkt");
 
                 if (pos.art == "Produkt")

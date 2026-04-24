@@ -1461,7 +1461,7 @@ namespace iPMCloud.Mobile
                     Spacing = 0,
                     Padding = new Thickness(1),
                     Margin = new Thickness(0),
-                    BackgroundColor = Color.FromArgb("#144d53"),
+                    BackgroundColor = Color.FromArgb("#245d93"),
                     Children = {
                     new Image
                     {
@@ -1481,7 +1481,7 @@ namespace iPMCloud.Mobile
                     Margin = new Thickness(2, 2, 2, 0),
                     HorizontalOptions = LayoutOptions.End,
                     VerticalOptions = LayoutOptions.Start,
-                    BackgroundColor = Color.FromArgb("#144d53"),
+                    BackgroundColor = Color.FromArgb("#245d93"),
                     Content = noticeStack,
                     Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 };

@@ -437,7 +437,7 @@ namespace iPMCloud.Mobile
             value.IsVisible = !value.IsVisible;
         }
 
-        public static StackLayout GetCategoryWarning(double count, AppModel model)
+        public static HorizontalStackLayout GetCategoryWarning(double count, AppModel model)
         {
             var warnText = count < 0 ? "Hier gibt es überfällige Arbeiten!" : (count < 1 ? "Heute sind fällige Arbeiten!" : "Arbeiten erst fällig in (Tagen)");
             var warnColor = Color.FromArgb(count < 0 ? "#50ff0000" : (count < 1 ? "#50ffcc00" : "#50009900"));
@@ -458,7 +458,7 @@ namespace iPMCloud.Mobile
                 TextColor = Color.FromArgb("#ffffff"),
                 Margin = new Thickness(5, 0, 5, 0),
                 FontSize = 12,
-                HorizontalOptions = LayoutOptions.StartAndExpand,
+                HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Center,
                 LineBreakMode = LineBreakMode.WordWrap,
             };
@@ -485,12 +485,11 @@ namespace iPMCloud.Mobile
                 }
             };
 
-            var h = new StackLayout()
+            var h = new HorizontalStackLayout()
             {
                 Padding = new Thickness(5, 1, 5, 1),
                 Margin = new Thickness(0, 0, 0, 0),
                 Spacing = 0,
-                Orientation = StackOrientation.Horizontal,
                 HorizontalOptions = LayoutOptions.Start,
                 BackgroundColor = warnColor,
             };
@@ -504,17 +503,17 @@ namespace iPMCloud.Mobile
             return new StackLayout
             {
                 Padding = new Thickness(5, 5, 5, 5),
-                Margin = new Thickness(34, 0, 0, 0),
+                Margin = new Thickness(17, 0, 0, 0),
                 Spacing = 0,
                 Orientation = StackOrientation.Horizontal,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
                 BackgroundColor = Color.FromArgb("#90144d73"),
                 Children = {
                     new Image {
                         Margin = new Thickness(0, 0, 10, 0),
                         HeightRequest = 30,
                         WidthRequest = 30,
-                        VerticalOptions = LayoutOptions.Start,
+                        VerticalOptions = LayoutOptions.Center,
                         Source = (c.art == "Leistung" ? "KLSymbol.png" :
                                  (c.art == "Produkt" ? "KPSymbol.png" :
                                  (c.art == "Texte" ? "KTSymbol.png" :
@@ -522,11 +521,10 @@ namespace iPMCloud.Mobile
                     },
                     new Label {
                         Text = c.GetMobileText(),// + " \nNr.: " + c.id,// + "  Art: " + c.art + "  Saison: " + c.saison,
-                        VerticalOptions = LayoutOptions.StartAndExpand,
-                        HorizontalOptions = LayoutOptions.FillAndExpand,
-                        FontSize = 14,
+                        VerticalOptions = LayoutOptions.Center,
+                        HorizontalOptions = LayoutOptions.Start,
+                        FontSize = 16,
                         TextColor = Colors.White,
-                        HorizontalTextAlignment = TextAlignment.Start,
                         Margin = new Thickness(0, 0, 0, 0),
                         Padding = new Thickness(0, 0, 0, 0)
                     }

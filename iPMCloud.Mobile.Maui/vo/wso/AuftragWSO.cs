@@ -505,31 +505,29 @@ namespace iPMCloud.Mobile
             h.Children.Add(badge);
             return h;
         }
-        public static StackLayout GetOrderInfoElement(AuftragWSO order, AppModel model)
+        public static HorizontalStackLayout GetOrderInfoElement(AuftragWSO order, AppModel model)
         {
-            return new StackLayout
+            return new HorizontalStackLayout
             {
                 Padding = new Thickness(5, 5, 5, 5),
                 Margin = new Thickness(0, 0, 0, 0),
                 Spacing = 0,
-                Orientation = StackOrientation.Horizontal,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
                 BackgroundColor = Color.FromArgb("#90144d73"),
                 Children = {
                     new Image {
                         Margin = new Thickness(0, 0, 10, 0),
                         HeightRequest = 30,
                         WidthRequest = 30,
-                        VerticalOptions = LayoutOptions.StartAndExpand,
+                        VerticalOptions = LayoutOptions.Center,
                         Source = "OrderFolderTools.png"
                     },
                     new Label {
                         Text = order.GetMobileText() + " \nNr.: " + order.id + "  Typ: " + order.typ,
-                        VerticalOptions = LayoutOptions.StartAndExpand,
-                        HorizontalOptions = LayoutOptions.FillAndExpand,
-                        FontSize = 14,
+                        VerticalOptions = LayoutOptions.Center,
+                        HorizontalOptions = LayoutOptions.Fill,
+                        FontSize = 16,
                         TextColor = Colors.White,
-                        HorizontalTextAlignment = TextAlignment.Start,
                         Margin = new Thickness(0, 0, 0, 0),
                         Padding = new Thickness(0, 0, 0, 0)
                     }

@@ -1590,7 +1590,7 @@ namespace iPMCloud.Mobile
             if (position.disabled || inWork) { return; }
 
             overlay.IsVisible = true;
-            //await Task.Delay(1);
+            await Task.Delay(100);
 
             AppModel.Instance.LastSelectedPosition = position;
             Border framePos = null;
@@ -1620,19 +1620,15 @@ namespace iPMCloud.Mobile
             //btn_showselected_pos_container2.IsVisible = AppModel.Instance.allSelectedPositionToWork.Count > 0;
             CheckForOptionalToWork();
 
-            //await Task.Delay(1);
+            await Task.Delay(1);
             overlay.IsVisible = false;
         }
         public async void RemoveSelectPositionFromToWork(LeistungWSO position)
         {
-            overlay.IsVisible = true;
-            //await Task.Delay(1);
-
             Border framePos;
             SwipeView swipePos;
             // entfernen da schon selectiert 
             AppModel.Instance.allSelectedPositionToWork.Remove(position);
-            position.selected = false;
             if (AppModel.Instance.allPositionInShowingListView.TryGetValue(position.id, out framePos))
             {
                 framePos.Content = LeistungWSO.GetPositionCardView(position, AppModel.Instance, ((TapGestureRecognizer)framePos.Content.GestureRecognizers[0]).Command).Content;
@@ -1646,30 +1642,28 @@ namespace iPMCloud.Mobile
             btn_showselected_pos_container_not.IsVisible = !(AppModel.Instance.allSelectedPositionToWork.Count > 0);
             btn_showselected_pos_container2.IsVisible = AppModel.Instance.allSelectedPositionToWork.Count > 0;
             CheckForOptionalToWork();
+
+            position.selected = false;
             if (AppModel.Instance.allSelectedPositionToWork.Count == 0)
             {
-                await Task.Delay(100);
+                //await Task.Delay(100);
                 AuswahlAnzeigenTapped_Done(false);
-                await Task.Delay(100);
+                //await Task.Delay(100);
                 if (BuildingOrderPage_order_Container.IsVisible)
                 {
                     buildingorderlist_order_container.Children.Clear();
                     buildingorderlist_order_container.Children.Add(AuftragWSO.GetOrderListView(AppModel.Instance, new Command<AuftragWSO>(SelectOrder)));
                 }
             }
-            //await Task.Delay(1);
-            overlay.IsVisible = false;
         }
         public async void CheckForOptionalToWork()
         {
+            //return;
             AppModel.Instance.IsOptionalToWork = false;
 
-            var foundProduktPos = AppModel.Instance.allSelectedPositionToWork.Find(i => (i.art == "Produkt"));
-            var foundOPPos = AppModel.Instance.allSelectedPositionToWork.Find(i => (i.art == "Leistung" && i.nichtpauschal == 1));
-            var foundRegPos = AppModel.Instance.allSelectedPositionToWork.Find(i => (i.art == "Leistung" && i.nichtpauschal == 0));
             if (AppModel.Instance.allSelectedPositionToWork.Count == 0)
             {
-                // alles zurücksetzen 
+                // alles zurücksetzen / in alle Aufträg / alle Kategorien / alle Leistungen
                 AppModel.Instance.LastBuilding.ArrayOfAuftrag.ForEach(o =>
                 {
                     o.kategorien.ForEach(c =>
@@ -1677,24 +1671,31 @@ namespace iPMCloud.Mobile
                         c.leistungen.ForEach(l =>
                         {
                             l.disabled = false;
-                            Border framePos;
-                            if (AppModel.Instance.allPositionInShowingListView.TryGetValue(l.id, out framePos))
-                            {
-                                var func = ((TapGestureRecognizer)framePos.Content.GestureRecognizers[0]).Command;
-                                bool inWork = false;
-                                if (AppModel.Instance.allPositionInWork != null)
+                            //if (l.selected)
+                            //{
+                                Border framePos;
+                                if (AppModel.Instance.allPositionInShowingListView.TryGetValue(l.id, out framePos))
                                 {
-                                    var foundInWork = AppModel.Instance.allPositionInWork.leistungen.Find(le => le.id == l.id);
-                                    inWork = foundInWork != null;
+                                    var func = ((TapGestureRecognizer)framePos.Content.GestureRecognizers[0]).Command;
+                                    bool inWork = false;
+                                    if (AppModel.Instance.allPositionInWork != null)
+                                    {
+                                        var foundInWork = AppModel.Instance.allPositionInWork.leistungen.Find(le => le.id == l.id);
+                                        inWork = foundInWork != null;
+                                    }
+                                    framePos.Content = inWork ? LeistungWSO.GetInWorkPositionCardView(l, AppModel.Instance, func).Content
+                                    : LeistungWSO.GetPositionCardView(l, AppModel.Instance, func).Content;
                                 }
-                                framePos.Content = inWork ? LeistungWSO.GetInWorkPositionCardView(l, AppModel.Instance, func).Content : LeistungWSO.GetPositionCardView(l, AppModel.Instance, func).Content;
-                            }
+                            //}
                         });
                     });
                 });
             }
             else if (AppModel.Instance.allSelectedPositionToWork.Count > 0)
             {
+                var foundProduktPos = AppModel.Instance.allSelectedPositionToWork.Find(i => (i.art == "Produkt"));
+                var foundOPPos = AppModel.Instance.allSelectedPositionToWork.Find(i => (i.art == "Leistung" && i.nichtpauschal == 1));
+                var foundRegPos = AppModel.Instance.allSelectedPositionToWork.Find(i => (i.art == "Leistung" && i.nichtpauschal == 0));
                 // erste Einträge prüfen IsOptional
                 if (foundOPPos != null)
                 {
@@ -1734,12 +1735,16 @@ namespace iPMCloud.Mobile
 
                                 if (AppModel.Instance.IsOptionalToWork)
                                 {
+                                    // Nur OPTIONALE
                                     if (l.art == "Leistung" && l.nichtpauschal == 1)
                                     {
                                         l.disabled = false;
                                         if (AppModel.Instance.allPositionInShowingListView.TryGetValue(l.id, out framePos))
                                         {
-                                            var stackPos = inWork ? LeistungWSO.GetInWorkPositionCardView(l, AppModel.Instance, func) : (l.disabled ? LeistungWSO.GetDisabledPositionCardView(l, AppModel.Instance, func) : (l.selected ? LeistungWSO.GetSelectedPositionCardView(l, AppModel.Instance, func) : LeistungWSO.GetPositionCardView(l, AppModel.Instance, func)));
+                                            var stackPos = inWork ? LeistungWSO.GetInWorkPositionCardView(l, AppModel.Instance, func) 
+                                            : (l.disabled ? LeistungWSO.GetDisabledPositionCardView(l, AppModel.Instance, func) 
+                                            : (l.selected ? LeistungWSO.GetSelectedPositionCardView(l, AppModel.Instance, func) 
+                                            : LeistungWSO.GetPositionCardView(l, AppModel.Instance, func)));
                                             framePos.Content = stackPos.Content;
                                         }
                                     }
@@ -1748,18 +1753,20 @@ namespace iPMCloud.Mobile
                                         l.disabled = true;
                                         if (AppModel.Instance.allPositionInShowingListView.TryGetValue(l.id, out framePos))
                                         {
-                                            framePos.Content = inWork ? LeistungWSO.GetInWorkPositionCardView(l, AppModel.Instance, func).Content : LeistungWSO.GetDisabledPositionCardView(l, AppModel.Instance, func).Content;
+                                            framePos.Content = inWork ? LeistungWSO.GetInWorkPositionCardView(l, AppModel.Instance, func).Content 
+                                            : LeistungWSO.GetDisabledPositionCardView(l, AppModel.Instance, func).Content;
                                         }
                                     }
                                 }
                                 else
-                                {
+                                {                                   
                                     if (l.art == "Leistung" && l.nichtpauschal == 1)
                                     {
                                         l.disabled = true;
                                         if (AppModel.Instance.allPositionInShowingListView.TryGetValue(l.id, out framePos))
                                         {
-                                            framePos.Content = inWork ? LeistungWSO.GetInWorkPositionCardView(l, AppModel.Instance, func).Content : LeistungWSO.GetDisabledPositionCardView(l, AppModel.Instance, func).Content;
+                                            framePos.Content = inWork ? LeistungWSO.GetInWorkPositionCardView(l, AppModel.Instance, func).Content 
+                                            : LeistungWSO.GetDisabledPositionCardView(l, AppModel.Instance, func).Content;
                                         }
                                     }
                                     else
@@ -1767,7 +1774,9 @@ namespace iPMCloud.Mobile
                                         l.disabled = false;
                                         if (AppModel.Instance.allPositionInShowingListView.TryGetValue(l.id, out framePos))
                                         {
-                                            var stackPos = inWork ? LeistungWSO.GetInWorkPositionCardView(l, AppModel.Instance, func) : (l.disabled ? LeistungWSO.GetDisabledPositionCardView(l, AppModel.Instance, func) : (l.selected ? LeistungWSO.GetSelectedPositionCardView(l, AppModel.Instance, func) : LeistungWSO.GetPositionCardView(l, AppModel.Instance, func)));
+                                            var stackPos = inWork ? LeistungWSO.GetInWorkPositionCardView(l, AppModel.Instance, func)                                              
+                                            : (l.selected ? LeistungWSO.GetSelectedPositionCardView(l, AppModel.Instance, func) 
+                                            : LeistungWSO.GetPositionCardView(l, AppModel.Instance, func));
                                             framePos.Content = stackPos.Content;
                                         }
                                     }
@@ -1785,22 +1794,27 @@ namespace iPMCloud.Mobile
                         {
                             c.leistungen.ForEach(l =>
                             {
-                                l.disabled = false;
-                                Border framePos;
-                                if (AppModel.Instance.allPositionInShowingListView.TryGetValue(l.id, out framePos))
-                                {
-                                    var func = ((TapGestureRecognizer)framePos.Content.GestureRecognizers[0]).Command;
-                                    bool inWork = false;
-                                    if (AppModel.Instance.allPositionInWork != null)
+                                //if(!l.selected)
+                                //{
+                                    l.disabled = false;
+                                    Border framePos;
+                                    if (AppModel.Instance.allPositionInShowingListView.TryGetValue(l.id, out framePos))
                                     {
-                                        var foundInWork = AppModel.Instance.allPositionInWork.leistungen.Find(le => le.id == l.id);
-                                        inWork = foundInWork != null;
-                                    }
-                                    //framePos.Content = inWork ? LeistungWSO.GetInWorkPositionCardView(l, AppModel.Instance, func).Content : LeistungWSO.GetPositionCardView(l, AppModel.Instance, func).Content;
+                                        var func = ((TapGestureRecognizer)framePos.Content.GestureRecognizers[0]).Command;
+                                        bool inWork = false;
+                                        if (AppModel.Instance.allPositionInWork != null)
+                                        {
+                                            var foundInWork = AppModel.Instance.allPositionInWork.leistungen.Find(le => le.id == l.id);
+                                            inWork = foundInWork != null;
+                                        }
 
-                                    var stackPos = inWork ? LeistungWSO.GetInWorkPositionCardView(l, AppModel.Instance, func) : (l.disabled ? LeistungWSO.GetDisabledPositionCardView(l, AppModel.Instance, func) : (l.selected ? LeistungWSO.GetSelectedPositionCardView(l, AppModel.Instance, func) : LeistungWSO.GetPositionCardView(l, AppModel.Instance, func)));
-                                    framePos.Content = stackPos.Content;
-                                }
+                                        var stackPos = inWork ? LeistungWSO.GetInWorkPositionCardView(l, AppModel.Instance, func) 
+                                        : (l.selected ? LeistungWSO.GetSelectedPositionCardView(l, AppModel.Instance, func) 
+                                        : LeistungWSO.GetPositionCardView(l, AppModel.Instance, func));
+                                        framePos.Content = stackPos.Content;
+                                    }
+
+                                //}
                             });
                         });
                     });
@@ -1808,6 +1822,7 @@ namespace iPMCloud.Mobile
                     lb_PosSelectionType_text2.Text = "Bisher nur Produkte gewählt!";
                 }
             }
+
         }
 
         private async void ShowRunningWorksView()
@@ -1844,70 +1859,70 @@ namespace iPMCloud.Mobile
                 var endDT = DateTime.Now;
                 var ts = (endDT - startDT);
 
-                timespan_inwork.Children.Clear();
-                timespan_inwork.Children.Add(new Image
+                timespan_inwork.Clear();
+                timespan_inwork.Add(new Image
                 {
                     Margin = new Thickness(0, 0, 10, 0),
                     HeightRequest = 30,
                     WidthRequest = 30,
                     VerticalOptions = LayoutOptions.Center,
                     Source = "Time.png"
-                });
-                timespan_inwork.Children.Add(new Label
+                },0,0);
+                timespan_inwork.Add(new Label
                 {
                     Text = startDT.ToString("dd.MM.yy") + "\n" + startDT.ToString("HH:mm"),
                     VerticalOptions = LayoutOptions.Center,
-                    HorizontalOptions = LayoutOptions.Fill,
+                    HorizontalOptions = LayoutOptions.Center,
                     FontSize = 16,
                     TextColor = Colors.White,
-                    HorizontalTextAlignment = TextAlignment.Start,
+                    HorizontalTextAlignment = TextAlignment.Center,
                     Margin = new Thickness(0, 0, 0, 0),
                     Padding = new Thickness(0, 0, 0, 0)
-                });
-                timespan_inwork.Children.Add(new Label
+                },1,0);
+                timespan_inwork.Add(new Label
                 {
                     Text = " - ",
                     VerticalOptions = LayoutOptions.Center,
-                    HorizontalOptions = LayoutOptions.Fill,
+                    HorizontalOptions = LayoutOptions.Center,
                     FontSize = 14,
                     TextColor = Colors.Yellow,
-                    HorizontalTextAlignment = TextAlignment.Start,
+                    HorizontalTextAlignment = TextAlignment.Center,
                     Margin = new Thickness(0, 0, 0, 0),
                     Padding = new Thickness(0, 0, 0, 0)
-                });
-                timespan_inwork.Children.Add(new Label
+                },2,0);
+                timespan_inwork.Add(new Label
                 {
                     Text = endDT.ToString("dd.MM.yy") + "\n" + endDT.ToString("HH:mm"),
                     VerticalOptions = LayoutOptions.Center,
-                    HorizontalOptions = LayoutOptions.Fill,
+                    HorizontalOptions = LayoutOptions.Center,
                     FontSize = 16,
                     TextColor = Colors.White,
-                    HorizontalTextAlignment = TextAlignment.Start,
+                    HorizontalTextAlignment = TextAlignment.Center,
                     Margin = new Thickness(0, 0, 0, 0),
                     Padding = new Thickness(0, 0, 0, 0)
-                });
-                timespan_inwork.Children.Add(new Label
+                },3, 0);
+                timespan_inwork.Add(new Label
                 {
                     Text = " = ",
                     VerticalOptions = LayoutOptions.Center,
-                    HorizontalOptions = LayoutOptions.Fill,
+                    HorizontalOptions = LayoutOptions.Center,
                     FontSize = 14,
                     TextColor = Colors.White,
-                    HorizontalTextAlignment = TextAlignment.Start,
+                    HorizontalTextAlignment = TextAlignment.Center,
                     Margin = new Thickness(0, 0, 0, 0),
                     Padding = new Thickness(0, 0, 0, 0)
-                });
-                timespan_inwork.Children.Add(new Label
+                },4, 0);
+                timespan_inwork.Add(new Label
                 {
                     Text = (ts.TotalDays > 1 ? ts.ToString("%d") + "T " : "") + ts.ToString(@"hh\:mm"),
                     VerticalOptions = LayoutOptions.Center,
-                    HorizontalOptions = LayoutOptions.Fill,
-                    FontSize = 16,
+                    HorizontalOptions = LayoutOptions.Center,
+                    FontSize = 20,
                     TextColor = Colors.Yellow,
-                    HorizontalTextAlignment = TextAlignment.Start,
+                    HorizontalTextAlignment = TextAlignment.Center,
                     Margin = new Thickness(0, 0, 0, 0),
                     Padding = new Thickness(0, 0, 0, 0)
-                });
+                },5, 0);
                 runningworks_list.Children.Clear();
                 runningworks_list.Children.Add(LeistungWSO.GetInWorkPositionListView(AppModel.Instance, new Command<LeistungWSO>(TapNoticeFromPosInWork)));
 
@@ -4396,14 +4411,14 @@ namespace iPMCloud.Mobile
             // MainStettings Menü
             if (!visible)
             {
-                await panelContainer_frame.TranslateToAsync(-w, 0, 200, Easing.Linear);
+                //await panelContainer_frame.TranslateToAsync(-w, 0, 200, Easing.Linear);
                 panelContainer.IsVisible = visible;
             }
             else
             {
-                await panelContainer_frame.TranslateToAsync(-w, 0, 0);
+                //await panelContainer_frame.TranslateToAsync(-w, 0, 0);
                 panelContainer.IsVisible = visible;
-                await panelContainer_frame.TranslateToAsync(-2, 0, 200, Easing.Linear);
+                //await panelContainer_frame.TranslateToAsync(-2, 0, 200, Easing.Linear);
                 SetAllSyncState();
             }
         }
@@ -4467,23 +4482,17 @@ namespace iPMCloud.Mobile
         }
         public async void AuswahlAnzeigenTapped_Done(bool visible)
         {
-            double w = screenWidthDp;
-            double h = screenHeightDp;
-            // MainStettings Menü
-            if (!visible)
+            if (visible)
             {
-                await panelShowSelectedPos_frame.TranslateToAsync(-w, 0, 200, Easing.Linear);
                 panelShowSelectedPos_Container.IsVisible = visible;
-                selectedPosList_container.Children.Clear();
-            }
-            else
-            {
-                await panelShowSelectedPos_frame.TranslateToAsync(-w, 0, 0);
-                panelShowSelectedPos_Container.IsVisible = visible;
-                await panelShowSelectedPos_frame.TranslateToAsync(-2, 0, 200, Easing.Linear);
                 selectedPosList_container.Children.Add(LeistungWSO.GetSelectedPositionListView(
                     AppModel.Instance, new Command<LeistungWSO>(RemoveSelectPositionFromToWork),
                     new Command<ChangeSelectedMuellPos>(ChangeSelectedMuellPos)));
+            }
+            else
+            {
+                panelShowSelectedPos_Container.IsVisible = visible;
+                selectedPosList_container.Children.Clear();
             }
         }
         public async void ChangeSelectedMuellPos(ChangeSelectedMuellPos obj)
@@ -4525,21 +4534,16 @@ namespace iPMCloud.Mobile
         }
         public async void AuswahlAnzeigenTapped_Again_Done(bool visible)
         {
-            double w = screenWidthDp;
-            double h = screenHeightDp;
-            if (!visible)
+            if (visible)
             {
-                await panelShowSelectedPos_frame.TranslateToAsync(-w, 0, 200, Easing.Linear);
                 panelShowSelectedPos_Container.IsVisible = visible;
-                selectedPosList_container.Children.Clear();
-            }
+                selectedPosList_container.Children.Add(LeistungWSO.GetSelectedPositionAgainListView(new Command<LeistungWSO>(RemoveSelectPositionAgainFromToWork)));
+            } 
             else
             {
-                await panelShowSelectedPos_frame.TranslateToAsync(-w, 0, 0);
                 panelShowSelectedPos_Container.IsVisible = visible;
-                await panelShowSelectedPos_frame.TranslateToAsync(-2, 0, 200, Easing.Linear);
-                selectedPosList_container.Children.Add(LeistungWSO.GetSelectedPositionAgainListView(AppModel.Instance, new Command<LeistungWSO>(RemoveSelectPositionAgainFromToWork)));
-            }
+                selectedPosList_container.Children.Clear();
+            }            
         }
 
 

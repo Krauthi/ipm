@@ -231,7 +231,7 @@ namespace iPMCloud.Mobile.vo
                 resMsg = await httpClientInstanceLogin.SendAsync(msg);
                 if (resMsg != null && resMsg.StatusCode == System.Net.HttpStatusCode.OK)
                 {
-                    var json = resMsg.Content.ReadAsStringAsync().Result;
+                    var json = await resMsg.Content.ReadAsStringAsync();
                     resMsg.Dispose();
                     return JsonConvert.DeserializeObject<IpmLoginResponse>(json);
                 }

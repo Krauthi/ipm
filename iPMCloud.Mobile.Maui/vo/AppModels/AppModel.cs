@@ -270,8 +270,17 @@ namespace iPMCloud.Mobile.vo
                 Connections = new Connections(this);
                 Scan = new Scanner(this);
                 Person = PersonWSO.LoadPerson(this);// Wenn keine Person dann "null" !!
+
+                var swBuildings = System.Diagnostics.Stopwatch.StartNew();
                 InitBuildings();
+                swBuildings.Stop();
+                Logger.Info($"PERF: InitBuildings took {swBuildings.ElapsedMilliseconds} ms");
+
+                var swKategorien = System.Diagnostics.Stopwatch.StartNew();
                 SetAllKategorieNames();
+                swKategorien.Stop();
+                Logger.Info($"PERF: SetAllKategorieNames took {swKategorien.ElapsedMilliseconds} ms");
+
                 AppControll = AppControll.Load(this);
                 InitLangs();
 

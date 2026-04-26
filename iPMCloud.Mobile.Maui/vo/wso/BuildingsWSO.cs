@@ -75,18 +75,21 @@ namespace iPMCloud.Mobile
                 string directoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ipm/" + model.SettingModel.SettingDTO.CustomerNumber + "/buildings/");
                 if (Directory.Exists(directoryPath))
                 {
-                    var files = Directory.GetFiles(directoryPath);
+                    var files = Directory.GetFiles(directoryPath, "b_*.ipm");
                     if (files != null && files.Length > 0)
                     {
-                        files.ToList().ForEach(building =>
+                        foreach (var file in files)
                         {
-                            building = building.Replace(directoryPath, "").Replace("b_", "").Replace(".ipm", "");
-                            var b = BuildingWSO.LoadBuilding(model, int.Parse(building));
-                            if (b.del == 0)
+                            string idString = Path.GetFileNameWithoutExtension(file).Replace("b_", "");
+                            if (int.TryParse(idString, out int buildingId))
                             {
-                                list.Add(BuildingWSO.LoadBuilding(model, int.Parse(building)));
+                                var b = BuildingWSO.LoadBuilding(model, buildingId);
+                                if (b != null && b.del == 0)
+                                {
+                                    list.Add(b);
+                                }
                             }
-                        });
+                        }
                     }
                     if (sorted) { list = list.OrderBy(o => o.id).ToList(); }
                 }
@@ -107,18 +110,21 @@ namespace iPMCloud.Mobile
                 string directoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ipm/" + AppModel.Instance.SettingModel.SettingDTO.CustomerNumber + "/buildings/");
                 if (Directory.Exists(directoryPath))
                 {
-                    var files = Directory.GetFiles(directoryPath);
+                    var files = Directory.GetFiles(directoryPath, "b_*.ipm");
                     if (files != null && files.Length > 0)
                     {
-                        files.ToList().ForEach(building =>
+                        foreach (var file in files)
                         {
-                            building = building.Replace(directoryPath, "").Replace("b_", "").Replace(".ipm", "");
-                            var b = BuildingWSO.LoadBuilding(AppModel.Instance, int.Parse(building));
-                            if (b.del == 0)
+                            string idString = Path.GetFileNameWithoutExtension(file).Replace("b_", "");
+                            if (int.TryParse(idString, out int buildingId))
                             {
-                                list.Add(BuildingWSO.LoadBuilding(AppModel.Instance, int.Parse(building)));
+                                var b = BuildingWSO.LoadBuilding(AppModel.Instance, buildingId);
+                                if (b != null && b.del == 0)
+                                {
+                                    list.Add(b);
+                                }
                             }
-                        });
+                        }
                     }
                 }
             }

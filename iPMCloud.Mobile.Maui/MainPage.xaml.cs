@@ -63,6 +63,10 @@ namespace iPMCloud.Mobile
         // Deferred overlays view
         private Views.MainPageOverlaysView _overlaysView;
 
+        // Guard fields: ensure overlays are loaded at most once.
+        private Task _overlayLoadTask;
+        private bool _overlaysLoaded = false;
+
         // Forwarding properties for elements moved into MainPageOverlaysView
         private AbsoluteLayout CheckPage_Bem_Container => _overlaysView?.CheckPageBemContainer;
         private Label CheckPage_Bem_Title => _overlaysView?.CheckPageBemTitle;
@@ -271,9 +275,50 @@ namespace iPMCloud.Mobile
             this.Loaded += OnPageLoaded;
         }
 
-        private void OnPageLoaded(object sender, EventArgs e)
+        private async void OnPageLoaded(object sender, EventArgs e)
         {
             this.Loaded -= OnPageLoaded;
+            await EnsureOverlaysLoadedAsync();
+        }
+
+        /// <summary>
+        /// Idempotent entry-point for overlay loading.
+        /// Returns immediately if already loaded, joins the in-flight task if loading is in
+        /// progress, or starts a new load task. Never blocks the UI thread.
+        /// NOTE: Must only be called from the UI thread (MAUI event handlers guarantee this).
+        /// </summary>
+        private Task EnsureOverlaysLoadedAsync()
+        {
+            if (_overlaysLoaded)
+            {
+#if DEBUG
+                AppModel.Logger.Info("PERF: EnsureOverlaysLoadedAsync – skipped (already loaded)");
+#endif
+                return Task.CompletedTask;
+            }
+            if (_overlayLoadTask != null)
+            {
+#if DEBUG
+                AppModel.Logger.Info("PERF: EnsureOverlaysLoadedAsync – joined in-flight task");
+#endif
+                return _overlayLoadTask;
+            }
+#if DEBUG
+            AppModel.Logger.Info("PERF: EnsureOverlaysLoadedAsync – started load");
+#endif
+            _overlayLoadTask = DoLoadOverlaysAsync();
+            return _overlayLoadTask;
+        }
+
+        /// <summary>
+        /// Performs the actual overlay construction after yielding so the first frame can paint.
+        /// All work runs on the UI thread; await Task.Yield() prevents blocking the caller.
+        /// </summary>
+        private async Task DoLoadOverlaysAsync()
+        {
+            // Yield so the current call stack unwinds and the first frame can paint before
+            // the (potentially expensive) overlay construction runs on the UI thread.
+            await Task.Yield();
 #if DEBUG
             var swDeferred = System.Diagnostics.Stopwatch.StartNew();
             AppModel.Logger.Info("PERF: MainPage deferred overlays load start");
@@ -281,6 +326,7 @@ namespace iPMCloud.Mobile
             _overlaysView = new Views.MainPageOverlaysView();
             WireOverlayEvents();
             DeferredOverlaysHost.Content = _overlaysView;
+            _overlaysLoaded = true;
 #if DEBUG
             swDeferred.Stop();
             AppModel.Logger.Info($"PERF: MainPage deferred overlays load done in {swDeferred.ElapsedMilliseconds} ms");
@@ -302,20 +348,10 @@ namespace iPMCloud.Mobile
 
         public async void MainPageAgain()
         {
-            if (_overlaysView == null)
-            {
-#if DEBUG
-                var swOv = System.Diagnostics.Stopwatch.StartNew();
-                AppModel.Logger.Info("PERF: MainPageAgain – loading deferred overlays synchronously");
-#endif
-                _overlaysView = new Views.MainPageOverlaysView();
-                WireOverlayEvents();
-                DeferredOverlaysHost.Content = _overlaysView;
-#if DEBUG
-                swOv.Stop();
-                AppModel.Logger.Info($"PERF: MainPageAgain – deferred overlays loaded in {swOv.ElapsedMilliseconds} ms");
-#endif
-            }
+            // Fire-and-forget: trigger overlay loading without blocking navigation startup.
+            // If already loaded or in-flight, EnsureOverlaysLoadedAsync is a no-op.
+            var overlayTask = EnsureOverlaysLoadedAsync();
+
             try
             {
 #if DEBUG
@@ -325,14 +361,19 @@ namespace iPMCloud.Mobile
                 isInitialize = true;
                 //AppModel.Instance.anImage = backgroundIMG;
 
-                AppModel.Instance.MainPageOverlay = overlay;
-
                 AppModel.Instance._showall_again_OrderCategory_frame = btn_back_inBuildingOrder_category_showall_again;
                 AppModel.Instance._showall_OrderCategory_frame = btn_back_inBuildingOrder_category_showall;
 
-                // Show spinner immediately so the page looks responsive, then yield to
-                // allow the first frame to paint before heavy initialization runs.
-                overlay.IsVisible = true;
+                // Guard: overlay controls are null until DoLoadOverlaysAsync completes.
+                // Show spinner only when overlays are already loaded; the spinner will
+                // appear via ShowMainPage() once the continuation runs if not yet ready.
+                if (_overlaysView != null)
+                {
+                    AppModel.Instance.MainPageOverlay = overlay;
+                    overlay.IsVisible = true;
+                }
+
+                // Yield so the first frame can paint before heavy initialization runs.
                 await Task.Yield();
 
 #if DEBUG
@@ -360,7 +401,26 @@ namespace iPMCloud.Mobile
                 if (checkPerm)
                 {
                     CheckAllSyncFromUpload();
-                    InitStartPageHandlers();
+
+                    // Guard: InitStartPageHandlers uses many overlay-backed controls.
+                    // Call immediately if overlays are loaded; otherwise queue after loading.
+                    if (_overlaysView != null)
+                    {
+                        InitStartPageHandlers();
+                    }
+                    else
+                    {
+                        _ = overlayTask.ContinueWith(
+                            t => MainThread.InvokeOnMainThreadAsync(() =>
+                            {
+                                try { InitStartPageHandlers(); }
+                                catch (Exception ex)
+                                {
+                                    AppModel.Logger.Error("Fehler in InitStartPageHandlers (deferred): " + ex.Message + " | StackTrace: " + ex.StackTrace);
+                                }
+                            }),
+                            TaskContinuationOptions.OnlyOnRanToCompletion);
+                    }
 #if DEBUG
                     AppModel.Logger.Info($"PERF: MainPageAgain InitStartPageHandlers took {sw.ElapsedMilliseconds} ms");
                     sw.Restart();
@@ -397,8 +457,31 @@ namespace iPMCloud.Mobile
                     AppModel.Logger.Info($"PERF: MainPageAgain LeistungPackWSO.Load took {sw.ElapsedMilliseconds} ms");
                     sw.Restart();
 #endif
-                    ShowMainPage();
 
+                    // Guard: ShowMainPage uses overlay controls.
+                    // Call immediately if overlays are loaded; otherwise queue after loading.
+                    if (_overlaysView != null)
+                    {
+                        AppModel.Instance.MainPageOverlay = overlay;
+                        ShowMainPage();
+                    }
+                    else
+                    {
+                        _ = overlayTask.ContinueWith(
+                            t => MainThread.InvokeOnMainThreadAsync(() =>
+                            {
+                                try
+                                {
+                                    AppModel.Instance.MainPageOverlay = overlay;
+                                    ShowMainPage();
+                                }
+                                catch (Exception ex)
+                                {
+                                    AppModel.Logger.Error("Fehler in ShowMainPage (deferred): " + ex.Message + " | StackTrace: " + ex.StackTrace);
+                                }
+                            }),
+                            TaskContinuationOptions.OnlyOnRanToCompletion);
+                    }
 
                     frame_plantabA.Margin = new Thickness(0, -8, 2, 0);
                     frame_plantabB.Margin = new Thickness(0, 0, 2, 0);
@@ -411,7 +494,9 @@ namespace iPMCloud.Mobile
                 }
                 else
                 {
-                    overlay.IsVisible = false;
+                    // Guard: overlay may not be loaded yet on the error path.
+                    if (_overlaysView != null)
+                        overlay.IsVisible = false;
                     await DisplayAlertAsync("Fehlende Berechtigungen!", "Bitte beenden Sie die App und starten diese neu!\n\nAktivieren Sie nach dem neustart die benötigten Berechtigungen!", "OK");
                 }
             }

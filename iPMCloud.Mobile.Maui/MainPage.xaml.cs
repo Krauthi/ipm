@@ -330,29 +330,41 @@ namespace iPMCloud.Mobile
             var sw = Stopwatch.StartNew();
             AppModel.Logger.Info("PERF: MainPage overlays on-demand load start");
 #endif
-            // Yield one frame so the UI can render before the heavy constructor runs.
-            await Task.Yield();
-
-            _overlaysView = new Views.MainPageOverlaysView();
-            WireOverlayEvents();
-            DeferredOverlaysHost.Content = _overlaysView;
-            _overlaysLoaded = true;
-
-            // Update AppModel so external code (e.g. BuildingsWSO) can reach the overlay.
-            if (AppModel.Instance != null)
-                AppModel.Instance.MainPageOverlay = overlay;
-
-            // Run deferred handler setup that was skipped during startup.
-            if (_pendingStartPageHandlersInit)
+            try
             {
-                _pendingStartPageHandlersInit = false;
-                InitStartPageHandlers();
-            }
+                // Yield one frame so the UI can render before the heavy constructor runs.
+                await Task.Yield();
+
+                _overlaysView = new Views.MainPageOverlaysView();
+                WireOverlayEvents();
+                DeferredOverlaysHost.Content = _overlaysView;
+
+                // Update AppModel so external code (e.g. BuildingsWSO) can reach the overlay.
+                if (AppModel.Instance != null)
+                    AppModel.Instance.MainPageOverlay = overlay;
+
+                // Run deferred handler setup that was skipped during startup.
+                if (_pendingStartPageHandlersInit)
+                {
+                    _pendingStartPageHandlersInit = false;
+                    InitStartPageHandlers();
+                }
+
+                // Mark overlays as fully ready only after InitStartPageHandlers completes.
+                _overlaysLoaded = true;
 
 #if DEBUG
-            sw.Stop();
-            AppModel.Logger.Info($"PERF: MainPage overlays on-demand load done in {sw.ElapsedMilliseconds} ms");
+                sw.Stop();
+                AppModel.Logger.Info($"PERF: MainPage overlays on-demand load done in {sw.ElapsedMilliseconds} ms");
 #endif
+            }
+            catch (Exception ex)
+            {
+                // Reset so a future call can retry rather than returning a faulted task.
+                _overlaysLoadTask = null;
+                AppModel.Logger.Error($"ERROR: MainPage overlay load failed: {ex.Message}");
+                throw;
+            }
         }
 
         public async void MainPageAgain()
@@ -407,10 +419,13 @@ namespace iPMCloud.Mobile
                     // Wire btn_mainmenu early so the user can open the menu even before
                     // overlays are loaded. InitStartPageHandlers (which wires the full set
                     // of handlers) is deferred until EnsureOverlaysLoadedAsync completes.
+                    // The temporary handler is self-removing to prevent double invocations.
                     btn_mainmenu.GestureRecognizers.Clear();
                     var tgr_mainmenu_early = new TapGestureRecognizer();
                     tgr_mainmenu_early.Tapped += async (s, e) =>
                     {
+                        // Remove this temporary handler; InitStartPageHandlers wires a permanent one.
+                        btn_mainmenu.GestureRecognizers.Clear();
                         await EnsureOverlaysLoadedAsync();
                         // InitStartPageHandlers was called inside EnsureOverlaysLoadedAsync;
                         // now the panel can be toggled normally.

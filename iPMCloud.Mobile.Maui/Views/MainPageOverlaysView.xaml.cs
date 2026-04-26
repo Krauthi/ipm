@@ -1,3 +1,4 @@
+using iPMCloud.Mobile.vo;
 using Microsoft.Maui.Controls;
 
 namespace iPMCloud.Mobile.Views
@@ -174,6 +175,15 @@ namespace iPMCloud.Mobile.Views
         public VerticalStackLayout SelectedPosListContainer => selectedPosList_container;
         public Switch SwAlertmessageDirektPos => sw_alertmessage_DirektPos;
         public Switch SwInternmessageDirektPos => sw_internmessage_DirektPos;
+        public PopupContainerObjectValuesBildView GetPopupContainerObjectValuesBild() 
+        {
+            // Using FindByName to avoid naming conflict with the generated private field.
+            return (PopupContainerObjectValuesBildView)FindByName("PopupContainerObjectValuesBild");
+        }
+        public CustomEditor EntryNoticeDirektPos => entry_notice_DirektPos;
+        public CustomEditor EntryNoticeCheckBem => entry_notice_check_bem;
+        public ImageButton BtnOverlayAuswahlAnzeigen => btn_overlay_auswahl_anzeigen;
+        public ImageButton BtnOverlayMainMenuTapped => btn_overlay_mainmenu_tapped;
 
         public MainPageOverlaysView()
         {

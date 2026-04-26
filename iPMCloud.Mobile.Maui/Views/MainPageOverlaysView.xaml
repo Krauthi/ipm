@@ -696,7 +696,7 @@
                         Keyboard="Text"
                         MinimumHeightRequest="80"
                         Text=""
-                        TextChanged="entry_notice_TextChanged_check_bem"
+                        
                         TextColor="#ffffff" />
                 </VerticalStackLayout>
                 <BoxView
@@ -969,7 +969,7 @@
                         Margin="0"
                         BackgroundColor="#144d73"
                         ItemsSource="{Binding}"
-                        SelectionChanged="langListView_SelectionChanged"
+                        
                         SelectionMode="Single">
                         <CollectionView.ItemTemplate>
                             <DataTemplate>
@@ -1283,10 +1283,10 @@
                             VerticalOptions="Center" />
                         <ImageButton
                             Grid.Column="2"
+                            x:Name="btn_overlay_auswahl_anzeigen"
                             Margin="0"
                             Padding="1"
                             BackgroundColor="Transparent"
-                            Clicked="btn_AuswahlAnzeigen"
                             HeightRequest="32"
                             HorizontalOptions="End"
                             Source="x128_2.png"
@@ -1424,10 +1424,10 @@
 
                             <ImageButton
                                 Grid.Column="1"
+                                x:Name="btn_overlay_mainmenu_tapped"
                                 Margin="10"
                                 Padding="3"
                                 BackgroundColor="Transparent"
-                                Clicked="btn_MainMenuTapped"
                                 HeightRequest="36"
                                 HorizontalOptions="End"
                                 Source="x128_2.png"
@@ -3779,7 +3779,7 @@
                         Keyboard="Text"
                         MinimumHeightRequest="80"
                         Text=""
-                        TextChanged="entry_notice_TextChanged_DirektPos"
+                        
                         TextColor="#ffffff" />
                 </VerticalStackLayout>
                 <BoxView
@@ -3831,7 +3831,7 @@
                                 x:Name="sw_alertmessage_DirektPos"
                                 Grid.Column="1"
                                 HorizontalOptions="Start"
-                                Toggled="AlertMessage_Switch_Toggled_DirektPos"
+                                
                                 VerticalOptions="Center" />
                         </Grid>
                         <Grid
@@ -3858,7 +3858,7 @@
                                 x:Name="sw_internmessage_DirektPos"
                                 Grid.Column="1"
                                 HorizontalOptions="Start"
-                                Toggled="InternMessage_Switch_Toggled_DirektPos"
+                                
                                 VerticalOptions="Center" />
                         </Grid>
                         <Label
@@ -4240,7 +4240,7 @@
                     HorizontalOptions="Fill"
                     IsGrouped="True"
                     ItemsSource="{Binding}"
-                    SelectionChanged="empListView_SelectionChanged"
+                    
                     SelectionMode="Single"
                     VerticalOptions="Fill">
                     <CollectionView.ItemTemplate>

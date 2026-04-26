@@ -233,8 +233,9 @@ namespace iPMCloud.Mobile
         private VerticalStackLayout selectedPosList_container => _overlaysView?.SelectedPosListContainer;
         private Switch sw_alertmessage_DirektPos => _overlaysView?.SwAlertmessageDirektPos;
         private Switch sw_internmessage_DirektPos => _overlaysView?.SwInternmessageDirektPos;
-
-
+        private Views.PopupContainerObjectValuesBildView PopupContainerObjectValuesBild => _overlaysView?.GetPopupContainerObjectValuesBild();
+        private iPMCloud.Mobile.vo.CustomEditor entry_notice_DirektPos => _overlaysView?.EntryNoticeDirektPos;
+        private iPMCloud.Mobile.vo.CustomEditor entry_notice_check_bem => _overlaysView?.EntryNoticeCheckBem;
 
         public DisplayInfo di = DeviceDisplay.MainDisplayInfo;
         public double density = 0;//> di.Density;           // px pro dp
@@ -278,11 +279,25 @@ namespace iPMCloud.Mobile
             AppModel.Logger.Info("PERF: MainPage deferred overlays load start");
 #endif
             _overlaysView = new Views.MainPageOverlaysView();
+            WireOverlayEvents();
             DeferredOverlaysHost.Content = _overlaysView;
 #if DEBUG
             swDeferred.Stop();
             AppModel.Logger.Info($"PERF: MainPage deferred overlays load done in {swDeferred.ElapsedMilliseconds} ms");
 #endif
+        }
+
+        private void WireOverlayEvents()
+        {
+            if (_overlaysView == null) return;
+            _overlaysView.EntryNoticeCheckBem.TextChanged += entry_notice_TextChanged_check_bem;
+            _overlaysView.LangListView.SelectionChanged += langListView_SelectionChanged;
+            _overlaysView.BtnOverlayAuswahlAnzeigen.Clicked += btn_AuswahlAnzeigen;
+            _overlaysView.BtnOverlayMainMenuTapped.Clicked += btn_MainMenuTapped;
+            _overlaysView.EntryNoticeDirektPos.TextChanged += entry_notice_TextChanged_DirektPos;
+            _overlaysView.EmpListView.SelectionChanged += empListView_SelectionChanged;
+            _overlaysView.SwAlertmessageDirektPos.Toggled += AlertMessage_Switch_Toggled_DirektPos;
+            _overlaysView.SwInternmessageDirektPos.Toggled += InternMessage_Switch_Toggled_DirektPos;
         }
 
         public async void MainPageAgain()
@@ -294,6 +309,7 @@ namespace iPMCloud.Mobile
                 AppModel.Logger.Info("PERF: MainPageAgain – loading deferred overlays synchronously");
 #endif
                 _overlaysView = new Views.MainPageOverlaysView();
+                WireOverlayEvents();
                 DeferredOverlaysHost.Content = _overlaysView;
 #if DEBUG
                 swOv.Stop();

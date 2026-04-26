@@ -289,6 +289,8 @@ namespace iPMCloud.Mobile
         /// the same in-flight Task to any concurrent callers so the view is never
         /// constructed twice.  A single <c>await Task.Yield()</c> before construction
         /// lets the UI thread render one frame first, preventing Android ANR.
+        /// All access to the guard fields is performed on the MAUI main thread, so no
+        /// additional locking is required.
         /// </summary>
         private Task EnsureOverlaysLoadedAsync()
         {
@@ -313,17 +315,24 @@ namespace iPMCloud.Mobile
 #endif
             _overlaysLoadTask = MainThread.InvokeOnMainThreadAsync(async () =>
             {
-                // Yield so the UI thread can paint at least one frame before the
-                // expensive InitializeComponent() inside MainPageOverlaysView runs.
-                await Task.Yield();
+                try
+                {
+                    // Yield so the UI thread can paint at least one frame before the
+                    // expensive InitializeComponent() inside MainPageOverlaysView runs.
+                    await Task.Yield();
 
-                _overlaysView = new Views.MainPageOverlaysView();
-                WireOverlayEvents();
-                DeferredOverlaysHost.Content = _overlaysView;
-                _overlaysLoaded = true;
+                    _overlaysView = new Views.MainPageOverlaysView();
+                    WireOverlayEvents();
+                    DeferredOverlaysHost.Content = _overlaysView;
+                    _overlaysLoaded = true;
 #if DEBUG
-                AppModel.Logger.Info("PERF: EnsureOverlaysLoadedAsync – overlay load done");
+                    AppModel.Logger.Info("PERF: EnsureOverlaysLoadedAsync – overlay load done");
 #endif
+                }
+                catch (Exception ex)
+                {
+                    AppModel.Logger.Error("EnsureOverlaysLoadedAsync failed: " + ex.Message + " | " + ex.StackTrace);
+                }
             });
 
             return _overlaysLoadTask;
@@ -362,8 +371,10 @@ namespace iPMCloud.Mobile
                 AppModel.Instance._showall_again_OrderCategory_frame = btn_back_inBuildingOrder_category_showall_again;
                 AppModel.Instance._showall_OrderCategory_frame = btn_back_inBuildingOrder_category_showall;
 
-                // Show spinner if overlays are already loaded; the overlay load task
-                // will make itself visible once ready.  yield so the first frame paints.
+                // Show the loading spinner if overlays are already available.
+                // If overlays are still being inflated the spinner will appear once
+                // EnsureOverlaysLoadedAsync() completes; either way yield so the
+                // first frame paints before further initialization runs.
                 if (overlay != null) overlay.IsVisible = true;
                 await Task.Yield();
 

@@ -203,7 +203,7 @@ namespace iPMCloud.Mobile
         private AbsoluteLayout popupContainer_infodialog => _overlaysView?.PopupContainerInfodialog;
         private Border popupContainer_infodialog_close => _overlaysView?.PopupContainerInfodialogClose;
         private Label popupContainer_infodialog_text => _overlaysView?.PopupContainerInfodialogText;
-        private Label popupContainer_infodialog_titel => _overlaysView?.PopupContainerInfodialogTitel;
+        //private Label popupContainer_infodialog_titel => _overlaysView?.PopupContainerInfodialogTitel;
         private AbsoluteLayout popupContainer_quest_changelang => _overlaysView?.PopupContainerQuestChangelang;
         private AbsoluteLayout popupContainer_quest_changelang_fail => _overlaysView?.PopupContainerQuestChangelangFail;
         private AbsoluteLayout popupContainer_quest_changemuellpos => _overlaysView?.PopupContainerQuestChangemuellpos;
@@ -231,8 +231,8 @@ namespace iPMCloud.Mobile
         private AbsoluteLayout popupContainer_trans => _overlaysView?.PopupContainerTrans;
         private Label popupContainer_trans_status => _overlaysView?.PopupContainerTransStatus;
         private VerticalStackLayout selectedPosList_container => _overlaysView?.SelectedPosListContainer;
-        private Switch sw_alertmessage_DirektPos => _overlaysView?.SwAlertmessageDirektPos;
-        private Switch sw_internmessage_DirektPos => _overlaysView?.SwInternmessageDirektPos;
+        private Microsoft.Maui.Controls.Switch sw_alertmessage_DirektPos => _overlaysView?.SwAlertmessageDirektPos;
+        private Microsoft.Maui.Controls.Switch sw_internmessage_DirektPos => _overlaysView?.SwInternmessageDirektPos;
         private Views.PopupContainerObjectValuesBildView PopupContainerObjectValuesBild => _overlaysView?.GetPopupContainerObjectValuesBild();
         private iPMCloud.Mobile.vo.CustomEditor entry_notice_DirektPos => _overlaysView?.EntryNoticeDirektPos;
         private iPMCloud.Mobile.vo.CustomEditor entry_notice_check_bem => _overlaysView?.EntryNoticeCheckBem;

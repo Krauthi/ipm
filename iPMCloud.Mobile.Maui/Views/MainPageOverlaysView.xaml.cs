@@ -145,7 +145,7 @@ namespace iPMCloud.Mobile.Views
         public AbsoluteLayout PopupContainerInfodialog => popupContainer_infodialog;
         public Border PopupContainerInfodialogClose => popupContainer_infodialog_close;
         public Label PopupContainerInfodialogText => popupContainer_infodialog_text;
-        public Label PopupContainerInfodialogTitel => popupContainer_infodialog_titel;
+        //public Label PopupContainerInfodialogTitel => popupContainer_infodialog_titel;
         public AbsoluteLayout PopupContainerQuestChangelang => popupContainer_quest_changelang;
         public AbsoluteLayout PopupContainerQuestChangelangFail => popupContainer_quest_changelang_fail;
         public AbsoluteLayout PopupContainerQuestChangemuellpos => popupContainer_quest_changemuellpos;
@@ -173,8 +173,8 @@ namespace iPMCloud.Mobile.Views
         public AbsoluteLayout PopupContainerTrans => popupContainer_trans;
         public Label PopupContainerTransStatus => popupContainer_trans_status;
         public VerticalStackLayout SelectedPosListContainer => selectedPosList_container;
-        public Switch SwAlertmessageDirektPos => sw_alertmessage_DirektPos;
-        public Switch SwInternmessageDirektPos => sw_internmessage_DirektPos;
+        public Microsoft.Maui.Controls.Switch SwAlertmessageDirektPos => sw_alertmessage_DirektPos;
+        public Microsoft.Maui.Controls.Switch SwInternmessageDirektPos => sw_internmessage_DirektPos;
         public PopupContainerObjectValuesBildView GetPopupContainerObjectValuesBild() 
         {
             // Using FindByName to avoid naming conflict with the generated private field.

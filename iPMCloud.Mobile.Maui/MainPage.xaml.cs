@@ -60,8 +60,10 @@ namespace iPMCloud.Mobile
         private ScrollView list_worker_scroll => WorkerPageContainerView.ListWorkerScroll;
         private StackLayout list_worker => WorkerPageContainerView.ListWorker;
 
-        // Deferred overlays view
+        // Deferred overlays view – loaded on-demand to prevent Android ANR
         private Views.MainPageOverlaysView _overlaysView;
+        private Task _overlaysLoadTask;
+        private bool _overlaysLoaded;
 
         // Forwarding properties for elements moved into MainPageOverlaysView
         private AbsoluteLayout CheckPage_Bem_Container => _overlaysView?.CheckPageBemContainer;
@@ -275,16 +277,56 @@ namespace iPMCloud.Mobile
         {
             this.Loaded -= OnPageLoaded;
 #if DEBUG
-            var swDeferred = System.Diagnostics.Stopwatch.StartNew();
-            AppModel.Logger.Info("PERF: MainPage deferred overlays load start");
+            AppModel.Logger.Info("PERF: MainPage Loaded fired (overlays NOT preloaded to avoid ANR)");
 #endif
-            _overlaysView = new Views.MainPageOverlaysView();
-            WireOverlayEvents();
-            DeferredOverlaysHost.Content = _overlaysView;
+            // Overlays are intentionally NOT constructed here.
+            // Heavy XAML inflation on the UI thread during Loaded causes Android ANR.
+            // Use EnsureOverlaysLoadedAsync() to load overlays on-demand instead.
+        }
+
+        /// <summary>
+        /// Loads MainPageOverlaysView exactly once, on the UI thread, and returns
+        /// the same in-flight Task to any concurrent callers so the view is never
+        /// constructed twice.  A single <c>await Task.Yield()</c> before construction
+        /// lets the UI thread render one frame first, preventing Android ANR.
+        /// </summary>
+        private Task EnsureOverlaysLoadedAsync()
+        {
+            if (_overlaysLoaded)
+            {
 #if DEBUG
-            swDeferred.Stop();
-            AppModel.Logger.Info($"PERF: MainPage deferred overlays load done in {swDeferred.ElapsedMilliseconds} ms");
+                AppModel.Logger.Info("PERF: EnsureOverlaysLoadedAsync – skip (already loaded)");
 #endif
+                return Task.CompletedTask;
+            }
+
+            if (_overlaysLoadTask != null)
+            {
+#if DEBUG
+                AppModel.Logger.Info("PERF: EnsureOverlaysLoadedAsync – join in-flight task");
+#endif
+                return _overlaysLoadTask;
+            }
+
+#if DEBUG
+            AppModel.Logger.Info("PERF: EnsureOverlaysLoadedAsync – overlay load start");
+#endif
+            _overlaysLoadTask = MainThread.InvokeOnMainThreadAsync(async () =>
+            {
+                // Yield so the UI thread can paint at least one frame before the
+                // expensive InitializeComponent() inside MainPageOverlaysView runs.
+                await Task.Yield();
+
+                _overlaysView = new Views.MainPageOverlaysView();
+                WireOverlayEvents();
+                DeferredOverlaysHost.Content = _overlaysView;
+                _overlaysLoaded = true;
+#if DEBUG
+                AppModel.Logger.Info("PERF: EnsureOverlaysLoadedAsync – overlay load done");
+#endif
+            });
+
+            return _overlaysLoadTask;
         }
 
         private void WireOverlayEvents()
@@ -302,20 +344,10 @@ namespace iPMCloud.Mobile
 
         public async void MainPageAgain()
         {
-            if (_overlaysView == null)
-            {
-#if DEBUG
-                var swOv = System.Diagnostics.Stopwatch.StartNew();
-                AppModel.Logger.Info("PERF: MainPageAgain – loading deferred overlays synchronously");
-#endif
-                _overlaysView = new Views.MainPageOverlaysView();
-                WireOverlayEvents();
-                DeferredOverlaysHost.Content = _overlaysView;
-#if DEBUG
-                swOv.Stop();
-                AppModel.Logger.Info($"PERF: MainPageAgain – deferred overlays loaded in {swOv.ElapsedMilliseconds} ms");
-#endif
-            }
+            // Kick off overlay loading in the background (fire-and-forget).
+            // Overlays are NOT awaited here so startup never blocks the UI thread.
+            _ = EnsureOverlaysLoadedAsync();
+
             try
             {
 #if DEBUG
@@ -330,9 +362,9 @@ namespace iPMCloud.Mobile
                 AppModel.Instance._showall_again_OrderCategory_frame = btn_back_inBuildingOrder_category_showall_again;
                 AppModel.Instance._showall_OrderCategory_frame = btn_back_inBuildingOrder_category_showall;
 
-                // Show spinner immediately so the page looks responsive, then yield to
-                // allow the first frame to paint before heavy initialization runs.
-                overlay.IsVisible = true;
+                // Show spinner if overlays are already loaded; the overlay load task
+                // will make itself visible once ready.  yield so the first frame paints.
+                if (overlay != null) overlay.IsVisible = true;
                 await Task.Yield();
 
 #if DEBUG
@@ -411,7 +443,7 @@ namespace iPMCloud.Mobile
                 }
                 else
                 {
-                    overlay.IsVisible = false;
+                    if (overlay != null) overlay.IsVisible = false;
                     await DisplayAlertAsync("Fehlende Berechtigungen!", "Bitte beenden Sie die App und starten diese neu!\n\nAktivieren Sie nach dem neustart die benötigten Berechtigungen!", "OK");
                 }
             }
@@ -1464,7 +1496,7 @@ namespace iPMCloud.Mobile
         public async void ShowMainPage()
         {
             isInitialize = true;
-            overlay.IsVisible = true;
+            if (overlay != null) overlay.IsVisible = true;
             await Task.Delay(1);
 
             ClearPageViews();
@@ -1481,7 +1513,7 @@ namespace iPMCloud.Mobile
             btn_showselected_pos_container2.IsVisible = AppModel.Instance.allSelectedPositionToWork.Count > 0;
 
             await Task.Delay(1);
-            overlay.IsVisible = false;
+            if (overlay != null) overlay.IsVisible = false;
             isInitialize = false;
 
             /* GEÄNDERT ... SetAllSyncState in DELETE FILE Methode eingesetzt */

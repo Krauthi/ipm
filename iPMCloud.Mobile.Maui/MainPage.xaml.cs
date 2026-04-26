@@ -75,10 +75,23 @@ namespace iPMCloud.Mobile
         public MainPage()
         {
             isInitialize = true;
+#if DEBUG
+            var swCtor = Stopwatch.StartNew();
+            AppModel.Logger.Info("PERF: MainPage ctor – before InitializeComponent");
+#endif
             InitializeComponent();
+#if DEBUG
+            swCtor.Stop();
+            AppModel.Logger.Info($"PERF: MainPage InitializeComponent took {swCtor.ElapsedMilliseconds} ms");
+            swCtor.Restart();
+#endif
             density = di.Density;
             screenWidthDp = di.Width / di.Density;
             screenHeightDp = di.Height / di.Density;
+#if DEBUG
+            swCtor.Stop();
+            AppModel.Logger.Info($"PERF: MainPage display-info setup took {swCtor.ElapsedMilliseconds} ms");
+#endif
             //MainPageAgain();
         }
 
@@ -88,6 +101,7 @@ namespace iPMCloud.Mobile
             {
 #if DEBUG
                 var sw = Stopwatch.StartNew();
+                AppModel.Logger.Info("PERF: MainPageAgain start");
 #endif
                 isInitialize = true;
                 //AppModel.Instance.anImage = backgroundIMG;
@@ -97,16 +111,41 @@ namespace iPMCloud.Mobile
                 AppModel.Instance._showall_again_OrderCategory_frame = btn_back_inBuildingOrder_category_showall_again;
                 AppModel.Instance._showall_OrderCategory_frame = btn_back_inBuildingOrder_category_showall;
 
+                // Show spinner immediately so the page looks responsive, then yield to
+                // allow the first frame to paint before heavy initialization runs.
+                overlay.IsVisible = true;
+                await Task.Yield();
+
+#if DEBUG
+                AppModel.Logger.Info($"PERF: MainPageAgain – before Lang.Load at {sw.ElapsedMilliseconds} ms total");
+                sw.Restart();
+#endif
                 AppModel.Instance.Lang = Lang.Load();
+#if DEBUG
+                AppModel.Logger.Info($"PERF: MainPageAgain Lang.Load took {sw.ElapsedMilliseconds} ms");
+                sw.Restart();
+#endif
 
                 ShowDisconnected();
+#if DEBUG
+                AppModel.Logger.Info($"PERF: MainPageAgain ShowDisconnected took {sw.ElapsedMilliseconds} ms");
+                sw.Restart();
+#endif
 
                 var checkPerm = await CheckPermissions();
+#if DEBUG
+                AppModel.Logger.Info($"PERF: MainPageAgain CheckPermissions took {sw.ElapsedMilliseconds} ms");
+                sw.Restart();
+#endif
 
                 if (checkPerm)
                 {
                     CheckAllSyncFromUpload();
                     InitStartPageHandlers();
+#if DEBUG
+                    AppModel.Logger.Info($"PERF: MainPageAgain InitStartPageHandlers took {sw.ElapsedMilliseconds} ms");
+                    sw.Restart();
+#endif
                     //ObjektPlanWeekMobile.Delete(AppModel.Instance);
                     // Objekte sycnen erforderlich nach 4 Stunden
                     SyncBuilding();
@@ -131,7 +170,14 @@ namespace iPMCloud.Mobile
                     AppModel.Logger.Info($"[Timing] 10 done in {sw.ElapsedMilliseconds}ms");
                     sw.Restart();
 #endif
-                    AppModel.Instance.allPositionInWork = LeistungPackWSO.Load(AppModel.Instance);
+                    // Load position data on a background thread to avoid blocking the UI thread.
+                    // LeistungPackWSO.Load only reads AppModel data and performs I/O; the result
+                    // is assigned back on the UI thread after the await completes.
+                    AppModel.Instance.allPositionInWork = await Task.Run(() => LeistungPackWSO.Load(AppModel.Instance));
+#if DEBUG
+                    AppModel.Logger.Info($"PERF: MainPageAgain LeistungPackWSO.Load took {sw.ElapsedMilliseconds} ms");
+                    sw.Restart();
+#endif
                     ShowMainPage();
 
 
@@ -146,6 +192,7 @@ namespace iPMCloud.Mobile
                 }
                 else
                 {
+                    overlay.IsVisible = false;
                     await DisplayAlertAsync("Fehlende Berechtigungen!", "Bitte beenden Sie die App und starten diese neu!\n\nAktivieren Sie nach dem neustart die benötigten Berechtigungen!", "OK");
                 }
             }

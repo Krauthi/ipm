@@ -62,6 +62,8 @@ namespace iPMCloud.Mobile
 
         // Deferred overlays view
         private Views.MainPageOverlaysView _overlaysView;
+        private bool _overlaysLoaded;
+        private Task _overlaysLoadTask;
 
         // Forwarding properties for elements moved into MainPageOverlaysView
         private AbsoluteLayout CheckPage_Bem_Container => _overlaysView?.CheckPageBemContainer;
@@ -271,9 +273,46 @@ namespace iPMCloud.Mobile
             this.Loaded += OnPageLoaded;
         }
 
-        private void OnPageLoaded(object sender, EventArgs e)
+        private async void OnPageLoaded(object sender, EventArgs e)
         {
             this.Loaded -= OnPageLoaded;
+            // Yield so the first frame can render before we build the overlay view.
+            await Task.Yield();
+            await EnsureOverlaysLoadedAsync();
+        }
+
+        /// <summary>
+        /// Ensures the deferred overlay view is created and wired exactly once.
+        /// This method is always called on the MAUI UI thread, so there is no
+        /// cross-thread race; the guards protect against re-entrant async calls
+        /// on the same thread (e.g. <see cref="OnPageLoaded"/> and
+        /// <see cref="MainPageAgain"/> both reaching this method before the first
+        /// load task completes).
+        /// </summary>
+        private Task EnsureOverlaysLoadedAsync()
+        {
+            if (_overlaysLoaded)
+            {
+#if DEBUG
+                AppModel.Logger.Info("PERF: EnsureOverlaysLoadedAsync – already loaded, skipped");
+#endif
+                return Task.CompletedTask;
+            }
+
+            if (_overlaysLoadTask != null)
+            {
+#if DEBUG
+                AppModel.Logger.Info("PERF: EnsureOverlaysLoadedAsync – awaiting existing load task");
+#endif
+                return _overlaysLoadTask;
+            }
+
+            _overlaysLoadTask = LoadOverlaysAsync();
+            return _overlaysLoadTask;
+        }
+
+        private Task LoadOverlaysAsync()
+        {
 #if DEBUG
             var swDeferred = System.Diagnostics.Stopwatch.StartNew();
             AppModel.Logger.Info("PERF: MainPage deferred overlays load start");
@@ -281,10 +320,12 @@ namespace iPMCloud.Mobile
             _overlaysView = new Views.MainPageOverlaysView();
             WireOverlayEvents();
             DeferredOverlaysHost.Content = _overlaysView;
+            _overlaysLoaded = true;
 #if DEBUG
             swDeferred.Stop();
             AppModel.Logger.Info($"PERF: MainPage deferred overlays load done in {swDeferred.ElapsedMilliseconds} ms");
 #endif
+            return Task.CompletedTask;
         }
 
         private void WireOverlayEvents()
@@ -302,20 +343,6 @@ namespace iPMCloud.Mobile
 
         public async void MainPageAgain()
         {
-            if (_overlaysView == null)
-            {
-#if DEBUG
-                var swOv = System.Diagnostics.Stopwatch.StartNew();
-                AppModel.Logger.Info("PERF: MainPageAgain – loading deferred overlays synchronously");
-#endif
-                _overlaysView = new Views.MainPageOverlaysView();
-                WireOverlayEvents();
-                DeferredOverlaysHost.Content = _overlaysView;
-#if DEBUG
-                swOv.Stop();
-                AppModel.Logger.Info($"PERF: MainPageAgain – deferred overlays loaded in {swOv.ElapsedMilliseconds} ms");
-#endif
-            }
             try
             {
 #if DEBUG
@@ -325,15 +352,18 @@ namespace iPMCloud.Mobile
                 isInitialize = true;
                 //AppModel.Instance.anImage = backgroundIMG;
 
+                // Yield to let the first frame paint and give the Loaded event a chance
+                // to fire, then ensure overlays are ready before accessing overlay elements.
+                await Task.Yield();
+                await EnsureOverlaysLoadedAsync();
+
                 AppModel.Instance.MainPageOverlay = overlay;
 
                 AppModel.Instance._showall_again_OrderCategory_frame = btn_back_inBuildingOrder_category_showall_again;
                 AppModel.Instance._showall_OrderCategory_frame = btn_back_inBuildingOrder_category_showall;
 
-                // Show spinner immediately so the page looks responsive, then yield to
-                // allow the first frame to paint before heavy initialization runs.
+                // Show spinner now that overlay view is guaranteed to be loaded.
                 overlay.IsVisible = true;
-                await Task.Yield();
 
 #if DEBUG
                 AppModel.Logger.Info($"PERF: MainPageAgain – before Lang.Load at {sw.ElapsedMilliseconds} ms total");

@@ -80,7 +80,7 @@ namespace iPMCloud.Mobile
                     {
                         foreach (var file in files)
                         {
-                            string idString = Path.GetFileNameWithoutExtension(file).Replace("b_", "");
+                            string idString = Path.GetFileNameWithoutExtension(file).Substring(2);
                             if (int.TryParse(idString, out int buildingId))
                             {
                                 var b = BuildingWSO.LoadBuilding(model, buildingId);
@@ -115,7 +115,7 @@ namespace iPMCloud.Mobile
                     {
                         foreach (var file in files)
                         {
-                            string idString = Path.GetFileNameWithoutExtension(file).Replace("b_", "");
+                            string idString = Path.GetFileNameWithoutExtension(file).Substring(2);
                             if (int.TryParse(idString, out int buildingId))
                             {
                                 var b = BuildingWSO.LoadBuilding(AppModel.Instance, buildingId);

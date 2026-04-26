@@ -63,6 +63,11 @@ namespace iPMCloud.Mobile
         // Deferred overlays view
         private Views.MainPageOverlaysView _overlaysView;
 
+        // On-demand overlay loading state
+        private bool _overlaysLoaded = false;
+        private Task _overlaysLoadTask = null;
+        private bool _pendingStartPageHandlersInit = false;
+
         // Forwarding properties for elements moved into MainPageOverlaysView
         private AbsoluteLayout CheckPage_Bem_Container => _overlaysView?.CheckPageBemContainer;
         private Label CheckPage_Bem_Title => _overlaysView?.CheckPageBemTitle;
@@ -275,16 +280,11 @@ namespace iPMCloud.Mobile
         {
             this.Loaded -= OnPageLoaded;
 #if DEBUG
-            var swDeferred = System.Diagnostics.Stopwatch.StartNew();
-            AppModel.Logger.Info("PERF: MainPage deferred overlays load start");
+            AppModel.Logger.Info("PERF: MainPage Loaded fired – overlays will be loaded on demand (not eagerly)");
 #endif
-            _overlaysView = new Views.MainPageOverlaysView();
-            WireOverlayEvents();
-            DeferredOverlaysHost.Content = _overlaysView;
-#if DEBUG
-            swDeferred.Stop();
-            AppModel.Logger.Info($"PERF: MainPage deferred overlays load done in {swDeferred.ElapsedMilliseconds} ms");
-#endif
+            // Overlays are intentionally NOT constructed here to avoid blocking the UI
+            // thread during startup and triggering Android ANR. Overlays are loaded
+            // on-demand via EnsureOverlaysLoadedAsync() when first needed.
         }
 
         private void WireOverlayEvents()
@@ -300,22 +300,63 @@ namespace iPMCloud.Mobile
             _overlaysView.SwInternmessageDirektPos.Toggled += InternMessage_Switch_Toggled_DirektPos;
         }
 
+        /// <summary>
+        /// Null-safe helper to show or hide the overlay spinner.
+        /// If the overlay view has not been loaded yet, this is a no-op.
+        /// </summary>
+        private void SetOverlayVisible(bool visible)
+        {
+            var o = overlay;
+            if (o != null) o.IsVisible = visible;
+        }
+
+        /// <summary>
+        /// Idempotent, thread-safe on-demand overlay loader.
+        /// The first call constructs MainPageOverlaysView on the UI thread (after
+        /// yielding one frame so the caller can paint first). Subsequent calls return
+        /// the in-flight or already-completed task immediately.
+        /// </summary>
+        private Task EnsureOverlaysLoadedAsync()
+        {
+            if (_overlaysLoaded) return Task.CompletedTask;
+            if (_overlaysLoadTask != null) return _overlaysLoadTask;
+            _overlaysLoadTask = LoadOverlaysOnMainThreadAsync();
+            return _overlaysLoadTask;
+        }
+
+        private async Task LoadOverlaysOnMainThreadAsync()
+        {
+#if DEBUG
+            var sw = Stopwatch.StartNew();
+            AppModel.Logger.Info("PERF: MainPage overlays on-demand load start");
+#endif
+            // Yield one frame so the UI can render before the heavy constructor runs.
+            await Task.Yield();
+
+            _overlaysView = new Views.MainPageOverlaysView();
+            WireOverlayEvents();
+            DeferredOverlaysHost.Content = _overlaysView;
+            _overlaysLoaded = true;
+
+            // Update AppModel so external code (e.g. BuildingsWSO) can reach the overlay.
+            if (AppModel.Instance != null)
+                AppModel.Instance.MainPageOverlay = overlay;
+
+            // Run deferred handler setup that was skipped during startup.
+            if (_pendingStartPageHandlersInit)
+            {
+                _pendingStartPageHandlersInit = false;
+                InitStartPageHandlers();
+            }
+
+#if DEBUG
+            sw.Stop();
+            AppModel.Logger.Info($"PERF: MainPage overlays on-demand load done in {sw.ElapsedMilliseconds} ms");
+#endif
+        }
+
         public async void MainPageAgain()
         {
-            if (_overlaysView == null)
-            {
-#if DEBUG
-                var swOv = System.Diagnostics.Stopwatch.StartNew();
-                AppModel.Logger.Info("PERF: MainPageAgain – loading deferred overlays synchronously");
-#endif
-                _overlaysView = new Views.MainPageOverlaysView();
-                WireOverlayEvents();
-                DeferredOverlaysHost.Content = _overlaysView;
-#if DEBUG
-                swOv.Stop();
-                AppModel.Logger.Info($"PERF: MainPageAgain – deferred overlays loaded in {swOv.ElapsedMilliseconds} ms");
-#endif
-            }
             try
             {
 #if DEBUG
@@ -325,14 +366,16 @@ namespace iPMCloud.Mobile
                 isInitialize = true;
                 //AppModel.Instance.anImage = backgroundIMG;
 
+                // MainPageOverlay may be null until EnsureOverlaysLoadedAsync completes;
+                // LoadOverlaysOnMainThreadAsync will update it once overlays are ready.
                 AppModel.Instance.MainPageOverlay = overlay;
 
                 AppModel.Instance._showall_again_OrderCategory_frame = btn_back_inBuildingOrder_category_showall_again;
                 AppModel.Instance._showall_OrderCategory_frame = btn_back_inBuildingOrder_category_showall;
 
-                // Show spinner immediately so the page looks responsive, then yield to
+                // Show spinner if overlay is already available, then yield to
                 // allow the first frame to paint before heavy initialization runs.
-                overlay.IsVisible = true;
+                SetOverlayVisible(true);
                 await Task.Yield();
 
 #if DEBUG
@@ -360,10 +403,26 @@ namespace iPMCloud.Mobile
                 if (checkPerm)
                 {
                     CheckAllSyncFromUpload();
-                    InitStartPageHandlers();
+
+                    // Wire btn_mainmenu early so the user can open the menu even before
+                    // overlays are loaded. InitStartPageHandlers (which wires the full set
+                    // of handlers) is deferred until EnsureOverlaysLoadedAsync completes.
+                    btn_mainmenu.GestureRecognizers.Clear();
+                    var tgr_mainmenu_early = new TapGestureRecognizer();
+                    tgr_mainmenu_early.Tapped += async (s, e) =>
+                    {
+                        await EnsureOverlaysLoadedAsync();
+                        // InitStartPageHandlers was called inside EnsureOverlaysLoadedAsync;
+                        // now the panel can be toggled normally.
+                        MainMenuTapped_Done(true);
+                    };
+                    btn_mainmenu.GestureRecognizers.Add(tgr_mainmenu_early);
+
+                    // Defer InitStartPageHandlers until overlays are ready (overlay elements
+                    // must exist before gesture recognizers can be attached to them).
+                    _pendingStartPageHandlersInit = true;
 #if DEBUG
-                    AppModel.Logger.Info($"PERF: MainPageAgain InitStartPageHandlers took {sw.ElapsedMilliseconds} ms");
-                    sw.Restart();
+                    AppModel.Logger.Info("PERF: MainPageAgain – InitStartPageHandlers deferred until overlays are loaded");
 #endif
                     //ObjektPlanWeekMobile.Delete(AppModel.Instance);
                     // Objekte sycnen erforderlich nach 4 Stunden
@@ -408,10 +467,15 @@ namespace iPMCloud.Mobile
                     frame_planConB.IsVisible = false;
                     frame_planConCe.IsVisible = false;
                     frame_planConC.IsVisible = false;
+
+                    // Start loading overlays on-demand now that the page is visible.
+                    // Fire-and-forget: does not block startup; will call InitStartPageHandlers
+                    // once complete, at which point all overlay gesture recognizers are wired.
+                    _ = EnsureOverlaysLoadedAsync();
                 }
                 else
                 {
-                    overlay.IsVisible = false;
+                    SetOverlayVisible(false);
                     await DisplayAlertAsync("Fehlende Berechtigungen!", "Bitte beenden Sie die App und starten diese neu!\n\nAktivieren Sie nach dem neustart die benötigten Berechtigungen!", "OK");
                 }
             }
@@ -430,7 +494,7 @@ namespace iPMCloud.Mobile
             {
                 if (showLoader)
                 {
-                    overlay.IsVisible = true;
+                    SetOverlayVisible(true);
                     await Task.Delay(1);
                 }
 
@@ -516,7 +580,7 @@ namespace iPMCloud.Mobile
 
 
             SetChecksCount();
-            overlay.IsVisible = false;
+            SetOverlayVisible(false);
             await Task.Delay(1);
         }
 
@@ -566,6 +630,8 @@ namespace iPMCloud.Mobile
         private int checkQuestIndex = 0;
         public async void StartOrOpenCheckA(IntBoolParam intBol)
         {
+            // Overlays contain the check pages; ensure they are ready before accessing any overlay element.
+            await EnsureOverlaysLoadedAsync();
             AppModel.Instance.selectedCheckA = null;
             AppModel.Instance.selectedCheckInfo = null;
             await Task.Delay(1);
@@ -1464,7 +1530,7 @@ namespace iPMCloud.Mobile
         public async void ShowMainPage()
         {
             isInitialize = true;
-            overlay.IsVisible = true;
+            SetOverlayVisible(true);
             await Task.Delay(1);
 
             ClearPageViews();
@@ -1481,7 +1547,7 @@ namespace iPMCloud.Mobile
             btn_showselected_pos_container2.IsVisible = AppModel.Instance.allSelectedPositionToWork.Count > 0;
 
             await Task.Delay(1);
-            overlay.IsVisible = false;
+            SetOverlayVisible(false);
             isInitialize = false;
 
             /* GEÄNDERT ... SetAllSyncState in DELETE FILE Methode eingesetzt */
@@ -2899,7 +2965,7 @@ namespace iPMCloud.Mobile
             TodoPageView.SetVisible(false);
             StartPage_Container.IsVisible = false;
             DSGVOPageContainerView.SetVisible(false);
-            PN_Page_Container.IsVisible = false;
+            if (PN_Page_Container != null) PN_Page_Container.IsVisible = false;
             WorkerPage_Container.IsVisible = false;
             BuildingScanPage_Container.IsVisible = false;
             BuildingOutScanPage_Container.IsVisible = false;
@@ -4692,9 +4758,9 @@ namespace iPMCloud.Mobile
         {
             ShowDisconnected();
             var countAll = GetAllSyncFromUploadCount();
-            btn_settings_frame_count.IsVisible = countAll > 0;
+            if (btn_settings_frame_count != null) btn_settings_frame_count.IsVisible = countAll > 0;
             btn_StartPage_frame_count.IsVisible = countAll > 0;
-            btn_settings_count.Text = "" + countAll;
+            if (btn_settings_count != null) btn_settings_count.Text = "" + countAll;
             btn_StartPage_count.Text = "" + countAll;
         }
         public void btn_BuildingScanTapped(object sender, EventArgs e)
@@ -7938,7 +8004,7 @@ namespace iPMCloud.Mobile
             //btn_buildingorderToTime_container.IsVisible = AppModel.Instance.LastBuilding != null;
             btn_inwork_container.IsVisible = AppModel.Instance.allPositionInWork != null;
             btn_nachbuchen_container.IsVisible = AppModel.Instance.allPositionInWork != null;
-            btn_regist.IsVisible = AppModel.Instance.allPositionInWork == null;
+            if (btn_regist != null) btn_regist.IsVisible = AppModel.Instance.allPositionInWork == null;
 
             // Plan zeigen/ ausblenden
             if (btn_nachbuchen_container.IsVisible)
@@ -8507,14 +8573,14 @@ namespace iPMCloud.Mobile
 
         public async void CheckAllSyncFromUpload()
         {
-            popupContainer_quest_countfromupload.IsVisible = false;
+            if (popupContainer_quest_countfromupload != null) popupContainer_quest_countfromupload.IsVisible = false;
             _allCountFromUpload = GetAllSyncFromUploadCount();
             _pn = PNWSO.CountFromStack();
             if (_allCountFromUpload > 0)
             {
                 // Es gibt Upload Daten !!!
                 _allCountFromUploadFalied = false;
-                overlay.IsVisible = true;
+                SetOverlayVisible(true);
                 await Task.Delay(1);
                 if (_dayovers > 0 && !_allCountFromUploadFalied)
                 {
@@ -8567,7 +8633,7 @@ namespace iPMCloud.Mobile
                     await Task.Delay(500);
                 }
                 await Task.Delay(1);
-                overlay.IsVisible = false;
+                SetOverlayVisible(false);
             }
 
             if (_pn > 0 && _allCountFromUpload == 0)
@@ -9528,6 +9594,7 @@ namespace iPMCloud.Mobile
 
         public void ShowAlertMessage(string titel, string message, bool enableBtn = false)
         {
+            if (popupContainer_Alert == null) return;
             if (popupContainer_Alert.IsVisible) { return; }
             popupContainer_Alert_Titel.Text = titel;
             popupContainer_Alert_Text.Text = message;
@@ -9536,6 +9603,7 @@ namespace iPMCloud.Mobile
         }
         public void HideAlertMessage(object sender, EventArgs e)
         {
+            if (popupContainer_Alert == null) return;
             popupContainer_Alert.IsVisible = false;
             popupContainer_Alert_Titel.Text = "";
             popupContainer_Alert_Text.Text = "";

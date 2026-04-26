@@ -1296,7 +1296,7 @@ namespace iPMCloud.Mobile
 
 
 
-        public static VerticalStackLayout GetSelectedPositionAgainListView(ICommand func)
+        public static VerticalStackLayout GetSelectedPositionAgainListView(ICommand func, ICommand funcB)
         {
             var stack = new VerticalStackLayout
             {
@@ -1353,7 +1353,7 @@ namespace iPMCloud.Mobile
                             {
                                 if (pos.selected)
                                 {
-                                    var stackPos = GetSelectedPositionAgainSmallCardView(pos, AppModel.Instance, func);
+                                    var stackPos = GetSelectedPositionAgainSmallCardView(pos, AppModel.Instance, func, funcB);
                                     AppModel.Instance.allPositionAgainInShowingSmallListView.Add(pos.id, stackPos);
                                     stack.Children.Add(stackPos);
                                 }
@@ -1364,7 +1364,7 @@ namespace iPMCloud.Mobile
             });
             return stack;
         }
-        public static SwipeView GetSelectedPositionAgainSmallCardView(LeistungWSO leistung, AppModel model, ICommand func)
+        public static SwipeView GetSelectedPositionAgainSmallCardView(LeistungWSO leistung, AppModel model, ICommand func,ICommand funcB)
         {
             var item = new SwipeItem
             {
@@ -1646,12 +1646,12 @@ namespace iPMCloud.Mobile
                     FontSize = 16,
                     HorizontalOptions = LayoutOptions.Start,
                 }, 1, 0);
-                if (func != null && leistung.muell == 1)
+                if (funcB != null && leistung.muell == 1)
                 {
                     hmuellquest.GestureRecognizers.Clear();
                     hmuellquest.GestureRecognizers.Add(new TapGestureRecognizer()
                     {
-                        Command = func,
+                        Command = funcB,
                         CommandParameter = new ChangeSelectedMuellPos
                         {
                             img = imageMuellSign,

@@ -4537,7 +4537,9 @@ namespace iPMCloud.Mobile
             if (visible)
             {
                 panelShowSelectedPos_Container.IsVisible = visible;
-                selectedPosList_container.Children.Add(LeistungWSO.GetSelectedPositionAgainListView(new Command<LeistungWSO>(RemoveSelectPositionAgainFromToWork)));
+                selectedPosList_container.Children.Add(LeistungWSO.GetSelectedPositionAgainListView(
+                    new Command<LeistungWSO>(RemoveSelectPositionAgainFromToWork), 
+                    new Command<ChangeSelectedMuellPos>(ChangeSelectedMuellPos)));
             } 
             else
             {

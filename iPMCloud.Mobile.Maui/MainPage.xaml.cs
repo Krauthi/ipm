@@ -270,7 +270,7 @@ namespace iPMCloud.Mobile
             this.Loaded += OnPageLoaded;
         }
 
-        private async void OnPageLoaded(object sender, EventArgs e)
+        private void OnPageLoaded(object sender, EventArgs e)
         {
             this.Loaded -= OnPageLoaded;
 #if DEBUG

@@ -21,7 +21,6 @@ namespace iPMCloud.Mobile.vo
         public bool displayIsOpen = false;
 
         public CameraBarcodeReaderView zxing;
-        public CameraBarcodeReaderView zxingAlone = new CameraBarcodeReaderView();
 
         // Eigenes Overlay erstellen (ZXingDefaultOverlay existiert nicht mehr)
         public ContentView overlayz;

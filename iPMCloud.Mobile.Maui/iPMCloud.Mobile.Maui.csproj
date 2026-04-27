@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net10.0-android</TargetFrameworks>
+		<TargetFrameworks>net10.0-android;net10.0-ios</TargetFrameworks>
 		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net10.0-windows10.0.19041.0</TargetFrameworks>
 		<OutputType>Exe</OutputType>
 		<RootNamespace>iPMCloud.Mobile</RootNamespace>
@@ -75,6 +75,7 @@
 
 	<!-- Ressourcen -->
 	<ItemGroup>
+		<MauiSplashScreen Include="Resources\Splash\screen.png" Color="#000000" BaseSize="128,128" />
 		<MauiImage Include="Resources\Images\*" />
 		<MauiFont Include="Resources\Fonts\*" />
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
@@ -102,7 +103,6 @@
 	  <MauiImage Remove="Resources\Images\isonline.png" />
 	  <MauiImage Remove="Resources\Images\logo.png" />
 	  <MauiImage Remove="Resources\Images\mockup4b.jpg" />
-	  <MauiImage Remove="Resources\Images\screen.png" />
 	  <MauiImage Remove="Resources\Images\Sort.png" />
 	</ItemGroup>
 

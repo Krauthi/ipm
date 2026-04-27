@@ -274,17 +274,18 @@ namespace iPMCloud.Mobile
         private void OnPageLoaded(object sender, EventArgs e)
         {
             this.Loaded -= OnPageLoaded;
-#if DEBUG
-            var swDeferred = System.Diagnostics.Stopwatch.StartNew();
-            AppModel.Logger.Info("PERF: MainPage deferred overlays load start");
-#endif
-            _overlaysView = new Views.MainPageOverlaysView();
-            WireOverlayEvents();
-            DeferredOverlaysHost.Content = _overlaysView;
-#if DEBUG
-            swDeferred.Stop();
-            AppModel.Logger.Info($"PERF: MainPage deferred overlays load done in {swDeferred.ElapsedMilliseconds} ms");
-#endif
+
+//#if DEBUG
+//            var swDeferred = System.Diagnostics.Stopwatch.StartNew();
+//            AppModel.Logger.Info("PERF: MainPage deferred overlays load start");
+//#endif
+//            _overlaysView = new Views.MainPageOverlaysView();
+//            WireOverlayEvents();
+//            DeferredOverlaysHost.Content = _overlaysView;
+//#if DEBUG
+//            swDeferred.Stop();
+//            AppModel.Logger.Info($"PERF: MainPage deferred overlays load done in {swDeferred.ElapsedMilliseconds} ms");
+//#endif
         }
 
         private void WireOverlayEvents()

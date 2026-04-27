@@ -1,5 +1,4 @@
-﻿using Android.Nfc.Tech;
-using iPMCloud.Mobile.vo;
+﻿using iPMCloud.Mobile.vo;
 using Microsoft.Maui.Controls;
 using System;
 using System.Linq;
@@ -1787,7 +1786,8 @@ namespace iPMCloud.Mobile
                 Text = "Auftrag: " + o.GetMobileText(),
                 TextColor = Color.FromArgb("#ffffff"),
                 Margin = new Thickness(5, 0, 0, 0),
-                FontSize = 12,
+                FontSize = 12, 
+                FontAttributes = FontAttributes.Bold,
                 LineBreakMode = LineBreakMode.WordWrap,
                 HorizontalOptions = LayoutOptions.Fill,
             };
@@ -1797,6 +1797,7 @@ namespace iPMCloud.Mobile
                 TextColor = Color.FromArgb("#ffffff"),
                 Margin = new Thickness(5, 0, 0, 0),
                 FontSize = 12,
+                FontAttributes = FontAttributes.Bold,
                 LineBreakMode = LineBreakMode.WordWrap,
                 HorizontalOptions = LayoutOptions.Fill,
             };
@@ -1858,155 +1859,6 @@ namespace iPMCloud.Mobile
 
 
 
-            var lbanzahl = new Label()
-            {
-                Text = "Anzahl (" + Utils.getEinheitStr(leistung.einheit) + "):",
-                TextColor = Color.FromArgb("#aaaaaa"),
-                Margin = new Thickness(0, 0, 0, 0),
-                Padding = new Thickness(5, 0, 0, 0),
-                FontSize = 12,
-                HorizontalOptions = LayoutOptions.Fill,
-                VerticalOptions = LayoutOptions.Start,
-            };
-            var InWorkPosSmallCardEntryAnzahl = new CustomEntry()
-            {
-                Margin = new Thickness(0, -10, 0, -5),
-                HorizontalOptions = LayoutOptions.Fill,
-                VerticalOptions = LayoutOptions.Start,
-                TextColor = Colors.White,
-                FontSize = 16,
-                Keyboard = Keyboard.Numeric,
-                HeightRequest = 40,
-                Text = Utils.formatDEStr(decimal.Parse(leiInWork.anzahl) > 0 ? decimal.Parse(leiInWork.anzahl) : 1),
-                MinimumWidthRequest = 100,
-                HorizontalTextAlignment = TextAlignment.End,
-                BackgroundColor = Colors.Transparent
-            };
-            InWorkPosSmallCardEntryAnzahl.ReturnCommandParameter = leiInWork;
-            InWorkPosSmallCardEntryAnzahl.Unfocused -= InWorkAnzahlChange;
-            InWorkPosSmallCardEntryAnzahl.Unfocused += InWorkAnzahlChange;
-            InWorkPosSmallCardEntryAnzahl.TextChanged -= InWorkPosSmallCardEntryAnzahlChanged;
-            InWorkPosSmallCardEntryAnzahl.TextChanged += InWorkPosSmallCardEntryAnzahlChanged;
-
-            var hanzahl = new VerticalStackLayout()
-            {
-                Padding = new Thickness(5, 2, 5, 0),
-                Margin = new Thickness(0),
-                Spacing = 0,
-                HorizontalOptions = LayoutOptions.Fill,
-                BackgroundColor = Color.FromArgb("#144d73"),
-            };
-            var addBtn = new VerticalStackLayout()
-            {
-                Padding = new Thickness(5, 2, 5, 2),
-                Margin = new Thickness(3, 0, 0, 0),
-                Spacing = 0,
-                HorizontalOptions = LayoutOptions.Start,
-                WidthRequest = 50,
-                BackgroundColor = Color.FromArgb("#04532d"),
-                Children = {
-                    new Label()
-                    {
-                        Text = "+",
-                        TextColor = Color.FromArgb("#ffffff"),
-                        Margin = new Thickness(0),
-                        Padding = new Thickness(0),
-                        FontSize = 24,
-                        HorizontalOptions = LayoutOptions.Center,
-                        VerticalOptions = LayoutOptions.Center,
-                    }
-
-                }
-            };
-            addBtn.GestureRecognizers.Clear();
-            var t_addBtn = new TapGestureRecognizer();
-            t_addBtn.Tapped += (object ob, TappedEventArgs ev) => { InWorkAddSubAnzahlChange(leiInWork, InWorkPosSmallCardEntryAnzahl, 1); };
-            addBtn.GestureRecognizers.Add(t_addBtn);
-            var subBtn = new VerticalStackLayout()
-            {
-                Padding = new Thickness(5, 2, 5, 2),
-                Margin = new Thickness(3, 0, 0, 0),
-                Spacing = 0,
-                HorizontalOptions = LayoutOptions.Start,
-                WidthRequest = 50,
-                BackgroundColor = Color.FromArgb("#73042d"),
-                Children = {
-                    new Label()
-                    {
-                        Text = "-",
-                        TextColor = Color.FromArgb("#ffffff"),
-                        Margin = new Thickness(0),
-                        Padding = new Thickness(0),
-                        FontSize = 24,
-                        HorizontalOptions = LayoutOptions.Center,
-                        VerticalOptions = LayoutOptions.Center,
-                    }
-
-                }
-            };
-            subBtn.GestureRecognizers.Clear();
-            var t_subBtn = new TapGestureRecognizer();
-            t_subBtn.Tapped += (object ob, TappedEventArgs ev) => { InWorkAddSubAnzahlChange(leiInWork, InWorkPosSmallCardEntryAnzahl, -1); };
-            subBtn.GestureRecognizers.Add(t_subBtn);
-            var ho_anzahl = new StackLayout()
-            {
-                Padding = new Thickness(0),
-                Margin = new Thickness(0, 5, 0, 0),
-                Spacing = 0,
-                Orientation = StackOrientation.Horizontal,
-                HorizontalOptions = LayoutOptions.Center,
-                Children =
-                {
-                    hanzahl,addBtn,subBtn
-                }
-            };
-            hanzahl.Children.Add(lbanzahl);
-            hanzahl.Children.Add(InWorkPosSmallCardEntryAnzahl);
-
-
-            var hmuell = new StackLayout()
-            {
-                Padding = new Thickness(0),
-                Margin = new Thickness(0),
-                Spacing = 0,
-                Orientation = StackOrientation.Horizontal,
-                HorizontalOptions = LayoutOptions.Fill,
-                IsVisible = leistung.muell == 1
-            };
-            var imageMuellSign2 = new Image
-            {
-                Margin = new Thickness(0, -6, 0, 0),
-                HeightRequest = 26,
-                WidthRequest = 26,
-                VerticalOptions = LayoutOptions.Start,
-                HorizontalOptions = LayoutOptions.End,
-                Source = leistung.muell == 1 ? (leistung.inout.inout == 0 ? "Muell_Out.png" : "Muell_InTonne.png") : null,
-            };
-            var imageMuellSign = new Image
-            {
-                Margin = new Thickness(0, -6, 0, 0),
-                HeightRequest = 26,
-                WidthRequest = 26,
-                VerticalOptions = LayoutOptions.Start,
-                HorizontalOptions = LayoutOptions.End,
-                Source = leistung.muell == 1 ? (leistung.inout.inout == 0 ? "Muell_OutTonne.png" : "Muell_In.png") : null,
-            };
-            var lbMuell = new Label()
-            {
-                Text = leistung.muell == 1 ? (leistung.inout.inout == 0 ? "Ich werde RAUSSTELLEN" : "Ich werde REINSTELLEN") : "",
-                TextColor = Color.FromArgb(leistung.muell == 1 ? (leistung.inout.inout == 0 ? "#cc0000" : "#00aa00") : "#cccccc"),
-                Margin = new Thickness(0, 0, 0, 0),
-                Padding = new Thickness(5, 0, 0, 0),
-                FontSize = 16,
-                HorizontalOptions = LayoutOptions.Start,
-            };
-            hmuell.Children.Add(lbMuell);
-            hmuell.Children.Add(imageMuellSign);
-            hmuell.Children.Add(imageMuellSign2);
-
-
-
-
             var vGrid = new Grid()
             {
                 Padding = new Thickness(0, 0, 0, 0),
@@ -2023,20 +1875,222 @@ namespace iPMCloud.Mobile
                 }
             };
 
-            vGrid.Add(order,0,0);
-            vGrid.Add(category,0,1);
-            vGrid.Add(lb,0,2);
-            vGrid.Add(hNote,0,3);
+            vGrid.Add(order, 0, 0);
+            vGrid.Add(category, 0, 1);
+            vGrid.Add(lb, 0, 2);
+            vGrid.Add(hNote, 0, 3);
+
+
+
 
             if (leistung.art == "Produkt")
             {
+
+                var ho_anzahl = new HorizontalStackLayout()
+                {
+                    Padding = new Thickness(0),
+                    Margin = new Thickness(0, 5, 0, 0),
+                    Spacing = 0
+                };
+                var lbanzahl = new Label()
+                {
+                    Text = "Anzahl (" + Utils.getEinheitStr(leistung.einheit) + "):",
+                    TextColor = Color.FromArgb("#aaaaaa"),
+                    Margin = new Thickness(0, 0, 0, 0),
+                    Padding = new Thickness(5, 0, 0, 0),
+                    FontSize = 12,
+                    HorizontalOptions = LayoutOptions.Fill,
+                    VerticalOptions = LayoutOptions.Start,
+                };
+                var InWorkPosSmallCardEntryAnzahl = new CustomEntry()
+                {
+                    Margin = new Thickness(0, -7, 0, -5),
+                    HorizontalOptions = LayoutOptions.Fill,
+                    VerticalOptions = LayoutOptions.Start,
+                    TextColor = Colors.White,
+                    FontSize = 16,
+                    Keyboard = Keyboard.Numeric,
+                    HeightRequest = 40,
+                    Text = Utils.formatDEStr(decimal.Parse(leiInWork.anzahl) > 0 ? decimal.Parse(leiInWork.anzahl) : 1),
+                    MinimumWidthRequest = 100,
+                    HorizontalTextAlignment = TextAlignment.End,
+                    BackgroundColor = Colors.Transparent
+                };
+                InWorkPosSmallCardEntryAnzahl.ReturnCommandParameter = leiInWork;
+                InWorkPosSmallCardEntryAnzahl.Unfocused -= InWorkAnzahlChange;
+                InWorkPosSmallCardEntryAnzahl.Unfocused += InWorkAnzahlChange;
+                InWorkPosSmallCardEntryAnzahl.TextChanged -= InWorkPosSmallCardEntryAnzahlChanged;
+                InWorkPosSmallCardEntryAnzahl.TextChanged += InWorkPosSmallCardEntryAnzahlChanged;
+
+                var vanzahl = new VerticalStackLayout()
+                {
+                    Padding = new Thickness(5, 2, 5, 0),
+                    Margin = new Thickness(0),
+                    Spacing = 0,
+                    HorizontalOptions = LayoutOptions.Fill,
+                    BackgroundColor = Color.FromArgb("#144d73"),
+                };
+                var addBtn = new VerticalStackLayout()
+                {
+                    Padding = new Thickness(5, 5, 5, 2),
+                    Margin = new Thickness(3, 0, 0, 0),
+                    Spacing = 0,
+                    HorizontalOptions = LayoutOptions.Start,
+                    WidthRequest = 50,
+                    BackgroundColor = Color.FromArgb("#04532d"),
+                    Children = {
+                    new Label()
+                    {
+                        Text = "+",
+                        TextColor = Color.FromArgb("#ffffff"),
+                        Margin = new Thickness(0),
+                        Padding = new Thickness(0),
+                        FontSize = 24,
+                        HorizontalOptions = LayoutOptions.Center,
+                        VerticalOptions = LayoutOptions.Center,
+                    }
+
+                }
+                };
+                addBtn.GestureRecognizers.Clear();
+                var t_addBtn = new TapGestureRecognizer();
+                t_addBtn.Tapped += (object ob, TappedEventArgs ev) => { InWorkAddSubAnzahlChange(leiInWork, InWorkPosSmallCardEntryAnzahl, 1); };
+                addBtn.GestureRecognizers.Add(t_addBtn);
+                var subBtn = new VerticalStackLayout()
+                {
+                    Padding = new Thickness(5, 5, 5, 2),
+                    Margin = new Thickness(3, 0, 0, 0),
+                    Spacing = 0,
+                    HorizontalOptions = LayoutOptions.Start,
+                    WidthRequest = 50,
+                    BackgroundColor = Color.FromArgb("#73042d"),
+                    Children = {
+                    new Label()
+                    {
+                        Text = "-",
+                        TextColor = Color.FromArgb("#ffffff"),
+                        Margin = new Thickness(0),
+                        Padding = new Thickness(0),
+                        FontSize = 24,
+                        HorizontalOptions = LayoutOptions.Center,
+                        VerticalOptions = LayoutOptions.Center,
+                    }
+
+                }
+                };
+                subBtn.GestureRecognizers.Clear();
+                var t_subBtn = new TapGestureRecognizer();
+                t_subBtn.Tapped += (object ob, TappedEventArgs ev) => { InWorkAddSubAnzahlChange(leiInWork, InWorkPosSmallCardEntryAnzahl, -1); };
+                subBtn.GestureRecognizers.Add(t_subBtn);
+                vanzahl.Children.Add(lbanzahl);
+                vanzahl.Children.Add(InWorkPosSmallCardEntryAnzahl);
+                ho_anzahl.Children.Add(vanzahl);
+                ho_anzahl.Children.Add(addBtn);
+                ho_anzahl.Children.Add(subBtn);
+
+
                 vGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-                vGrid.Add(ho_anzahl,5);
+                vGrid.Add(ho_anzahl, 0, 4);
             }
+
+
             if (leistung.muell == 1)
             {
+                var hmuell = new Grid()
+                {
+                    Padding = new Thickness(0),
+                    Margin = new Thickness(0),
+                    ColumnSpacing = 0,
+                    HorizontalOptions = LayoutOptions.Fill,
+                    IsVisible = leistung.muell == 1,
+                    ColumnDefinitions = {
+                    new ColumnDefinition { Width = GridLength.Auto },
+                    new ColumnDefinition { Width = GridLength.Auto },
+                    new ColumnDefinition { Width = GridLength.Auto },
+                }
+                };
+                var imageMuellSign2 = new Image
+                {
+                    Margin = new Thickness(0, -6, 0, 0),
+                    HeightRequest = 26,
+                    WidthRequest = 26,
+                    VerticalOptions = LayoutOptions.Start,
+                    HorizontalOptions = LayoutOptions.End,
+                    Source = leistung.muell == 1 ? (leistung.inout.inout == 0 ? "Muell_Out.png" : "Muell_InTonne.png") : null,
+                };
+                var imageMuellSign = new Image
+                {
+                    Margin = new Thickness(0, -6, 0, 0),
+                    HeightRequest = 26,
+                    WidthRequest = 26,
+                    VerticalOptions = LayoutOptions.Start,
+                    HorizontalOptions = LayoutOptions.End,
+                    Source = leistung.muell == 1 ? (leistung.inout.inout == 0 ? "Muell_OutTonne.png" : "Muell_In.png") : null,
+                };
+                var lbMuell = new Label()
+                {
+                    Text = leistung.muell == 1 ? (leistung.inout.inout == 0 ? "Ich werde RAUSSTELLEN" : "Ich werde REINSTELLEN") : "",
+                    TextColor = Color.FromArgb(leistung.muell == 1 ? (leistung.inout.inout == 0 ? "#dd0000" : "#00aa00") : "#cccccc"),
+                    Margin = new Thickness(0, 0, 0, 0),
+                    Padding = new Thickness(5, 0, 0, 0),
+                    FontSize = 16,
+                    HorizontalOptions = LayoutOptions.Start,
+                };
+//                var hmuellquest = new Grid()
+//                {
+//                    Padding = new Thickness(5, 5, 5, 5),
+//                    Margin = new Thickness(5, 8, 0, 2),
+//                    ColumnSpacing = 0,
+//                    HorizontalOptions = LayoutOptions.Fill,
+//                    IsVisible = leistung.muell == 1,
+//                    BackgroundColor = Color.FromArgb("#1f74ad"),
+//                    ColumnDefinitions =
+//{
+//                new ColumnDefinition { Width = GridLength.Auto },
+//                new ColumnDefinition { Width = GridLength.Auto },
+//}
+//                };
+                //hmuellquest.Add(new Image
+                //{
+                //    Margin = new Thickness(0, 0, 10, 0),
+                //    HeightRequest = 23,
+                //    WidthRequest = 23,
+                //    VerticalOptions = LayoutOptions.Start,
+                //    HorizontalOptions = LayoutOptions.End,
+                //    Source = "Change.png",
+                //}, 0, 0);
+                //hmuellquest.Add(new Label()
+                //{
+                //    Text = "ÄNDERN",// + ( leistung.inout != null && leistung.inout.inout == 1 ? "RAUSSTELLEN":"REINSTELLEN"),
+                //    TextColor = Color.FromArgb("#ffffff"),
+                //    Margin = new Thickness(0),
+                //    Padding = new Thickness(0),
+                //    FontSize = 16,
+                //    HorizontalOptions = LayoutOptions.Start,
+                //}, 1, 0);
+                //if (funcB != null && leistung.muell == 1)
+                //{
+                //    hmuellquest.GestureRecognizers.Clear();
+                //    hmuellquest.GestureRecognizers.Add(new TapGestureRecognizer()
+                //    {
+                //        Command = funcB,
+                //        CommandParameter = new ChangeSelectedMuellPos
+                //        {
+                //            img = imageMuellSign,
+                //            img2 = imageMuellSign2,
+                //            lb = lbMuell,
+                //            pos = leistung
+                //        }
+                //    });
+                //}
+                hmuell.Add(lbMuell, 0, 0);
+                hmuell.Add(imageMuellSign, 1, 0);
+                hmuell.Add(imageMuellSign2, 2, 0);
+
+                //vGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
                 vGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-                vGrid.Add(hmuell, (leistung.art == "Produkt") ? 6:5);
+                vGrid.Add(hmuell, 0, 4);
+                //vGrid.Add(hmuellquest, 1, 3);
             }
 
             var hGrid = new Grid()
@@ -2055,17 +2109,6 @@ namespace iPMCloud.Mobile
 
             hGrid.Add(imageL,0,0);
             hGrid.Add(vGrid,1,0);
-
-            //var mainFrame = new Border()
-            //{
-            //    Padding = new Thickness(1, 1, 1, 1),
-            //    Margin = new Thickness(0, 5, 0, 5),
-            //    HorizontalOptions = LayoutOptions.Fill,
-            //    BackgroundColor = Colors.Transparent,
-            //    Content = hGrid,
-            //};
-
-
             return hGrid;
         }
 

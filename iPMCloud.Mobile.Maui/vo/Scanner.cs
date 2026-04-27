@@ -12,16 +12,14 @@ namespace iPMCloud.Mobile.vo
 {
     public class Scanner
     {
-        AppModel model = null;
-        public Scanner(AppModel _model)
+        public Scanner()
         {
-            model = _model;
         }
 
         public bool displayIsOpen = false;
 
         public CameraBarcodeReaderView zxing;
-        public CameraBarcodeReaderView zxingAlone = new CameraBarcodeReaderView();
+        //public CameraBarcodeReaderView zxing9Alone = new CameraBarcodeReaderView();
 
         // Eigenes Overlay erstellen (ZXingDefaultOverlay existiert nicht mehr)
         public ContentView overlayz;
@@ -163,7 +161,7 @@ namespace iPMCloud.Mobile.vo
                                 var sp = result.Value.Replace("http://www.ipm-cloud.de/?objektid=", "").Split(new String[] { "_" }, StringSplitOptions.RemoveEmptyEntries);
                                 if (sp != null && sp.Length > 0)
                                 {
-                                    model.OutScanBuilding = null;
+                                    AppModel.Instance.OutScanBuilding = null;
                                     var CustomerNumber = "0";
                                     if (sp.Length == 1)
                                     {
@@ -174,14 +172,14 @@ namespace iPMCloud.Mobile.vo
                                         CustomerNumber = "" + sp[1];
                                     }
                                     Int32 buildingid = Int32.Parse(sp[0]);
-                                    if (CustomerNumber == model.SettingModel.SettingDTO.CustomerNumber)
+                                    if (CustomerNumber == AppModel.Instance.SettingModel.SettingDTO.CustomerNumber)
                                     {
-                                        if (model.AllBuildings != null && model.AllBuildings.Count > 0)
+                                        if (AppModel.Instance.AllBuildings != null && AppModel.Instance.AllBuildings.Count > 0)
                                         {
-                                            model.OutScanBuilding = model.AllBuildings.Find(bu => bu.id == buildingid);
+                                            AppModel.Instance.OutScanBuilding = AppModel.Instance.AllBuildings.Find(bu => bu.id == buildingid);
                                             try
                                             {
-                                                AppModel.Logger.Info("CHECK-OUT: " + model.OutScanBuilding.strasse + " " + model.OutScanBuilding.hsnr + model.OutScanBuilding.plz + " " + model.OutScanBuilding.ort);
+                                                AppModel.Logger.Info("CHECK-OUT: " + AppModel.Instance.OutScanBuilding.strasse + " " + AppModel.Instance.OutScanBuilding.hsnr + AppModel.Instance.OutScanBuilding.plz + " " + AppModel.Instance.OutScanBuilding.ort);
                                             }
                                             catch (Exception) { }
                                         }
@@ -190,7 +188,7 @@ namespace iPMCloud.Mobile.vo
                                         grid.Children.Clear();
                                         displayIsOpen = false;
 
-                                        model.UseExternHardware = false;
+                                        AppModel.Instance.UseExternHardware = false;
                                         func.Invoke();
                                     }
                                     else
@@ -286,26 +284,26 @@ namespace iPMCloud.Mobile.vo
                                     }
                                     Int32 buildingid = Int32.Parse(sp[0]);
 
-                                    if (CustomerNumber == model.SettingModel.SettingDTO.CustomerNumber)
+                                    if (CustomerNumber == AppModel.Instance.SettingModel.SettingDTO.CustomerNumber)
                                     {
-                                        model.SettingModel.SettingDTO.LastBuildingIdScanned = buildingid;
-                                        if (buildingid > 0 && model.AllBuildings != null && model.AllBuildings.Count > 0)
+                                        AppModel.Instance.SettingModel.SettingDTO.LastBuildingIdScanned = buildingid;
+                                        if (buildingid > 0 && AppModel.Instance.AllBuildings != null && AppModel.Instance.AllBuildings.Count > 0)
                                         {
-                                            model.SetAllObjectAndValuesToNoSelectedBuilding();
-                                            model.SettingModel.SettingDTO.LastBuildingIdScanned = buildingid;
-                                            model.LastBuilding = model.AllBuildings.Find(bu => bu.id == buildingid);
+                                            AppModel.Instance.SetAllObjectAndValuesToNoSelectedBuilding();
+                                            AppModel.Instance.SettingModel.SettingDTO.LastBuildingIdScanned = buildingid;
+                                            AppModel.Instance.LastBuilding = AppModel.Instance.AllBuildings.Find(bu => bu.id == buildingid);
                                             try
                                             {
-                                                AppModel.Logger.Info("CHECK-IN: " + model.LastBuilding.strasse + " " + model.LastBuilding.hsnr + model.LastBuilding.plz + " " + model.LastBuilding.ort);
+                                                AppModel.Logger.Info("CHECK-IN: " + AppModel.Instance.LastBuilding.strasse + " " + AppModel.Instance.LastBuilding.hsnr + AppModel.Instance.LastBuilding.plz + " " + AppModel.Instance.LastBuilding.ort);
                                             }
                                             catch (Exception) { }
                                         }
-                                        model.SettingModel.SaveSettings();
+                                        AppModel.Instance.SettingModel.SaveSettings();
                                         zxing.IsTorchOn = false;
                                         zxing.IsDetecting = false;
                                         grid.Children.Clear();
                                         displayIsOpen = false;
-                                        model.UseExternHardware = false;
+                                        AppModel.Instance.UseExternHardware = false;
                                         func.Invoke();
                                     }
                                     else
@@ -402,15 +400,15 @@ namespace iPMCloud.Mobile.vo
                                     string directoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ipm/" + newScanSettings.CustomerNumber + "");
                                     if (!Directory.Exists(directoryPath)) { Directory.CreateDirectory(directoryPath); }
 
-                                    model.SettingModel.SettingDTO = newScanSettings;
-                                    model.SettingModel.SaveSettings();
-                                    Company.AddUpdateCompany(model, model.SettingModel.SettingDTO);
+                                    AppModel.Instance.SettingModel.SettingDTO = newScanSettings;
+                                    AppModel.Instance.SettingModel.SaveSettings();
+                                    Company.AddUpdateCompany(AppModel.Instance, AppModel.Instance.SettingModel.SettingDTO);
 
                                     zxing.IsTorchOn = false;
                                     zxing.IsDetecting = false;
                                     grid.Children.Clear();
                                     displayIsOpen = false;
-                                    model.UseExternHardware = false;
+                                    AppModel.Instance.UseExternHardware = false;
                                     func.Invoke();
                                 }
                                 else
@@ -495,26 +493,26 @@ namespace iPMCloud.Mobile.vo
 
                                 if (result.Value.IndexOf("###") > -1 && !String.IsNullOrWhiteSpace(newScanSettings.ServerUrl) &&
                                     !String.IsNullOrWhiteSpace(newScanSettings.CustomerNumber) &&
-                                    !String.IsNullOrWhiteSpace(newScanSettings.CustomerName) && newScanSettings.CustomerNumber != model.SettingModel.SettingDTO.CustomerNumber)
+                                    !String.IsNullOrWhiteSpace(newScanSettings.CustomerName) && newScanSettings.CustomerNumber != AppModel.Instance.SettingModel.SettingDTO.CustomerNumber)
                                 {
-                                    Company.AddUpdateCompany(model, model.SettingModel.SettingDTO);
+                                    Company.AddUpdateCompany(AppModel.Instance, AppModel.Instance.SettingModel.SettingDTO);
 
                                     string directoryPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ipm/" + newScanSettings.CustomerNumber + "");
                                     if (!Directory.Exists(directoryPath)) { Directory.CreateDirectory(directoryPath); }
 
-                                    model.SettingModel.SettingDTO = newScanSettings;
-                                    model.SettingModel.SaveSettings();
+                                    AppModel.Instance.SettingModel.SettingDTO = newScanSettings;
+                                    AppModel.Instance.SettingModel.SaveSettings();
 
                                     zxing.IsTorchOn = false;
                                     zxing.IsDetecting = false;
                                     grid.Children.Clear();
                                     displayIsOpen = false;
-                                    model.UseExternHardware = false;
+                                    AppModel.Instance.UseExternHardware = false;
                                     func.Invoke();
                                 }
                                 else
                                 {
-                                    //if (newScanSettings.CustomerNumber == model.SettingModel.SettingDTO.CustomerNumber)
+                                    //if (newScanSettings.CustomerNumber == AppModel.Instance.SettingModel.SettingDTO.CustomerNumber)
                                     //{
                                     //    await page.DisplayAlertAsync("Registrierung existiert schon!", "Diesen QR-Code haben Sie schon Registriert!", "OK");
                                     //}

@@ -268,7 +268,7 @@ namespace iPMCloud.Mobile.vo
                 PageNavigator = new TFPageNavigator();
                 State = new State();
                 Connections = new Connections(this);
-                Scan = new Scanner(this);
+                Scan = new Scanner();
                 Person = PersonWSO.LoadPerson(this);// Wenn keine Person dann "null" !!
 
                 var swBuildings = System.Diagnostics.Stopwatch.StartNew();

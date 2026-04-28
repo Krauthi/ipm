@@ -11,9 +11,9 @@
 		<ApplicationTitle>iPM-Cloud</ApplicationTitle>
 		<ApplicationId>com.ipmcloud.ipm.mobile</ApplicationId>
 		<ApplicationIdGuid>201CEFAB-590D-414F-9660-9EFF31FE2078</ApplicationIdGuid>
-		<ApplicationDisplayVersion>2.1.0</ApplicationDisplayVersion>
+		<ApplicationDisplayVersion>3.0.1</ApplicationDisplayVersion>
 		<ApplicationVersion>1</ApplicationVersion>
-		<Version>2.1.0</Version>
+		<Version>3.0.1</Version>
 		<AssemblyVersion>2.0.0.0</AssemblyVersion>
 		<FileVersion>2.0.0.0</FileVersion>
 		<NeutralLanguage>de-DE</NeutralLanguage>
@@ -34,6 +34,7 @@
 	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
 		<AndroidMinSdkVersion>23</AndroidMinSdkVersion>
 		<AndroidTargetSdkVersion>36</AndroidTargetSdkVersion>
+	<RuntimeIdentifiers>android-arm64;android-arm</RuntimeIdentifiers>
 		<AndroidEnableMultiDex>true</AndroidEnableMultiDex>
 		<AndroidUseAapt2>true</AndroidUseAapt2>
 		<AndroidManifestMerger>manifestmerger.jar</AndroidManifestMerger>

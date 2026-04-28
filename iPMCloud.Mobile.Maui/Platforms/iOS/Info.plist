@@ -27,15 +27,13 @@
 	<key>CFBundleVersion</key>
 	<string>2201111</string>
 	<key>UILaunchStoryboardName</key>
-	<string>LaunchScreen</string>
+	<string>MauiSplash</string>
 	<key>CFBundleName</key>
 	<string>iPMCloud.Mobile</string>
 	<key>CFBundleShortVersionString</key>
 	<string>2.1.111</string>
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/AppIcon.appiconset</string>
-	<key>XSLaunchImageAssets</key>
-	<string>Assets.xcassets/LaunchImage.launchimage</string>
 	<key>UIStatusBarHidden</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>

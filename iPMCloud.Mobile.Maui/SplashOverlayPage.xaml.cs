@@ -1,3 +1,4 @@
+using iPMCloud.Mobile.vo;
 using Microsoft.Maui.Controls;
 using System;
 using System.Threading.Tasks;
@@ -12,7 +13,7 @@ namespace iPMCloud.Mobile
     public partial class SplashOverlayPage : ContentPage
     {
         /// <summary>Minimum time (ms) the splash overlay is visible.</summary>
-        private const int MinimumSplashDisplayTimeMs = 2500;
+        private const int MinimumSplashDisplayTimeMs = 1000;
 
         public SplashOverlayPage()
         {
@@ -29,20 +30,14 @@ namespace iPMCloud.Mobile
                 // App.InitApp() already ran synchronously in the App constructor,
                 // so StartPage is available immediately; this delay is purely visual.
                 await Task.Delay(MinimumSplashDisplayTimeMs);
-
-                var startPage = AppModel.Instance?.StartPage;
-
-                if (startPage == null)
-                {
-                    // Fallback: should not happen, but guard against null
-                    startPage = new ContentPage { BackgroundColor = Colors.Black };
-                }
+                AppModel.Instance?.PageNavigator.NavigateTo(TFPageNavigator.PAGE_STARTPAGE);
+                //ContentPage startPage = AppModel.Instance?.StartPage ?? new ContentPage { BackgroundColor = Colors.Black };
 
                 // Switch the window's root page – no navigation stack needed
-                if (Application.Current?.Windows?.Count > 0)
-                {
-                    Application.Current.Windows[0].Page = startPage;
-                }
+                //if (Application.Current?.Windows?.Count > 0)
+                //{
+                //    Application.Current.Windows[0].Page = startPage;
+                //}
             }
             catch (Exception ex)
             {

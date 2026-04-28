@@ -5623,13 +5623,14 @@
             AbsoluteLayout.LayoutFlags="All"
             HorizontalOptions="Fill"
             IsVisible="False"
+            BackgroundColor ="#000000"
             VerticalOptions="Fill">
 
             <Image
                 Margin="0,0,0,0"
                 AbsoluteLayout.LayoutBounds="0,0,1,1"
                 AbsoluteLayout.LayoutFlags="All"
-                Aspect="Fill"
+                Aspect="AspectFill"
                 HorizontalOptions="Center"
                 Opacity="1"
                 Source="backgroundgray2.jpg"
@@ -5657,7 +5658,7 @@
                     Margin="0"
                     Padding="10,10,10,10"
                     ColumnSpacing="0"
-                    HeightRequest="48"
+                    HeightRequest="54"
                     HorizontalOptions="Fill">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
@@ -7932,8 +7933,8 @@
             <VerticalStackLayout
                 Margin="20"
                 Padding="10"
-                AbsoluteLayout.LayoutBounds="0,200,350,345"
-                AbsoluteLayout.LayoutFlags="None"
+                AbsoluteLayout.LayoutBounds="0.4,0.4,1,0.36"
+                AbsoluteLayout.LayoutFlags="All"
                 BackgroundColor="#144d73"
                 HorizontalOptions="Fill"
                 Spacing="0">

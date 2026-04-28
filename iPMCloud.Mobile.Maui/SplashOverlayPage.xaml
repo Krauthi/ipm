@@ -10,10 +10,11 @@
     <Grid>
         <!--  Splash background image – full screen  -->
         <Image
-            Aspect="AspectFill"
-            HorizontalOptions="Fill"
-            Source="screen.png"
-            VerticalOptions="Fill" />
+            MaximumWidthRequest="300"
+            MinimumWidthRequest="300"
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            Source="screen.png" />
 
         <!--  Rotating loader centered on screen  -->
         <ActivityIndicator

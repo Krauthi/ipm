@@ -112,6 +112,9 @@ namespace iPMCloud.Mobile
 
         protected override Window CreateWindow(IActivationState activationState)
         {
+            //var page = AppModel.Instance.StartPage ??
+            //    new ContentPage { BackgroundColor = Colors.DarkRed };
+            //return new Window(page);
             // Show the splash overlay (screen.png background + spinning loader) first.
             // SplashOverlayPage transitions automatically to StartPage after a short delay.
             return new Window(new SplashOverlayPage());

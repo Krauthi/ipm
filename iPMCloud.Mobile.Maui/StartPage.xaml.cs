@@ -161,7 +161,7 @@ namespace iPMCloud.Mobile
                         }
                         return false;
                     }
-                    //AppModel.Instance.InitGPSTimer();
+                    AppModel.Instance.InitGPSTimer();
                 }
                 return true;
             }
@@ -352,7 +352,7 @@ namespace iPMCloud.Mobile
         {
             try
             {
-                //AppModel.Instance.InitGPSTimer();
+                AppModel.Instance.InitGPSTimer();
                 if (AppModel.Instance.Companies != null && AppModel.Instance.Companies.Count > 1)
                 {
                     btn_addRegScan_frame.IsVisible = false;

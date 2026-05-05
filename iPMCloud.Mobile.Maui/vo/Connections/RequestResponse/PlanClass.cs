@@ -803,7 +803,7 @@ namespace iPMCloud.Mobile
         }
 
 
-        public static VerticalStackLayout GetOptWinterCheckItemHeadItem(Object value, AuftragWSO order, Border btn, Label lb, ICommand func,
+        public static Grid GetOptWinterCheckItemHeadItem(Object value, AuftragWSO order, Border btn, Label lb, ICommand func,
             List<IntBemerkungWSOPair> selectedBemerkungForNoticeList_DirektPos)
         {
             var model = ((value as List<Object>)[0] as AppModel);
@@ -828,47 +828,56 @@ namespace iPMCloud.Mobile
                 VerticalOptions = LayoutOptions.Center,
             };
 
-            var stv = new VerticalStackLayout()
+            int idx = 0;
+            var stvGrid = new Grid()
             {
                 Padding = new Thickness(5, 6, 5, 6),
                 Margin = new Thickness(0, 2, 0, 0),
-                Spacing = 0,
+                RowSpacing = 0,
                 HorizontalOptions = LayoutOptions.Fill,
                 BackgroundColor = Color.FromArgb("#55042d53"),
+                RowDefinitions =
+                {
+                    new RowDefinition { Height = GridLength.Auto },
+                },
             };
-            var st = new HorizontalStackLayout()
+            var sthGrid = new Grid()
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(0),
-                Spacing = 0,
+                ColumnSpacing = 0,
                 HorizontalOptions = LayoutOptions.Fill,
-                Children = {
-                    winter,
-                    new Label()
-                    {
-                        Padding = new Thickness(0),
-                        Text = b != null ? "" + b.plz + " " + b.ort + " - " + b.strasse + " " + b.hsnr:"Nicht gefunden! (Synchronisieren)",
-                        TextColor = (b == null ? Color.FromArgb("#ffcc00") : Color.FromArgb("#ffffff")),
-                        Margin = new Thickness(3, 3, 5, 3),
-                        FontSize = 14,
-                        HorizontalOptions = LayoutOptions.Start,
-                        LineBreakMode = LineBreakMode.WordWrap,
-                    },
-                    new Label()
-                    {
-                        Padding = new Thickness(0),
-                        Text = "(" + ppm.std + ")",
-                        TextColor = Color.FromArgb("#cccccc"),
-                        Margin = new Thickness(0, 3, 5, 3),
-                        FontSize = 12,
-                        WidthRequest = 46,
-                        HorizontalTextAlignment = TextAlignment.Center,
-                        HorizontalOptions = LayoutOptions.Center
-                    }
+                ColumnDefinitions =                 {
+                    new ColumnDefinition { Width = GridLength.Auto }, // winter
+                    new ColumnDefinition { Width = GridLength.Star }, // Adresse
+                    new ColumnDefinition { Width = GridLength.Auto }, // (std)
                 }
             };
-            stv.Children.Add(st);
-
+            sthGrid.Add(winter, 0, 0);
+            sthGrid.Add(new Label()
+            {
+                Padding = new Thickness(0),
+                Text = b != null ? "" + b.plz + " " + b.ort + " - " + b.strasse + " " + b.hsnr : "Nicht gefunden! (Synchronisieren)",
+                TextColor = (b == null ? Color.FromArgb("#ffcc00") : Color.FromArgb("#ffffff")),
+                Margin = new Thickness(3, 3, 5, 3),
+                FontSize = 14,
+                HorizontalOptions = LayoutOptions.Start,
+                LineBreakMode = LineBreakMode.WordWrap,
+            },1,0);
+            sthGrid.Add(new Label()
+            {
+                Padding = new Thickness(0),
+                Text = "(" + ppm.std + ")",
+                TextColor = Color.FromArgb("#cccccc"),
+                Margin = new Thickness(0, 3, 5, 3),
+                FontSize = 12,
+                WidthRequest = 46,
+                HorizontalTextAlignment = TextAlignment.Center,
+                HorizontalOptions = LayoutOptions.Center
+            },2,0);
+                    
+            stvGrid.Add(sthGrid,0,idx);
+            idx++;
 
             bool isWinterKat = false;
             order.kategorien.ForEach(k =>
@@ -927,18 +936,24 @@ namespace iPMCloud.Mobile
                     HorizontalOptions = LayoutOptions.Fill,
                     LineBreakMode = LineBreakMode.WordWrap,
                 };
-                var hOrder = new HorizontalStackLayout()
+                var hOrderGrid = new Grid()
                 {
                     Padding = new Thickness(24, 0, 0, 0),
                     Margin = new Thickness(0, 0, 0, 0),
-                    Spacing = 0,
+                    ColumnSpacing = 0,
                     HorizontalOptions = LayoutOptions.Fill,
+                    ColumnDefinitions =                 {
+                        new ColumnDefinition { Width = GridLength.Auto }, // imageLOrder
+                        new ColumnDefinition { Width = GridLength.Star }, // lbOrder
+                    }
                     //BackgroundColor = Color.FromHex("#aa042d53"),
                 };
-                hOrder.Children.Add(imageLOrder);
-                hOrder.Children.Add(lbOrder);
+                hOrderGrid.Add(imageLOrder,0,0);
+                hOrderGrid.Add(lbOrder,1,0);
 
-                stv.Children.Add(hOrder);
+                stvGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+                stvGrid.Add(hOrderGrid, 0, idx);
+                idx++;
 
                 order.kategorien.Where(k => k.winterservice == 1).ToList().ForEach(c =>
                 {
@@ -978,38 +993,49 @@ namespace iPMCloud.Mobile
                         HorizontalOptions = LayoutOptions.Fill,
                         LineBreakMode = LineBreakMode.WordWrap,
                     };
-                    var hCat = new HorizontalStackLayout()
+                    var hCatGrid = new Grid()
                     {
                         Padding = new Thickness(24, 0, 0, 0),
                         Margin = new Thickness(0, 0, 0, 0),
-                        Spacing = 0,
+                        ColumnSpacing = 0,
                         HorizontalOptions = LayoutOptions.Fill, 
+                        ColumnDefinitions =                 {
+                            new ColumnDefinition { Width = GridLength.Auto }, // imageLCatB
+                            new ColumnDefinition { Width = GridLength.Star }, // lbCat
+                        }
                     };
-                    hCat.Children.Add(imageLCatB);
-                    hCat.Children.Add(lbCat);
-                    stv.Children.Add(hCat);
+                    hCatGrid.Add(imageLCatB,0,0);
+                    hCatGrid.Add(lbCat,1,0);
+
+                    stvGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+                    stvGrid.Add(hCatGrid, 0,idx);
+                    idx++;
+
                     c.leistungen.ForEach(l =>
                     {
                         var cl = GetOptWinterCheckItem(l, ppm, btn, lb, order, func, selectedBemerkungForNoticeList_DirektPos.Find(_ => _.lei.id == l.id));
-                        stv.Children.Add(cl);
+                        stvGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+                        stvGrid.Add(cl, 0, idx);
+                        idx++;
                     });
 
-                    stv.Children.Add(new HorizontalStackLayout()
+                    stvGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+                    stvGrid.Add(new HorizontalStackLayout()
                     {
                         Padding = new Thickness(0),
                         Margin = new Thickness(0),
                         Spacing = 0,
                         HeightRequest = 10,
                         HorizontalOptions = LayoutOptions.Fill,
-                    });
+                    },0,idx);
                 });
             }
 
-            return stv;
+            return stvGrid;
         }
 
 
-        public static VerticalStackLayout GetOptWinterCheckItem(LeistungWSO lei, PlanPersonMobile p, Border btn, Label lb, AuftragWSO order, ICommand func, IntBemerkungWSOPair obj)
+        public static Grid GetOptWinterCheckItem(LeistungWSO lei, PlanPersonMobile p, Border btn, Label lb, AuftragWSO order, ICommand func, IntBemerkungWSOPair obj)
         {
             CheckBox checkBox = new CheckBox
             {
@@ -1031,84 +1057,65 @@ namespace iPMCloud.Mobile
                 HorizontalOptions = LayoutOptions.Fill,
                 VerticalOptions = LayoutOptions.Center,
             };
-            var sth = new HorizontalStackLayout()
+            var sthGrid = new Grid()
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(0),
-                Spacing = 0,
+                ColumnSpacing = 0,
                 HorizontalOptions = LayoutOptions.Fill,
                 VerticalOptions = LayoutOptions.Start,
-                BackgroundColor = Color.FromArgb("#ff042d53")
+                BackgroundColor = Color.FromArgb("#ff042d53"),
+                ColumnDefinitions =                 {
+                    new ColumnDefinition { Width = GridLength.Auto }, // winter
+                    new ColumnDefinition { Width = GridLength.Star }, // Adresse
+                    new ColumnDefinition { Width = GridLength.Auto }, // btn
+                    new ColumnDefinition { Width = GridLength.Auto }, // badge
+                }
             };
-            sth.Children.Add(checkBox);
-            sth.Children.Add(checkLb);
+            sthGrid.Add(checkBox,0);
+            sthGrid.Add(checkLb,1);
+
             var winterBemerkungBadgeCount = new Label
             {
                 Text = "0",
                 Margin = new Thickness(0),
-                Padding = new Thickness(3, 0, 3, 0),
+                Padding = new Thickness(1,0,1,0),
                 HorizontalOptions = LayoutOptions.Center,
                 VerticalOptions = LayoutOptions.Center,
                 FontSize = 10,
                 TextColor = Color.FromArgb("#ffffff"),
                 HorizontalTextAlignment = TextAlignment.Center
             };
-            var badgeStack = new HorizontalStackLayout()
-            {
-                Margin = new Thickness(-9, -4, 0, 0),
-                Padding = new Thickness(0),
-                Spacing = 0,
+            var badgeStack = new Border {
+                BackgroundColor = Color.FromArgb("#007700"),
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.End,
                 VerticalOptions = LayoutOptions.Start,
-                IsVisible = false,
-                Children = {
-                        new Border {
-                            BackgroundColor = Color.FromArgb("#007700"),
-                             Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
-                            HorizontalOptions = LayoutOptions.Start,
-                            VerticalOptions = LayoutOptions.Start,
-                            HeightRequest = 15,
-                            WidthRequest = 28,
-                            Margin = new Thickness(0),
-                            Padding = new Thickness(1,1,0,0),
-                            StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 10 },
-                            Content = winterBemerkungBadgeCount
-                        },
-                    }
+                Margin = new Thickness(-15, 1, 0, 0),
+                Padding = new Thickness(0,0,0,0),
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 9 },
+                Content = winterBemerkungBadgeCount
             };
             obj.badge = winterBemerkungBadgeCount;
             obj.badgeStack = badgeStack;
             obj.count = 0;
 
-            var noticeStack = new VerticalStackLayout
-            {
-                VerticalOptions = LayoutOptions.Fill,
-                HorizontalOptions = LayoutOptions.Fill,
-                Spacing = 0,
-                Padding = new Thickness(1),
-                Margin = new Thickness(0),
-                BackgroundColor = Color.FromArgb("#144d73"),
-                Children = {
-                    new Image
-                    {
-                        Margin = new Thickness(2),
-                        HeightRequest = 32,
-                        WidthRequest = 32,
-                        VerticalOptions = LayoutOptions.Center,
-                        HorizontalOptions = LayoutOptions.Center,
-                        Source = "CamMessageWarn.png",
-                    }
-
-                }
-            };
             var btnNoticeFrame = new Border()
             {
                 Padding = new Thickness(1),
-                Margin = new Thickness(2, 2, 2, 0),
+                Margin = new Thickness(2, 2, 2, 3),
                 HorizontalOptions = LayoutOptions.End,
                 VerticalOptions = LayoutOptions.Start,
-                BackgroundColor = Color.FromArgb("#041d43"),
-                Content = noticeStack,
+                BackgroundColor = Color.FromArgb("#245d93"),
+                Content = new Image
+                {
+                    Margin = new Thickness(2),
+                    HeightRequest = 32,
+                    WidthRequest = 32,
+                    VerticalOptions = LayoutOptions.Center,
+                    HorizontalOptions = LayoutOptions.Center,
+                    Source = "CamMessageWarn.png",
+                },
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
             };
             if (func != null)
@@ -1117,20 +1124,24 @@ namespace iPMCloud.Mobile
                 btnNoticeFrame.GestureRecognizers.Add(new TapGestureRecognizer() { Command = func, CommandParameter = lei });
             }
 
-            sth.Children.Add(btnNoticeFrame);
-            sth.Children.Add(badgeStack);
+            sthGrid.Add(btnNoticeFrame,2);
+            sthGrid.Add(badgeStack,2);
 
-            var stv = new VerticalStackLayout()
+            var stvGrid = new Grid()
             {
                 Padding = new Thickness(0, 2, 0, 2),
                 Margin = new Thickness(-5, 0, -5, 0),
-                Spacing = 0,
+                RowSpacing = 0,
                 HorizontalOptions = LayoutOptions.Fill,
-                VerticalOptions = LayoutOptions.Center
+                VerticalOptions = LayoutOptions.Center,
+                RowDefinitions =
+                {
+                    new RowDefinition { Height = GridLength.Auto },
+                },
             };
-
-            stv.Children.Add(sth);
-
+            int idx = 0;
+            stvGrid.Add(sthGrid,0,idx);
+            idx++;
 
             lei.leiInWork = LeistungInWorkWSO.ConvertLeistungTo(lei);
 
@@ -1148,7 +1159,7 @@ namespace iPMCloud.Mobile
                 };
                 var InWorkPosSmallCardEntryAnzahl = new CustomEntry()
                 {
-                    Margin = new Thickness(0, -10, 0, -5),
+                    Margin = new Thickness(0, -8, 0, -5),
                     HorizontalOptions = LayoutOptions.Fill,
                     VerticalOptions = LayoutOptions.Start,
                     TextColor = Colors.White,
@@ -1166,20 +1177,28 @@ namespace iPMCloud.Mobile
                 InWorkPosSmallCardEntryAnzahl.TextChanged -= LeistungWSO.InWorkPosSmallCardEntryAnzahlChanged;
                 InWorkPosSmallCardEntryAnzahl.TextChanged += LeistungWSO.InWorkPosSmallCardEntryAnzahlChanged;
 
-                var hanzahl = new VerticalStackLayout()
+                var hanzahlGrid = new Grid()
                 {
                     Padding = new Thickness(5, 2, 5, 0),
                     Margin = new Thickness(0),
-                    Spacing = 0,
+                    RowSpacing = 0,
                     HorizontalOptions = LayoutOptions.Fill,
+                    RowDefinitions =
+                    {
+                        new RowDefinition{ Height = GridLength.Auto },
+                        new RowDefinition{ Height = GridLength.Auto },
+                    }
                     //BackgroundColor = Color.FromHex("#144d73"),
                 };
-                var addBtn = new HorizontalStackLayout()
+                hanzahlGrid.Add(lbanzahl,0,0);
+                hanzahlGrid.Add(InWorkPosSmallCardEntryAnzahl,0,1);
+
+                var addBtn = new VerticalStackLayout()
                 {
                     Padding = new Thickness(5, 2, 5, 2),
                     Margin = new Thickness(3, 0, 0, 0),
                     Spacing = 0,
-                    HorizontalOptions = LayoutOptions.Start,
+                    HorizontalOptions = LayoutOptions.End,
                     WidthRequest = 50,
                     BackgroundColor = Color.FromArgb("#04532d"),
                     Children = {
@@ -1189,9 +1208,8 @@ namespace iPMCloud.Mobile
                             TextColor = Color.FromArgb("#ffffff"),
                             Margin = new Thickness(0),
                             Padding = new Thickness(0),
-                            FontSize = 24,
-                            HorizontalOptions = LayoutOptions.Fill,
-                            HorizontalTextAlignment = TextAlignment.Center,
+                            FontSize = 28,
+                            HorizontalOptions = LayoutOptions.Center,
                             VerticalOptions = LayoutOptions.Center,
                         }
 
@@ -1201,12 +1219,12 @@ namespace iPMCloud.Mobile
                 var t_addBtn = new TapGestureRecognizer();
                 t_addBtn.Tapped += (object ob, TappedEventArgs ev) => { LeistungWSO.InWorkAddSubAnzahlChange(lei.leiInWork, InWorkPosSmallCardEntryAnzahl, 1); };
                 addBtn.GestureRecognizers.Add(t_addBtn);
-                var subBtn = new HorizontalStackLayout()
+                var subBtn = new VerticalStackLayout()
                 {
                     Padding = new Thickness(5, 2, 5, 2),
                     Margin = new Thickness(3, 0, 0, 0),
                     Spacing = 0,
-                    HorizontalOptions = LayoutOptions.Start,
+                    HorizontalOptions = LayoutOptions.End,
                     WidthRequest = 50,
                     BackgroundColor = Color.FromArgb("#73042d"),
                     Children = {
@@ -1216,9 +1234,8 @@ namespace iPMCloud.Mobile
                             TextColor = Color.FromArgb("#ffffff"),
                             Margin = new Thickness(0),
                             Padding = new Thickness(0),
-                            FontSize = 24,
-                            HorizontalTextAlignment = TextAlignment.Center,
-                            HorizontalOptions = LayoutOptions.Fill,
+                            FontSize = 28,
+                            HorizontalOptions = LayoutOptions.Center,
                             VerticalOptions = LayoutOptions.Center,
                         }
 
@@ -1228,38 +1245,43 @@ namespace iPMCloud.Mobile
                 var t_subBtn = new TapGestureRecognizer();
                 t_subBtn.Tapped += (object ob, TappedEventArgs ev) => { LeistungWSO.InWorkAddSubAnzahlChange(lei.leiInWork, InWorkPosSmallCardEntryAnzahl, -1); };
                 subBtn.GestureRecognizers.Add(t_subBtn);
-                var ho_anzahl = new HorizontalStackLayout()
+                var ho_anzahl = new Grid()
                 {
                     Padding = new Thickness(3, 0, 3, 3),
                     Margin = new Thickness(50, 0, 0, 0),
-                    Spacing = 0,
+                    ColumnSpacing = 0,
                     HorizontalOptions = LayoutOptions.Fill,
                     BackgroundColor = Color.FromArgb("#ff042d53"),
-                    Children =
+                    ColumnDefinitions =
                     {
-                        hanzahl,addBtn,subBtn
+                        new ColumnDefinition{ Width = GridLength.Star },
+                        new ColumnDefinition{ Width = GridLength.Auto },
+                        new ColumnDefinition{ Width = GridLength.Auto },
                     }
                 };
-                hanzahl.Children.Add(lbanzahl);
-                hanzahl.Children.Add(InWorkPosSmallCardEntryAnzahl);
-
-                stv.Children.Add(ho_anzahl);
+                ho_anzahl.Add(hanzahlGrid, 0);
+                ho_anzahl.Add(addBtn, 1);
+                ho_anzahl.Add(subBtn, 2);
+                
+                
+                stvGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+                stvGrid.Add(ho_anzahl,0,idx);
+                idx++;
             }
 
 
-
-
+            
             checkBox.CheckedChanged -= (object o, CheckedChangedEventArgs ev) => { ChangeObjektPlanWeekMobileWinterDirektC(checkBox, p, btn, lb, lei, order); };
             checkBox.CheckedChanged += (object o, CheckedChangedEventArgs ev) => { ChangeObjektPlanWeekMobileWinterDirektC(checkBox, p, btn, lb, lei, order); };
 
-            sth.GestureRecognizers.Clear();
+            sthGrid.GestureRecognizers.Clear();
             var t_quest_direktbuchen_cancel = new TapGestureRecognizer();
             t_quest_direktbuchen_cancel.Tapped -= (object o, TappedEventArgs ev) => { ChangeObjektPlanWeekMobileWinterDirekt(checkBox, p, btn, lb, lei, order); };
             t_quest_direktbuchen_cancel.Tapped += (object o, TappedEventArgs ev) => { ChangeObjektPlanWeekMobileWinterDirekt(checkBox, p, btn, lb, lei, order); };
-            sth.GestureRecognizers.Add(t_quest_direktbuchen_cancel);
+            sthGrid.GestureRecognizers.Add(t_quest_direktbuchen_cancel);
 
 
-            return stv;
+            return stvGrid;
         }
 
 
@@ -1318,27 +1340,32 @@ namespace iPMCloud.Mobile
                 VerticalOptions = LayoutOptions.Center,
                 HorizontalOptions = LayoutOptions.Start,
             };
-            var sthg = new Grid()
+            var sthGrid = new Grid()
             {
                 Padding = new Thickness(5, 6, 5, 6),
                 Margin = new Thickness(0, 2, 0, 0),
                 RowSpacing = 0,
                 HorizontalOptions = LayoutOptions.Fill,
                 BackgroundColor = Color.FromArgb("#55042d53"),
-
             };
-            sthg.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
-            sthg.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Star });
-            sthg.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
-            var stv = new VerticalStackLayout()
+            sthGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
+            sthGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Star });
+            sthGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
+
+            int idx = 0;
+            var stvGrid = new Grid()
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(0),
-                Spacing = 0,
+                RowSpacing = 0,
                 HorizontalOptions = LayoutOptions.Fill,
                 BackgroundColor = Color.FromArgb("#55042d53"),
+                RowDefinitions =
+                {
+                    new RowDefinition { Height = GridLength.Auto },
+                },
             };
-            stv.Children.Add(new Label
+            stvGrid.Add(new Label
             {
                 Padding = new Thickness(0),
                 Text = b != null ? "" + b.plz + " " + b.ort + " - " + b.strasse + " " + b.hsnr : "Objekt nicht gefunden!",
@@ -1347,15 +1374,22 @@ namespace iPMCloud.Mobile
                 FontSize = 14,
                 HorizontalOptions = LayoutOptions.Fill,
                 LineBreakMode = LineBreakMode.TailTruncation,
-            });
+            },0,idx);
+            idx++;
+
             if (p.muelltoid > 0)
             {
-                var stmuell = new HorizontalStackLayout()
+                var stmuellGrid = new Grid()
                 {
                     Padding = new Thickness(0),
                     Margin = new Thickness(0),
-                    Spacing = 0,
-                    HorizontalOptions = LayoutOptions.Fill
+                    ColumnSpacing = 0,
+                    HorizontalOptions = LayoutOptions.Fill,
+                    ColumnDefinitions =
+                    {
+                        new ColumnDefinition{ Width = GridLength.Auto},
+                        new ColumnDefinition{ Width = GridLength.Star},
+                    }
                 };
                 var name = "";
                 var col = "";
@@ -1391,14 +1425,18 @@ namespace iPMCloud.Mobile
                     HorizontalOptions = LayoutOptions.Start,
                     BackgroundColor = Color.FromArgb(col)
                 };
-                stmuell.Children.Add(imgMuell);
-                stmuell.Children.Add(lbMuell);
-                stv.Children.Add(stmuell);
+                stmuellGrid.Add(imgMuell,0);
+                stmuellGrid.Add(lbMuell,1);
+
+                stvGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+                stvGrid.Add(stmuellGrid,0,idx);
+                idx++;
             }
 
             if (p.personid != p.vonpersonid)
             {
-                stv.Children.Add(new Label()
+                stvGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+                stvGrid.Add(new Label()
                 {
                     Padding = new Thickness(0),
                     Text = " (" + GetPlanedPersonInitialien(p.vonpersonid) + ")",
@@ -1407,10 +1445,11 @@ namespace iPMCloud.Mobile
                     FontSize = 12,
                     HorizontalOptions = LayoutOptions.Start,
                     LineBreakMode = LineBreakMode.WordWrap,
-                });
+                },0,idx);
+                idx++;
             }
-            sthg.Add(checkBox,0,0);
-            sthg.Add(stv,1,0);
+            sthGrid.Add(checkBox,0,0);
+            sthGrid.Add(stvGrid,1,0);
 
 
 
@@ -1420,35 +1459,22 @@ namespace iPMCloud.Mobile
                 {
                     Text = "0",
                     Margin = new Thickness(0),
-                    Padding = new Thickness(3, 0, 3, 0),
+                    Padding = new Thickness(1),
                     HorizontalOptions = LayoutOptions.Center,
                     VerticalOptions = LayoutOptions.Center,
                     FontSize = 10,
                     TextColor = Color.FromArgb("#ffffff"),
                     HorizontalTextAlignment = TextAlignment.Center
                 };
-                var badgeStack = new HorizontalStackLayout()
-                {
-                    Margin = new Thickness(-8, -4, 0, 0),
-                    Padding = new Thickness(0),
-                    Spacing = 0,
-                    HorizontalOptions = LayoutOptions.End,
-                    VerticalOptions = LayoutOptions.Start,
-                    IsVisible = false,
-                    Children = {
-                        new Border {
+                var badgeStack = new Border {
                             BackgroundColor = Color.FromArgb("#007700"),
                              Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
-                            HorizontalOptions = LayoutOptions.Start,
+                            HorizontalOptions = LayoutOptions.End,
                             VerticalOptions = LayoutOptions.Start,
-                            HeightRequest = 15,
-                            WidthRequest = 20,
-                            Margin = new Thickness(0),
-                            Padding = new Thickness(1,0,0,0),
+                    Margin = new Thickness(-15,1, 0, 0),
+                            Padding = new Thickness(0,0,0,0),
                             StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 10 },
                             Content = bemBadgeCount
-                        },
-                    }
                 };
                 obj.badge = bemBadgeCount;
                 obj.badgeStack = badgeStack;
@@ -1491,8 +1517,8 @@ namespace iPMCloud.Mobile
                     btnNoticeFrame.GestureRecognizers.Add(new TapGestureRecognizer() { Command = func, CommandParameter = obj.lei });
                 }
 
-                sthg.Add(btnNoticeFrame,2,0);
-                sthg.Add(badgeStack,2,0);
+                sthGrid.Add(btnNoticeFrame,2,0);
+                sthGrid.Add(badgeStack,2,0);
             }
 
 
@@ -1501,13 +1527,13 @@ namespace iPMCloud.Mobile
             checkBox.CheckedChanged -= (object o, CheckedChangedEventArgs ev) => { ChangeObjektPlanWeekMobileDirektC(checkBox, p, btn, lb, mainP); };
             checkBox.CheckedChanged += (object o, CheckedChangedEventArgs ev) => { ChangeObjektPlanWeekMobileDirektC(checkBox, p, btn, lb, mainP); };
 
-            stv.GestureRecognizers.Clear();
+            stvGrid.GestureRecognizers.Clear();
             var t_quest_direktbuchen_cancel = new TapGestureRecognizer();
             t_quest_direktbuchen_cancel.Tapped += (object o, TappedEventArgs ev) => { ChangeObjektPlanWeekMobileDirekt(checkBox, p, btn, lb, mainP); };
-            stv.GestureRecognizers.Add(t_quest_direktbuchen_cancel);
+            stvGrid.GestureRecognizers.Add(t_quest_direktbuchen_cancel);
 
 
-            return sthg;
+            return sthGrid;
         }
 
         public static VerticalStackLayout GetPlanedTodayNotMobileItem(PlanPersonMobile p)

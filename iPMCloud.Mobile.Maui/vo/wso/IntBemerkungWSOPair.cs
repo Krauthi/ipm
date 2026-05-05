@@ -9,7 +9,7 @@ namespace iPMCloud.Mobile.vo.wso
         public BemerkungWSO bem = null;
         public LeistungWSO lei = null;
         public Label badge = null;
-        public HorizontalStackLayout badgeStack;
+        public Border badgeStack;
         public int count = 0;
     }
 }

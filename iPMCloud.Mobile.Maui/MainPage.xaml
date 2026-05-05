@@ -189,18 +189,6 @@
                         VerticalTextAlignment="Center" />
                 </Grid>
 
-                <!--  Titel  -->
-                <Label
-                    Grid.Column="1"
-                    Margin="0"
-                    FontSize="18"
-                    HorizontalOptions="Fill"
-                    HorizontalTextAlignment="Start"
-                    LineBreakMode="TailTruncation"
-                    Text="START"
-                    TextColor="#ffffff"
-                    VerticalOptions="Center" />
-
                 <!--  Userbild rechts  -->
                 <Border
                     x:Name="frm_img_LoginUser"
@@ -266,7 +254,6 @@
                 Grid.Row="2"
                 Margin="0"
                 Padding="0"
-                BackgroundColor="#34000000"
                 HorizontalOptions="Fill"
                 Spacing="0"
                 VerticalOptions="Start">
@@ -274,10 +261,14 @@
                 <Grid
                     x:Name="lastBuilding_Container"
                     Margin="0"
-                    Padding="10,0,10,0"
+                    Padding="5,0,5,0"
                     ColumnSpacing="0"
                     HorizontalOptions="Fill"
                     IsVisible="False">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
@@ -285,14 +276,23 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <VerticalStackLayout
+                    <Grid
+                        Grid.Row="1"
                         Grid.Column="0"
                         Margin="0"
-                        Padding="0,0,10,0"
+                        Padding="0,-20,0,0"
                         HorizontalOptions="Fill"
-                        Spacing="0">
+                        RowSpacing="0">
 
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
                         <Grid
+                            Grid.Row="0"
                             Margin="0"
                             Padding="0"
                             ColumnSpacing="0"
@@ -304,86 +304,44 @@
 
                             <VerticalStackLayout
                                 Grid.Column="0"
-                                Margin="0"
+                                Margin="0,-16,0,0"
                                 Padding="0"
-                                HorizontalOptions="Fill"
                                 Spacing="0">
                                 <Label
                                     Margin="0"
                                     FontSize="11"
-                                    HorizontalOptions="Fill"
-                                    HorizontalTextAlignment="Start"
                                     Text="Letztes Objekt:"
-                                    TextColor="#aaaaaa"
-                                    VerticalOptions="Center" />
+                                    TextColor="#aaaaaa" />
                                 <Label
                                     x:Name="last_building_name"
-                                    Margin="0,-2,0,0"
+                                    Margin="0"
                                     Padding="0"
-                                    FontSize="13"
-                                    HorizontalOptions="Fill"
-                                    HorizontalTextAlignment="Start"
+                                    FontSize="12"
+                                    MaximumWidthRequest="120"
                                     Text=""
-                                    TextColor="#ffffff"
-                                    VerticalOptions="Center" />
+                                    TextColor="#ffffff" />
                             </VerticalStackLayout>
 
                             <Border
                                 x:Name="btn_objektinfo_container"
                                 Grid.Column="1"
-                                Margin="2,0,0,0"
+                                Margin="2,-20,0,0"
                                 Padding="1"
                                 BackgroundColor="Transparent"
                                 HorizontalOptions="End"
                                 IsVisible="True"
                                 VerticalOptions="Start">
-                                <StackLayout
+                                <Image
                                     x:Name="btn_objektinfo"
-                                    Margin="0"
-                                    Padding="0"
-                                    BackgroundColor="Transparent"
+                                    Margin="0,3,0,0"
                                     HeightRequest="26"
-                                    HorizontalOptions="End"
-                                    Spacing="0"
+                                    HorizontalOptions="Center"
+                                    Source="ic_info.png"
                                     VerticalOptions="Center"
-                                    WidthRequest="26">
-                                    <Image
-                                        Margin="0,3,0,0"
-                                        HeightRequest="26"
-                                        HorizontalOptions="Center"
-                                        Source="ic_info.png"
-                                        VerticalOptions="Center"
-                                        WidthRequest="26" />
-                                </StackLayout>
+                                    WidthRequest="26" />
                             </Border>
                         </Grid>
-                        <VerticalStackLayout
-                            Margin="0"
-                            Padding="0"
-                            HorizontalOptions="Fill"
-                            Spacing="0">
-                            <Label
-                                x:Name="last_building_address"
-                                Margin="0,-2,0,0"
-                                Padding="0"
-                                FontSize="13"
-                                HorizontalOptions="Fill"
-                                HorizontalTextAlignment="Start"
-                                Text=""
-                                TextColor="#ffffff"
-                                VerticalOptions="Center" />
-                            <Label
-                                x:Name="last_building_zip_city"
-                                Margin="0,-2,0,0"
-                                Padding="0"
-                                FontSize="13"
-                                HorizontalOptions="Fill"
-                                HorizontalTextAlignment="Start"
-                                Text=""
-                                TextColor="#ffffff"
-                                VerticalOptions="Center" />
-                        </VerticalStackLayout>
-                    </VerticalStackLayout>
+                    </Grid>
                     <Border
                         x:Name="btn_alertmessage_container"
                         Grid.Column="1"
@@ -457,10 +415,39 @@
                     </Border>
                 </Grid>
 
+                <Grid
+                    Margin="0,5,0,0"
+                    Padding="5,0,5,0"
+                    ColumnSpacing="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Label
+                        x:Name="last_building_address"
+                        Grid.Row="0"
+                        Margin="0"
+                        Padding="0"
+                        FontSize="12"
+                        HorizontalOptions="Fill"
+                        Text=""
+                        TextColor="#ffffff"
+                        VerticalOptions="Center" />
+                    <Label
+                        x:Name="last_building_zip_city"
+                        Grid.Row="1"
+                        Margin="0,-2,0,0"
+                        Padding="0"
+                        FontSize="12"
+                        HorizontalOptions="Fill"
+                        Text=""
+                        TextColor="#ffffff"
+                        VerticalOptions="Center" />
+                </Grid>
 
                 <Border
                     x:Name="btn_buildingorder_container"
-                    Margin="10,5,10,2"
+                    Margin="5,3,5,2"
                     Padding="1"
                     BackgroundColor="#042d53"
                     HeightRequest="48"
@@ -497,7 +484,7 @@
                             <Label
                                 Margin="0"
                                 Padding="0"
-                                FontSize="20"
+                                FontSize="18"
                                 HorizontalOptions="Fill"
                                 HorizontalTextAlignment="Start"
                                 Text="Arbeiten auswählen"
@@ -580,7 +567,7 @@
                             <Label
                                 Margin="0"
                                 Padding="0"
-                                FontSize="20"
+                                FontSize="18"
                                 HorizontalOptions="Fill"
                                 HorizontalTextAlignment="Start"
                                 Text="Aktuelle Arbeiten"
@@ -630,7 +617,7 @@
                                 x:Name="inwork_starttime_text"
                                 Margin="0,-3,0,0"
                                 Padding="0"
-                                FontSize="20"
+                                FontSize="18"
                                 HorizontalOptions="Fill"
                                 HorizontalTextAlignment="End"
                                 Text="00:00"
@@ -696,7 +683,7 @@
                             <Label
                                 Margin="0"
                                 Padding="0"
-                                FontSize="20"
+                                FontSize="18"
                                 HorizontalOptions="Fill"
                                 HorizontalTextAlignment="Start"
                                 Text="Nachbuchen"
@@ -801,7 +788,7 @@
                                 <Label
                                     Margin="0"
                                     Padding="0"
-                                    FontSize="20"
+                                    FontSize="18"
                                     HorizontalOptions="Fill"
                                     HorizontalTextAlignment="Start"
                                     Text="Feierabend"
@@ -820,10 +807,10 @@
                                         Grid.Column="0"
                                         Margin="0,0,0,0"
                                         Padding="0"
-                                        FontSize="11"
+                                        FontSize="9"
                                         HorizontalOptions="Fill"
                                         HorizontalTextAlignment="Start"
-                                        Text="Zuletzt Datum/Zeit"
+                                        Text="Zuletzt"
                                         TextColor="#ffcc00" />
                                 </Grid>
                             </VerticalStackLayout>
@@ -2345,7 +2332,7 @@
                                                 x:Name="frame_planConCe_offenheadtxt"
                                                 Margin="3,0,0,1"
                                                 Padding="0"
-                                                FontSize="20"
+                                                FontSize="18"
                                                 Text="Offene"
                                                 TextColor="#ffffff" />
                                         </HorizontalStackLayout>
@@ -2382,7 +2369,7 @@
                                                 x:Name="frame_planConCe_workheadtxt"
                                                 Margin="3,0,0,1"
                                                 Padding="0"
-                                                FontSize="20"
+                                                FontSize="18"
                                                 Text="Fällig innerhalb 7 Tagen"
                                                 TextColor="#ffffff" />
                                         </HorizontalStackLayout>
@@ -2420,7 +2407,7 @@
                                                 x:Name="frame_planConCe_erlheadtxt"
                                                 Margin="3,0,0,1"
                                                 Padding="0"
-                                                FontSize="20"
+                                                FontSize="18"
                                                 Text="Weitere"
                                                 TextColor="#ffffff" />
                                         </HorizontalStackLayout>
@@ -4804,37 +4791,37 @@
                     HorizontalOptions="Fill"
                     VerticalOptions="End" />
                 <Border
+                    x:Name="btn_runningworks_over"
                     Margin="10,5"
-                        x:Name="btn_runningworks_over"
-                    BackgroundColor="#04532d"
                     Padding="2"
+                    BackgroundColor="#04532d"
                     HorizontalOptions="Start">
-                        <HorizontalStackLayout
-                            Margin="0"
+                    <HorizontalStackLayout
+                        Margin="0"
+                        Padding="0"
+                        HeightRequest="36"
+                        HorizontalOptions="Fill"
+                        Spacing="0"
+                        VerticalOptions="Center">
+                        <Image
+                            Margin="10,0,8,0"
+                            HeightRequest="30"
+                            Source="CheckWhite.png"
+                            VerticalOptions="Center"
+                            WidthRequest="30" />
+                        <VerticalStackLayout
+                            Margin="0,-3,10,0"
                             Padding="0"
-                            HeightRequest="36"
-                            HorizontalOptions="Fill"
                             Spacing="0"
                             VerticalOptions="Center">
-                            <Image
-                                Margin="10,0,8,0"
-                                HeightRequest="30"
-                                Source="CheckWhite.png"
-                                VerticalOptions="Center"
-                                WidthRequest="30" />
-                            <VerticalStackLayout
-                                Margin="0,-3,10,0"
+                            <Label
+                                Margin="0,4,0,0"
                                 Padding="0"
-                                Spacing="0"
-                                VerticalOptions="Center">
-                                <Label
-                                    Margin="0,4,0,0"
-                                    Padding="0"
-                                    FontSize="16"
-                                    Text="JETZT BEENDEN"
-                                    TextColor="#ffffff" />
-                            </VerticalStackLayout>
-                        </HorizontalStackLayout>
+                                FontSize="16"
+                                Text="JETZT BEENDEN"
+                                TextColor="#ffffff" />
+                        </VerticalStackLayout>
+                    </HorizontalStackLayout>
                 </Border>
             </VerticalStackLayout>
 
@@ -5340,7 +5327,7 @@
                     <Label
                         Grid.Column="1"
                         Margin="0"
-                        FontSize="20"
+                        FontSize="18"
                         HorizontalOptions="Start"
                         HorizontalTextAlignment="Start"
                         LineBreakMode="TailTruncation"
@@ -5549,7 +5536,7 @@
                             WidthRequest="30" />
                         <Label
                             Margin="0"
-                            FontSize="20"
+                            FontSize="18"
                             HorizontalOptions="Start"
                             HorizontalTextAlignment="Start"
                             LineBreakMode="TailTruncation"
@@ -5621,9 +5608,9 @@
             Padding="0"
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             AbsoluteLayout.LayoutFlags="All"
+            BackgroundColor="#000000"
             HorizontalOptions="Fill"
             IsVisible="False"
-            BackgroundColor ="#000000"
             VerticalOptions="Fill">
 
             <Image
@@ -5632,7 +5619,7 @@
                 AbsoluteLayout.LayoutFlags="All"
                 Aspect="AspectFill"
                 HorizontalOptions="Center"
-                Opacity="1"
+                Opacity=".75"
                 Source="backgroundgray2.jpg"
                 VerticalOptions="End" />
 
@@ -5648,9 +5635,8 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
                 <Grid
@@ -5802,9 +5788,9 @@
                         Grid.Column="3"
                         Margin="13,0,0,0"
                         Padding="1"
-                        BackgroundColor="#73042d"
+                        BackgroundColor="#93042d"
                         HorizontalOptions="End"
-                        Stroke="#73143d"
+                        Stroke="#93042d"
                         VerticalOptions="Center">
                         <HorizontalStackLayout
                             Margin="0"
@@ -5815,7 +5801,7 @@
                             VerticalOptions="Center"
                             WidthRequest="40">
                             <Image
-                                Margin="0,0,0,0"
+                                Margin="4,0,0,0"
                                 HeightRequest="29"
                                 HorizontalOptions="Center"
                                 Source="Trash.png"
@@ -5833,7 +5819,7 @@
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
 
-                <HorizontalStackLayout
+                <!--<HorizontalStackLayout
                     Grid.Row="4"
                     Margin="0,25,0,0"
                     Padding="0"
@@ -5846,7 +5832,7 @@
                         Padding="15,10,15,10"
                         BackgroundColor="#73042d"
                         HorizontalOptions="Center"
-                        IsVisible="TRUE">
+                        IsVisible="True">
                         <Label
                             Margin="0"
                             Padding="0"
@@ -5882,138 +5868,128 @@
                             Text="FERTIG"
                             TextColor="#ffffff" />
                     </Border>
-                </HorizontalStackLayout>
+                </HorizontalStackLayout>-->
 
-                <BoxView
+                <!--<BoxView
                     Grid.Row="5"
                     Margin="0,0,0,0"
-                    BackgroundColor="Gray"
+                    BackgroundColor="Red"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
-                    VerticalOptions="Start" />
+                    VerticalOptions="Start" />-->
 
                 <ScrollView
                     x:Name="checkQuestStack_scroll"
-                    Grid.Row="6"
-                    Margin="0"
+                    Grid.Row="4"
+                    Margin="0,0,0,0"
                     Padding="0"
                     HorizontalOptions="Fill"
                     VerticalOptions="Fill">
                     <VerticalStackLayout
                         x:Name="checkQuestStack"
                         Margin="0"
-                        Padding="0"
+                        Padding="0,0,0,60"
                         HorizontalOptions="Fill"
                         Spacing="0"
                         VerticalOptions="Fill" />
                 </ScrollView>
-            </Grid>
 
 
-            <VerticalStackLayout
-                x:Name="img_info_check_typ_container"
-                Margin="0"
-                Padding="0"
-                AbsoluteLayout.LayoutBounds="0,0,1,1"
-                AbsoluteLayout.LayoutFlags="All"
-                BackgroundColor="#99042d53"
-                HorizontalOptions="Fill"
-                Spacing="0"
-                VerticalOptions="End">
-                <BoxView
-                    Margin="0,0,0,0"
-                    BackgroundColor="Gray"
-                    HeightRequest="1"
-                    HorizontalOptions="Fill"
-                    VerticalOptions="Start" />
-                <HorizontalStackLayout
+                <VerticalStackLayout
+                    x:Name="img_info_check_typ_container"
+                    Grid.Row="5"
                     Margin="0"
-                    Padding="10,5"
+                    Padding="0"
+                    BackgroundColor="#99042d53"
                     HorizontalOptions="Fill"
-                    Spacing="0"
-                    VerticalOptions="End">
-                    <Border
-                        x:Name="btn_notice_save_check_ready"
-                        Margin="0,5,0,0"
-                        Padding="1"
-                        BackgroundColor="#04432d"
-                        HeightRequest="44"
-                        HorizontalOptions="Start"
-                        VerticalOptions="Start">
-                        <StackLayout
-                            Margin="0"
-                            Padding="10,0"
-                            BackgroundColor="#04532d"
-                            HeightRequest="44"
-                            HorizontalOptions="Fill">
-                            <HorizontalStackLayout
-                                Margin="0,0,0,0"
-                                Padding="0"
-                                HorizontalOptions="Fill"
-                                Spacing="0"
-                                VerticalOptions="Center">
+                    Spacing="0">
+                    <BoxView
+                        Margin="0,0,0,0"
+                        BackgroundColor="Gray"
+                        HeightRequest="1"
+                        HorizontalOptions="Fill"
+                        VerticalOptions="Start" />
+                    <HorizontalStackLayout
+                        Margin="0"
+                        Padding="10,5"
+                        HorizontalOptions="Fill"
+                        Spacing="0"
+                        VerticalOptions="End">
+                        <Border
+                            x:Name="btn_notice_save_check_ready"
+                            Margin="0,5,0,20"
+                            Padding="1"
+                            BackgroundColor="#04432d"
+                            HorizontalOptions="Start"
+                            VerticalOptions="Start">
+                            <StackLayout
+                                Margin="0"
+                                Padding="10,-2,10,5"
+                                BackgroundColor="#04532d"
+                                HorizontalOptions="Fill">
                                 <VerticalStackLayout
-                                    Margin="0,-3,10,0"
+                                    Margin="0,0,0,0"
                                     Padding="0"
                                     Spacing="0"
                                     VerticalOptions="Center">
                                     <Label
-                                        Margin="0"
+                                        Margin="0,5,0,0"
                                         Padding="0"
-                                        FontSize="16"
+                                        FontSize="18"
                                         Text="FERTIG"
                                         TextColor="#ffffff" />
                                     <Label
-                                        Margin="0"
+                                        Margin="0,-3,0,0"
                                         Padding="0"
-                                        FontSize="10"
+                                        FontSize="12"
                                         LineBreakMode="TailTruncation"
                                         Text="Checkliste abgeben"
                                         TextColor="#ffffff" />
                                 </VerticalStackLayout>
-                            </HorizontalStackLayout>
-                        </StackLayout>
-                    </Border>
-                    <VerticalStackLayout
-                        Margin="0"
-                        Padding="10,0,10,20"
-                        HorizontalOptions="Center"
-                        Spacing="0">
-                        <Label
-                            x:Name="info_check_text1a"
+                            </StackLayout>
+                        </Border>
+                        <VerticalStackLayout
                             Margin="0"
-                            Padding="0"
-                            FontSize="14"
-                            HorizontalOptions="Start"
-                            LineBreakMode="TailTruncation"
-                            Text="Gesamt"
-                            TextColor="#cccccc"
-                            VerticalOptions="Start" />
-                        <Label
-                            x:Name="info_check_text2a"
-                            Margin="0"
-                            Padding="0"
-                            FontSize="14"
-                            HorizontalOptions="Start"
-                            LineBreakMode="TailTruncation"
-                            Text="0 vom 0 beantwortet"
-                            TextColor="#cccccc"
-                            VerticalOptions="Start" />
-                        <Label
-                            x:Name="info_check_text3a"
-                            Margin="0"
-                            Padding="0"
-                            FontAttributes="Bold"
-                            FontSize="12"
-                            HorizontalOptions="Start"
-                            IsVisible="False"
-                            LineBreakMode="TailTruncation"
-                            Text="Es müssen alle Pflichtfragen beantwortet werden!"
-                            TextColor="#ffcc00"
-                            VerticalOptions="Start" />
-                    </VerticalStackLayout>
-                </HorizontalStackLayout>
-            </VerticalStackLayout>
+                            Padding="10,0,10,20"
+                            HorizontalOptions="Center"
+                            Spacing="0">
+                            <Label
+                                x:Name="info_check_text1a"
+                                Margin="0"
+                                Padding="0"
+                                FontSize="14"
+                                HorizontalOptions="Start"
+                                LineBreakMode="TailTruncation"
+                                Text="Gesamt"
+                                TextColor="#cccccc"
+                                VerticalOptions="Start" />
+                            <Label
+                                x:Name="info_check_text2a"
+                                Margin="0"
+                                Padding="0"
+                                FontSize="14"
+                                HorizontalOptions="Start"
+                                LineBreakMode="TailTruncation"
+                                Text="0 vom 0 beantwortet"
+                                TextColor="#cccccc"
+                                VerticalOptions="Start" />
+                            <Label
+                                x:Name="info_check_text3a"
+                                Margin="0"
+                                Padding="0"
+                                FontAttributes="Bold"
+                                FontSize="12"
+                                HorizontalOptions="Start"
+                                IsVisible="False"
+                                LineBreakMode="TailTruncation"
+                                Text="Es müssen alle Pflichtfragen beantwortet werden!"
+                                TextColor="#ffcc00"
+                                VerticalOptions="Start" />
+                        </VerticalStackLayout>
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+
+            </Grid>
         </AbsoluteLayout>
 
 
@@ -6149,7 +6125,7 @@
             HorizontalOptions="Fill"
             IsVisible="False"
             VerticalOptions="Fill">
-            <Image
+            <!--<Image
                 Margin="0,0,0,0"
                 AbsoluteLayout.LayoutBounds="0,0,1,1"
                 AbsoluteLayout.LayoutFlags="All"
@@ -6157,7 +6133,7 @@
                 HorizontalOptions="Center"
                 Opacity="0.7"
                 Source="backgroundgray2.jpg"
-                VerticalOptions="End" />
+                VerticalOptions="End" />-->
 
             <StackLayout
                 x:Name="CheckPage_Bem_inner_Container"
@@ -6171,7 +6147,7 @@
                     Margin="0"
                     Padding="10"
                     ColumnSpacing="0"
-                    HeightRequest="48"
+                    HeightRequest="54"
                     HorizontalOptions="Fill">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
@@ -6190,8 +6166,7 @@
                             Margin="0"
                             Padding="0"
                             ColumnSpacing="0"
-                            HeightRequest="38"
-                            HorizontalOptions="Start"
+                            HeightRequest="54"
                             VerticalOptions="Center">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
@@ -6221,7 +6196,7 @@
                         x:Name="CheckPage_Bem_Title"
                         Grid.Column="1"
                         Margin="0,0,5,0"
-                        FontSize="22"
+                        FontSize="20"
                         HorizontalOptions="End"
                         HorizontalTextAlignment="End"
                         LineBreakMode="TailTruncation"
@@ -6263,6 +6238,7 @@
                         x:Name="noticeFor_Pos_check_bem"
                         Margin="0,0,0,5"
                         Padding="0"
+                        Scale="0.80"
                         HorizontalOptions="Fill"
                         Spacing="0" />
                 </VerticalStackLayout>
@@ -6294,12 +6270,11 @@
                         Margin="0,-10,0,0"
                         BackgroundColor="Transparent"
                         FontSize="16"
-                        HeightRequest="100"
+                        HeightRequest="80"
                         HorizontalOptions="Fill"
                         Keyboard="Text"
                         MinimumHeightRequest="80"
                         Text=""
-                        TextChanged="entry_notice_TextChanged_check_bem"
                         TextColor="#ffffff" />
                 </VerticalStackLayout>
                 <BoxView
@@ -6322,31 +6297,33 @@
                     <Grid
                         Grid.Column="0"
                         Margin="0"
-                        Padding="0,2,10,7"
+                        Padding="0,2,10,5"
                         ColumnSpacing="10"
                         HorizontalOptions="Fill"
                         VerticalOptions="End">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
+                        <Label
+                        Grid.Column="0"
+                        Margin="10,0,20,0"
+                        Padding="0"
+                        FontSize="12"
+                        HorizontalOptions="Start"
+                        LineBreakMode="WordWrap"
+                        Text="Maximal 3 Bilder"
+                        TextColor="#ffcc00"
+                        VerticalOptions="Center" />
                         <Border
                             x:Name="btn_takePhoto_frame_check_bem"
-                            Grid.Column="0"
+                            Grid.Column="1"
                             Margin="15,0,15,0"
-                            Padding="1"
-                            BackgroundColor="#041d43"
+                            Padding="6"
+                                BackgroundColor="#345d93"
                             HorizontalOptions="Start"
                             VerticalOptions="Center">
-                            <StackLayout
-                                Margin="0"
-                                Padding="0"
-                                BackgroundColor="#042d53"
-                                HeightRequest="40"
-                                HorizontalOptions="Center"
-                                Spacing="0"
-                                VerticalOptions="Center"
-                                WidthRequest="40">
                                 <Image
                                     Margin="0,0,0,0"
                                     HeightRequest="30"
@@ -6354,25 +6331,15 @@
                                     Source="Cam.png"
                                     VerticalOptions="Center"
                                     WidthRequest="30" />
-                            </StackLayout>
                         </Border>
                         <Border
                             x:Name="btn_takePhotoAttachment_frame_check_bem"
-                            Grid.Column="1"
+                            Grid.Column="2"
                             Margin="5,0,15,0"
-                            Padding="1"
-                            BackgroundColor="#041d43"
+                            Padding="6"
+                            BackgroundColor="#345d93"
                             HorizontalOptions="Start"
                             VerticalOptions="Center">
-                            <StackLayout
-                                Margin="0"
-                                Padding="0"
-                                BackgroundColor="#042d53"
-                                HeightRequest="40"
-                                HorizontalOptions="Center"
-                                Spacing="0"
-                                VerticalOptions="Center"
-                                WidthRequest="40">
                                 <Image
                                     Margin="0,0,0,0"
                                     HeightRequest="30"
@@ -6380,19 +6347,8 @@
                                     Source="Attachment.png"
                                     VerticalOptions="Center"
                                     WidthRequest="30" />
-                            </StackLayout>
                         </Border>
                     </Grid>
-                    <Label
-                        Grid.Column="1"
-                        Margin="20,0,20,6"
-                        Padding="0"
-                        FontSize="12"
-                        HorizontalOptions="End"
-                        LineBreakMode="WordWrap"
-                        Text="Maximal 3 Bilder"
-                        TextColor="#ffcc00"
-                        VerticalOptions="Center" />
                 </Grid>
 
                 <BoxView
@@ -6434,18 +6390,11 @@
                         x:Name="btn_notice_save_check_bem"
                         Margin="5"
                         Padding="1"
-                        BackgroundColor="#04432d"
+                        BackgroundColor="#04532d"
                         HorizontalOptions="Start">
-                        <StackLayout
-                            Margin="0"
-                            Padding="2,2,10,2"
-                            BackgroundColor="#04532d"
-                            HeightRequest="40"
-                            HorizontalOptions="Fill">
                             <HorizontalStackLayout
                                 Margin="0,0,0,0"
-                                Padding="0"
-                                HeightRequest="30"
+                                Padding="10,6"
                                 HorizontalOptions="Fill"
                                 Spacing="0"
                                 VerticalOptions="Center">
@@ -6456,19 +6405,18 @@
                                     VerticalOptions="Center"
                                     WidthRequest="30" />
                                 <VerticalStackLayout
-                                    Margin="0,-3,10,0"
+                                    Margin="0"
                                     Padding="0"
                                     Spacing="0"
                                     VerticalOptions="Center">
                                     <Label
                                         Margin="0"
                                         Padding="0"
-                                        FontSize="16"
+                                        FontSize="18"
                                         Text="ÜBERNEHMEN"
                                         TextColor="#ffffff" />
                                 </VerticalStackLayout>
                             </HorizontalStackLayout>
-                        </StackLayout>
                     </Border>
                 </VerticalStackLayout>
             </StackLayout>
@@ -6672,7 +6620,7 @@
                 <Label
                     x:Name="popupContainer_container_changelang_titel"
                     Margin="0"
-                    FontSize="20"
+                    FontSize="18"
                     HorizontalOptions="Fill"
                     HorizontalTextAlignment="Start"
                     Text="Sprache von Kategorien und Leistungen ändern"
@@ -6765,7 +6713,7 @@
                     <Label
                         Grid.Column="0"
                         Margin="0"
-                        FontSize="20"
+                        FontSize="18"
                         HorizontalOptions="Fill"
                         HorizontalTextAlignment="Start"
                         Text="Das Übersetzen war nicht erfolgreich!"
@@ -7086,7 +7034,7 @@
                                         <Label
                                             Margin="0"
                                             Padding="0"
-                                            FontSize="20"
+                                            FontSize="18"
                                             HorizontalTextAlignment="Start"
                                             Text="Todo's"
                                             TextColor="#ffffff" />
@@ -7152,7 +7100,7 @@
                                         <Label
                                             Margin="0"
                                             Padding="0"
-                                            FontSize="20"
+                                            FontSize="18"
                                             HorizontalTextAlignment="Start"
                                             Text="Meine Zeiten"
                                             TextColor="#ffffff" />
@@ -7225,7 +7173,7 @@
                                         <Label
                                             Margin="0"
                                             Padding="0"
-                                            FontSize="20"
+                                            FontSize="18"
                                             HorizontalTextAlignment="Start"
                                             Text="Handwerker"
                                             TextColor="#ffffff" />
@@ -7307,7 +7255,7 @@
                                         <Label
                                             Margin="0"
                                             Padding="0"
-                                            FontSize="20"
+                                            FontSize="18"
                                             HorizontalTextAlignment="Start"
                                             Text="Synchronisieren"
                                             TextColor="#ffffff" />
@@ -7383,7 +7331,7 @@
                                         <Label
                                             Margin="0"
                                             Padding="0"
-                                            FontSize="20"
+                                            FontSize="18"
                                             HorizontalTextAlignment="Start"
                                             Text="Einstellungen"
                                             TextColor="#ffffff" />
@@ -7503,7 +7451,7 @@
                                         <Label
                                             Margin="0"
                                             Padding="0"
-                                            FontSize="20"
+                                            FontSize="18"
                                             Text="DSGVO &amp; Impressum"
                                             TextColor="#ffffff" />
                                         <Label
@@ -7573,7 +7521,7 @@
                                         <Label
                                             Margin="0"
                                             Padding="0"
-                                            FontSize="20"
+                                            FontSize="18"
                                             HorizontalTextAlignment="Start"
                                             Text="Anmeldung"
                                             TextColor="#ffffff" />
@@ -7933,7 +7881,7 @@
             <VerticalStackLayout
                 Margin="20"
                 Padding="10"
-                AbsoluteLayout.LayoutBounds="0.4,0.4,1,0.36"
+                AbsoluteLayout.LayoutBounds="0.4,0.4,1,0.42"
                 AbsoluteLayout.LayoutFlags="All"
                 BackgroundColor="#144d73"
                 HorizontalOptions="Fill"
@@ -8346,7 +8294,7 @@
                 Spacing="0">
                 <Label
                     Margin="0"
-                    FontSize="20"
+                    FontSize="18"
                     HorizontalOptions="Fill"
                     HorizontalTextAlignment="Start"
                     Text="Leeren des LOGs"
@@ -8430,7 +8378,7 @@
                 <Label
                     x:Name="popupContainer_Alert_Titel"
                     Margin="0"
-                    FontSize="20"
+                    FontSize="18"
                     HorizontalOptions="Fill"
                     HorizontalTextAlignment="Start"
                     Text=""
@@ -8499,7 +8447,7 @@
                 Spacing="0">
                 <Label
                     Margin="0"
-                    FontSize="20"
+                    FontSize="18"
                     HorizontalOptions="Fill"
                     HorizontalTextAlignment="Start"
                     Text="Senden an den Support der iPM-Cloud"
@@ -8600,7 +8548,7 @@
                     <Label
                         Grid.Column="1"
                         Margin="0"
-                        FontSize="20"
+                        FontSize="18"
                         HorizontalOptions="Fill"
                         HorizontalTextAlignment="Start"
                         Text="Das Senden an den Support der iPM-Cloud war nicht erfolgreich!"
@@ -8914,10 +8862,10 @@
             <Grid
                 Margin="20"
                 Padding="10"
-                HorizontalOptions="Fill"
                 AbsoluteLayout.LayoutBounds="0.5, 0.25, -1, -1"
                 AbsoluteLayout.LayoutFlags="PositionProportional"
                 BackgroundColor="#144d73"
+                HorizontalOptions="Fill"
                 RowSpacing="0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
@@ -8949,18 +8897,16 @@
                     Grid.Row="2"
                     Margin="0,0,0,0"
                     FontSize="14"
+                    LineBreakMode="WordWrap"
                     Text="Falls die Müllposition anderes ist als erwartet,"
-                    TextColor="#ffffff"
-                    
-                        LineBreakMode="WordWrap"/>
+                    TextColor="#ffffff" />
                 <Label
                     Grid.Row="3"
                     Margin="0,0,0,20"
                     FontSize="14"
+                    LineBreakMode="WordWrap"
                     Text="können Sie hier die Position berichtigen."
-                    TextColor="#ffffff"
-                    
-                        LineBreakMode="WordWrap"/>
+                    TextColor="#ffffff" />
                 <Label
                     Grid.Row="4"
                     Margin="0,0,0,20"
@@ -9050,7 +8996,7 @@
                     Grid.Row="0"
                     Margin="10,8"
                     FontAttributes="Bold"
-                    FontSize="20"
+                    FontSize="18"
                     HorizontalOptions="Fill"
                     HorizontalTextAlignment="Start"
                     Text="DIREKTBUCHEN OHNE SCAN"
@@ -9110,11 +9056,39 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <Border
                         x:Name="btn_quest_direktbuchen_cancel"
+                        Grid.Column="0"
+                        Margin="0"
+                        Padding="10"
+                        BackgroundColor="#73042d"
+                        HorizontalOptions="Start"
+                        IsVisible="False">
+                        <Label
+                            Margin="10,0,0,0"
+                            Padding="0"
+                            FontSize="14"
+                            Text="1ABBRECHEN"
+                            TextColor="#ffffff" />
+                    </Border>
+                    <Border
+                        x:Name="btn_quest_direktbuchen"
+                        Grid.Column="2"
+                        Margin="0"
+                        Padding="10"
+                        BackgroundColor="#04732d"
+                        HorizontalOptions="End"
+                        IsVisible="False">
+                        <Label
+                            Margin="0"
+                            Padding="0"
+                            FontSize="14"
+                            Text="1JETZT BUCHEN"
+                            TextColor="#ffffff" />
+                    </Border>
+                    <Border
+                        x:Name="btn_quest_direktbuchenwinter_cancel"
                         Grid.Column="0"
                         Margin="0"
                         Padding="10"
@@ -9129,38 +9103,8 @@
                             TextColor="#ffffff" />
                     </Border>
                     <Border
-                        x:Name="btn_quest_direktbuchen"
-                        Grid.Column="1"
-                        Margin="0"
-                        Padding="10"
-                        BackgroundColor="#04732d"
-                        HorizontalOptions="End"
-                        IsVisible="False">
-                        <Label
-                            Margin="0"
-                            Padding="0"
-                            FontSize="14"
-                            Text="JETZT BUCHEN"
-                            TextColor="#ffffff" />
-                    </Border>
-                    <Border
-                        x:Name="btn_quest_direktbuchenwinter_cancel"
-                        Grid.Column="2"
-                        Margin="0"
-                        Padding="10"
-                        BackgroundColor="#73042d"
-                        HorizontalOptions="Start"
-                        IsVisible="False">
-                        <Label
-                            Margin="0"
-                            Padding="0"
-                            FontSize="14"
-                            Text="ABBRECHEN"
-                            TextColor="#ffffff" />
-                    </Border>
-                    <Border
                         x:Name="btn_quest_direktbuchenwinter"
-                        Grid.Column="3"
+                        Grid.Column="2"
                         Margin="0"
                         Padding="10"
                         BackgroundColor="#04732d"
@@ -9176,9 +9120,9 @@
 
                     <Label
                         x:Name="btn_quest_direktbuchen_i"
-                        Grid.Column="4"
+                        Grid.Column="1"
                         Margin="10"
-                        FontSize="16"
+                        FontSize="14"
                         HorizontalOptions="End"
                         HorizontalTextAlignment="End"
                         IsVisible="False"
@@ -9702,7 +9646,7 @@
                     <Label
                         Grid.Column="1"
                         Margin="10"
-                        FontSize="20"
+                        FontSize="18"
                         HorizontalOptions="Fill"
                         HorizontalTextAlignment="Start"
                         Text="Zusätzliche Information"
@@ -10111,7 +10055,7 @@
                         x:Name="btn_back_pn_headtext"
                         Grid.Column="1"
                         Margin="0,0,10,0"
-                        FontSize="20"
+                        FontSize="18"
                         HorizontalOptions="End"
                         HorizontalTextAlignment="End"
                         LineBreakMode="TailTruncation"
@@ -10172,7 +10116,7 @@
                                         Grid.Column="0"
                                         Margin="0"
                                         Padding="10,3,10,3"
-                                        FontSize="20"
+                                        FontSize="18"
                                         HorizontalOptions="Start"
                                         Text="Anweisung"
                                         TextColor="#ffffff"

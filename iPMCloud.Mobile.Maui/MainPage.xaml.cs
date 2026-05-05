@@ -614,7 +614,7 @@ namespace iPMCloud.Mobile
                 btn_info_check_text1.Text = AppModel.Instance.selectedCheckA.bezeichnung;
                 btn_info_check_text2.Text = "Datum: " + JavaScriptDateConverter.Convert(long.Parse(AppModel.Instance.selectedCheckA.datum)).ToString("dd.MM.yyyy");
                 frame_info_check_badge.Children.Clear();
-                frame_info_check_badge.Children.Add(Check.GetBadgeFrame(AppModel.Instance.selectedCheckInfo.naeststeFaelligkeitDate));
+                frame_info_check_badge.Children.Add(Check.GetBadgeFrame(AppModel.Instance.selectedCheckInfo.naeststeFaelligkeitDate,30));
 
                 BuildCheckQuestStack();
             }
@@ -970,7 +970,7 @@ namespace iPMCloud.Mobile
                 _SelectedPosForNotice_check_bem.bemWSO.objektid = AppModel.Instance.selectedCheckA.objektid;
                 _SelectedPosForNotice_check_bem.bemWSO.leistungid = _SelectedPosForNotice_check_bem.id;
                 _SelectedPosForNotice_check_bem.bemWSO.datum = JavaScriptDateConverter.Convert(DateTime.Now);
-                _SelectedPosForNotice_check_bem.bemWSO.text = !_SelectedPosForNotice_check_bem_isquest ? entry_notice_check_bem.Text : "";
+                _SelectedPosForNotice_check_bem.bemWSO.text = !_SelectedPosForNotice_check_bem_isquest ? entry_notice_check_bem.Text.Trim() : "";
                 _SelectedPosForNotice_check_bem.bemWSO.id = 0;
 
                 if (_SelectedPosForNotice_check_bem_isquest)
@@ -1174,18 +1174,6 @@ namespace iPMCloud.Mobile
             await Task.Delay(1);
             overlay.IsVisible = false;
         }
-
-
-
-        private void entry_notice_TextChanged_check_bem(object sender, TextChangedEventArgs e)
-        {
-            //_SelectedPosForNotice_check_bem.bem.text = entry_notice_check_bem.Text;
-            //CheckNoticeFalid_check_bem();
-        }
-
-
-
-
 
 
 
@@ -2090,7 +2078,7 @@ namespace iPMCloud.Mobile
                         if (item.id == _SelectedPosForNotice.id && item.bem != null)
                         {
                             _SelectedBemerkungForNotice = item.bem;
-                            entry_notice_DirektPos.Text = item.bem.text;
+                            entry_notice_DirektPos.Text = item.bem.text.Trim();
                             sw_internmessage_DirektPos.IsToggled = item.bem.prio == 1 || item.bem.prio == 3;
                             sw_alertmessage_DirektPos.IsToggled = item.bem.prio == 2 || item.bem.prio == 3;
                             item.bem.photos.ForEach(p =>
@@ -2167,7 +2155,7 @@ namespace iPMCloud.Mobile
                 _SelectedBemerkungForNotice.objektid = _SelectedPosForNotice.objektid;
                 _SelectedBemerkungForNotice.leistungid = _SelectedPosForNotice.id;
                 _SelectedBemerkungForNotice.datum = DateTime.Now.Ticks;
-                _SelectedBemerkungForNotice.text = "" + entry_notice_DirektPos.Text;
+                _SelectedBemerkungForNotice.text = "" + entry_notice_DirektPos.Text.Trim();
 
                 foreach (var item in _SelectedBemerkungForNoticeList_DirektPos)
                 {
@@ -6075,7 +6063,7 @@ namespace iPMCloud.Mobile
             await Task.Delay(1);
 
             AppModel.Instance.selectedObjectValueBild.filename = DateTime.Now.ToString("dd_MM_yyyy_HH_mm_ss");
-            AppModel.Instance.selectedObjectValueBild.bemerkung = PopupContainerObjectValuesBild.EditorNotice.Text;
+            AppModel.Instance.selectedObjectValueBild.bemerkung = PopupContainerObjectValuesBild.EditorNotice.Text.Trim();
             AppModel.Instance.selectedObjectValueBild.meterid = AppModel.Instance.selectedObjectValue.id;
             AppModel.Instance.selectedObjectValueBild.lastchange = JavaScriptDateConverter.Convert(DateTime.Now).ToString();
             AppModel.Instance.selectedObjectValueBild.standid = 0;
@@ -6345,7 +6333,7 @@ namespace iPMCloud.Mobile
                 _manuelTextChange = true;
                 //entry_notice.Text = System.Text.RegularExpressions.Regex.Replace(e.NewTextValue, @"\p{Cs}", "").Trim(); 
                 //_SelectedBemerkungForNotice.text = System.Text.RegularExpressions.Regex.Replace(e.NewTextValue, @"\p{Cs}", "").Trim();
-                _SelectedBemerkungForNotice.text = e.NewTextValue;
+                _SelectedBemerkungForNotice.text = e.NewTextValue.Trim();
                 CheckNoticeFalid();
                 _manuelTextChange = false;
             }
@@ -7963,7 +7951,7 @@ namespace iPMCloud.Mobile
                         int i = 0;
                         int ii = 0;
                         var bs = new List<BuildingWSO>();
-                        var blist = ListExtensions.ChunkBy(ipmNewBuildingResponse.builgings.Distinct().ToList(), 30);
+                        var blist = ListExtensions.ChunkBy(ipmNewBuildingResponse.builgings.Distinct().ToList(), 10);
                         double pr = 0;
                         popupContainer_count.Text = "SYNCHRONISATION (0%)";
                         await Task.Delay(1);
@@ -7979,7 +7967,7 @@ namespace iPMCloud.Mobile
                             string objids = "";
                             //var objidsInt = Utils.ConvertStringToListInt(objids);
                             blist[zz].ForEach(b => { objids = objids + (objids.Length > 0 ? "," : "") + b.id; });
-                            IpmNewSyncResponse resp = AppModel.Instance.Connections.IpmNewAuftragSync(objids);
+                            IpmNewSyncResponse resp = await AppModel.Instance.Connections.IpmNewAuftragSyncAsync(objids);
                             if (resp != null && resp.auftraege != null)
                             {
                                 ii++;

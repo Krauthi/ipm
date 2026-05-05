@@ -314,6 +314,82 @@ namespace iPMCloud.Mobile.vo
             }
         }
 
+        public async Task<IpmNewSyncResponse> IpmNewAuftragSyncAsync(string objids)
+        {
+            if (uri_NewSyncAuftrag == null)
+                InitConnections();
+
+            if (!AppModel.Instance.IsInternet)
+            {
+                return new IpmNewSyncResponse
+                {
+                    success = false,
+                    message = "Sie brauchen für diese Aktion eine Onlineverbindung!",
+                };
+            }
+
+            var args = JsonConvert.SerializeObject(new IpmNewSyncRequest
+            {
+                token = AppModel.Instance.SettingModel.SettingDTO.LoginToken,
+                objids = objids,
+                lastsync = string.IsNullOrWhiteSpace(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks)
+                    ? 0
+                    : long.Parse(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks)
+            });
+
+            using var msg = new HttpRequestMessage(HttpMethod.Post, uri_NewSyncAuftrag)
+            {
+                Content = new StringContent(args, Encoding.UTF8, "application/json")
+            };
+
+            HttpResponseMessage? resMsg = null;
+
+            try
+            {
+                // Wichtig: await statt .Result (verhindert UI-Deadlocks / blockierte Threads)
+                resMsg = await httpClientInstance.SendAsync(msg).ConfigureAwait(false);
+
+                if (resMsg != null && resMsg.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    // Tokenzeit neu setzen
+                    AppModel.Instance.SettingModel.SettingDTO.LastTokenDateTimeTicks = DateTime.Now.Ticks.ToString();
+                    AppModel.Instance.SettingModel.SaveSettings();
+
+                    var json = await resMsg.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    return JsonConvert.DeserializeObject<IpmNewSyncResponse>(json);
+                }
+                else
+                {
+                    var m = "Method => IpmNewAuftragSyncAsync: httpResponseMessage.StatusCode = " +
+                            resMsg?.StatusCode + " - " + resMsg?.RequestMessage;
+
+                    AppModel.Logger.Warn(m);
+                    return new IpmNewSyncResponse { success = false, message = m };
+                }
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message.ToLower().Contains("canceled"))
+                {
+                    var text =
+                        "Method => IpmNewAuftragSyncAsync(canceled): Der Server ist nicht erreichbar oder die Verbindung wurde unterbrochen!\n\n" +
+                        "Bitte versuchen Sie es später noch einmal.\n\n" +
+                        "Sollte das Problem weiter bestehen, melden Sie sich bei Ihren Sachbearbeitern.\n\n" +
+                        ex.Message;
+
+                    AppModel.Logger.Error(text);
+                    return new IpmNewSyncResponse { success = false, message = text };
+                }
+
+                AppModel.Logger.Error("Method => IpmNewAuftragSyncAsync(catch): " + ex.Message);
+                return new IpmNewSyncResponse { success = false, message = "Method(IpmNewAuftragSyncAsync(catch)): " + ex.Message };
+            }
+            finally
+            {
+                resMsg?.Dispose();
+            }
+        }
+
         public IpmNewSyncResponse IpmNewAuftragSync(string objids)
         {
             if (uri_NewSyncAuftrag == null) { InitConnections(); }
@@ -874,7 +950,7 @@ namespace iPMCloud.Mobile.vo
             });
 
             // TODO: Log wieder freigeben
-            return true;
+            //return true;
 
             HttpRequestMessage msg = new HttpRequestMessage(HttpMethod.Post, uri_Log);
             msg.Content = new StringContent(args, Encoding.UTF8, "application/json");

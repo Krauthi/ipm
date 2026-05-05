@@ -1,13 +1,12 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using BarcodeScanning;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Devices;
-using Microsoft.Maui.Storage;
-using ZXing.Net.Maui;
-using ZXing.Net.Maui.Controls;
 
 namespace iPMCloud.Mobile.vo
 {
@@ -24,7 +23,7 @@ namespace iPMCloud.Mobile.vo
         private int _isStopping = 0;
 
         // Stored handler so we can unsubscribe (no inline-lambda-only subscriptions)
-        private EventHandler<BarcodeDetectionEventArgs> _barcodeHandler;
+        private EventHandler<OnDetectionFinishedEventArg> _barcodeHandler;
 
         // Delay to let in-flight Android CameraManager Runnables finish before removing the view
         // from the visual tree / reconnecting.
@@ -32,9 +31,9 @@ namespace iPMCloud.Mobile.vo
 
         public bool displayIsOpen = false;
 
-        public CameraBarcodeReaderView zxing;
+        public CameraView zxing;
 
-        // Eigenes Overlay erstellen (ZXingDefaultOverlay existiert nicht mehr)
+        // Eigenes Overlay erstellen
         public ContentView overlayz;
 
         // NOTE: This grid is shared on the singleton Scanner instance; we therefore must be
@@ -182,16 +181,16 @@ namespace iPMCloud.Mobile.vo
                         {
                             if (_barcodeHandler != null)
                             {
-                                try { zxing.BarcodesDetected -= _barcodeHandler; }
+                                try { zxing.OnDetectionFinished -= _barcodeHandler; }
                                 catch (Exception ex) { LogException("StopAsync.unsubscribe", ex); }
                                 _barcodeHandler = null;
                             }
 
-                            try { zxing.IsDetecting = false; }
-                            catch (Exception ex) { LogException("StopAsync.IsDetecting=false", ex); }
+                            try { zxing.CameraEnabled = false; }
+                            catch (Exception ex) { LogException("StopAsync.CameraEnabled=false", ex); }
 
-                            try { zxing.IsTorchOn = false; }
-                            catch (Exception ex) { LogException("StopAsync.IsTorchOn=false", ex); }
+                            try { zxing.TorchOn = false; }
+                            catch (Exception ex) { LogException("StopAsync.TorchOn=false", ex); }
 
                             // Critical for Connect-NRE: detach native view/handler
                             try { zxing.Handler?.DisconnectHandler(); }
@@ -235,20 +234,13 @@ namespace iPMCloud.Mobile.vo
             {
                 await StopAsync();
 
-                var opts = new BarcodeReaderOptions
-                {
-                    Formats = BarcodeFormats.OneDimensional | BarcodeFormats.TwoDimensional,
-                    AutoRotate = true,
-                    Multiple = false
-                };
-
-                zxing = new CameraBarcodeReaderView
+                zxing = new CameraView
                 {
                     HorizontalOptions = LayoutOptions.Fill,
                     VerticalOptions = LayoutOptions.Fill,
                     AutomationId = "zxingScannerView",
                     Margin = new Thickness(0, 0, 0, 0),
-                    Options = opts
+                    BarcodeSymbologies = BarcodeFormats.All
                 };
 
                 _barcodeHandler = (sender, e) =>
@@ -257,14 +249,14 @@ namespace iPMCloud.Mobile.vo
                     {
                         try
                         {
-                            if (!displayIsOpen && e.Results?.Length > 0)
+                            if (!displayIsOpen && e.BarcodeResults?.Count > 0)
                             {
                                 displayIsOpen = true;
-                                var result = e.Results[0];
+                                var result = e.BarcodeResults.First();
 
                                 try
                                 {
-                                    var sp = result.Value
+                                    var sp = result.DisplayValue
                                         .Replace("http://www.ipm-cloud.de/?objektid=", "")
                                         .Split(new[] { "_" }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -350,7 +342,7 @@ namespace iPMCloud.Mobile.vo
                         }
                     });
                 };
-                zxing.BarcodesDetected += _barcodeHandler;
+                zxing.OnDetectionFinished += _barcodeHandler;
 
                 overlayz = CreateOverlay(
                     "Richten Sie die Kamera auf den QR-Code",
@@ -358,7 +350,7 @@ namespace iPMCloud.Mobile.vo
                     true,
                     () =>
                     {
-                        try { zxing.IsTorchOn = !zxing.IsTorchOn; }
+                        try { zxing.TorchOn = !zxing.TorchOn; }
                         catch (Exception ex) { LogException("ScanBuildingOutView.ToggleTorch", ex); }
                     }
                 );
@@ -368,7 +360,7 @@ namespace iPMCloud.Mobile.vo
                 grid.Children.Add(overlayz);
                 scanContainer.Children.Add(grid);
 
-                zxing.IsDetecting = true;
+                zxing.CameraEnabled = true;
             }
             catch (Exception ex)
             {
@@ -388,20 +380,13 @@ namespace iPMCloud.Mobile.vo
             {
                 await StopAsync();
 
-                var opts = new BarcodeReaderOptions
-                {
-                    Formats = BarcodeFormats.OneDimensional | BarcodeFormats.TwoDimensional,
-                    AutoRotate = true,
-                    Multiple = false
-                };
-
-                zxing = new CameraBarcodeReaderView
+                zxing = new CameraView
                 {
                     HorizontalOptions = LayoutOptions.Fill,
                     VerticalOptions = LayoutOptions.Fill,
                     Margin = new Thickness(0, 0, 0, 0),
                     AutomationId = "zxingScannerView",
-                    Options = opts
+                    BarcodeSymbologies = BarcodeFormats.All
                 };
 
                 _barcodeHandler = (sender, e) =>
@@ -410,14 +395,14 @@ namespace iPMCloud.Mobile.vo
                     {
                         try
                         {
-                            if (!displayIsOpen && e.Results?.Length > 0)
+                            if (!displayIsOpen && e.BarcodeResults?.Count > 0)
                             {
                                 displayIsOpen = true;
-                                var result = e.Results[0];
+                                var result = e.BarcodeResults.First();
 
                                 try
                                 {
-                                    var sp = result.Value
+                                    var sp = result.DisplayValue
                                         .Replace("http://www.ipm-cloud.de/?objektid=", "")
                                         .Split(new[] { "_" }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -507,7 +492,7 @@ namespace iPMCloud.Mobile.vo
                         }
                     });
                 };
-                zxing.BarcodesDetected += _barcodeHandler;
+                zxing.OnDetectionFinished += _barcodeHandler;
 
                 overlayz = CreateOverlay(
                     "Richten Sie die Kamera auf den QR-Code",
@@ -515,7 +500,7 @@ namespace iPMCloud.Mobile.vo
                     true,
                     () =>
                     {
-                        try { zxing.IsTorchOn = !zxing.IsTorchOn; }
+                        try { zxing.TorchOn = !zxing.TorchOn; }
                         catch (Exception ex) { LogException("ScanBuildingView.ToggleTorch", ex); }
                     }
                 );
@@ -525,7 +510,7 @@ namespace iPMCloud.Mobile.vo
                 grid.Children.Add(overlayz);
                 scanContainer.Children.Add(grid);
 
-                zxing.IsDetecting = true;
+                zxing.CameraEnabled = true;
             }
             catch (Exception ex)
             {
@@ -545,22 +530,14 @@ namespace iPMCloud.Mobile.vo
             {
                 await StopAsync();
 
-                var opts = new BarcodeReaderOptions
-                {
-                    Formats = BarcodeFormats.OneDimensional | BarcodeFormats.TwoDimensional,
-                    AutoRotate = true,
-                    Multiple = false,
-                    TryHarder = true,
-                    TryInverted = true
-                };
-
-                zxing = new CameraBarcodeReaderView
+                zxing = new CameraView
                 {
                     HorizontalOptions = LayoutOptions.Fill,
                     VerticalOptions = LayoutOptions.Fill,
                     AutomationId = "zxingScannerView",
                     Margin = new Thickness(0, 0, 0, 0),
-                    Options = opts
+                    BarcodeSymbologies = BarcodeFormats.All,
+                    ForceInverted = true
                 };
 
                 _barcodeHandler = (sender, e) =>
@@ -569,14 +546,14 @@ namespace iPMCloud.Mobile.vo
                     {
                         try
                         {
-                            if (!displayIsOpen && e.Results?.Length > 0)
+                            if (!displayIsOpen && e.BarcodeResults?.Count > 0)
                             {
                                 displayIsOpen = true;
-                                var result = e.Results[0];
+                                var result = e.BarcodeResults.First();
 
                                 try
                                 {
-                                    var sp = result.Value
+                                    var sp = result.DisplayValue
                                         .Replace("https://", "http://")
                                         .Replace("httpss://", "https://")
                                         .Split(new[] { "###" }, StringSplitOptions.RemoveEmptyEntries);
@@ -591,7 +568,7 @@ namespace iPMCloud.Mobile.vo
                                         CustomerName = sp[2]
                                     };
 
-                                    if (result.Value.IndexOf("###", StringComparison.Ordinal) > -1 &&
+                                    if (result.DisplayValue.IndexOf("###", StringComparison.Ordinal) > -1 &&
                                         !string.IsNullOrWhiteSpace(newScanSettings.ServerUrl) &&
                                         !string.IsNullOrWhiteSpace(newScanSettings.CustomerNumber) &&
                                         !string.IsNullOrWhiteSpace(newScanSettings.CustomerName))
@@ -650,7 +627,7 @@ namespace iPMCloud.Mobile.vo
                         }
                     });
                 };
-                zxing.BarcodesDetected += _barcodeHandler;
+                zxing.OnDetectionFinished += _barcodeHandler;
 
                 overlayz = CreateOverlay(
                     "Richten Sie die Kamera auf den QR-Code",
@@ -658,7 +635,7 @@ namespace iPMCloud.Mobile.vo
                     true,
                     () =>
                     {
-                        try { zxing.IsTorchOn = !zxing.IsTorchOn; }
+                        try { zxing.TorchOn = !zxing.TorchOn; }
                         catch (Exception ex) { LogException("ScanRegView.ToggleTorch", ex); }
                     }
                 );
@@ -668,7 +645,7 @@ namespace iPMCloud.Mobile.vo
                 grid.Children.Add(overlayz);
                 scanContainer.Children.Add(grid);
 
-                zxing.IsDetecting = true;
+                zxing.CameraEnabled = true;
             }
             catch (Exception ex)
             {
@@ -688,20 +665,13 @@ namespace iPMCloud.Mobile.vo
             {
                 await StopAsync();
 
-                var opts = new BarcodeReaderOptions
-                {
-                    Formats = BarcodeFormats.OneDimensional | BarcodeFormats.TwoDimensional,
-                    AutoRotate = true,
-                    Multiple = false
-                };
-
-                zxing = new CameraBarcodeReaderView
+                zxing = new CameraView
                 {
                     HorizontalOptions = LayoutOptions.Fill,
                     VerticalOptions = LayoutOptions.Fill,
                     Margin = new Thickness(0, 0, 0, 0),
                     AutomationId = "zxingScannerView",
-                    Options = opts
+                    BarcodeSymbologies = BarcodeFormats.All
                 };
 
                 _barcodeHandler = (sender, e) =>
@@ -710,14 +680,14 @@ namespace iPMCloud.Mobile.vo
                     {
                         try
                         {
-                            if (!displayIsOpen && e.Results?.Length > 0)
+                            if (!displayIsOpen && e.BarcodeResults?.Count > 0)
                             {
                                 displayIsOpen = true;
-                                var result = e.Results[0];
+                                var result = e.BarcodeResults.First();
 
                                 try
                                 {
-                                    var sp = result.Value
+                                    var sp = result.DisplayValue
                                         .Replace("https://", "http://")
                                         .Replace("httpss://", "https://")
                                         .Split(new[] { "###" }, StringSplitOptions.RemoveEmptyEntries);
@@ -732,7 +702,7 @@ namespace iPMCloud.Mobile.vo
                                         CustomerName = sp[2]
                                     };
 
-                                    if (result.Value.IndexOf("###", StringComparison.Ordinal) > -1 &&
+                                    if (result.DisplayValue.IndexOf("###", StringComparison.Ordinal) > -1 &&
                                         !string.IsNullOrWhiteSpace(newScanSettings.ServerUrl) &&
                                         !string.IsNullOrWhiteSpace(newScanSettings.CustomerNumber) &&
                                         !string.IsNullOrWhiteSpace(newScanSettings.CustomerName) &&
@@ -794,7 +764,7 @@ namespace iPMCloud.Mobile.vo
                         }
                     });
                 };
-                zxing.BarcodesDetected += _barcodeHandler;
+                zxing.OnDetectionFinished += _barcodeHandler;
 
                 overlayz = CreateOverlay(
                     "Richten Sie die Kamera auf den QR-Code",
@@ -802,7 +772,7 @@ namespace iPMCloud.Mobile.vo
                     true,
                     () =>
                     {
-                        try { zxing.IsTorchOn = !zxing.IsTorchOn; }
+                        try { zxing.TorchOn = !zxing.TorchOn; }
                         catch (Exception ex) { LogException("ScanAddRegView.ToggleTorch", ex); }
                     }
                 );
@@ -812,7 +782,7 @@ namespace iPMCloud.Mobile.vo
                 grid.Children.Add(overlayz);
                 scanContainer.Children.Add(grid);
 
-                zxing.IsDetecting = true;
+                zxing.CameraEnabled = true;
             }
             catch (Exception ex)
             {
@@ -830,7 +800,7 @@ namespace iPMCloud.Mobile.vo
             try
             {
                 if (zxing != null)
-                    zxing.IsTorchOn = !zxing.IsTorchOn;
+                    zxing.TorchOn = !zxing.TorchOn;
             }
             catch (Exception ex)
             {
@@ -864,7 +834,7 @@ namespace iPMCloud.Mobile.vo
             try
             {
                 if (zxing != null)
-                    zxing.IsTorchOn = !zxing.IsTorchOn;
+                    zxing.TorchOn = !zxing.TorchOn;
 
             }
             catch (Exception ex)

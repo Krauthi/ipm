@@ -138,8 +138,7 @@
   <PackageReference Include="System.Security.Cryptography.Xml" Version="10.0.6" />
   <PackageReference Include="System.ServiceModel.Http" Version="10.0.652802" />
   <PackageReference Include="System.ServiceModel.Primitives" Version="10.0.652802" />
-  <PackageReference Include="ZXing.Net.Maui" Version="0.7.4" />
-  <PackageReference Include="ZXing.Net.Maui.Controls" Version="0.7.4" />
+  <PackageReference Include="BarcodeScanning.Native.Maui" Version="3.0.3" />
 </ItemGroup>
 
 	<!-- Android-only Packages -->

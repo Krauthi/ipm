@@ -30142,12 +30142,6 @@ namespace iPMCloud.Mobile.Droid
 			global::Xamarin.RangeSlider.Forms.Resource.Styleable.ViewStubCompat_android_id = global::iPMCloud.Mobile.Droid.Resource.Styleable.ViewStubCompat_android_id;
 			global::Xamarin.RangeSlider.Forms.Resource.Styleable.ViewStubCompat_android_inflatedId = global::iPMCloud.Mobile.Droid.Resource.Styleable.ViewStubCompat_android_inflatedId;
 			global::Xamarin.RangeSlider.Forms.Resource.Styleable.ViewStubCompat_android_layout = global::iPMCloud.Mobile.Droid.Resource.Styleable.ViewStubCompat_android_layout;
-			global::ZXing.Net.Mobile.Forms.Android.Resource.Layout.zxingscanneractivitylayout = global::iPMCloud.Mobile.Droid.Resource.Layout.zxingscanneractivitylayout;
-			global::ZXing.Net.Mobile.Forms.Android.Resource.Layout.zxingscannerfragmentlayout = global::iPMCloud.Mobile.Droid.Resource.Layout.zxingscannerfragmentlayout;
-			global::ZXing.Net.Mobile.Forms.Android.Resource.String.library_name = global::iPMCloud.Mobile.Droid.Resource.String.library_name;
-			global::ZXing.Mobile.Resource.Id.contentFrame = global::iPMCloud.Mobile.Droid.Resource.Id.contentFrame;
-			global::ZXing.Mobile.Resource.Layout.zxingscanneractivitylayout = global::iPMCloud.Mobile.Droid.Resource.Layout.zxingscanneractivitylayout;
-			global::ZXing.Mobile.Resource.Layout.zxingscannerfragmentlayout = global::iPMCloud.Mobile.Droid.Resource.Layout.zxingscannerfragmentlayout;
 		}
 		
 		public partial class Animation

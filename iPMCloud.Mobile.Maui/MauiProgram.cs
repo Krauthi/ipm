@@ -2,7 +2,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Maui.Controls.Hosting;
 using Microsoft.Maui.Hosting;
 using CommunityToolkit.Maui;
-using ZXing.Net.Maui.Controls;
+using BarcodeScanning;
 using NLog.Extensions.Logging;
 
 namespace iPMCloud.Mobile
@@ -25,7 +25,7 @@ namespace iPMCloud.Mobile
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
-                .UseBarcodeReader() 
+                .UseBarcodeScanning() 
                 .UseMauiCommunityToolkit()
                 .ConfigureFonts(fonts =>
                 {
@@ -51,7 +51,6 @@ namespace iPMCloud.Mobile
 
             // TODO: Initialize Firebase
             // TODO: Initialize Maps
-            // TODO: Initialize ZXing Scanner
             // TODO: Configure Permissions
 
             return builder.Build();

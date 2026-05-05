@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using Microsoft.Maui.Storage;
 using Microsoft.Maui.Devices;
 using Microsoft.Maui.ApplicationModel;
@@ -19,6 +20,9 @@ namespace iPMCloud.Mobile.vo
         public bool displayIsOpen = false;
 
         private EventHandler<BarcodeDetectionEventArgs> _barcodeHandler;
+
+        // Thread-safe guard so StopAsync() is idempotent and never runs concurrently with itself
+        private int _isStopping = 0;
 
         public CameraBarcodeReaderView zxing;
         //public CameraBarcodeReaderView zxing9Alone = new CameraBarcodeReaderView();
@@ -129,28 +133,76 @@ namespace iPMCloud.Mobile.vo
             return new ContentView { Content = overlayGrid };
         }
 
+        // Delay in ms to let in-flight Android CameraManager Runnables finish before
+        // removing the CameraBarcodeReaderView from the visual tree.
+        private const int CameraDrainDelayMs = 150;
+
+        /// <summary>
+        /// Asynchronously stops the scanner in a thread-safe, idempotent way.
+        /// Unsubscribes the barcode handler, disables detection, waits CameraDrainDelayMs for
+        /// in-flight Android CameraManager callbacks to drain, then clears the grid.
+        /// All UI work is guaranteed to run on the MainThread.
+        /// </summary>
+        public Task StopAsync()
+        {
+            // Idempotent: if already stopping, return immediately
+            if (Interlocked.CompareExchange(ref _isStopping, 1, 0) != 0)
+                return Task.CompletedTask;
+
+            return MainThread.InvokeOnMainThreadAsync(async () =>
+            {
+                try
+                {
+                    // Block late barcode callbacks from re-entering while we are tearing down.
+                    // Set inside InvokeOnMainThreadAsync so it is synchronized with all
+                    // other MainThread.BeginInvokeOnMainThread barcode-callback reads.
+                    displayIsOpen = true;
+
+                    try
+                    {
+                        if (zxing != null)
+                        {
+                            if (_barcodeHandler != null)
+                            {
+                                zxing.BarcodesDetected -= _barcodeHandler;
+                                _barcodeHandler = null;
+                            }
+                            zxing.IsDetecting = false;
+                            zxing.IsTorchOn = false;
+                        }
+                    }
+                    catch { /* defensive: zxing may already be disposed/detached */ }
+
+                    // Give in-flight Android CameraManager Runnables time to finish
+                    // before we remove the view from the visual tree. Without this delay
+                    // the native callback can dereference a freed object and cause a NRE.
+                    await Task.Delay(CameraDrainDelayMs);
+
+                    try { grid?.Children.Clear(); } catch { /* defensive */ }
+                }
+                finally
+                {
+                    displayIsOpen = false;
+                    Interlocked.Exchange(ref _isStopping, 0);
+                }
+            });
+        }
+
+        /// <summary>
+        /// Fire-and-forget wrapper around StopAsync(). Safe to call from any thread.
+        /// Exceptions from the async body are silently discarded since Stop() is best-effort.
+        /// </summary>
         public void Stop()
         {
-            try
-            {
-                if (zxing != null)
-                {
-                    if (_barcodeHandler != null)
-                    {
-                        zxing.BarcodesDetected -= _barcodeHandler;
-                        _barcodeHandler = null;
-                    }
-                    zxing.IsDetecting = false;
-                    zxing.IsTorchOn = false;
-                }
-            }
-            catch { /* defensive: zxing may already be disposed */ }
-            try { grid?.Children.Clear(); } catch { /* defensive: grid may already be cleared */ }
-            displayIsOpen = false;
+            StopAsync().ContinueWith(
+                static t => { _ = t.Exception; },
+                TaskContinuationOptions.OnlyOnFaulted);
         }
 
         public async void ScanBuildingOutView(ContentPage page, StackLayout scanContainer, Func<bool> func)
         {
+            // Stop any previous scanner instance before starting a new one
+            await StopAsync();
             try
             {
                 var opts = new BarcodeReaderOptions
@@ -205,7 +257,7 @@ namespace iPMCloud.Mobile.vo
                                             }
                                             catch (Exception) { }
                                         }
-                                        Stop();
+                                        await StopAsync();
                                         AppModel.Instance.UseExternHardware = false;
                                         func.Invoke();
                                     }
@@ -260,6 +312,8 @@ namespace iPMCloud.Mobile.vo
 
         public async void ScanBuildingView(ContentPage page, StackLayout scanContainer, Func<bool> func)
         {
+            // Stop any previous scanner instance before starting a new one
+            await StopAsync();
             try
             {
                 var opts = new BarcodeReaderOptions
@@ -318,7 +372,7 @@ namespace iPMCloud.Mobile.vo
                                             catch (Exception) { }
                                         }
                                         AppModel.Instance.SettingModel.SaveSettings();
-                                        Stop();
+                                        await StopAsync();
                                         AppModel.Instance.UseExternHardware = false;
                                         func.Invoke();
                                     }
@@ -373,6 +427,8 @@ namespace iPMCloud.Mobile.vo
 
         public async void ScanRegView(ContentPage page, StackLayout scanContainer, Func<bool> func)
         {
+            // Stop any previous scanner instance before starting a new one
+            await StopAsync();
             try
             {
                 var opts = new BarcodeReaderOptions
@@ -424,7 +480,7 @@ namespace iPMCloud.Mobile.vo
                                     AppModel.Instance.SettingModel.SaveSettings();
                                     Company.AddUpdateCompany(AppModel.Instance, AppModel.Instance.SettingModel.SettingDTO);
 
-                                    Stop();
+                                    await StopAsync();
                                     AppModel.Instance.UseExternHardware = false;
                                     func.Invoke();
                                 }
@@ -473,6 +529,8 @@ namespace iPMCloud.Mobile.vo
 
         public async void ScanAddRegView(ContentPage page, StackLayout scanContainer, Func<bool> func, Func<bool> funcfaild)
         {
+            // Stop any previous scanner instance before starting a new one
+            await StopAsync();
             try
             {
                 var opts = new BarcodeReaderOptions
@@ -524,7 +582,7 @@ namespace iPMCloud.Mobile.vo
                                     AppModel.Instance.SettingModel.SettingDTO = newScanSettings;
                                     AppModel.Instance.SettingModel.SaveSettings();
 
-                                    Stop();
+                                    await StopAsync();
                                     AppModel.Instance.UseExternHardware = false;
                                     func.Invoke();
                                 }
@@ -538,7 +596,7 @@ namespace iPMCloud.Mobile.vo
                                     //{
                                     //    await page.DisplayAlertAsync("QR-Code nicht erkannt!", "Dieser QR-Code kann für die Registrierung eines weiteren Unternehmens mit der iPM-Cloud-App nicht verwendet werden.", "OK");
                                     //}
-                                    Stop();
+                                    await StopAsync();
                                     //funcfaild.Invoke();
                                 }
                             }
@@ -546,7 +604,7 @@ namespace iPMCloud.Mobile.vo
                             {
                                 await page.DisplayAlertAsync("QR-Code nicht erkannt!", "Dieser QR-Code kann für die Registrierung eines weiteren Unternehmens mit der iPM-Cloud-App nicht verwendet werden.", "OK");
 
-                                Stop();
+                                await StopAsync();
                                 funcfaild.Invoke();
                             }
                         }

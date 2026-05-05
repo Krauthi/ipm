@@ -12,7 +12,7 @@ using ZXing.Net.Maui.Controls;
 
 namespace iPMCloud.Mobile.vo
 {
-    public class Scanner
+    public class Scanner : IDisposable
     {
         public Scanner()
         {
@@ -24,6 +24,7 @@ namespace iPMCloud.Mobile.vo
 
         // Serializes all scan start/stop operations so no two Connect attempts can run in parallel.
         private readonly SemaphoreSlim _scanSemaphore = new SemaphoreSlim(1, 1);
+        private bool _disposed = false;
 
         public CameraBarcodeReaderView zxing;
         //public CameraBarcodeReaderView zxing9Alone = new CameraBarcodeReaderView();
@@ -724,6 +725,15 @@ namespace iPMCloud.Mobile.vo
         public void FlashON_Handle_Clicked(object sender, System.EventArgs e)
         {
             zxing.IsTorchOn = !zxing.IsTorchOn;
+        }
+
+        public void Dispose()
+        {
+            if (!_disposed)
+            {
+                _scanSemaphore.Dispose();
+                _disposed = true;
+            }
         }
     }
 }

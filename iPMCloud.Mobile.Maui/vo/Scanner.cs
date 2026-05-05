@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using Microsoft.Maui.Storage;
 using Microsoft.Maui.Devices;
 using Microsoft.Maui.ApplicationModel;
@@ -129,30 +130,108 @@ namespace iPMCloud.Mobile.vo
             return new ContentView { Content = overlayGrid };
         }
 
+        private const int CameraDrainDelayMs = 100;
+
         public void Stop()
         {
+            AppModel.Logger.Info($"Scanner.Stop() called, IsMainThread={MainThread.IsMainThread}");
+
+            // Guard against new detection callbacks entering the processing block
+            // while we are tearing down the scanner. Reset to false at the end of
+            // DoUIStop so that the next scan session can start fresh.
+            displayIsOpen = true;
+
+            // Unsubscribe handler on any thread (delegate list is safe for removal)
             try
             {
-                if (zxing != null)
+                if (zxing != null && _barcodeHandler != null)
                 {
-                    if (_barcodeHandler != null)
-                    {
-                        zxing.BarcodesDetected -= _barcodeHandler;
-                        _barcodeHandler = null;
-                    }
-                    zxing.IsDetecting = false;
-                    zxing.IsTorchOn = false;
+                    zxing.BarcodesDetected -= _barcodeHandler;
+                    _barcodeHandler = null;
                 }
             }
             catch { /* defensive: zxing may already be disposed */ }
-            try { grid?.Children.Clear(); } catch { /* defensive: grid may already be cleared */ }
-            displayIsOpen = false;
+
+            // All UI operations must run on the MainThread
+            void DoUIStop()
+            {
+                try
+                {
+                    if (zxing != null)
+                    {
+                        zxing.IsDetecting = false;
+                        zxing.IsTorchOn = false;
+                    }
+                }
+                catch { /* defensive: zxing may already be disposed */ }
+                try { grid?.Children.Clear(); } catch { /* defensive: grid may already be cleared */ }
+                displayIsOpen = false;
+            }
+
+            if (MainThread.IsMainThread)
+                DoUIStop();
+            else
+                MainThread.BeginInvokeOnMainThread(DoUIStop);
+        }
+
+        /// <summary>
+        /// Async variant of Stop() that adds a short delay before clearing the grid,
+        /// allowing any late ZXing/Android camera Runnables to drain before the View
+        /// is removed from the visual tree. Call with await from within scan callbacks.
+        /// </summary>
+        public async Task StopAsync()
+        {
+            AppModel.Logger.Info($"Scanner.StopAsync() called, IsMainThread={MainThread.IsMainThread}");
+
+            // Guard against new detection callbacks entering the processing block
+            // while we are tearing down the scanner. Reset to false after grid clear
+            // so that the next scan session can start fresh.
+            displayIsOpen = true;
+
+            // Unsubscribe handler (safe on any thread)
+            try
+            {
+                if (zxing != null && _barcodeHandler != null)
+                {
+                    zxing.BarcodesDetected -= _barcodeHandler;
+                    _barcodeHandler = null;
+                }
+            }
+            catch { /* defensive */ }
+
+            // Disable detecting on MainThread immediately so ZXing stops processing new frames
+            await MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                try
+                {
+                    if (zxing != null)
+                    {
+                        zxing.IsDetecting = false;
+                        zxing.IsTorchOn = false;
+                    }
+                }
+                catch { /* defensive: zxing may already be disposed */ }
+            });
+
+            // Give late ZXing/Android camera callbacks (Runnables) time to drain
+            // before we remove the View from the visual tree
+            await Task.Delay(CameraDrainDelayMs);
+
+            // Clear the grid on MainThread; reset displayIsOpen so next session starts fresh
+            await MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                try { grid?.Children.Clear(); } catch { /* defensive: grid may already be cleared */ }
+                displayIsOpen = false;
+            });
         }
 
         public async void ScanBuildingOutView(ContentPage page, StackLayout scanContainer, Func<bool> func)
         {
             try
             {
+                // Stop any previous scan session before starting a new one (idempotent)
+                Stop();
+
                 var opts = new BarcodeReaderOptions
                 {
                     Formats = BarcodeFormats.OneDimensional | BarcodeFormats.TwoDimensional,
@@ -205,7 +284,7 @@ namespace iPMCloud.Mobile.vo
                                             }
                                             catch (Exception) { }
                                         }
-                                        Stop();
+                                        await StopAsync();
                                         AppModel.Instance.UseExternHardware = false;
                                         func.Invoke();
                                     }
@@ -262,6 +341,9 @@ namespace iPMCloud.Mobile.vo
         {
             try
             {
+                // Stop any previous scan session before starting a new one (idempotent)
+                Stop();
+
                 var opts = new BarcodeReaderOptions
                 {
                     Formats = BarcodeFormats.OneDimensional | BarcodeFormats.TwoDimensional,
@@ -318,7 +400,7 @@ namespace iPMCloud.Mobile.vo
                                             catch (Exception) { }
                                         }
                                         AppModel.Instance.SettingModel.SaveSettings();
-                                        Stop();
+                                        await StopAsync();
                                         AppModel.Instance.UseExternHardware = false;
                                         func.Invoke();
                                     }
@@ -375,6 +457,9 @@ namespace iPMCloud.Mobile.vo
         {
             try
             {
+                // Stop any previous scan session before starting a new one (idempotent)
+                Stop();
+
                 var opts = new BarcodeReaderOptions
                 {
                     Formats = BarcodeFormats.OneDimensional | BarcodeFormats.TwoDimensional,
@@ -424,7 +509,7 @@ namespace iPMCloud.Mobile.vo
                                     AppModel.Instance.SettingModel.SaveSettings();
                                     Company.AddUpdateCompany(AppModel.Instance, AppModel.Instance.SettingModel.SettingDTO);
 
-                                    Stop();
+                                    await StopAsync();
                                     AppModel.Instance.UseExternHardware = false;
                                     func.Invoke();
                                 }
@@ -475,6 +560,9 @@ namespace iPMCloud.Mobile.vo
         {
             try
             {
+                // Stop any previous scan session before starting a new one (idempotent)
+                Stop();
+
                 var opts = new BarcodeReaderOptions
                 {
                     Formats = BarcodeFormats.OneDimensional | BarcodeFormats.TwoDimensional,
@@ -524,7 +612,7 @@ namespace iPMCloud.Mobile.vo
                                     AppModel.Instance.SettingModel.SettingDTO = newScanSettings;
                                     AppModel.Instance.SettingModel.SaveSettings();
 
-                                    Stop();
+                                    await StopAsync();
                                     AppModel.Instance.UseExternHardware = false;
                                     func.Invoke();
                                 }
@@ -538,7 +626,7 @@ namespace iPMCloud.Mobile.vo
                                     //{
                                     //    await page.DisplayAlertAsync("QR-Code nicht erkannt!", "Dieser QR-Code kann für die Registrierung eines weiteren Unternehmens mit der iPM-Cloud-App nicht verwendet werden.", "OK");
                                     //}
-                                    Stop();
+                                    await StopAsync();
                                     //funcfaild.Invoke();
                                 }
                             }
@@ -546,7 +634,7 @@ namespace iPMCloud.Mobile.vo
                             {
                                 await page.DisplayAlertAsync("QR-Code nicht erkannt!", "Dieser QR-Code kann für die Registrierung eines weiteren Unternehmens mit der iPM-Cloud-App nicht verwendet werden.", "OK");
 
-                                Stop();
+                                await StopAsync();
                                 funcfaild.Invoke();
                             }
                         }

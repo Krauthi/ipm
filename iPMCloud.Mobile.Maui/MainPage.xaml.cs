@@ -1181,6 +1181,7 @@ namespace iPMCloud.Mobile
 
         protected override void OnDisappearing()
         {
+            try { AppModel.Instance.Scan?.Stop(); } catch { /* defensive: Stop() is idempotent and must not block navigation */ }
             if (AppModel.Instance._cts != null && !AppModel.Instance._cts.IsCancellationRequested)
                 AppModel.Instance._cts.Cancel();
             base.OnDisappearing();

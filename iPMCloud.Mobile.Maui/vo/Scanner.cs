@@ -24,6 +24,16 @@ namespace iPMCloud.Mobile.vo
         // Thread-safe guard so StopAsync() is idempotent and never runs concurrently with itself
         private int _isStopping = 0;
 
+        // Semaphore that serialises concurrent Scan*View start calls (one at a time).
+        // StopAsync must NOT acquire this gate – it is called from inside the gate
+        // (via Scan*View) and also from barcode callbacks (outside the gate).
+        private readonly SemaphoreSlim _scanGate = new SemaphoreSlim(1, 1);
+
+        // Incremented each time a new scan session is started.  Used by StopAsync to
+        // detect whether a new session was launched during the drain delay so it can
+        // skip the grid.Children.Clear() that would wipe the freshly-added view.
+        private int _scanGeneration = 0;
+
         public CameraBarcodeReaderView zxing;
         //public CameraBarcodeReaderView zxing9Alone = new CameraBarcodeReaderView();
 
@@ -135,19 +145,32 @@ namespace iPMCloud.Mobile.vo
 
         // Delay in ms to let in-flight Android CameraManager Runnables finish before
         // removing the CameraBarcodeReaderView from the visual tree.
-        private const int CameraDrainDelayMs = 150;
+        // 300 ms was chosen conservatively: Android CameraManager Connect callbacks are
+        // posted onto the camera thread and may arrive up to ~100-200 ms after IsDetecting
+        // is set to false.  A shorter delay (150 ms) was observed to be insufficient
+        // under load; 300 ms provides a reliable margin without meaningfully impacting UX.
+        private const int CameraDrainDelayMs = 300;
 
         /// <summary>
         /// Asynchronously stops the scanner in a thread-safe, idempotent way.
-        /// Unsubscribes the barcode handler, disables detection, waits CameraDrainDelayMs for
-        /// in-flight Android CameraManager callbacks to drain, then clears the grid.
+        /// Unsubscribes the barcode handler, disables detection, hard-disconnects the MAUI
+        /// handler so the native Android CameraManager releases its surface/device references,
+        /// waits CameraDrainDelayMs for in-flight callbacks to drain, then clears the grid.
         /// All UI work is guaranteed to run on the MainThread.
+        /// StopAsync intentionally does NOT acquire _scanGate – it is called both from inside
+        /// the gate (Scan*View start paths) and from barcode callbacks (outside the gate).
         /// </summary>
         public Task StopAsync()
         {
             // Idempotent: if already stopping, return immediately
             if (Interlocked.CompareExchange(ref _isStopping, 1, 0) != 0)
                 return Task.CompletedTask;
+
+            // Capture the scan generation at the moment we decide to stop.
+            // If a new scan session is started during the drain delay the generation will
+            // advance and we skip the grid.Children.Clear() so the new view is not wiped.
+            int stoppingGeneration = Volatile.Read(ref _scanGeneration);
+            AppModel.Logger.Info("Scanner.StopAsync: begin (onMainThread=" + MainThread.IsMainThread + ", gen=" + stoppingGeneration + ")");
 
             return MainThread.InvokeOnMainThreadAsync(async () =>
             {
@@ -169,6 +192,18 @@ namespace iPMCloud.Mobile.vo
                             }
                             zxing.IsDetecting = false;
                             zxing.IsTorchOn = false;
+                            // Hard-disconnect the MAUI handler so the native Android
+                            // CameraManager releases its surface/device before the view is
+                            // removed from the visual tree.  Without this the Connect
+                            // callback can dereference a freed object and raise a NRE.
+                            zxing.Handler?.DisconnectHandler();
+                            // Null the field so any code path that checks for an active
+                            // scanner (including a racing Scan*View start or StopAsync
+                            // re-entry) sees no live instance.  All Scan*View methods
+                            // create a fresh CameraBarcodeReaderView after calling StopAsync,
+                            // and all callback paths guard with the displayIsOpen flag, so
+                            // no live code path accesses zxing without a prior null-check.
+                            zxing = null;
                         }
                     }
                     catch { /* defensive: zxing may already be disposed/detached */ }
@@ -178,12 +213,24 @@ namespace iPMCloud.Mobile.vo
                     // the native callback can dereference a freed object and cause a NRE.
                     await Task.Delay(CameraDrainDelayMs);
 
-                    try { grid?.Children.Clear(); } catch { /* defensive */ }
+                    // Only clear the grid if no new scan session was started while we were
+                    // waiting.  A new session increments _scanGeneration so stoppingGeneration
+                    // will no longer match and we skip the clear, avoiding a race where we
+                    // would wipe a freshly-added CameraBarcodeReaderView.
+                    if (Volatile.Read(ref _scanGeneration) == stoppingGeneration)
+                    {
+                        try { grid?.Children.Clear(); } catch { /* defensive */ }
+                    }
+                    else
+                    {
+                        AppModel.Logger.Info("Scanner.StopAsync: skip grid.Clear() – new scan generation detected");
+                    }
                 }
                 finally
                 {
                     displayIsOpen = false;
                     Interlocked.Exchange(ref _isStopping, 0);
+                    AppModel.Logger.Info("Scanner.StopAsync: done");
                 }
             });
         }
@@ -201,10 +248,14 @@ namespace iPMCloud.Mobile.vo
 
         public async void ScanBuildingOutView(ContentPage page, StackLayout scanContainer, Func<bool> func)
         {
-            // Stop any previous scanner instance before starting a new one
-            await StopAsync();
+            AppModel.Logger.Info("Scanner.ScanBuildingOutView: waiting for gate (onMainThread=" + MainThread.IsMainThread + ")");
+            await _scanGate.WaitAsync();
+            AppModel.Logger.Info("Scanner.ScanBuildingOutView: gate acquired");
             try
             {
+                // Stop any previous scanner instance before starting a new one
+                await StopAsync();
+                Interlocked.Increment(ref _scanGeneration);
                 var opts = new BarcodeReaderOptions
                 {
                     Formats = BarcodeFormats.OneDimensional | BarcodeFormats.TwoDimensional,
@@ -308,14 +359,22 @@ namespace iPMCloud.Mobile.vo
                     var a = e;
                 }
             }
+            finally
+            {
+                _scanGate.Release();
+            }
         }
 
         public async void ScanBuildingView(ContentPage page, StackLayout scanContainer, Func<bool> func)
         {
-            // Stop any previous scanner instance before starting a new one
-            await StopAsync();
+            AppModel.Logger.Info("Scanner.ScanBuildingView: waiting for gate (onMainThread=" + MainThread.IsMainThread + ")");
+            await _scanGate.WaitAsync();
+            AppModel.Logger.Info("Scanner.ScanBuildingView: gate acquired");
             try
             {
+                // Stop any previous scanner instance before starting a new one
+                await StopAsync();
+                Interlocked.Increment(ref _scanGeneration);
                 var opts = new BarcodeReaderOptions
                 {
                     Formats = BarcodeFormats.OneDimensional | BarcodeFormats.TwoDimensional,
@@ -423,14 +482,22 @@ namespace iPMCloud.Mobile.vo
                     var a = e;
                 }
             }
+            finally
+            {
+                _scanGate.Release();
+            }
         }
 
         public async void ScanRegView(ContentPage page, StackLayout scanContainer, Func<bool> func)
         {
-            // Stop any previous scanner instance before starting a new one
-            await StopAsync();
+            AppModel.Logger.Info("Scanner.ScanRegView: waiting for gate (onMainThread=" + MainThread.IsMainThread + ")");
+            await _scanGate.WaitAsync();
+            AppModel.Logger.Info("Scanner.ScanRegView: gate acquired");
             try
             {
+                // Stop any previous scanner instance before starting a new one
+                await StopAsync();
+                Interlocked.Increment(ref _scanGeneration);
                 var opts = new BarcodeReaderOptions
                 {
                     Formats = BarcodeFormats.OneDimensional | BarcodeFormats.TwoDimensional,
@@ -525,14 +592,22 @@ namespace iPMCloud.Mobile.vo
                     var a = e;
                 }
             }
+            finally
+            {
+                _scanGate.Release();
+            }
         }
 
         public async void ScanAddRegView(ContentPage page, StackLayout scanContainer, Func<bool> func, Func<bool> funcfaild)
         {
-            // Stop any previous scanner instance before starting a new one
-            await StopAsync();
+            AppModel.Logger.Info("Scanner.ScanAddRegView: waiting for gate (onMainThread=" + MainThread.IsMainThread + ")");
+            await _scanGate.WaitAsync();
+            AppModel.Logger.Info("Scanner.ScanAddRegView: gate acquired");
             try
             {
+                // Stop any previous scanner instance before starting a new one
+                await StopAsync();
+                Interlocked.Increment(ref _scanGeneration);
                 var opts = new BarcodeReaderOptions
                 {
                     Formats = BarcodeFormats.OneDimensional | BarcodeFormats.TwoDimensional,
@@ -636,6 +711,10 @@ namespace iPMCloud.Mobile.vo
                 {
                     var a = e;
                 }
+            }
+            finally
+            {
+                _scanGate.Release();
             }
         }
 

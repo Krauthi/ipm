@@ -4469,6 +4469,7 @@ namespace iPMCloud.Mobile
         }
         public void btn_BuildingScanTapped(object sender, EventArgs e)
         {
+            if (isInitialize) { return; }
             ShowBuildingScanPage();
         }
         public void btn_BuildingNotScanTapped(object sender, EventArgs e)

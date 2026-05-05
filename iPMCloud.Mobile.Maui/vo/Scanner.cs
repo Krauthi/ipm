@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.Maui.Storage;
@@ -17,6 +17,8 @@ namespace iPMCloud.Mobile.vo
         }
 
         public bool displayIsOpen = false;
+
+        private EventHandler<BarcodeDetectionEventArgs> _barcodeHandler;
 
         public CameraBarcodeReaderView zxing;
         //public CameraBarcodeReaderView zxing9Alone = new CameraBarcodeReaderView();
@@ -127,6 +129,26 @@ namespace iPMCloud.Mobile.vo
             return new ContentView { Content = overlayGrid };
         }
 
+        public void Stop()
+        {
+            try
+            {
+                if (zxing != null)
+                {
+                    if (_barcodeHandler != null)
+                    {
+                        zxing.BarcodesDetected -= _barcodeHandler;
+                        _barcodeHandler = null;
+                    }
+                    zxing.IsDetecting = false;
+                    zxing.IsTorchOn = false;
+                }
+            }
+            catch { /* defensive: zxing may already be disposed */ }
+            try { grid?.Children.Clear(); } catch { /* defensive: grid may already be cleared */ }
+            displayIsOpen = false;
+        }
+
         public async void ScanBuildingOutView(ContentPage page, StackLayout scanContainer, Func<bool> func)
         {
             try
@@ -147,7 +169,7 @@ namespace iPMCloud.Mobile.vo
                     Options = opts
                 };
 
-                zxing.BarcodesDetected += (sender, e) =>
+                _barcodeHandler = (sender, e) =>
                 {
                     MainThread.BeginInvokeOnMainThread(async () =>
                     {
@@ -183,11 +205,7 @@ namespace iPMCloud.Mobile.vo
                                             }
                                             catch (Exception) { }
                                         }
-                                        zxing.IsTorchOn = false;
-                                        zxing.IsDetecting = false;
-                                        grid.Children.Clear();
-                                        displayIsOpen = false;
-
+                                        Stop();
                                         AppModel.Instance.UseExternHardware = false;
                                         func.Invoke();
                                     }
@@ -211,6 +229,7 @@ namespace iPMCloud.Mobile.vo
                         }
                     });
                 };
+                zxing.BarcodesDetected += _barcodeHandler;
 
                 overlayz = CreateOverlay(
                     "Richten Sie die Kamera auf den QR-Code",
@@ -259,7 +278,7 @@ namespace iPMCloud.Mobile.vo
                     Options = opts
                 };
 
-                zxing.BarcodesDetected += (sender, e) =>
+                _barcodeHandler = (sender, e) =>
                 {
                     MainThread.BeginInvokeOnMainThread(async () =>
                     {
@@ -299,10 +318,7 @@ namespace iPMCloud.Mobile.vo
                                             catch (Exception) { }
                                         }
                                         AppModel.Instance.SettingModel.SaveSettings();
-                                        zxing.IsTorchOn = false;
-                                        zxing.IsDetecting = false;
-                                        grid.Children.Clear();
-                                        displayIsOpen = false;
+                                        Stop();
                                         AppModel.Instance.UseExternHardware = false;
                                         func.Invoke();
                                     }
@@ -326,6 +342,7 @@ namespace iPMCloud.Mobile.vo
                         }
                     });
                 };
+                zxing.BarcodesDetected += _barcodeHandler;
 
                 overlayz = CreateOverlay(
                     "Richten Sie die Kamera auf den QR-Code",
@@ -375,7 +392,7 @@ namespace iPMCloud.Mobile.vo
                     Options = opts
                 };
 
-                zxing.BarcodesDetected += (sender, e) =>
+                _barcodeHandler = (sender, e) =>
                 {
                     MainThread.BeginInvokeOnMainThread(async () =>
                     {
@@ -387,6 +404,9 @@ namespace iPMCloud.Mobile.vo
                             try
                             {
                                 var sp = result.Value.Replace("https://", "http://").Replace("httpss://", "https://").Split(new String[] { "###" }, StringSplitOptions.RemoveEmptyEntries);
+
+                                if (sp.Length < 3)
+                                    throw new Exception("QR-Format ungültig.");
 
                                 var newScanSettings = new SettingDTO();
                                 newScanSettings.ServerUrl = sp[0];
@@ -404,10 +424,7 @@ namespace iPMCloud.Mobile.vo
                                     AppModel.Instance.SettingModel.SaveSettings();
                                     Company.AddUpdateCompany(AppModel.Instance, AppModel.Instance.SettingModel.SettingDTO);
 
-                                    zxing.IsTorchOn = false;
-                                    zxing.IsDetecting = false;
-                                    grid.Children.Clear();
-                                    displayIsOpen = false;
+                                    Stop();
                                     AppModel.Instance.UseExternHardware = false;
                                     func.Invoke();
                                 }
@@ -425,6 +442,7 @@ namespace iPMCloud.Mobile.vo
                         }
                     });
                 };
+                zxing.BarcodesDetected += _barcodeHandler;
 
                 overlayz = CreateOverlay(
                     "Richten Sie die Kamera auf den QR-Code",
@@ -473,7 +491,7 @@ namespace iPMCloud.Mobile.vo
                     Options = opts
                 };
 
-                zxing.BarcodesDetected += (sender, e) =>
+                _barcodeHandler = (sender, e) =>
                 {
                     MainThread.BeginInvokeOnMainThread(async () =>
                     {
@@ -485,6 +503,9 @@ namespace iPMCloud.Mobile.vo
                             try
                             {
                                 var sp = result.Value.Replace("https://", "http://").Replace("httpss://", "https://").Split(new String[] { "###" }, StringSplitOptions.RemoveEmptyEntries);
+
+                                if (sp.Length < 3)
+                                    throw new Exception("QR-Format ungültig.");
 
                                 var newScanSettings = new SettingDTO();
                                 newScanSettings.ServerUrl = sp[0];
@@ -503,10 +524,7 @@ namespace iPMCloud.Mobile.vo
                                     AppModel.Instance.SettingModel.SettingDTO = newScanSettings;
                                     AppModel.Instance.SettingModel.SaveSettings();
 
-                                    zxing.IsTorchOn = false;
-                                    zxing.IsDetecting = false;
-                                    grid.Children.Clear();
-                                    displayIsOpen = false;
+                                    Stop();
                                     AppModel.Instance.UseExternHardware = false;
                                     func.Invoke();
                                 }
@@ -520,10 +538,7 @@ namespace iPMCloud.Mobile.vo
                                     //{
                                     //    await page.DisplayAlertAsync("QR-Code nicht erkannt!", "Dieser QR-Code kann für die Registrierung eines weiteren Unternehmens mit der iPM-Cloud-App nicht verwendet werden.", "OK");
                                     //}
-                                    zxing.IsTorchOn = false;
-                                    zxing.IsDetecting = false;
-                                    grid.Children.Clear();
-                                    displayIsOpen = false;
+                                    Stop();
                                     //funcfaild.Invoke();
                                 }
                             }
@@ -531,15 +546,13 @@ namespace iPMCloud.Mobile.vo
                             {
                                 await page.DisplayAlertAsync("QR-Code nicht erkannt!", "Dieser QR-Code kann für die Registrierung eines weiteren Unternehmens mit der iPM-Cloud-App nicht verwendet werden.", "OK");
 
-                                zxing.IsTorchOn = false;
-                                zxing.IsDetecting = false;
-                                grid.Children.Clear();
-                                displayIsOpen = false;
+                                Stop();
                                 funcfaild.Invoke();
                             }
                         }
                     });
                 };
+                zxing.BarcodesDetected += _barcodeHandler;
 
                 overlayz = CreateOverlay(
                     "Richten Sie die Kamera auf den QR-Code",

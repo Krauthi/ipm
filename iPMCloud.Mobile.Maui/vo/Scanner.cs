@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Maui.Storage;
 using Microsoft.Maui.Devices;
 using Microsoft.Maui.ApplicationModel;
@@ -21,8 +22,8 @@ namespace iPMCloud.Mobile.vo
 
         private EventHandler<BarcodeDetectionEventArgs> _barcodeHandler;
 
-        // Thread-safe guard so StopAsync() is idempotent and never runs concurrently with itself
-        private int _isStopping = 0;
+        // Serializes all scan start/stop operations so no two Connect attempts can run in parallel.
+        private readonly SemaphoreSlim _scanSemaphore = new SemaphoreSlim(1, 1);
 
         public CameraBarcodeReaderView zxing;
         //public CameraBarcodeReaderView zxing9Alone = new CameraBarcodeReaderView();
@@ -135,47 +136,49 @@ namespace iPMCloud.Mobile.vo
 
         // Delay in ms to let in-flight Android CameraManager Runnables finish before
         // removing the CameraBarcodeReaderView from the visual tree.
-        private const int CameraDrainDelayMs = 150;
+        private const int CameraDrainDelayMs = 300;
 
         /// <summary>
-        /// Asynchronously stops the scanner in a thread-safe, idempotent way.
-        /// Unsubscribes the barcode handler, disables detection, waits CameraDrainDelayMs for
-        /// in-flight Android CameraManager callbacks to drain, then clears the grid.
-        /// All UI work is guaranteed to run on the MainThread.
+        /// Core stop logic – must only be called while <see cref="_scanSemaphore"/> is held.
+        /// Unsubscribes the barcode handler, disables detection, force-disconnects the MAUI
+        /// handler, waits CameraDrainDelayMs for in-flight Android CameraManager callbacks to
+        /// drain, then clears the grid.  All UI work runs on the MainThread.
         /// </summary>
-        public Task StopAsync()
+        private Task StopCoreAsync()
         {
-            // Idempotent: if already stopping, return immediately
-            if (Interlocked.CompareExchange(ref _isStopping, 1, 0) != 0)
-                return Task.CompletedTask;
-
             return MainThread.InvokeOnMainThreadAsync(async () =>
             {
+                AppModel.Logger.Info($"[Scanner] StopCoreAsync start – MainThread={MainThread.IsMainThread}");
                 try
                 {
-                    // Block late barcode callbacks from re-entering while we are tearing down.
-                    // Set inside InvokeOnMainThreadAsync so it is synchronized with all
-                    // other MainThread.BeginInvokeOnMainThread barcode-callback reads.
+                    // Block late barcode callbacks from re-entering while we tear down.
                     displayIsOpen = true;
 
-                    try
+                    var view = zxing;
+                    if (view != null)
                     {
-                        if (zxing != null)
+                        try
                         {
                             if (_barcodeHandler != null)
                             {
-                                zxing.BarcodesDetected -= _barcodeHandler;
+                                view.BarcodesDetected -= _barcodeHandler;
                                 _barcodeHandler = null;
                             }
-                            zxing.IsDetecting = false;
-                            zxing.IsTorchOn = false;
+                            view.IsDetecting = false;
+                            view.IsTorchOn = false;
                         }
-                    }
-                    catch { /* defensive: zxing may already be disposed/detached */ }
+                        catch { /* defensive: may already be disposed/detached */ }
 
-                    // Give in-flight Android CameraManager Runnables time to finish
-                    // before we remove the view from the visual tree. Without this delay
-                    // the native callback can dereference a freed object and cause a NRE.
+                        // Force the MAUI platform handler to release native camera resources
+                        // before we remove the view from the visual tree.  This is the key
+                        // step that prevents CameraManager.Connect() NRE on fast re-opens.
+                        try { view.Handler?.DisconnectHandler(); } catch { /* defensive */ }
+
+                        zxing = null;
+                    }
+
+                    // Give in-flight Android CameraManager Runnables time to finish.
+                    // Without this delay the native callback can dereference a freed object.
                     await Task.Delay(CameraDrainDelayMs);
 
                     try { grid?.Children.Clear(); } catch { /* defensive */ }
@@ -183,9 +186,27 @@ namespace iPMCloud.Mobile.vo
                 finally
                 {
                     displayIsOpen = false;
-                    Interlocked.Exchange(ref _isStopping, 0);
+                    AppModel.Logger.Info($"[Scanner] StopCoreAsync done – MainThread={MainThread.IsMainThread}");
                 }
             });
+        }
+
+        /// <summary>
+        /// Asynchronously stops the scanner.  Serialized via <see cref="_scanSemaphore"/> so
+        /// concurrent or reentrant calls queue up and never overlap.
+        /// </summary>
+        public async Task StopAsync()
+        {
+            AppModel.Logger.Info($"[Scanner] StopAsync waiting for semaphore – MainThread={MainThread.IsMainThread}");
+            await _scanSemaphore.WaitAsync();
+            try
+            {
+                await StopCoreAsync();
+            }
+            finally
+            {
+                _scanSemaphore.Release();
+            }
         }
 
         /// <summary>
@@ -201,10 +222,13 @@ namespace iPMCloud.Mobile.vo
 
         public async void ScanBuildingOutView(ContentPage page, StackLayout scanContainer, Func<bool> func)
         {
-            // Stop any previous scanner instance before starting a new one
-            await StopAsync();
+            AppModel.Logger.Info($"[Scanner] ScanBuildingOutView: waiting for semaphore – MainThread={MainThread.IsMainThread}");
+            await _scanSemaphore.WaitAsync();
+            AppModel.Logger.Info("[Scanner] ScanBuildingOutView: semaphore acquired, stopping previous scan");
             try
             {
+                await StopCoreAsync();
+
                 var opts = new BarcodeReaderOptions
                 {
                     Formats = BarcodeFormats.OneDimensional | BarcodeFormats.TwoDimensional,
@@ -295,6 +319,7 @@ namespace iPMCloud.Mobile.vo
                 grid.Children.Add(overlayz);
                 scanContainer.Children.Add(grid);
                 zxing.IsDetecting = true;
+                AppModel.Logger.Info("[Scanner] ScanBuildingOutView: scan started");
             }
             catch (Exception ex)
             {
@@ -308,14 +333,22 @@ namespace iPMCloud.Mobile.vo
                     var a = e;
                 }
             }
+            finally
+            {
+                _scanSemaphore.Release();
+                AppModel.Logger.Info("[Scanner] ScanBuildingOutView: semaphore released");
+            }
         }
 
         public async void ScanBuildingView(ContentPage page, StackLayout scanContainer, Func<bool> func)
         {
-            // Stop any previous scanner instance before starting a new one
-            await StopAsync();
+            AppModel.Logger.Info($"[Scanner] ScanBuildingView: waiting for semaphore – MainThread={MainThread.IsMainThread}");
+            await _scanSemaphore.WaitAsync();
+            AppModel.Logger.Info("[Scanner] ScanBuildingView: semaphore acquired, stopping previous scan");
             try
             {
+                await StopCoreAsync();
+
                 var opts = new BarcodeReaderOptions
                 {
                     Formats = BarcodeFormats.OneDimensional | BarcodeFormats.TwoDimensional,
@@ -410,6 +443,7 @@ namespace iPMCloud.Mobile.vo
                 grid.Children.Add(overlayz);
                 scanContainer.Children.Add(grid);
                 zxing.IsDetecting = true;
+                AppModel.Logger.Info("[Scanner] ScanBuildingView: scan started");
             }
             catch (Exception ex)
             {
@@ -423,14 +457,22 @@ namespace iPMCloud.Mobile.vo
                     var a = e;
                 }
             }
+            finally
+            {
+                _scanSemaphore.Release();
+                AppModel.Logger.Info("[Scanner] ScanBuildingView: semaphore released");
+            }
         }
 
         public async void ScanRegView(ContentPage page, StackLayout scanContainer, Func<bool> func)
         {
-            // Stop any previous scanner instance before starting a new one
-            await StopAsync();
+            AppModel.Logger.Info($"[Scanner] ScanRegView: waiting for semaphore – MainThread={MainThread.IsMainThread}");
+            await _scanSemaphore.WaitAsync();
+            AppModel.Logger.Info("[Scanner] ScanRegView: semaphore acquired, stopping previous scan");
             try
             {
+                await StopCoreAsync();
+
                 var opts = new BarcodeReaderOptions
                 {
                     Formats = BarcodeFormats.OneDimensional | BarcodeFormats.TwoDimensional,
@@ -512,6 +554,7 @@ namespace iPMCloud.Mobile.vo
                 grid.Children.Add(overlayz);
                 scanContainer.Children.Add(grid);
                 zxing.IsDetecting = true;
+                AppModel.Logger.Info("[Scanner] ScanRegView: scan started");
             }
             catch (Exception ex)
             {
@@ -525,14 +568,22 @@ namespace iPMCloud.Mobile.vo
                     var a = e;
                 }
             }
+            finally
+            {
+                _scanSemaphore.Release();
+                AppModel.Logger.Info("[Scanner] ScanRegView: semaphore released");
+            }
         }
 
         public async void ScanAddRegView(ContentPage page, StackLayout scanContainer, Func<bool> func, Func<bool> funcfaild)
         {
-            // Stop any previous scanner instance before starting a new one
-            await StopAsync();
+            AppModel.Logger.Info($"[Scanner] ScanAddRegView: waiting for semaphore – MainThread={MainThread.IsMainThread}");
+            await _scanSemaphore.WaitAsync();
+            AppModel.Logger.Info("[Scanner] ScanAddRegView: semaphore acquired, stopping previous scan");
             try
             {
+                await StopCoreAsync();
+
                 var opts = new BarcodeReaderOptions
                 {
                     Formats = BarcodeFormats.OneDimensional | BarcodeFormats.TwoDimensional,
@@ -624,6 +675,7 @@ namespace iPMCloud.Mobile.vo
                 grid.Children.Add(overlayz);
                 scanContainer.Children.Add(grid);
                 zxing.IsDetecting = true;
+                AppModel.Logger.Info("[Scanner] ScanAddRegView: scan started");
             }
             catch (Exception ex)
             {
@@ -636,6 +688,11 @@ namespace iPMCloud.Mobile.vo
                 {
                     var a = e;
                 }
+            }
+            finally
+            {
+                _scanSemaphore.Release();
+                AppModel.Logger.Info("[Scanner] ScanAddRegView: semaphore released");
             }
         }
 

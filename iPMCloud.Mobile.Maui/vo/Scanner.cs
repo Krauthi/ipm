@@ -28,7 +28,9 @@ namespace iPMCloud.Mobile.vo
 
         // Delay to let in-flight Android CameraManager Runnables finish before removing the view
         // from the visual tree / reconnecting.
-        private const int CameraDrainDelayMs = 300;
+        // Increased to 1200ms to ensure Android native camera resources are fully released
+        // This prevents NullReferenceException in CameraManager.Connect when rapidly switching views
+        private const int CameraDrainDelayMs = 1200;
 
         public bool displayIsOpen = false;
 
@@ -366,9 +368,25 @@ namespace iPMCloud.Mobile.vo
                 grid.Children.Clear();
                 grid.Children.Add(zxing);
                 grid.Children.Add(overlayz);
-                scanContainer.Children.Add(grid);
 
-                zxing.IsDetecting = true;
+                // Ensure grid is not already in the container to avoid duplicate parent issues
+                if (grid.Parent != scanContainer)
+                {
+                    scanContainer.Children.Add(grid);
+                }
+
+                // Extended delay before starting detection to ensure native camera resources are fully released
+                // This prevents NullReferenceException in ZXing.Net.Maui CameraManager.Connect on Android
+                await Task.Delay(300);
+
+                if (zxing != null)
+                {
+                    zxing.IsDetecting = true;
+                }
+                else
+                {
+                    throw new InvalidOperationException("Camera view was disposed during initialization");
+                }
             }
             catch (Exception ex)
             {
@@ -387,6 +405,10 @@ namespace iPMCloud.Mobile.vo
             try
             {
                 await StopAsync();
+
+                // Extended delay after stop to ensure Android native camera resources are fully released
+                // Critical for preventing NullReferenceException in CameraManager.Connect
+                await Task.Delay(300);
 
                 var opts = new BarcodeReaderOptions
                 {
@@ -523,9 +545,25 @@ namespace iPMCloud.Mobile.vo
                 grid.Children.Clear();
                 grid.Children.Add(zxing);
                 grid.Children.Add(overlayz);
-                scanContainer.Children.Add(grid);
 
-                zxing.IsDetecting = true;
+                // Ensure grid is not already in the container to avoid duplicate parent issues
+                if (grid.Parent != scanContainer)
+                {
+                    scanContainer.Children.Add(grid);
+                }
+
+                // Extended delay before starting detection to ensure native camera resources are fully released
+                // This prevents NullReferenceException in ZXing.Net.Maui CameraManager.Connect on Android
+                await Task.Delay(300);
+
+                if (zxing != null)
+                {
+                    zxing.IsDetecting = true;
+                }
+                else
+                {
+                    throw new InvalidOperationException("Camera view was disposed during initialization");
+                }
             }
             catch (Exception ex)
             {
@@ -668,7 +706,18 @@ namespace iPMCloud.Mobile.vo
                 grid.Children.Add(overlayz);
                 scanContainer.Children.Add(grid);
 
-                zxing.IsDetecting = true;
+                // Extended delay before starting detection to ensure native camera resources are fully released
+                // This prevents NullReferenceException in ZXing.Net.Maui CameraManager.Connect on Android
+                await Task.Delay(300);
+
+                if (zxing != null)
+                {
+                    zxing.IsDetecting = true;
+                }
+                else
+                {
+                    throw new InvalidOperationException("Camera view was disposed during initialization");
+                }
             }
             catch (Exception ex)
             {
@@ -812,12 +861,22 @@ namespace iPMCloud.Mobile.vo
                 grid.Children.Add(overlayz);
                 scanContainer.Children.Add(grid);
 
-                zxing.IsDetecting = true;
+                // Extended delay before starting detection to ensure native camera resources are fully released
+                // This prevents NullReferenceException in ZXing.Net.Maui CameraManager.Connect on Android
+                await Task.Delay(300);
+
+                if (zxing != null)
+                {
+                    zxing.IsDetecting = true;
+                }
+                else
+                {
+                    throw new InvalidOperationException("Camera view was disposed during initialization");
+                }
             }
             catch (Exception ex)
             {
                 LogException("ScanAddRegView", ex);
-                try { await page.DisplayAlertAsync("Faild scan addreg QRCode", ex.Message, "OK"); } catch { }
             }
             finally
             {

@@ -1,34 +1,44 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
+    x:Class="iPMCloud.Mobile.ScanPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    x:Class="iPMCloud.Mobile.ScanPage"
     xmlns:custom="clr-namespace:iPMCloud.Mobile.vo"
-    xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.Maui.Controls"
     xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
+    xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.Maui.Controls"
     Title="ScanPage">
 
     <Grid>
 
-        <!-- "Caller"-Bereich -->
-        <VerticalStackLayout x:Name="CallerPanel" Padding="20" Spacing="12" IsVisible="True">
-            <Label Text="Hier ist deine Caller-UI" FontAttributes="Bold" />
-            <Button Text="Scanner starten" Clicked="OnStartScannerClicked" />
-            <Button Text="Zurück" Clicked="OnBackClicked" />
+        <!--  "Caller"-Bereich  -->
+        <VerticalStackLayout
+            x:Name="CallerPanel"
+            Padding="20"
+            IsVisible="True"
+            Spacing="12">
+            <Label FontAttributes="Bold" Text="Hier ist deine Caller-UI" />
+            <Button Clicked="OnStartScannerClicked" Text="Scanner starten" />
+            <Button Clicked="OnBackClicked" Text="Zurück" />
         </VerticalStackLayout>
 
-        <!-- Scanner-Bereich -->
-        <Grid x:Name="ScannerPanel" RowDefinitions="*,Auto" IsVisible="False">
+        <!--  Scanner-Bereich  -->
+        <Grid
+            x:Name="ScannerPanel"
+            IsVisible="False"
+            RowDefinitions="*,Auto">
 
             <zxing:CameraBarcodeReaderView
                 x:Name="ReaderView"
-                IsDetecting="False"
+                BarcodesDetected="ReaderView_BarcodesDetected"
                 CameraLocation="Rear"
-                BarcodesDetected="ReaderView_BarcodesDetected" />
+                IsDetecting="False" />
 
-            <HorizontalStackLayout Grid.Row="1" Padding="12" Spacing="12">
-                <Button Text="Kamera wechseln" Clicked="OnSwitchCameraClicked" />
-                <Button Text="Abbrechen" Clicked="OnCancelScanClicked" />
+            <HorizontalStackLayout
+                Grid.Row="1"
+                Padding="12"
+                Spacing="12">
+                <Button Clicked="OnSwitchCameraClicked" Text="Kamera wechseln" />
+                <Button Clicked="OnCancelScanClicked" Text="Abbrechen" />
                 <Label x:Name="StatusLabel" VerticalOptions="Center" />
             </HorizontalStackLayout>
         </Grid>

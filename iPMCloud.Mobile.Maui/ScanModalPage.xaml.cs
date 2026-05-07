@@ -1,3 +1,5 @@
+using iPMCloud.Mobile.vo;
+using System.Windows.Input;
 using ZXing.Net.Maui;
 
 namespace iPMCloud.Mobile
@@ -10,6 +12,21 @@ namespace iPMCloud.Mobile
         private ScanModalPage()
         {
             InitializeComponent();
+
+
+            BindingContext = new OverlayViewModel(
+                onFlashButtonClicked: () => { FlashCameraClicked(null, null); })
+            {
+                TopText = AppModel.Instance.StartPage.ScanAddRegText,
+                BottomText = AppModel.Instance.StartPage.ScanAddRegTextSec,
+            };
+
+
+            btn_back_inAddRegScan.GestureRecognizers.Clear();
+            var tgr7 = new TapGestureRecognizer();
+            tgr7.Tapped -= OnCancelClicked;
+            tgr7.Tapped += OnCancelClicked;
+            btn_back_inAddRegScan.GestureRecognizers.Add(tgr7);
         }
 
         /// <summary>
@@ -28,7 +45,7 @@ namespace iPMCloud.Mobile
 
             if (status != PermissionStatus.Granted)
             {
-                await callerPage.DisplayAlert(
+                await callerPage.DisplayAlertAsync(
                     "Kamerazugriff verweigert",
                     "Bitte erlauben Sie den Kamerazugriff in den Einstellungen.",
                     "OK");
@@ -51,11 +68,13 @@ namespace iPMCloud.Mobile
             base.OnAppearing();
             _completed = false;
             ReaderView.IsDetecting = true;
+
         }
 
         protected override void OnDisappearing()
         {
             // Stop the camera feed whenever the page leaves the screen.
+            ReaderView.IsTorchOn = false;
             ReaderView.IsDetecting = false;
             base.OnDisappearing();
         }
@@ -68,11 +87,17 @@ namespace iPMCloud.Mobile
                     : CameraLocation.Rear;
         }
 
-        private async void OnCancelClicked(object sender, EventArgs e)
+        private void FlashCameraClicked(object sender, EventArgs e)
+        {
+            ReaderView.IsTorchOn = !ReaderView.IsTorchOn;
+        }
+
+        private async void OnCancelClicked(object sender, TappedEventArgs e)
         {
             if (_completed) return;
             _completed = true;
 
+            ReaderView.IsTorchOn = false;
             ReaderView.IsDetecting = false;
             _tcs?.TrySetResult(null);
             await Navigation.PopModalAsync();
@@ -91,10 +116,23 @@ namespace iPMCloud.Mobile
             // BarcodesDetected may fire on a background thread – marshal to UI thread.
             await MainThread.InvokeOnMainThreadAsync(async () =>
             {
+                ReaderView.IsTorchOn = false;
                 ReaderView.IsDetecting = false;
                 _tcs?.TrySetResult(value);
                 await Navigation.PopModalAsync();
             });
+        }
+    }
+    public class OverlayViewModel
+    {
+        public string TopText { get; set; } = "";
+        public string BottomText { get; set; } = "";
+
+        public ICommand FlashButtonCommand { get; }
+
+        public OverlayViewModel(Action? onFlashButtonClicked)
+        {
+            FlashButtonCommand = new Command(() => onFlashButtonClicked?.Invoke());
         }
     }
 }

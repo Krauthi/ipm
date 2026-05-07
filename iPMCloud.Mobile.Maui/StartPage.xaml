@@ -382,7 +382,7 @@
 
 
         <!--  REGISTRIEREN QR SCREEN  -->
-        <Grid
+        <!--<Grid
             x:Name="RegScan_Container"
             Margin="0"
             Padding="0"
@@ -398,7 +398,6 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <!--  Info-Box  -->
             <Border
                 Grid.Row="0"
                 Margin="0,0,0,0"
@@ -409,7 +408,6 @@
                         Margin="0"
                         Padding="5"
                         FontSize="19"
-                        HorizontalTextAlignment="Justify"
                         Text="Damit Sie sich mit dieser App als Mitarbeiter anmelden können, scannen Sie bitte zuerst den von Ihrem Unternehmen vorliegenden QR-Code ein."
                         TextColor="#ffffff"
                         VerticalOptions="Start">
@@ -425,29 +423,13 @@
             </Border>
 
 
-            <zxing:CameraBarcodeReaderView 
-                Grid.Row="1"
-                        x:Name="cameraViewRegScan"
-                    Margin="0,0,0,20"
-                        IsDetecting="False"
-                        VerticalOptions="Fill" 
-                  />
-            <!--<StackLayout
-                x:Name="lay_regscan"
-                Grid.Row="1"
-                Margin="0,0,0,20"
-                Padding="0"
-                HorizontalOptions="Fill"
-                Spacing="0"
-                VerticalOptions="Fill" />-->
-
             <Border
                 Grid.Row="2"
                 Margin="0,0,0,13"
                 Padding="0"
                 BackgroundColor="#000000"
                 VerticalOptions="Fill" />
-        </Grid>
+        </Grid>-->
 
 
         <!--  Anmelde Start Login  -->
@@ -1018,7 +1000,7 @@
         </Grid>
 
 
-        <Grid
+        <!--<Grid
             x:Name="AddRegScan_Container"
             Margin="0,0,0,0"
             Padding="0"
@@ -1098,7 +1080,7 @@
                     VerticalOptions="Start" />
             </VerticalStackLayout>
 
-            <!--<VerticalStackLayout
+            --><!--<VerticalStackLayout
                 Grid.Row="2"
                 Margin="0"
                 Padding="0"
@@ -1110,7 +1092,7 @@
                     Padding="0"
                     HorizontalOptions="Fill"
                     Spacing="0"
-                    VerticalOptions="Fill" />-->
+                    VerticalOptions="Fill" />--><!--
                 <zxing:CameraBarcodeReaderView 
                 Grid.Row="2"
                         x:Name="cameraViewAddRegScan"
@@ -1119,14 +1101,14 @@
                         VerticalOptions="Fill" 
                   />
                 
-            <!--</VerticalStackLayout>-->
+            --><!--</VerticalStackLayout>--><!--
             <BoxView
                 Grid.Row="3"
                 Margin="0,40,0,13"
                 BackgroundColor="Black"
                 HorizontalOptions="Fill"
                 VerticalOptions="Fill" />
-        </Grid>
+        </Grid>-->
 
 
 
@@ -1173,7 +1155,7 @@
                             WidthRequest="36" />
                         <Label
                             Margin="10,0,0,0"
-                            FontSize="24"
+                            FontSize="22"
                             HorizontalOptions="Fill"
                             HorizontalTextAlignment="Start"
                             Text="GPS Standort"
@@ -1188,7 +1170,7 @@
                         VerticalOptions="Start" />
                     <Label
                         Margin="0,0,0,20"
-                        FontSize="18"
+                        FontSize="16"
                         HorizontalOptions="Fill"
                         HorizontalTextAlignment="Start"
                         Text="Wir möchten Sie darauf hinweisen, das diese App GPS Standort -Daten abruft und diese Ihrem Unternehmen bereitstellt.&#x0a;&#x0a;Die GPS Standort -Daten werden abgerufen, wenn diese App immer in Gebrauch ist,  im Hintergrund wenn die App geschlossen ist bzw. wenn die App nicht verwendet wird.&#x0a;&#x0a;Ihr Unternehmen benötigt diese Daten zwecks Ihrer Einsatzfähigkeit in spontanen Einsatzgebieten in befindlicher Nähe.&#x0a;&#x0a;Die GPS-Daten dienen Ihnen auch zur Navigation zum Einsatzort aus der TODO-Liste.&#x0a;&#x0a;Diese Standort -Daten werden NICHT für Anzeigen oder Support-Werbung / Support-Anzeigen verwendet."

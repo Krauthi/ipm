@@ -407,12 +407,15 @@ namespace iPMCloud.Mobile
 
         private async void ShowAddRegScan()
         {
-            var caller = new ScanPage(onScanResult: result =>
+            var result = await ScanModalPage.ScanAsync(this);
+            if (!string.IsNullOrWhiteSpace(result))
             {
-                var TextR = result;
-            });
-
-            await Navigation.PushAsync(caller);
+                AppModel.Logger.Info($"INFO: AddRegScan result received: {result}");
+            }
+            else
+            {
+                AppModel.Logger.Info("INFO: AddRegScan cancelled or camera permission denied.");
+            }
         }
 
 

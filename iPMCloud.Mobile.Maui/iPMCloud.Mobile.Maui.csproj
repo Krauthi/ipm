@@ -185,6 +185,9 @@
 		<None Include="Platforms\iOS\Entitlements.plist" />
 	</ItemGroup>
 	<ItemGroup>
+	  <Compile Update="ScanModalPage.xaml.cs">
+	    <DependentUpon>ScanModalPage.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="ScannerPage.xaml.cs">
 	    <DependentUpon>ScannerPage.xaml</DependentUpon>
 	  </Compile>
@@ -207,6 +210,9 @@
 
 	<!-- Einzelne XAML Update -->
 	<ItemGroup>
+		<MauiXaml Update="ScanModalPage.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 		<MauiXaml Update="ScannerPage.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.Maui.Controls"
+    x:Class="iPMCloud.Mobile.ScanModalPage"
+    Title="QR-Code scannen">
+
+    <Grid RowDefinitions="*,Auto">
+
+        <zxing:CameraBarcodeReaderView
+            x:Name="ReaderView"
+            IsDetecting="False"
+            CameraLocation="Rear"
+            BarcodesDetected="ReaderView_BarcodesDetected" />
+
+        <HorizontalStackLayout
+            Grid.Row="1"
+            Padding="12"
+            Spacing="12"
+            HorizontalOptions="Center">
+            <Button Text="Kamera wechseln" Clicked="OnSwitchCameraClicked" />
+            <Button Text="Abbrechen" Clicked="OnCancelClicked" />
+        </HorizontalStackLayout>
+
+    </Grid>
+</ContentPage>

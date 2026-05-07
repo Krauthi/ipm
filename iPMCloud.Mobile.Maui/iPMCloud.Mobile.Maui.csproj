@@ -184,6 +184,14 @@
 		<None Include="Platforms\iOS\Info.plist" />
 		<None Include="Platforms\iOS\Entitlements.plist" />
 	</ItemGroup>
+	<ItemGroup>
+	  <Compile Update="ScannerPage.xaml.cs">
+	    <DependentUpon>ScannerPage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="ScanPage.xaml.cs">
+	    <DependentUpon>ScanPage.xaml</DependentUpon>
+	  </Compile>
+	</ItemGroup>
 
 	<ItemGroup>
 	  <MauiImage Update="Resources\Images\backgroundgray1a.jpg">
@@ -199,6 +207,12 @@
 
 	<!-- Einzelne XAML Update -->
 	<ItemGroup>
+		<MauiXaml Update="ScannerPage.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="ScanPage.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 		<MauiXaml Update="vo\wso\checks\SignaturePadView.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>

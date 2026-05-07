@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="iPMCloud.Mobile.ScanPage"
+    xmlns:custom="clr-namespace:iPMCloud.Mobile.vo"
+    xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.Maui.Controls"
+    xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
+    Title="ScanPage">
+
+    <Grid>
+
+        <!-- "Caller"-Bereich -->
+        <VerticalStackLayout x:Name="CallerPanel" Padding="20" Spacing="12" IsVisible="True">
+            <Label Text="Hier ist deine Caller-UI" FontAttributes="Bold" />
+            <Button Text="Scanner starten" Clicked="OnStartScannerClicked" />
+            <Button Text="Zurück" Clicked="OnBackClicked" />
+        </VerticalStackLayout>
+
+        <!-- Scanner-Bereich -->
+        <Grid x:Name="ScannerPanel" RowDefinitions="*,Auto" IsVisible="False">
+
+            <zxing:CameraBarcodeReaderView
+                x:Name="ReaderView"
+                IsDetecting="False"
+                CameraLocation="Rear"
+                BarcodesDetected="ReaderView_BarcodesDetected" />
+
+            <HorizontalStackLayout Grid.Row="1" Padding="12" Spacing="12">
+                <Button Text="Kamera wechseln" Clicked="OnSwitchCameraClicked" />
+                <Button Text="Abbrechen" Clicked="OnCancelScanClicked" />
+                <Label x:Name="StatusLabel" VerticalOptions="Center" />
+            </HorizontalStackLayout>
+        </Grid>
+
+    </Grid>
+</ContentPage>

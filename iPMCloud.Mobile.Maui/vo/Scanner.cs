@@ -17,9 +17,6 @@ namespace iPMCloud.Mobile.vo
         {
         }
 
-        // Gate to serialize scan starts (prevents overlapping Connect/Start races)
-        private readonly SemaphoreSlim _scanGate = new(1, 1);
-
         // Thread-safe guard so StopAsync() is idempotent and never runs concurrently with itself
         private int _isStopping = 0;
 
@@ -232,7 +229,6 @@ namespace iPMCloud.Mobile.vo
 
         public async void ScanBuildingOutView(ContentPage page, StackLayout scanContainer, Func<bool> func)
         {
-            await _scanGate.WaitAsync();
             try
             {
                 await StopAsync();
@@ -395,13 +391,11 @@ namespace iPMCloud.Mobile.vo
             }
             finally
             {
-                _scanGate.Release();
             }
         }
 
         public async void ScanBuildingView(ContentPage page, StackLayout scanContainer, Func<bool> func)
         {
-            await _scanGate.WaitAsync();
             try
             {
                 await StopAsync();
@@ -572,13 +566,11 @@ namespace iPMCloud.Mobile.vo
             }
             finally
             {
-                _scanGate.Release();
             }
         }
 
         public async void ScanRegView(ContentPage page, StackLayout scanContainer, Func<bool> func)
         {
-            await _scanGate.WaitAsync();
             try
             {
                 await StopAsync();
@@ -726,13 +718,11 @@ namespace iPMCloud.Mobile.vo
             }
             finally
             {
-                _scanGate.Release();
             }
         }
 
-        public async void ScanAddRegView(ContentPage page, StackLayout scanContainer, Func<bool> func, Func<bool> funcfaild)
+        public async void ScanAddRegView(ContentPage page, CameraBarcodeReaderView scanContainer, Func<bool> func, Func<bool> funcfaild)
         {
-            await _scanGate.WaitAsync();
             try
             {
                 await StopAsync();
@@ -749,7 +739,7 @@ namespace iPMCloud.Mobile.vo
                     HorizontalOptions = LayoutOptions.Fill,
                     VerticalOptions = LayoutOptions.Fill,
                     Margin = new Thickness(0, 0, 0, 0),
-                    AutomationId = "zxingScannerView",
+                    AutomationId = "zxingScannerViewAddReg",
                     Options = opts
                 };
 
@@ -856,18 +846,18 @@ namespace iPMCloud.Mobile.vo
                     }
                 );
 
-                grid.Children.Clear();
-                grid.Children.Add(zxing);
-                grid.Children.Add(overlayz);
-                scanContainer.Children.Add(grid);
+                //grid.Children.Clear();
+                //grid.Children.Add(zxing);
+                //grid.Children.Add(overlayz);
+                //scanContainer.Children.Add(grid);
 
                 // Extended delay before starting detection to ensure native camera resources are fully released
                 // This prevents NullReferenceException in ZXing.Net.Maui CameraManager.Connect on Android
-                await Task.Delay(300);
+                //await Task.Delay(300);
 
-                if (zxing != null)
+                if (scanContainer != null)
                 {
-                    zxing.IsDetecting = true;
+                    scanContainer.IsDetecting = true;
                 }
                 else
                 {
@@ -880,7 +870,6 @@ namespace iPMCloud.Mobile.vo
             }
             finally
             {
-                _scanGate.Release();
             }
         }
 

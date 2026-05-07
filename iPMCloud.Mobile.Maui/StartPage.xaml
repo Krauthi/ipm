@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:custom="clr-namespace:iPMCloud.Mobile.vo"
     xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
+    xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.Maui.Controls"
     Padding="0,0,0,0"
     BackgroundColor="Black"
     ClassId="StartPage">
@@ -424,14 +425,21 @@
             </Border>
 
 
-            <StackLayout
+            <zxing:CameraBarcodeReaderView 
+                Grid.Row="1"
+                        x:Name="cameraViewRegScan"
+                    Margin="0,0,0,20"
+                        IsDetecting="False"
+                        VerticalOptions="Fill" 
+                  />
+            <!--<StackLayout
                 x:Name="lay_regscan"
                 Grid.Row="1"
                 Margin="0,0,0,20"
                 Padding="0"
                 HorizontalOptions="Fill"
                 Spacing="0"
-                VerticalOptions="Fill" />
+                VerticalOptions="Fill" />-->
 
             <Border
                 Grid.Row="2"
@@ -1090,20 +1098,28 @@
                     VerticalOptions="Start" />
             </VerticalStackLayout>
 
-            <VerticalStackLayout
+            <!--<VerticalStackLayout
                 Grid.Row="2"
                 Margin="0"
                 Padding="0"
                 HorizontalOptions="Fill"
-                Spacing="0">
-                <StackLayout
+                Spacing="0">-->
+                <!--<StackLayout
                     x:Name="lay_addregscan"
                     Margin="0,0,0,0"
                     Padding="0"
                     HorizontalOptions="Fill"
                     Spacing="0"
-                    VerticalOptions="Fill" />
-            </VerticalStackLayout>
+                    VerticalOptions="Fill" />-->
+                <zxing:CameraBarcodeReaderView 
+                Grid.Row="2"
+                        x:Name="cameraViewAddRegScan"
+                    Margin="0,50,0,50"
+                        IsDetecting="False"
+                        VerticalOptions="Fill" 
+                  />
+                
+            <!--</VerticalStackLayout>-->
             <BoxView
                 Grid.Row="3"
                 Margin="0,40,0,13"

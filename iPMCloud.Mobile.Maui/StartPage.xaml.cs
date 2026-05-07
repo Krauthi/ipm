@@ -9,6 +9,8 @@ using Microsoft.Maui.Storage;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using ZXing.Net.Maui;
+using ZXing.Net.Maui.Controls;
 //https://docs.microsoft.com/de-de/xamarin/essentials/preferences?tabs=android
 
 namespace iPMCloud.Mobile
@@ -89,6 +91,73 @@ namespace iPMCloud.Mobile
             overlay.IsVisible = false;
             isInitialize = false;
         }
+
+
+        bool _isProcessingRegScan = false;
+        private void BarcodeHandlerRegEventHandler(object sender, BarcodeDetectionEventArgs e)
+        {
+            var result = e.Results.FirstOrDefault();
+            if (result == null) { return; }
+            if (_isProcessingRegScan) return;
+
+            _isProcessingRegScan = true;
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+
+                cameraViewRegScan.IsDetecting = false;
+
+                var sp = result.Value
+                    .Replace("https://", "http://")
+                    .Replace("httpss://", "https://")
+                    .Split(new[] { "###" }, StringSplitOptions.RemoveEmptyEntries);
+
+                if (sp.Length < 3)
+                    throw new Exception("QR-Format ungültig.");
+
+                var newScanSettings = new SettingDTO
+                {
+                    ServerUrl = sp[0],
+                    CustomerNumber = sp[1],
+                    CustomerName = sp[2]
+                };
+                var cn = AppModel.Instance.SettingModel.SettingDTO.CustomerNumber;
+                if (!string.IsNullOrWhiteSpace(newScanSettings.ServerUrl) &&
+                    !string.IsNullOrWhiteSpace(newScanSettings.CustomerNumber) &&
+                    !string.IsNullOrWhiteSpace(newScanSettings.CustomerName) &&
+                    newScanSettings.CustomerNumber != cn)
+                {
+                    
+                    string directoryPath = Path.Combine(
+                        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                        "ipm/" + newScanSettings.CustomerNumber);
+
+                    if (!Directory.Exists(directoryPath)) Directory.CreateDirectory(directoryPath);
+
+                    AppModel.Instance.SettingModel.SettingDTO = newScanSettings;
+                    AppModel.Instance.SettingModel.SaveSettings();
+                    
+                    Company.AddUpdateCompany(AppModel.Instance, AppModel.Instance.SettingModel.SettingDTO);
+
+                    AppModel.Instance.UseExternHardware = false;
+
+                    cameraViewRegScan.IsDetecting = false;
+                    _isProcessingRegScan = false;
+                    MethodAfterScan();
+                }
+                else
+                {
+                    cameraViewRegScan.IsDetecting = false;
+                    _isProcessingRegScan = false;
+
+                    await DisplayAlertAsync("QR-Code nicht erkannt!",
+                        "Dieser QR-Code kann für die Registrierung mit der iPM-Cloud nicht verwendet werden. Bitte Probieren Sie es noch einmal.",
+                        "OK");
+                    //MethodAfterAddScanFail();
+                }
+
+            });
+        }
+
         private async void ShowRegScan()
         {
             isInitialize = true;
@@ -102,9 +171,41 @@ namespace iPMCloud.Mobile
             RegManagement_Container.IsVisible = false;
 
             InitStartPageHandlers();
-            lay_regscan.Children.Clear();
+
+            var status = await Permissions.RequestAsync<Permissions.Camera>();
+            if (status != PermissionStatus.Granted)
+            {
+                // Handle permission denied
+                var uu = 0;
+            }
+            else
+            {
+                var ee = 0;
+            }
+
+            //lay_regscan.Children.Clear();
+            var opts = new BarcodeReaderOptions
+            {
+                Formats = BarcodeFormats.TwoDimensional,
+                AutoRotate = true,
+                Multiple = false,
+                TryHarder = true,
+                TryInverted = true
+            };
+
+            cameraViewRegScan.Options = opts;
+            cameraViewRegScan.CameraLocation = CameraLocation.Rear;
+
+            cameraViewRegScan.BarcodesDetected -= BarcodeHandlerRegEventHandler;
+            cameraViewRegScan.BarcodesDetected += BarcodeHandlerRegEventHandler;
+
             AppModel.Instance.UseExternHardware = true;
-            AppModel.Instance.Scan.ScanRegView(this, lay_regscan, MethodAfterScan);
+
+            cameraViewRegScan.IsDetecting = true;
+
+
+            //AppModel.Instance.Scan.ScanRegView(this, lay_regscan, MethodAfterScan);
+
 
             await Task.Delay(1);
             overlay.IsVisible = false;
@@ -114,7 +215,7 @@ namespace iPMCloud.Mobile
         {
             //StartGPS();
             AppModel.Instance.UseExternHardware = false;
-            lay_regscan.Children.Clear();
+            //lay_regscan.Children.Clear();
             popupContainer_gpsinfo.IsVisible = true;
             return true;
         }
@@ -131,6 +232,9 @@ namespace iPMCloud.Mobile
             try { AppModel.Instance.Scan?.Stop(); } catch { /* defensive: Stop() is idempotent and must not block navigation */ }
             if (AppModel.Instance._cts != null && !AppModel.Instance._cts.IsCancellationRequested)
                 AppModel.Instance._cts.Cancel();
+
+            cameraViewAddRegScan.IsDetecting = false;
+
             base.OnDisappearing();
         }
 
@@ -235,7 +339,84 @@ namespace iPMCloud.Mobile
             popupContainer_Alert_btn.IsVisible = true;
         }
 
+
+
+        bool _isProcessingAddRegScan = false;
+        private void BarcodeHandlerAddRegEventHandler(object sender, BarcodeDetectionEventArgs e)
+        {
+            var result = e.Results.FirstOrDefault();
+            if (result == null) { return; }
+            if (_isProcessingAddRegScan) return;
+
+            _isProcessingAddRegScan = true;
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+
+                cameraViewAddRegScan.IsDetecting = false;
+
+                var sp = result.Value
+                    .Replace("https://", "http://")
+                    .Replace("httpss://", "https://")
+                    .Split(new[] { "###" }, StringSplitOptions.RemoveEmptyEntries);
+
+                if (sp.Length < 3)
+                    throw new Exception("QR-Format ungültig.");
+
+                var newScanSettings = new SettingDTO
+                {
+                    ServerUrl = sp[0],
+                    CustomerNumber = sp[1],
+                    CustomerName = sp[2]
+                };
+                var cn = AppModel.Instance.SettingModel.SettingDTO.CustomerNumber;
+                if (!string.IsNullOrWhiteSpace(newScanSettings.ServerUrl) &&
+                    !string.IsNullOrWhiteSpace(newScanSettings.CustomerNumber) &&
+                    !string.IsNullOrWhiteSpace(newScanSettings.CustomerName) &&
+                    newScanSettings.CustomerNumber != cn)
+                {
+                    Company.AddUpdateCompany(AppModel.Instance, AppModel.Instance.SettingModel.SettingDTO);
+
+                    string directoryPath = Path.Combine(
+                        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                        "ipm/" + newScanSettings.CustomerNumber);
+
+                    if (!Directory.Exists(directoryPath)) Directory.CreateDirectory(directoryPath);
+
+                    AppModel.Instance.SettingModel.SettingDTO = newScanSettings;
+                    AppModel.Instance.SettingModel.SaveSettings();
+
+                    AppModel.Instance.UseExternHardware = false;
+
+                    cameraViewAddRegScan.IsDetecting = false;
+                    _isProcessingAddRegScan = false;
+                    MethodAfterAddScan();
+                }
+                else
+                {
+                    cameraViewAddRegScan.IsDetecting = false;
+                    _isProcessingAddRegScan = false;
+                    await DisplayAlertAsync("QR-Code nicht erkannt!",
+                                            "Dieser QR-Code kann für die Registrierung eines weiteren Unternehmens mit der iPM-Cloud-App nicht verwendet werden.",
+                                            "OK");
+                    MethodAfterAddScanFail();
+                }
+
+            });
+        }
+
+
         private async void ShowAddRegScan()
+        {
+            var caller = new ScanPage(onScanResult: result =>
+            {
+                var TextR = result;
+            });
+
+            await Navigation.PushAsync(caller);
+        }
+
+
+        private async void ShowAddRegScanOLD()
         {
             isInitialize = true;
             overlay.IsVisible = true;
@@ -247,12 +428,43 @@ namespace iPMCloud.Mobile
             AddRegScan_Container.IsVisible = true;
             RegManagement_Container.IsVisible = false;
 
-            lay_addregscan.Children.Clear();
+            //lay_addregscan.Children.Clear();
             InitStartPageHandlers();
-            AppModel.Instance.UseExternHardware = true;
-            AppModel.Instance.Scan.ScanAddRegView(this, lay_addregscan, MethodAfterAddScan, MethodAfterAddScanFail);
 
-            await Task.Delay(1);
+            var status = await Permissions.RequestAsync<Permissions.Camera>();
+            if (status != PermissionStatus.Granted)
+            {
+                // Handle permission denied
+                var uu = 0;
+            }
+            else
+            {
+                var ee = 0;
+            }
+
+            var opts = new BarcodeReaderOptions
+            {
+                Formats = BarcodeFormats.TwoDimensional,
+                AutoRotate = true,
+                Multiple = false,
+                TryHarder = true,
+                TryInverted = true
+            };
+            cameraViewAddRegScan.CameraLocation = CameraLocation.Rear;
+            cameraViewAddRegScan.Options = opts;
+
+            
+            cameraViewAddRegScan.BarcodesDetected -= BarcodeHandlerAddRegEventHandler;
+            cameraViewAddRegScan.BarcodesDetected += BarcodeHandlerAddRegEventHandler;
+
+
+
+            AppModel.Instance.UseExternHardware = true;
+            //AppModel.Instance.Scan.ScanAddRegView(this, cameraViewAddRegScan, MethodAfterAddScan, MethodAfterAddScanFail);
+
+            cameraViewAddRegScan.IsDetecting = true;
+
+            await Task.Delay(1000);
             overlay.IsVisible = false;
             isInitialize = false;
         }
@@ -323,7 +535,7 @@ namespace iPMCloud.Mobile
         public bool MethodAfterAddScan()
         {
             AppModel.Instance.UseExternHardware = false;
-            lay_addregscan.Children.Clear();
+            //lay_addregscan.Children.Clear();
             AppModel.Instance.Person = null;
             entry_login_name.Text = "";
             entry_login_password.Text = "";
@@ -343,7 +555,7 @@ namespace iPMCloud.Mobile
         public bool MethodAfterAddScanFail()
         {
             AppModel.Instance.UseExternHardware = false;
-            lay_addregscan.Children.Clear();
+            //lay_addregscan.Children.Clear();
             ShowLoginPage();
             return false;
         }
@@ -548,6 +760,11 @@ namespace iPMCloud.Mobile
         {
             ShowLoginPage();
         }
+        public void BackAddRegScanToLoginPage(object sender, EventArgs e)
+        {
+            cameraViewAddRegScan.IsDetecting = false;
+            ShowLoginPage();
+        }
         public async void Btn_DeleteRegScanTapped(object sender, EventArgs e)
         {
             var a = await DisplayAlertAsync("Registrierung löschen?", "Sind Sie sich sicher das Sie diese Registrierung löschen möchten?\n\n", "JETZT LÖSCHEN", "ABBRECHEN");
@@ -681,8 +898,8 @@ namespace iPMCloud.Mobile
 
                 btn_back_inAddRegScan.GestureRecognizers.Clear();
                 var tgr7 = new TapGestureRecognizer();
-                tgr7.Tapped -= BackToLoginPage;
-                tgr7.Tapped += BackToLoginPage;
+                tgr7.Tapped -= BackAddRegScanToLoginPage;
+                tgr7.Tapped += BackAddRegScanToLoginPage;
                 btn_back_inAddRegScan.GestureRecognizers.Add(tgr7);
 
                 btn_back_RegManagement.GestureRecognizers.Clear();

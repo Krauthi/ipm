@@ -592,7 +592,7 @@ namespace iPMCloud.Mobile
                 VerticalOptions = LayoutOptions.Center,
                 Margin = new Thickness(3, 0, 3, 0),
                 Padding = new Thickness(4, 2, 4, 2),
-                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 5 },
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 9 },
                 Content = new Label
                 {
                     Text = Int32.Parse("" + value).ToString(),
@@ -603,7 +603,7 @@ namespace iPMCloud.Mobile
                     FontSize = 11,
                     TextColor = Colors.White,
                     FontAttributes = FontAttributes.Bold,
-                    MinimumWidthRequest = minsize,
+                    //MinimumWidthRequest = minsize,
                     LineBreakMode = LineBreakMode.NoWrap,
                     HorizontalTextAlignment = TextAlignment.Center
                 }
@@ -645,7 +645,7 @@ namespace iPMCloud.Mobile
 
             return new Border
             {
-                BackgroundColor = Color.FromArgb(isRed ? "#ff0000" : (isGray ? "#999999" : "#009900")),
+                BackgroundColor = Color.FromArgb(isRed ? "#ff0000" : (isGray ? "#888888" : "#009900")),
 
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Start,
@@ -663,7 +663,7 @@ namespace iPMCloud.Mobile
                     FontSize = 11,
                     TextColor = Colors.White,
                     FontAttributes = FontAttributes.Bold,
-                    MinimumWidthRequest = 50,
+                    //MinimumWidthRequest = 50,
                     LineBreakMode = LineBreakMode.NoWrap,
                     HorizontalTextAlignment = TextAlignment.Center
                 }
@@ -676,7 +676,7 @@ namespace iPMCloud.Mobile
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(1, 30, 1, 0),
-                BackgroundColor = Color.FromArgb("#66042d53"),
+                BackgroundColor = Color.FromArgb("#66144d73"),
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Fill,
                 StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 10 },
@@ -717,7 +717,7 @@ namespace iPMCloud.Mobile
             {
                 Padding = new Thickness(5),
                 Margin = new Thickness(0, 5, 0, 0),
-                BackgroundColor = Color.FromArgb("#042d53"),
+                BackgroundColor = Color.FromArgb("#144d73"),
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
@@ -735,7 +735,7 @@ namespace iPMCloud.Mobile
             quest.stack_Bem_Badge = new HorizontalStackLayout
             {
                 Padding = new Thickness(0),
-                Margin = new Thickness(-16, -8, 0, 0),
+                Margin = new Thickness(-25, -8, 0, 0),
                 Spacing = 0,
                 HorizontalOptions = LayoutOptions.End,
                 Children = {
@@ -819,7 +819,7 @@ namespace iPMCloud.Mobile
                 IsVisible = quest.isReady,
                 Padding = new Thickness(5),
                 Margin = new Thickness(0, 5, 0, 0),
-                BackgroundColor = Color.FromArgb("#042d53"),
+                BackgroundColor = Color.FromArgb("#144d73"),
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
@@ -881,7 +881,7 @@ namespace iPMCloud.Mobile
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(15, 8, 15, 0),
-                BackgroundColor = Color.FromArgb("#99042d53"),
+                BackgroundColor = Color.FromArgb("#99144d73"),
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Fill,
                 StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 10 },
@@ -900,7 +900,7 @@ namespace iPMCloud.Mobile
                         {
                             Padding = new Thickness(0),
                             Margin = new Thickness(10,5,10,5),
-                            Spacing = 15,
+                            Spacing = 20,
                             HorizontalOptions = LayoutOptions.Fill,
                             Children = {
                                 quest.frame_Reset,
@@ -939,7 +939,7 @@ namespace iPMCloud.Mobile
             {
                 Padding = new Thickness(5),
                 Margin = new Thickness(0, 5, 0, 0),
-                BackgroundColor = Color.FromArgb("#042d53"),
+                BackgroundColor = Color.FromArgb("#144d73"),
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
@@ -955,7 +955,7 @@ namespace iPMCloud.Mobile
             quest.stack_Bem_Badge = new HorizontalStackLayout
             {
                 Padding = new Thickness(0),
-                Margin = new Thickness(-16, -8, 0, 0),
+                Margin = new Thickness(-25, -8, 0, 0),
                 Spacing = 0,
                 HorizontalOptions = LayoutOptions.End,
                 Children = {
@@ -971,12 +971,12 @@ namespace iPMCloud.Mobile
             {
                 Text = quest.a1,
                 HorizontalOptions = LayoutOptions.Fill,
-                Margin = new Thickness(0),
-                BackgroundColor = Color.FromArgb("#ffffff"),
-                FontSize = 12,
+                Margin = new Thickness(0,2),
+                BackgroundColor = quest.isReady ? Color.FromArgb("#cccccc"):Color.FromArgb("#eeeeee"),
+                FontSize = 14,
                 TextColor = Colors.Black,
                 MaxLength = 499,
-                HeightRequest = quest.isReady ? 40 : -1,
+                //HeightRequest = quest.isReady ? 40 : -1,
                 AutoSize = EditorAutoSizeOption.TextChanges,
             };
             quest.textEditor.TextChanged -= (object sender, TextChangedEventArgs e) => { quest.Text_a1_Changed(); };
@@ -1012,7 +1012,7 @@ namespace iPMCloud.Mobile
                 IsVisible = quest.isReady,
                 Padding = new Thickness(5),
                 Margin = new Thickness(0, 5, 0, 0),
-                BackgroundColor = Color.FromArgb("#042d53"),
+                BackgroundColor = Color.FromArgb("#144d73"),
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
@@ -1032,7 +1032,7 @@ namespace iPMCloud.Mobile
                 FontSize = 16,
                 TextColor = Colors.White,
                 Margin = new Thickness(0),
-                Padding = new Thickness(10, (quest.required == 1 ? 0 : 5), 10, 0),
+                Padding = new Thickness(0, (quest.required == 1 ? 0 : 5), 10, 0),
                 LineBreakMode = quest.isReady ? LineBreakMode.TailTruncation : LineBreakMode.WordWrap,
             };
             quest.lb_notiz = new Label
@@ -1044,7 +1044,7 @@ namespace iPMCloud.Mobile
                 FontAttributes = FontAttributes.Italic,
                 TextColor = Color.FromArgb("#cccccc"),
                 Margin = new Thickness(0, 5),
-                Padding = new Thickness(10, 0),
+                Padding = new Thickness(0, 0),
                 LineBreakMode = quest.isReady ? LineBreakMode.TailTruncation : LineBreakMode.WordWrap,
             };
             quest.lb_required = new Label
@@ -1072,14 +1072,14 @@ namespace iPMCloud.Mobile
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(15, 8, 15, 0),
-                BackgroundColor = Color.FromArgb("#99042d53"),
+                BackgroundColor = Color.FromArgb("#99144d73"),
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Fill,
                 StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 10 },
                 Content = new VerticalStackLayout
                 {
                     Padding = new Thickness(5),
-                    Margin = new Thickness(0),
+                    Margin = new Thickness(10, 5),
                     Spacing = 0,
                     HorizontalOptions = LayoutOptions.Fill,
                     Children = {
@@ -1087,30 +1087,12 @@ namespace iPMCloud.Mobile
                         quest.img_ready,
                         quest.lb_quest,
                         quest.lb_notiz,
+                        quest.textEditor,
                         new HorizontalStackLayout
                         {
                             Padding = new Thickness(0),
-                            Margin = new Thickness(10,5),
-                            Spacing = 0,
-                            HorizontalOptions = LayoutOptions.Fill,
-                            Children = {
-                                new Border
-                                {
-                                    Padding = new Thickness(0),
-                                    Margin = new Thickness(0),
-                                    BackgroundColor = Color.FromArgb("#99ffffff"),
-                                    Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
-                                    HorizontalOptions = LayoutOptions.Fill,
-                                    StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 10 },
-                                    Content = quest.textEditor,
-                                }
-                            }
-                        },
-                        new HorizontalStackLayout
-                        {
-                            Padding = new Thickness(0),
-                            Margin = new Thickness(10,5),
-                            Spacing = 15,
+                            Margin = new Thickness(0,5),
+                            Spacing = 20,
                             HorizontalOptions = LayoutOptions.Fill,
                             Children = {
                                 quest.frame_Reset,
@@ -1145,7 +1127,7 @@ namespace iPMCloud.Mobile
             {
                 Padding = new Thickness(5),
                 Margin = new Thickness(0, 5, 0, 0),
-                BackgroundColor = Color.FromArgb("#042d53"),
+                BackgroundColor = Color.FromArgb("#144d73"),
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
@@ -1221,7 +1203,7 @@ namespace iPMCloud.Mobile
                 IsVisible = quest.isReady,
                 Padding = new Thickness(5),
                 Margin = new Thickness(0, 5, 0, 0),
-                BackgroundColor = Color.FromArgb("#042d53"),
+                BackgroundColor = Color.FromArgb("#144d73"),
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
@@ -1283,7 +1265,7 @@ namespace iPMCloud.Mobile
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(15, 8, 15, 0),
-                BackgroundColor = Color.FromArgb("#99042d53"),
+                BackgroundColor = Color.FromArgb("#99144d73"),
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Fill,
                 StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 10 },
@@ -1400,7 +1382,7 @@ namespace iPMCloud.Mobile
             {
                 Padding = new Thickness(5),
                 Margin = new Thickness(0),
-                BackgroundColor = Color.FromArgb("#042d53"),
+                BackgroundColor = Color.FromArgb("#144d73"),
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
@@ -1418,7 +1400,7 @@ namespace iPMCloud.Mobile
                 IsVisible = quest.isReady || true,
                 Padding = new Thickness(5),
                 Margin = new Thickness(0),
-                BackgroundColor = Color.FromArgb("#042d53"),
+                BackgroundColor = Color.FromArgb("#144d73"),
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
@@ -1492,7 +1474,7 @@ namespace iPMCloud.Mobile
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(15, 8, 15, 0),
-                BackgroundColor = Color.FromArgb("#99042d53"),
+                BackgroundColor = Color.FromArgb("#99144d73"),
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Fill,
                 StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 10 },
@@ -1567,7 +1549,7 @@ namespace iPMCloud.Mobile
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(0),
-                BackgroundColor = Color.FromArgb("#aa042d53"),
+                BackgroundColor = Color.FromArgb("#aa144d73"),
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Fill,
                 StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 10 },
@@ -1679,7 +1661,7 @@ namespace iPMCloud.Mobile
             {
                 Padding = new Thickness(5),
                 Margin = new Thickness(0),
-                BackgroundColor = Color.FromArgb("#042d53"),
+                BackgroundColor = Color.FromArgb("#144d73"),
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
@@ -1735,7 +1717,7 @@ namespace iPMCloud.Mobile
                 IsVisible = quest.isReady,
                 Padding = new Thickness(5),
                 Margin = new Thickness(0),
-                BackgroundColor = Color.FromArgb("#042d53"),
+                BackgroundColor = Color.FromArgb("#144d73"),
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
@@ -1797,7 +1779,7 @@ namespace iPMCloud.Mobile
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(15, 8, 15, 0),
-                BackgroundColor = Color.FromArgb("#99042d53"),
+                BackgroundColor = Color.FromArgb("#99144d73"),
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Fill,
                 StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 10 },
@@ -1933,7 +1915,7 @@ namespace iPMCloud.Mobile
             {
                 Padding = new Thickness(5),
                 Margin = new Thickness(0, 5, 0, 0),
-                BackgroundColor = Color.FromArgb("#042d53"),
+                BackgroundColor = Color.FromArgb("#144d73"),
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
@@ -1991,7 +1973,7 @@ namespace iPMCloud.Mobile
                 IsVisible = quest.isReady,
                 Padding = new Thickness(5),
                 Margin = new Thickness(0, 5, 0, 0),
-                BackgroundColor = Color.FromArgb("#042d53"),
+                BackgroundColor = Color.FromArgb("#144d73"),
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
@@ -2053,7 +2035,7 @@ namespace iPMCloud.Mobile
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(15, 8, 15, 0),
-                BackgroundColor = Color.FromArgb("#99042d53"),
+                BackgroundColor = Color.FromArgb("#99144d73"),
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Fill,
                 StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 10 },
@@ -2120,7 +2102,7 @@ namespace iPMCloud.Mobile
             {
                 Padding = new Thickness(5),
                 Margin = new Thickness(quest.isReady ? 10 : 0, 5, 0, 0),
-                BackgroundColor = Color.FromArgb("#042d53"),
+                BackgroundColor = Color.FromArgb("#144d73"),
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
@@ -2181,7 +2163,7 @@ namespace iPMCloud.Mobile
                 IsVisible = quest.isReady,
                 Padding = new Thickness(5),
                 Margin = new Thickness(0, 5, 0, 0),
-                BackgroundColor = Color.FromArgb("#042d53"),
+                BackgroundColor = Color.FromArgb("#144d73"),
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Start,
@@ -2273,7 +2255,7 @@ namespace iPMCloud.Mobile
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(15, 8, 15, 0),
-                BackgroundColor = Color.FromArgb("#99042d53"),
+                BackgroundColor = Color.FromArgb("#99144d73"),
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 HorizontalOptions = LayoutOptions.Fill,
                 StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 10 },
@@ -2321,121 +2303,121 @@ namespace iPMCloud.Mobile
             return frame;
         }
 
-        public static Border GetQuestMain_7_PopUp(CheckLeistungAntwort originalQuest)
-        {
-            var tapNone = new TapGestureRecognizer();
-            tapNone.Tapped -= (object o, TappedEventArgs ev) => { originalQuest.signPad.Clear(); };
-            tapNone.Tapped += (object o, TappedEventArgs ev) => { originalQuest.signPad.Clear(); };
-            var tapYes = new TapGestureRecognizer();
-            tapYes.Tapped -= (object o, TappedEventArgs ev) => { _ = originalQuest.Tap_a7_ReturnSig(); };
-            tapYes.Tapped += (object o, TappedEventArgs ev) => { _ = originalQuest.Tap_a7_ReturnSig(); };
+        //public static Border GetQuestMain_7_PopUp(CheckLeistungAntwort originalQuest)
+        //{
+        //    var tapNone = new TapGestureRecognizer();
+        //    tapNone.Tapped -= (object o, TappedEventArgs ev) => { originalQuest.signPad.Clear(); };
+        //    tapNone.Tapped += (object o, TappedEventArgs ev) => { originalQuest.signPad.Clear(); };
+        //    var tapYes = new TapGestureRecognizer();
+        //    tapYes.Tapped -= (object o, TappedEventArgs ev) => { _ = originalQuest.Tap_a7_ReturnSig(); };
+        //    tapYes.Tapped += (object o, TappedEventArgs ev) => { _ = originalQuest.Tap_a7_ReturnSig(); };
 
-            var frame_Yes = new Border
-            {
-                Padding = new Thickness(5),
-                Margin = new Thickness(0, 5, 0, 0),
-                BackgroundColor = Color.FromArgb("#04732d"),// #666666
-                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
-                HorizontalOptions = LayoutOptions.End,
-                Content = new Label
-                {
-                    Text = "ÜBERNEHMEN",
-                    FontSize = 16,
-                    HorizontalOptions = LayoutOptions.Center,
-                    VerticalOptions = LayoutOptions.Center,
-                    TextColor = Color.FromArgb("#ffffff"),
-                    Margin = new Thickness(0),
-                    Padding = new Thickness(0)
-                },
-                GestureRecognizers = { tapYes },
-            };
-            var frame_None = new Border
-            {
-                Padding = new Thickness(5),
-                Margin = new Thickness(0, 5, 0, 0),
-                BackgroundColor = Color.FromArgb("#73042d"),// #666666
-                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
-                HorizontalOptions = LayoutOptions.End,
-                VerticalOptions = LayoutOptions.Start,
-                Content = new Label
-                {
-                    Text = "LÖSCHEN",
-                    FontSize = 16,
-                    TextColor = Color.FromArgb("#ffffff"),
-                    Margin = new Thickness(0),
-                    Padding = new Thickness(0)
-                },
-                GestureRecognizers = { tapNone },
-            };
-            var lb_quest = new Label
-            {
-                Text = originalQuest.frage,
-                HorizontalOptions = LayoutOptions.Fill,
-                FontSize = 16,
-                TextColor = Colors.White,
-                Margin = new Thickness(0),
-                Padding = new Thickness(10, (originalQuest.required == 1 ? 0 : 5), 10, 0),
-                LineBreakMode = LineBreakMode.WordWrap,
-            };
-            var lb_notiz = new Label
-            {
-                Text = originalQuest.notiz,
-                IsVisible = !String.IsNullOrWhiteSpace(originalQuest.notiz),
-                HorizontalOptions = LayoutOptions.Fill,
-                FontSize = 13,
-                FontAttributes = FontAttributes.Italic,
-                TextColor = Color.FromArgb("#cccccc"),
-                Margin = new Thickness(0, 5),
-                Padding = new Thickness(10, 0),
-                LineBreakMode = LineBreakMode.WordWrap,
-            };
-            var lb_required = new Label
-            {
-                IsVisible = originalQuest.required == 1,
-                Text = "*PFLICHTANTWORT",
-                HorizontalOptions = LayoutOptions.Fill,
-                FontSize = 12,
-                TextColor = Color.FromArgb("#ffcc00"),
-                HorizontalTextAlignment = TextAlignment.End,
-                Margin = new Thickness(0),
-                Padding = new Thickness(0, -3, 0, 0)
-            };
+        //    var frame_Yes = new Border
+        //    {
+        //        Padding = new Thickness(5),
+        //        Margin = new Thickness(0, 5, 0, 0),
+        //        BackgroundColor = Color.FromArgb("#04732d"),// #666666
+        //        Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
+        //        HorizontalOptions = LayoutOptions.End,
+        //        Content = new Label
+        //        {
+        //            Text = "ÜBERNEHMEN",
+        //            FontSize = 16,
+        //            HorizontalOptions = LayoutOptions.Center,
+        //            VerticalOptions = LayoutOptions.Center,
+        //            TextColor = Color.FromArgb("#ffffff"),
+        //            Margin = new Thickness(0),
+        //            Padding = new Thickness(0)
+        //        },
+        //        GestureRecognizers = { tapYes },
+        //    };
+        //    var frame_None = new Border
+        //    {
+        //        Padding = new Thickness(5),
+        //        Margin = new Thickness(0, 5, 0, 0),
+        //        BackgroundColor = Color.FromArgb("#73042d"),// #666666
+        //        Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
+        //        HorizontalOptions = LayoutOptions.End,
+        //        VerticalOptions = LayoutOptions.Start,
+        //        Content = new Label
+        //        {
+        //            Text = "LÖSCHEN",
+        //            FontSize = 16,
+        //            TextColor = Color.FromArgb("#ffffff"),
+        //            Margin = new Thickness(0),
+        //            Padding = new Thickness(0)
+        //        },
+        //        GestureRecognizers = { tapNone },
+        //    };
+        //    var lb_quest = new Label
+        //    {
+        //        Text = originalQuest.frage,
+        //        HorizontalOptions = LayoutOptions.Fill,
+        //        FontSize = 16,
+        //        TextColor = Colors.White,
+        //        Margin = new Thickness(0),
+        //        Padding = new Thickness(10, (originalQuest.required == 1 ? 0 : 5), 10, 0),
+        //        LineBreakMode = LineBreakMode.WordWrap,
+        //    };
+        //    var lb_notiz = new Label
+        //    {
+        //        Text = originalQuest.notiz,
+        //        IsVisible = !String.IsNullOrWhiteSpace(originalQuest.notiz),
+        //        HorizontalOptions = LayoutOptions.Fill,
+        //        FontSize = 13,
+        //        FontAttributes = FontAttributes.Italic,
+        //        TextColor = Color.FromArgb("#cccccc"),
+        //        Margin = new Thickness(0, 5),
+        //        Padding = new Thickness(10, 0),
+        //        LineBreakMode = LineBreakMode.WordWrap,
+        //    };
+        //    var lb_required = new Label
+        //    {
+        //        IsVisible = originalQuest.required == 1,
+        //        Text = "*PFLICHTANTWORT",
+        //        HorizontalOptions = LayoutOptions.Fill,
+        //        FontSize = 12,
+        //        TextColor = Color.FromArgb("#ffcc00"),
+        //        HorizontalTextAlignment = TextAlignment.End,
+        //        Margin = new Thickness(0),
+        //        Padding = new Thickness(0, -3, 0, 0)
+        //    };
 
-            var frame = new Border
-            {
-                Padding = new Thickness(0),
-                Margin = new Thickness(15, 8, 15, 0),
-                BackgroundColor = Color.FromArgb("#99042d53"),
-                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
-                HorizontalOptions = LayoutOptions.Fill,
-                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 10 },
-                Content = new VerticalStackLayout
-                {
-                    Padding = new Thickness(5),
-                    Margin = new Thickness(0),
-                    Spacing = 0,
-                    HorizontalOptions = LayoutOptions.Fill,
-                    Children = {
-                        lb_required,
-                        lb_quest,
-                        lb_notiz,
-                        originalQuest.signPad,
-                        new HorizontalStackLayout
-                        {
-                            Padding = new Thickness(0),
-                            Margin = new Thickness(10,5),
-                            Spacing = 30,
-                            HorizontalOptions = LayoutOptions.Fill,
-                            Children = {
-                                frame_None,
-                                frame_Yes,
-                            }
-                        }
-                    }
-                }
-            };
-            return frame;
-        }
+        //    var frame = new Border
+        //    {
+        //        Padding = new Thickness(0),
+        //        Margin = new Thickness(15, 8, 15, 0),
+        //        BackgroundColor = Color.FromArgb("#99144d73"),
+        //        Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
+        //        HorizontalOptions = LayoutOptions.Fill,
+        //        StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 10 },
+        //        Content = new VerticalStackLayout
+        //        {
+        //            Padding = new Thickness(5),
+        //            Margin = new Thickness(0),
+        //            Spacing = 0,
+        //            HorizontalOptions = LayoutOptions.Fill,
+        //            Children = {
+        //                lb_required,
+        //                lb_quest,
+        //                lb_notiz,
+        //                originalQuest.signPad,
+        //                new HorizontalStackLayout
+        //                {
+        //                    Padding = new Thickness(0),
+        //                    Margin = new Thickness(10,5),
+        //                    Spacing = 30,
+        //                    HorizontalOptions = LayoutOptions.Fill,
+        //                    Children = {
+        //                        frame_None,
+        //                        frame_Yes,
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    };
+        //    return frame;
+        //}
 
         // TODO: SignaturePad not MAUI-compatible - comment out until migrated
         /*
@@ -2467,16 +2449,16 @@ namespace iPMCloud.Mobile
 
         public static SignaturePadView signPad;
 
-        public static StackLayout GetSignElement()
+        public static VerticalStackLayout GetSignElement()
         {
             signPad = new SignaturePadView
             {
                 HeightRequest = 200,
                 StrokeColor = Colors.Black,
-                StrokeWidth = 2
+                StrokeWidth = 2                
             };
 
-            var stack = new StackLayout();
+            var stack = new VerticalStackLayout { HorizontalOptions = LayoutOptions.Fill };
             stack.Children.Add(signPad);
             return stack;
         }

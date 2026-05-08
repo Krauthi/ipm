@@ -1,8 +1,10 @@
 ﻿using iPMCloud.Mobile.vo;
 using Microsoft.Maui.Controls;
 using System;
+using System.Globalization;
 using System.Linq;
 using System.Windows.Input;
+using System.Globalization;
 
 namespace iPMCloud.Mobile
 {
@@ -1062,8 +1064,8 @@ namespace iPMCloud.Mobile
 
                 leistung.produktAnzahl = Utils.formatDEStr(decimal.Parse(leistung.anzahl) > 0 ? decimal.Parse(leistung.anzahl) : 1);
                 SelectedPositionSmallCardViewEntry.ReturnCommandParameter = leistung;
-                SelectedPositionSmallCardViewEntry.Unfocused -= AnzahlChange;
-                SelectedPositionSmallCardViewEntry.Unfocused += AnzahlChange;
+                SelectedPositionSmallCardViewEntry.Unfocused -= UnfocusedAnzahlChange;
+                SelectedPositionSmallCardViewEntry.Unfocused += UnfocusedAnzahlChange;
                 SelectedPositionSmallCardViewEntry.TextChanged -= SelectedPositionSmallCardViewEntryChanged;
                 SelectedPositionSmallCardViewEntry.TextChanged += SelectedPositionSmallCardViewEntryChanged;
                 vAnzahlGrid.Add(lbanzahl, 0, 0);
@@ -1258,33 +1260,114 @@ namespace iPMCloud.Mobile
             return swipe;// mainFrame;
         }
 
+        //public static void SelectedPositionSmallCardViewEntryChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    var entry = (CustomEntry)sender;
+        //    var leiInWork = (LeistungWSO)entry.ReturnCommandParameter;
+        //    entry.TextChanged -= SelectedPositionSmallCardViewEntryChanged;
+        //    try
+        //    {
+        //        string text = entry.Text.Replace(".", "").Replace(",", "");
+        //        if (String.IsNullOrWhiteSpace(text)) { text = "0,00"; }
+        //        var t = decimal.Parse(text) / 100;
+        //        entry.Text = Utils.formatDEStr(t);
+        //        leiInWork.produktAnzahl = entry.Text;
+        //    }
+        //    finally
+        //    {
+        //        entry.TextChanged += SelectedPositionSmallCardViewEntryChanged;
+        //    }
+        //}
+
+        static bool _updatingProduktAnzahl;
+        static readonly CultureInfo De = CultureInfo.GetCultureInfo("de-DE");
+
         public static void SelectedPositionSmallCardViewEntryChanged(object sender, TextChangedEventArgs e)
         {
+            if (_updatingProduktAnzahl) return;
+
             var entry = (CustomEntry)sender;
             var leiInWork = (LeistungWSO)entry.ReturnCommandParameter;
-            entry.TextChanged -= SelectedPositionSmallCardViewEntryChanged;
+
+            entry.Dispatcher.Dispatch(() =>
+            {
+                if (_updatingProduktAnzahl) return;
+                _updatingProduktAnzahl = true;
+                try
+                {
+                    var raw = (entry.Text ?? "").Replace(".", "").Replace(",", "").Trim();
+                    if (string.IsNullOrWhiteSpace(raw))
+                        raw = "0";
+
+                    if (!decimal.TryParse(raw, NumberStyles.Number, CultureInfo.InvariantCulture, out var v))
+                        v = 0m;
+
+                    var t = v / 100m;
+                    var formatted = Utils.formatDEStr(t);
+
+                    if (entry.Text != formatted)
+                        entry.Text = formatted;
+
+                    leiInWork.produktAnzahl = entry.Text;
+                }
+                finally
+                {
+                    _updatingProduktAnzahl = false;
+                }
+            });
+        }
+
+
+
+
+        //public static void UnfocusedAnzahlChange(object sender, FocusEventArgs e)
+        //{
+        //    var entry = (CustomEntry)sender;
+        //    entry.Text = Utils.formatDEStr(decimal.Parse(entry.Text));
+        //    var leistung = (LeistungWSO)entry.ReturnCommandParameter;
+        //    leistung.produktAnzahl = entry.Text;
+        //}
+        static bool _updatingUnfocusedAnzahl;
+
+        public static void UnfocusedAnzahlChange(object sender, FocusEventArgs e)
+        {
+            if (_updatingUnfocusedAnzahl) return;
+
+            var entry = (CustomEntry)sender;
+            var leistung = (LeistungWSO)entry.ReturnCommandParameter;
+
+            _updatingUnfocusedAnzahl = true;
             try
             {
-                string text = entry.Text.Replace(".", "").Replace(",", "");
-                if (String.IsNullOrWhiteSpace(text)) { text = "0,00"; }
-                var t = decimal.Parse(text) / 100;
-                entry.Text = Utils.formatDEStr(t);
-                leiInWork.produktAnzahl = entry.Text;
+                var text = (entry.Text ?? "").Trim();
+
+                // typische „Zwischenzustände“ abfangen
+                if (text.StartsWith(".")) text = text.Substring(1);
+                if (text.StartsWith(",")) text = "0" + text;
+                if (string.IsNullOrWhiteSpace(text)) text = "0";
+
+                // falls du sowohl "." als auch "," zulässt, ggf. normalisieren:
+                // text = text.Replace(".", "").Replace(",", ".");  // je nach gewünschter Kultur
+                // oder besser: explizit mit de-DE parsen:
+
+                if (!decimal.TryParse(text, out var value))
+                    value = 0m;
+
+                var formatted = Utils.formatDEStr(value);
+
+                if (entry.Text != formatted)
+                    entry.Text = formatted;
+
+                leistung.produktAnzahl = entry.Text;
             }
             finally
             {
-                entry.TextChanged += SelectedPositionSmallCardViewEntryChanged;
+                _updatingUnfocusedAnzahl = false;
             }
         }
 
 
-        public static void AnzahlChange(object sender, FocusEventArgs e)
-        {
-            var entry = (CustomEntry)sender;
-            entry.Text = Utils.formatDEStr(decimal.Parse(entry.Text));
-            var leistung = (LeistungWSO)entry.ReturnCommandParameter;
-            leistung.produktAnzahl = entry.Text;
-        }
+
         public static void AddSubAnzahlChange(LeistungWSO l, CustomEntry entry, int add)
         {
             var dec = decimal.Parse(entry.Text) + add;
@@ -1494,8 +1577,8 @@ namespace iPMCloud.Mobile
 
                 leistung.produktAnzahl = Utils.formatDEStr(decimal.Parse(leistung.anzahl) > 0 ? decimal.Parse(leistung.anzahl) : 1);
                 SelectedPositionAgainSmallCardViewEntry.ReturnCommandParameter = leistung;
-                SelectedPositionAgainSmallCardViewEntry.Unfocused -= AnzahlChange;
-                SelectedPositionAgainSmallCardViewEntry.Unfocused += AnzahlChange;
+                SelectedPositionAgainSmallCardViewEntry.Unfocused -= UnfocusedAnzahlChange;
+                SelectedPositionAgainSmallCardViewEntry.Unfocused += UnfocusedAnzahlChange;
                 SelectedPositionAgainSmallCardViewEntry.TextChanged -= SelectedPositionAgainSmallCardViewEntryChanged;
                 SelectedPositionAgainSmallCardViewEntry.TextChanged += SelectedPositionAgainSmallCardViewEntryChanged;
                 vAnzahlGrid.Add(lbanzahl, 0, 0);
@@ -1690,24 +1773,74 @@ namespace iPMCloud.Mobile
             return swipe;// mainFrame;
         }
 
+        //public static void SelectedPositionAgainSmallCardViewEntryChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    var entry = (CustomEntry)sender;
+        //    var leiInWork = (LeistungWSO)entry.ReturnCommandParameter;
+        //    entry.TextChanged -= SelectedPositionAgainSmallCardViewEntryChanged;
+        //    try
+        //    {
+        //        string text = entry.Text.Replace(".", "").Replace(",", "");
+        //        if (String.IsNullOrWhiteSpace(text)) { text = "0,00"; }
+        //        var t = decimal.Parse(text) / 100;
+        //        entry.Text = Utils.formatDEStr(t);
+        //        leiInWork.produktAnzahl = entry.Text;
+        //    }
+        //    finally
+        //    {
+        //        entry.TextChanged += SelectedPositionAgainSmallCardViewEntryChanged;
+        //    }
+        //}
         public static void SelectedPositionAgainSmallCardViewEntryChanged(object sender, TextChangedEventArgs e)
         {
+            if (_updatingProduktAnzahl)
+                return;
+
             var entry = (CustomEntry)sender;
             var leiInWork = (LeistungWSO)entry.ReturnCommandParameter;
-            entry.TextChanged -= SelectedPositionAgainSmallCardViewEntryChanged;
-            try
+
+            // Nach dem aktuellen afterTextChanged-Call ausführen -> deutlich weniger Emoji2/Samsung-Probleme
+            entry.Dispatcher.Dispatch(() =>
             {
-                string text = entry.Text.Replace(".", "").Replace(",", "");
-                if (String.IsNullOrWhiteSpace(text)) { text = "0,00"; }
-                var t = decimal.Parse(text) / 100;
-                entry.Text = Utils.formatDEStr(t);
-                leiInWork.produktAnzahl = entry.Text;
-            }
-            finally
-            {
-                entry.TextChanged += SelectedPositionAgainSmallCardViewEntryChanged;
-            }
+                if (_updatingProduktAnzahl)
+                    return;
+
+                _updatingProduktAnzahl = true;
+                try
+                {
+                    // Nur Ziffern behalten (du entfernst . und ,)
+                    var raw = (entry.Text ?? string.Empty)
+                        .Replace(".", string.Empty)
+                        .Replace(",", string.Empty)
+                        .Trim();
+
+                    if (string.IsNullOrWhiteSpace(raw))
+                        raw = "0"; // wichtig: nicht "0,00", weil wir gleich nur Ziffern parsen
+
+                    // raw enthält jetzt nur Ziffern => InvariantCulture ist passend
+                    if (!decimal.TryParse(raw, NumberStyles.Number, CultureInfo.InvariantCulture, out var v))
+                        v = 0m;
+
+                    var t = v / 100m;
+                    var formatted = Utils.formatDEStr(t);
+
+                    // unnötige Setzungen vermeiden
+                    if (!string.Equals(entry.Text, formatted, StringComparison.Ordinal))
+                        entry.Text = formatted;
+
+                    leiInWork.produktAnzahl = entry.Text;
+                }
+                finally
+                {
+                    _updatingProduktAnzahl = false;
+                }
+            });
         }
+
+
+
+
+
         public static void AnzahlAgainChange(object sender, FocusEventArgs e)
         {
             var entry = (CustomEntry)sender;
@@ -2113,48 +2246,132 @@ namespace iPMCloud.Mobile
         }
 
 
+        //public static void InWorkPosSmallCardEntryAnzahlChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    var entry = (CustomEntry)sender;
+        //    var leiInWork = (LeistungInWorkWSO)entry.ReturnCommandParameter;
+        //    entry.TextChanged -= InWorkPosSmallCardEntryAnzahlChanged;
+        //    try
+        //    {
+        //        string text = entry.Text.Replace(".", "").Replace(",", "");
+        //        if (String.IsNullOrWhiteSpace(text)) { text = "0,00"; }
+        //        var t = decimal.Parse(text) / 100;
+        //        entry.Text = Utils.formatDEStr(t);
+        //        leiInWork.anzahl = entry.Text;
+        //    }
+        //    finally
+        //    {
+        //        entry.TextChanged += InWorkPosSmallCardEntryAnzahlChanged;
+        //    }
+        //}
+        static bool _updatingInWorkPosAnzahl;
+
         public static void InWorkPosSmallCardEntryAnzahlChanged(object sender, TextChangedEventArgs e)
         {
+            if (_updatingInWorkPosAnzahl)
+                return;
+
             var entry = (CustomEntry)sender;
             var leiInWork = (LeistungInWorkWSO)entry.ReturnCommandParameter;
-            entry.TextChanged -= InWorkPosSmallCardEntryAnzahlChanged;
+
+            entry.Dispatcher.Dispatch(() =>
+            {
+                if (_updatingInWorkPosAnzahl)
+                    return;
+
+                _updatingInWorkPosAnzahl = true;
+                try
+                {
+                    var raw = (entry.Text ?? string.Empty)
+                        .Replace(".", string.Empty)
+                        .Replace(",", string.Empty)
+                        .Trim();
+
+                    if (string.IsNullOrWhiteSpace(raw))
+                        raw = "0"; // nicht "0,00" (wir parsen nur Ziffern)
+
+                    if (!decimal.TryParse(raw, NumberStyles.Number, CultureInfo.InvariantCulture, out var v))
+                        v = 0m;
+
+                    var t = v / 100m;
+                    var formatted = Utils.formatDEStr(t);
+
+                    if (!string.Equals(entry.Text, formatted, StringComparison.Ordinal))
+                        entry.Text = formatted;
+
+                    leiInWork.anzahl = entry.Text;
+                }
+                finally
+                {
+                    _updatingInWorkPosAnzahl = false;
+                }
+            });
+        }
+
+
+
+        //public static void InWorkAnzahlChange(object sender, FocusEventArgs e)
+        //{
+        //    var entry = (CustomEntry)sender;
+        //    var leiInWork = (LeistungInWorkWSO)entry.ReturnCommandParameter;
+        //    try
+        //    {
+        //        entry.Text = Utils.formatDEStr(decimal.Parse(entry.Text));
+        //    }
+        //    catch (Exception)
+        //    {
+        //        leiInWork.anzahl = "1,00";
+        //        return;
+        //    }
+        //    leiInWork.anzahl = entry.Text;
+        //}
+
+        static bool _updatingInWorkAnzahl;
+
+        public static void InWorkAnzahlChange(object sender, FocusEventArgs e)
+        {
+            if (_updatingInWorkAnzahl) return;
+
+            var entry = (CustomEntry)sender;
+            var leiInWork = (LeistungInWorkWSO)entry.ReturnCommandParameter;
+
+            _updatingInWorkAnzahl = true;
             try
             {
-                string text = entry.Text.Replace(".", "").Replace(",", "");
-                if (String.IsNullOrWhiteSpace(text)) { text = "0,00"; }
-                var t = decimal.Parse(text) / 100;
-                entry.Text = Utils.formatDEStr(t);
+                var text = (entry.Text ?? "").Trim();
+
+                // typische Zwischenzustände abfangen
+                if (text.StartsWith(".")) text = text.Substring(1);
+                if (text.StartsWith(",")) text = "0" + text;
+                if (string.IsNullOrWhiteSpace(text)) text = "0";
+
+                // Optional: wenn Nutzer "." als Dezimaltrenner eingibt, in "," überführen:
+                // (nur wenn du das wirklich unterstützen willst)
+                text = text.Replace(".", ",");
+
+                if (!decimal.TryParse(text, NumberStyles.Number, De, out var value))
+                    value = 1.00m; // oder 0m, je nach Fachlogik
+
+                var formatted = Utils.formatDEStr(value);
+
+                if (entry.Text != formatted)
+                    entry.Text = formatted;
+
                 leiInWork.anzahl = entry.Text;
             }
             finally
             {
-                entry.TextChanged += InWorkPosSmallCardEntryAnzahlChanged;
+                _updatingInWorkAnzahl = false;
             }
-        }
-
-        public static void InWorkAnzahlChange(object sender, FocusEventArgs e)
-        {
-            var entry = (CustomEntry)sender;
-            var leiInWork = (LeistungInWorkWSO)entry.ReturnCommandParameter;
-            try
-            {
-                entry.Text = Utils.formatDEStr(decimal.Parse(entry.Text));
-            }
-            catch (Exception)
-            {
-                leiInWork.anzahl = "1,00";
-                return;
-            }
-            leiInWork.anzahl = entry.Text;
         }
 
         public static void InWorkAddSubAnzahlChange(LeistungInWorkWSO l, CustomEntry entry, int add)
-        {
-            var dec = (decimal.Parse(entry.Text) + add);
-            if (dec < 0) { dec = 0; }
-            entry.Text = Utils.formatDEStr(dec);
-            l.anzahl = entry.Text;
-        }
+            {
+                var dec = (decimal.Parse(entry.Text) + add);
+                if (dec < 0) { dec = 0; }
+                entry.Text = Utils.formatDEStr(dec);
+                l.anzahl = entry.Text;
+            }
 
 
         public static Border GetInWorkPositionSmallCardView_DirektPos(AuftragWSO o, KategorieWSO c, LeistungWSO pos, LeistungWSO lei)

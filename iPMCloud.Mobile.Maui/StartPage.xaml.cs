@@ -9,6 +9,8 @@ using Microsoft.Maui.Storage;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using ZXing.Net.Maui;
+using ZXing.Net.Maui.Controls;
 //https://docs.microsoft.com/de-de/xamarin/essentials/preferences?tabs=android
 
 namespace iPMCloud.Mobile
@@ -78,9 +80,9 @@ namespace iPMCloud.Mobile
             await Task.Delay(1);
 
             BeforeLogin_Container.IsVisible = true;
-            RegScan_Container.IsVisible = false;
+            //Reg/Scan_Container.IsVisible = false;
             Login_Container.IsVisible = false;
-            AddRegScan_Container.IsVisible = false;
+            //AddReg/Scan_Container.IsVisible = false;
             RegManagement_Container.IsVisible = false;
 
             //InitStartPageHandlers();
@@ -89,34 +91,81 @@ namespace iPMCloud.Mobile
             overlay.IsVisible = false;
             isInitialize = false;
         }
+
         private async void ShowRegScan()
         {
-            isInitialize = true;
-            overlay.IsVisible = true;
-            await Task.Delay(1);
 
-            BeforeLogin_Container.IsVisible = false;
-            RegScan_Container.IsVisible = true;
+
+            //Reg/Scan_Container.IsVisible = true;
             Login_Container.IsVisible = false;
-            AddRegScan_Container.IsVisible = false;
+            //AddReg/Scan_Container.IsVisible = false;
             RegManagement_Container.IsVisible = false;
 
-            InitStartPageHandlers();
-            lay_regscan.Children.Clear();
-            AppModel.Instance.UseExternHardware = true;
-            AppModel.Instance.Scan.ScanRegView(this, lay_regscan, MethodAfterScan);
 
-            await Task.Delay(1);
-            overlay.IsVisible = false;
-            isInitialize = false;
-        }
-        public bool MethodAfterScan()
-        {
-            //StartGPS();
-            AppModel.Instance.UseExternHardware = false;
-            lay_regscan.Children.Clear();
-            popupContainer_gpsinfo.IsVisible = true;
-            return true;
+            var result = await ScanModalPage.ScanAsync(this);
+            if (!string.IsNullOrWhiteSpace(result))
+            {
+                var sp = result
+                    .Replace("https://", "http://")
+                    .Replace("httpss://", "https://")
+                    .Split(new[] { "###" }, StringSplitOptions.RemoveEmptyEntries);
+
+                if (sp.Length < 3)
+                {
+                    await DisplayAlertAsync("QR-Code nicht gültig!",
+                                            "Dieser QR-Code kann für die Registrierung des Unternehmens mit der iPM-Cloud-App nicht verwendet werden.",
+                                            "OK");
+                    return;
+                }
+
+                AppModel.Instance.UseExternHardware = true;
+                var newScanSettings = new SettingDTO
+                {
+                    ServerUrl = sp[0],
+                    CustomerNumber = sp[1],
+                    CustomerName = sp[2]
+                };
+                var cn = AppModel.Instance.SettingModel.SettingDTO.CustomerNumber;
+                if (!string.IsNullOrWhiteSpace(newScanSettings.ServerUrl) &&
+                    !string.IsNullOrWhiteSpace(newScanSettings.CustomerNumber) &&
+                    !string.IsNullOrWhiteSpace(newScanSettings.CustomerName) &&
+                    newScanSettings.CustomerNumber != cn)
+                {
+
+                    string directoryPath = Path.Combine(
+                        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                        "ipm/" + newScanSettings.CustomerNumber);
+
+                    if (!Directory.Exists(directoryPath)) Directory.CreateDirectory(directoryPath);
+
+                    Company.AddUpdateCompany(AppModel.Instance, AppModel.Instance.SettingModel.SettingDTO);
+
+                    AppModel.Instance.SettingModel.SettingDTO = newScanSettings;
+                    AppModel.Instance.SettingModel.SaveSettings();
+
+                    AppModel.Instance.UseExternHardware = false;
+
+                    BeforeLogin_Container.IsVisible = false;
+                    //StartGPS();
+                    popupContainer_gpsinfo.IsVisible = true;
+                }
+                else
+                {
+                    AppModel.Logger.Error("QR-Code nicht erkannt!" + " Dieser QR-Code kann für die Registrierung des Unternehmens mit der iPM-Cloud-App nicht verwendet werden!");
+                    await DisplayAlertAsync("QR-Code nicht erkannt!",
+                                            "Dieser QR-Code kann für die Registrierung des Unternehmens mit der iPM-Cloud-App nicht verwendet werden.",
+                                            "OK");
+                    AppModel.Instance.UseExternHardware = false;
+                }
+            }
+            else
+            {
+                //AppModel.Logger.Error("Keine Kamera!" + " Vermutlich ist die Berechtigung der Kamera nicht gesetzt!");
+                //await DisplayAlertAsync("Keine Kamera!",
+                //                        "Vermutlich ist die Berechtigung der Kamera nicht gesetzt!",
+                //                        "OK");
+                AppModel.Instance.UseExternHardware = false;
+            }
         }
 
         public async void Btn_GPSInfoTapped(object sender, EventArgs e)
@@ -130,6 +179,8 @@ namespace iPMCloud.Mobile
         {
             if (AppModel.Instance._cts != null && !AppModel.Instance._cts.IsCancellationRequested)
                 AppModel.Instance._cts.Cancel();
+
+
             base.OnDisappearing();
         }
 
@@ -161,7 +212,7 @@ namespace iPMCloud.Mobile
                         }
                         return false;
                     }
-                    //AppModel.Instance.InitGPSTimer();
+                    AppModel.Instance.InitGPSTimer();
                 }
                 return true;
             }
@@ -234,27 +285,90 @@ namespace iPMCloud.Mobile
             popupContainer_Alert_btn.IsVisible = true;
         }
 
+
+
+
+        public string ScanAddRegText { get; set; } = "Richten Sie die Kamera auf den QR-Code.";
+        public string ScanAddRegTextSec { get; set; } = "Das Scannen erfolgt automatisch";
+
         private async void ShowAddRegScan()
         {
-            isInitialize = true;
-            overlay.IsVisible = true;
-            await Task.Delay(1);
+            var result = await ScanModalPage.ScanAsync(this);
+            if (!string.IsNullOrWhiteSpace(result))
+            {
+                var sp = result
+                    .Replace("https://", "http://")
+                    .Replace("httpss://", "https://")
+                    .Split(new[] { "###" }, StringSplitOptions.RemoveEmptyEntries);
 
-            BeforeLogin_Container.IsVisible = false;
-            RegScan_Container.IsVisible = false;
-            Login_Container.IsVisible = false;
-            AddRegScan_Container.IsVisible = true;
-            RegManagement_Container.IsVisible = false;
+                if (sp.Length < 3)
+                {
+                    await DisplayAlertAsync("QR-Code nicht gültig!",
+                                            "Dieser QR-Code kann für die Registrierung eines weiteren Unternehmens mit der iPM-Cloud-App nicht verwendet werden.",
+                                            "OK");
+                    return;
+                }
 
-            lay_addregscan.Children.Clear();
-            InitStartPageHandlers();
-            AppModel.Instance.UseExternHardware = true;
-            AppModel.Instance.Scan.ScanAddRegView(this, lay_addregscan, MethodAfterAddScan, MethodAfterAddScanFail);
+                AppModel.Instance.UseExternHardware = true;
+                var newScanSettings = new SettingDTO
+                {
+                    ServerUrl = sp[0],
+                    CustomerNumber = sp[1],
+                    CustomerName = sp[2]
+                };
+                var cn = AppModel.Instance.SettingModel.SettingDTO.CustomerNumber;
+                if (!string.IsNullOrWhiteSpace(newScanSettings.ServerUrl) &&
+                    !string.IsNullOrWhiteSpace(newScanSettings.CustomerNumber) &&
+                    !string.IsNullOrWhiteSpace(newScanSettings.CustomerName) &&
+                    newScanSettings.CustomerNumber != cn)
+                {
+                    Company.AddUpdateCompany(AppModel.Instance, AppModel.Instance.SettingModel.SettingDTO);
 
-            await Task.Delay(1);
-            overlay.IsVisible = false;
-            isInitialize = false;
+                    string directoryPath = Path.Combine(
+                        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                        "ipm/" + newScanSettings.CustomerNumber);
+
+                    if (!Directory.Exists(directoryPath)) Directory.CreateDirectory(directoryPath);
+
+                    AppModel.Instance.SettingModel.SettingDTO = newScanSettings;
+                    AppModel.Instance.SettingModel.SaveSettings();
+
+                    AppModel.Instance.UseExternHardware = false;
+
+                    AppModel.Instance.Person = null;
+                    entry_login_name.Text = "";
+                    entry_login_password.Text = "";
+                    sw_autologin.IsToggled = false;
+                    AppModel.Instance.SettingModel.SettingDTO.LoginName = "";
+                    AppModel.Instance.SettingModel.SettingDTO.LoginPassword = "";
+                    AppModel.Instance.SettingModel.SettingDTO.Autologin = false;
+                    AppModel.Instance.SettingModel.SettingDTO.LoginToken = "";
+                    AppModel.Instance.SettingModel.SettingDTO.LastTokenDateTimeTicks = "";
+                    AppModel.Instance.Connections.InitConnections();
+                    AppModel.Instance.Connections.InitPNConnections();
+
+                    AppModel.Instance.SettingModel.SaveSettings();
+                    ShowLoginPage();
+                }
+                else
+                {
+                    AppModel.Logger.Error("QR-Code nicht erkannt!" + " Dieser QR-Code kann für die Registrierung eines weiteren Unternehmens mit der iPM-Cloud-App nicht verwendet werden!");
+                    await DisplayAlertAsync("QR-Code nicht erkannt!",
+                                            "Dieser QR-Code kann für die Registrierung eines weiteren Unternehmens mit der iPM-Cloud-App nicht verwendet werden.",
+                                            "OK");
+                    AppModel.Instance.UseExternHardware = false;
+                }
+            }
+            else
+            {
+                //AppModel.Logger.Error("Keine Kamera!" + " Vermutlich ist die Berechtigung der Kamera nicht gesetzt!");
+                //await DisplayAlertAsync("Keine Kamera!",
+                //                        "Vermutlich ist die Berechtigung der Kamera nicht gesetzt!",
+                //                        "OK");
+                AppModel.Instance.UseExternHardware = false;
+            }
         }
+
 
         private async void ShowRegManagementScan()
         {
@@ -263,9 +377,9 @@ namespace iPMCloud.Mobile
             await Task.Delay(1);
 
             BeforeLogin_Container.IsVisible = false;
-            RegScan_Container.IsVisible = false;
+            //Reg/Scan_Container.IsVisible = false;
             Login_Container.IsVisible = false;
-            AddRegScan_Container.IsVisible = false;
+            //AddReg/Scan_Container.IsVisible = false;
             RegManagement_Container.IsVisible = true;
 
             InitStartPageHandlers();
@@ -319,40 +433,13 @@ namespace iPMCloud.Mobile
             isInitialize = false;
         }
 
-        public bool MethodAfterAddScan()
-        {
-            AppModel.Instance.UseExternHardware = false;
-            lay_addregscan.Children.Clear();
-            AppModel.Instance.Person = null;
-            entry_login_name.Text = "";
-            entry_login_password.Text = "";
-            sw_autologin.IsToggled = false;
-            AppModel.Instance.SettingModel.SettingDTO.LoginName = "";
-            AppModel.Instance.SettingModel.SettingDTO.LoginPassword = "";
-            AppModel.Instance.SettingModel.SettingDTO.Autologin = false;
-            AppModel.Instance.SettingModel.SettingDTO.LoginToken = "";
-            AppModel.Instance.SettingModel.SettingDTO.LastTokenDateTimeTicks = "";
-            AppModel.Instance.Connections.InitConnections();
-            AppModel.Instance.Connections.InitPNConnections();
-
-            AppModel.Instance.SettingModel.SaveSettings();
-            ShowLoginPage();
-            return true;
-        }
-        public bool MethodAfterAddScanFail()
-        {
-            AppModel.Instance.UseExternHardware = false;
-            lay_addregscan.Children.Clear();
-            ShowLoginPage();
-            return false;
-        }
 
 
         private async void ShowLoginPage(bool switchCustomer = false)
         {
             try
             {
-                //AppModel.Instance.InitGPSTimer();
+                AppModel.Instance.InitGPSTimer();
                 if (AppModel.Instance.Companies != null && AppModel.Instance.Companies.Count > 1)
                 {
                     btn_addRegScan_frame.IsVisible = false;
@@ -364,17 +451,14 @@ namespace iPMCloud.Mobile
                     btn_ToRegScanManagement_frame.IsVisible = false;
                 }
 
-                AppModel.Logger.Info("0018");
                 if (AppModel.Instance.SettingModel.SettingDTO.Autologin && !String.IsNullOrWhiteSpace(AppModel.Instance.SettingModel.SettingDTO.LoginToken) &&
                     !AppModel.Instance.State.IsBackTappedToLogin && !switchCustomer)
                 {
-                    AppModel.Logger.Info("0018a");
                     //Es gibt ein Token und Autologin
                     CheckLogin(true);//SmallLoginCheck
                 }
                 else
                 {
-                    AppModel.Logger.Info("0018b");
                     // Kein Autologin - Anmeldeseite zeigen
                     isInitialize = true;
                     overlay.IsVisible = true;
@@ -382,25 +466,22 @@ namespace iPMCloud.Mobile
 
                     AppModel.Instance.State.IsBackTappedToLogin = false;
 
-                    RegScan_Container.IsVisible = false;
+                    //Reg/Scan_Container.IsVisible = false;
                     Login_Container.IsVisible = true;
-                    AddRegScan_Container.IsVisible = false;
+                    //AddReg/Scan_Container.IsVisible = false;
                     RegManagement_Container.IsVisible = false;
 
                     InitStartPageHandlers();
-                    AppModel.Logger.Info("0018c");
                     lb_login_mandant.Text = AppModel.Instance.SettingModel.SettingDTO.CustomerName;
 
                     if (switchCustomer)
                     {
-                        AppModel.Logger.Info("0018d");
                         AppModel.Instance.InitBuildings();
                         AppModel.Instance.SetAllKategorieNames();
                         Btn_LoginTapped(null, null);
                     }
                     else
                     {
-                        AppModel.Logger.Info("0018e");
                         await Task.Delay(1);
                         overlay.IsVisible = false;
                         isInitialize = false;
@@ -622,30 +703,12 @@ namespace iPMCloud.Mobile
                 tgr1btn_endselectedwork.Tapped += Btn_GPSInfoTapped;
                 btn_endselectedwork.GestureRecognizers.Add(tgr1btn_endselectedwork);
 
-                //btn_flashlight_container.GestureRecognizers.Clear();
-                //var tgr1 = new TapGestureRecognizer();
-                //tgr1.Tapped -= AppModel.Instance.Scan.Btn_FlashlightTapped;
-                //tgr1.Tapped += AppModel.Instance.Scan.Btn_FlashlightTapped;
-                //btn_flashlight_container.GestureRecognizers.Add(tgr1);
-
-                //btn_flashlight_AddRegScan_container.GestureRecognizers.Clear();
-                //var tgr2 = new TapGestureRecognizer();
-                //tgr2.Tapped -= AppModel.Instance.Scan.Btn_FlashlightTapped;
-                //tgr2.Tapped += AppModel.Instance.Scan.Btn_FlashlightTapped;
-                //btn_flashlight_AddRegScan_container.GestureRecognizers.Add(tgr2);
-
                 btn_loginlogin_container.GestureRecognizers.Clear();
                 var tgr3 = new TapGestureRecognizer();
                 tgr3.Tapped -= Btn_LoginTapped;
                 tgr3.Tapped += Btn_LoginTapped;
                 btn_loginlogin_container.GestureRecognizers.Add(tgr3);
 
-
-                //btn_toregistmore_container.GestureRecognizers.Clear();
-                //var tgr3bmore = new TapGestureRecognizer();
-                //tgr3bmore.Tapped -= Btn_toregistMoreTapped;
-                //tgr3bmore.Tapped += Btn_toregistMoreTapped;
-                //btn_toregistmore_container.GestureRecognizers.Add(tgr3bmore);
 
                 btn_toregist_container.GestureRecognizers.Clear();
                 var tgr3b = new TapGestureRecognizer();
@@ -678,11 +741,11 @@ namespace iPMCloud.Mobile
                 tgr6.Tapped += Btn_ToRegScanManagementTapped;
                 btn_ToRegScanManagement_container.GestureRecognizers.Add(tgr6);
 
-                btn_back_inAddRegScan.GestureRecognizers.Clear();
-                var tgr7 = new TapGestureRecognizer();
-                tgr7.Tapped -= BackToLoginPage;
-                tgr7.Tapped += BackToLoginPage;
-                btn_back_inAddRegScan.GestureRecognizers.Add(tgr7);
+                //btn_back_inAddRegScan.GestureRecognizers.Clear();
+                //var tgr7 = new TapGestureRecognizer();
+                //tgr7.Tapped -= BackAddRegScanToLoginPage;
+                //tgr7.Tapped += BackAddRegScanToLoginPage;
+                //btn_back_inAddRegScan.GestureRecognizers.Add(tgr7);
 
                 btn_back_RegManagement.GestureRecognizers.Clear();
                 var tgr8 = new TapGestureRecognizer();

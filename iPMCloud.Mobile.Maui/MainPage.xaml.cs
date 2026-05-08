@@ -643,24 +643,11 @@ namespace iPMCloud.Mobile
         private async void ShowBuildingScanPage_Check(IntBoolParam intBol)
         {
             intBol_Check = intBol;
-            isInitialize = true;
-            overlay.IsVisible = true;
-            await Task.Delay(1);
-
-            ClearPageViews();
-            BuildingScanPage_Container.IsVisible = true;
-
-            lay_buildingscan.Children.Clear();
-            AppModel.Instance.UseExternHardware = true;
-            AppModel.Instance.Scan.ScanBuildingView(this, lay_buildingscan, MethodAfterScan_check);
-
-            await Task.Delay(1);
-            overlay.IsVisible = false;
-            isInitialize = false;
+            ShowBuildingScanPage(true);
         }
         public bool MethodAfterScan_check()
         {
-            lay_buildingscan.Children.Clear();
+            //lay_buildingscan.Children.Clear();
             ShowMainPage();
             if (AppModel.Instance.LastBuilding != null
                 && AppModel.Instance.LastBuilding.id == AppModel.Instance.selectedCheckInfo.objektid)
@@ -834,7 +821,7 @@ namespace iPMCloud.Mobile
                 btn_info_check_text1.Text = AppModel.Instance.selectedCheckA.bezeichnung;
                 btn_info_check_text2.Text = "Datum: " + JavaScriptDateConverter.Convert(long.Parse(AppModel.Instance.selectedCheckA.datum)).ToString("dd.MM.yyyy");
                 frame_info_check_badge.Children.Clear();
-                frame_info_check_badge.Children.Add(Check.GetBadgeFrame(AppModel.Instance.selectedCheckInfo.naeststeFaelligkeitDate));
+                frame_info_check_badge.Children.Add(Check.GetBadgeFrame(AppModel.Instance.selectedCheckInfo.naeststeFaelligkeitDate,30));
 
                 BuildCheckQuestStack();
             }
@@ -1079,17 +1066,34 @@ namespace iPMCloud.Mobile
             await Task.Delay(1);
         }
 
-
-
-        public void OpenCheckA_Singature(CheckLeistungAntwort quest)
+        public async void OpenCheckA_Singature(CheckLeistungAntwort quest)
         {
-            double w = screenWidthDp;
-            CheckPage_Signature_Container.WidthRequest = w;
+            var modal = new SignatureModalPage();
+                await Navigation.PushModalAsync(modal, animated: false);
+
+                SignatureResult? result = await modal.Result;
+            if (result is null)
+            {
+                quest.img_sig.Source = null;
+                //quest.signPad.Clear();
+                return;
+            }
+
+            byte[] pngBytes = result.PngBytes;
+                ImageSource signatureImage = result.Image;
+
+            await quest.Tap_a7_ReturnSig(pngBytes, signatureImage);
+            quest.img_sig.Source = signatureImage;
+        }
+
+        public void OpenCheckA_Singatureaa(CheckLeistungAntwort quest)
+        {
+            CheckPage_position_Container2.WidthRequest = screenWidthDp;
             checkQuestStack_signature_scroll.HeightRequest =
                 screenHeightDp - checkQuestStack_signature_scroll.Y - 13;
             checkQuestStack_signature.Children.Clear();
             quest.signPad = Check.GetSignElement();
-            checkQuestStack_signature.Children.Add(Check.GetQuestMain_7_PopUp(quest));
+            //checkQuestStack_signature.Children.Add(Check.GetQuestMain_7_PopUp(quest));
             CheckPage_Signature_Container.IsVisible = true;
         }
         public void CloseCheckA_Singature(object sender, EventArgs e)
@@ -1190,7 +1194,7 @@ namespace iPMCloud.Mobile
                 _SelectedPosForNotice_check_bem.bemWSO.objektid = AppModel.Instance.selectedCheckA.objektid;
                 _SelectedPosForNotice_check_bem.bemWSO.leistungid = _SelectedPosForNotice_check_bem.id;
                 _SelectedPosForNotice_check_bem.bemWSO.datum = JavaScriptDateConverter.Convert(DateTime.Now);
-                _SelectedPosForNotice_check_bem.bemWSO.text = !_SelectedPosForNotice_check_bem_isquest ? entry_notice_check_bem.Text : "";
+                _SelectedPosForNotice_check_bem.bemWSO.text = !_SelectedPosForNotice_check_bem_isquest ? entry_notice_check_bem.Text.Trim() : "";
                 _SelectedPosForNotice_check_bem.bemWSO.id = 0;
 
                 if (_SelectedPosForNotice_check_bem_isquest)
@@ -1397,22 +1401,10 @@ namespace iPMCloud.Mobile
 
 
 
-        private void entry_notice_TextChanged_check_bem(object sender, TextChangedEventArgs e)
-        {
-            //_SelectedPosForNotice_check_bem.bem.text = entry_notice_check_bem.Text;
-            //CheckNoticeFalid_check_bem();
-        }
-
-
-
-
-
-
-
 
 
         protected override void OnDisappearing()
-        {
+        {            
             if (AppModel.Instance._cts != null && !AppModel.Instance._cts.IsCancellationRequested)
                 AppModel.Instance._cts.Cancel();
             base.OnDisappearing();
@@ -1485,17 +1477,6 @@ namespace iPMCloud.Mobile
             overlay.IsVisible = false;
             isInitialize = false;
 
-            /* GEÄNDERT ... SetAllSyncState in DELETE FILE Methode eingesetzt */
-            //______System.Timers.Timer runonce = new System.Timers.Timer(2000);
-            //runonce.Elapsed += (s, e) =>
-            //{
-            //    MainThread.BeginInvokeOnMainThread(() =>
-            //    {
-            //        SetAllSync();
-            //    });
-            //};
-            //runonce.AutoReset = false;
-            //runonce.Start();
 
             await Task.Delay(1);
             SetChecksCount();
@@ -1576,23 +1557,132 @@ namespace iPMCloud.Mobile
         }
 
 
-        private async void ShowBuildingScanPage()
+
+
+        public string ScanAddRegText { get; set; } = "Richten Sie die Kamera auf den QR-Code.";
+        public string ScanAddRegTextSec { get; set; } = "Das Scannen erfolgt automatisch";
+
+        private async void ShowBuildingScanPage(bool isCheck)
         {
-            isInitialize = true;
-            overlay.IsVisible = true;
-            await Task.Delay(1);
+            var result = await ScanObjModalPage.ScanAsync(this);
+            if (!string.IsNullOrWhiteSpace(result))
+            {
+                var sp = result.Replace("http://www.ipm-cloud.de/?objektid=", "")
+                               .Split(new[] { "_" }, StringSplitOptions.RemoveEmptyEntries);
 
-            ClearPageViews();
-            BuildingScanPage_Container.IsVisible = true;
+                if (sp != null && sp.Length > 0)
+                {
+                    var CustomerNumber = sp.Length == 1 ? "1" : "" + sp[1];
+                    Int32 buildingid = Int32.Parse(sp[0]);
 
-            lay_buildingscan.Children.Clear();
-            AppModel.Instance.UseExternHardware = true;
-            AppModel.Instance.Scan.ScanBuildingView(this, lay_buildingscan, MethodAfterScan);
+                    if (CustomerNumber == AppModel.Instance.SettingModel.SettingDTO.CustomerNumber)
+                    {
+                        AppModel.Instance.SettingModel.SettingDTO.LastBuildingIdScanned = buildingid;
 
-            await Task.Delay(1);
-            overlay.IsVisible = false;
-            isInitialize = false;
+                        if (buildingid > 0 && AppModel.Instance.AllBuildings != null && AppModel.Instance.AllBuildings.Count > 0)
+                        {
+                            AppModel.Instance.SetAllObjectAndValuesToNoSelectedBuilding();
+                            AppModel.Instance.SettingModel.SettingDTO.LastBuildingIdScanned = buildingid;
+                            AppModel.Instance.LastBuilding = AppModel.Instance.AllBuildings.Find(bu => bu.id == buildingid);
+                            
+                            AppModel.Logger.Info("CHECK-IN: " + AppModel.Instance.LastBuilding.strasse + " " +
+                                                     AppModel.Instance.LastBuilding.hsnr + " " +
+                                                     AppModel.Instance.LastBuilding.plz + " " +
+                                                     AppModel.Instance.LastBuilding.ort);
+                            
+                        }
+
+                        AppModel.Instance.SettingModel.SaveSettings();
+
+                        AppModel.Instance.UseExternHardware = false;
+                        if (isCheck) { 
+                            MethodAfterScan_check();
+                        }
+                        else
+                        {
+                            ShowMainPage();
+                        }
+                    }
+                    else
+                    {
+                            await DisplayAlertAsync("QR-Code nicht erkannt!",
+                                "Dieser QR-Code ist zwar ein iPM-Cloud Code jedoch gehört er nicht zum Registrieten Unternehmen! Bitte Probieren Sie es noch einmal oder melden Sie sich in Ihrer Zentrale.",
+                                "OK");
+                        AppModel.Instance.UseExternHardware = false;
+                    }
+                }
+                else
+                {
+                        await DisplayAlertAsync("QR-Code nicht erkannt!",
+                            "Dieser QR-Code kann nicht verwendet werden. Bitte Probieren Sie es noch einmal.",
+                            "OK");
+                    AppModel.Instance.UseExternHardware = false;
+                }
+
+
+                /*
+
+
+                var sp = result
+                    .Replace("https://", "http://")
+                    .Replace("httpss://", "https://")
+                    .Split(new[] { "###" }, StringSplitOptions.RemoveEmptyEntries);
+
+                if (sp.Length < 3)
+                {
+                    await DisplayAlertAsync("QR-Code nicht gültig!",
+                                            "Dieser QR-Code kann für die Registrierung eines weiteren Unternehmens mit der iPM-Cloud-App nicht verwendet werden.",
+                                            "OK");
+                    return;
+                }
+
+                AppModel.Instance.UseExternHardware = true;
+                var newScanSettings = new SettingDTO
+                {
+                    ServerUrl = sp[0],
+                    CustomerNumber = sp[1],
+                    CustomerName = sp[2]
+                };
+                var cn = AppModel.Instance.SettingModel.SettingDTO.CustomerNumber;
+                if (!string.IsNullOrWhiteSpace(newScanSettings.ServerUrl) &&
+                    !string.IsNullOrWhiteSpace(newScanSettings.CustomerNumber) &&
+                    !string.IsNullOrWhiteSpace(newScanSettings.CustomerName) &&
+                    newScanSettings.CustomerNumber != cn)
+                {
+                    Company.AddUpdateCompany(AppModel.Instance, AppModel.Instance.SettingModel.SettingDTO);
+
+                    string directoryPath = Path.Combine(
+                        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                        "ipm/" + newScanSettings.CustomerNumber);
+
+                    if (!Directory.Exists(directoryPath)) Directory.CreateDirectory(directoryPath);
+
+                    AppModel.Instance.SettingModel.SettingDTO = newScanSettings;
+                    AppModel.Instance.SettingModel.SaveSettings();
+
+                    AppModel.Instance.UseExternHardware = false;
+
+                }
+                else
+                {
+                    AppModel.Logger.Error("QR-Code nicht erkannt!" + " Dieser QR-Code kann für die Registrierung eines weiteren Unternehmens mit der iPM-Cloud-App nicht verwendet werden!");
+                    await DisplayAlertAsync("QR-Code nicht erkannt!",
+                                            "Dieser QR-Code kann für die Registrierung eines weiteren Unternehmens mit der iPM-Cloud-App nicht verwendet werden.",
+                                            "OK");
+                    AppModel.Instance.UseExternHardware = false;
+                }*/
+            }
+            else
+            {
+                //AppModel.Logger.Error("Keine Kamera!" + " Vermutlich ist die Berechtigung der Kamera nicht gesetzt!");
+                //await DisplayAlertAsync("Keine Kamera!",
+                //                        "Vermutlich ist die Berechtigung der Kamera nicht gesetzt!",
+                //                        "OK");
+                AppModel.Instance.UseExternHardware = false;
+            }
         }
+
+
 
         private async void ShowBuildingNotScanPage()
         {
@@ -1679,32 +1769,55 @@ namespace iPMCloud.Mobile
             }
         }
 
-
-
-        public bool MethodAfterScan()
-        {
-            lay_buildingscan.Children.Clear();
-            ShowMainPage();
-            return true;
-        }
         private async void ShowBuildingOutScanPage()
         {
-            isInitialize = true;
-            overlay.IsVisible = true;
-            await Task.Delay(1);
+            var result = await ScanObjModalPage.ScanAsync(this);
+            if (!string.IsNullOrWhiteSpace(result))
+            {
 
-            ClearPageViews();
-            BuildingOutScanPage_Container.IsVisible = true;
+                var sp = result.Replace("http://www.ipm-cloud.de/?objektid=", "")
+                               .Split(new[] { "_" }, StringSplitOptions.RemoveEmptyEntries);
 
-            lay_buildingoutscan.Children.Clear();
-            AppModel.Instance.UseExternHardware = true;
+                if (sp != null && sp.Length > 0)
+                {
+                    AppModel.Instance.OutScanBuilding = null;
 
-            AppModel.Instance.Scan.ScanBuildingOutView(this, lay_buildingoutscan, MethodAfterOutScan);
+                    var CustomerNumber = sp.Length == 1 ? "1" : "" + sp[1];
+                    Int32 buildingid = Int32.Parse(sp[0]);
 
-            await Task.Delay(1);
-            overlay.IsVisible = false;
-            isInitialize = false;
+                    if (CustomerNumber == AppModel.Instance.SettingModel.SettingDTO.CustomerNumber)
+                    {
+                        if (AppModel.Instance.AllBuildings != null && AppModel.Instance.AllBuildings.Count > 0)
+                        {
+                            AppModel.Logger.Info("CHECK-OUT: " + AppModel.Instance.OutScanBuilding.strasse + " " +
+                                                     AppModel.Instance.OutScanBuilding.hsnr + " " +
+                                                     AppModel.Instance.OutScanBuilding.plz + " " +
+                                                     AppModel.Instance.OutScanBuilding.ort);
+                        }
+
+                        AppModel.Instance.UseExternHardware = false;
+                        MethodAfterOutScan();
+                    }
+                    else
+                    {
+                            await DisplayAlertAsync("QR-Code nicht erkannt!",
+                                "Dieser QR-Code ist zwar ein iPM-Cloud Code jedoch gehört er nicht zum Registrieten Unternehmen! Bitte Probieren Sie es noch einmal oder melden Sie sich in Ihrer Zentrale.",
+                                "OK");
+                    }
+                }
+                else
+                {
+                        await DisplayAlertAsync("QR-Code nicht erkannt!",
+                            "Dieser QR-Code kann nicht verwendet werden. Bitte Probieren Sie es noch einmal.",
+                            "OK");
+                }
+            }
+            else
+            {
+                AppModel.Instance.UseExternHardware = false;
+            }
         }
+
         public bool MethodAfterOutScan()
         {
             if (AppModel.Instance.AppControll.direktBuchenPos)
@@ -1726,7 +1839,7 @@ namespace iPMCloud.Mobile
             else
             {
                 AppModel.Instance.UseExternHardware = false;
-                lay_buildingoutscan.Children.Clear();
+                //lay_buildingoutscan.Children.Clear();
                 if (AppModel.Instance.OutScanBuilding != null)
                 {
                     if (AppModel.Instance.OutScanBuilding.id == AppModel.Instance.LastBuilding.id)
@@ -2310,7 +2423,7 @@ namespace iPMCloud.Mobile
                         if (item.id == _SelectedPosForNotice.id && item.bem != null)
                         {
                             _SelectedBemerkungForNotice = item.bem;
-                            entry_notice_DirektPos.Text = item.bem.text;
+                            entry_notice_DirektPos.Text = item.bem.text.Trim();
                             sw_internmessage_DirektPos.IsToggled = item.bem.prio == 1 || item.bem.prio == 3;
                             sw_alertmessage_DirektPos.IsToggled = item.bem.prio == 2 || item.bem.prio == 3;
                             item.bem.photos.ForEach(p =>
@@ -2387,7 +2500,7 @@ namespace iPMCloud.Mobile
                 _SelectedBemerkungForNotice.objektid = _SelectedPosForNotice.objektid;
                 _SelectedBemerkungForNotice.leistungid = _SelectedPosForNotice.id;
                 _SelectedBemerkungForNotice.datum = DateTime.Now.Ticks;
-                _SelectedBemerkungForNotice.text = "" + entry_notice_DirektPos.Text;
+                _SelectedBemerkungForNotice.text = "" + entry_notice_DirektPos.Text.Trim();
 
                 foreach (var item in _SelectedBemerkungForNoticeList_DirektPos)
                 {
@@ -2847,7 +2960,7 @@ namespace iPMCloud.Mobile
 
         private async void SwitchObjectValueFlashlight()
         {
-            AppModel.Instance.Scan.Btn_FlashlightAloneTapped(null, null);
+            AppModel.Instance.Btn_FlashlightAloneTapped(null, null);
         }
 
         public async void SaveObjektValue(ObjektDataWSO newod)
@@ -2856,7 +2969,7 @@ namespace iPMCloud.Mobile
             await Task.Delay(1);
             if (AppModel.Instance.isFlashLigthAloneON)
             {
-                AppModel.Instance.Scan.Btn_FlashlightAloneTapped(null, null);
+                AppModel.Instance.Btn_FlashlightAloneTapped(null, null);
             }
             await Task.Delay(1);
 
@@ -2902,8 +3015,8 @@ namespace iPMCloud.Mobile
             DSGVOPageContainerView.SetVisible(false);
             PN_Page_Container.IsVisible = false;
             WorkerPage_Container.IsVisible = false;
-            BuildingScanPage_Container.IsVisible = false;
-            BuildingOutScanPage_Container.IsVisible = false;
+            //BuildingScanPage_Container.IsVisible = false;
+            //BuildingOutScanPage_Container.IsVisible = false;
             BuildingOrderPage_Container.IsVisible = false;
             RunningWorksPage_Container.IsVisible = false;
             NoticePage_Container.IsVisible = false;
@@ -4700,7 +4813,7 @@ namespace iPMCloud.Mobile
         }
         public void btn_BuildingScanTapped(object sender, EventArgs e)
         {
-            ShowBuildingScanPage();
+            ShowBuildingScanPage(false);
         }
         public void btn_BuildingNotScanTapped(object sender, EventArgs e)
         {
@@ -6290,12 +6403,12 @@ namespace iPMCloud.Mobile
             await Task.Delay(1);
             if (AppModel.Instance.isFlashLigthAloneON)
             {
-                AppModel.Instance.Scan.Btn_FlashlightAloneTapped(null, null);
+                AppModel.Instance.Btn_FlashlightAloneTapped(null, null);
             }
             await Task.Delay(1);
 
             AppModel.Instance.selectedObjectValueBild.filename = DateTime.Now.ToString("dd_MM_yyyy_HH_mm_ss");
-            AppModel.Instance.selectedObjectValueBild.bemerkung = PopupContainerObjectValuesBild.EditorNotice.Text;
+            AppModel.Instance.selectedObjectValueBild.bemerkung = PopupContainerObjectValuesBild.EditorNotice.Text.Trim();
             AppModel.Instance.selectedObjectValueBild.meterid = AppModel.Instance.selectedObjectValue.id;
             AppModel.Instance.selectedObjectValueBild.lastchange = JavaScriptDateConverter.Convert(DateTime.Now).ToString();
             AppModel.Instance.selectedObjectValueBild.standid = 0;
@@ -6565,7 +6678,7 @@ namespace iPMCloud.Mobile
                 _manuelTextChange = true;
                 //entry_notice.Text = System.Text.RegularExpressions.Regex.Replace(e.NewTextValue, @"\p{Cs}", "").Trim(); 
                 //_SelectedBemerkungForNotice.text = System.Text.RegularExpressions.Regex.Replace(e.NewTextValue, @"\p{Cs}", "").Trim();
-                _SelectedBemerkungForNotice.text = e.NewTextValue;
+                _SelectedBemerkungForNotice.text = e.NewTextValue.Trim();
                 CheckNoticeFalid();
                 _manuelTextChange = false;
             }
@@ -7684,20 +7797,20 @@ namespace iPMCloud.Mobile
                 var tgr_overtootherBuildingSave = new TapGestureRecognizer();
                 tgr_overtootherBuildingSave.Tapped += btn_done_BuildingOutScanTapped;
                 btn_overtootherBuildingSave.GestureRecognizers.Add(tgr_overtootherBuildingSave);
-                btn_back_inBuildingOutScan.GestureRecognizers.Clear();
-                var tgr_back_inBuildingOutScan = new TapGestureRecognizer();
-                tgr_back_inBuildingOutScan.Tapped += btn_back_BuildingOutScanTapped;
-                btn_back_inBuildingOutScan.GestureRecognizers.Add(tgr_back_inBuildingOutScan);
-                btn_flashlight_Out_container.GestureRecognizers.Clear();
-                var tapGestureRecognizer1b = new TapGestureRecognizer();
-                tapGestureRecognizer1b.Tapped += AppModel.Instance.Scan.Btn_FlashlightTapped;
-                btn_flashlight_Out_container.GestureRecognizers.Add(tapGestureRecognizer1b);
+                //btn_back_inBuildingOutScan.GestureRecognizers.Clear();
+                //var tgr_back_inBuildingOutScan = new TapGestureRecognizer();
+                //tgr_back_inBuildingOutScan.Tapped += btn_back_BuildingOutScanTapped;
+                //btn_back_inBuildingOutScan.GestureRecognizers.Add(tgr_back_inBuildingOutScan);
+                //btn_flashlight_Out_container.GestureRecognizers.Clear();
+                //var tapGestureRecognizer1b = new TapGestureRecognizer();
+                //tapGestureRecognizer1b.Tapped += AppModel.Instance.Scan.Btn_FlashlightTapped;
+                //btn_flashlight_Out_container.GestureRecognizers.Add(tapGestureRecognizer1b);
 
                 // BuidlingScan Back to MainPage
-                btn_back_inBuildingScan.GestureRecognizers.Clear();
-                var tgr_back_inBuildingScan = new TapGestureRecognizer();
-                tgr_back_inBuildingScan.Tapped += btn_back_BuildingScanTapped;
-                btn_back_inBuildingScan.GestureRecognizers.Add(tgr_back_inBuildingScan);
+                //btn_back_inBuildingScan.GestureRecognizers.Clear();
+                //var tgr_back_inBuildingScan = new TapGestureRecognizer();
+                //tgr_back_inBuildingScan.Tapped += btn_back_BuildingScanTapped;
+                //btn_back_inBuildingScan.GestureRecognizers.Add(tgr_back_inBuildingScan);
                 //btn_flashlight_container.GestureRecognizers.Clear();
                 //var tapGestureRecognizer1 = new TapGestureRecognizer();
                 //tapGestureRecognizer1.Tapped += AppModel.Instance.Scan.Btn_FlashlightTapped;
@@ -8183,7 +8296,7 @@ namespace iPMCloud.Mobile
                         int i = 0;
                         int ii = 0;
                         var bs = new List<BuildingWSO>();
-                        var blist = ListExtensions.ChunkBy(ipmNewBuildingResponse.builgings.Distinct().ToList(), 30);
+                        var blist = ListExtensions.ChunkBy(ipmNewBuildingResponse.builgings.Distinct().ToList(), 10);
                         double pr = 0;
                         popupContainer_count.Text = "SYNCHRONISATION (0%)";
                         await Task.Delay(1);
@@ -8199,7 +8312,7 @@ namespace iPMCloud.Mobile
                             string objids = "";
                             //var objidsInt = Utils.ConvertStringToListInt(objids);
                             blist[zz].ForEach(b => { objids = objids + (objids.Length > 0 ? "," : "") + b.id; });
-                            IpmNewSyncResponse resp = AppModel.Instance.Connections.IpmNewAuftragSync(objids);
+                            IpmNewSyncResponse resp = await AppModel.Instance.Connections.IpmNewAuftragSyncAsync(objids);
                             if (resp != null && resp.auftraege != null)
                             {
                                 ii++;

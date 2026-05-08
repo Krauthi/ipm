@@ -85,7 +85,7 @@ namespace iPMCloud.Mobile
 
         // TODO: SignaturePad not MAUI-compatible - comment out until migrated
         [NonSerialized]
-        public StackLayout signPad = null;
+        public VerticalStackLayout signPad = null;
 
         [NonSerialized]
         public HorizontalStackLayout stack_Badge = null;
@@ -568,9 +568,9 @@ namespace iPMCloud.Mobile
             lb_notiz.LineBreakMode = isReady ? LineBreakMode.TailTruncation : LineBreakMode.WordWrap;
 
             img_sig.IsVisible = !none;
-            img_sig.Source = String.IsNullOrWhiteSpace(a7) ?
-                "SignPad.png" :
-                ImageSource.FromStream(() => new MemoryStream(Convert.FromBase64String(a7)));
+            //img_sig.Source = String.IsNullOrWhiteSpace(a7) ?
+            //    "SignPad.png" :
+            //    ImageSource.FromStream(() => new MemoryStream(Convert.FromBase64String(a7)));
 
             mainFrame.BackgroundColor = isReady ? Color.FromArgb("#66cccccc") : Color.FromArgb("#99042d53");
             AppModel.Instance.MainPage.UpdateCheckAState();
@@ -607,7 +607,26 @@ namespace iPMCloud.Mobile
         //    CheckIsReadyAndSet_a7();
         //}
 
-        public async Task Tap_a7_ReturnSig()
+        public async Task Tap_a7_ReturnSig(byte[] imageBytes, ImageSource signatureImage)
+        {
+            try
+            {
+                none = false;
+                img_sig.Source = signatureImage;
+                    if (imageBytes != null && imageBytes.Length > 0)
+                    {
+                        // Direkt zu Base64 konvertieren
+                        a7 = Convert.ToBase64String(imageBytes);
+                    } 
+                CheckIsReadyAndSet_a7();
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error($"Fehler beim Speichern der Signatur: {ex.Message}");
+            }
+        }
+
+        public async Task Tap_a7_ReturnSigOld()
         {
             try
             {
@@ -615,14 +634,15 @@ namespace iPMCloud.Mobile
                 AppModel.Instance.MainPage.CloseCheckA_Singature(null, null);
 
                 // Signatur als Byte-Array direkt holen
-                if (signPad.Children[0] is SignaturePadView sigPad) {
+                if (signPad.Children[0] is SignaturePadView sigPad)
+                {
                     var imageBytes = await sigPad.GetImageStreamAsync(SignatureImageFormat.Png);
 
                     if (imageBytes != null && imageBytes.Length > 0)
                     {
                         // Direkt zu Base64 konvertieren
                         a7 = Convert.ToBase64String(imageBytes);
-                    } 
+                    }
                 }
                 CheckIsReadyAndSet_a7();
             }
@@ -633,7 +653,6 @@ namespace iPMCloud.Mobile
                 AppModel.Logger?.Error($"Fehler beim Speichern der Signatur: {ex.Message}");
             }
         }
-
 
 
 

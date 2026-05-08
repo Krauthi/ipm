@@ -60,7 +60,7 @@ namespace iPMCloud.Mobile
                 Margin = new Thickness(0, 0, 0, 0),
                 Spacing = 0,
                 Orientation = StackOrientation.Vertical,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
             };
             string lastyp = "";
             model.LastBuilding.ArrayOfObjektdata = model.LastBuilding.ArrayOfObjektdata.OrderBy(s => s.typ).ToList();//.ThenBy(s => s.Name);
@@ -128,7 +128,7 @@ namespace iPMCloud.Mobile
                 FontSize = 26,
                 FontAttributes = FontAttributes.None,
                 HorizontalTextAlignment = TextAlignment.End,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
                 LineBreakMode = LineBreakMode.WordWrap,
                 CharacterSpacing = 1.05,
                 BackgroundColor = Color.FromArgb("#143d63"),
@@ -139,8 +139,19 @@ namespace iPMCloud.Mobile
                 TextColor = Color.FromArgb("#cccccc"),
                 Margin = new Thickness(5, 0, 5, 5),
                 FontSize = 16,
-                HorizontalOptions = LayoutOptions.StartAndExpand,
+                HorizontalOptions = LayoutOptions.Start,
                 LineBreakMode = LineBreakMode.WordWrap,
+            };
+
+            var typ2 = new Label
+            {
+                Text = "Standort: " + od.mieter + "\nStandort: " + od.mieterb
+                + "\nEichjahr: " + od.eich,
+                TextColor = Color.FromArgb("#ffcc00"),
+                Margin = new Thickness(5, 0, 0, 0),
+                FontSize = 16,
+                LineBreakMode = LineBreakMode.WordWrap,
+                HorizontalOptions = LayoutOptions.Start,
             };
             var zaehlerGanzzahl = new Label
             {
@@ -149,7 +160,6 @@ namespace iPMCloud.Mobile
                 Margin = new Thickness(0, 0, 0, 0),
                 Padding = new Thickness(5, 5, 5, 5),
                 FontSize = 26,
-                LineBreakMode = LineBreakMode.WordWrap,
                 HorizontalOptions = LayoutOptions.Fill,
                 HorizontalTextAlignment = TextAlignment.End,
                 BackgroundColor = Color.FromArgb("#000000"),
@@ -161,7 +171,6 @@ namespace iPMCloud.Mobile
                 Margin = new Thickness(0, 0, 0, 0),
                 Padding = new Thickness(0, 5, 0, 5),
                 FontSize = 22,
-                LineBreakMode = LineBreakMode.WordWrap,
                 HorizontalOptions = LayoutOptions.End,
                 BackgroundColor = Color.FromArgb("#e14b3a"),
             };
@@ -172,7 +181,6 @@ namespace iPMCloud.Mobile
                 Margin = new Thickness(0),
                 Padding = new Thickness(0, 5, 0, 5),
                 FontSize = 26,
-                LineBreakMode = LineBreakMode.WordWrap,
                 HorizontalOptions = LayoutOptions.End,
                 BackgroundColor = Color.FromArgb("#e14b3a"),
             };
@@ -184,48 +192,40 @@ namespace iPMCloud.Mobile
                 Padding = new Thickness(3, 5, 5, 5),
                 FontSize = 18,
                 FontAttributes = FontAttributes.Bold,
-                LineBreakMode = LineBreakMode.WordWrap,
                 HorizontalOptions = LayoutOptions.End,
                 BackgroundColor = Color.FromArgb("#e14b3a"),
             };
-            var hz = new StackLayout()
+            var hz = new Grid()
             {
                 Padding = new Thickness(0),
-                Margin = new Thickness(-37, 5, -5, -5),
-                Spacing = 0,
-                Orientation = StackOrientation.Horizontal,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                //Margin = new Thickness(-37, 5, -5, -5),
+                ColumnSpacing = 0,
+                HorizontalOptions = LayoutOptions.Fill,
                 BackgroundColor = Color.FromArgb("#55ffcc00"),
-            };
-
-            var noticeStack = new StackLayout
-            {
-                HeightRequest = 44,
-                WidthRequest = 44,
-                BackgroundColor = Color.FromArgb("#143d63"),
-                VerticalOptions = LayoutOptions.Start,
-                HorizontalOptions = LayoutOptions.Start,
-                Spacing = 0,
-                Padding = new Thickness(0, 0, 0, 0),
-                Margin = new Thickness(0, 0, 0, 0),
-                Children = { new Image
+                ColumnDefinitions =
                 {
-                    Margin = new Thickness(3, 0, 0, 0),
-                    HeightRequest = 28,
-                    WidthRequest = 28,
-                    VerticalOptions = LayoutOptions.CenterAndExpand,
-                    HorizontalOptions = LayoutOptions.CenterAndExpand,
-                    Source = "Pen.png"
-                } }
+                    new ColumnDefinition { Width = GridLength.Star },
+                    new ColumnDefinition { Width = GridLength.Auto },
+                    new ColumnDefinition { Width = GridLength.Auto },
+                    new ColumnDefinition { Width = GridLength.Auto }
+                }
             };
+            hz.Add(zaehlerGanzzahl,0);
+            hz.Add(zaehlerKomma,1);
+            hz.Add(zaehlerKommazahl,2);
+            hz.Add(zaehlerEinheit,3);
 
-            var hzedit = new StackLayout()
+            var hzedit = new Grid()
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(0),
-                Spacing = 0,
-                Orientation = StackOrientation.Horizontal,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                ColumnSpacing = 0,
+                HorizontalOptions = LayoutOptions.Fill,
+                ColumnDefinitions =
+                {
+                    new ColumnDefinition { Width = GridLength.Star },
+                    new ColumnDefinition { Width = GridLength.Auto },
+                }
             };
             var editFrame = new Border()
             {
@@ -237,23 +237,18 @@ namespace iPMCloud.Mobile
                 Padding = new Thickness(0, 0, 0, 0),
                 Margin = new Thickness(0, 0, -3, 0),
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
-                Content = noticeStack
-            };
+                Content = 
+                    new Image
+                    {
+                        Margin = new Thickness(0, 0, 0, 0),
+                        HeightRequest = 28,
+                        WidthRequest = 28,
+                        VerticalOptions = LayoutOptions.Center,
+                        HorizontalOptions = LayoutOptions.Center,
+                        Source = "Pen.png"
+                    }
+                };
 
-            hz.Children.Add(zaehlerGanzzahl);
-            hz.Children.Add(zaehlerKomma);
-            hz.Children.Add(zaehlerKommazahl);
-            hz.Children.Add(zaehlerEinheit);
-            var typ2 = new Label
-            {
-                Text = "Standort: " + od.mieter + "\nStandort: " + od.mieterb
-                + "\nEichjahr: " + od.eich,
-                TextColor = Color.FromArgb("#ffcc00"),
-                Margin = new Thickness(5, 0, 0, 0),
-                FontSize = 16,
-                LineBreakMode = LineBreakMode.WordWrap,
-                HorizontalOptions = LayoutOptions.StartAndExpand,
-            };
             var last = new Label
             {
                 Text = "Zuletzt:  " + JavaScriptDateConverter.Convert(long.Parse(od.standdatum)).ToString("dd.MM.yyyy (HH:mm)"),
@@ -262,42 +257,54 @@ namespace iPMCloud.Mobile
                 Margin = new Thickness(5, 0, 0, 0),
                 FontSize = 14,
                 LineBreakMode = LineBreakMode.WordWrap,
-                HorizontalOptions = LayoutOptions.StartAndExpand,
+                HorizontalOptions = LayoutOptions.Start,
             };
-            var h = new StackLayout()
+            hzedit.Add(last,0);
+            hzedit.Add(editFrame,1);
+
+            var h = new Grid()
             {
                 Padding = new Thickness(5, 5, 5, 5),
                 Margin = new Thickness(0, 0, 0, 0),
-                Spacing = 0,
-                Orientation = StackOrientation.Horizontal,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                ColumnSpacing = 0,
+                HorizontalOptions = LayoutOptions.Fill,
                 BackgroundColor = Color.FromArgb("#042d53"),
+                ColumnDefinitions =
+                {
+                    new ColumnDefinition { Width = GridLength.Auto },
+                    new ColumnDefinition { Width = GridLength.Star },
+                }
             };
-            var v = new StackLayout()
+            var v = new Grid()
             {
                 Padding = new Thickness(0, 0, 0, 0),
                 Margin = new Thickness(0, 0, 0, 0),
-                Spacing = 0,
-                Orientation = StackOrientation.Vertical,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                RowSpacing = 0,
+                HorizontalOptions = LayoutOptions.Fill,
+                RowDefinitions =
+                {
+                    new RowDefinition{ Height = GridLength.Auto },
+                    new RowDefinition{ Height = GridLength.Auto },
+                    new RowDefinition{ Height = GridLength.Auto },
+                    new RowDefinition{ Height = GridLength.Auto },
+                    new RowDefinition{ Height = GridLength.Auto },
+                }
             };
-            hzedit.Children.Add(last);
-            hzedit.Children.Add(editFrame);
-            v.Children.Add(lb_nr);
-            v.Children.Add(lb_text);
-            v.Children.Add(typ2);
-            v.Children.Add(hzedit);
-            //v.Children.Add(editFrame);
-            v.Children.Add(hz);
+            v.Add(lb_nr,0,0);
+            v.Add(lb_text,0,1);
+            v.Add(typ2,0,2);
+            v.Add(hzedit,0,3);
+            //v.Children.Add(editFrame,x,x);
+            v.Add(hz,0,4);
 
-            h.Children.Add(imageL);
-            h.Children.Add(v);
+            h.Add(imageL,0);
+            h.Add(v,1);
 
             var mainFrame = new Border()
             {
                 Padding = new Thickness(1, 1, 1, 1),
                 Margin = new Thickness(38, 10, 0, 5),
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
                 BackgroundColor = Colors.Transparent,
                 Content = h,
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
@@ -334,7 +341,7 @@ namespace iPMCloud.Mobile
                 FontSize = 26,
                 FontAttributes = FontAttributes.None,
                 HorizontalTextAlignment = TextAlignment.End,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
                 LineBreakMode = LineBreakMode.WordWrap,
                 CharacterSpacing = 1.05,
                 BackgroundColor = Color.FromArgb("#143d63"),
@@ -345,7 +352,7 @@ namespace iPMCloud.Mobile
                 TextColor = Color.FromArgb("#cccccc"),
                 Margin = new Thickness(5, 0, 5, 5),
                 FontSize = 16,
-                HorizontalOptions = LayoutOptions.StartAndExpand,
+                HorizontalOptions = LayoutOptions.Start,
                 LineBreakMode = LineBreakMode.WordWrap,
             };
             var zaehlerGanzzahl = new Label
@@ -356,7 +363,7 @@ namespace iPMCloud.Mobile
                 Padding = new Thickness(5, 5, 5, 5),
                 FontSize = 26,
                 LineBreakMode = LineBreakMode.WordWrap,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
                 HorizontalTextAlignment = TextAlignment.End,
                 BackgroundColor = Color.FromArgb("#000000"),
             };
@@ -394,20 +401,27 @@ namespace iPMCloud.Mobile
                 HorizontalOptions = LayoutOptions.End,
                 BackgroundColor = Color.FromArgb("#e14b3a"),
             };
-            var hz = new StackLayout()
+
+            var hz = new Grid()
             {
                 Padding = new Thickness(0),
-                Margin = new Thickness(-37, 5, -5, -5),
-                Spacing = 0,
-                Orientation = StackOrientation.Horizontal,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                //Margin = new Thickness(-37, 5, -5, -5),
+                ColumnSpacing = 0,
+                HorizontalOptions = LayoutOptions.Fill,
                 BackgroundColor = Color.FromArgb("#55ffcc00"),
+                ColumnDefinitions =
+                {
+                    new ColumnDefinition { Width = GridLength.Star },
+                    new ColumnDefinition { Width = GridLength.Auto },
+                    new ColumnDefinition { Width = GridLength.Auto },
+                    new ColumnDefinition { Width = GridLength.Auto }
+                }
             };
+            hz.Add(zaehlerGanzzahl, 0);
+            hz.Add(zaehlerKomma, 1);
+            hz.Add(zaehlerKommazahl, 2);
+            hz.Add(zaehlerEinheit, 3);
 
-            hz.Children.Add(zaehlerGanzzahl);
-            hz.Children.Add(zaehlerKomma);
-            hz.Children.Add(zaehlerKommazahl);
-            hz.Children.Add(zaehlerEinheit);
             var typ2 = new Label
             {
                 Text = "Standort: " + od.mieter + "\nStandort: " + od.mieterb
@@ -416,7 +430,7 @@ namespace iPMCloud.Mobile
                 Margin = new Thickness(5, 0, 0, 0),
                 FontSize = 16,
                 LineBreakMode = LineBreakMode.WordWrap,
-                HorizontalOptions = LayoutOptions.StartAndExpand,
+                HorizontalOptions = LayoutOptions.Start,
             };
             var h = new StackLayout()
             {
@@ -433,7 +447,7 @@ namespace iPMCloud.Mobile
                 Margin = new Thickness(0, 0, 0, 0),
                 Spacing = 0,
                 Orientation = StackOrientation.Vertical,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
             };
             v.Children.Add(lb_nr);
             v.Children.Add(lb_text);
@@ -468,26 +482,7 @@ namespace iPMCloud.Mobile
         public static StackLayout EditObjektValueField(ObjektDataWSO od, AppModel model, ICommand func, ICommand funcLight, ICommand funcCam)
         {
             model.allAblesegrundStack = new Dictionary<int, Switch>();
-            var noticeStack = new StackLayout
-            {
-                HeightRequest = 44,
-                WidthRequest = 44,
-                BackgroundColor = Color.FromArgb("#143d63"),
-                VerticalOptions = LayoutOptions.Start,
-                HorizontalOptions = LayoutOptions.Start,
-                Spacing = 0,
-                Padding = new Thickness(0, 0, 0, 0),
-                Margin = new Thickness(0, 0, 0, 0),
-                Children = { new Image
-                {
-                    Margin = new Thickness(3, 0, 0, 0),
-                    HeightRequest = 28,
-                    WidthRequest = 28,
-                    VerticalOptions = LayoutOptions.Center,
-                    HorizontalOptions = LayoutOptions.Center,
-                    Source="refresh.png"
-                } }
-            };
+            
 
             var refreshFrame = new Border()
             {
@@ -499,15 +494,23 @@ namespace iPMCloud.Mobile
                 Padding = new Thickness(0, 0, 0, 0),
                 Margin = new Thickness(0, 0, -3, 0),
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
-                Content = noticeStack
+                Content = new Image
+                {
+                    Margin = new Thickness(0,0,0,0),
+                    HeightRequest = 28,
+                    WidthRequest = 28,
+                    VerticalOptions = LayoutOptions.Center,
+                    HorizontalOptions = LayoutOptions.Center,
+                    Source = "refresh.png"
+                }
             };
 
 
             entryanzahl = new CustomEntry()
             {
                 Margin = new Thickness(10, 0, 0, 0),
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-                VerticalOptions = LayoutOptions.StartAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
+                VerticalOptions = LayoutOptions.Start,
                 TextColor = Colors.White,
                 FontSize = 30,
                 Keyboard = Keyboard.Numeric,
@@ -529,18 +532,6 @@ namespace iPMCloud.Mobile
 
 
 
-
-
-            //var labelnewEdit = new Label
-            //{
-            //    Text = "Neuer Stand:",
-            //    TextColor = Color.FromArgb("#ffffff"),
-            //    Margin = new Thickness(5, 0, 5, 0),
-            //    Padding = new Thickness(0),
-            //    FontSize = 14,
-            //    LineBreakMode = LineBreakMode.WordWrap,
-            //    HorizontalOptions = LayoutOptions.StartAndExpand,
-            //};
             var zaehlerEinheitEdit = new Label
             {
                 Text = od.einheit,
@@ -553,42 +544,33 @@ namespace iPMCloud.Mobile
                 HorizontalOptions = LayoutOptions.End,
                 BackgroundColor = Color.FromArgb("#333333"),
             };
-            var hanzahl = new StackLayout()
+            var hanzahl = new Grid()
             {
                 Padding = new Thickness(5, 5, 0, 5),
                 Margin = new Thickness(0, 0, 0, 0),
-                Spacing = 0,
-                Orientation = StackOrientation.Horizontal,
-                HorizontalOptions = LayoutOptions.FillAndExpand
+                ColumnSpacing = 0,
+                HorizontalOptions = LayoutOptions.Fill,
+                ColumnDefinitions = 
+                {
+                    new ColumnDefinition { Width = GridLength.Auto },
+                    new ColumnDefinition { Width = GridLength.Star },
+                    new ColumnDefinition { Width = GridLength.Auto }
+                }
             };
-            var vanzahl = new StackLayout()
+            hanzahl.Add(refreshFrame,0);
+            hanzahl.Add(entryanzahl,1);
+            hanzahl.Add(zaehlerEinheitEdit,2);
+
+            var vanzahl = new VerticalStackLayout()
             {
                 Padding = new Thickness(5, 5, 0, 5),
                 Margin = new Thickness(0, 0, 0, 0),
                 Spacing = 0,
-                Orientation = StackOrientation.Vertical,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
                 BackgroundColor = Color.FromArgb("#55042d53")
             };
-            hanzahl.Children.Add(refreshFrame);
 
-            hanzahl.Children.Add(entryanzahl);
-            hanzahl.Children.Add(zaehlerEinheitEdit);
-
-            //vanzahl.Children.Add(labelnewEdit);
             vanzahl.Children.Add(hanzahl);
-
-            //var labelGrund = new Label
-            //{
-            //    Text = "Ablesegrund:",
-            //    TextColor = Color.FromArgb("#ffffff"),
-            //    Margin = new Thickness(5, 10, 5, 10),
-            //    Padding = new Thickness(0),
-            //    FontSize = 14,
-            //    LineBreakMode = LineBreakMode.WordWrap,
-            //    HorizontalOptions = LayoutOptions.Start,
-            //};
-
             refreshFrame.GestureRecognizers.Clear();
             refreshFrame.GestureRecognizers.Add(new TapGestureRecognizer()
             {
@@ -608,7 +590,7 @@ namespace iPMCloud.Mobile
                 Margin = new Thickness(0),
                 Spacing = 5,
                 Orientation = StackOrientation.Horizontal,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
                 Children = { l1, r1 }
             };
             h1.GestureRecognizers.Add(new TapGestureRecognizer()
@@ -627,7 +609,7 @@ namespace iPMCloud.Mobile
                 Margin = new Thickness(0),
                 Spacing = 5,
                 Orientation = StackOrientation.Horizontal,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
                 Children = { l2, r2 }
             };
             h2.GestureRecognizers.Add(new TapGestureRecognizer()
@@ -646,7 +628,7 @@ namespace iPMCloud.Mobile
                 Margin = new Thickness(0),
                 Spacing = 5,
                 Orientation = StackOrientation.Horizontal,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
                 Children = { l3, r3 }
             };
             h3.GestureRecognizers.Add(new TapGestureRecognizer()
@@ -665,7 +647,7 @@ namespace iPMCloud.Mobile
                 Margin = new Thickness(0),
                 Spacing = 5,
                 Orientation = StackOrientation.Horizontal,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
                 Children = { l4, r4 }
             };
             h4.GestureRecognizers.Add(new TapGestureRecognizer()
@@ -685,7 +667,7 @@ namespace iPMCloud.Mobile
                 Margin = new Thickness(0),
                 Spacing = 5,
                 Orientation = StackOrientation.Horizontal,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
                 Children = { l5, r5 }
             };
             h5.GestureRecognizers.Add(new TapGestureRecognizer()
@@ -704,7 +686,7 @@ namespace iPMCloud.Mobile
                 Margin = new Thickness(0),
                 Spacing = 5,
                 Orientation = StackOrientation.Horizontal,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
                 Children = { l6, r6 }
             };
             h6.GestureRecognizers.Add(new TapGestureRecognizer()
@@ -718,13 +700,12 @@ namespace iPMCloud.Mobile
             var l7 = new Label { Text = "Mieter-/Nutzerwechsel", TextColor = Color.FromArgb("#cccccc"), WidthRequest = 125, MinimumWidthRequest = 125, VerticalOptions = LayoutOptions.Center };
             var r7 = new Switch { IsToggled = false, InputTransparent = true };
             model.allAblesegrundStack.Add(7, r7);
-            var h7 = new StackLayout()
+            var h7 = new HorizontalStackLayout()
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(0),
                 Spacing = 5,
-                Orientation = StackOrientation.Horizontal,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
                 Children = { l7, r7 }
             };
             h7.GestureRecognizers.Add(new TapGestureRecognizer()
@@ -738,13 +719,12 @@ namespace iPMCloud.Mobile
             var l8 = new Label { Text = "Kontrolle", TextColor = Color.FromArgb("#cccccc"), WidthRequest = 95, MinimumWidthRequest = 95, VerticalOptions = LayoutOptions.Center };
             var r8 = new Switch { IsToggled = false, InputTransparent = true };
             model.allAblesegrundStack.Add(8, r8);
-            var h8 = new StackLayout()
+            var h8 = new HorizontalStackLayout()
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(0),
                 Spacing = 5,
-                Orientation = StackOrientation.Horizontal,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
                 Children = { l8, r8 }
             };
             h8.GestureRecognizers.Add(new TapGestureRecognizer()
@@ -755,50 +735,45 @@ namespace iPMCloud.Mobile
                 })
             });
 
-            var m1 = new StackLayout()
+            var m1 = new HorizontalStackLayout()
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(5, 2, 5, 2),
                 Spacing = 10,
-                Orientation = StackOrientation.Horizontal,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
                 Children = { h1, h2 }
             };
-            var m2 = new StackLayout()
+            var m2 = new HorizontalStackLayout()
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(5, 2, 5, 2),
                 Spacing = 10,
-                Orientation = StackOrientation.Horizontal,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
                 Children = { h3, h4 }
             };
-            var m3 = new StackLayout()
+            var m3 = new HorizontalStackLayout()
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(5, 2, 5, 2),
                 Spacing = 10,
-                Orientation = StackOrientation.Horizontal,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
                 Children = { h5, h6 }
             };
-            var m4 = new StackLayout()
+            var m4 = new HorizontalStackLayout()
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(5, 2, 5, 2),
                 Spacing = 10,
-                Orientation = StackOrientation.Horizontal,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
                 Children = { h7, h8 }
             };
 
-            var stackRadio = new StackLayout
+            var stackRadio = new VerticalStackLayout
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(0, 5, 0, 5),
                 Spacing = 0,
-                Orientation = StackOrientation.Vertical,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
                 BackgroundColor = Colors.Transparent,
                 Children = { m1, m2, m3, m4 }
             };
@@ -807,13 +782,12 @@ namespace iPMCloud.Mobile
 
 
 
-            var stackBtn = new StackLayout
+            var stackBtn = new HorizontalStackLayout
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(0),
                 Spacing = 0,
-                Orientation = StackOrientation.Horizontal,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
                 BackgroundColor = Colors.Transparent
             };
 
@@ -865,15 +839,15 @@ namespace iPMCloud.Mobile
             {
                 BackgroundColor = Color.FromArgb("#041d43"),
                 VerticalOptions = LayoutOptions.Start,
-                HorizontalOptions = LayoutOptions.EndAndExpand,
+                HorizontalOptions = LayoutOptions.End,
                 Padding = new Thickness(1),
                 Margin = new Thickness(0, 17, 5, 10),
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
                 Content = new StackLayout
                 {
                     BackgroundColor = Color.FromArgb("#042d53"),
-                    VerticalOptions = LayoutOptions.CenterAndExpand,
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    VerticalOptions = LayoutOptions.Center,
+                    HorizontalOptions = LayoutOptions.Fill,
                     Padding = new Thickness(0),
                     Margin = new Thickness(0),
                     HeightRequest = 40,
@@ -881,8 +855,8 @@ namespace iPMCloud.Mobile
                     Spacing = 0,
                     Children = { new Image
                         {
-                            VerticalOptions = LayoutOptions.CenterAndExpand,
-                            HorizontalOptions = LayoutOptions.CenterAndExpand,
+                            VerticalOptions = LayoutOptions.Center,
+                            HorizontalOptions = LayoutOptions.Center,
                             Margin = new Thickness(0),
                             HeightRequest = 30,
                             WidthRequest = 30,
@@ -908,8 +882,8 @@ namespace iPMCloud.Mobile
                 Content = new StackLayout
                 {
                     BackgroundColor = Color.FromArgb("#042d53"),
-                    VerticalOptions = LayoutOptions.CenterAndExpand,
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    VerticalOptions = LayoutOptions.Center,
+                    HorizontalOptions = LayoutOptions.Fill,
                     Padding = new Thickness(0),
                     Margin = new Thickness(0),
                     HeightRequest = 40,
@@ -917,8 +891,8 @@ namespace iPMCloud.Mobile
                     Spacing = 0,
                     Children = { new Image
                         {
-                            VerticalOptions = LayoutOptions.CenterAndExpand,
-                            HorizontalOptions = LayoutOptions.CenterAndExpand,
+                            VerticalOptions = LayoutOptions.Center,
+                            HorizontalOptions = LayoutOptions.Center,
                             Margin = new Thickness(0),
                             HeightRequest = 30,
                             WidthRequest = 30,
@@ -947,7 +921,7 @@ namespace iPMCloud.Mobile
                 Margin = new Thickness(0),
                 Spacing = 0,
                 Orientation = StackOrientation.Vertical,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
                 BackgroundColor = Colors.Transparent,
                 Children = { vanzahl
                 }
@@ -970,44 +944,144 @@ namespace iPMCloud.Mobile
         }
 
 
-
-
+        static bool _updatingAnzahl;
 
         public static void ValueChanged(object sender, TextChangedEventArgs e)
         {
+            if (_updatingAnzahl) return;
+
             var entry = (CustomEntry)sender;
             var od = (ObjektDataWSO)entry.ReturnCommandParameter;
-            entryanzahl.TextChanged -= ValueChanged;
-            try
+
+            // Wichtig: nicht entryanzahl verwenden, sondern sender/entry
+            entry.Dispatcher.Dispatch(() =>
             {
-                char[] allowedChars = { '1', '2', '3', '4', '5', '6', '7', '8', '9', '0' };
-                string text = entryanzahl.Text.Replace(".", "").Replace(",", "");
-                if (String.IsNullOrWhiteSpace(text)) { text = "0,000"; }
-                var t = decimal.Parse(text) / 1000;
-                entryanzahl.Text = Utils.formatDEStr3(t);
-                od.firstStand = entryanzahl.Text;
-            }
-            finally
-            {
-                entryanzahl.TextChanged += ValueChanged;
-            }
+                if (_updatingAnzahl) return;
+                _updatingAnzahl = true;
+                try
+                {
+                    var raw = (entry.Text ?? "").Replace(".", "").Replace(",", "");
+                    if (string.IsNullOrWhiteSpace(raw)) raw = "0";
+
+                    if (!decimal.TryParse(raw, out var v)) v = 0m;
+
+                    var formatted = Utils.formatDEStr3(v / 1000m);
+
+                    if (entry.Text != formatted)
+                        entry.Text = formatted;
+
+                    od.firstStand = entry.Text;
+                }
+                finally
+                {
+                    _updatingAnzahl = false;
+                }
+            });
         }
+        static bool _updating;
+
+        //public static void ValueChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    if (_updating) return;
+
+        //    var entry = (CustomEntry)sender;
+        //    var od = (ObjektDataWSO)entry.ReturnCommandParameter;
+
+        //    // Optional: wenn nichts geändert wurde, raus
+        //    if (e.NewTextValue == null)
+        //        return;
+
+        //    // Nur auf wirklich geänderte Eingabe reagieren
+        //    // (verhindert unnötige Zyklen)
+        //    entry.Dispatcher.Dispatch(() =>
+        //    {
+        //        if (_updating) return;
+        //        _updating = true;
+        //        try
+        //        {
+        //            var raw = (entry.Text ?? "").Replace(".", "").Replace(",", "");
+        //            if (string.IsNullOrWhiteSpace(raw))
+        //                raw = "0";
+
+        //            if (!decimal.TryParse(raw, out var v))
+        //                v = 0;
+
+        //            var t = v / 1000m;
+        //            var formatted = Utils.formatDEStr3(t);
+
+        //            if (entry.Text != formatted)
+        //                entry.Text = formatted;
+
+        //            od.firstStand = entry.Text;
+        //        }
+        //        finally
+        //        {
+        //            _updating = false;
+        //        }
+        //    });
+        //}
+
+        //public static void ValueChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    var entry = (CustomEntry)sender;
+        //    var od = (ObjektDataWSO)entry.ReturnCommandParameter;
+        //    entryanzahl.TextChanged -= ValueChanged;
+        //    try
+        //    {
+        //        char[] allowedChars = { '1', '2', '3', '4', '5', '6', '7', '8', '9', '0' };
+        //        string text = entryanzahl.Text.Replace(".", "").Replace(",", "");
+        //        if (String.IsNullOrWhiteSpace(text)) { text = "0,000"; }
+        //        var t = decimal.Parse(text) / 1000;
+        //        entryanzahl.Text = Utils.formatDEStr3(t);
+        //        od.firstStand = entryanzahl.Text;
+        //    }
+        //    finally
+        //    {
+        //        entryanzahl.TextChanged += ValueChanged;
+        //    }
+        //}
+        //public static void ValueChange(object sender, FocusEventArgs e)
+        //{
+        //    var entry = (CustomEntry)sender;
+        //    var od = (ObjektDataWSO)entry.ReturnCommandParameter;
+        //    try
+        //    {
+        //        entry.Text = (entry.Text.Substring(0, 1) == "." ? entry.Text.Substring(1) : entry.Text);
+        //        entry.Text = (entry.Text.Substring(0, 1) == "," ? "0" + entry.Text : entry.Text);
+        //        entry.Text = Utils.formatDEStr3(decimal.Parse(entry.Text));
+        //    }
+        //    catch (Exception)
+        //    {
+        //        od.firstStand = "1,000";
+        //        return;
+        //    }
+        //    od.firstStand = entry.Text;
+        //}
         public static void ValueChange(object sender, FocusEventArgs e)
         {
             var entry = (CustomEntry)sender;
             var od = (ObjektDataWSO)entry.ReturnCommandParameter;
+
             try
             {
-                entry.Text = (entry.Text.Substring(0, 1) == "." ? entry.Text.Substring(1) : entry.Text);
-                entry.Text = (entry.Text.Substring(0, 1) == "," ? "0" + entry.Text : entry.Text);
-                entry.Text = Utils.formatDEStr3(decimal.Parse(entry.Text));
+                var text = entry.Text ?? "";
+
+                if (text.StartsWith(".")) text = text.Substring(1);
+                if (text.StartsWith(",")) text = "0" + text;
+
+                if (string.IsNullOrWhiteSpace(text))
+                    text = "0";
+
+                if (!decimal.TryParse(text, out var val))
+                    val = 0;
+
+                entry.Text = Utils.formatDEStr3(val);
+                od.firstStand = entry.Text;
             }
-            catch (Exception)
+            catch
             {
                 od.firstStand = "1,000";
-                return;
             }
-            od.firstStand = entry.Text;
         }
 
         public static StackLayout GetTypInfoElement(string typ, AppModel model)
@@ -1018,7 +1092,7 @@ namespace iPMCloud.Mobile
                 Margin = new Thickness(0, 10, 0, 0),
                 Spacing = 0,
                 Orientation = StackOrientation.Horizontal,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
                 BackgroundColor = Color.FromArgb("#90144d73"),
                 Children = {
                     new Image
@@ -1033,7 +1107,7 @@ namespace iPMCloud.Mobile
                     new Label {
                         Text = typ,
                         VerticalOptions = LayoutOptions.Center,
-                        HorizontalOptions = LayoutOptions.FillAndExpand,
+                        HorizontalOptions = LayoutOptions.Fill,
                         FontSize = 18,
                         TextColor = Colors.White,
                         HorizontalTextAlignment = TextAlignment.Start,

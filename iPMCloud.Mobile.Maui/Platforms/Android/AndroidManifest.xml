@@ -18,6 +18,7 @@
 		</provider>
 		<!-- Foreground Service für Datensynchronisation (läuft bei Screen-off und im Hintergrund) -->
 		<service android:name="com.ipmcloud.ipm.mobile.SyncForegroundService" android:exported="false" android:foregroundServiceType="dataSync" />
+		<service android:name="com.ipmcloud.ipm.mobile.UploadForegroundService" android:exported="false" android:foregroundServiceType="dataSync" />
 	</application>
 	<!-- Permissions -->
 	<uses-permission android:name="android.permission.INTERNET" />

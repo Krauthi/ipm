@@ -75,6 +75,7 @@ namespace iPMCloud.Mobile
 
         // Platform-specific sync service resolved lazily from DI (Android → ForegroundService, iOS → inline)
         private iPMCloud.Mobile.Services.ISyncService _syncService;
+        private iPMCloud.Mobile.Services.IUploadService _uploadService;
 
 
         public MainPage()
@@ -8425,72 +8426,93 @@ namespace iPMCloud.Mobile
         public async void CheckAllSyncFromUpload()
         {
             popupContainer_quest_countfromupload.IsVisible = false;
-            _allCountFromUpload = GetAllSyncFromUploadCount();
-            _pn = PNWSO.CountFromStack();
-            if (_allCountFromUpload > 0)
+
+            var pendingUploads = iPMCloud.Mobile.Services.UploadCoordinator.Instance.GetPendingUploadCount();
+            if (pendingUploads <= 0)
             {
-                // Es gibt Upload Daten !!!
-                _allCountFromUploadFalied = false;
-                overlay.IsVisible = true;
-                await Task.Delay(1);
-                if (_dayovers > 0 && !_allCountFromUploadFalied)
-                {
-                    SyncDayOver();
-                    await Task.Delay(300);
-                }
-                if (_checks > 0 && !_allCountFromUploadFalied)
-                {
-                    SyncChecks();
-                    await Task.Delay(300);
-                }
-                if (_checksBemImg > 0 && !_allCountFromUploadFalied)
-                {
-                    SyncChecksBemImg();
-                    await Task.Delay(300);
-                }
-                if (_bemerkungen > 0 && !_allCountFromUploadFalied)
-                {
-                    SyncSingleNotice();
-                    await Task.Delay(300);
-                }
-                if (_bilder > 0 && !_allCountFromUploadFalied)
-                {
-                    SyncNoticeBild();
-                    await Task.Delay(300);
-                }
-                if (_packs > 0 && !_allCountFromUploadFalied)
-                {
-                    SyncPosition();
-                    await Task.Delay(300);
-                }
-                if (_trans > 0 && !_allCountFromUploadFalied)
-                {
-                    SyncTransSigns();
-                    await Task.Delay(300);
-                }
-                if (_objectValues > 0 && !_allCountFromUploadFalied)
-                {
-                    SyncObjectValues();
-                    await Task.Delay(300);
-                }
-                if (_objectValueBilds > 0 && !_allCountFromUploadFalied)
-                {
-                    SyncObjectValueBild();
-                    await Task.Delay(300);
-                }
-                if (_pn > 0 && !_allCountFromUploadFalied)
-                {
-                    SyncPN();
-                    await Task.Delay(500);
-                }
-                await Task.Delay(1);
-                overlay.IsVisible = false;
+                return;
             }
 
-            if (_pn > 0 && _allCountFromUpload == 0)
+            overlay.IsVisible = true;
+            await Task.Delay(1);
+
+            iPMCloud.Mobile.Services.UploadCoordinator.ProgressChanged -= OnUploadProgress;
+            iPMCloud.Mobile.Services.UploadCoordinator.UploadCompleted -= OnUploadCompleted;
+            iPMCloud.Mobile.Services.UploadCoordinator.ProgressChanged += OnUploadProgress;
+            iPMCloud.Mobile.Services.UploadCoordinator.UploadCompleted += OnUploadCompleted;
+
+            if (_uploadService == null)
             {
-                SyncPN();
+                try
+                {
+                    _uploadService = IPlatformApplication.Current?.Services
+                        ?.GetService<iPMCloud.Mobile.Services.IUploadService>();
+                }
+                catch (Exception ex)
+                {
+                    AppModel.Logger.Warn("IUploadService DI lookup: " + ex.Message);
+                }
+
+                if (_uploadService == null)
+                {
+#if ANDROID
+                    _uploadService = new iPMCloud.Mobile.Platforms.Android.AndroidUploadService();
+#elif IOS
+                    _uploadService = new iPMCloud.Mobile.Platforms.iOS.iOSUploadService();
+#endif
+                }
             }
+
+#if IOS
+            DeviceDisplay.Current.KeepScreenOn = true;
+#endif
+            _uploadService?.StartUploads();
+        }
+
+        private void OnUploadProgress(object sender, iPMCloud.Mobile.Services.UploadProgressEventArgs e)
+        {
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                try
+                {
+                    overlay.IsVisible = true;
+                }
+                catch (Exception ex)
+                {
+                    AppModel.Logger.Warn("OnUploadProgress UI: " + ex.Message);
+                }
+            });
+        }
+
+        private void OnUploadCompleted(object sender, iPMCloud.Mobile.Services.UploadCompletedEventArgs e)
+        {
+            iPMCloud.Mobile.Services.UploadCoordinator.ProgressChanged -= OnUploadProgress;
+            iPMCloud.Mobile.Services.UploadCoordinator.UploadCompleted -= OnUploadCompleted;
+
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                try
+                {
+                    overlay.IsVisible = false;
+                    SetAllSyncState();
+
+                    if (!e.Success && !string.IsNullOrWhiteSpace(e.ErrorMessage))
+                    {
+                        AppModel.Logger.Warn("Uploads fehlgeschlagen: " + e.ErrorMessage);
+                    }
+                    await Task.Delay(1);
+                }
+                catch (Exception ex)
+                {
+                    AppModel.Logger.Warn("OnUploadCompleted UI: " + ex.Message);
+                }
+                finally
+                {
+#if IOS
+                    DeviceDisplay.Current.KeepScreenOn = false;
+#endif
+                }
+            });
         }
 
 

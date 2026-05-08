@@ -50,8 +50,10 @@ namespace iPMCloud.Mobile
             // Platform-specific sync service (Android: ForegroundService; iOS: inline)
 #if ANDROID
             builder.Services.AddSingleton<ISyncService, AndroidSyncService>();
+            builder.Services.AddSingleton<IUploadService, AndroidUploadService>();
 #elif IOS
             builder.Services.AddSingleton<ISyncService, iOSSyncService>();
+            builder.Services.AddSingleton<IUploadService, iOSUploadService>();
 #endif
 
             // Example: builder.Services.AddSingleton<IImageResizer, ImageResizer>();

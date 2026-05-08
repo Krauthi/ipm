@@ -3,6 +3,7 @@ using Android.OS;
 using Android.Util;
 using iPMCloud.Mobile.Platforms.Android.Services;
 using iPMCloud.Mobile.Services;
+using iPMCloud.Mobile.vo;
 
 namespace iPMCloud.Mobile.Platforms.Android
 {

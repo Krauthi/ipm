@@ -16,11 +16,17 @@
 		<provider android:name="androidx.core.content.FileProvider" android:authorities="${applicationId}.fileprovider" android:exported="false" android:grantUriPermissions="true">
 			<meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths" />
 		</provider>
+		<!-- Foreground Service für Datensynchronisation (läuft bei Screen-off und im Hintergrund) -->
+		<service android:name="com.ipmcloud.ipm.mobile.SyncForegroundService" android:exported="false" android:foregroundServiceType="dataSync" />
 	</application>
 	<!-- Permissions -->
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+	<!-- Foreground Service und WakeLock für Hintergrund-Synchronisation -->
+	<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+	<uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+	<uses-permission android:name="android.permission.WAKE_LOCK" />
 	<!-- Notification Permissions (Android 13+) -->
 	<uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 	<uses-permission android:name="android.permission.VIBRATE" />

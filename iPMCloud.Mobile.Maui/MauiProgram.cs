@@ -5,6 +5,12 @@ using Microsoft.Maui.Controls.Hosting;
 using Microsoft.Maui.Hosting;
 using NLog.Extensions.Logging;
 using ZXing.Net.Maui.Controls;
+using iPMCloud.Mobile.Services;
+#if ANDROID
+using iPMCloud.Mobile.Platforms.Android;
+#elif IOS
+using iPMCloud.Mobile.Platforms.iOS;
+#endif
 
 namespace iPMCloud.Mobile
 {
@@ -40,6 +46,13 @@ namespace iPMCloud.Mobile
             builder.Logging.AddNLog();
             // Configure services for dependency injection
             // Migrate DependencyService registrations here
+
+            // Platform-specific sync service (Android: ForegroundService; iOS: inline)
+#if ANDROID
+            builder.Services.AddSingleton<ISyncService, AndroidSyncService>();
+#elif IOS
+            builder.Services.AddSingleton<ISyncService, iOSSyncService>();
+#endif
 
             // Example: builder.Services.AddSingleton<IImageResizer, ImageResizer>();
             // TODO: Register all services that were previously using DependencyService

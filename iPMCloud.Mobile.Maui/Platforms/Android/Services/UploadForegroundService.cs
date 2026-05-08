@@ -19,6 +19,7 @@ namespace iPMCloud.Mobile.Platforms.Android.Services
         private const string CHANNEL_ID = "ipmcloud_upload_channel";
         private const int NOTIFICATION_ID = 20002;
         private const string TAG = "UploadForegroundService";
+        // Safety cap: expected upload runs are usually <= 5 minutes; 10 minutes avoids stale wake locks on failure paths.
         private const long WAKE_LOCK_TIMEOUT_MS = 10 * 60 * 1000;
 
         private CancellationTokenSource _cts;

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -539,11 +540,14 @@ namespace iPMCloud.Mobile.Services
                             c.leistungen?.ForEach(p =>
                             {
                                 var foundPos = resultPack.leistungen.Find(lei => lei.id == p.id);
-                                if (foundPos != null && double.Parse(p.lastwork) > 0 && p.timevaldays > 0)
+                                if (foundPos != null &&
+                                    p.timevaldays > 0 &&
+                                    double.TryParse(p.lastwork, NumberStyles.Any, CultureInfo.InvariantCulture, out var lastWorkValue) &&
+                                    lastWorkValue > 0)
                                 {
                                     if (string.IsNullOrWhiteSpace(foundPos.workat) || foundPos.workat == "0")
                                     {
-                                        foundPos.workat = "" + (double.Parse(p.lastwork) + (double.Parse("" + p.timevaldays) * 24 * 60 * 60 * 1000));
+                                        foundPos.workat = (lastWorkValue + (p.timevaldays * 24d * 60d * 60d * 1000d)).ToString(CultureInfo.InvariantCulture);
                                     }
                                     p.workat = foundPos.workat;
                                 }
@@ -649,7 +653,8 @@ namespace iPMCloud.Mobile.Services
                         throw;
                 }
 
-                var delay = TimeSpan.FromSeconds(Math.Pow(2, attempt - 1));
+                var delaySeconds = Math.Min(8d, Math.Pow(2, attempt - 1));
+                var delay = TimeSpan.FromSeconds(delaySeconds);
                 await Task.Delay(delay, token).ConfigureAwait(false);
             }
 

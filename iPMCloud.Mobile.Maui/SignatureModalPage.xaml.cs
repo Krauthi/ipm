@@ -15,6 +15,12 @@ namespace iPMCloud.Mobile
         public SignatureModalPage()
         {
             InitializeComponent();
+//            NavigationPage.SetHasNavigationBar(this, false);
+
+//#if IOS
+//    this.On<iOS>().SetUseSafeArea(false);
+//#endif
+
 
             btn_back_sign.GestureRecognizers.Clear();
             var tgr3 = new TapGestureRecognizer();
@@ -22,6 +28,29 @@ namespace iPMCloud.Mobile
             tgr3.Tapped += OnCancelClicked;
             btn_back_sign.GestureRecognizers.Add(tgr3);
         }
+
+
+//        protected override void OnAppearing()
+//        {
+//            base.OnAppearing();
+//#if ANDROID
+//            AndroidFullscreen.SetFullscreen(true);
+//#endif
+//#if IOS
+//        iOSFullscreen.SetFullscreen(true);
+//#endif
+//        }
+
+//        protected override void OnDisappearing()
+//        {
+//            base.OnDisappearing();
+//#if ANDROID
+//            AndroidFullscreen.SetFullscreen(false);
+//#endif
+//#if IOS
+//        iOSFullscreen.SetFullscreen(false);
+//#endif
+//        }
 
         private async void OnCancelClicked(object sender, EventArgs e)
         {

@@ -4,12 +4,12 @@ using ZXing.Net.Maui;
 
 namespace iPMCloud.Mobile
 {
-    public partial class ScanModalPage : ContentPage
+    public partial class ScanObjModalPage : ContentPage
     {
         private TaskCompletionSource<string> _tcs;
         private bool _completed;
 
-        private ScanModalPage()
+        private ScanObjModalPage()
         {
             InitializeComponent();
 
@@ -52,7 +52,7 @@ namespace iPMCloud.Mobile
                 return null;
             }
 
-            var page = new ScanModalPage();
+            var page = new ScanObjModalPage();
             page._tcs = new TaskCompletionSource<string>();
 
             // PushModalAsync works without a NavigationPage wrapper because
@@ -123,16 +123,5 @@ namespace iPMCloud.Mobile
             });
         }
     }
-    public class OverlayViewModel
-    {
-        public string TopText { get; set; } = "";
-        public string BottomText { get; set; } = "";
-
-        public ICommand FlashButtonCommand { get; }
-
-        public OverlayViewModel(Action? onFlashButtonClicked)
-        {
-            FlashButtonCommand = new Command(() => onFlashButtonClicked?.Invoke());
-        }
-    }
+    
 }

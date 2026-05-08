@@ -42,7 +42,7 @@ namespace iPMCloud.Mobile.vo
         // Page Navigator
         public TFPageNavigator PageNavigator { get; set; } = new TFPageNavigator();
 
-        public Scanner Scan = null;
+        //public Scanner Scan = null;
         public State State = null;
 
         //! Management for Settings
@@ -268,7 +268,7 @@ namespace iPMCloud.Mobile.vo
                 PageNavigator = new TFPageNavigator();
                 State = new State();
                 Connections = new Connections(this);
-                Scan = new Scanner();
+                //Scan = new Scanner();
                 Person = PersonWSO.LoadPerson(this);// Wenn keine Person dann "null" !!
 
                 var swBuildings = System.Diagnostics.Stopwatch.StartNew();
@@ -858,7 +858,25 @@ namespace iPMCloud.Mobile.vo
 
 
 
-
+        public async void Btn_FlashlightAloneTapped(object sender, EventArgs e)
+        {
+            try
+            {
+                if (AppModel.Instance.isFlashLigthAloneON)
+                {
+                    AppModel.Instance.isFlashLigthAloneON = false;
+                    await Flashlight.Default.TurnOffAsync();
+                }
+                else
+                {
+                    AppModel.Instance.isFlashLigthAloneON = true;
+                    await Flashlight.Default.TurnOnAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+        }
 
 
 

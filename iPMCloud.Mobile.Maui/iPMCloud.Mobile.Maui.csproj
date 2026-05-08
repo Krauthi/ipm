@@ -11,9 +11,9 @@
 		<ApplicationTitle>iPM-Cloud</ApplicationTitle>
 		<ApplicationId>com.ipmcloud.ipm.mobile</ApplicationId>
 		<ApplicationIdGuid>201CEFAB-590D-414F-9660-9EFF31FE2078</ApplicationIdGuid>
-		<ApplicationDisplayVersion>3.0.5</ApplicationDisplayVersion>
+		<ApplicationDisplayVersion>3.0.6</ApplicationDisplayVersion>
 		<ApplicationVersion>1</ApplicationVersion>
-		<Version>3.0.5</Version>
+		<Version>3.0.6</Version>
 		<AssemblyVersion>2.0.0.0</AssemblyVersion>
 		<FileVersion>2.0.0.0</FileVersion>
 		<NeutralLanguage>de-DE</NeutralLanguage>
@@ -120,6 +120,7 @@
 
 	<!-- NuGet Packages - Allgemein (alle Plattformen) -->
 <ItemGroup>
+  <PackageReference Include="CommunityToolkit.Maui.Core" Version="14.1.0" />
   <PackageReference Include="FFImageLoading.Maui" Version="1.3.2" />
   <PackageReference Include="MetadataExtractor" Version="2.9.3" />
   <PackageReference Include="Microsoft.Maui.Controls" Version="10.0.60" />
@@ -185,14 +186,14 @@
 		<None Include="Platforms\iOS\Entitlements.plist" />
 	</ItemGroup>
 	<ItemGroup>
+	  <Compile Update="SignatureModalPage.xaml.cs">
+	    <DependentUpon>SignatureModalPage.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="ScanObjModalPage.xaml.cs">
+	    <DependentUpon>ScanObjModalPage.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="ScanModalPage.xaml.cs">
 	    <DependentUpon>ScanModalPage.xaml</DependentUpon>
-	  </Compile>
-	  <Compile Update="ScannerPage.xaml.cs">
-	    <DependentUpon>ScannerPage.xaml</DependentUpon>
-	  </Compile>
-	  <Compile Update="ScanPage.xaml.cs">
-	    <DependentUpon>ScanPage.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
 
@@ -210,13 +211,13 @@
 
 	<!-- Einzelne XAML Update -->
 	<ItemGroup>
+		<MauiXaml Update="SignatureModalPage.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="ScanObjModalPage.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 		<MauiXaml Update="ScanModalPage.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="ScannerPage.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="ScanPage.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="vo\wso\checks\SignaturePadView.xaml">

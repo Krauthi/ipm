@@ -3755,316 +3755,6 @@
 
 
         <Grid
-            x:Name="BuildingScanPage_Container"
-            Margin="0,0,0,25"
-            Padding="0"
-            AbsoluteLayout.LayoutBounds="0,0,1,1"
-            AbsoluteLayout.LayoutFlags="All"
-            HorizontalOptions="Fill"
-            IsVisible="False"
-            RowSpacing="0"
-            VerticalOptions="Fill">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-
-            <Grid
-                Grid.Row="0"
-                Margin="0"
-                Padding="10,10,10,10"
-                ColumnSpacing="0"
-                HeightRequest="48"
-                HorizontalOptions="Fill">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Border
-                    Grid.Column="0"
-                    Margin="3,2,2,2"
-                    Padding="1"
-                    BackgroundColor="Transparent"
-                    HorizontalOptions="Start"
-                    Stroke="Transparent"
-                    VerticalOptions="Center">
-                    <Grid
-                        x:Name="btn_back_inBuildingScan"
-                        Margin="0"
-                        Padding="0"
-                        ColumnSpacing="0"
-                        HeightRequest="38"
-                        HorizontalOptions="Start"
-                        VerticalOptions="Center">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Image
-                            Grid.Column="0"
-                            Margin="0,0,0,0"
-                            HeightRequest="30"
-                            HorizontalOptions="Start"
-                            Source="DropLeftBlueDoubleImage.png"
-                            VerticalOptions="Center"
-                            WidthRequest="30" />
-                        <Label
-                            Grid.Column="1"
-                            Margin="0"
-                            FontSize="18"
-                            HorizontalOptions="Fill"
-                            HorizontalTextAlignment="Start"
-                            LineBreakMode="TailTruncation"
-                            Text="ABBRECHEN"
-                            TextColor="#2f84bd"
-                            VerticalOptions="Center" />
-                    </Grid>
-                </Border>
-            </Grid>
-            <BoxView
-                Grid.Row="1"
-                Margin="0,0,0,3"
-                BackgroundColor="Gray"
-                HeightRequest="1"
-                HorizontalOptions="Fill"
-                VerticalOptions="Start" />
-
-
-            <ScrollView
-                Grid.Row="2"
-                Margin="0"
-                Padding="0"
-                HorizontalOptions="Fill"
-                VerticalOptions="Fill">
-                <Grid
-                    Margin="0"
-                    Padding="0"
-                    HorizontalOptions="Fill"
-                    RowSpacing="0"
-                    VerticalOptions="Fill">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-
-                    <StackLayout
-                        x:Name="lay_buildingscan"
-                        Grid.Row="0"
-                        Margin="10,0,10,20"
-                        Padding="0"
-                        HorizontalOptions="Fill"
-                        Spacing="0"
-                        VerticalOptions="Fill" />
-
-                    <Grid
-                        Grid.Row="1"
-                        Margin="10,0,10,5"
-                        Padding="5"
-                        BackgroundColor="#70144d73"
-                        ColumnSpacing="0"
-                        HorizontalOptions="Fill">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Image
-                            Grid.Column="0"
-                            Margin="0,0,10,0"
-                            HeightRequest="36"
-                            Source="qr.png"
-                            VerticalOptions="Start"
-                            WidthRequest="36" />
-                        <Label
-                            Grid.Column="1"
-                            Margin="0"
-                            Padding="0"
-                            FontSize="14"
-                            HorizontalOptions="Fill"
-                            HorizontalTextAlignment="Start"
-                            Text="Bitte scannen Sie den QR-Code um ein Objekt auszuwählen."
-                            TextColor="#ffffff"
-                            VerticalOptions="Start" />
-                    </Grid>
-                </Grid>
-            </ScrollView>
-        </Grid>
-
-
-        <Grid
-            x:Name="BuildingOutScanPage_Container"
-            Margin="0,0,0,25"
-            Padding="0"
-            AbsoluteLayout.LayoutBounds="0,0,1,1"
-            AbsoluteLayout.LayoutFlags="All"
-            HorizontalOptions="Fill"
-            IsVisible="False"
-            RowSpacing="0"
-            VerticalOptions="Fill">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-
-            <Grid
-                Grid.Row="0"
-                Margin="0"
-                Padding="10,10,10,10"
-                ColumnSpacing="0"
-                HeightRequest="48"
-                HorizontalOptions="Fill">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Border
-                    Grid.Column="0"
-                    Margin="3,2,2,2"
-                    Padding="1"
-                    BackgroundColor="Transparent"
-                    HorizontalOptions="Start"
-                    Stroke="Transparent"
-                    VerticalOptions="Center">
-                    <Grid
-                        x:Name="btn_back_inBuildingOutScan"
-                        Margin="0"
-                        Padding="0"
-                        ColumnSpacing="0"
-                        HeightRequest="38"
-                        HorizontalOptions="Start"
-                        VerticalOptions="Center">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Image
-                            Grid.Column="0"
-                            Margin="0,0,0,0"
-                            HeightRequest="30"
-                            HorizontalOptions="Start"
-                            Source="DropLeftBlueDoubleImage.png"
-                            VerticalOptions="Center"
-                            WidthRequest="30" />
-                        <Label
-                            Grid.Column="1"
-                            Margin="0"
-                            FontSize="18"
-                            HorizontalOptions="Fill"
-                            HorizontalTextAlignment="Start"
-                            LineBreakMode="TailTruncation"
-                            Text="ABBRECHEN"
-                            TextColor="#2f84bd"
-                            VerticalOptions="Center" />
-                    </Grid>
-                </Border>
-            </Grid>
-            <BoxView
-                Grid.Row="1"
-                Margin="0,0,0,3"
-                BackgroundColor="Gray"
-                HeightRequest="1"
-                HorizontalOptions="Fill"
-                VerticalOptions="Start" />
-
-            <Grid
-                Grid.Row="2"
-                Margin="10,0,10,5"
-                Padding="5"
-                BackgroundColor="#70144d73"
-                ColumnSpacing="0"
-                HorizontalOptions="Fill">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Image
-                    Grid.Column="0"
-                    Margin="0,0,10,0"
-                    HeightRequest="30"
-                    Source="qr.png"
-                    VerticalOptions="Start"
-                    WidthRequest="30" />
-                <Label
-                    Grid.Column="1"
-                    Margin="0"
-                    Padding="0"
-                    FontSize="14"
-                    HorizontalOptions="Fill"
-                    HorizontalTextAlignment="Start"
-                    Text="Bitte scannen Sie den QR-Code um sich vom Objekt abzuwählen."
-                    TextColor="#ffffff"
-                    VerticalOptions="Start" />
-            </Grid>
-
-            <ScrollView
-                Grid.Row="3"
-                Margin="0"
-                Padding="0"
-                HorizontalOptions="Fill"
-                VerticalOptions="Fill">
-                <Grid
-                    Margin="0"
-                    Padding="0"
-                    HorizontalOptions="Fill"
-                    RowSpacing="0"
-                    VerticalOptions="Fill">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-
-                    <Grid
-                        Grid.Row="0"
-                        Margin="10,0,10,0"
-                        Padding="0"
-                        ColumnSpacing="0"
-                        HorizontalOptions="Fill">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Border
-                            Grid.Column="0"
-                            Margin="0"
-                            Padding="1"
-                            BackgroundColor="#041d43"
-                            HorizontalOptions="End"
-                            VerticalOptions="Center">
-                            <StackLayout
-                                x:Name="btn_flashlight_Out_container"
-                                Margin="0"
-                                Padding="0"
-                                BackgroundColor="#042d53"
-                                HeightRequest="40"
-                                HorizontalOptions="End"
-                                Spacing="0"
-                                VerticalOptions="Center"
-                                WidthRequest="40">
-                                <Image
-                                    Margin="0,0,0,0"
-                                    HeightRequest="30"
-                                    HorizontalOptions="Center"
-                                    Source="Flashlight.png"
-                                    VerticalOptions="Center"
-                                    WidthRequest="30" />
-                            </StackLayout>
-                        </Border>
-                    </Grid>
-
-                    <StackLayout
-                        x:Name="lay_buildingoutscan"
-                        Grid.Row="1"
-                        Margin="10,0,10,20"
-                        Padding="0"
-                        HorizontalOptions="Fill"
-                        Spacing="0"
-                        VerticalOptions="Fill" />
-
-                </Grid>
-            </ScrollView>
-        </Grid>
-
-
-        <Grid
             x:Name="BuildingOrderPage_Container"
             Margin="0,0,0,0"
             Padding="0"
@@ -5819,64 +5509,6 @@
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
 
-                <!--<HorizontalStackLayout
-                    Grid.Row="4"
-                    Margin="0,25,0,0"
-                    Padding="0"
-                    HorizontalOptions="Fill"
-                    IsVisible="False"
-                    Spacing="10">
-                    <Border
-                        x:Name="btn_check_sub"
-                        Margin="0"
-                        Padding="15,10,15,10"
-                        BackgroundColor="#73042d"
-                        HorizontalOptions="Center"
-                        IsVisible="True">
-                        <Label
-                            Margin="0"
-                            Padding="0"
-                            FontSize="16"
-                            Text="VORHERIGE"
-                            TextColor="#ffffff" />
-                    </Border>
-                    <Border
-                        x:Name="btn_check_add"
-                        Margin="0"
-                        Padding="15,10,15,10"
-                        BackgroundColor="#042d53"
-                        HorizontalOptions="Center"
-                        IsVisible="True">
-                        <Label
-                            Margin="0"
-                            Padding="0"
-                            FontSize="16"
-                            Text="NÄCHSTE"
-                            TextColor="#ffffff" />
-                    </Border>
-                    <Border
-                        x:Name="btn_check_ready"
-                        Margin="0"
-                        Padding="15,10,15,10"
-                        BackgroundColor="#04732d"
-                        HorizontalOptions="Center"
-                        IsVisible="true">
-                        <Label
-                            Margin="0"
-                            Padding="0"
-                            FontSize="16"
-                            Text="FERTIG"
-                            TextColor="#ffffff" />
-                    </Border>
-                </HorizontalStackLayout>-->
-
-                <!--<BoxView
-                    Grid.Row="5"
-                    Margin="0,0,0,0"
-                    BackgroundColor="Red"
-                    HeightRequest="1"
-                    HorizontalOptions="Fill"
-                    VerticalOptions="Start" />-->
 
                 <ScrollView
                     x:Name="checkQuestStack_scroll"
@@ -5995,15 +5627,15 @@
 
         <AbsoluteLayout
             x:Name="CheckPage_Signature_Container"
-            Margin="0,0,0,0"
+            Margin="0"
             Padding="0"
+                HorizontalOptions="Fill"
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             AbsoluteLayout.LayoutFlags="All"
-            HorizontalOptions="Fill"
-            IsVisible="False"
-            VerticalOptions="Fill">
+            BackgroundColor="#000"
+            IsVisible="False">
 
-            <Image
+            <!--<Image
                 Margin="0,0,0,0"
                 AbsoluteLayout.LayoutBounds="0,0,1,1"
                 AbsoluteLayout.LayoutFlags="All"
@@ -6011,27 +5643,31 @@
                 HorizontalOptions="Center"
                 Opacity="1"
                 Source="backgroundgray2.jpg"
-                VerticalOptions="End" />
+                VerticalOptions="End" />-->
 
             <Grid
                 x:Name="CheckPage_position_Container2"
-                Margin="0"
+                Margin="0,0,0,0"
                 Padding="0"
+            BackgroundColor="#600"
                 HorizontalOptions="Fill"
                 RowSpacing="0"
                 VerticalOptions="Fill">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="54" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
 
                 <Grid
                     Grid.Row="0"
+                    Grid.Column="0"
                     Margin="0"
-                    Padding="10,10,10,10"
+                    Padding="0"
                     ColumnSpacing="0"
-                    HeightRequest="48"
+                    HeightRequest="54"
                     HorizontalOptions="Fill">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
@@ -6043,14 +5679,12 @@
                         Margin="3,2,2,2"
                         Padding="1"
                         BackgroundColor="Transparent"
-                        HorizontalOptions="Start"
-                        Stroke="Transparent"
+                        HorizontalOptions="Fill"
                         VerticalOptions="Center">
                         <Grid
                             Margin="0"
                             Padding="0"
                             ColumnSpacing="0"
-                            HeightRequest="38"
                             HorizontalOptions="Start"
                             VerticalOptions="Center">
                             <Grid.ColumnDefinitions>
@@ -6079,25 +5713,18 @@
                     </Border>
                     <Label
                         Grid.Column="1"
-                        Margin="0"
+                        Margin="0,0,10,0"
+                        Padding="0"
                         FontSize="22"
-                        HorizontalOptions="Fill"
-                        LineBreakMode="TailTruncation"
-                        Text="Unterschrift hinzufügen"
+                        HorizontalOptions="End"
+                        Text="Unterschrift"
                         TextColor="#ffffff"
                         VerticalOptions="Center" />
                 </Grid>
-                <BoxView
-                    Grid.Row="1"
-                    Margin="0"
-                    BackgroundColor="Gray"
-                    HeightRequest="1"
-                    HorizontalOptions="Fill"
-                    VerticalOptions="Start" />
 
                 <ScrollView
                     x:Name="checkQuestStack_signature_scroll"
-                    Grid.Row="2"
+                    Grid.Row="1"
                     Margin="0"
                     Padding="0"
                     HorizontalOptions="Fill"
@@ -6238,8 +5865,8 @@
                         x:Name="noticeFor_Pos_check_bem"
                         Margin="0,0,0,5"
                         Padding="0"
-                        Scale="0.80"
                         HorizontalOptions="Fill"
+                        Scale="0.80"
                         Spacing="0" />
                 </VerticalStackLayout>
                 <BoxView
@@ -6307,30 +5934,30 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <Label
-                        Grid.Column="0"
-                        Margin="10,0,20,0"
-                        Padding="0"
-                        FontSize="12"
-                        HorizontalOptions="Start"
-                        LineBreakMode="WordWrap"
-                        Text="Maximal 3 Bilder"
-                        TextColor="#ffcc00"
-                        VerticalOptions="Center" />
+                            Grid.Column="0"
+                            Margin="10,0,20,0"
+                            Padding="0"
+                            FontSize="12"
+                            HorizontalOptions="Start"
+                            LineBreakMode="WordWrap"
+                            Text="Maximal 3 Bilder"
+                            TextColor="#ffcc00"
+                            VerticalOptions="Center" />
                         <Border
                             x:Name="btn_takePhoto_frame_check_bem"
                             Grid.Column="1"
                             Margin="15,0,15,0"
                             Padding="6"
-                                BackgroundColor="#345d93"
+                            BackgroundColor="#345d93"
                             HorizontalOptions="Start"
                             VerticalOptions="Center">
-                                <Image
-                                    Margin="0,0,0,0"
-                                    HeightRequest="30"
-                                    HorizontalOptions="Center"
-                                    Source="Cam.png"
-                                    VerticalOptions="Center"
-                                    WidthRequest="30" />
+                            <Image
+                                Margin="0,0,0,0"
+                                HeightRequest="30"
+                                HorizontalOptions="Center"
+                                Source="Cam.png"
+                                VerticalOptions="Center"
+                                WidthRequest="30" />
                         </Border>
                         <Border
                             x:Name="btn_takePhotoAttachment_frame_check_bem"
@@ -6340,13 +5967,13 @@
                             BackgroundColor="#345d93"
                             HorizontalOptions="Start"
                             VerticalOptions="Center">
-                                <Image
-                                    Margin="0,0,0,0"
-                                    HeightRequest="30"
-                                    HorizontalOptions="Center"
-                                    Source="Attachment.png"
-                                    VerticalOptions="Center"
-                                    WidthRequest="30" />
+                            <Image
+                                Margin="0,0,0,0"
+                                HeightRequest="30"
+                                HorizontalOptions="Center"
+                                Source="Attachment.png"
+                                VerticalOptions="Center"
+                                WidthRequest="30" />
                         </Border>
                     </Grid>
                 </Grid>
@@ -6392,31 +6019,31 @@
                         Padding="1"
                         BackgroundColor="#04532d"
                         HorizontalOptions="Start">
-                            <HorizontalStackLayout
-                                Margin="0,0,0,0"
-                                Padding="10,6"
-                                HorizontalOptions="Fill"
+                        <HorizontalStackLayout
+                            Margin="0,0,0,0"
+                            Padding="10,6"
+                            HorizontalOptions="Fill"
+                            Spacing="0"
+                            VerticalOptions="Center">
+                            <Image
+                                Margin="0,0,8,0"
+                                HeightRequest="30"
+                                Source="CheckWhite.png"
+                                VerticalOptions="Center"
+                                WidthRequest="30" />
+                            <VerticalStackLayout
+                                Margin="0"
+                                Padding="0"
                                 Spacing="0"
                                 VerticalOptions="Center">
-                                <Image
-                                    Margin="0,0,8,0"
-                                    HeightRequest="30"
-                                    Source="CheckWhite.png"
-                                    VerticalOptions="Center"
-                                    WidthRequest="30" />
-                                <VerticalStackLayout
+                                <Label
                                     Margin="0"
                                     Padding="0"
-                                    Spacing="0"
-                                    VerticalOptions="Center">
-                                    <Label
-                                        Margin="0"
-                                        Padding="0"
-                                        FontSize="18"
-                                        Text="ÜBERNEHMEN"
-                                        TextColor="#ffffff" />
-                                </VerticalStackLayout>
-                            </HorizontalStackLayout>
+                                    FontSize="18"
+                                    Text="ÜBERNEHMEN"
+                                    TextColor="#ffffff" />
+                            </VerticalStackLayout>
+                        </HorizontalStackLayout>
                     </Border>
                 </VerticalStackLayout>
             </StackLayout>

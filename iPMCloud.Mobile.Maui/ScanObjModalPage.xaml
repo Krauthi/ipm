@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="iPMCloud.Mobile.ScanObjModalPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.Maui.Controls"
+    Title="Objekt QR-Code scannen">
+
+
+
+    <Grid
+        Margin="0,0,0,0"
+        Padding="0"
+        AbsoluteLayout.LayoutBounds="0,0,1,1"
+        AbsoluteLayout.LayoutFlags="All"
+        BackgroundColor="Transparent"
+        HorizontalOptions="Fill"
+        RowSpacing="0"
+        VerticalOptions="Fill">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="54" />
+            <RowDefinition Height="130" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackLayout
+            Grid.Row="0"
+            Margin="0"
+            Padding="10,10,10,10"
+            HorizontalOptions="Fill"
+            Spacing="0"
+            VerticalOptions="Fill">
+            <Border
+                Margin="3,2,2,2"
+                Padding="1"
+                BackgroundColor="Transparent"
+                HorizontalOptions="Fill"
+                Stroke="Transparent"
+                VerticalOptions="Center">
+                <HorizontalStackLayout
+                    x:Name="btn_back_inAddRegScan"
+                    Margin="0"
+                    Padding="0"
+                    BackgroundColor="Transparent"
+                    HeightRequest="28"
+                    HorizontalOptions="Start"
+                    Spacing="0"
+                    VerticalOptions="Center">
+                    <Image
+                        Margin="0,0,10,0"
+                        HeightRequest="26"
+                        HorizontalOptions="Start"
+                        Source="DropLeftBlueDoubleImage.png"
+                        VerticalOptions="Center"
+                        WidthRequest="26" />
+                    <Label
+                        Margin="0"
+                        FontSize="20"
+                        HorizontalOptions="Fill"
+                        HorizontalTextAlignment="Start"
+                        LineBreakMode="TailTruncation"
+                        Text="Scann abbrechen"
+                        TextColor="#4fa4dd"
+                        VerticalOptions="Center" />
+                </HorizontalStackLayout>
+            </Border>
+        </StackLayout>
+
+        <VerticalStackLayout
+            Grid.Row="1"
+            Margin="0,0,0,5"
+            Padding="15,15,15,20"
+            BackgroundColor="#90144d93"
+            HorizontalOptions="Fill"
+            Spacing="0">
+            <Label
+                Margin="0"
+                Padding="0"
+                FontSize="18"
+                HorizontalOptions="Fill"
+                HorizontalTextAlignment="Start"
+                Text="Scannen Sie den QR-Code des Objekts, um es zu Ihrer App hinzuzufügen. "
+                TextColor="#ffffff"
+                VerticalOptions="Start" />
+        </VerticalStackLayout>
+
+
+
+        <Grid
+            Grid.Row="2"
+            BackgroundColor="Transparent"
+            HorizontalOptions="Fill"
+            VerticalOptions="Fill">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="2*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <!--  Top Text  -->
+            <Label
+                Grid.Row="0"
+                Margin="0,0,0,30"
+                FontSize="16"
+                HorizontalOptions="Center"
+                Text="{Binding TopText}"
+                TextColor="White"
+                VerticalOptions="End">
+                <Label.Shadow>
+                    <Shadow
+                        Brush="Black"
+                        Opacity="0.7"
+                        Radius="7"
+                        Offset="3,3" />
+                </Label.Shadow>
+            </Label>
+
+            <!--  Scanner Frame (Mitte)  -->
+            <Border
+                Grid.Row="1"
+                Padding="0"
+                BackgroundColor="Transparent"
+                HeightRequest="250"
+                HorizontalOptions="Center"
+                Stroke="White"
+                VerticalOptions="Center"
+                WidthRequest="250">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="10" />
+                </Border.StrokeShape>
+                <Border.Shadow>
+                    <Shadow
+                        Brush="Black"
+                        Opacity="0.3"
+                        Radius="5"
+                        Offset="2,2" />
+                </Border.Shadow>
+                <Grid RowDefinitions="*">
+
+                    <zxing:CameraBarcodeReaderView
+                        x:Name="ReaderView"
+                        BarcodesDetected="ReaderView_BarcodesDetected"
+                        CameraLocation="Rear"
+                        IsDetecting="False" />
+
+                </Grid>
+
+            </Border>
+            <!--  Bottom Stack  -->
+            <StackLayout
+                Grid.Row="2"
+                Margin="0,30,0,0"
+                HorizontalOptions="Center"
+                Spacing="10"
+                VerticalOptions="Start">
+
+                <Label
+                    FontSize="18"
+                    HorizontalOptions="Center"
+                    Text="{Binding BottomText}"
+                    TextColor="White">
+                    <Label.Shadow>
+                        <Shadow
+                            Brush="Black"
+                            Opacity="0.7"
+                            Radius="7"
+                            Offset="3,3" />
+                    </Label.Shadow>
+                </Label>
+
+                <!--  Flash Button  -->
+                <Button
+                    Margin="0,20,0,0"
+                    Padding="5"
+                    BackgroundColor="#144D93"
+                    Command="{Binding FlashButtonCommand}"
+                    CornerRadius="0"
+                    HeightRequest="70"
+                    HorizontalOptions="Center"
+                    ImageSource="Flashlight.png"
+                    WidthRequest="70" />
+            </StackLayout>
+
+        </Grid>
+
+
+
+
+
+
+
+
+
+
+
+
+        <BoxView
+            Grid.Row="3"
+            Margin="0,40,0,13"
+            BackgroundColor="Black"
+            HorizontalOptions="Fill"
+            VerticalOptions="Fill" />
+    </Grid>
+
+
+
+
+
+
+
+</ContentPage>

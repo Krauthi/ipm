@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="iPMCloud.Mobile.SignatureModalPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:CommunityToolkit.Maui.Views;assembly=CommunityToolkit.Maui"
+    BackgroundColor="#000000">
+
+    <!--  Halbtransparentes Overlay + zentrierte "Dialog"-Karte  -->
+    <Grid RowDefinitions="54,Auto,Auto,*"
+        Padding="0"
+        HorizontalOptions="Fill"
+        VerticalOptions="Fill">
+
+
+        <Grid
+            Grid.Row="0"
+            Margin="0"
+            Padding="10,10,10,10"
+            ColumnSpacing="0"
+            HeightRequest="54"
+            HorizontalOptions="Fill">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Border
+                x:Name="btn_back_sign"
+                Grid.Column="0"
+                Margin="3,2,2,2"
+                Padding="1"
+                BackgroundColor="Transparent"
+                HorizontalOptions="Start"
+                Stroke="Transparent"
+                VerticalOptions="Center">
+                <Grid
+                    Margin="0"
+                    Padding="0"
+                    ColumnSpacing="0"
+                    HeightRequest="38"
+                    HorizontalOptions="Start"
+                    VerticalOptions="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Image
+                        Grid.Column="0"
+                        Margin="0,0,0,0"
+                        HeightRequest="30"
+                        HorizontalOptions="Start"
+                        Source="DropLeftBlueDoubleImage.png"
+                        VerticalOptions="Center"
+                        WidthRequest="30" />
+                    <Label
+                        Grid.Column="1"
+                        Margin="0"
+                        FontSize="18"
+                        HorizontalOptions="Start"
+                        HorizontalTextAlignment="Start"
+                        LineBreakMode="TailTruncation"
+                        Text="ZURÜCK"
+                        TextColor="#3f94cd"
+                        VerticalOptions="Center" />
+                </Grid>
+            </Border>
+            <Label
+                Grid.Column="1"
+                Margin="0"
+                FontSize="24"
+                HorizontalOptions="End"
+                HorizontalTextAlignment="End"
+                LineBreakMode="TailTruncation"
+                Text="Unterschrift"
+                TextColor="#ffffff"
+                VerticalOptions="Center" />
+        </Grid>
+
+
+        <Border
+                    Grid.Row="1" Stroke="Gray" HeightRequest="1"
+            Margin="0,0,0,10"
+                    HorizontalOptions="Fill"
+                    VerticalOptions="Fill"
+                    ></Border>
+        <Border
+            Grid.Row="2"
+            Padding="20"
+            BackgroundColor="#000000"
+            HorizontalOptions="Fill"
+            StrokeThickness="1"
+            VerticalOptions="Center">
+
+            <Grid RowDefinitions="Auto,440,*" RowSpacing="12">
+
+                <Label
+                    Grid.Row="0"
+                    FontSize="22"
+                    Margin="0,0,0,10"
+                    HorizontalOptions="Center"
+                    Text="Bitte unterschreiben"
+                    TextColor="White" />
+
+                <Border
+                    Grid.Row="1"
+                    BackgroundColor="White">
+                    <views:DrawingView
+                        x:Name="Pad"
+                        BackgroundColor="White"
+                        LineColor="Black"
+                        IsMultiLineModeEnabled="True"
+                        LineWidth="3" />
+                </Border>
+
+                <Grid
+                    Margin="0,20,0,0"
+                    Grid.Row="2"
+                    ColumnDefinitions="*,*,*"
+                    VerticalOptions="Fill"
+                    ColumnSpacing="5">
+
+                    <Border
+                        Grid.Column="0"
+                        Margin="0"
+                        Padding="10"
+                        BackgroundColor="#144d73"
+                        HorizontalOptions="Fill">
+                        <Label
+                            Margin="0"
+                            Padding="0"
+                            FontSize="16"
+                            HorizontalOptions="Center"
+                            Text="LÖSCHEN"
+                            TextColor="#ffffff" />
+                    </Border>
+                    <Button
+                        Grid.Column="0"
+                        Clicked="OnClearClicked"
+                        Opacity="0.2"
+                        Text="Löschen" />
+
+                    <Border
+                        Grid.Column="2"
+                        Margin="0"
+                        Padding="10"
+                        BackgroundColor="#04732d"
+                        HorizontalOptions="Fill">
+                        <Label
+                            Margin="0"
+                            Padding="0"
+                            FontSize="16"
+                            HorizontalOptions="Center"
+                            Text="FERTIG"
+                            TextColor="#ffffff" />
+                    </Border>
+                    <Button
+                        Grid.Column="2"
+                        Clicked="OnOkClicked"
+                        Opacity="0.2"
+                        Text="" />
+                </Grid>
+
+            </Grid>
+        </Border>
+        <Border
+                    Grid.Row="3"
+                    HorizontalOptions="Fill"
+                    VerticalOptions="Fill"
+                    ></Border>
+    </Grid>
+</ContentPage>

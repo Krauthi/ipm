@@ -1575,6 +1575,7 @@ namespace iPMCloud.Mobile
                     {
                         if (AppModel.Instance.AllBuildings != null && AppModel.Instance.AllBuildings.Count > 0)
                         {
+                            AppModel.Instance.OutScanBuilding = AppModel.Instance.AllBuildings.Find(bu => bu.id == buildingid);
                             AppModel.Logger.Info("CHECK-OUT: " + AppModel.Instance.OutScanBuilding.strasse + " " +
                                                      AppModel.Instance.OutScanBuilding.hsnr + " " +
                                                      AppModel.Instance.OutScanBuilding.plz + " " +

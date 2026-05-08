@@ -34,6 +34,7 @@ namespace iPMCloud.Mobile.Platforms.Android.Services
 
         private CancellationTokenSource _cts;
         private PowerManager.WakeLock   _wakeLock;
+        private readonly object         _wakeLockLock = new object();
 
         public override IBinder OnBind(Intent intent) => null;
 
@@ -123,6 +124,13 @@ namespace iPMCloud.Mobile.Platforms.Android.Services
                 _cts?.Cancel();
                 _cts?.Dispose();
                 _cts = null;
+                // Remove the ongoing notification from the tray when sync finishes
+                try
+                {
+                    var nm = GetSystemService(NotificationService) as NotificationManager;
+                    nm?.Cancel(SYNC_NOTIFICATION_ID);
+                }
+                catch (Exception nex) { Log.Warn(TAG, $"Cleanup cancel notification: {nex.Message}"); }
                 ReleaseWakeLock();
             }
             catch (Exception ex)
@@ -133,33 +141,39 @@ namespace iPMCloud.Mobile.Platforms.Android.Services
 
         private void AcquireWakeLock()
         {
-            try
+            lock (_wakeLockLock)
             {
-                var pm = GetSystemService(PowerService) as PowerManager;
-                _wakeLock = pm?.NewWakeLock(WakeLockFlags.Partial, "iPMCloud:SyncWakeLock");
-                _wakeLock?.Acquire(WAKE_LOCK_TIMEOUT_MS);
-                Log.Debug(TAG, "WakeLock acquired");
-            }
-            catch (Exception ex)
-            {
-                Log.Error(TAG, $"AcquireWakeLock error: {ex.Message}");
+                try
+                {
+                    var pm = GetSystemService(PowerService) as PowerManager;
+                    _wakeLock = pm?.NewWakeLock(WakeLockFlags.Partial, "iPMCloud:SyncWakeLock");
+                    _wakeLock?.Acquire(WAKE_LOCK_TIMEOUT_MS);
+                    Log.Debug(TAG, "WakeLock acquired");
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(TAG, $"AcquireWakeLock error: {ex.Message}");
+                }
             }
         }
 
         private void ReleaseWakeLock()
         {
-            try
+            lock (_wakeLockLock)
             {
-                if (_wakeLock != null && _wakeLock.IsHeld)
+                try
                 {
-                    _wakeLock.Release();
-                    Log.Debug(TAG, "WakeLock released");
+                    if (_wakeLock != null && _wakeLock.IsHeld)
+                    {
+                        _wakeLock.Release();
+                        Log.Debug(TAG, "WakeLock released");
+                    }
+                    _wakeLock = null;
                 }
-                _wakeLock = null;
-            }
-            catch (Exception ex)
-            {
-                Log.Error(TAG, $"ReleaseWakeLock error: {ex.Message}");
+                catch (Exception ex)
+                {
+                    Log.Error(TAG, $"ReleaseWakeLock error: {ex.Message}");
+                }
             }
         }
 

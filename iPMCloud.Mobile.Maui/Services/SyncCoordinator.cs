@@ -104,7 +104,7 @@ namespace iPMCloud.Mobile.Services
 
                     double pr = blist.Count == 0
                         ? 100d
-                        : Math.Max(1d, Convert.ToDouble(zz + 1) / Convert.ToDouble(blist.Count) * 100d);
+                        : Math.Max(1d, (double)(zz + 1) / blist.Count * 100d);
 
                     OnProgressChanged(new SyncProgressEventArgs
                     {

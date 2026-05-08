@@ -8067,7 +8067,10 @@ namespace iPMCloud.Mobile
                     popupContainer_count.Text = "SYNCHRONISATION (0%)";
                     await Task.Delay(1);
 
-                    // Subscribe to coordinator events for UI updates
+                    // Always unsubscribe before subscribing to prevent duplicate registrations
+                    // if SyncNewBuildingManuell is called again before the previous sync completes.
+                    iPMCloud.Mobile.Services.SyncCoordinator.ProgressChanged -= OnSyncProgress;
+                    iPMCloud.Mobile.Services.SyncCoordinator.SyncCompleted   -= OnSyncCompleted;
                     iPMCloud.Mobile.Services.SyncCoordinator.ProgressChanged += OnSyncProgress;
                     iPMCloud.Mobile.Services.SyncCoordinator.SyncCompleted   += OnSyncCompleted;
 
@@ -8079,7 +8082,7 @@ namespace iPMCloud.Mobile
                             _syncService = IPlatformApplication.Current?.Services
                                 ?.GetService<iPMCloud.Mobile.Services.ISyncService>();
                         }
-                        catch { /* DI not yet available – fall back below */ }
+                        catch (Exception ex) { AppModel.Logger.Warn("ISyncService DI lookup: " + ex.Message); }
 
                         if (_syncService == null)
                         {

@@ -7,6 +7,8 @@ using iPMCloud.Mobile.vo;
 using iPMCloud.Mobile.vo.GlobalObjects;
 using iPMCloud.Mobile.vo.wso;
 using MetadataExtractor.Formats.Photoshop;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Maui;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls;
@@ -70,6 +72,9 @@ namespace iPMCloud.Mobile
 
         public bool isInitialize = false;
         public bool _isShowing = false;
+
+        // Platform-specific sync service resolved lazily from DI (Android → ForegroundService, iOS → inline)
+        private iPMCloud.Mobile.Services.ISyncService _syncService;
 
 
         public MainPage()
@@ -8040,97 +8045,63 @@ namespace iPMCloud.Mobile
             SetLastBuilding();
         }
 
+        /// <summary>
+        /// Starts the building sync. On Android the heavy network work runs inside a
+        /// ForegroundService (with a PARTIAL_WAKE_LOCK) so the sync continues when the
+        /// screen goes off or the app is backgrounded. On iOS the work runs inline.
+        /// Progress and completion are communicated back via SyncCoordinator events.
+        /// </summary>
         private async void SyncNewBuildingManuell(bool manuellSync = false)
         {
             try
             {
                 var dt = String.IsNullOrEmpty(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks) ?
                     DateTime.Now.AddDays(-2) : new DateTime(long.Parse(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks));
-                if (dt.AddHours(AppModel.Instance.SettingModel.SettingDTO.SyncTimeHours) < DateTime.Now || manuellSync) //(dt.AddHours(4) < DateTime.Now || manuellSync)
+
+                box_buildingInformation.Children.Clear();
+                box_buildingInformation.Children.Add(BuildingWSO.GetBuildingInformation(AppModel.Instance, dt));
+
+                if (dt.AddHours(AppModel.Instance.SettingModel.SettingDTO.SyncTimeHours) < DateTime.Now || manuellSync)
                 {
-                    // AppModel.Logger.Info("Info: STARTE Sync Objekte/Auftraege/Leistungen => SyncBuilding");
-                    // Objekte sycnen erforderlich nach 12 Stunden
                     popupContainer.IsVisible = true;
+                    popupContainer_count.Text = "SYNCHRONISATION (0%)";
                     await Task.Delay(1);
 
-                    IpmNewSyncResponse ipmNewBuildingResponse = await Task.Run(() => { return AppModel.Instance.Connections.IpmNewBuildingSync(); });
-                    if (ipmNewBuildingResponse == null || !ipmNewBuildingResponse.success)
-                    {
-                        // Synchronisierung FAILED
-                        AppModel.Logger.Warn("WARN: iPM.Mobile Error (0): Sync FEHLGESCHLAGEN  => NewSyncBuilding");
-                        popupContainer.IsVisible = false;
-                        await Task.Delay(1);
-                        CheckForNewBuildingFailed(ipmNewBuildingResponse);
-                        //********* Update Plandaten 
-                        Load_PlanTabs(((int)DateTime.Now.DayOfWeek));
-                    }
-                    else
-                    {
-                        if (ipmNewBuildingResponse.AppControll != null)
-                        {
-                            AppModel.Instance.AppControll = ipmNewBuildingResponse.AppControll;
-                            if (AppModel.Instance.AppControll == null) { AppModel.Instance.AppControll = new AppControll(); }
-                            AppControll.Save(AppModel.Instance, AppModel.Instance.AppControll);
-                            SetAppControll();
-                        }
-                        int i = 0;
-                        int ii = 0;
-                        var bs = new List<BuildingWSO>();
-                        var blist = ListExtensions.ChunkBy(ipmNewBuildingResponse.builgings.Distinct().ToList(), 10);
-                        double pr = 0;
-                        popupContainer_count.Text = "SYNCHRONISATION (0%)";
-                        await Task.Delay(1);
-                        for (int zz = 0; zz < blist.Count; zz++)
-                        {
-                            pr = Convert.ToDouble(i) / (Convert.ToDouble(blist.Count) / 100);
-                            pr = pr == 0 ? 1d : pr;
-                            popupContainer_count.Text = "SYNCHRONISATION (" + pr.ToString("###") + "%)";
-                            await Task.Delay(10);
-                            //UpdateSyncCounter(pr);
+                    // Always unsubscribe before subscribing to prevent duplicate registrations
+                    // if SyncNewBuildingManuell is called again before the previous sync completes.
+                    iPMCloud.Mobile.Services.SyncCoordinator.ProgressChanged -= OnSyncProgress;
+                    iPMCloud.Mobile.Services.SyncCoordinator.SyncCompleted   -= OnSyncCompleted;
+                    iPMCloud.Mobile.Services.SyncCoordinator.ProgressChanged += OnSyncProgress;
+                    iPMCloud.Mobile.Services.SyncCoordinator.SyncCompleted   += OnSyncCompleted;
 
-                            i++;
-                            string objids = "";
-                            //var objidsInt = Utils.ConvertStringToListInt(objids);
-                            blist[zz].ForEach(b => { objids = objids + (objids.Length > 0 ? "," : "") + b.id; });
-                            IpmNewSyncResponse resp = await AppModel.Instance.Connections.IpmNewAuftragSyncAsync(objids);
-                            if (resp != null && resp.auftraege != null)
-                            {
-                                ii++;
-                                for (int z = 0; z < blist[zz].Count; z++)
-                                {
-                                    var aufs = resp.auftraege.FindAll(a => a.objektid == blist[zz][z].id);
-                                    blist[zz][z].ArrayOfAuftrag = aufs;
-                                }
-                                ;
-                            }
-                            bs.AddRange(blist[zz]);
-                            if (blist.Count == i)
-                            {
-                                UpdateSyncCounter(100d);
-                                if (i == ii)
-                                {
-                                    // Erfolgreich synchronisiert
-                                    ipmNewBuildingResponse.builgings = bs;
-                                    SyncNewBuildingManuell_next(ipmNewBuildingResponse);
-                                }
-                                else
-                                {
-                                    // Nicht vollständig syncronisiert!!!
-                                    popupContainer.IsVisible = false;
-                                    popupContainerSyncFaild.IsVisible = true;
-                                    await Task.Delay(1);
-                                }
-                            }
+                    // Resolve ISyncService from DI (lazy, once); fall back to direct instantiation
+                    if (_syncService == null)
+                    {
+                        try
+                        {
+                            _syncService = IPlatformApplication.Current?.Services
+                                ?.GetService<iPMCloud.Mobile.Services.ISyncService>();
                         }
-                        ;
+                        catch (Exception ex) { AppModel.Logger.Warn("ISyncService DI lookup: " + ex.Message); }
+
+                        if (_syncService == null)
+                        {
+#if ANDROID
+                            _syncService = new iPMCloud.Mobile.Platforms.Android.AndroidSyncService();
+#elif IOS
+                            _syncService = new iPMCloud.Mobile.Platforms.iOS.iOSSyncService();
+#endif
+                        }
                     }
+
+                    // Start: on Android this launches a ForegroundService with WakeLock;
+                    // on iOS it runs SyncCoordinator.RunAsync() inline.
+                    _syncService?.StartSync(manuellSync);
                 }
                 else
                 {
                     Load_PlanTabs(((int)DateTime.Now.DayOfWeek));
                 }
-                box_buildingInformation.Children.Clear();
-                box_buildingInformation.Children.Add(BuildingWSO.GetBuildingInformation(AppModel.Instance, dt));
             }
             catch (Exception ex)
             {
@@ -8139,6 +8110,58 @@ namespace iPMCloud.Mobile
                 var ok = AppModel.Instance.SendLogZipFile();
                 await Task.Delay(2000);
             }
+        }
+
+        /// <summary>Updates the progress popup text during sync.</summary>
+        private void OnSyncProgress(object sender, iPMCloud.Mobile.Services.SyncProgressEventArgs e)
+        {
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                try { popupContainer_count.Text = e.StatusText; }
+                catch (Exception ex) { AppModel.Logger.Warn("OnSyncProgress UI: " + ex.Message); }
+            });
+        }
+
+        /// <summary>Called when SyncCoordinator finishes (success or failure).</summary>
+        private void OnSyncCompleted(object sender, iPMCloud.Mobile.Services.SyncCompletedEventArgs e)
+        {
+            // Always unsubscribe first
+            iPMCloud.Mobile.Services.SyncCoordinator.ProgressChanged -= OnSyncProgress;
+            iPMCloud.Mobile.Services.SyncCoordinator.SyncCompleted   -= OnSyncCompleted;
+
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                try
+                {
+                    if (e.Success && e.Response != null)
+                    {
+                        // AppControll UI refresh (data was already saved by SyncCoordinator)
+                        SetAppControll();
+                        UpdateSyncCounter(100d);
+                        SyncNewBuildingManuell_next(e.Response);
+                    }
+                    else
+                    {
+                        // Synchronisierung FAILED
+                        AppModel.Logger.Warn("WARN: iPM.Mobile Error (0): Sync FEHLGESCHLAGEN  => NewSyncBuilding: " + e.ErrorMessage);
+                        popupContainer.IsVisible = false;
+                        await Task.Delay(1);
+                        if (e.ErrorMessage == "Nicht vollständig synchronisiert")
+                        {
+                            popupContainerSyncFaild.IsVisible = true;
+                        }
+                        else
+                        {
+                            CheckForNewBuildingFailed(e.Response);
+                            Load_PlanTabs(((int)DateTime.Now.DayOfWeek));
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    AppModel.Logger.Error("Method => MainPage-OnSyncCompleted(catch): " + ex.Message);
+                }
+            });
         }
         private async void UpdateSyncCounter(double pr)
         {

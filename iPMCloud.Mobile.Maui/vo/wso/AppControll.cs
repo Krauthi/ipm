@@ -120,80 +120,34 @@ namespace iPMCloud.Mobile
 
                 string filePath = Path.Combine(directoryPath, "appcontroll.ipm");
 
-                if (File.Exists(filePath))
-                {
-                    try
-                    {
-                        // JSON laden
-                        string jsonString = File.ReadAllText(filePath);
-
-                        if (string.IsNullOrWhiteSpace(jsonString))
-                        {
-                            return new AppControll();
-                        }
-
-                        var jsonSettings = new JsonSerializerSettings
-                        {
-                            NullValueHandling = NullValueHandling.Include,
-                            DefaultValueHandling = DefaultValueHandling.Include,
-                            MissingMemberHandling = MissingMemberHandling.Ignore
-                        };
-
-                        AppControll ac = JsonConvert.DeserializeObject<AppControll>(jsonString, jsonSettings);
-                        return ac ?? new AppControll();
-                    }
-                    catch (JsonException jsonEx)
-                    {
-                        // JSON Fehler - könnte alte BinaryFormatter Datei sein
-                        AppModel.Logger?.Warn(jsonEx, "Failed to deserialize AppControll JSON, attempting migration");
-
-                        if (TryMigrateLegacyAppControll(filePath, out AppControll migratedAc))
-                        {
-                            // Nach erfolgreicher Migration neu speichern
-                            Save(model, migratedAc);
-                            return migratedAc;
-                        }
-
-                        return new AppControll();
-                    }
-                }
-                else
+                if (!File.Exists(filePath))
                 {
                     return new AppControll();
                 }
+
+                var jsonSettings = new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Include,
+                    DefaultValueHandling = DefaultValueHandling.Include,
+                    MissingMemberHandling = MissingMemberHandling.Ignore
+                };
+
+                if (PersistedJsonMigration.TryLoadWithLegacyMigration(
+                    filePath,
+                    jsonSettings,
+                    "Load AppControll",
+                    migratedAc => Save(model, migratedAc),
+                    out AppControll appControll))
+                {
+                    return appControll ?? new AppControll();
+                }
+
+                return new AppControll();
             }
             catch (Exception ex)
             {
                 AppModel.Logger?.Error(ex, "ERROR: Load AppControll");
                 return new AppControll();
-            }
-        }
-
-        private static bool TryMigrateLegacyAppControll(string filePath, out AppControll appControll)
-        {
-            appControll = null;
-
-            try
-            {
-                // Alte Datei sichern
-                string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-                string backupPath = filePath + $".old_binary_{timestamp}";
-
-                if (File.Exists(filePath))
-                {
-                    File.Copy(filePath, backupPath, true);
-                    AppModel.Logger?.Info($"Legacy AppControll file backed up to: {backupPath}");
-                }
-
-                // In .NET MAUI kann BinaryFormatter nicht mehr verwendet werden
-                // Die alte Datei wird gesichert und muss manuell konvertiert werden
-                appControll = new AppControll();
-                return true; // Gib neue leere AppControll zurück
-            }
-            catch (Exception ex)
-            {
-                AppModel.Logger?.Error(ex, "ERROR: TryMigrateLegacyAppControll()");
-                return false;
             }
         }
 

@@ -120,80 +120,34 @@ namespace iPMCloud.Mobile
 
                 string filePath = Path.Combine(directoryPath, "lang.ipm");
 
-                if (File.Exists(filePath))
-                {
-                    try
-                    {
-                        // JSON laden
-                        string jsonString = File.ReadAllText(filePath);
-
-                        if (string.IsNullOrWhiteSpace(jsonString))
-                        {
-                            return new Lang();
-                        }
-
-                        var jsonSettings = new JsonSerializerSettings
-                        {
-                            NullValueHandling = NullValueHandling.Include,
-                            DefaultValueHandling = DefaultValueHandling.Include,
-                            MissingMemberHandling = MissingMemberHandling.Ignore
-                        };
-
-                        Lang pn = JsonConvert.DeserializeObject<Lang>(jsonString, jsonSettings);
-                        return pn ?? new Lang();
-                    }
-                    catch (JsonException jsonEx)
-                    {
-                        // JSON Fehler - könnte alte BinaryFormatter Datei sein
-                        AppModel.Logger?.Warn(jsonEx, "Failed to deserialize Lang JSON, attempting migration");
-
-                        if (TryMigrateLegacyLang(filePath, out Lang migratedLang))
-                        {
-                            // Nach erfolgreicher Migration neu speichern
-                            Save(migratedLang);
-                            return migratedLang;
-                        }
-
-                        return new Lang();
-                    }
-                }
-                else
+                if (!File.Exists(filePath))
                 {
                     return new Lang();
                 }
+
+                var jsonSettings = new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Include,
+                    DefaultValueHandling = DefaultValueHandling.Include,
+                    MissingMemberHandling = MissingMemberHandling.Ignore
+                };
+
+                if (PersistedJsonMigration.TryLoadWithLegacyMigration(
+                    filePath,
+                    jsonSettings,
+                    "Load Lang",
+                    Save,
+                    out Lang lang))
+                {
+                    return lang ?? new Lang();
+                }
+
+                return new Lang();
             }
             catch (Exception ex)
             {
                 AppModel.Logger?.Error(ex, "ERROR: Load Lang");
                 return new Lang();
-            }
-        }
-
-        private static bool TryMigrateLegacyLang(string filePath, out Lang lang)
-        {
-            lang = null;
-
-            try
-            {
-                // Alte Datei sichern
-                string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-                string backupPath = filePath + $".old_binary_{timestamp}";
-
-                if (File.Exists(filePath))
-                {
-                    File.Copy(filePath, backupPath, true);
-                    AppModel.Logger?.Info($"Legacy Lang file backed up to: {backupPath}");
-                }
-
-                // In .NET MAUI kann BinaryFormatter nicht mehr verwendet werden
-                // Die alte Datei wird gesichert und Standard-Lang zurückgegeben
-                lang = new Lang();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                AppModel.Logger?.Error(ex, "ERROR: TryMigrateLegacyLang()");
-                return false;
             }
         }
 

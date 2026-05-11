@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Microsoft.Maui.Storage;
@@ -720,20 +719,20 @@ namespace iPMCloud.Mobile
 
                 if (File.Exists(filePath))
                 {
-                    string jsonString = File.ReadAllText(filePath);
-
-                    if (string.IsNullOrWhiteSpace(jsonString))
-                    {
-                        return null;
-                    }
-
                     var jsonSettings = new JsonSerializerSettings
                     {
                         NullValueHandling = NullValueHandling.Include,
                         MissingMemberHandling = MissingMemberHandling.Ignore
                     };
 
-                    return JsonConvert.DeserializeObject<BuildingWSO>(jsonString, jsonSettings);
+                    return PersistedJsonMigration.TryLoadWithLegacyMigration(
+                        filePath,
+                        jsonSettings,
+                        "LoadBuilding",
+                        migratedBuilding => Save(model, migratedBuilding),
+                        out BuildingWSO building)
+                        ? building
+                        : null;
                 }
 
                 return null;

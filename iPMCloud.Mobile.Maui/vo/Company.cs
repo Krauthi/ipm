@@ -120,81 +120,40 @@ namespace iPMCloud.Mobile.vo
 
                 string filePath = Path.Combine(directoryPath, "companies.ipm");
 
-                if (File.Exists(filePath))
-                {
-                    try
-                    {
-                        // JSON laden
-                        string jsonString = File.ReadAllText(filePath);
-
-                        if (string.IsNullOrWhiteSpace(jsonString))
-                        {
-                            AppModel.Logger?.Warn("LoadCompanies: File is empty");
-                            return new List<Company>();
-                        }
-
-                        var jsonSettings = new JsonSerializerSettings
-                        {
-                            NullValueHandling = NullValueHandling.Include,
-                            DefaultValueHandling = DefaultValueHandling.Include,
-                            MissingMemberHandling = MissingMemberHandling.Ignore
-                        };
-
-                        List<Company> companies = JsonConvert.DeserializeObject<List<Company>>(jsonString, jsonSettings);
-                        return companies ?? new List<Company>();
-                    }
-                    catch (JsonException jsonEx)
-                    {
-                        // JSON Fehler - könnte alte BinaryFormatter Datei sein
-                        AppModel.Logger?.Warn(jsonEx, "Failed to deserialize JSON, attempting migration");
-
-                        if (TryMigrateLegacyCompanies(filePath, out List<Company> migratedCompanies))
-                        {
-                            // Nach erfolgreicher Migration neu speichern
-                            SaveCompanies(migratedCompanies);
-                            return migratedCompanies;
-                        }
-
-                        return new List<Company>();
-                    }
-                }
-                else
+                if (!File.Exists(filePath))
                 {
                     return new List<Company>();
                 }
+
+                var jsonSettings = new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Include,
+                    DefaultValueHandling = DefaultValueHandling.Include,
+                    MissingMemberHandling = MissingMemberHandling.Ignore
+                };
+
+                if (PersistedJsonMigration.TryLoadWithLegacyMigration(
+                    filePath,
+                    jsonSettings,
+                    "LoadCompanies",
+                    SaveCompanies,
+                    out List<Company> companies))
+                {
+                    return companies ?? new List<Company>();
+                }
+
+                if (new FileInfo(filePath).Length == 0)
+                {
+                    AppModel.Logger?.Warn("LoadCompanies: File is empty");
+                }
+
+                return new List<Company>();
             }
             catch (Exception ex)
             {
                 AppModel.Logger?.Error(ex, "ERROR: LoadCompanies()");
                 Console.WriteLine(ex.Message);
                 return new List<Company>();
-            }
-        }
-
-        private static bool TryMigrateLegacyCompanies(string filePath, out List<Company> companies)
-        {
-            companies = new List<Company>();
-
-            try
-            {
-                // Alte Datei sichern
-                string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-                string backupPath = filePath + $".old_binary_{timestamp}";
-
-                if (File.Exists(filePath))
-                {
-                    File.Copy(filePath, backupPath, true);
-                    AppModel.Logger?.Info($"Legacy companies file backed up to: {backupPath}");
-                }
-
-                // In .NET MAUI kann BinaryFormatter nicht mehr verwendet werden
-                // Die alte Datei muss manuell konvertiert oder neu erstellt werden
-                return false;
-            }
-            catch (Exception ex)
-            {
-                AppModel.Logger?.Error(ex, "ERROR: TryMigrateLegacyCompanies()");
-                return false;
             }
         }
 

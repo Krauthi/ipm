@@ -165,7 +165,9 @@ namespace iPMCloud.Mobile
 
                 string directoryPath = Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                    "ipm/" + model.SettingModel.SettingDTO.CustomerNumber + "/nbi/"
+                    "ipm",
+                    model.SettingModel.SettingDTO.CustomerNumber,
+                    "nbi"
                 );
 
                 if (!Directory.Exists(directoryPath))
@@ -217,7 +219,9 @@ namespace iPMCloud.Mobile
 
                 string directoryPath = Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                    "ipm/" + model.SettingModel.SettingDTO.CustomerNumber + "/nbi/"
+                    "ipm",
+                    model.SettingModel.SettingDTO.CustomerNumber,
+                    "nbi"
                 );
 
                 if (Directory.Exists(directoryPath))
@@ -228,7 +232,9 @@ namespace iPMCloud.Mobile
                     {
                         foreach (var file in files)
                         {
-                            if (file.Contains(guid))
+                            string fileName = Path.GetFileName(file);
+                            if (!string.IsNullOrWhiteSpace(fileName) &&
+                                fileName.Contains(guid, StringComparison.OrdinalIgnoreCase))
                             {
                                 var bild = Load(model, file);
                                 if (bild != null)
@@ -260,20 +266,21 @@ namespace iPMCloud.Mobile
                     return null;
                 }
 
-                string jsonString = File.ReadAllText(filename);
-
-                if (string.IsNullOrWhiteSpace(jsonString))
-                {
-                    return null;
-                }
-
                 var jsonSettings = new JsonSerializerSettings
                 {
                     NullValueHandling = NullValueHandling.Include,
                     MissingMemberHandling = MissingMemberHandling.Ignore
                 };
 
-                var bildwso = JsonConvert.DeserializeObject<BildWSO>(jsonString, jsonSettings);
+                if (!PersistedJsonMigration.TryLoadWithLegacyMigration(
+                    filename,
+                    jsonSettings,
+                    "Load BildWSO",
+                    migratedBild => Save(model, migratedBild),
+                    out BildWSO bildwso))
+                {
+                    return null;
+                }
 
                 if (bildwso != null)
                 {

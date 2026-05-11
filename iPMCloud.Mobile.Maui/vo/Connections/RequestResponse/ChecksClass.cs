@@ -157,20 +157,20 @@ namespace iPMCloud.Mobile
 
                 if (File.Exists(filePath))
                 {
-                    string jsonString = File.ReadAllText(filePath);
-
-                    if (string.IsNullOrWhiteSpace(jsonString))
-                    {
-                        return new ChecksResponse();
-                    }
-
                     var jsonSettings = new JsonSerializerSettings
                     {
                         NullValueHandling = NullValueHandling.Include,
                         MissingMemberHandling = MissingMemberHandling.Ignore
                     };
 
-                    return JsonConvert.DeserializeObject<ChecksResponse>(jsonString, jsonSettings) ?? new ChecksResponse();
+                    return PersistedJsonMigration.TryLoadWithLegacyMigration(
+                        filePath,
+                        jsonSettings,
+                        "LoadChecksInfo",
+                        SaveChecksInfo,
+                        out ChecksResponse checksResponse)
+                        ? checksResponse ?? new ChecksResponse()
+                        : new ChecksResponse();
                 }
 
                 return new ChecksResponse();
@@ -285,20 +285,20 @@ namespace iPMCloud.Mobile
 
                 if (File.Exists(filePath))
                 {
-                    string jsonString = File.ReadAllText(filePath);
-
-                    if (string.IsNullOrWhiteSpace(jsonString))
-                    {
-                        return null;
-                    }
-
                     var jsonSettings = new JsonSerializerSettings
                     {
                         NullValueHandling = NullValueHandling.Include,
                         MissingMemberHandling = MissingMemberHandling.Ignore
                     };
 
-                    return JsonConvert.DeserializeObject<Check>(jsonString, jsonSettings);
+                    return PersistedJsonMigration.TryLoadWithLegacyMigration(
+                        filePath,
+                        jsonSettings,
+                        "LoadCheck",
+                        SaveCheck,
+                        out Check check)
+                        ? check
+                        : null;
                 }
 
                 return null;
@@ -413,20 +413,20 @@ namespace iPMCloud.Mobile
 
                 if (File.Exists(filePath))
                 {
-                    string jsonString = File.ReadAllText(filePath);
-
-                    if (string.IsNullOrWhiteSpace(jsonString))
-                    {
-                        return null;
-                    }
-
                     var jsonSettings = new JsonSerializerSettings
                     {
                         NullValueHandling = NullValueHandling.Include,
                         MissingMemberHandling = MissingMemberHandling.Ignore
                     };
 
-                    return JsonConvert.DeserializeObject<Check>(jsonString, jsonSettings);
+                    return PersistedJsonMigration.TryLoadWithLegacyMigration(
+                        filePath,
+                        jsonSettings,
+                        "LoadCheckA",
+                        SaveCheckA,
+                        out Check check)
+                        ? check
+                        : null;
                 }
 
                 return null;
@@ -697,20 +697,20 @@ namespace iPMCloud.Mobile
                     return null;
                 }
 
-                string jsonString = File.ReadAllText(filename);
-
-                if (string.IsNullOrWhiteSpace(jsonString))
-                {
-                    return null;
-                }
-
                 var jsonSettings = new JsonSerializerSettings
                 {
                     NullValueHandling = NullValueHandling.Include,
                     MissingMemberHandling = MissingMemberHandling.Ignore
                 };
 
-                return JsonConvert.DeserializeObject<Check>(jsonString, jsonSettings);
+                return PersistedJsonMigration.TryLoadWithLegacyMigration(
+                    filename,
+                    jsonSettings,
+                    "LoadFromUploadStack Check",
+                    ToUploadStack,
+                    out Check check)
+                    ? check
+                    : null;
             }
             catch (Exception ex)
             {

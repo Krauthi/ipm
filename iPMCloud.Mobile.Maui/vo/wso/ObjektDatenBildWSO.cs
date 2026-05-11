@@ -181,20 +181,20 @@ namespace iPMCloud.Mobile
                     return null;
                 }
 
-                string jsonString = File.ReadAllText(filename);
-
-                if (string.IsNullOrWhiteSpace(jsonString))
-                {
-                    return null;
-                }
-
                 var jsonSettings = new JsonSerializerSettings
                 {
                     NullValueHandling = NullValueHandling.Include,
                     MissingMemberHandling = MissingMemberHandling.Ignore
                 };
 
-                return JsonConvert.DeserializeObject<ObjektDatenBildWSO>(jsonString, jsonSettings);
+                return PersistedJsonMigration.TryLoadWithLegacyMigration(
+                    filename,
+                    jsonSettings,
+                    "LoadFromUploadStack ObjektDatenBildWSO",
+                    migratedImage => ToUploadStack(AppModel.Instance, migratedImage),
+                    out ObjektDatenBildWSO objektDatenBild)
+                    ? objektDatenBild
+                    : null;
             }
             catch (Exception ex)
             {

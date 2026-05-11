@@ -845,7 +845,7 @@ namespace iPMCloud.Mobile
             }
 
             await Task.Delay(1000);
-            AppModel.Instance.selectedCheckA.antworten.ForEach(_ => _.ClearGui());
+            //AppModel.Instance.selectedCheckA.antworten.ForEach(_ => _.ClearGui());
             checkQuestStack.Children.Clear();
             CheckPage_Container.IsVisible = false;
 

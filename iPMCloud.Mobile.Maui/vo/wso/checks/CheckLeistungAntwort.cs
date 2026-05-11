@@ -158,13 +158,20 @@ namespace iPMCloud.Mobile
 
         public void Text_a1_Changed()
         {
-            if (inChangeMode || textEditor != null) return;
-            none = false;
-            a1 = textEditor.Text;
+            try
+            {
+                if (inChangeMode || textEditor != null) return;
+                none = false;
+                a1 = textEditor.Text;
+            }
+            catch { }
         }
         public void Text_a1_Focused()
         {
-            textEditor.HeightRequest = -1;
+            try
+            {
+                textEditor.HeightRequest = -1;
+            } catch { }
         }
         public void Tap_a1_Reset()
         {
@@ -177,13 +184,16 @@ namespace iPMCloud.Mobile
         }
         public void Text_a1_Completed()
         {
-            if (textEditor != null)
-            {
-                a1 = textEditor.Text;
-                if (!String.IsNullOrEmpty(a1)) { none = false; }
-                textEditor.HeightRequest = 40;
-                CheckIsReadyAndSet_a1();
+            try { 
+                if (textEditor != null)
+                {
+                    a1 = textEditor.Text;
+                    if (!String.IsNullOrEmpty(a1)) { none = false; }
+                    textEditor.HeightRequest = 40;
+                    CheckIsReadyAndSet_a1();
+                }
             }
+            catch { }
         }
         public void Tap_a1_None()
         {
@@ -233,15 +243,21 @@ namespace iPMCloud.Mobile
 
         public void Text_a2_Changed()
         {
-            if (inChangeMode || entry == null) return;
-            none = false;
-            a2 = entry.Text;
+            try
+            {
+                if (inChangeMode || entry == null) return;
+                none = false;
+                a2 = entry.Text;
+            } catch { }
         }
         public void Text_a2_Focused()
         {
-            if(entry != null)
-                a2 = entry.Text;
-            CheckIsReadyAndSet_a2();
+            try
+            {
+                if (entry != null)
+                    a2 = entry.Text;
+                CheckIsReadyAndSet_a2();
+            } catch { }
         }
         public void Tap_a2_Reset()
         {
@@ -256,10 +272,14 @@ namespace iPMCloud.Mobile
         }
         public void Text_a2_Completed()
         {
-            if (entry != null)
-                a2 = entry.Text;
-            if (!String.IsNullOrEmpty(a2)) { none = false; }
-            CheckIsReadyAndSet_a2();
+            try
+            {
+                if (entry != null)
+                    a2 = entry.Text;
+                if (!String.IsNullOrEmpty(a2)) { none = false; }
+                CheckIsReadyAndSet_a2();
+            }
+            catch { }
         }
         public void Tap_a2_None()
         {

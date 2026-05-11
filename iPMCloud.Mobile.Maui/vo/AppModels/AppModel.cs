@@ -254,13 +254,7 @@ namespace iPMCloud.Mobile.vo
         {
             try
             {
-                if (MainThread.IsMainThread)
-                {
-                    MainPage?.SetAllSyncState();
-                    return;
-                }
-
-                MainThread.BeginInvokeOnMainThread(() =>
+                Action invokeSetAllSyncState = () =>
                 {
                     try
                     {
@@ -268,9 +262,17 @@ namespace iPMCloud.Mobile.vo
                     }
                     catch (Exception ex)
                     {
-                        Logger?.Error(ex, "ERROR: SetAllSyncStateSafe (BeginInvokeOnMainThread)");
+                        Logger?.Error(ex, "ERROR: SetAllSyncStateSafe (SetAllSyncState)");
                     }
-                });
+                };
+
+                if (MainThread.IsMainThread)
+                {
+                    invokeSetAllSyncState();
+                    return;
+                }
+
+                MainThread.BeginInvokeOnMainThread(invokeSetAllSyncState);
             }
             catch (Exception ex)
             {

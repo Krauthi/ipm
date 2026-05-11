@@ -200,14 +200,6 @@ namespace iPMCloud.Mobile
                     return null;
                 }
 
-                string jsonString = File.ReadAllText(filename);
-
-                if (string.IsNullOrWhiteSpace(jsonString))
-                {
-                    AppModel.Logger?.Warn($"LoadFromUploadStack: File is empty - {filename}");
-                    return null;
-                }
-
                 var jsonSettings = new JsonSerializerSettings
                 {
                     NullValueHandling = NullValueHandling.Include,
@@ -215,17 +207,19 @@ namespace iPMCloud.Mobile
                     MissingMemberHandling = MissingMemberHandling.Ignore
                 };
 
-                AllTransSignRequest request = JsonConvert.DeserializeObject<AllTransSignRequest>(jsonString, jsonSettings);
-                return request;
-            }
-            catch (JsonException jsonEx)
-            {
-                AppModel.Logger?.Warn(jsonEx, $"Failed to deserialize JSON - {filename}");
-
-                // Versuchen alte BinaryFormatter Datei zu migrieren
-                if (TryMigrateLegacyFile(filename, out AllTransSignRequest migratedRequest))
+                if (PersistedJsonMigration.TryLoadWithLegacyMigration(
+                    filename,
+                    jsonSettings,
+                    "LoadFromUploadStack AllTransSignRequest",
+                    ToUploadStack,
+                    out AllTransSignRequest request))
                 {
-                    return migratedRequest;
+                    return request;
+                }
+
+                if (new FileInfo(filename).Length == 0)
+                {
+                    AppModel.Logger?.Warn($"LoadFromUploadStack: File is empty - {filename}");
                 }
 
                 return null;
@@ -234,33 +228,6 @@ namespace iPMCloud.Mobile
             {
                 AppModel.Logger?.Error(ex, $"ERROR: LoadFromUploadStack() - {filename}");
                 return null;
-            }
-        }
-
-        private static bool TryMigrateLegacyFile(string filePath, out AllTransSignRequest request)
-        {
-            request = null;
-
-            try
-            {
-                // Alte Datei sichern
-                string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-                string backupPath = filePath + $".old_binary_{timestamp}";
-
-                if (File.Exists(filePath))
-                {
-                    File.Copy(filePath, backupPath, true);
-                    AppModel.Logger?.Info($"Legacy trans file backed up to: {backupPath}");
-                }
-
-                // In .NET MAUI kann BinaryFormatter nicht mehr verwendet werden
-                // Die alte Datei wird gesichert und muss manuell konvertiert werden
-                return false;
-            }
-            catch (Exception ex)
-            {
-                AppModel.Logger?.Error(ex, "ERROR: TryMigrateLegacyFile()");
-                return false;
             }
         }
 

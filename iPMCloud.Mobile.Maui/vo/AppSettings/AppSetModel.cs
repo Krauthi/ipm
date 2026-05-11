@@ -151,49 +151,39 @@ namespace iPMCloud.Mobile.vo
                     Directory.CreateDirectory(DirectoryPath);
                 }
 
-                if (File.Exists(FilePath))
+                if (!File.Exists(FilePath))
                 {
-                    try
+                    // Datei existiert nicht - neue Instanz erstellen
+                    AppModel.Instance.AppSetModel = new AppSetModel();
+                    return;
+                }
+
+                var jsonSettings = new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Include,
+                    DefaultValueHandling = DefaultValueHandling.Include,
+                    MissingMemberHandling = MissingMemberHandling.Ignore
+                };
+
+                if (PersistedJsonMigration.TryLoadWithLegacyMigration(
+                    FilePath,
+                    jsonSettings,
+                    "Load AppSet",
+                    migratedAppSet =>
                     {
-                        string jsonString = File.ReadAllText(FilePath);
-
-                        if (!string.IsNullOrWhiteSpace(jsonString))
-                        {
-                            var jsonSettings = new JsonSerializerSettings
-                            {
-                                NullValueHandling = NullValueHandling.Include,
-                                DefaultValueHandling = DefaultValueHandling.Include,
-                                MissingMemberHandling = MissingMemberHandling.Ignore
-                            };
-
-                            var obj = JsonConvert.DeserializeObject<AppSetModel>(jsonString, jsonSettings);
-
-                            if (obj != null)
-                            {
-                                AppModel.Instance.AppSetModel = obj;
-                            }
-                        }
-                    }
-                    catch (JsonException jsonEx)
-                    {
-                        // JSON Fehler - könnte alte BinaryFormatter Datei sein
-                        AppModel.Logger?.Warn(jsonEx, "Failed to deserialize AppSet JSON, attempting migration");
-
-                        if (TryMigrateLegacyAppSet(FilePath, out AppSetModel migratedAppSet))
-                        {
-                            AppModel.Instance.AppSetModel = migratedAppSet;
-                            Save(); // Neu speichern als JSON
-                        }
-                        else
-                        {
-                            // Fallback: Neue Instanz erstellen
-                            AppModel.Instance.AppSetModel = new AppSetModel();
-                        }
-                    }
+                        AppModel.Instance.AppSetModel = migratedAppSet;
+                        return Save();
+                    },
+                    out AppSetModel appSetModel))
+                {
+                    AppModel.Instance.AppSetModel = appSetModel;
+                }
+                else if (new FileInfo(FilePath).Length == 0)
+                {
+                    AppModel.Instance.AppSetModel = new AppSetModel();
                 }
                 else
                 {
-                    // Datei existiert nicht - neue Instanz erstellen
                     AppModel.Instance.AppSetModel = new AppSetModel();
                 }
             }
@@ -204,34 +194,6 @@ namespace iPMCloud.Mobile.vo
 
                 // Fallback: Neue Instanz
                 AppModel.Instance.AppSetModel = new AppSetModel();
-            }
-        }
-
-        private static bool TryMigrateLegacyAppSet(string filePath, out AppSetModel appSetModel)
-        {
-            appSetModel = null;
-
-            try
-            {
-                // Alte Datei sichern
-                string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-                string backupPath = filePath + $".old_binary_{timestamp}";
-
-                if (File.Exists(filePath))
-                {
-                    File.Copy(filePath, backupPath, true);
-                    AppModel.Logger?.Info($"Legacy AppSet file backed up to: {backupPath}");
-                }
-
-                // In .NET MAUI kann BinaryFormatter nicht mehr verwendet werden
-                // Die alte Datei wird gesichert und Standard-AppSet zurückgegeben
-                appSetModel = new AppSetModel();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                AppModel.Logger?.Error(ex, "ERROR: TryMigrateLegacyAppSet()");
-                return false;
             }
         }
 

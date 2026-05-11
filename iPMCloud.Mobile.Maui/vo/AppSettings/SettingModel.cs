@@ -207,56 +207,7 @@ namespace iPMCloud.Mobile.vo
 
                 string filePath = Path.Combine(directoryPath, "set.ipm");
 
-                if (File.Exists(filePath))
-                {
-                    try
-                    {
-                        // JSON laden
-                        string jsonString = File.ReadAllText(filePath);
-
-                        if (string.IsNullOrWhiteSpace(jsonString))
-                        {
-                            throw new Exception("Settings file is empty");
-                        }
-
-                        var jsonSettings = new JsonSerializerSettings
-                        {
-                            NullValueHandling = NullValueHandling.Include,
-                            DefaultValueHandling = DefaultValueHandling.Include,
-                            MissingMemberHandling = MissingMemberHandling.Ignore
-                        };
-
-                        SettingDTO = JsonConvert.DeserializeObject<SettingDTO>(jsonString, jsonSettings);
-
-                        if (SettingDTO != null)
-                        {
-                            loadAttempts = 0; // Reset counter bei Erfolg
-                            return true;
-                        }
-                        else
-                        {
-                            throw new Exception("Deserialized SettingDTO is null");
-                        }
-                    }
-                    catch (JsonException jsonEx)
-                    {
-                        // JSON Fehler - könnte alte BinaryFormatter Datei sein
-                        AppModel.Logger?.Warn(jsonEx, "Failed to deserialize JSON, attempting migration");
-
-                        if (TryMigrateLegacySettings(filePath))
-                        {
-                            loadAttempts = 0;
-                            return true;
-                        }
-
-                        // Falls Migration fehlschlägt, neue Settings erstellen
-                        SettingDTO = new SettingDTO();
-                        SaveSettings();
-                        loadAttempts = 0;
-                        return true;
-                    }
-                }
-                else
+                if (!File.Exists(filePath))
                 {
                     // Datei existiert nicht - neue Settings erstellen (OHNE rekursiven Aufruf!)
                     SettingDTO = new SettingDTO();
@@ -264,6 +215,39 @@ namespace iPMCloud.Mobile.vo
                     loadAttempts = 0;
                     return true;
                 }
+
+                var jsonSettings = new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Include,
+                    DefaultValueHandling = DefaultValueHandling.Include,
+                    MissingMemberHandling = MissingMemberHandling.Ignore
+                };
+
+                if (PersistedJsonMigration.TryLoadWithLegacyMigration(
+                    filePath,
+                    jsonSettings,
+                    "LoadSettings",
+                    migratedSettings =>
+                    {
+                        SettingDTO = migratedSettings;
+                        return SaveSettings();
+                    },
+                    out SettingDTO loadedSettings))
+                {
+                    SettingDTO = loadedSettings;
+                    loadAttempts = 0;
+                    return true;
+                }
+
+                if (new FileInfo(filePath).Length == 0)
+                {
+                    throw new Exception("Settings file is empty");
+                }
+
+                SettingDTO = new SettingDTO();
+                SaveSettings();
+                loadAttempts = 0;
+                return true;
             }
             catch (Exception ex)
             {
@@ -271,35 +255,6 @@ namespace iPMCloud.Mobile.vo
                 AppModel.Logger?.Error(ex, "ERROR: LoadSettings()");
                 IoLoadError = true;
                 loadAttempts = 0; // Reset counter
-                return false;
-            }
-        }
-
-        private bool TryMigrateLegacySettings(string filePath)
-        {
-            try
-            {
-                // Alte Datei sichern
-                string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-                string backupPath = filePath + $".old_binary_{timestamp}";
-
-                if (File.Exists(filePath))
-                {
-                    File.Copy(filePath, backupPath, true);
-                    File.Delete(filePath);
-
-                    AppModel.Logger?.Info($"Legacy settings file backed up to: {backupPath}");
-                }
-
-                // Neue leere Settings erstellen
-                SettingDTO = new SettingDTO();
-                SaveSettings();
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                AppModel.Logger?.Error(ex, "ERROR: TryMigrateLegacySettings()");
                 return false;
             }
         }

@@ -148,20 +148,20 @@ namespace iPMCloud.Mobile
                     return null;
                 }
 
-                string jsonString = File.ReadAllText(filename);
-
-                if (string.IsNullOrWhiteSpace(jsonString))
-                {
-                    return null;
-                }
-
                 var jsonSettings = new JsonSerializerSettings
                 {
                     NullValueHandling = NullValueHandling.Include,
                     MissingMemberHandling = MissingMemberHandling.Ignore
                 };
 
-                return JsonConvert.DeserializeObject<PNWSO>(jsonString, jsonSettings);
+                return PersistedJsonMigration.TryLoadWithLegacyMigration(
+                    filename,
+                    jsonSettings,
+                    "LoadFromFile PNWSO",
+                    ToUploadStack,
+                    out PNWSO pnwso)
+                    ? pnwso
+                    : null;
             }
             catch (Exception ex)
             {

@@ -49,7 +49,9 @@ namespace iPMCloud.Mobile
 
                 string directoryPath = Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                    "ipm/" + AppModel.Instance.SettingModel.SettingDTO.CustomerNumber + "/check_nbi/"
+                    "ipm",
+                    AppModel.Instance.SettingModel.SettingDTO.CustomerNumber,
+                    "check_nbi"
                 );
 
                 if (!Directory.Exists(directoryPath))
@@ -100,7 +102,9 @@ namespace iPMCloud.Mobile
 
                 string directoryPath = Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                    "ipm/" + AppModel.Instance.SettingModel.SettingDTO.CustomerNumber + "/check_nbi/"
+                    "ipm",
+                    AppModel.Instance.SettingModel.SettingDTO.CustomerNumber,
+                    "check_nbi"
                 );
 
                 if (Directory.Exists(directoryPath))
@@ -111,7 +115,9 @@ namespace iPMCloud.Mobile
                     {
                         foreach (var file in files)
                         {
-                            if (file.Contains(guid))
+                            string fileName = Path.GetFileName(file);
+                            if (!string.IsNullOrWhiteSpace(fileName) &&
+                                fileName.Contains(guid, StringComparison.OrdinalIgnoreCase))
                             {
                                 var img = Load(file);
                                 if (img != null)
@@ -143,20 +149,21 @@ namespace iPMCloud.Mobile
                     return null;
                 }
 
-                string jsonString = File.ReadAllText(filename);
-
-                if (string.IsNullOrWhiteSpace(jsonString))
-                {
-                    return null;
-                }
-
                 var jsonSettings = new JsonSerializerSettings
                 {
                     NullValueHandling = NullValueHandling.Include,
                     MissingMemberHandling = MissingMemberHandling.Ignore
                 };
 
-                var imgWso = JsonConvert.DeserializeObject<CheckLeistungAntwortBemImg>(jsonString, jsonSettings);
+                if (!PersistedJsonMigration.TryLoadWithLegacyMigration(
+                    filename,
+                    jsonSettings,
+                    "Load CheckLeistungAntwortBemImg",
+                    Save,
+                    out CheckLeistungAntwortBemImg imgWso))
+                {
+                    return null;
+                }
 
                 if (imgWso != null)
                 {

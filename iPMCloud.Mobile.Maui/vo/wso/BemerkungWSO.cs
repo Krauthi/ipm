@@ -162,20 +162,20 @@ namespace iPMCloud.Mobile
                     return null;
                 }
 
-                string jsonString = File.ReadAllText(filename);
-
-                if (string.IsNullOrWhiteSpace(jsonString))
-                {
-                    return null;
-                }
-
                 var jsonSettings = new JsonSerializerSettings
                 {
                     NullValueHandling = NullValueHandling.Include,
                     MissingMemberHandling = MissingMemberHandling.Ignore
                 };
 
-                return JsonConvert.DeserializeObject<BemerkungWSO>(jsonString, jsonSettings);
+                return PersistedJsonMigration.TryLoadWithLegacyMigration(
+                    filename,
+                    jsonSettings,
+                    "Load BemerkungWSO",
+                    migratedNotice => Save(model, migratedNotice),
+                    out BemerkungWSO notice)
+                    ? notice
+                    : null;
             }
             catch (Exception ex)
             {
@@ -422,20 +422,20 @@ namespace iPMCloud.Mobile
                     return null;
                 }
 
-                string jsonString = File.ReadAllText(filename);
-
-                if (string.IsNullOrWhiteSpace(jsonString))
-                {
-                    return null;
-                }
-
                 var jsonSettings = new JsonSerializerSettings
                 {
                     NullValueHandling = NullValueHandling.Include,
                     MissingMemberHandling = MissingMemberHandling.Ignore
                 };
 
-                return JsonConvert.DeserializeObject<BemerkungWSO>(jsonString, jsonSettings);
+                return PersistedJsonMigration.TryLoadWithLegacyMigration(
+                    filename,
+                    jsonSettings,
+                    "LoadFromUploadStack BemerkungWSO",
+                    migratedNotice => ToUploadStack(AppModel.Instance, migratedNotice),
+                    out BemerkungWSO notice)
+                    ? notice
+                    : null;
             }
             catch (Exception ex)
             {

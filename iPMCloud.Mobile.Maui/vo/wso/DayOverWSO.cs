@@ -172,20 +172,20 @@ namespace iPMCloud.Mobile
                     return null;
                 }
 
-                string jsonString = File.ReadAllText(filename);
-
-                if (string.IsNullOrWhiteSpace(jsonString))
-                {
-                    return null;
-                }
-
                 var jsonSettings = new JsonSerializerSettings
                 {
                     NullValueHandling = NullValueHandling.Include,
                     MissingMemberHandling = MissingMemberHandling.Ignore
                 };
 
-                return JsonConvert.DeserializeObject<DayOverWSO>(jsonString, jsonSettings);
+                return PersistedJsonMigration.TryLoadWithLegacyMigration(
+                    filename,
+                    jsonSettings,
+                    "Load DayOverWSO",
+                    migratedDay => Save(model, migratedDay),
+                    out DayOverWSO day)
+                    ? day
+                    : null;
             }
             catch (Exception ex)
             {
@@ -421,20 +421,20 @@ namespace iPMCloud.Mobile
                     return null;
                 }
 
-                string jsonString = File.ReadAllText(filename);
-
-                if (string.IsNullOrWhiteSpace(jsonString))
-                {
-                    return null;
-                }
-
                 var jsonSettings = new JsonSerializerSettings
                 {
                     NullValueHandling = NullValueHandling.Include,
                     MissingMemberHandling = MissingMemberHandling.Ignore
                 };
 
-                return JsonConvert.DeserializeObject<DayOverWSO>(jsonString, jsonSettings);
+                return PersistedJsonMigration.TryLoadWithLegacyMigration(
+                    filename,
+                    jsonSettings,
+                    "LoadFromUploadStack DayOverWSO",
+                    migratedDay => ToUploadStack(model, migratedDay),
+                    out DayOverWSO day)
+                    ? day
+                    : null;
             }
             catch (Exception ex)
             {

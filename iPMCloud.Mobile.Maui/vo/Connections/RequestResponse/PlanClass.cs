@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Microsoft.Maui.Controls;
@@ -2291,81 +2290,34 @@ namespace iPMCloud.Mobile
                     "ipm/" + model.SettingModel.SettingDTO.CustomerNumber + "/planperson/planresponse.ipm"
                 );
 
-                if (File.Exists(filePath))
-                {
-                    try
-                    {
-                        string jsonString = File.ReadAllText(filePath);
-
-                        if (string.IsNullOrWhiteSpace(jsonString))
-                        {
-                            return new PlanResponse();
-                        }
-
-                        var jsonSettings = new JsonSerializerSettings
-                        {
-                            NullValueHandling = NullValueHandling.Include,
-                            DefaultValueHandling = DefaultValueHandling.Include,
-                            MissingMemberHandling = MissingMemberHandling.Ignore
-                        };
-
-                        PlanResponse response = JsonConvert.DeserializeObject<PlanResponse>(jsonString, jsonSettings);
-                        return response ?? new PlanResponse();
-                    }
-                    catch (JsonException jsonEx)
-                    {
-                        // JSON Fehler - könnte alte BinaryFormatter Datei sein
-                        AppModel.Logger?.Warn(jsonEx, "Failed to deserialize PlanResponse JSON, attempting migration");
-
-                        if (TryMigrateLegacyPlanResponse(filePath, out PlanResponse migratedResponse))
-                        {
-                            // Nach erfolgreicher Migration neu speichern
-                            Save(model, migratedResponse);
-                            return migratedResponse;
-                        }
-
-                        return new PlanResponse();
-                    }
-                }
-                else
+                if (!File.Exists(filePath))
                 {
                     return new PlanResponse();
                 }
+
+                var jsonSettings = new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Include,
+                    DefaultValueHandling = DefaultValueHandling.Include,
+                    MissingMemberHandling = MissingMemberHandling.Ignore
+                };
+
+                if (PersistedJsonMigration.TryLoadWithLegacyMigration(
+                    filePath,
+                    jsonSettings,
+                    "Load PlanResponse",
+                    migratedResponse => Save(model, migratedResponse),
+                    out PlanResponse response))
+                {
+                    return response ?? new PlanResponse();
+                }
+
+                return new PlanResponse();
             }
             catch (Exception ex)
             {
                 AppModel.Logger?.Error(ex, "ERROR: Load PlanResponse");
                 return new PlanResponse();
-            }
-        }
-        /// <summary>
-        /// Versucht alte BinaryFormatter-Datei zu migrieren
-        /// </summary>
-        private static bool TryMigrateLegacyPlanResponse(string filePath, out PlanResponse planResponse)
-        {
-            planResponse = null;
-
-            try
-            {
-                // Alte Datei sichern
-                string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-                string backupPath = filePath + $".old_binary_{timestamp}";
-
-                if (File.Exists(filePath))
-                {
-                    File.Copy(filePath, backupPath, true);
-                    AppModel.Logger?.Info($"Legacy PlanResponse file backed up to: {backupPath}");
-                }
-
-                // In .NET MAUI kann BinaryFormatter nicht mehr verwendet werden
-                // Die alte Datei wird gesichert und leere Response zurückgegeben
-                planResponse = new PlanResponse();
-                return true;
-            }
-            catch (Exception ex)
-            {
-                AppModel.Logger?.Error(ex, "ERROR: TryMigrateLegacyPlanResponse()");
-                return false;
             }
         }
         /// <summary>

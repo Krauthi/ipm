@@ -168,13 +168,6 @@ namespace iPMCloud.Mobile
 
                 if (File.Exists(filePath))
                 {
-                    string jsonString = File.ReadAllText(filePath);
-
-                    if (string.IsNullOrWhiteSpace(jsonString))
-                    {
-                        return null;
-                    }
-
                     var jsonSettings = new JsonSerializerSettings
                     {
                         NullValueHandling = NullValueHandling.Include,
@@ -182,7 +175,14 @@ namespace iPMCloud.Mobile
                         DateFormatHandling = DateFormatHandling.IsoDateFormat
                     };
 
-                    return JsonConvert.DeserializeObject<PN>(jsonString, jsonSettings);
+                    return PersistedJsonMigration.TryLoadWithLegacyMigration(
+                        filePath,
+                        jsonSettings,
+                        "Load PN",
+                        Save,
+                        out PN pn)
+                        ? pn
+                        : null;
                 }
 
                 return null;

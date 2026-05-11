@@ -364,80 +364,39 @@ namespace iPMCloud.Mobile
 
                 string filePath = Path.Combine(directoryPath, "loginuser.ipm");
 
-                if (File.Exists(filePath))
-                {
-                    try
-                    {
-                        // JSON laden
-                        string jsonString = File.ReadAllText(filePath);
-
-                        if (string.IsNullOrWhiteSpace(jsonString))
-                        {
-                            AppModel.Logger?.Warn("LoadPerson: File is empty");
-                            return null;
-                        }
-
-                        var jsonSettings = new JsonSerializerSettings
-                        {
-                            NullValueHandling = NullValueHandling.Include,
-                            DefaultValueHandling = DefaultValueHandling.Include,
-                            MissingMemberHandling = MissingMemberHandling.Ignore
-                        };
-
-                        PersonWSO person = JsonConvert.DeserializeObject<PersonWSO>(jsonString, jsonSettings);
-                        return person;
-                    }
-                    catch (JsonException jsonEx)
-                    {
-                        // JSON Fehler - könnte alte BinaryFormatter Datei sein
-                        AppModel.Logger?.Warn(jsonEx, "Failed to deserialize JSON, attempting migration");
-
-                        if (TryMigrateLegacyPerson(filePath, out PersonWSO migratedPerson))
-                        {
-                            // Nach erfolgreicher Migration neu speichern
-                            SavePerson(model, migratedPerson);
-                            return migratedPerson;
-                        }
-
-                        return null;
-                    }
-                }
-                else
+                if (!File.Exists(filePath))
                 {
                     return null;
                 }
+
+                var jsonSettings = new JsonSerializerSettings
+                {
+                    NullValueHandling = NullValueHandling.Include,
+                    DefaultValueHandling = DefaultValueHandling.Include,
+                    MissingMemberHandling = MissingMemberHandling.Ignore
+                };
+
+                if (PersistedJsonMigration.TryLoadWithLegacyMigration(
+                    filePath,
+                    jsonSettings,
+                    "LoadPerson",
+                    migratedPerson => SavePerson(model, migratedPerson),
+                    out PersonWSO person))
+                {
+                    return person;
+                }
+
+                if (new FileInfo(filePath).Length == 0)
+                {
+                    AppModel.Logger?.Warn("LoadPerson: File is empty");
+                }
+
+                return null;
             }
             catch (Exception ex)
             {
                 AppModel.Logger?.Error(ex, "ERROR: LoadPerson()");
                 return null;
-            }
-        }
-
-        private static bool TryMigrateLegacyPerson(string filePath, out PersonWSO person)
-        {
-            person = null;
-
-            try
-            {
-                // Alte Datei sichern
-                string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-                string backupPath = filePath + $".old_binary_{timestamp}";
-
-                if (File.Exists(filePath))
-                {
-                    File.Copy(filePath, backupPath, true);
-                    AppModel.Logger?.Info($"Legacy person file backed up to: {backupPath}");
-                }
-
-                // In .NET MAUI kann BinaryFormatter nicht mehr verwendet werden
-                // Die alte Datei muss manuell konvertiert oder neu erstellt werden
-                return false;
-            }
-            catch (Exception ex)
-            {
-                AppModel.Logger?.Error(ex, "ERROR: TryMigrateLegacyPerson()");
-                return false;
             }
         }
 

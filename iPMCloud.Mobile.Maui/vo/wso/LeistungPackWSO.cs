@@ -112,20 +112,20 @@ namespace iPMCloud.Mobile
 
                 if (File.Exists(filePath))
                 {
-                    string jsonString = File.ReadAllText(filePath);
-
-                    if (string.IsNullOrWhiteSpace(jsonString))
-                    {
-                        return null;
-                    }
-
                     var jsonSettings = new JsonSerializerSettings
                     {
                         NullValueHandling = NullValueHandling.Include,
                         MissingMemberHandling = MissingMemberHandling.Ignore
                     };
 
-                    return JsonConvert.DeserializeObject<LeistungPackWSO>(jsonString, jsonSettings);
+                    return PersistedJsonMigration.TryLoadWithLegacyMigration(
+                        filePath,
+                        jsonSettings,
+                        "Load LeistungPackWSO",
+                        migratedPack => Save(model, migratedPack),
+                        out LeistungPackWSO pack)
+                        ? pack
+                        : null;
                 }
 
                 return null;
@@ -377,20 +377,20 @@ namespace iPMCloud.Mobile
                     return null;
                 }
 
-                string jsonString = File.ReadAllText(filename);
-
-                if (string.IsNullOrWhiteSpace(jsonString))
-                {
-                    return null;
-                }
-
                 var jsonSettings = new JsonSerializerSettings
                 {
                     NullValueHandling = NullValueHandling.Include,
                     MissingMemberHandling = MissingMemberHandling.Ignore
                 };
 
-                return JsonConvert.DeserializeObject<LeistungPackWSO>(jsonString, jsonSettings);
+                return PersistedJsonMigration.TryLoadWithLegacyMigration(
+                    filename,
+                    jsonSettings,
+                    "LoadFromUploadStack LeistungPackWSO",
+                    migratedPack => ToUploadStack(AppModel.Instance, migratedPack),
+                    out LeistungPackWSO pack)
+                    ? pack
+                    : null;
             }
             catch (Exception ex)
             {

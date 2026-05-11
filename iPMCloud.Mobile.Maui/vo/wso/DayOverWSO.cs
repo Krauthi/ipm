@@ -218,7 +218,7 @@ namespace iPMCloud.Mobile
                     // UI Update
                     if (AppModel.Instance?.MainPage != null)
                     {
-                        AppModel.Instance.MainPage.SetAllSyncState();
+                        AppModel.Instance.SetAllSyncStateSafe();
                     }
                 }
 
@@ -260,7 +260,7 @@ namespace iPMCloud.Mobile
                     // UI Update
                     if (AppModel.Instance?.MainPage != null)
                     {
-                        AppModel.Instance.MainPage.SetAllSyncState();
+                        AppModel.Instance.SetAllSyncStateSafe();
                     }
 
                     return true;
@@ -322,7 +322,7 @@ namespace iPMCloud.Mobile
                 // UI Update
                 if (AppModel.Instance?.MainPage != null)
                 {
-                    AppModel.Instance.MainPage.SetAllSyncState();
+                    AppModel.Instance.SetAllSyncStateSafe();
                 }
 
                 return true;
@@ -467,7 +467,7 @@ namespace iPMCloud.Mobile
                     // UI Update
                     if (AppModel.Instance?.MainPage != null)
                     {
-                        AppModel.Instance.MainPage.SetAllSyncState();
+                        AppModel.Instance.SetAllSyncStateSafe();
                     }
                 }
 
@@ -509,7 +509,7 @@ namespace iPMCloud.Mobile
                     // UI Update
                     if (AppModel.Instance?.MainPage != null)
                     {
-                        AppModel.Instance.MainPage.SetAllSyncState();
+                        AppModel.Instance.SetAllSyncStateSafe();
                     }
 
                     return true;

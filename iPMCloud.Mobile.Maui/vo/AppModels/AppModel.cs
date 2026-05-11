@@ -250,6 +250,34 @@ namespace iPMCloud.Mobile.vo
             private set { }
         }
 
+        public void SetAllSyncStateSafe()
+        {
+            try
+            {
+                if (MainThread.IsMainThread)
+                {
+                    MainPage?.SetAllSyncState();
+                    return;
+                }
+
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    try
+                    {
+                        MainPage?.SetAllSyncState();
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger?.Error(ex, "ERROR: SetAllSyncStateSafe (BeginInvokeOnMainThread)");
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                Logger?.Error(ex, "ERROR: SetAllSyncStateSafe");
+            }
+        }
+
 
         public bool HasInitAppmodel { get; set; } = false;
 

@@ -100,7 +100,7 @@ namespace iPMCloud.Mobile
                 // UI Update
                 if (AppModel.Instance.MainPage != null)
                 {
-                    AppModel.Instance.MainPage.SetAllSyncState();
+                    AppModel.Instance.SetAllSyncStateSafe();
                 }
 
                 return true;
@@ -299,7 +299,7 @@ namespace iPMCloud.Mobile
                     // UI Update
                     if (AppModel.Instance.MainPage != null)
                     {
-                        AppModel.Instance.MainPage.SetAllSyncState();
+                        AppModel.Instance.SetAllSyncStateSafe();
                     }
 
                     return true;
@@ -343,7 +343,7 @@ namespace iPMCloud.Mobile
                     // UI Update
                     if (AppModel.Instance.MainPage != null)
                     {
-                        AppModel.Instance.MainPage.SetAllSyncState();
+                        AppModel.Instance.SetAllSyncStateSafe();
                     }
 
                     AppModel.Logger?.Info($"Upload stack cleared: {files.Length} files deleted");

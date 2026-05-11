@@ -111,7 +111,7 @@ namespace iPMCloud.Mobile.vo
         {
             try
             {
-                string backupPath = filePath + $".old_binary_{DateTime.Now:yyyyMMdd_HHmmss}";
+                string backupPath = filePath + $".old_binary_{DateTime.UtcNow:yyyyMMdd_HHmmss_fff}_{Guid.NewGuid():N}";
                 File.Copy(filePath, backupPath, true);
                 AppModel.Logger?.Info($"{logContext}: Legacy backup created - {backupPath}");
             }

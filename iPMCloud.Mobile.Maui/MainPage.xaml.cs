@@ -958,17 +958,21 @@ namespace iPMCloud.Mobile
             overlay.IsVisible = false;
         }
 
-        public void btn_NoticeBackTapped_check_bem(object sender, EventArgs e)
+        private void ResetNoticeDialog_check_bem()
         {
-            this.Focus();
+            entry_notice_check_bem.Unfocus();
             entry_notice_check_bem.Text = "";
             noticePhotoStack_check_bem.Children.Clear();
             CheckPage_Bem_Container.IsVisible = false;
         }
 
+        public void btn_NoticeBackTapped_check_bem(object sender, EventArgs e)
+        {
+            ResetNoticeDialog_check_bem();
+        }
+
         public async void btn_NoticeSaveTapped_check_bem(object sender, EventArgs e)
         {
-            this.Focus();
             if (!String.IsNullOrWhiteSpace(entry_notice_check_bem.Text.Trim())
                 || (_SelectedPosForNotice_check_bem.bemWSO.photos != null
                 && _SelectedPosForNotice_check_bem.bemWSO.photos.Count > 0))
@@ -995,11 +999,7 @@ namespace iPMCloud.Mobile
                 }
                 await Task.Delay(1);
 
-                entry_notice_check_bem.Text = "";
-                noticePhotoStack_check_bem.Children.Clear();
-
-
-                CheckPage_Bem_Container.IsVisible = false;
+                ResetNoticeDialog_check_bem();
 
                 await Task.Delay(1);
                 overlay.IsVisible = false;
@@ -1017,7 +1017,7 @@ namespace iPMCloud.Mobile
                     _SelectedPosForNotice_check_bem.Tap_a_Bem_Refresh();
                 }
 
-                CheckPage_Bem_Container.IsVisible = false;
+                ResetNoticeDialog_check_bem();
             }
         }
 

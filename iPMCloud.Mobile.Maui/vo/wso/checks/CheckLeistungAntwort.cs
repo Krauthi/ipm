@@ -158,7 +158,7 @@ namespace iPMCloud.Mobile
 
         public void Text_a1_Changed()
         {
-            if (inChangeMode) return;
+            if (inChangeMode || textEditor != null) return;
             none = false;
             a1 = textEditor.Text;
         }
@@ -170,7 +170,7 @@ namespace iPMCloud.Mobile
         {
             none = false;
             a1 = "";
-            textEditor.Text = "";
+            textEditor?.Text = "";
             CheckIsReadyAndSet_a1();
             frame_Reset.IsVisible = false;
             textEditor.HeightRequest = -1;
@@ -190,7 +190,10 @@ namespace iPMCloud.Mobile
             none = true;
             a1 = "";
             inChangeMode = true;
-            textEditor.Text = a1;
+            if (textEditor != null)
+            {
+                textEditor.Text = a1;
+            }
             CheckIsReadyAndSet_a1();
             inChangeMode = false;
         }
@@ -209,7 +212,8 @@ namespace iPMCloud.Mobile
 
             mainFrame.BackgroundColor = isReady ? Color.FromArgb("#66cccccc") : Color.FromArgb("#99042d53");
 
-            textEditor.HeightRequest = isReady ? 40 : -1;
+            if(textEditor != null)
+                textEditor.HeightRequest = isReady ? 40 : -1;
 
             AppModel.Instance.MainPage.UpdateCheckAState();
         }
@@ -229,26 +233,31 @@ namespace iPMCloud.Mobile
 
         public void Text_a2_Changed()
         {
-            if (inChangeMode) return;
+            if (inChangeMode || entry == null) return;
             none = false;
             a2 = entry.Text;
         }
         public void Text_a2_Focused()
         {
-            a2 = entry.Text;
+            if(entry != null)
+                a2 = entry.Text;
             CheckIsReadyAndSet_a2();
         }
         public void Tap_a2_Reset()
         {
             none = false;
             a2 = "";
-            entry.Text = "";
+            if (entry != null)
+            {
+                entry.Text = "";
+            }
             CheckIsReadyAndSet_a2();
             frame_Reset.IsVisible = false;
         }
         public void Text_a2_Completed()
         {
-            a2 = entry.Text;
+            if (entry != null)
+                a2 = entry.Text;
             if (!String.IsNullOrEmpty(a2)) { none = false; }
             CheckIsReadyAndSet_a2();
         }
@@ -257,7 +266,10 @@ namespace iPMCloud.Mobile
             none = true;
             a2 = "";
             inChangeMode = true;
-            entry.Text = a2;
+            if (entry != null)
+            {
+                entry.Text = a2;
+            }
             CheckIsReadyAndSet_a2();
             inChangeMode = false;
         }
@@ -286,8 +298,11 @@ namespace iPMCloud.Mobile
                 Tap_SetAllGuis_a2();
                 return;
             }
-            isReady = a2.Length > 0 || none;
-            Tap_SetAllGuis_a2();
+            if (a2 != null)
+            {
+                isReady = a2.Length > 0 || none;
+                Tap_SetAllGuis_a2();
+            }
         }
 
 
@@ -587,25 +602,6 @@ namespace iPMCloud.Mobile
         }
 
 
-        //public async void Tap_a7_ReturnSig()
-        //{
-        //    none = false;
-        //    AppModel.Instance.MainPage.CloseCheckA_Singature(null, null);
-        //    var stream = await signPad.GetImageStreamAsync(SignatureImageFormat.Png);
-        //    if (stream != null)
-        //    {
-        //        byte[] imageArray = null;
-
-        //        using (MemoryStream memory = new MemoryStream())
-        //        {
-        //            stream.CopyTo(memory.ToArray(), 81920); // 81920 ist die Standard-Puffergröße
-        //            imageArray = memory.ToArray();
-        //            //image.Source = ImageSource.FromStream(() => new MemoryStream(bytes));
-        //            a7 = System.Convert.ToBase64String(imageArray);
-        //        }
-        //    }
-        //    CheckIsReadyAndSet_a7();
-        //}
 
         public async Task Tap_a7_ReturnSig(byte[] imageBytes, ImageSource signatureImage)
         {

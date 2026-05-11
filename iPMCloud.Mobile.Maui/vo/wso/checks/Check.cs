@@ -1143,7 +1143,7 @@ namespace iPMCloud.Mobile
             quest.stack_Bem_Badge = new HorizontalStackLayout
             {
                 Padding = new Thickness(0),
-                Margin = new Thickness(-16, -8, 0, 0),
+                Margin = new Thickness(-25, -8, 0, 0),
                 Spacing = 0,
                 HorizontalOptions = LayoutOptions.End,
                 Children = {
@@ -1159,13 +1159,12 @@ namespace iPMCloud.Mobile
             {
                 Text = quest.a2,
                 HorizontalOptions = LayoutOptions.Fill,
-                Margin = new Thickness(0),
+                Margin = new Thickness(10, 0, 10, 0),
                 BackgroundColor = Color.FromArgb("#ffffff"),
                 HorizontalTextAlignment = TextAlignment.End,
                 FontSize = 12,
                 TextColor = Colors.Black,
-                MaxLength = 499,
-                HeightRequest = 40,
+                MaxLength = 150,
                 Keyboard = Keyboard.Numeric,
             };
             quest.entry.TextChanged -= (object sender, TextChangedEventArgs e) => { quest.Text_a2_Changed(); };
@@ -1280,6 +1279,7 @@ namespace iPMCloud.Mobile
                         quest.img_ready,
                         quest.lb_quest,
                         quest.lb_notiz,
+                        quest.entry,
                         new HorizontalStackLayout
                         {
                             Padding = new Thickness(0),
@@ -1291,25 +1291,6 @@ namespace iPMCloud.Mobile
                                 quest.frame_Bem,
                                 quest.stack_Bem_Badge,
                                 quest.frame_None
-                            }
-                        },
-                        new HorizontalStackLayout
-                        {
-                            Padding = new Thickness(0),
-                            Margin = new Thickness(10,5),
-                            Spacing = 5,
-                            HorizontalOptions = LayoutOptions.Fill,
-                            Children = {
-                                new Border
-                                {
-                                    Padding = new Thickness(0),
-                                    Margin = new Thickness(0),
-                                    BackgroundColor = Color.FromArgb("#99ffffff"),
-                                    Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
-                                    HorizontalOptions = LayoutOptions.Fill,
-                                    StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 10 },
-                                    Content = quest.entry,
-                                },
                             }
                         },
                     }

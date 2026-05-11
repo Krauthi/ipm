@@ -304,42 +304,24 @@
 
                             <VerticalStackLayout
                                 Grid.Column="0"
-                                Margin="0,-16,0,0"
+                                Margin="0,-9,0,-1"
                                 Padding="0"
                                 Spacing="0">
                                 <Label
                                     Margin="0"
-                                    FontSize="11"
+                                    FontSize="12"
                                     Text="Letztes Objekt:"
                                     TextColor="#aaaaaa" />
                                 <Label
                                     x:Name="last_building_name"
                                     Margin="0"
                                     Padding="0"
-                                    FontSize="12"
+                                    FontSize="11"
                                     MaximumWidthRequest="120"
                                     Text=""
                                     TextColor="#ffffff" />
                             </VerticalStackLayout>
 
-                            <Border
-                                x:Name="btn_objektinfo_container"
-                                Grid.Column="1"
-                                Margin="2,-20,0,0"
-                                Padding="1"
-                                BackgroundColor="Transparent"
-                                HorizontalOptions="End"
-                                IsVisible="True"
-                                VerticalOptions="Start">
-                                <Image
-                                    x:Name="btn_objektinfo"
-                                    Margin="0,3,0,0"
-                                    HeightRequest="26"
-                                    HorizontalOptions="Center"
-                                    Source="ic_info.png"
-                                    VerticalOptions="Center"
-                                    WidthRequest="26" />
-                            </Border>
                         </Grid>
                     </Grid>
                     <Border
@@ -416,33 +398,61 @@
                 </Grid>
 
                 <Grid
-                    Margin="0,5,0,0"
+                    Margin="0,0,0,4"
                     Padding="5,0,5,0"
                     ColumnSpacing="0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <Label
-                        x:Name="last_building_address"
-                        Grid.Row="0"
-                        Margin="0"
-                        Padding="0"
-                        FontSize="12"
-                        HorizontalOptions="Fill"
-                        Text=""
-                        TextColor="#ffffff"
-                        VerticalOptions="Center" />
-                    <Label
-                        x:Name="last_building_zip_city"
-                        Grid.Row="1"
-                        Margin="0,-2,0,0"
-                        Padding="0"
-                        FontSize="12"
-                        HorizontalOptions="Fill"
-                        Text=""
-                        TextColor="#ffffff"
-                        VerticalOptions="Center" />
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid
+                        Grid.Column="1"
+                        Margin="0,5,0,0"
+                        Padding="5,0,5,0"
+                        ColumnSpacing="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Label
+                            x:Name="last_building_address"
+                            Grid.Row="0"
+                            Margin="0"
+                            Padding="0"
+                            FontSize="12"
+                            HorizontalOptions="Fill"
+                            Text=""
+                            TextColor="#ffffff"
+                            VerticalOptions="Center" />
+                        <Label
+                            x:Name="last_building_zip_city"
+                            Grid.Row="1"
+                            Margin="0,-2,0,0"
+                            Padding="0"
+                            FontSize="12"
+                            HorizontalOptions="Fill"
+                            Text=""
+                            TextColor="#ffffff"
+                            VerticalOptions="Center" />
+                    </Grid>
+                    <Border
+                        x:Name="btn_objektinfo_container"
+                        Grid.Column="0"
+                        Margin="2,1,0,0"
+                        Padding="1"
+                        BackgroundColor="Transparent"
+                        HorizontalOptions="End"
+                        IsVisible="True"
+                        VerticalOptions="Start">
+                        <Image
+                            x:Name="btn_objektinfo"
+                            Margin="0,3,0,0"
+                            HeightRequest="26"
+                            HorizontalOptions="Center"
+                            Source="ic_info.png"
+                            VerticalOptions="Center"
+                            WidthRequest="26" />
+                    </Border>
                 </Grid>
 
                 <Border
@@ -5629,10 +5639,10 @@
             x:Name="CheckPage_Signature_Container"
             Margin="0"
             Padding="0"
-                HorizontalOptions="Fill"
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             AbsoluteLayout.LayoutFlags="All"
             BackgroundColor="#000"
+            HorizontalOptions="Fill"
             IsVisible="False">
 
             <!--<Image
@@ -5649,7 +5659,7 @@
                 x:Name="CheckPage_position_Container2"
                 Margin="0,0,0,0"
                 Padding="0"
-            BackgroundColor="#600"
+                BackgroundColor="#600"
                 HorizontalOptions="Fill"
                 RowSpacing="0"
                 VerticalOptions="Fill">
@@ -6060,6 +6070,9 @@
             AbsoluteLayout.LayoutFlags="All"
             BackgroundColor="#88000000"
             IsVisible="False">
+            <AbsoluteLayout.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnOverlayTapped" />
+            </AbsoluteLayout.GestureRecognizers>
             <Grid
                 x:Name="popupContainer_quest_langpicker_inner"
                 Margin="20,20,0,0"
@@ -6237,6 +6250,9 @@
             AbsoluteLayout.LayoutFlags="All"
             BackgroundColor="#88000000"
             IsVisible="False">
+            <AbsoluteLayout.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnOverlayTapped" />
+            </AbsoluteLayout.GestureRecognizers>
             <VerticalStackLayout
                 x:Name="popupContainer_container_changelang"
                 Margin="10,200,20,0"
@@ -6322,6 +6338,9 @@
             AbsoluteLayout.LayoutFlags="All"
             BackgroundColor="#88000000"
             IsVisible="False">
+            <AbsoluteLayout.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnOverlayTapped" />
+            </AbsoluteLayout.GestureRecognizers>
             <VerticalStackLayout
                 x:Name="popupContainer_container_changelang_fail"
                 Margin="10,200,20,0"
@@ -6545,6 +6564,9 @@
             AbsoluteLayout.LayoutFlags="All"
             BackgroundColor="#66000000"
             IsVisible="false">
+            <AbsoluteLayout.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnOverlayTapped" />
+            </AbsoluteLayout.GestureRecognizers>
             <Border
                 x:Name="panelContainer_frame"
                 Margin="-2,0,100,0"
@@ -7183,6 +7205,9 @@
             AbsoluteLayout.LayoutFlags="All"
             BackgroundColor="#88000000"
             IsVisible="false">
+            <AbsoluteLayout.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnOverlayTapped" />
+            </AbsoluteLayout.GestureRecognizers>
             <VerticalStackLayout
                 Margin="10"
                 Padding="10"
@@ -7254,6 +7279,9 @@
             AbsoluteLayout.LayoutFlags="All"
             BackgroundColor="#88000000"
             IsVisible="False">
+            <AbsoluteLayout.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnOverlayTapped" />
+            </AbsoluteLayout.GestureRecognizers>
             <VerticalStackLayout
                 Margin="10"
                 Padding="10"
@@ -7341,6 +7369,9 @@
             AbsoluteLayout.LayoutFlags="All"
             BackgroundColor="#88000000"
             IsVisible="false">
+            <AbsoluteLayout.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnOverlayTapped" />
+            </AbsoluteLayout.GestureRecognizers>
             <VerticalStackLayout
                 Margin="10"
                 Padding="10"
@@ -7420,6 +7451,9 @@
             AbsoluteLayout.LayoutFlags="All"
             BackgroundColor="#88000000"
             IsVisible="False">
+            <AbsoluteLayout.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnOverlayTapped" />
+            </AbsoluteLayout.GestureRecognizers>
             <VerticalStackLayout
                 Margin="20"
                 Padding="10"
@@ -7505,6 +7539,9 @@
             AbsoluteLayout.LayoutFlags="All"
             BackgroundColor="#88000000"
             IsVisible="False">
+            <AbsoluteLayout.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnOverlayTapped" />
+            </AbsoluteLayout.GestureRecognizers>
             <VerticalStackLayout
                 Margin="20"
                 Padding="10"
@@ -7596,6 +7633,9 @@
             AbsoluteLayout.LayoutFlags="All"
             BackgroundColor="#88000000"
             IsVisible="False">
+            <AbsoluteLayout.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnOverlayTapped" />
+            </AbsoluteLayout.GestureRecognizers>
             <VerticalStackLayout
                 Margin="20"
                 Padding="10"
@@ -7687,6 +7727,9 @@
             AbsoluteLayout.LayoutFlags="All"
             BackgroundColor="#88000000"
             IsVisible="False">
+            <AbsoluteLayout.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnOverlayTapped" />
+            </AbsoluteLayout.GestureRecognizers>
             <VerticalStackLayout
                 Margin="20"
                 Padding="10"
@@ -7758,6 +7801,9 @@
             AbsoluteLayout.LayoutFlags="All"
             BackgroundColor="#88000000"
             IsVisible="False">
+            <AbsoluteLayout.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnOverlayTapped" />
+            </AbsoluteLayout.GestureRecognizers>
             <VerticalStackLayout
                 Margin="20"
                 Padding="10"
@@ -7828,6 +7874,9 @@
             AbsoluteLayout.LayoutFlags="All"
             BackgroundColor="#88000000"
             IsVisible="False">
+            <AbsoluteLayout.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnOverlayTapped" />
+            </AbsoluteLayout.GestureRecognizers>
             <VerticalStackLayout
                 Margin="20"
                 Padding="10"
@@ -7912,6 +7961,9 @@
             AbsoluteLayout.LayoutFlags="All"
             BackgroundColor="#88000000"
             IsVisible="False">
+            <AbsoluteLayout.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnOverlayTapped" />
+            </AbsoluteLayout.GestureRecognizers>
             <VerticalStackLayout
                 x:Name="popupContainer_container_clearlog"
                 Margin="10,200,20,0"
@@ -7996,6 +8048,9 @@
             AbsoluteLayout.LayoutFlags="All"
             BackgroundColor="#88000000"
             IsVisible="False">
+            <AbsoluteLayout.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnOverlayTapped" />
+            </AbsoluteLayout.GestureRecognizers>
             <VerticalStackLayout
                 Margin="10,200,20,0"
                 Padding="10"
@@ -8065,6 +8120,9 @@
             AbsoluteLayout.LayoutFlags="All"
             BackgroundColor="#88000000"
             IsVisible="False">
+            <AbsoluteLayout.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnOverlayTapped" />
+            </AbsoluteLayout.GestureRecognizers>
             <VerticalStackLayout
                 x:Name="popupContainer_container_sendlog"
                 Margin="10,200,20,0"
@@ -8148,6 +8206,9 @@
             AbsoluteLayout.LayoutFlags="All"
             BackgroundColor="#88000000"
             IsVisible="False">
+            <AbsoluteLayout.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnOverlayTapped" />
+            </AbsoluteLayout.GestureRecognizers>
             <VerticalStackLayout
                 x:Name="popupContainer_container_sendlog_fail"
                 Margin="10,200,20,0"
@@ -8234,6 +8295,9 @@
             AbsoluteLayout.LayoutFlags="All"
             BackgroundColor="#88000000"
             IsVisible="False">
+            <AbsoluteLayout.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnOverlayTapped" />
+            </AbsoluteLayout.GestureRecognizers>
             <VerticalStackLayout
                 Margin="20"
                 Padding="10"
@@ -8300,6 +8364,9 @@
             AbsoluteLayout.LayoutFlags="All"
             BackgroundColor="#88000000"
             IsVisible="False">
+            <AbsoluteLayout.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnOverlayTapped" />
+            </AbsoluteLayout.GestureRecognizers>
             <VerticalStackLayout
                 Margin="20"
                 Padding="10"
@@ -8393,6 +8460,9 @@
             AbsoluteLayout.LayoutFlags="All"
             BackgroundColor="#88000000"
             IsVisible="False">
+            <AbsoluteLayout.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnOverlayTapped" />
+            </AbsoluteLayout.GestureRecognizers>
             <VerticalStackLayout
                 Margin="20"
                 Padding="10"
@@ -8486,6 +8556,9 @@
             AbsoluteLayout.LayoutFlags="All"
             BackgroundColor="#88000000"
             IsVisible="False">
+            <AbsoluteLayout.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnOverlayTapped" />
+            </AbsoluteLayout.GestureRecognizers>
             <Grid
                 Margin="20"
                 Padding="10"
@@ -8599,6 +8672,9 @@
             AbsoluteLayout.LayoutFlags="All"
             BackgroundColor="#88000000"
             IsVisible="False">
+            <AbsoluteLayout.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnOverlayTapped" />
+            </AbsoluteLayout.GestureRecognizers>
 
 
             <Grid
@@ -8696,7 +8772,7 @@
                             Margin="10,0,0,0"
                             Padding="0"
                             FontSize="14"
-                            Text="1ABBRECHEN"
+                            Text="ABBRECHEN"
                             TextColor="#ffffff" />
                     </Border>
                     <Border
@@ -8711,7 +8787,7 @@
                             Margin="0"
                             Padding="0"
                             FontSize="14"
-                            Text="1JETZT BUCHEN"
+                            Text="JETZT BUCHEN"
                             TextColor="#ffffff" />
                     </Border>
                     <Border
@@ -8770,6 +8846,9 @@
             HorizontalOptions="Fill"
             IsVisible="False"
             VerticalOptions="Fill">
+            <AbsoluteLayout.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnOverlayTapped" />
+            </AbsoluteLayout.GestureRecognizers>
 
             <Image
                 Margin="0"
@@ -9246,14 +9325,18 @@
             AbsoluteLayout.LayoutFlags="All"
             BackgroundColor="#88000000"
             IsVisible="False">
-            <VerticalStackLayout
+
+            <AbsoluteLayout.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnOverlayTapped" />
+            </AbsoluteLayout.GestureRecognizers>
+            <Grid
                 Margin="20"
                 Padding="10"
-                AbsoluteLayout.LayoutBounds="0.5, 0.05, -1, -1"
-                AbsoluteLayout.LayoutFlags="PositionProportional"
                 BackgroundColor="#144d73"
-                Spacing="0">
+                RowDefinitions="44,Auto,*,Auto,Auto"
+                RowSpacing="0">
                 <Grid
+                    Grid.Row="0"
                     Margin="0"
                     Padding="0"
                     ColumnSpacing="0"
@@ -9281,6 +9364,7 @@
                         VerticalOptions="Center" />
                 </Grid>
                 <BoxView
+                    Grid.Row="1"
                     Margin="0,10,0,10"
                     BackgroundColor="Gray"
                     HeightRequest="1"
@@ -9289,21 +9373,24 @@
                 <!--<Label x:Name="popupContainer_infodialog_titel" Margin="10" HorizontalOptions="Fill" VerticalOptions="Center"
                        FontSize="18"  TextColor="#ffffff" HorizontalTextAlignment="Start" />-->
                 <Label
+                    Grid.Row="2"
                     x:Name="popupContainer_infodialog_text"
                     Margin="10"
                     FontSize="14"
+                    WidthRequest="280"
                     HorizontalOptions="Fill"
-                    HorizontalTextAlignment="Start"
+                    LineBreakMode="WordWrap"
                     Text=""
-                    TextColor="#ffffff"
-                    VerticalOptions="Center" />
+                    TextColor="#ffffff" />
                 <BoxView
+                    Grid.Row="3"
                     Margin="0,10,0,10"
                     BackgroundColor="Gray"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Grid
+                    Grid.Row="4"
                     Margin="0"
                     Padding="0"
                     ColumnSpacing="0"
@@ -9317,7 +9404,7 @@
                         Margin="0"
                         Padding="10"
                         BackgroundColor="#73042d"
-                        HorizontalOptions="End">
+                        HorizontalOptions="Center">
                         <Label
                             Margin="0"
                             Padding="0"
@@ -9326,7 +9413,7 @@
                             TextColor="#ffffff" />
                     </Border>
                 </Grid>
-            </VerticalStackLayout>
+            </Grid>
 
         </AbsoluteLayout>
 
@@ -9336,6 +9423,9 @@
             AbsoluteLayout.LayoutFlags="All"
             BackgroundColor="#88000000"
             IsVisible="False">
+            <AbsoluteLayout.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnOverlayTapped" />
+            </AbsoluteLayout.GestureRecognizers>
             <Grid
                 x:Name="popupContainer_quest_personpicker_inner"
                 Margin="20,20,0,0"
@@ -9511,6 +9601,9 @@
             AbsoluteLayout.LayoutFlags="All"
             BackgroundColor="#88000000"
             IsVisible="False">
+            <AbsoluteLayout.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnOverlayTapped" />
+            </AbsoluteLayout.GestureRecognizers>
             <VerticalStackLayout
                 Margin="20"
                 Padding="10"
@@ -9580,6 +9673,9 @@
             HeightRequest="100"
             IsVisible="false"
             WidthRequest="100">
+            <AbsoluteLayout.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnOverlayTapped" />
+            </AbsoluteLayout.GestureRecognizers>
             <ActivityIndicator
                 x:Name="overlayb"
                 AbsoluteLayout.LayoutBounds="0,0,1,1"

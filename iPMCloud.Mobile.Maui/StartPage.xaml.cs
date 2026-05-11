@@ -25,8 +25,36 @@ namespace iPMCloud.Mobile
         {
             isInitialize = true;
             InitializeComponent();
+            if(StorageMigration.HasMigrateIpmFolder())
+            {
                 InitStartPage();
                 ShowDisconnected();
+            }
+            else
+            {
+                popupContainer_migration.IsVisible = true;
+                Task.Run(async () =>
+                {
+                    var migrated = await StorageMigration.MigrateIpmFolderAsync();
+                    if (migrated)
+                    {
+                        MainThread.BeginInvokeOnMainThread(() =>
+                        {
+                            popupContainer_migration.IsVisible = false;
+                            InitStartPage();
+                            ShowDisconnected();
+                        });
+                    }
+                    else
+                    {
+                        MainThread.BeginInvokeOnMainThread(async () =>
+                        {
+                            popupContainer_migration.IsVisible = false;
+                            await DisplayAlertAsync("Fehler", "Die Migration der Daten ist fehlgeschlagen. Bitte kontaktieren Sie den Support.", "OK");
+                        });
+                    }
+                });
+            }
         }
 
 
@@ -923,5 +951,13 @@ namespace iPMCloud.Mobile
             return this;
         }
 
+        private void OnOverlayTapped(object sender, EventArgs e)
+        {
+            // Implementierung hier - z.B. das Overlay ausblenden
+            //if (popupContainer_infodialog != null)
+            //{
+            //    popupContainer_infodialog.IsVisible = false;
+            //}
+        }
     }
 }

@@ -762,10 +762,7 @@ namespace iPMCloud.Mobile
             overlay.IsVisible = true;
             await Task.Delay(1000);
 
-            // Befragung speichern und pausieren
-            AppModel.Instance.selectedCheckA.antworten.ForEach(_ => _.ClearGui());
             CheckClass.SaveCheckA(AppModel.Instance.selectedCheckA);
-            checkQuestStack.Children.Clear();
             CheckPage_Container.IsVisible = false;
             // Update CheckInfo mit CheckA
             foreach (var check in AppModel.Instance.ChecksInfoResponse.checks)
@@ -779,6 +776,9 @@ namespace iPMCloud.Mobile
             CheckClass.SaveChecksInfo(AppModel.Instance.ChecksInfoResponse);
 
             await Task.Delay(1000);
+            // Befragung speichern und pausieren
+            AppModel.Instance.selectedCheckA.antworten.ForEach(_ => _.ClearGui());
+            checkQuestStack.Children.Clear();
             overlay.IsVisible = false;
         }
 
@@ -844,7 +844,9 @@ namespace iPMCloud.Mobile
                 CheckAllSyncFromUpload();
             }
 
-            checkQuestStack.Children.Clear();
+            await Task.Delay(1000);
+            //AppModel.Instance.selectedCheckA.antworten.ForEach(_ => _.ClearGui());
+            //checkQuestStack.Children.Clear();
             CheckPage_Container.IsVisible = false;
 
             // //GetChecksInfo(checkInfoLastView, true);
@@ -1018,7 +1020,288 @@ namespace iPMCloud.Mobile
                 CheckPage_Bem_Container.IsVisible = false;
             }
         }
-        public async Task btn_takePhoto_check_bem(object sender, EventArgs e)  // ✅ Task statt void
+
+
+
+
+        public async Task btn_takePhoto_check_bem(object sender, EventArgs e)
+        {
+            if (_SelectedPosForNotice_check_bem.bemWSO?.photos?.Count >= 3)
+            {
+                await DisplayAlertAsync("Limit erreicht", "Maximal 3 Fotos erlaubt", "OK");
+                return;
+            }
+
+
+
+            AppModel.Instance.UseExternHardware = true;
+
+            try
+            {
+                var status = await Permissions.CheckStatusAsync<Permissions.Camera>();
+                if (status != PermissionStatus.Granted)
+                {
+                    status = await Permissions.RequestAsync<Permissions.Camera>();
+                    if (status != PermissionStatus.Granted)
+                    {
+                        await DisplayAlertAsync("Berechtigung erforderlich",
+                            "Bitte erlauben Sie Kamera-Zugriff", "OK");
+                        return;
+                    }
+                }
+
+                if (!MediaPicker.Default.IsCaptureSupported)
+                {
+                    await DisplayAlertAsync("Fehler", "Kamera nicht verfügbar", "OK");
+                    return;
+                }
+
+                overlay.IsVisible = true;
+                await Task.Delay(1);
+                var photo = await MediaPicker.CapturePhotoAsync(new MediaPickerOptions
+                {
+                    CompressionQuality = 75,
+                    MaximumHeight = 1024,
+                    MaximumWidth = 1024,
+                    RotateImage = true,
+                    SelectionLimit = 1,
+                    PreserveMetaData = true,
+                });
+
+                if (photo != null)
+                {
+                    var photoResponse = await PhotoResize.CreatePhotoResponseAsync(photo);
+
+                    // TODO: Später wieder aktivieren bzw. Testen - dauer zu lange!!
+                    //string buildingText = null;
+                    //if (AppModel.Instance.LastBuilding == null && _SelectedPosForNotice != null)
+                    //{
+                    //    var bui = BuildingWSO.LoadBuilding(AppModel.Instance, _SelectedPosForNotice.objektid);
+                    //    if (bui != null)
+                    //    {
+                    //        buildingText = $"{bui.plz} {bui.ort} - {bui.strasse} {bui.hsnr}";
+                    //    }
+                    //}
+                    //var photoResponse = PhotoUtils.GetImages(stream);
+                    //photoResponse = PhotoUtils.AddInfoToImage(photoResponse, AppModel.Instance.LastBuilding);
+
+                    var reCo = new Command<BildWSO>(RemoveBildInWork_check_bem);
+
+                    long bildName = DateTime.Now.Ticks;
+                    var b = new BildWSO(_SelectedPosForNotice_check_bem.bemWSO.guid)
+                    {
+                        bytes = photoResponse.imageBytes,
+                        name = bildName.ToString(),
+                        stack = BildWSO.GetAttachmentForNoticeElement(
+                            photoResponse.GetImageSourceAsThumb(),
+                            new DateTime(bildName).ToString("dd.MM.yyyy-HH:mm:ss"),
+                            reCo)
+                    };
+
+                    var frame = (Border)((StackLayout)(b.stack.Children[0])).Children[2];
+                    frame.GestureRecognizers.Clear();
+                    frame.GestureRecognizers.Add(new TapGestureRecognizer()
+                    {
+                        Command = reCo,
+                        CommandParameter = b
+                    });
+
+
+                    if (b != null)
+                    {
+                        // BildWSO.Save(AppModel.Instance, b);
+                        _SelectedPosForNotice_check_bem.bemWSO.photos.Add(b);
+                        noticePhotoStack_check_bem.Children.Add(b.stack);
+
+                        UpdatePhotoButtonsVisibility_check_bem();
+                    }
+                }
+            }
+            catch (FeatureNotSupportedException)
+            {
+                // Kamera wird nicht unterstützt
+                await DisplayAlertAsync("Fehler", "Kamera wird nicht unterstützt", "OK");
+            }
+            catch (PermissionException)
+            {
+                // Berechtigungen wurden nicht erteilt
+                await DisplayAlertAsync("Fehler", "Keine Kamera-Berechtigung", "OK");
+            }
+            catch (OperationCanceledException)
+            {
+                // Benutzer hat abgebrochen
+            }
+            catch (Exception ex)
+            {
+                // Andere Fehler
+                System.Diagnostics.Debug.WriteLine($"Fehler beim Foto aufnehmen: {ex.Message}");
+            }
+            finally
+            {
+                AppModel.Instance.UseExternHardware = false;
+                overlay.IsVisible = false;
+            }
+        }
+        private void UpdatePhotoButtonsVisibility_check_bem()
+        {
+            var bemWSO = _SelectedPosForNotice_check_bem?.bemWSO;
+            if (bemWSO?.photos != null)
+            {
+                bool hasSpace = bemWSO.photos.Count < 3;
+                btn_takePhoto_frame_check_bem.IsVisible = hasSpace;
+                btn_takePhotoAttachment_frame_check_bem.IsVisible = hasSpace;
+            }
+        }
+
+        public async Task btn_pickPhotos_check_bem(object sender, EventArgs e)
+        {
+            int zp = 0;
+            if (_SelectedPosForNotice_check_bem.bemWSO?.photos?.Count >= 3)
+            {
+                await DisplayAlertAsync("Limit erreicht", "Maximal 3 Fotos erlaubt", "OK");
+                return;
+            }
+            if(_SelectedPosForNotice_check_bem.bemWSO?.photos != null)
+            {
+                zp = _SelectedPosForNotice_check_bem.bemWSO.photos.Count;
+            }
+
+            AppModel.Instance.UseExternHardware = true;
+
+            try
+            {
+                if (!MediaPicker.Default.IsCaptureSupported)
+                {
+                    await DisplayAlertAsync("Fehler", "Kamera nicht verfügbar", "OK");
+                    return;
+                }
+
+                overlay.IsVisible = true;
+                _ = Task.Delay(1);
+
+
+
+                var photos = await MediaPicker.PickPhotosAsync(new MediaPickerOptions
+                {
+                    CompressionQuality = 75,
+                    MaximumHeight = 1024,
+                    MaximumWidth = 1024,
+                    RotateImage = true,
+                    SelectionLimit = 3 - zp,
+                    PreserveMetaData = true,
+                });
+
+                if (photos != null && photos.Count() > 0)
+                {
+                    foreach (var photo in photos)
+                    {
+                        var reCo = new Command<BildWSO>(RemoveBildInWork_check_bem);
+
+                        var photoResponse = await PhotoResize.CreatePhotoResponseAsync(photo);
+
+                        // TODO: Später wieder aktivieren bzw. Testen - dauer zu lange!!
+                        // Building-Text vorbereiten
+                        //string buildingText = null;
+                        //if (AppModel.Instance.LastBuilding == null && _SelectedPosForNotice != null)
+                        //{
+                        //    var bui = BuildingWSO.LoadBuilding(AppModel.Instance, _SelectedPosForNotice.objektid);
+                        //    if (bui != null)
+                        //    {
+                        //        buildingText = $"{bui.plz} {bui.ort} - {bui.strasse} {bui.hsnr}";
+                        //    }
+                        //}
+                        //photoResponse = PhotoUtils.AddInfoToImage(
+                        //    photoResponse,
+                        //    building,
+                        //    customBuildingText);
+
+                        long bildName = DateTime.Now.Ticks;
+                        var bildWSO = new BildWSO(_SelectedPosForNotice_check_bem.guid)
+                        {
+                            bytes = photoResponse.imageBytes,
+                            name = bildName.ToString(),
+                            stack = BildWSO.GetAttachmentForNoticeElement(
+                                photoResponse.GetImageSourceAsThumb(),
+                                new DateTime(bildName).ToString("dd.MM.yyyy-HH:mm:ss"),
+                                reCo)
+                        };
+                        var frame = (Border)((StackLayout)(bildWSO.stack.Children[0])).Children[2];
+                        frame.GestureRecognizers.Clear();
+                        frame.GestureRecognizers.Add(new TapGestureRecognizer()
+                        {
+                            Command = reCo,
+                            CommandParameter = bildWSO
+                        });
+
+
+                        if (bildWSO != null)
+                        {
+                            // BildWSO.Save(AppModel.Instance, bildWSO);
+                            _SelectedPosForNotice_check_bem.bemWSO.photos.Add(bildWSO);
+                            noticePhotoStack_check_bem.Children.Add(bildWSO.stack);
+
+                            // UI Update
+                            if (_SelectedPosForNotice_check_bem.bemWSO?.photos != null)
+                            {
+                                bool hasSpace = _SelectedPosForNotice_check_bem.bemWSO.photos.Count < 3;
+                                btn_takePhoto_frame_check_bem.IsVisible = hasSpace;
+                                btn_takePhotoAttachment_frame_check_bem.IsVisible = hasSpace;
+                            }
+                        }
+
+                        /*
+                        await PhotoPickerHelper.PickAndProcessPhotosAsync(
+                            maxPhotos: 3,
+                            photoList: _SelectedPosForNotice_check_bem.bemWSO.photos,
+                            targetStack: noticePhotoStack_check_bem,
+                            parentGuid: _SelectedPosForNotice_check_bem.bemWSO.guid,
+                            removeCommand: new Command<BildWSO>(RemoveBildInWork_check_bem),
+                            building: AppModel.Instance.LastBuilding,
+                            onComplete: () =>
+                            {
+                                // UI Update
+                                if (_SelectedPosForNotice_check_bem.bemWSO?.photos != null)
+                                {
+                                    bool hasSpace = _SelectedPosForNotice_check_bem.bemWSO.photos.Count < 3;
+                                    btn_takePhoto_frame_check_bem.IsVisible = hasSpace;
+                                    btn_takePhotoAttachment_frame_check_bem.IsVisible = hasSpace;
+                                }
+                            }
+                        );
+                        */
+                    }
+                }
+            }
+            catch (FeatureNotSupportedException exn)
+            {
+                // Kamera wird nicht unterstützt
+                AppModel.Logger.Error($"Fehler Kamera wird nicht unterstützt: {exn.Message}");
+            }
+            catch (PermissionException exp)
+            {
+                // Berechtigungen wurden nicht erteilt
+                AppModel.Logger.Error($"Fehler Keine Kamera-Berechtigung: {exp.Message}");
+            }
+            catch (OperationCanceledException)
+            {
+                // Benutzer hat abgebrochen
+            }
+            catch (Exception ex)
+            {
+                // Andere Fehler
+                AppModel.Logger.Error($"Fehler beim Foto aufnehmen: {ex.Message}");
+            }
+            finally
+            {
+
+                AppModel.Instance.UseExternHardware = false;
+                overlay.IsVisible = false;
+            }
+        }
+
+
+
+        public async Task btn_takePhoto_check_bem_old(object sender, EventArgs e)  // ✅ Task statt void
         {
             await Task.Delay(1);
 
@@ -1118,17 +1401,8 @@ namespace iPMCloud.Mobile
         }
 
         // ✅ UI Update in separate Methode (wiederverwendbar)
-        private void UpdatePhotoButtonsVisibility_check_bem()
-        {
-            var bemWSO = _SelectedPosForNotice_check_bem?.bemWSO;
-            if (bemWSO?.photos != null)
-            {
-                bool hasSpace = bemWSO.photos.Count < 3;
-                btn_takePhoto_frame_check_bem.IsVisible = hasSpace;
-                btn_takePhotoAttachment_frame_check_bem.IsVisible = hasSpace;
-            }
-        }
-        public async Task btn_pickPhotos_check_bem(object sender, EventArgs e)
+
+        public async Task btn_pickPhotos_check_bem_old(object sender, EventArgs e)
         {
             if (_SelectedPosForNotice_check_bem.bemWSO?.photos?.Count >= 3)
             {
@@ -2428,8 +2702,6 @@ namespace iPMCloud.Mobile
                 overlay.IsVisible = false;
             }
         }
-
-
 
         public async Task btn_pickPhotos_DirektPos(object sender, TappedEventArgs e)  
         {
@@ -9480,6 +9752,14 @@ namespace iPMCloud.Mobile
             popupContainer_Alert_Titel.Text = "";
             popupContainer_Alert_Text.Text = "";
             popupContainer_Alert_btn.IsVisible = true;
+        }
+        private void OnOverlayTapped(object sender, EventArgs e)
+        {
+            // Implementierung hier - z.B. das Overlay ausblenden
+            //if (popupContainer_infodialog != null)
+            //{
+            //    popupContainer_infodialog.IsVisible = false;
+            //}
         }
 
     }

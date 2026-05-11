@@ -13,7 +13,7 @@
         Padding="0"
         AbsoluteLayout.LayoutBounds="0,0,1,1"
         AbsoluteLayout.LayoutFlags="All"
-        BackgroundColor="Transparent"
+        BackgroundColor="Black"
         HorizontalOptions="Fill"
         RowSpacing="0"
         VerticalOptions="Fill">

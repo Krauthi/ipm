@@ -106,10 +106,10 @@ namespace iPMCloud.Mobile.vo
                         AppModel.Logger.Info($"PERF: StartPage.StartPageAgain took {swStartPageAgain.ElapsedMilliseconds} ms");
 #endif
                     }
-                    else
-                    {
-                        StartPageObj.GetPage(subPage);
-                    }
+                    //else
+                    //{
+                    //    StartPageObj.GetPage(subPage);
+                    //}
                     break;
 
 
@@ -155,10 +155,10 @@ namespace iPMCloud.Mobile.vo
                         AppModel.Logger.Info($"PERF: MainPage.MainPageAgain took {swMainPageAgain.ElapsedMilliseconds} ms");
 #endif
                     }
-                    else
-                    {
-                        MainPageObj.GetPage(subPage);
-                    }
+                    //else
+                    //{
+                    //    MainPageObj.GetPage(subPage);
+                    //}
                     break;
 
 

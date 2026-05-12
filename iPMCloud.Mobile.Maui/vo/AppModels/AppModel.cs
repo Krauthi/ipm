@@ -280,6 +280,7 @@ namespace iPMCloud.Mobile.vo
             }
         }
 
+        public bool hasFirstStart { get; set; } = false;
 
         public bool HasInitAppmodel { get; set; } = false;
 

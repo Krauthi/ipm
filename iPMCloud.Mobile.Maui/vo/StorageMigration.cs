@@ -7,7 +7,7 @@ namespace iPMCloud.Mobile.vo
 
     public static class StorageMigration
     {
-        private const string MigrationKey = "Migrated_MyDocuments_ipm_To_LocalApplicationData_ipm";
+        private const string MigrationKey = "Migrated_ipm_To_LocalApplicationData_ipm_3000014";
 
         public static bool HasMigrateIpmFolder()
         {
@@ -18,7 +18,7 @@ namespace iPMCloud.Mobile.vo
         {
             return await Task.Run(() =>
             {
-                try
+                try 
                 {
                     if (Preferences.Default.Get(MigrationKey, false))
                         return true;
@@ -37,23 +37,24 @@ namespace iPMCloud.Mobile.vo
                         Preferences.Default.Set(MigrationKey, true);
                         return true;
                     }
-                    if (Directory.Exists(newPath) && Directory.GetFiles(newPath, "*", SearchOption.AllDirectories).Length > 0)
-                    {
-                        Preferences.Default.Set(MigrationKey, true);
-                        return true;
-                    }
+                    //if (Directory.Exists(newPath) && Directory.GetFiles(newPath, "*", SearchOption.AllDirectories).Length > 0)
+                    //{
+                    //    Preferences.Default.Set(MigrationKey, true);
+                    //    return true;
+                    //}
 
                     Directory.CreateDirectory(newPath);
                     CopyDirectory(oldPath, newPath);
 
                     //Optional erst später aktivieren, wenn alles geprüft wurde:
-                    Directory.Delete(oldPath, true);
+                    //Directory.Delete(oldPath, true);
 
                     Preferences.Default.Set(MigrationKey, true);
                     return true;
                 }
-                catch
+                catch(Exception ex)
                 {
+                    AppModel.Logger.Error("ERROR: StorageMigration: " + ex.Message + " - " + (ex.StackTrace ?? ""));
                     return false;
                 }
             });

@@ -10,22 +10,22 @@
     <Grid>
         <!--  Splash background image – full screen  -->
         <Image
+            HorizontalOptions="Center"
             MaximumWidthRequest="300"
             MinimumWidthRequest="300"
-            HorizontalOptions="Center"
-            VerticalOptions="Center"
-            Source="screen.png" />
+            Source="screen.png"
+            VerticalOptions="Center" />
 
         <!--  Rotating loader centered on screen  -->
         <ActivityIndicator
             x:Name="SplashIndicator"
-            Color="White"
+            Margin="0,0,0,80"
             HorizontalOptions="Center"
             IsRunning="True"
             IsVisible="True"
             Scale="2"
             VerticalOptions="End"
-            Margin="0,0,0,80" />
+            Color="White" />
     </Grid>
 
 </ContentPage>

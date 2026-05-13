@@ -37,16 +37,41 @@ namespace iPMCloud.Mobile
         {
 
             InitializeComponent();
-            /*
-            var lad = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            System.Diagnostics.Debug.WriteLine("LAD=" + lad);
 
-            var logDir = Path.Combine(lad, "logs");
-            Directory.CreateDirectory(logDir);
+            if (StorageMigration.HasMigrateIpmFolder())
+            {
+                AppStart(); 
+            }
+            else
+            {
+                Task.Run(async () =>
+                {
+                    var migrated = await StorageMigration.MigrateIpmFolderAsync();
+                    if (migrated)
+                    {
+                        // Alte Files wurden erfolgreich migriert
+                        MainThread.BeginInvokeOnMainThread(() =>
+                        {
+                            AppModel.Logger.Info("INFO: Alte Files wurden erfolgreich migriert");
+                            AppStart();
+                        });
+                    }
+                    else
+                    {
+                        // Alte Files konnten nicht migriert werden, wahrscheinlich weil sie nicht mehr existieren
+                        MainThread.BeginInvokeOnMainThread(() =>
+                        {
+                            AppModel.Logger.Error("ERROR: Alte Files konnten nicht migriert werden, wahrscheinlich weil sie nicht mehr existieren");
+                            AppModel.Instance.MigrationFailed = true;
+                            AppStart();
+                        });
+                    }
+                });
+            }
 
-            File.AppendAllText(Path.Combine(logDir, "where-am-i.txt"), DateTime.Now.ToString("O") + " LAD=" + lad + "\n");
-            */
-
+        }
+        public void AppStart()
+        {
 
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             try
@@ -65,17 +90,23 @@ namespace iPMCloud.Mobile
                 AppModel.Logger.Warn("WARN: AppCache konnte nicht eglöscht werden!");
             }
 
-
             InitApp();
         }
 
 
         public void InitApp()
         {
+
+
+
+
+
             // TODO: Migrate to MAUI-compatible Firebase
             // Plugin.FirebasePushNotification is not MAUI-compatible
             // Consider: Plugin.Firebase or native Firebase SDK
             // OnStartIntiFirebase();
+
+
 
             AppModel.Instance.InitDeviceInformation();
             AppModel.Instance.App = this;
@@ -93,13 +124,10 @@ namespace iPMCloud.Mobile
 
             //AppModel.Instance.SendLogZipFile();
 
-            AppModel.Logger.Info("0001");
             if (AppModel.Instance.StartPage == null)
             {
-                AppModel.Logger.Info("0001");
                 var startPage = new StartPage();
                 AppModel.Instance.StartPage = startPage;
-                AppModel.Logger.Info("0002");
             }
             //if (AppModel.Instance.MainPage == null)
             //{

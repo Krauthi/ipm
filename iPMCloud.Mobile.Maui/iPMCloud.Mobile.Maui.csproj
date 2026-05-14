@@ -2,7 +2,6 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>net10.0-android;net10.0-ios</TargetFrameworks>
-		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net10.0-windows10.0.19041.0</TargetFrameworks>
 		<OutputType>Exe</OutputType>
 		<RootNamespace>iPMCloud.Mobile</RootNamespace>
 		<UseMaui>true</UseMaui>
@@ -11,11 +10,11 @@
 		<ApplicationTitle>iPM-Cloud</ApplicationTitle>
 		<ApplicationId>com.ipmcloud.ipm.mobile</ApplicationId>
 		<ApplicationIdGuid>201CEFAB-590D-414F-9660-9EFF31FE2078</ApplicationIdGuid>
-		<ApplicationDisplayVersion>3.0.21</ApplicationDisplayVersion>
+		<ApplicationDisplayVersion>3.0.23</ApplicationDisplayVersion>
 		<ApplicationVersion>1</ApplicationVersion>
-		<Version>3000021</Version>
-		<AssemblyVersion>3.0.21.0</AssemblyVersion>
-		<FileVersion>3.0.21.0</FileVersion>
+		<Version>3000023</Version>
+		<AssemblyVersion>3.0.23.0</AssemblyVersion>
+		<FileVersion>3.0.23.0</FileVersion>
 		<NeutralLanguage>de-DE</NeutralLanguage>
 		<Copyright>iPM-Cloud</Copyright>
 		<Nullable>disable</Nullable>
@@ -82,6 +81,20 @@
 		<MauiImage Include="Resources\Images\*" />
 		<MauiFont Include="Resources\Fonts\*" />
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+	</ItemGroup>
+	<ItemGroup>
+	  <AndroidResource Remove="bin - Kopie\**" />
+	  <AndroidResource Remove="obj - Kopie\**" />
+	  <Compile Remove="bin - Kopie\**" />
+	  <Compile Remove="obj - Kopie\**" />
+	  <EmbeddedResource Remove="bin - Kopie\**" />
+	  <EmbeddedResource Remove="obj - Kopie\**" />
+	  <MauiCss Remove="bin - Kopie\**" />
+	  <MauiCss Remove="obj - Kopie\**" />
+	  <MauiXaml Remove="bin - Kopie\**" />
+	  <MauiXaml Remove="obj - Kopie\**" />
+	  <None Remove="bin - Kopie\**" />
+	  <None Remove="obj - Kopie\**" />
 	</ItemGroup>
 
 	<ItemGroup>

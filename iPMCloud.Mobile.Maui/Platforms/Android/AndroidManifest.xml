@@ -1,49 +1,70 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" package="com.ipmcloud.ipm.mobile" android:versionName="3.0.14" android:versionCode="3000014">
-	<!-- SDK Versionen explizit angeben -->
-	<uses-sdk tools:overrideLibrary="             androidx.lifecycle.runtime,             com.google.android.play.core,             com.google.android.gms.base,             com.google.android.gms.common,             com.google.android.gms.tasks" />
-	<application android:allowBackup="true" android:supportsRtl="true" android:label="iPM-Cloud" android:theme="@style/Maui.SplashTheme" android:networkSecurityConfig="@xml/network_security_config" tools:replace="android:allowBackup,android:label" android:icon="@drawable/icon">
-		<!--  Option 2: Wenn du MAUI AppIcon nutzen willst (empfohlen) -->
-		<!-- android:icon="@mipmap/appicon"
-        android:roundIcon="@mipmap/appicon_round" -->
-		<!--  Option 3: Temporär kein Icon (zum Testen) -->
-		<!-- Einfach weglassen, Android nutzt dann Default -->
-		<!-- Hinweis: SplashActivity und MainActivity werden über C# Attributes definiert -->
-		<!-- Die Activity-Registrierung erfolgt automatisch durch MAUI basierend auf den [Activity] Attributes -->
-		<!-- SplashActivity: MainLauncher=true, NoHistory=true -->
-		<!-- MainActivity: MainLauncher=false (MAUI Host Activity) -->
-		<!-- File Provider (für Kamera/Galerie) -->
-		<provider android:name="androidx.core.content.FileProvider" android:authorities="${applicationId}.fileprovider" android:exported="false" android:grantUriPermissions="true">
-			<meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/file_paths" />
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.ipmcloud.ipm.mobile"
+    android:versionName="3.0.21"
+    android:versionCode="3000021">
+
+	<uses-sdk
+        tools:overrideLibrary="androidx.lifecycle.runtime,com.google.android.play.core,com.google.android.gms.base,com.google.android.gms.common,com.google.android.gms.tasks" />
+
+	<application
+        android:allowBackup="true"
+        android:supportsRtl="true"
+        android:label="iPM-Cloud"
+        android:theme="@style/Maui.SplashTheme"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:icon="@drawable/icon"
+        tools:replace="android:allowBackup,android:label">
+
+		<provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+			<meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
 		</provider>
-		<!-- Foreground Service für Datensynchronisation (läuft bei Screen-off und im Hintergrund) -->
-		<service android:name="com.ipmcloud.ipm.mobile.SyncForegroundService" android:exported="false" android:foregroundServiceType="dataSync" />
+
+		<service
+            android:name="com.ipmcloud.ipm.mobile.SyncForegroundService"
+            android:exported="false"
+            android:foregroundServiceType="dataSync" />
 	</application>
-	<!-- Permissions -->
+
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-	<!-- Foreground Service und WakeLock für Hintergrund-Synchronisation -->
+
 	<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 	<uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
-	<!-- Notification Permissions (Android 13+) -->
+
 	<uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 	<uses-permission android:name="android.permission.VIBRATE" />
-	<!-- Camera & Storage -->
+
 	<uses-permission android:name="android.permission.CAMERA" />
 	<uses-permission android:name="android.permission.FLASHLIGHT" />
-	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="32" tools:ignore="ScopedStorage" />
-	<!-- Android 13+ Storage Permissions -->
+
+	<uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+	<uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32"
+        tools:ignore="ScopedStorage" />
+
 	<uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
 	<uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
 	<uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+
 	<uses-permission android:name="android.permission.RECORD_AUDIO" />
-	<uses-permission android:name="android.permission.RECORD_VIDEO" />
+
 	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-	<!-- Features -->
+
 	<uses-feature android:name="android.hardware.camera" android:required="false" />
 	<uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
 </manifest>

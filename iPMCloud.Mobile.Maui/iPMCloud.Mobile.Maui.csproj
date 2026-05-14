@@ -11,17 +11,17 @@
 		<ApplicationTitle>iPM-Cloud</ApplicationTitle>
 		<ApplicationId>com.ipmcloud.ipm.mobile</ApplicationId>
 		<ApplicationIdGuid>201CEFAB-590D-414F-9660-9EFF31FE2078</ApplicationIdGuid>
-		<ApplicationDisplayVersion>3.0.13</ApplicationDisplayVersion>
+		<ApplicationDisplayVersion>3.0.21</ApplicationDisplayVersion>
 		<ApplicationVersion>1</ApplicationVersion>
-		<Version>3000013</Version>
-		<AssemblyVersion>3.0.13.0</AssemblyVersion>
-		<FileVersion>3.0.13.0</FileVersion>
+		<Version>3000021</Version>
+		<AssemblyVersion>3.0.21.0</AssemblyVersion>
+		<FileVersion>3.0.21.0</FileVersion>
 		<NeutralLanguage>de-DE</NeutralLanguage>
 		<Copyright>iPM-Cloud</Copyright>
 		<Nullable>disable</Nullable>
 
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">12.0</SupportedOSPlatformVersion>
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">30.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">28.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.19041.0</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
@@ -32,7 +32,10 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
-		<AndroidMinSdkVersion>23</AndroidMinSdkVersion>
+		<!--<AndroidMinSdkVersion>23</AndroidMinSdkVersion>
+		<AndroidTargetSdkVersion>36</AndroidTargetSdkVersion>-->
+		<SupportedOSPlatformVersion>28.0</SupportedOSPlatformVersion>
+		<TargetPlatformMinVersion>28.0</TargetPlatformMinVersion>
 		<AndroidTargetSdkVersion>36</AndroidTargetSdkVersion>
 	<RuntimeIdentifiers>android-arm64;android-arm</RuntimeIdentifiers>
 		<AndroidEnableMultiDex>true</AndroidEnableMultiDex>
@@ -63,11 +66,10 @@
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0-android|AnyCPU'">
 		<Optimize>true</Optimize>
 		<AndroidPackageFormat>aab</AndroidPackageFormat>
-		<AndroidUseAapt2>true</AndroidUseAapt2>
-		<AndroidEnableMultiDex>true</AndroidEnableMultiDex>
+		<!-- <AndroidUseAapt2>true</AndroidUseAapt2>
+		<AndroidEnableMultiDex>true</AndroidEnableMultiDex> -->
 		<AndroidLinkMode>SdkOnly</AndroidLinkMode>
-		<AndroidLinkSkip />
-		<PublishTrimmed>false</PublishTrimmed>
+		<PublishTrimmed>true</PublishTrimmed>
 	</PropertyGroup>
 
 	<!-- <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0-android|AnyCPU'">
@@ -232,7 +234,7 @@
 		</MauiXaml>
 	</ItemGroup>
 
-	<ItemGroup>
+	<!-- <ItemGroup>
 	  <None Update="Assets\backgroundgray0.jpg">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
@@ -254,6 +256,6 @@
 	  <None Update="Resources\Images\mockup4b.jpg">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </None>
-	</ItemGroup>
+	</ItemGroup> -->
 
 </Project>

@@ -7,7 +7,7 @@ namespace iPMCloud.Mobile.vo
 
     public static class StorageMigration
     {
-        private const string MigrationKey = "Migrated_ipm_To_LocalApplicationData_ipm_3000014";
+        private const string MigrationKey = "Migrated_ipm_To_LocalApplicationData_ipm_3000020";
 
         public static bool HasMigrateIpmFolder()
         {

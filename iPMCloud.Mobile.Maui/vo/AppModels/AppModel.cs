@@ -523,6 +523,18 @@ namespace iPMCloud.Mobile.vo
 
             try
             {
+                var statusMedia = await MainThread.InvokeOnMainThreadAsync(() =>
+                    Permissions.CheckStatusAsync<Permissions.Media>());
+
+                var statusMaps = await MainThread.InvokeOnMainThreadAsync(() =>
+                    Permissions.CheckStatusAsync<Permissions.Maps>());
+
+                var statusFlashlight = await MainThread.InvokeOnMainThreadAsync(() =>
+                    Permissions.CheckStatusAsync<Permissions.Flashlight>());
+
+                var statusPhotos = await MainThread.InvokeOnMainThreadAsync(() =>
+                    Permissions.CheckStatusAsync<Permissions.Photos>());
+
                 var status = await MainThread.InvokeOnMainThreadAsync(() =>
                     Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>());
 

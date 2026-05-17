@@ -138,7 +138,7 @@ namespace iPMCloud.Mobile
                 sw.Restart();
 #endif
 
-                var checkPerm = await CheckPermissions();
+                var checkPerm = await CheckLocationPermissionsAndInitGps();
 #if DEBUG
                 AppModel.Logger.Info($"PERF: MainPageAgain CheckPermissions took {sw.ElapsedMilliseconds} ms");
                 sw.Restart();
@@ -1470,16 +1470,8 @@ namespace iPMCloud.Mobile
             base.OnDisappearing();
         }
 
-        private async Task<bool> CheckPermissions()
+        private async Task<bool> CheckLocationPermissionsAndInitGps()
         {
-            var checkPermissionsMessage = await AppModel.Instance.CheckPermissions();
-            if (!String.IsNullOrWhiteSpace(checkPermissionsMessage))
-            {
-                checkPermissionsMessage = checkPermissionsMessage.Replace(";", "\n\n");
-                await DisplayAlertAsync("Folgendes wird benötigt!", checkPermissionsMessage, "OK");
-                //AppModel.Instance.PageNavigator.NavigateTo(TFPageNavigator.PAGE_CLOSEAPP);
-                return false;
-            }
             var checkPermissionGPSMessage = await AppModel.Instance.CheckPermissionGPS();
             if (!String.IsNullOrWhiteSpace(checkPermissionGPSMessage))
             {

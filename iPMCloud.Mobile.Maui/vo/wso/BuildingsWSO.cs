@@ -397,6 +397,11 @@ namespace iPMCloud.Mobile
 
         public static async void btn_MapTapped(object obj)
         {
+            await BtnMapTappedAsync(obj);
+        }
+
+        private static async Task BtnMapTappedAsync(object obj)
+        {
             var b = (BuildingWSO)obj;
 
             try

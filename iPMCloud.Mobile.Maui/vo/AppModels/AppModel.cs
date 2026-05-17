@@ -515,14 +515,6 @@ namespace iPMCloud.Mobile.vo
         //    return r;
         //}
 
-        public string checkPermissionsMessage = "";
-        public Task<string> CheckPermissions()
-        {
-            checkPermissionsMessage = "";
-            return Task.FromResult(checkPermissionsMessage);
-        }
-
-
         public bool gpsPermissionReady = false;
         public string checkPermissionGPSMessage = "";
         public async Task<string> CheckPermissionGPS()

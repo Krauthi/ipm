@@ -1472,19 +1472,19 @@ namespace iPMCloud.Mobile
 
         private async Task<bool> CheckPermissions()
         {
-            AppModel.Instance.CheckPermissions();
-            if (!String.IsNullOrWhiteSpace(AppModel.Instance.checkPermissionsMessage))
+            var permissionMessage = await AppModel.Instance.CheckPermissions();
+            if (!String.IsNullOrWhiteSpace(permissionMessage))
             {
-                AppModel.Instance.checkPermissionsMessage = AppModel.Instance.checkPermissionsMessage.Replace(";", "\n\n");
-                await DisplayAlertAsync("Folgendes wird benötigt!", AppModel.Instance.checkPermissionsMessage, "OK");
+                permissionMessage = permissionMessage.Replace(";", "\n\n");
+                await DisplayAlertAsync("Folgendes wird benötigt!", permissionMessage, "OK");
                 //AppModel.Instance.PageNavigator.NavigateTo(TFPageNavigator.PAGE_CLOSEAPP);
                 return false;
             }
-            AppModel.Instance.CheckPermissionGPS();
-            if (!String.IsNullOrWhiteSpace(AppModel.Instance.checkPermissionGPSMessage))
+            var gpsPermissionMessage = await AppModel.Instance.CheckPermissionGPS();
+            if (!String.IsNullOrWhiteSpace(gpsPermissionMessage))
             {
-                AppModel.Instance.checkPermissionGPSMessage = AppModel.Instance.checkPermissionGPSMessage.Replace(";", "\n\n");
-                await DisplayAlertAsync("Berechtigungsproblem!", AppModel.Instance.checkPermissionGPSMessage, "OK");
+                gpsPermissionMessage = gpsPermissionMessage.Replace(";", "\n\n");
+                await DisplayAlertAsync("Berechtigungsproblem!", gpsPermissionMessage, "OK");
                 //AppModel.Instance.PageNavigator.NavigateTo(TFPageNavigator.PAGE_CLOSEAPP);
                 return false;
             }

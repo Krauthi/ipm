@@ -1170,6 +1170,11 @@ namespace iPMCloud.Mobile
 
             try
             {
+                if (!await EnsurePhotoPermissionAsync())
+                {
+                    return;
+                }
+
                 if (!MediaPicker.Default.IsCaptureSupported)
                 {
                     await DisplayAlertAsync("Fehler", "Kamera nicht verfügbar", "OK");
@@ -1472,23 +1477,53 @@ namespace iPMCloud.Mobile
 
         private async Task<bool> CheckPermissions()
         {
-            AppModel.Instance.CheckPermissions();
-            if (!String.IsNullOrWhiteSpace(AppModel.Instance.checkPermissionsMessage))
+            var permissionMessage = await AppModel.Instance.CheckPermissions();
+            if (!String.IsNullOrWhiteSpace(permissionMessage))
             {
-                AppModel.Instance.checkPermissionsMessage = AppModel.Instance.checkPermissionsMessage.Replace(";", "\n\n");
-                await DisplayAlertAsync("Folgendes wird benötigt!", AppModel.Instance.checkPermissionsMessage, "OK");
+                permissionMessage = permissionMessage.Replace(";", "\n\n");
+                await DisplayAlertAsync("Folgendes wird benötigt!", permissionMessage, "OK");
                 //AppModel.Instance.PageNavigator.NavigateTo(TFPageNavigator.PAGE_CLOSEAPP);
                 return false;
             }
-            AppModel.Instance.CheckPermissionGPS();
-            if (!String.IsNullOrWhiteSpace(AppModel.Instance.checkPermissionGPSMessage))
+            var permissionGPSMessage = await AppModel.Instance.CheckPermissionGPS();
+            if (!String.IsNullOrWhiteSpace(permissionGPSMessage))
             {
-                AppModel.Instance.checkPermissionGPSMessage = AppModel.Instance.checkPermissionGPSMessage.Replace(";", "\n\n");
-                await DisplayAlertAsync("Berechtigungsproblem!", AppModel.Instance.checkPermissionGPSMessage, "OK");
+                permissionGPSMessage = permissionGPSMessage.Replace(";", "\n\n");
+                await DisplayAlertAsync("Berechtigungsproblem!", permissionGPSMessage, "OK");
                 //AppModel.Instance.PageNavigator.NavigateTo(TFPageNavigator.PAGE_CLOSEAPP);
                 return false;
             }
             return true;
+        }
+
+        private async Task<bool> EnsureCameraPermissionAsync()
+        {
+            var status = await Permissions.CheckStatusAsync<Permissions.Camera>();
+            if (status != PermissionStatus.Granted && status != PermissionStatus.Restricted)
+            {
+                status = await Permissions.RequestAsync<Permissions.Camera>();
+            }
+
+            if (status == PermissionStatus.Granted || status == PermissionStatus.Restricted)
+                return true;
+
+            await DisplayAlertAsync("Berechtigung erforderlich", "Bitte erlauben Sie Kamera-Zugriff", "OK");
+            return false;
+        }
+
+        private async Task<bool> EnsurePhotoPermissionAsync()
+        {
+            var status = await Permissions.CheckStatusAsync<Permissions.Photos>();
+            if (status != PermissionStatus.Granted && status != PermissionStatus.Restricted)
+            {
+                status = await Permissions.RequestAsync<Permissions.Photos>();
+            }
+
+            if (status == PermissionStatus.Granted || status == PermissionStatus.Restricted)
+                return true;
+
+            await DisplayAlertAsync("Berechtigung erforderlich", "Bitte erlauben Sie den Zugriff auf Fotos/Medien", "OK");
+            return false;
         }
 
         /*********/
@@ -2618,6 +2653,11 @@ namespace iPMCloud.Mobile
 
             try
             {
+                if (!await EnsureCameraPermissionAsync())
+                {
+                    return;
+                }
+
                 overlay.IsVisible = true;
                 await Task.Delay(1);
                 var photo = await MediaPicker.CapturePhotoAsync(new MediaPickerOptions
@@ -2716,6 +2756,11 @@ namespace iPMCloud.Mobile
 
             try
             {
+                if (!await EnsurePhotoPermissionAsync())
+                {
+                    return;
+                }
+
                 if (!MediaPicker.Default.IsCaptureSupported)
                 {
                     await DisplayAlertAsync("Fehler", "Kamera nicht verfügbar", "OK");
@@ -6382,6 +6427,11 @@ namespace iPMCloud.Mobile
             {
                 AppModel.Instance.UseExternHardware = true;
 
+                if (!await EnsureCameraPermissionAsync())
+                {
+                    return;
+                }
+
                 // ✅ Prüfen ob Kamera verfügbar
                 if (!MediaPicker.Default.IsCaptureSupported)
                 {
@@ -6499,6 +6549,11 @@ namespace iPMCloud.Mobile
 
             try
             {
+                if (!await EnsureCameraPermissionAsync())
+                {
+                    return;
+                }
+
                 overlay.IsVisible = true;
                 await Task.Delay(1);
                 var photo = await MediaPicker.CapturePhotoAsync(new MediaPickerOptions
@@ -6591,6 +6646,11 @@ namespace iPMCloud.Mobile
             try
             {
                 AppModel.Instance.UseExternHardware = true;
+
+                if (!await EnsurePhotoPermissionAsync())
+                {
+                    return;
+                }
 
                 // ✅ Prüfen ob Kamera verfügbar
                 if (!MediaPicker.Default.IsCaptureSupported)
@@ -8371,6 +8431,14 @@ namespace iPMCloud.Mobile
 
                     // Start: on Android this launches a ForegroundService with WakeLock;
                     // on iOS it runs SyncCoordinator.RunAsync() inline.
+                    var notificationPermissionMessage = await AppModel.Instance.CheckPermissionNotifications();
+                    if (!String.IsNullOrWhiteSpace(notificationPermissionMessage))
+                    {
+                        popupContainer.IsVisible = false;
+                        await DisplayAlertAsync("Berechtigungsproblem!", notificationPermissionMessage, "OK");
+                        return;
+                    }
+
                     _syncService?.StartSync(manuellSync);
                 }
                 else
@@ -8740,6 +8808,14 @@ namespace iPMCloud.Mobile
 #if IOS
             DeviceDisplay.Current.KeepScreenOn = true;
 #endif
+            var notificationPermissionMessage = await AppModel.Instance.CheckPermissionNotifications();
+            if (!String.IsNullOrWhiteSpace(notificationPermissionMessage))
+            {
+                overlay.IsVisible = false;
+                await DisplayAlertAsync("Berechtigungsproblem!", notificationPermissionMessage, "OK");
+                return;
+            }
+
             _uploadService?.StartUploads();
         }
 

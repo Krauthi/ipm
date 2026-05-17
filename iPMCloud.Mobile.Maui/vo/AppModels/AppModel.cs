@@ -516,168 +516,37 @@ namespace iPMCloud.Mobile.vo
         //}
 
         public string checkPermissionsMessage = "";
-        public async void CheckPermissions()
+        public Task<string> CheckPermissions()
         {
+            // Runtime-Berechtigungen werden kontextbezogen angefragt (z. B. Kamera/Medien/GPS),
+            // daher hier bewusst keine pauschale Start-Abfrage.
             checkPermissionsMessage = "";
-            var r = "";
-            try
-            {
-                PermissionStatus statusCam = await Permissions.CheckStatusAsync<Permissions.Camera>();
-                if (statusCam != PermissionStatus.Granted && statusCam != PermissionStatus.Restricted)
-                {
-                    //  Berechtigung Fehlt
-                    r = r + ";Kamera - Berechtigung muss aktiviert sein!";
-                    _ = await Permissions.RequestAsync<Permissions.Camera>();
-                    _ = await Permissions.CheckStatusAsync<Permissions.Camera>();
-                }
-            }
-            catch (Exception ex)
-            {
-                AppModel.Logger.Error("ERROR: CheckPermissions -> " + ex.Message);
-            }
-
-            try
-            {
-                var statusPhoto = await Permissions.CheckStatusAsync<Permissions.Photos>();
-                if (statusPhoto != PermissionStatus.Granted && statusPhoto != PermissionStatus.Restricted)
-                {
-                    //  Berechtigung Fehlt
-                    r = r + ";Fotos & Videos - Berechtigung (Lesen) muss aktiviert sein!";
-                    _ = await Permissions.RequestAsync<Permissions.Photos>();
-                    _ = await Permissions.CheckStatusAsync<Permissions.Photos>();
-                }
-            }
-            catch (Exception ex)
-            {
-                AppModel.Logger.Error("ERROR: CheckPermissions -> " + ex.Message);
-            }
-
-            try
-            {
-                var statusMedia = await Permissions.CheckStatusAsync<Permissions.Media>();
-                if (statusMedia != PermissionStatus.Granted && statusMedia != PermissionStatus.Restricted)
-                {
-                    //  Berechtigung Fehlt
-                    r = r + ";Speicher Fotos & Videos - Berechtigung (Lesen) muss aktiviert sein!";
-                    _ = await Permissions.RequestAsync<Permissions.Media>();
-                    _ = await Permissions.CheckStatusAsync<Permissions.Media>();
-                }
-            }
-            catch (Exception ex)
-            {
-                AppModel.Logger.Error("ERROR: CheckPermissions -> " + ex.Message);
-            }
-
-            try
-            {
-                var statusFlash = await Permissions.CheckStatusAsync<Permissions.Flashlight>();
-                if (statusFlash != PermissionStatus.Granted && statusFlash != PermissionStatus.Restricted)
-                {
-                    //  Berechtigung Fehlt
-                    r = r + ";Flashlight - Berechtigung muss aktiviert sein!";
-                    _ = await Permissions.RequestAsync<Permissions.Flashlight>();
-                    _ = await Permissions.CheckStatusAsync<Permissions.Flashlight>();
-                }
-            }
-            catch (Exception ex)
-            {
-                AppModel.Logger.Error("ERROR: CheckPermissions -> " + ex.Message);
-            }
-
-
-            try
-            {
-                var statusMaps = await Permissions.CheckStatusAsync<Permissions.Maps>();
-                if (statusMaps != PermissionStatus.Granted && statusMaps != PermissionStatus.Restricted)
-                {
-                    //  Berechtigung Fehlt
-                    r = r + ";Maps - Berechtigung muss aktiviert sein!";
-                    _ = await Permissions.RequestAsync<Permissions.Maps>();
-                    _ = await Permissions.CheckStatusAsync<Permissions.Maps>();
-                }
-            }
-            catch (Exception ex)
-            {
-                AppModel.Logger.Error("ERROR: CheckPermissions -> " + ex.Message);
-            }
-
-            //try
-            //{
-            //    var statusRead = await Permissions.CheckStatusAsync<Permissions.StorageRead>();
-            //    if (statusRead != PermissionStatus.Granted && statusRead != PermissionStatus.Restricted)
-            //    {
-            //        //  Berechtigung Fehlt
-            //        r = r + ";Speicher - Berechtigung (Lesen) muss aktiviert sein!";
-            //        _ = await Permissions.RequestAsync<Permissions.StorageRead>();
-            //        _ = await Permissions.CheckStatusAsync<Permissions.StorageRead>();
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    AppModel.Logger.Error("ERROR: CheckPermissions -> " + ex.Message);
-            //}
-
-
-            try
-            {
-                var statusLWIU = await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>();
-                if (statusLWIU != PermissionStatus.Granted && statusLWIU != PermissionStatus.Restricted)
-                {
-                    //  Berechtigung Fehlt
-                    r = r + ";LocationWhenInUse muss aktiviert sein!";
-                    _ = await Permissions.RequestAsync<Permissions.LocationWhenInUse>();
-                    _ = await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>();
-                }
-            }
-            catch (Exception ex)
-            {
-                AppModel.Logger.Error("ERROR: CheckPermissions -> " + ex.Message);
-            }
-
-            //try
-            //{
-            //    var statusWrite = await Permissions.CheckStatusAsync<Permissions.StorageWrite>();
-            //    if (statusWrite != PermissionStatus.Granted && statusWrite != PermissionStatus.Restricted)
-            //    {
-            //        //  Berechtigung Fehlt
-            //        r = r + ";Speicher - Berechtigung (Schreiben) muss aktiviert sein!";
-            //        _ = await Permissions.RequestAsync<Permissions.StorageWrite>();
-            //        _ = await Permissions.CheckStatusAsync<Permissions.StorageWrite>();
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    AppModel.Logger.Error("ERROR: CheckPermissions -> " + ex.Message);
-            //}
-            checkPermissionsMessage = r;
+            return Task.FromResult(checkPermissionsMessage);
         }
 
 
         public bool gpsPermissionReady = false;
         public string checkPermissionGPSMessage = "";
-        public async void CheckPermissionGPS()
+        public async Task<string> CheckPermissionGPS()
         {
-
             checkPermissionGPSMessage = "";
-            PermissionStatus status = await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>();
-            if (status == PermissionStatus.Denied)
+
+            try
             {
-                gpsPermissionReady = false;
-                AppModel.Logger.Error("ERROR: Permission Denied - Die (GPS)-Standortabfrage ist deaktiviert! ");
-                var status1 = Permissions.RequestAsync<Permissions.LocationWhenInUse>().Result;
-                //var status2 = await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>();
-                //if (status2 == PermissionStatus.Denied)
-                //{
-                //    //checkPermissionGPSMessage = "Permission Denied - Die (GPS)-Standortabfrage ist deaktiviert! ";
-                //}
-            }
-            else
-            {
+                PermissionStatus status = await MainThread.InvokeOnMainThreadAsync(async () =>
+                {
+                    var currentStatus = await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>();
+                    if (currentStatus != PermissionStatus.Granted && currentStatus != PermissionStatus.Restricted)
+                    {
+                        currentStatus = await Permissions.RequestAsync<Permissions.LocationWhenInUse>();
+                    }
+                    return currentStatus;
+                });
+
                 if (DeviceInfo.Platform == DevicePlatform.iOS)
                 {
                     if (status == PermissionStatus.Granted)
                     {
-                        //AppModel.Logger.Info("INFO: Permission Granted - Die Berechtigung für (GPS)-Standortabfrage ist gesetzt!");
                         checkPermissionGPSMessage = "";
                         gpsPermissionReady = true;
                     }
@@ -692,15 +561,9 @@ namespace iPMCloud.Mobile.vo
                 {
                     if (status == PermissionStatus.Granted || status == PermissionStatus.Restricted)
                     {
-                        //AppModel.Logger.Info("INFO: Permission Granted - Die Berechtigung für (GPS)-Standortabfrage ist gesetzt! ");
                         checkPermissionGPSMessage = "";
                         gpsPermissionReady = true;
                     }
-                    //else if (status == PermissionStatus.Restricted)
-                    //{
-                    //    AppModel.Logger.Error("ERROR: Permission Restricted - Du hast keine ausreichende Berechtigung für (GPS)-Standortabfrage auf Android gesetzt!");
-                    //    checkPermissionGPSMessage =  "Permission Restricted - Du hast keine ausreichende Berechtigung für (GPS)-Standortabfrage auf Android gesetzt!";
-                    //}
                     else
                     {
                         gpsPermissionReady = false;
@@ -711,11 +574,56 @@ namespace iPMCloud.Mobile.vo
                 else
                 {
                     gpsPermissionReady = false;
-                    //throw new NotImplementedException("GPS wird nicht unterstützt!");
                     checkPermissionGPSMessage = "GPS wird nicht unterstützt!";
                 }
             }
+            catch (Exception ex)
+            {
+                gpsPermissionReady = false;
+                AppModel.Logger.Error("ERROR: CheckPermissionGPS -> " + ex.Message);
+                checkPermissionGPSMessage = "Permission Error - Die (GPS)-Standortabfrage konnte nicht geprüft werden!";
+            }
 
+            return checkPermissionGPSMessage;
+        }
+
+        public string checkPermissionNotificationMessage = "";
+        public async Task<string> CheckPermissionNotifications()
+        {
+            checkPermissionNotificationMessage = "";
+
+#if ANDROID
+            if (DeviceInfo.Platform != DevicePlatform.Android)
+                return checkPermissionNotificationMessage;
+
+            if (global::Android.OS.Build.VERSION.SdkInt < global::Android.OS.BuildVersionCodes.Tiramisu)
+                return checkPermissionNotificationMessage;
+
+            try
+            {
+                PermissionStatus status = await MainThread.InvokeOnMainThreadAsync(async () =>
+                {
+                    var currentStatus = await Permissions.CheckStatusAsync<Permissions.PostNotifications>();
+                    if (currentStatus != PermissionStatus.Granted && currentStatus != PermissionStatus.Restricted)
+                    {
+                        currentStatus = await Permissions.RequestAsync<Permissions.PostNotifications>();
+                    }
+                    return currentStatus;
+                });
+
+                if (status != PermissionStatus.Granted && status != PermissionStatus.Restricted)
+                {
+                    checkPermissionNotificationMessage = "Permission Error - Du hast nicht die Berechtigung für Benachrichtigungen gesetzt!";
+                }
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger.Error("ERROR: CheckPermissionNotifications -> " + ex.Message);
+                checkPermissionNotificationMessage = "Permission Error - Die Berechtigung für Benachrichtigungen konnte nicht geprüft werden!";
+            }
+#endif
+
+            return checkPermissionNotificationMessage;
         }
 
         public bool isReachableServer = true;
@@ -724,13 +632,13 @@ namespace iPMCloud.Mobile.vo
         public bool gpsAlertHasSend = false;
         public GPSService _gpsService;
 
-        public void InitGPSTimer()
+        public async Task InitGPSTimer()
         {
             if (gpsTimerIsRunning) { return; }
 
-            CheckPermissionGPS();
+            var permissionMessage = await CheckPermissionGPS();
 
-            if (String.IsNullOrWhiteSpace(checkPermissionGPSMessage))
+            if (String.IsNullOrWhiteSpace(permissionMessage))
             {
                 gpsTimerIsRunning = true;
                 

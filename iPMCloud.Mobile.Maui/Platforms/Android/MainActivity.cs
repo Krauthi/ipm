@@ -7,7 +7,6 @@ using Android.OS;
 using Android.Runtime;
 using Android.Util;
 using Android.Views;
-using AndroidX.Core.App;
 using iPMCloud.Mobile.vo;
 using iPMCloud.Mobile.Platforms.Android.Services;
 using System;
@@ -72,9 +71,6 @@ namespace iPMCloud.Mobile
 
                 // UI Konfiguration
                 ConfigureUI();
-
-                // Permissions anfordern
-                RequestRequiredPermissions();
 
                 // App Version setzen
                 SetAppVersion();
@@ -289,43 +285,6 @@ namespace iPMCloud.Mobile
         #endregion
 
         #region Permissions
-
-        private void RequestRequiredPermissions()
-        {
-            try
-            {
-                var permissions = new System.Collections.Generic.List<string>
-                {
-                    Manifest.Permission.Internet,
-                    Manifest.Permission.Camera,
-                    Manifest.Permission.AccessWifiState,
-                    Manifest.Permission.AccessNetworkState,
-                    Manifest.Permission.ChangeNetworkState,
-                    Manifest.Permission.Flashlight,
-                    Manifest.Permission.ChangeWifiState,
-                };
-
-                // Android 13+ Permissions
-                if (Build.VERSION.SdkInt >= BuildVersionCodes.Tiramisu)
-                {
-                    permissions.Add(Manifest.Permission.PostNotifications);
-                    permissions.Add(Manifest.Permission.ReadMediaImages);
-                    permissions.Add(Manifest.Permission.ReadMediaVideo);
-                }
-                else
-                {
-                    // Ältere Android Versionen
-                    permissions.Add(Manifest.Permission.ReadExternalStorage);
-                    permissions.Add(Manifest.Permission.WriteExternalStorage);
-                }
-
-                ActivityCompat.RequestPermissions(this, permissions.ToArray(), 122);
-            }
-            catch (Exception ex)
-            {
-                Log.Error(TAG, $"RequestPermissions Error: {ex.Message}");
-            }
-        }
 
         public override void OnRequestPermissionsResult(
             int requestCode, 

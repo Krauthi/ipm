@@ -216,31 +216,31 @@ namespace iPMCloud.Mobile
         {
             try
             {
-                AppModel.Instance.CheckPermissions();
-                if (!String.IsNullOrWhiteSpace(AppModel.Instance.checkPermissionsMessage))
+                var permissionMessage = await AppModel.Instance.CheckPermissions();
+                if (!String.IsNullOrWhiteSpace(permissionMessage))
                 {
                     if (showAlert)
                     {
-                        AppModel.Instance.checkPermissionsMessage = AppModel.Instance.checkPermissionsMessage.Replace(";", "\n\n");
-                        await DisplayAlertAsync("Folgendes wird benötigt!", AppModel.Instance.checkPermissionsMessage, "OK");
+                        permissionMessage = permissionMessage.Replace(";", "\n\n");
+                        await DisplayAlertAsync("Folgendes wird benötigt!", permissionMessage, "OK");
                         //model.PageNavigator.NavigateTo(TFPageNavigator.PAGE_CLOSEAPP);
                     }
                     return false;
                 }
                 if (inclGPS)
                 {
-                    AppModel.Instance.CheckPermissionGPS();
-                    if (!String.IsNullOrWhiteSpace(AppModel.Instance.checkPermissionGPSMessage))
+                    var permissionGPSMessage = await AppModel.Instance.CheckPermissionGPS();
+                    if (!String.IsNullOrWhiteSpace(permissionGPSMessage))
                     {
                         if (showAlert)
                         {
-                            AppModel.Instance.checkPermissionGPSMessage = AppModel.Instance.checkPermissionGPSMessage.Replace(";", "\n\n");
-                            await DisplayAlertAsync("Berechtigungsproblem!", AppModel.Instance.checkPermissionGPSMessage, "OK");
+                            permissionGPSMessage = permissionGPSMessage.Replace(";", "\n\n");
+                            await DisplayAlertAsync("Berechtigungsproblem!", permissionGPSMessage, "OK");
                             //model.PageNavigator.NavigateTo(TFPageNavigator.PAGE_CLOSEAPP);
                         }
                         return false;
                     }
-                    AppModel.Instance.InitGPSTimer();
+                    await AppModel.Instance.InitGPSTimer();
                 }
                 return true;
             }
@@ -467,7 +467,7 @@ namespace iPMCloud.Mobile
         {
             try
             {
-                AppModel.Instance.InitGPSTimer();
+                await AppModel.Instance.InitGPSTimer();
                 if (AppModel.Instance.Companies != null && AppModel.Instance.Companies.Count > 1)
                 {
                     btn_addRegScan_frame.IsVisible = false;

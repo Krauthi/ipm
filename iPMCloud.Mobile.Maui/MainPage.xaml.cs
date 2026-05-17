@@ -1477,14 +1477,6 @@ namespace iPMCloud.Mobile
 
         private async Task<bool> CheckPermissions()
         {
-            var permissionMessage = await AppModel.Instance.CheckPermissions();
-            if (!String.IsNullOrWhiteSpace(permissionMessage))
-            {
-                permissionMessage = permissionMessage.Replace(";", "\n\n");
-                await DisplayAlertAsync("Folgendes wird benötigt!", permissionMessage, "OK");
-                //AppModel.Instance.PageNavigator.NavigateTo(TFPageNavigator.PAGE_CLOSEAPP);
-                return false;
-            }
             var permissionGPSMessage = await AppModel.Instance.CheckPermissionGPS();
             if (!String.IsNullOrWhiteSpace(permissionGPSMessage))
             {

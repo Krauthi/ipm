@@ -515,16 +515,6 @@ namespace iPMCloud.Mobile.vo
         //    return r;
         //}
 
-        public string checkPermissionsMessage = "";
-        public Task<string> CheckPermissions()
-        {
-            // Runtime-Berechtigungen werden kontextbezogen angefragt (z. B. Kamera/Medien/GPS),
-            // daher hier bewusst keine pauschale Start-Abfrage.
-            checkPermissionsMessage = "";
-            return Task.FromResult(checkPermissionsMessage);
-        }
-
-
         public bool gpsPermissionReady = false;
         public string checkPermissionGPSMessage = "";
         public async Task<string> CheckPermissionGPS()

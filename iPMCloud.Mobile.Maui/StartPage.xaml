@@ -270,7 +270,6 @@
                             Margin="0,5,0,0"
                             Padding="0"
                             FontSize="14"
-                            HorizontalTextAlignment="Justify"
                             Text="Diese App ist nur in Verbindung mit Unserer Hauptanwendung zu vernwenden. Um diese App nutzen zu können brauchen Sie von uns einen Unternehmer QR-Code. Diesen QR-Code erhalten Sie nur als Mitglied der iPM-Cloud."
                             TextColor="#ffffff"
                             VerticalOptions="Start">
@@ -947,110 +946,110 @@
 
         <!--  Wait for StorageMigration  -->
         <AbsoluteLayout
-     x:Name="popupContainer_migration"
-     AbsoluteLayout.LayoutBounds="0,0,1,1"
-     AbsoluteLayout.LayoutFlags="All"
-     BackgroundColor="#000000"
-     IsVisible="False">
+            x:Name="popupContainer_migration"
+            AbsoluteLayout.LayoutBounds="0,0,1,1"
+            AbsoluteLayout.LayoutFlags="All"
+            BackgroundColor="#000000"
+            IsVisible="False">
             <AbsoluteLayout.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnOverlayTapped" />
             </AbsoluteLayout.GestureRecognizers>
 
             <Grid
-         Margin="0,100,0,0"
-         Padding="0"
-         AbsoluteLayout.LayoutBounds="0,0,1,1"
-         AbsoluteLayout.LayoutFlags="All"
-         RowSpacing="0">
+                Margin="0,100,0,0"
+                Padding="0"
+                AbsoluteLayout.LayoutBounds="0,0,1,1"
+                AbsoluteLayout.LayoutFlags="All"
+                RowSpacing="0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="0" />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
                 <VerticalStackLayout
-             Grid.Row="1"
-             Margin="10,0,10,0"
-             Padding="20"
-             AbsoluteLayout.LayoutBounds="0,0,1,1"
-             AbsoluteLayout.LayoutFlags="All"
-             BackgroundColor="#144d73"
-             HorizontalOptions="Fill"
-             Spacing="0">
+                    Grid.Row="1"
+                    Margin="10,0,10,0"
+                    Padding="20"
+                    AbsoluteLayout.LayoutBounds="0,0,1,1"
+                    AbsoluteLayout.LayoutFlags="All"
+                    BackgroundColor="#144d73"
+                    HorizontalOptions="Fill"
+                    Spacing="0">
                     <HorizontalStackLayout
-                 Margin="0"
-                 Padding="0"
-                 HorizontalOptions="Fill"
-                 Spacing="0"
-                 VerticalOptions="Center">
+                        Margin="0"
+                        Padding="0"
+                        HorizontalOptions="Fill"
+                        Spacing="0"
+                        VerticalOptions="Center">
                         <Image
-                     Margin="0,0,10,0"
-                     HeightRequest="36"
-                     HorizontalOptions="Center"
-                     Source="Time.png"
-                     VerticalOptions="Center"
-                     WidthRequest="36" />
+                            Margin="0,0,10,0"
+                            HeightRequest="36"
+                            HorizontalOptions="Center"
+                            Source="Time.png"
+                            VerticalOptions="Center"
+                            WidthRequest="36" />
                         <Label
-                     Margin="10,0,0,0"
-                     FontSize="22"
-                     HorizontalOptions="Fill"
-                     HorizontalTextAlignment="Start"
-                     Text="Daten Import (Einmalig)"
-                     TextColor="#ffcc00"
-                     VerticalOptions="Center" />
+                            Margin="10,0,0,0"
+                            FontSize="22"
+                            HorizontalOptions="Fill"
+                            HorizontalTextAlignment="Start"
+                            Text="Daten Import (Einmalig)"
+                            TextColor="#ffcc00"
+                            VerticalOptions="Center" />
                     </HorizontalStackLayout>
                     <BoxView
-                 Margin="0,3,0,13"
-                 BackgroundColor="Gray"
-                 HeightRequest="1"
-                 HorizontalOptions="Fill"
-                 VerticalOptions="Start" />
+                        Margin="0,3,0,13"
+                        BackgroundColor="Gray"
+                        HeightRequest="1"
+                        HorizontalOptions="Fill"
+                        VerticalOptions="Start" />
                     <Label
-                 Margin="0,0,0,20"
-                 FontSize="18"
-                 HorizontalOptions="Fill"
-                 HorizontalTextAlignment="Start"
-                 Text="Daten aus der vorherigen Version werden in die neue Version 3.x.x übernommen."
-                 TextColor="#ffffff"
-                 VerticalOptions="Center" />
+                        Margin="0,0,0,20"
+                        FontSize="18"
+                        HorizontalOptions="Fill"
+                        HorizontalTextAlignment="Start"
+                        Text="Daten aus der vorherigen Version werden in die neue Version 3.x.x übernommen."
+                        TextColor="#ffffff"
+                        VerticalOptions="Center" />
                     <Label
-                 Margin="0,0,0,20"
-                 FontSize="18"
-                 HorizontalOptions="Fill"
-                 HorizontalTextAlignment="Start"
-                 Text="Bitte warten Sie bis die Daten migriert wurden."
-                 TextColor="#ffffff"
-                 VerticalOptions="Center" />
+                        Margin="0,0,0,20"
+                        FontSize="18"
+                        HorizontalOptions="Fill"
+                        HorizontalTextAlignment="Start"
+                        Text="Bitte warten Sie bis die Daten migriert wurden."
+                        TextColor="#ffffff"
+                        VerticalOptions="Center" />
                     <BoxView
-                 Margin="0,10,0,10"
-                 BackgroundColor="Gray"
-                 HeightRequest="1"
-                 HorizontalOptions="Fill"
-                 VerticalOptions="Start" />
+                        Margin="0,10,0,10"
+                        BackgroundColor="Gray"
+                        HeightRequest="1"
+                        HorizontalOptions="Fill"
+                        VerticalOptions="Start" />
                     <Grid
-                 Margin="0"
-                 Padding="0"
-                 HorizontalOptions="Fill">
+                        Margin="0"
+                        Padding="0"
+                        HorizontalOptions="Fill">
                         <Border
-                     Margin="0"
-                     Padding="10"
-                     BackgroundColor="#f3042d"
-                     HorizontalOptions="Center">
+                            Margin="0"
+                            Padding="10"
+                            BackgroundColor="#f3042d"
+                            HorizontalOptions="Center">
                             <Label
-                         Margin="0"
-                         Padding="0"
-                         FontSize="17"
-                         Text="BITTE WARTEN - NICHT BEENDEN"
-                         TextColor="#ffffff" />
+                                Margin="0"
+                                Padding="0"
+                                FontSize="17"
+                                Text="BITTE WARTEN - NICHT BEENDEN"
+                                TextColor="#ffffff" />
                         </Border>
                     </Grid>
                     <Label
-                 Margin="0,20,0,20"
-                 FontSize="16"
-                 HorizontalOptions="Fill"
-                 HorizontalTextAlignment="Center"
-                 Text="Wir schalten das Fenster frei sobald die Mirgation fertig ist"
-                 TextColor="#ffffff"
-                 VerticalOptions="Center" />
+                        Margin="0,20,0,20"
+                        FontSize="16"
+                        HorizontalOptions="Fill"
+                        HorizontalTextAlignment="Center"
+                        Text="Wir schalten das Fenster frei sobald die Mirgation fertig ist"
+                        TextColor="#ffffff"
+                        VerticalOptions="Center" />
                 </VerticalStackLayout>
             </Grid>
         </AbsoluteLayout>

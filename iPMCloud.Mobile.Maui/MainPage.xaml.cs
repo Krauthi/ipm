@@ -138,7 +138,7 @@ namespace iPMCloud.Mobile
                 sw.Restart();
 #endif
 
-                var checkPerm = await CheckPermissions();
+                var checkPerm = await CheckLocationPermissionsAndInitGps();
 #if DEBUG
                 AppModel.Logger.Info($"PERF: MainPageAgain CheckPermissions took {sw.ElapsedMilliseconds} ms");
                 sw.Restart();
@@ -1470,25 +1470,18 @@ namespace iPMCloud.Mobile
             base.OnDisappearing();
         }
 
-        private async Task<bool> CheckPermissions()
+        private async Task<bool> CheckLocationPermissionsAndInitGps()
         {
-            AppModel.Instance.CheckPermissions();
-            if (!String.IsNullOrWhiteSpace(AppModel.Instance.checkPermissionsMessage))
+            var checkPermissionGPSMessage = await AppModel.Instance.CheckPermissionGPS();
+            if (!String.IsNullOrWhiteSpace(checkPermissionGPSMessage))
             {
-                AppModel.Instance.checkPermissionsMessage = AppModel.Instance.checkPermissionsMessage.Replace(";", "\n\n");
-                await DisplayAlertAsync("Folgendes wird benötigt!", AppModel.Instance.checkPermissionsMessage, "OK");
+                checkPermissionGPSMessage = checkPermissionGPSMessage.Replace(";", "\n\n");
+                await DisplayAlertAsync("Berechtigungsproblem!", checkPermissionGPSMessage, "OK");
                 //AppModel.Instance.PageNavigator.NavigateTo(TFPageNavigator.PAGE_CLOSEAPP);
                 return false;
             }
-            AppModel.Instance.CheckPermissionGPS();
-            if (!String.IsNullOrWhiteSpace(AppModel.Instance.checkPermissionGPSMessage))
-            {
-                AppModel.Instance.checkPermissionGPSMessage = AppModel.Instance.checkPermissionGPSMessage.Replace(";", "\n\n");
-                await DisplayAlertAsync("Berechtigungsproblem!", AppModel.Instance.checkPermissionGPSMessage, "OK");
-                //AppModel.Instance.PageNavigator.NavigateTo(TFPageNavigator.PAGE_CLOSEAPP);
-                return false;
-            }
-            return true;
+
+            return await AppModel.Instance.InitGPSTimer();
         }
 
         /*********/
@@ -8371,6 +8364,12 @@ namespace iPMCloud.Mobile
 
                     // Start: on Android this launches a ForegroundService with WakeLock;
                     // on iOS it runs SyncCoordinator.RunAsync() inline.
+                    if (!await EnsureNotificationPermissionForForegroundWorkAsync())
+                    {
+                        popupContainer.IsVisible = false;
+                        return;
+                    }
+
                     _syncService?.StartSync(manuellSync);
                 }
                 else
@@ -8740,7 +8739,40 @@ namespace iPMCloud.Mobile
 #if IOS
             DeviceDisplay.Current.KeepScreenOn = true;
 #endif
+            if (!await EnsureNotificationPermissionForForegroundWorkAsync())
+            {
+                overlay.IsVisible = false;
+                return;
+            }
+
             _uploadService?.StartUploads();
+        }
+
+        private async Task<bool> EnsureNotificationPermissionForForegroundWorkAsync()
+        {
+#if ANDROID
+            if (DeviceInfo.Version.Major >= 13)
+            {
+                var status = await MainThread.InvokeOnMainThreadAsync(() =>
+                    Permissions.CheckStatusAsync<Permissions.PostNotifications>());
+
+                if (status != PermissionStatus.Granted)
+                {
+                    status = await MainThread.InvokeOnMainThreadAsync(() =>
+                        Permissions.RequestAsync<Permissions.PostNotifications>());
+                }
+
+                if (status != PermissionStatus.Granted)
+                {
+                    await DisplayAlertAsync(
+                        "Berechtigungsproblem!",
+                        "Für Synchronisation und Upload im Hintergrund wird die Benachrichtigungsberechtigung benötigt.",
+                        "OK");
+                    return false;
+                }
+            }
+#endif
+            return true;
         }
 
         private void OnUploadProgress(object sender, iPMCloud.Mobile.Services.UploadProgressEventArgs e)

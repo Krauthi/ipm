@@ -397,37 +397,71 @@ namespace iPMCloud.Mobile
 
         public static async void btn_MapTapped(object obj)
         {
-            BuildingWSO b = (BuildingWSO)obj;
+            await BtnMapTappedAsync(obj);
+        }
 
-            AppModel.Instance.MainPageOverlay.IsVisible = true;
-            await Task.Delay(1);
+        private static async Task BtnMapTappedAsync(object obj)
+        {
+            var b = (BuildingWSO)obj;
 
-            var result = await Geolocation.
-                    GetLocationAsync(new GeolocationRequest(
-                        GeolocationAccuracy.Default, TimeSpan.FromSeconds(50)));
-
-            string routefrom = ("@" + result.Latitude + "#" + result.Longitude).Replace(",", ".").Replace("#", ",");
-            string routeto = "" + b.strasse.Replace(" ", "+") + "+" + b.hsnr.Replace(" ", "+") + "," + b.ort;
-            string route = "http://maps.google.com/?daddr=" + routeto + "&saddr=" + routefrom;
-            string routeApple = "http://maps.apple.com/?daddr=" + routeto + "&saddr=" + routefrom;
-
-
-            AppModel.Instance.UseExternHardware = true;
-
-            if (DeviceInfo.Platform == DevicePlatform.iOS)
+            try
             {
-                // https://developer.apple.com/library/ios/featuredarticles/iPhoneURLScheme_Reference/MapLinks/MapLinks.html
-                await Launcher.OpenAsync(new Uri(routeApple));
-            }
-            else if (DeviceInfo.Platform == DevicePlatform.Android)
-            {
-                //await Launcher.OpenAsync(new Uri("https://www.google.com/maps/dir/" + routefrom));
-                await Launcher.OpenAsync(new Uri(route));
-            }
+                if (AppModel.Instance.MainPageOverlay != null)
+                {
+                    AppModel.Instance.MainPageOverlay.IsVisible = true;
+                    await Task.Delay(1);
+                }
 
-            //AppModel.Instance.UseOutSideHardware = false;
-            AppModel.Instance.MainPageOverlay.IsVisible = false;
-            await Task.Delay(1);
+                var permissionMessage = await AppModel.Instance.CheckPermissionGPS();
+                if (!String.IsNullOrWhiteSpace(permissionMessage))
+                {
+                    if (AppModel.Instance.MainPage != null)
+                    {
+                        await AppModel.Instance.MainPage.DisplayAlertAsync("Berechtigungsproblem!", permissionMessage, "OK");
+                    }
+                    return;
+                }
+
+                var result = await Geolocation.GetLocationAsync(new GeolocationRequest(
+                    GeolocationAccuracy.Default, TimeSpan.FromSeconds(50)));
+
+                if (result == null)
+                {
+                    if (AppModel.Instance.MainPage != null)
+                    {
+                        await AppModel.Instance.MainPage.DisplayAlertAsync("GPS", "Aktuelle Position konnte nicht ermittelt werden.", "OK");
+                    }
+                    return;
+                }
+
+                string routefrom = ("@" + result.Latitude + "#" + result.Longitude).Replace(",", ".").Replace("#", ",");
+                string routeto = "" + b.strasse.Replace(" ", "+") + "+" + b.hsnr.Replace(" ", "+") + "," + b.ort;
+                string route = "http://maps.google.com/?daddr=" + routeto + "&saddr=" + routefrom;
+                string routeApple = "http://maps.apple.com/?daddr=" + routeto + "&saddr=" + routefrom;
+
+                AppModel.Instance.UseExternHardware = true;
+
+                if (DeviceInfo.Platform == DevicePlatform.iOS)
+                {
+                    await Launcher.OpenAsync(new Uri(routeApple));
+                }
+                else if (DeviceInfo.Platform == DevicePlatform.Android)
+                {
+                    await Launcher.OpenAsync(new Uri(route));
+                }
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger.Error("ERROR: btn_MapTapped -> " + ex.Message);
+            }
+            finally
+            {
+                if (AppModel.Instance.MainPageOverlay != null)
+                {
+                    AppModel.Instance.MainPageOverlay.IsVisible = false;
+                    await Task.Delay(1);
+                }
+            }
         }
 
         public async static void ShowOrderContainerOnlyKat(Object value)

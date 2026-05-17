@@ -216,31 +216,20 @@ namespace iPMCloud.Mobile
         {
             try
             {
-                AppModel.Instance.CheckPermissions();
-                if (!String.IsNullOrWhiteSpace(AppModel.Instance.checkPermissionsMessage))
-                {
-                    if (showAlert)
-                    {
-                        AppModel.Instance.checkPermissionsMessage = AppModel.Instance.checkPermissionsMessage.Replace(";", "\n\n");
-                        await DisplayAlertAsync("Folgendes wird benötigt!", AppModel.Instance.checkPermissionsMessage, "OK");
-                        //model.PageNavigator.NavigateTo(TFPageNavigator.PAGE_CLOSEAPP);
-                    }
-                    return false;
-                }
                 if (inclGPS)
                 {
-                    AppModel.Instance.CheckPermissionGPS();
-                    if (!String.IsNullOrWhiteSpace(AppModel.Instance.checkPermissionGPSMessage))
+                    var checkPermissionGPSMessage = await AppModel.Instance.CheckPermissionGPS();
+                    if (!String.IsNullOrWhiteSpace(checkPermissionGPSMessage))
                     {
                         if (showAlert)
                         {
-                            AppModel.Instance.checkPermissionGPSMessage = AppModel.Instance.checkPermissionGPSMessage.Replace(";", "\n\n");
-                            await DisplayAlertAsync("Berechtigungsproblem!", AppModel.Instance.checkPermissionGPSMessage, "OK");
+                            checkPermissionGPSMessage = checkPermissionGPSMessage.Replace(";", "\n\n");
+                            await DisplayAlertAsync("Berechtigungsproblem!", checkPermissionGPSMessage, "OK");
                             //model.PageNavigator.NavigateTo(TFPageNavigator.PAGE_CLOSEAPP);
                         }
                         return false;
                     }
-                    AppModel.Instance.InitGPSTimer();
+                    await AppModel.Instance.InitGPSTimer();
                 }
                 return true;
             }
@@ -467,7 +456,7 @@ namespace iPMCloud.Mobile
         {
             try
             {
-                AppModel.Instance.InitGPSTimer();
+                await AppModel.Instance.InitGPSTimer();
                 if (AppModel.Instance.Companies != null && AppModel.Instance.Companies.Count > 1)
                 {
                     btn_addRegScan_frame.IsVisible = false;

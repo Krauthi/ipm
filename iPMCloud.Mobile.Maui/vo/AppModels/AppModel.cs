@@ -535,22 +535,22 @@ namespace iPMCloud.Mobile.vo
                 var statusPhotos = await MainThread.InvokeOnMainThreadAsync(() =>
                     Permissions.CheckStatusAsync<Permissions.Photos>());
 
-                var status = await MainThread.InvokeOnMainThreadAsync(() =>
+                var statusGPS = await MainThread.InvokeOnMainThreadAsync(() =>
                     Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>());
 
-                if (status != PermissionStatus.Granted && status != PermissionStatus.Restricted)
+                if (statusGPS != PermissionStatus.Granted && statusGPS != PermissionStatus.Restricted)
                 {
-                    status = await MainThread.InvokeOnMainThreadAsync(() =>
+                    statusGPS = await MainThread.InvokeOnMainThreadAsync(() =>
                         Permissions.RequestAsync<Permissions.LocationWhenInUse>());
                 }
 
                 if (DeviceInfo.Platform == DevicePlatform.iOS)
                 {
-                    gpsPermissionReady = status == PermissionStatus.Granted;
+                    gpsPermissionReady = statusGPS == PermissionStatus.Granted;
                 }
                 else if (DeviceInfo.Platform == DevicePlatform.Android)
                 {
-                    gpsPermissionReady = status == PermissionStatus.Granted || status == PermissionStatus.Restricted;
+                    gpsPermissionReady = statusGPS == PermissionStatus.Granted || statusGPS == PermissionStatus.Restricted;
                 }
                 else
                 {

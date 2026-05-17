@@ -413,6 +413,8 @@ namespace iPMCloud.Mobile
             }
             else
             {
+                overlay.IsVisible = false;
+                await Task.Delay(1);
                 // OBJEKT SCANEN !!!
                 if (AppModel.Instance.LastBuilding != null
                     && AppModel.Instance.LastBuilding.id == AppModel.Instance.selectedCheckInfo.objektid)

@@ -516,9 +516,9 @@ namespace iPMCloud.Mobile.vo
         //}
 
         public string checkPermissionsMessage = "";
-        public async Task<string> CheckPermissions()
+        public Task<string> CheckPermissions()
         {
-            return await MainThread.InvokeOnMainThreadAsync(async () =>
+            return MainThread.InvokeOnMainThreadAsync(async () =>
             {
                 checkPermissionsMessage = "";
                 var r = "";
@@ -659,11 +659,11 @@ namespace iPMCloud.Mobile.vo
 
         public bool gpsPermissionReady = false;
         public string checkPermissionGPSMessage = "";
-        public async Task<string> CheckPermissionGPS()
+        public Task<string> CheckPermissionGPS()
         {
-            try
+            return MainThread.InvokeOnMainThreadAsync(async () =>
             {
-                return await MainThread.InvokeOnMainThreadAsync(async () =>
+                try
                 {
                     checkPermissionGPSMessage = "";
                     PermissionStatus status = await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>();
@@ -721,15 +721,15 @@ namespace iPMCloud.Mobile.vo
                     }
 
                     return checkPermissionGPSMessage;
-                });
-            }
-            catch (Exception ex)
-            {
-                gpsPermissionReady = false;
-                checkPermissionGPSMessage = ex.Message;
-                AppModel.Logger.Error("ERROR: CheckPermissionGPS -> " + ex.Message);
-                return checkPermissionGPSMessage;
-            }
+                }
+                catch (Exception ex)
+                {
+                    gpsPermissionReady = false;
+                    checkPermissionGPSMessage = ex.Message;
+                    AppModel.Logger.Error("ERROR: CheckPermissionGPS -> " + ex.Message);
+                    return checkPermissionGPSMessage;
+                }
+            });
         }
 
         public bool isReachableServer = true;

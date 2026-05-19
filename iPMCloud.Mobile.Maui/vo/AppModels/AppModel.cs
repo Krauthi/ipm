@@ -808,6 +808,64 @@ namespace iPMCloud.Mobile.vo
                 AppModel.Logger.Error("ERROR: CheckLogin failed: " + ex.Message);
             }
         }
+        /// <summary>
+        /// Checks whether the stored login credentials are still valid without making a network call.
+        /// Returns <c>true</c> when the token is present, not older than 7 days and Person data is
+        /// loaded – i.e. the app can skip the login screen and go directly to MainPage.
+        /// Returns <c>false</c> for any condition that requires the user to log in again.
+        /// </summary>
+        public Task<bool> CheckLoginAsync()
+        {
+            try
+            {
+                var dto = AppModel.Instance.SettingModel.SettingDTO;
+
+                // No autologin flag or no token -> must show StartPage
+                if (!dto.Autologin || string.IsNullOrWhiteSpace(dto.LoginToken))
+                {
+                    AppModel.Logger.Info("CheckLoginAsync: no autologin or no token -> StartPage");
+                    return Task.FromResult(false);
+                }
+
+                // Person data not loaded yet -> cannot bypass login
+                if (AppModel.Instance.Person == null)
+                {
+                    AppModel.Logger.Info("CheckLoginAsync: Person is null -> StartPage");
+                    return Task.FromResult(false);
+                }
+
+                // Check token age (must be within the last 7 days)
+                DateTime lastTokenDate = string.IsNullOrWhiteSpace(dto.LastTokenDateTimeTicks)
+                    ? DateTime.Now.AddDays(-365)  // treat missing timestamp as far in the past → expired
+                    : new DateTime(long.Parse(dto.LastTokenDateTimeTicks));
+                DateTime nowMinus7Days = DateTime.Now.AddDays(-7);
+                // Positive means lastTokenDate is more recent than 7 days ago (token still valid)
+                var hoursUntilExpiry = (lastTokenDate - nowMinus7Days).TotalHours;
+
+                if (hoursUntilExpiry > 0)
+                {
+                    // Token still valid – refresh timestamp and proceed to MainPage
+                    AppModel.Logger.Info("CheckLoginAsync: valid token -> MainPage");
+                    dto.LastTokenDateTimeTicks = DateTime.Now.Ticks.ToString();
+                    dto.GPSInfoHasShow = true;
+                    AppModel.Instance.SettingModel.SaveSettings();
+                    return Task.FromResult(true);
+                }
+
+                // Token expired – clear credentials so next login is forced
+                AppModel.Logger.Info("CheckLoginAsync: token expired -> StartPage");
+                dto.LoginToken = "";
+                dto.Autologin = false;
+                AppModel.Instance.SettingModel.SaveSettings();
+                return Task.FromResult(false);
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger.Error("ERROR: CheckLoginAsync failed: " + ex.Message);
+                return Task.FromResult(false);
+            }
+        }
+
         private async void LoginNow()
         {
             IpmLoginResponse ipmLoginResponse = await Task.Run(() => { return AppModel.Instance.Connections.IpmLogin(false); });

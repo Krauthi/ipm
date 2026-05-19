@@ -124,11 +124,8 @@ namespace iPMCloud.Mobile
 
             //AppModel.Instance.SendLogZipFile();
 
-            if (AppModel.Instance.StartPage == null)
-            {
-                var startPage = new StartPage();
-                AppModel.Instance.StartPage = startPage;
-            }
+            // StartPage is created lazily by TFPageNavigator when needed –
+            // no premature construction here so the splash is not delayed.
             //if (AppModel.Instance.MainPage == null)
             //{
             //    var mainPage = new MainPage();

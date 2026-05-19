@@ -17,8 +17,8 @@ namespace iPMCloud.Mobile
             BindingContext = new OverlayViewModel(
                 onFlashButtonClicked: () => { FlashCameraClicked(null, null); })
             {
-                TopText = AppModel.Instance.StartPage.ScanAddRegText,
-                BottomText = AppModel.Instance.StartPage.ScanAddRegTextSec,
+                TopText = AppModel.Instance.ScanAddRegText,
+                BottomText = AppModel.Instance.ScanAddRegTextSec,
             };
 
 

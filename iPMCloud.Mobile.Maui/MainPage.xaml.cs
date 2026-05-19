@@ -423,7 +423,16 @@ namespace iPMCloud.Mobile
                 }
                 else
                 {
-                    ShowBuildingScanPage_Check(intBol);
+                    if (AppModel.Instance.allPositionInWork != null && AppModel.Instance.allPositionInWork.leistungen.Count > 0)
+                    {
+                        await DisplayAlertAsync("OFFENE ARBEITEN", 
+                            "Die Checkliste kann nicht bearbeitet werden! Es sind noch offene Arbeiten in einem anderen Objekt aktiv. Diese müssen Sie zuerst beenden.",
+                            "OK");
+                    }
+                    else
+                    {
+                        ShowBuildingScanPage_Check(intBol);
+                    }
                 }
             }
         }
@@ -1613,9 +1622,6 @@ namespace iPMCloud.Mobile
 
 
 
-
-        public string ScanAddRegText { get; set; } = "Richten Sie die Kamera auf den QR-Code.";
-        public string ScanAddRegTextSec { get; set; } = "Das Scannen erfolgt automatisch";
 
         private async void ShowBuildingScanPage(bool isCheck)
         {

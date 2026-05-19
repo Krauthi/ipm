@@ -21,6 +21,9 @@ namespace iPMCloud.Mobile.vo
 
         public static string Google_Translation_ApiKey = "AIzaSyCVwK7fQxV5PjzEEQUZBfuGh93pMwAtIe4";
 
+        public string ScanAddRegText { get; set; } = "Richten Sie die Kamera auf den QR-Code.";
+        public string ScanAddRegTextSec { get; set; } = "Das Scannen erfolgt automatisch";
+
         public DateTime AppOnStart;
         public DateTime AppOnSleep;
         public DateTime AppOnResume;

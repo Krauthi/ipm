@@ -978,7 +978,7 @@ namespace iPMCloud.Mobile
                 MaxLength = 499,
                 //HeightRequest = quest.isReady ? 40 : -1,
                 AutoSize = EditorAutoSizeOption.TextChanges,
-                Keyboard = Keyboard.Text,
+                Keyboard = Keyboard.Default,
             };
             quest.textEditor.TextChanged -= (object sender, TextChangedEventArgs e) => { quest.Text_a1_Changed(); };
             quest.textEditor.TextChanged += (object sender, TextChangedEventArgs e) => { quest.Text_a1_Changed(); };
@@ -1580,8 +1580,34 @@ namespace iPMCloud.Mobile
                 tapAnt.Tapped += (object o, TappedEventArgs ev) => { quest.Tap_a4a_Ant(img); };
                 img.GestureRecognizers.Add(tapAnt);
 
-                quest.frame_ants.Add(new Border
+
+                var grid = new Grid
                 {
+                    Padding = new Thickness(0),
+                    Margin = new Thickness(0),
+                    ColumnSpacing = 0,
+                    HorizontalOptions = LayoutOptions.Fill,
+                    ColumnDefinitions = {
+                        new ColumnDefinition { Width = GridLength.Star },
+                        new ColumnDefinition { Width = GridLength.Auto }
+                    }
+                };
+                grid.Add(new Label
+                {
+                    Text = q,
+                    HorizontalOptions = LayoutOptions.Start,
+                    VerticalOptions = LayoutOptions.Center,
+                    FontSize = 14,
+                    TextColor = Colors.White,
+                    Margin = new Thickness(0),
+                    Padding = new Thickness(0),
+                    LineBreakMode = LineBreakMode.WordWrap,
+                }, 0);
+                grid.Add(img, 1);
+
+                var bor = new Border
+                {
+                    IsVisible = !quest.none && (ants.Length == 0 || ants.Contains(z.ToString())),
                     Padding = new Thickness(5, 5),
                     Margin = new Thickness(0, 3),
                     BackgroundColor = Color.FromArgb("#33ffffff"),
@@ -1590,28 +1616,9 @@ namespace iPMCloud.Mobile
                     ClassId = "" + z,
                     HorizontalOptions = LayoutOptions.Fill,
                     Stroke = ants.Contains(z.ToString()) ? Colors.White : Colors.Transparent,
-                    Content = new HorizontalStackLayout
-                    {
-                        Padding = new Thickness(0),
-                        Margin = new Thickness(0),
-                        Spacing = 0,
-                        HorizontalOptions = LayoutOptions.Fill,
-                        Children = {
-                            new Label
-                            {
-                                Text = q,
-                                HorizontalOptions = LayoutOptions.Start,
-                                VerticalOptions = LayoutOptions.Center,
-                                FontSize = 14,
-                                TextColor = Colors.White,
-                                Margin = new Thickness(0),
-                                Padding = new Thickness(0),
-                                LineBreakMode = LineBreakMode.WordWrap,
-                            },
-                            img
-                        },
-                    }
-                });
+                    Content = grid
+                };
+                quest.frame_ants.Add(bor);
                 z++;
             }
             var questStack = new VerticalStackLayout
@@ -1833,7 +1840,31 @@ namespace iPMCloud.Mobile
                 tapAnt.Tapped += (object o, TappedEventArgs ev) => { quest.Tap_a4b_Ant(img); };
                 img.GestureRecognizers.Add(tapAnt);
 
-                quest.frame_ants.Add(new Border
+                var grid = new Grid
+                {
+                    Padding = new Thickness(0),
+                    Margin = new Thickness(0),
+                    ColumnSpacing = 0,
+                    HorizontalOptions = LayoutOptions.Fill,
+                    ColumnDefinitions = {
+                        new ColumnDefinition { Width = GridLength.Star },
+                        new ColumnDefinition { Width = GridLength.Auto }
+                    }
+                };
+                grid.Add(new Label
+                {
+                    Text = q,
+                    HorizontalOptions = LayoutOptions.Start,
+                    VerticalOptions = LayoutOptions.Center,
+                    FontSize = 14,
+                    TextColor = Colors.White,
+                    Margin = new Thickness(0),
+                    Padding = new Thickness(0),
+                    LineBreakMode = LineBreakMode.WordWrap,
+                }, 0);
+                grid.Add(img, 1);
+
+                var bor = new Border
                 {
                     IsVisible = !quest.none && (ants.Length == 0 || ants.Contains(z.ToString())),
                     Padding = new Thickness(5, 5),
@@ -1844,28 +1875,10 @@ namespace iPMCloud.Mobile
                     ClassId = "" + z,
                     HorizontalOptions = LayoutOptions.Fill,
                     Stroke = ants.Contains(z.ToString()) ? Colors.White : Colors.Transparent,
-                    Content = new HorizontalStackLayout
-                    {
-                        Padding = new Thickness(0),
-                        Margin = new Thickness(0),
-                        Spacing = 0,
-                        HorizontalOptions = LayoutOptions.Fill,
-                        Children = {
-                            new Label
-                            {
-                                Text = q,
-                                HorizontalOptions = LayoutOptions.Start,
-                                VerticalOptions = LayoutOptions.Center,
-                                FontSize = 14,
-                                TextColor = Colors.White,
-                                Margin = new Thickness(0),
-                                Padding = new Thickness(0),
-                                LineBreakMode = LineBreakMode.WordWrap,
-                            },
-                            img
-                        },
-                    }
-                }); ;
+                    Content = grid
+                };
+                quest.frame_ants.Add(bor);
+                
                 z++;
             }
             var questStack = new VerticalStackLayout

@@ -434,13 +434,20 @@ namespace iPMCloud.Mobile
         {
             none = false;
             a4 = "";
-            foreach (var item in frame_ants)
+            if (frame_ants != null)
             {
-                item.Stroke = Colors.Transparent;
-                var img = (item.Content as StackLayout).Children[1] as Image;
-                img.Source = "No.png";
-                img.Opacity = 0.5;
-            };
+                foreach (var item in frame_ants)
+                {
+                    if(item == null)
+                        continue;
+                    item.Stroke = Colors.Transparent;
+                    if (item.Content is Layout layout && layout.Count > 1 && layout[1] is Image img)
+                    {
+                        img.Source = "No.png";
+                        img.Opacity = 0.5;
+                    }
+                }
+            }
             CheckIsReadyAndSet_a4a();
             frame_Reset.IsVisible = false;
         }
@@ -525,24 +532,35 @@ namespace iPMCloud.Mobile
         {
             none = false;
             a4 = "";
-            foreach (var item in frame_ants)
+            if (frame_ants != null)
             {
-                item.IsVisible = true;
-                item.Stroke = Colors.Transparent;
-                var img = (item.Content as StackLayout).Children[1] as Image;
-                img.Source = "No_Round.png";
-                img.Opacity = 0.5;
-            };
+                foreach (var item in frame_ants)
+                {
+                    if (item == null)
+                        continue;
+
+                    item.IsVisible = true;
+                    item.Stroke = Colors.Transparent;
+                    if (item.Content is Layout layout && layout.Count > 1 && layout[1] is Image img)
+                    {
+                        img.Source = "No_Round.png";
+                        img.Opacity = 0.5;
+                    }
+                }
+            }
             CheckIsReadyAndSet_a4b();
             frame_Reset.IsVisible = false;
         }
         public void Tap_a4b_None()
         {
             Tap_a4b_Reset();
-            foreach (var item in frame_ants)
+            if (frame_ants != null)
             {
-                item.IsVisible = false;
-            };
+                foreach (var item in frame_ants)
+                {
+                    item.IsVisible = false;
+                }
+            }
             none = true;
             CheckIsReadyAndSet_a4b();
             frame_Reset.IsVisible = true;

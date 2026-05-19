@@ -305,8 +305,6 @@ namespace iPMCloud.Mobile
 
 
 
-        public string ScanAddRegText { get; set; } = "Richten Sie die Kamera auf den QR-Code.";
-        public string ScanAddRegTextSec { get; set; } = "Das Scannen erfolgt automatisch";
 
         private async void ShowAddRegScan()
         {

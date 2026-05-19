@@ -1,5 +1,6 @@
 using Android.App;
 using Android.Content;
+using Android.Content.PM;
 using Android.OS;
 using Android.Util;
 using AndroidX.Core.App;
@@ -10,7 +11,10 @@ using System.Threading.Tasks;
 
 namespace iPMCloud.Mobile.Platforms.Android.Services
 {
-    [Service(Name = "com.ipmcloud.ipm.mobile.UploadForegroundService", Exported = false)]
+    [Service(
+        Name = "com.ipmcloud.ipm.mobile.UploadForegroundService",
+        Exported = false,
+        ForegroundServiceType = ForegroundService.TypeDataSync)]
     public class UploadForegroundService : Service
     {
         public const string ACTION_START = "iPMCloud.upload.ACTION_START";
@@ -43,7 +47,22 @@ namespace iPMCloud.Mobile.Platforms.Android.Services
             }
 
             CreateNotificationChannel();
-            StartForeground(NOTIFICATION_ID, BuildNotification("Uploads laufen…", 0));
+            //StartForeground(NOTIFICATION_ID, BuildNotification("Uploads laufen…", 0)); 
+            var notification = BuildNotification("Uploads laufen…", 0);
+
+            if (Build.VERSION.SdkInt >= BuildVersionCodes.Q)
+            {
+#pragma warning disable CA1416 // Plattformkompatibilität überprüfen
+                StartForeground(
+                    NOTIFICATION_ID,
+                    notification,
+                    ForegroundService.TypeDataSync);
+#pragma warning restore CA1416 // Plattformkompatibilität überprüfen
+            }
+            else
+            {
+                StartForeground(NOTIFICATION_ID, notification);
+            }
             AcquireWakeLock();
 
             _cts = new CancellationTokenSource();

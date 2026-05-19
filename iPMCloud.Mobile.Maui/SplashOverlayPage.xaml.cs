@@ -13,7 +13,7 @@ namespace iPMCloud.Mobile
     public partial class SplashOverlayPage : ContentPage
     {
         /// <summary>Minimum time (ms) the splash overlay is visible.</summary>
-        private const int MinimumSplashDisplayTimeMs = 1000;
+        private const int MinimumSplashDisplayTimeMs = 500;
 
         public SplashOverlayPage()
         {

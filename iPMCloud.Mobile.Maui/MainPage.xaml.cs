@@ -474,22 +474,23 @@ namespace iPMCloud.Mobile
             }
             else
             {
-                // Es wird noch eine bearbeitet "Offen"
-                popupContainer_dialog_titel.Text = "CHECKLISTE";
-                popupContainer_dialog_text.Text = "Diese Checkliste kann nicht gestartet werden, da Sie aktuell noch eine andere Checkliste in bearbeitung haben und zuerst fertig stellen müssen.";
-                popupContainer_dialog.IsVisible = true;
-
-                popupContainer_dialog_btn_ok.GestureRecognizers.Clear();
-                var tgr_popupContainer_dialog_btn_ok = new TapGestureRecognizer();
-                tgr_popupContainer_dialog_btn_ok.Tapped += (object o, TappedEventArgs ev) =>
-                {
-                    popupContainer_dialog.IsVisible = false;
-                    popupContainer_dialog_btn_ok.GestureRecognizers.Clear();
-                };
-                popupContainer_dialog_btn_ok.GestureRecognizers.Add(tgr_popupContainer_dialog_btn_ok);
-
                 overlay.IsVisible = false;
                 await Task.Delay(1);
+                // Es wird noch eine bearbeitet "Offen"
+                await DisplayAlertAsync("CHECKLISTE", "Diese Checkliste kann nicht gestartet werden, da Sie aktuell noch eine andere Checkliste in Bearbeitung haben und zuerst fertig stellen müssen.", "OK");
+                //popupContainer_dialog_titel.Text = "CHECKLISTE";
+                //popupContainer_dialog_text.Text = "Diese Checkliste kann nicht gestartet werden, da Sie aktuell noch eine andere Checkliste in bearbeitung haben und zuerst fertig stellen müssen.";
+                //popupContainer_dialog.IsVisible = true;
+
+                //popupContainer_dialog_btn_ok.GestureRecognizers.Clear();
+                //var tgr_popupContainer_dialog_btn_ok = new TapGestureRecognizer();
+                //tgr_popupContainer_dialog_btn_ok.Tapped += (object o, TappedEventArgs ev) =>
+                //{
+                //    popupContainer_dialog.IsVisible = false;
+                //    popupContainer_dialog_btn_ok.GestureRecognizers.Clear();
+                //};
+                //popupContainer_dialog_btn_ok.GestureRecognizers.Add(tgr_popupContainer_dialog_btn_ok);
+
                 intBol_Check = null;
             }
         }
@@ -1547,20 +1548,20 @@ namespace iPMCloud.Mobile
         }
 
 
-        private async void ShowPN_Page()
-        {
-            isInitialize = true;
-            overlay.IsVisible = true;
-            await Task.Delay(1);
+        //private async void ShowPN_Page()
+        //{
+        //    isInitialize = true;
+        //    overlay.IsVisible = true;
+        //    await Task.Delay(1);
 
-            ClearPageViews();
-            PN_Page_Container.IsVisible = true;
+        //    ClearPageViews();
+        //    PN_Page_Container.IsVisible = true;
 
 
-            await Task.Delay(1);
-            overlay.IsVisible = false;
-            isInitialize = false;
-        }
+        //    await Task.Delay(1);
+        //    overlay.IsVisible = false;
+        //    isInitialize = false;
+        //}
         public void btn_PN_BackTapped(object sender, EventArgs e)
         {
             this.Focus();
@@ -3073,7 +3074,7 @@ namespace iPMCloud.Mobile
             TodoPageView.SetVisible(false);
             StartPage_Container.IsVisible = false;
             DSGVOPageContainerView.SetVisible(false);
-            PN_Page_Container.IsVisible = false;
+            //PN_Page_Container.IsVisible = false;
             WorkerPage_Container.IsVisible = false;
             //BuildingScanPage_Container.IsVisible = false;
             //BuildingOutScanPage_Container.IsVisible = false;
@@ -5941,116 +5942,116 @@ namespace iPMCloud.Mobile
         }
 
 
-      
 
-        public void OpenLanguage(object sender, EventArgs e)
-        {
-            double w = screenWidthDp;
-            double h = screenHeightDp;
-            langListView.SelectedItem = null;
-            popupContainer_quest_langpicker_inner.HeightRequest = h - 100;
-            popupContainer_quest_langpicker_inner.WidthRequest = w - 40;
-            popupContainer_quest_langpicker.IsVisible = true;
 
-            var empList = AppModel.Instance.Langs;
-            var groupedData =
-                empList.OrderBy(el => el.text)
-                    .GroupBy(el => el.text[0].ToString())
-                    .Select(el => new ObservableLangItemCollection<string, Lang>(el))
-                    .ToList();
+        //public void OpenLanguage(object sender, EventArgs e)
+        //{
+        //    double w = screenWidthDp;
+        //    double h = screenHeightDp;
+        //    langListView.SelectedItem = null;
+        //    popupContainer_quest_langpicker_inner.HeightRequest = h - 100;
+        //    popupContainer_quest_langpicker_inner.WidthRequest = w - 40;
+        //    popupContainer_quest_langpicker.IsVisible = true;
 
-            BindingContext = new ObservableCollection<ObservableLangItemCollection<string, Lang>>(groupedData);
+        //    var empList = AppModel.Instance.Langs;
+        //    var groupedData =
+        //        empList.OrderBy(el => el.text)
+        //            .GroupBy(el => el.text[0].ToString())
+        //            .Select(el => new ObservableLangItemCollection<string, Lang>(el))
+        //            .ToList();
 
-        }
-        private void langListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (e.CurrentSelection != null && e.CurrentSelection.Count > 0)
-            {
-                var l = (Lang)e.CurrentSelection[0];
-                AppModel.Instance.Lang = l;
-                CloseLanguage();
-                ShowTranslate(null, null);
-            }
-        }
-        public async void CloseLanguage()
-        {
-            await Task.Delay(1);
-            popupContainer_quest_langpicker.IsVisible = false;
-        }
+        //    BindingContext = new ObservableCollection<ObservableLangItemCollection<string, Lang>>(groupedData);
 
-        public void ShowTranslate(object sender, EventArgs e)
-        {
-            double w = screenWidthDp;
-            double h = screenHeightDp;
-            popupContainer_container_changelang.WidthRequest = w - 40;
-            //popupContainer_container_changelang.Margin = new Thickness(0,100,0,0);
-            btn_changelang.GestureRecognizers.Clear();
-            var tgr_over = new TapGestureRecognizer();
-            tgr_over.Tapped -= btn_translateTapped;
-            tgr_over.Tapped += btn_translateTapped;
-            btn_changelang.GestureRecognizers.Add(tgr_over);
+        //}
+        //private void langListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        //{
+        //    if (e.CurrentSelection != null && e.CurrentSelection.Count > 0)
+        //    {
+        //        var l = (Lang)e.CurrentSelection[0];
+        //        AppModel.Instance.Lang = l;
+        //        CloseLanguage();
+        //        ShowTranslate(null, null);
+        //    }
+        //}
+        //public async void CloseLanguage()
+        //{
+        //    await Task.Delay(1);
+        //    popupContainer_quest_langpicker.IsVisible = false;
+        //}
 
-            btn_cancellang.GestureRecognizers.Clear();
-            var tgr_cancel = new TapGestureRecognizer();
-            tgr_cancel.Tapped -= (object o, TappedEventArgs ev) => { popupContainer_quest_changelang.IsVisible = false; };
-            tgr_cancel.Tapped += (object o, TappedEventArgs ev) => { popupContainer_quest_changelang.IsVisible = false; };
-            btn_cancellang.GestureRecognizers.Add(tgr_cancel);
+        //public void ShowTranslate(object sender, EventArgs e)
+        //{
+        //    double w = screenWidthDp;
+        //    double h = screenHeightDp;
+        //    popupContainer_container_changelang.WidthRequest = w - 40;
+        //    //popupContainer_container_changelang.Margin = new Thickness(0,100,0,0);
+        //    btn_changelang.GestureRecognizers.Clear();
+        //    //var tgr_over = new TapGestureRecognizer();
+        //    //tgr_over.Tapped -= btn_translateTapped;
+        //    //tgr_over.Tapped += btn_translateTapped;
+        //    //btn_changelang.GestureRecognizers.Add(tgr_over);
 
-            popupContainer_container_changelang_titel.Text = "Kategorien und Leistungen ändern in (" + AppModel.Instance.Lang.text.Replace("(Standard)", "") + ")";
+        //    btn_cancellang.GestureRecognizers.Clear();
+        //    var tgr_cancel = new TapGestureRecognizer();
+        //    tgr_cancel.Tapped -= (object o, TappedEventArgs ev) => { popupContainer_quest_changelang.IsVisible = false; };
+        //    tgr_cancel.Tapped += (object o, TappedEventArgs ev) => { popupContainer_quest_changelang.IsVisible = false; };
+        //    btn_cancellang.GestureRecognizers.Add(tgr_cancel);
 
-            // Dialog öffnen
-            popupContainer_quest_changelang.IsVisible = true;
-        }
-        public void ShowTranslate_fail()
-        {
-            double w = screenWidthDp;
-            double h = screenHeightDp;
-            popupContainer_quest_changelang_fail.WidthRequest = w - 40;
-            //popupContainer_container_sendlog.Margin = new Thickness(0,100,0,0);
-            btn_cancellogtosupport_fail.GestureRecognizers.Clear();
-            var tgr_cancel = new TapGestureRecognizer();
-            tgr_cancel.Tapped -= (object o, TappedEventArgs ev) => { popupContainer_quest_changelang_fail.IsVisible = false; };
-            tgr_cancel.Tapped += (object o, TappedEventArgs ev) => { popupContainer_quest_changelang_fail.IsVisible = false; };
-            btn_cancellogtosupport_fail.GestureRecognizers.Add(tgr_cancel);
+        //    popupContainer_container_changelang_titel.Text = "Kategorien und Leistungen ändern in (" + AppModel.Instance.Lang.text.Replace("(Standard)", "") + ")";
 
-            // Dialog öffnen
-            popupContainer_quest_changelang_fail.IsVisible = true;
-        }
+        //    // Dialog öffnen
+        //    popupContainer_quest_changelang.IsVisible = true;
+        //}
+        //public void ShowTranslate_fail()
+        //{
+        //    double w = screenWidthDp;
+        //    double h = screenHeightDp;
+        //    popupContainer_quest_changelang_fail.WidthRequest = w - 40;
+        //    //popupContainer_container_sendlog.Margin = new Thickness(0,100,0,0);
+        //    btn_cancellogtosupport_fail.GestureRecognizers.Clear();
+        //    var tgr_cancel = new TapGestureRecognizer();
+        //    tgr_cancel.Tapped -= (object o, TappedEventArgs ev) => { popupContainer_quest_changelang_fail.IsVisible = false; };
+        //    tgr_cancel.Tapped += (object o, TappedEventArgs ev) => { popupContainer_quest_changelang_fail.IsVisible = false; };
+        //    btn_cancellogtosupport_fail.GestureRecognizers.Add(tgr_cancel);
 
-        public async void btn_translateTapped(object sender, EventArgs e)
-        {
-            try
-            {
-                overlay.IsVisible = true;
-                await Task.Delay(1);
+        //    // Dialog öffnen
+        //    popupContainer_quest_changelang_fail.IsVisible = true;
+        //}
 
-                if (AppModel.Instance.Lang.lang.ToLower() == "de")
-                {
-                    // fertig
-                    popupContainer_container_changelang_status.Text = "";
-                    popupContainer_quest_changelang.IsVisible = false;
+        //public async void btn_translateTapped(object sender, EventArgs e)
+        //{
+        //    try
+        //    {
+        //        overlay.IsVisible = true;
+        //        await Task.Delay(1);
 
-                    //Lang.Save(AppModel.Instance.Lang);
-                    //lb_settings_sel_trans.Text = AppModel.Instance.Lang.text.Replace("(Standard)", "");
+        //        if (AppModel.Instance.Lang.lang.ToLower() == "de")
+        //        {
+        //            // fertig
+        //            popupContainer_container_changelang_status.Text = "";
+        //            popupContainer_quest_changelang.IsVisible = false;
 
-                    await Task.Delay(1000);
-                    overlay.IsVisible = false;
-                    return;
-                }
+        //            //Lang.Save(AppModel.Instance.Lang);
+        //            //lb_settings_sel_trans.Text = AppModel.Instance.Lang.text.Replace("(Standard)", "");
 
-            }
-            catch (Exception ex)
-            {
-                popupContainer_quest_changelang.IsVisible = false;
-                AppModel.Logger.Error("Error: Sprache zu DE (btn_translateTapped) - " + ex.Message + "");
-                await Task.Delay(1);
-                overlay.IsVisible = false;
-                ShowTranslate_fail();
-                return;
-            }
+        //            await Task.Delay(1000);
+        //            overlay.IsVisible = false;
+        //            return;
+        //        }
 
-            //translate/Buildings(AppModel.Instance.AllBuildings, true);
-        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        popupContainer_quest_changelang.IsVisible = false;
+        //        AppModel.Logger.Error("Error: Sprache zu DE (btn_translateTapped) - " + ex.Message + "");
+        //        await Task.Delay(1);
+        //        overlay.IsVisible = false;
+        //        ShowTranslate_fail();
+        //        return;
+        //    }
+
+        //    //translate/Buildings(AppModel.Instance.AllBuildings, true);
+        //}
 
         public async Task<bool> translateAfterSyncedBuildings(string lang, List<BuildingWSO> buildings, bool isChangeLang = false)
         {
@@ -6200,8 +6201,8 @@ namespace iPMCloud.Mobile
                 var alist = ListExtensions.ChunkBy(als.Distinct().ToList(), 100);
                 var klist = ListExtensions.ChunkBy(kls.Distinct().ToList(), 100);
                 var llist = ListExtensions.ChunkBy(lls.Distinct().ToList(), 100);
-                //countFrom = klist.Count + llist.Count;
-                popupContainer_container_changelang_status.Text = "" + countReady + " von " + countFrom;
+                ////countFrom = klist.Count + llist.Count;
+                //popupContainer_container_changelang_status.Text = "" + countReady + " von " + countFrom;
                 await Task.Delay(1);
                 var atr = new List<TranslationResult>();
                 var ktr = new List<TranslationResult>();
@@ -6273,7 +6274,7 @@ namespace iPMCloud.Mobile
                             }
                         });
                         BuildingWSO.Save(AppModel.Instance, b);
-                        popupContainer_container_changelang_status.Text = "" + countReady + " von " + countFrom;
+                       // popupContainer_container_changelang_status.Text = "" + countReady + " von " + countFrom;
                     }
                 });
 
@@ -6292,8 +6293,8 @@ namespace iPMCloud.Mobile
                     SyncTransSigns();
                 }
 
-                popupContainer_container_changelang_status.Text = "" + countReady + " von " + countFrom;
-                popupContainer_quest_changelang.IsVisible = false;
+                //popupContainer_container_changelang_status.Text = "" + countReady + " von " + countFrom;
+                //popupContainer_quest_changelang.IsVisible = false;
 
                 //Lang.Save(AppModel.Instance.Lang);
                 //lb_settings_sel_trans.Text = lang; // AppModel.Instance.Lang.text.Replace("(Standard)", "");
@@ -6304,11 +6305,12 @@ namespace iPMCloud.Mobile
             }
             catch (Exception ex)
             {
-                popupContainer_quest_changelang.IsVisible = false;
+                //popupContainer_quest_changelang.IsVisible = false;
                 AppModel.Logger.Error("Error: (translateBuildings) - " + ex.Message + "");
                 await Task.Delay(1);
                 overlay.IsVisible = false;
-                ShowTranslate_fail();
+                await DisplayAlertAsync("Fehler", "Fehler beim Übersetzen: " + ex.Message, "OK");
+                //ShowTranslate_fail();
                 return false;
             }
         }
@@ -7697,10 +7699,10 @@ namespace iPMCloud.Mobile
                 t_popupContainer_ObjektPlanWeek_personpicker_close.Tapped += (object o, TappedEventArgs ev) => { CloseOtherPerson(); };
                 popupContainer_quest_personpicker_close.GestureRecognizers.Add(t_popupContainer_ObjektPlanWeek_personpicker_close);
 
-                popupContainer_quest_langpicker_close.GestureRecognizers.Clear();
-                var t_popupContainer_langpicker_close = new TapGestureRecognizer();
-                t_popupContainer_langpicker_close.Tapped += (object o, TappedEventArgs ev) => { CloseLanguage(); };
-                popupContainer_quest_langpicker_close.GestureRecognizers.Add(t_popupContainer_langpicker_close);
+                //popupContainer_quest_langpicker_close.GestureRecognizers.Clear();
+                //var t_popupContainer_langpicker_close = new TapGestureRecognizer();
+                //t_popupContainer_langpicker_close.Tapped += (object o, TappedEventArgs ev) => { CloseLanguage(); };
+                //popupContainer_quest_langpicker_close.GestureRecognizers.Add(t_popupContainer_langpicker_close);
 
                 popupContainer_ObjektPlanWeek_Type.GestureRecognizers.Clear();
                 var t_popupContainer_ObjektPlanWeek_Type = new TapGestureRecognizer();
@@ -7829,11 +7831,11 @@ namespace iPMCloud.Mobile
 
 
 
-                popupContainer_Alert_btn.GestureRecognizers.Clear();
-                var tgr9 = new TapGestureRecognizer();
-                tgr9.Tapped -= HideAlertMessage;
-                tgr9.Tapped += HideAlertMessage;
-                popupContainer_Alert_btn.GestureRecognizers.Add(tgr9);
+                //popupContainer_Alert_btn.GestureRecognizers.Clear();
+                //var tgr9 = new TapGestureRecognizer();
+                //tgr9.Tapped -= HideAlertMessage;
+                //tgr9.Tapped += HideAlertMessage;
+                //popupContainer_Alert_btn.GestureRecognizers.Add(tgr9);
 
                 // Handwerker nach Kategorien suchen
                 btn_workercategorysearch.GestureRecognizers.Clear();
@@ -8039,10 +8041,10 @@ namespace iPMCloud.Mobile
 
 
 
-                btn_back_pn.GestureRecognizers.Clear();
-                var tgr_back_pn = new TapGestureRecognizer();
-                tgr_back_pn.Tapped += btn_PN_BackTapped;
-                btn_back_pn.GestureRecognizers.Add(tgr_back_pn);
+                //btn_back_pn.GestureRecognizers.Clear();
+                //var tgr_back_pn = new TapGestureRecognizer();
+                //tgr_back_pn.Tapped += btn_PN_BackTapped;
+                //btn_back_pn.GestureRecognizers.Add(tgr_back_pn);
 
 
                 btn_nachbuchen_back.GestureRecognizers.Clear();
@@ -8706,7 +8708,7 @@ namespace iPMCloud.Mobile
 
         public async void CheckAllSyncFromUpload()
         {
-            popupContainer_quest_countfromupload.IsVisible = false;
+            //popupContainer_quest_countfromupload.IsVisible = false;
 
             var pendingUploads = iPMCloud.Mobile.Services.UploadCoordinator.Instance.GetPendingUploadCount();
             if (pendingUploads <= 0)
@@ -9779,21 +9781,22 @@ namespace iPMCloud.Mobile
 
 
 
-        public void ShowAlertMessage(string titel, string message, bool enableBtn = false)
+        public async void ShowAlertMessage(string titel, string message, bool enableBtn = false)
         {
-            if (popupContainer_Alert.IsVisible) { return; }
-            popupContainer_Alert_Titel.Text = titel;
-            popupContainer_Alert_Text.Text = message;
-            popupContainer_Alert.IsVisible = true;
-            popupContainer_Alert_btn.IsVisible = enableBtn;
+            await DisplayAlertAsync(titel, message, "OK");
+            //if (popupContainer_Alert.IsVisible) { return; }
+            //popupContainer_Alert_Titel.Text = titel;
+            //popupContainer_Alert_Text.Text = message;
+            //popupContainer_Alert.IsVisible = true;
+            //popupContainer_Alert_btn.IsVisible = enableBtn;
         }
-        public void HideAlertMessage(object sender, EventArgs e)
-        {
-            popupContainer_Alert.IsVisible = false;
-            popupContainer_Alert_Titel.Text = "";
-            popupContainer_Alert_Text.Text = "";
-            popupContainer_Alert_btn.IsVisible = true;
-        }
+        //public void HideAlertMessage(object sender, EventArgs e)
+        //{
+        //    popupContainer_Alert.IsVisible = false;
+        //    popupContainer_Alert_Titel.Text = "";
+        //    popupContainer_Alert_Text.Text = "";
+        //    popupContainer_Alert_btn.IsVisible = true;
+        //}
         private void OnOverlayTapped(object sender, EventArgs e)
         {
             // Implementierung hier - z.B. das Overlay ausblenden

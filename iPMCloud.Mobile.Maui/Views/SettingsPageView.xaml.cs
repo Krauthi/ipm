@@ -59,10 +59,10 @@ namespace iPMCloud.Mobile.Views
             btn_settings_sendlog.GestureRecognizers.Add(tgr_namestacksend);
 
 
-            btn_settings_sel_trans_lang.GestureRecognizers.Clear();
-            var tgr_btn_settings_sel_trans_lang = new TapGestureRecognizer();
-            tgr_btn_settings_sel_trans_lang.Tapped += AppModel.Instance.MainPage.OpenLanguage;
-            btn_settings_sel_trans_lang.GestureRecognizers.Add(tgr_btn_settings_sel_trans_lang);
+            //btn_settings_sel_trans_lang.GestureRecognizers.Clear();
+            //var tgr_btn_settings_sel_trans_lang = new TapGestureRecognizer();
+            //tgr_btn_settings_sel_trans_lang.Tapped += AppModel.Instance.MainPage.OpenLanguage;
+            //btn_settings_sel_trans_lang.GestureRecognizers.Add(tgr_btn_settings_sel_trans_lang);
 
 
 

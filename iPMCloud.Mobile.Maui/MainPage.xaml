@@ -6055,7 +6055,7 @@
 
 
 
-        <AbsoluteLayout
+        <!--<AbsoluteLayout
             x:Name="popupContainer_quest_langpicker"
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             AbsoluteLayout.LayoutFlags="All"
@@ -6233,14 +6233,14 @@
                 </Grid>
             </Grid>
 
-        </AbsoluteLayout>
+        </AbsoluteLayout>-->
 
-        <AbsoluteLayout
+        <!--<AbsoluteLayout
             x:Name="popupContainer_quest_changelang"
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             AbsoluteLayout.LayoutFlags="All"
             BackgroundColor="#88000000"
-            IsVisible="False">
+            IsVisible="True">
             <AbsoluteLayout.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnOverlayTapped" />
             </AbsoluteLayout.GestureRecognizers>
@@ -6321,25 +6321,28 @@
                 </Grid>
             </VerticalStackLayout>
 
-        </AbsoluteLayout>
+        </AbsoluteLayout>-->
 
-        <AbsoluteLayout
+        <!--<AbsoluteLayout
             x:Name="popupContainer_quest_changelang_fail"
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             AbsoluteLayout.LayoutFlags="All"
             BackgroundColor="#88000000"
-            IsVisible="False">
+            IsVisible="True">
             <AbsoluteLayout.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnOverlayTapped" />
             </AbsoluteLayout.GestureRecognizers>
-            <VerticalStackLayout
+            <Grid
                 x:Name="popupContainer_container_changelang_fail"
                 Margin="10,200,20,0"
                 Padding="10"
                 BackgroundColor="#144d73"
                 HorizontalOptions="Fill"
-                Spacing="0">
+                RowSpacing="0"
+                RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto"
+                >
                 <Grid
+                    Grid.Row="0"
                     Margin="0"
                     Padding="0"
                     ColumnSpacing="0"
@@ -6358,40 +6361,49 @@
                         VerticalOptions="Center" />
                 </Grid>
                 <BoxView
+                    Grid.Row="1"
                     Margin="0,3,0,3"
                     BackgroundColor="Gray"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
-                <Label
-                    Margin="0,0,0,20"
-                    FontSize="16"
-                    HorizontalOptions="Fill"
-                    HorizontalTextAlignment="Start"
-                    Text="Es wurde versucht die Sprache für Kategorien und Leistungen zu ändern. Leider konnte dies nicht ausgeführt werden. Bitte prüfen Sie ob Sie Online sind bzw. das Internet erreichen können."
-                    TextColor="#ffffff"
-                    VerticalOptions="Center" />
+                <VerticalStackLayout
+                    Grid.Row="2"
+                    Margin="0" >
+                    <Label
+                        Margin="0"
+                        FontSize="16"
+                        Text="Es wurde versucht die Sprache für Kategorien"
+                        TextColor="#ffffff"
+                        LineBreakMode="WordWrap"/>
+                    <Label
+                        Margin="0"
+                        FontSize="16"
+                        Text="und Leistungen zu ändern. Leider konnte dies "
+                        TextColor="#ffffff"
+                        LineBreakMode="WordWrap"/>
+                    <Label
+                        Margin="0,0,0,0"
+                        FontSize="16"
+                        Text="nicht ausgeführt werden."
+                        TextColor="#ffffff"
+                        LineBreakMode="WordWrap"/>
+                </VerticalStackLayout>
                 <BoxView
+                    Grid.Row="4"
                     Margin="0,10,0,10"
                     BackgroundColor="Gray"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
-                <Grid
-                    Margin="0"
-                    Padding="0"
-                    ColumnSpacing="0"
-                    HorizontalOptions="Fill">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
                     <Border
+                    Grid.Row="5"
                         x:Name="btn_cancelchangelang_fail"
                         Grid.Column="0"
                         Margin="0"
                         Padding="10"
                         BackgroundColor="#73042d"
-                        HorizontalOptions="End">
+                        HorizontalOptions="Center">
                         <Label
                             Margin="0"
                             Padding="0"
@@ -6399,9 +6411,8 @@
                             Text="ZURÜCK"
                             TextColor="#ffffff" />
                     </Border>
-                </Grid>
-            </VerticalStackLayout>
-        </AbsoluteLayout>
+            </Grid>
+        </AbsoluteLayout>-->
 
 
 
@@ -7657,7 +7668,7 @@
             </VerticalStackLayout>
         </AbsoluteLayout>
 
-        <AbsoluteLayout
+        <!--<AbsoluteLayout
             x:Name="popupContainer_dialog"
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             AbsoluteLayout.LayoutFlags="All"
@@ -7729,7 +7740,7 @@
                 </Grid>
             </VerticalStackLayout>
 
-        </AbsoluteLayout>
+        </AbsoluteLayout>-->
 
         <AbsoluteLayout
             x:Name="popupContainer_info_notscan"
@@ -7891,7 +7902,7 @@
 
         </AbsoluteLayout>
 
-        <AbsoluteLayout
+        <!--<AbsoluteLayout
             x:Name="popupContainer_quest_clearlog"
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             AbsoluteLayout.LayoutFlags="All"
@@ -7975,10 +7986,10 @@
                 </Grid>
             </VerticalStackLayout>
 
-        </AbsoluteLayout>
+        </AbsoluteLayout>-->
 
 
-        <AbsoluteLayout
+        <!--<AbsoluteLayout
             x:Name="popupContainer_Alert"
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             AbsoluteLayout.LayoutFlags="All"
@@ -8047,7 +8058,7 @@
                     </Border>
                 </Grid>
             </VerticalStackLayout>
-        </AbsoluteLayout>
+        </AbsoluteLayout>-->
 
 
         <AbsoluteLayout
@@ -8390,7 +8401,7 @@
 
         </AbsoluteLayout>
 
-        <AbsoluteLayout
+        <!--<AbsoluteLayout
             x:Name="popupContainer_quest_countfromupload"
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             AbsoluteLayout.LayoutFlags="All"
@@ -8484,7 +8495,7 @@
                 </Grid>
             </VerticalStackLayout>
 
-        </AbsoluteLayout>
+        </AbsoluteLayout>-->
 
         <AbsoluteLayout
             x:Name="popupContainer_quest_changemuellpos"
@@ -9626,7 +9637,7 @@
                 Color="#0078d7" />
         </AbsoluteLayout>
 
-        <Grid
+        <!--<Grid
             x:Name="PN_Page_Container"
             Margin="0"
             Padding="0"
@@ -9634,7 +9645,7 @@
             AbsoluteLayout.LayoutFlags="All"
             BackgroundColor="#aa000000"
             HorizontalOptions="Fill"
-            IsVisible="False"
+            IsVisible="True"
             RowSpacing="0"
             VerticalOptions="Fill">
             <Grid.RowDefinitions>
@@ -10035,7 +10046,7 @@
                 </ScrollView>
             </StackLayout>
 
-        </Grid>
+        </Grid>-->
 
 
     </AbsoluteLayout>

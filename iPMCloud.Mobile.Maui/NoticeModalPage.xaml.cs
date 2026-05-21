@@ -187,14 +187,11 @@ namespace iPMCloud.Mobile
                         CommandParameter = bildWSO
                     });
 
-                    if (bildWSO != null)
-                    {
-                        BildWSO.Save(AppModel.Instance, bildWSO);
-                        _SelectedBemerkungForNotice.photos.Add(bildWSO);
-                        noticePhotoStack.Children.Add(bildWSO.stack);
+                    BildWSO.Save(AppModel.Instance, bildWSO);
+                    _SelectedBemerkungForNotice.photos.Add(bildWSO);
+                    noticePhotoStack.Children.Add(bildWSO.stack);
 
-                        CheckNoticeFalid();
-                    }
+                    CheckNoticeFalid();
                 }
             }
             catch (FeatureNotSupportedException)
@@ -232,12 +229,6 @@ namespace iPMCloud.Mobile
 
             try
             {
-                if (!MediaPicker.Default.IsCaptureSupported)
-                {
-                    await DisplayAlert("Fehler", "Kamera nicht verfügbar", "OK");
-                    return;
-                }
-
                 var photos = await MediaPicker.PickPhotosAsync(new MediaPickerOptions
                 {
                     CompressionQuality = 75,

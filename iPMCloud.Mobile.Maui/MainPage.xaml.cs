@@ -2863,12 +2863,12 @@ namespace iPMCloud.Mobile
 
 
 
-        public void TapNoticeFromPosInWork(LeistungWSO position)
+        public async void TapNoticeFromPosInWork(LeistungWSO position)
         {
-            ShowNoticeView(false, position, "inwork");
+            await ShowNoticeView(false, position, "inwork");
         }
 
-        private async void ShowNoticeView(bool prio, LeistungWSO pos = null, string backTo = null)
+        private async Task ShowNoticeView(bool prio, LeistungWSO pos = null, string backTo = null)
         {
             overlay.IsVisible = true;
             await Task.Delay(1);
@@ -2906,7 +2906,7 @@ namespace iPMCloud.Mobile
                 if (result.Pos != null)
                 {
                     var posInWork = AppModel.Instance.allPositionInWork.leistungen.Find(p => p.id == result.Pos.id);
-                    if (posInWork.bemerkungen == null) { posInWork.bemerkungen = new List<BemerkungWSO>(); }
+                    posInWork.bemerkungen ??= new List<BemerkungWSO>();
                     result.Bemerkung.leistungid = result.Pos.id;
                     posInWork.bemerkungen.Add(result.Bemerkung);
                     LeistungPackWSO.Save(AppModel.Instance, AppModel.Instance.allPositionInWork);
@@ -5840,13 +5840,13 @@ namespace iPMCloud.Mobile
             ObjectValuesPage_Edit_Container.IsVisible = false;
             //ShowObjectValuesView();
         }
-        public void btn_ShowNoticeTapped(object sender, EventArgs e)
+        public async void btn_ShowNoticeTapped(object sender, EventArgs e)
         {
-            ShowNoticeView(false, null, null);
+            await ShowNoticeView(false, null, null);
         }
-        public void btn_ShowNoticePrioTapped(object sender, EventArgs e)
+        public async void btn_ShowNoticePrioTapped(object sender, EventArgs e)
         {
-            ShowNoticeView(true, null, null);
+            await ShowNoticeView(true, null, null);
         }
 
         public void btn_DSGVOBackTapped(object sender, EventArgs e)

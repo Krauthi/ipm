@@ -23,7 +23,6 @@
             Margin="0"
             Padding="0"
             HorizontalOptions="Fill"
-            IsVisible="True"
             RowSpacing="0"
             VerticalOptions="Fill">
 

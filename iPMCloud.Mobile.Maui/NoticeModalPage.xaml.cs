@@ -143,7 +143,7 @@ namespace iPMCloud.Mobile
         {
             if (_SelectedBemerkungForNotice.photos.Count >= 5)
             {
-                await DisplayAlert("Limit erreicht", "Maximal 5 Fotos erlaubt", "OK");
+                await DisplayAlertAsync("Limit erreicht", "Maximal 5 Fotos erlaubt", "OK");
                 return;
             }
             notizSave_stack.IsVisible = false;
@@ -196,11 +196,11 @@ namespace iPMCloud.Mobile
             }
             catch (FeatureNotSupportedException)
             {
-                await DisplayAlert("Fehler", "Kamera wird nicht unterstützt", "OK");
+                await DisplayAlertAsync("Fehler", "Kamera wird nicht unterstützt", "OK");
             }
             catch (PermissionException)
             {
-                await DisplayAlert("Fehler", "Keine Kamera-Berechtigung", "OK");
+                await DisplayAlertAsync("Fehler", "Keine Kamera-Berechtigung", "OK");
             }
             catch (OperationCanceledException)
             {
@@ -220,7 +220,7 @@ namespace iPMCloud.Mobile
         {
             if (_SelectedBemerkungForNotice.photos.Count >= 5)
             {
-                await DisplayAlert("Limit erreicht", "Maximal 5 Fotos erlaubt", "OK");
+                await DisplayAlertAsync("Limit erreicht", "Maximal 5 Fotos erlaubt", "OK");
                 return;
             }
 

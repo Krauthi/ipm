@@ -5,12 +5,11 @@ namespace iPMCloud.Mobile.Views
 {
     public partial class SettingsPageView : ContentPage
     {
-        public static SettingsPageView ActivePage { get; private set; }
+        private const int LogSendDelayMilliseconds = 2000;
 
         public SettingsPageView()
         {
             InitializeComponent();
-            ActivePage = this;
 
             lb_settings_sel_trans.Text = AppModel.Instance.Lang.text.Replace("(Standard)", "");
 
@@ -62,15 +61,6 @@ namespace iPMCloud.Mobile.Views
             lb_settings_sel_trans.Text = lang != null ? lang : "Deutsch";
         }
 
-        protected override void OnDisappearing()
-        {
-            if (ActivePage == this)
-            {
-                ActivePage = null;
-            }
-            base.OnDisappearing();
-        }
-
         public void SetSendLog(bool visible)
         {
             btn_settings_sendlog.Opacity = visible ? 1 : 0.4;
@@ -80,7 +70,7 @@ namespace iPMCloud.Mobile.Views
 
         private async void ShowSendLogAsync(object sender, EventArgs e)
         {
-            var confirm = await DisplayAlertAsync(
+            var confirm = await DisplayAlert(
                 "Support-Log senden",
                 "Möchten Sie die Log-Daten jetzt an den Support senden?",
                 "Senden",
@@ -89,12 +79,12 @@ namespace iPMCloud.Mobile.Views
 
             SetSendLog(false);
             var ok = AppModel.Instance.SendLogZipFile();
-            await Task.Delay(2000);
+            await Task.Delay(LogSendDelayMilliseconds);
             SetSendLog(true);
 
             if (!ok)
             {
-                await DisplayAlertAsync("Fehler", "Log-Daten konnten nicht gesendet werden.", "OK");
+                await DisplayAlert("Fehler", "Log-Daten konnten nicht gesendet werden.", "OK");
             }
         }
 

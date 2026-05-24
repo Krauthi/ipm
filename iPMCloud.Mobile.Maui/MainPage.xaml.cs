@@ -5768,7 +5768,6 @@ namespace iPMCloud.Mobile
         }
         public async void btn_nlogsendTapped(object sender, EventArgs e)
         {
-            SettingsPageView.ActivePage?.SetSendLog(false);
             overlay.IsVisible = true;
             await Task.Delay(1);
 
@@ -5780,11 +5779,9 @@ namespace iPMCloud.Mobile
             if (ok)
             {
                 overlay.IsVisible = false;
-                SettingsPageView.ActivePage?.SetSendLog(true);
             }
             else
             {
-                SettingsPageView.ActivePage?.SetSendLog(true);
                 await Task.Delay(1);
                 overlay.IsVisible = false;
                 ShowSendLog_fail();

@@ -1574,7 +1574,7 @@ namespace iPMCloud.Mobile
             _isChangingFullscreenModal = true;
             try
             {
-                if (Navigation.ModalStack.Count > 0 && Navigation.ModalStack.Last() == _activeFullscreenModalPage)
+                if (Navigation.ModalStack.LastOrDefault() == _activeFullscreenModalPage)
                 {
                     await Navigation.PopModalAsync(animated: false);
                 }

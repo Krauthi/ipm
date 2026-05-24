@@ -3514,13 +3514,6 @@
 
         </Grid>
 
-        <!--  TODO Page  -->
-        <views:TodoPageView
-            x:Name="TodoPageView"
-            AbsoluteLayout.LayoutBounds="0,0,1,1"
-            AbsoluteLayout.LayoutFlags="All" />
-
-
         <!--  Objektauswahl ohne Scan - Container  -->
         <Grid
             x:Name="NotScanPage_Container"
@@ -3741,19 +3734,6 @@
                 VerticalOptions="Start" />
 
         </Grid>
-
-        <!--  Zeiten person  -->
-        <views:PersonTimesPageView
-            x:Name="PersonTimesPageView"
-            AbsoluteLayout.LayoutBounds="0,0,1,1"
-            AbsoluteLayout.LayoutFlags="All" />
-
-
-        <views:WorkerPageContainerView
-            x:Name="WorkerPageContainerView"
-            AbsoluteLayout.LayoutBounds="0,0,1,1"
-            AbsoluteLayout.LayoutFlags="All" />
-
 
         <Grid
             x:Name="BuildingOrderPage_Container"
@@ -5599,11 +5579,6 @@
 
 
 
-
-        <views:PopupContainerObjectValuesBildView
-            x:Name="PopupContainerObjectValuesBild"
-            AbsoluteLayout.LayoutBounds="0,0,1,1"
-            AbsoluteLayout.LayoutFlags="All" />
 
         <AbsoluteLayout
             x:Name="panelShowSelectedPos_Container"

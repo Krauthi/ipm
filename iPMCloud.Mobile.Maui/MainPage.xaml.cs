@@ -42,6 +42,13 @@ namespace iPMCloud.Mobile
     public partial class MainPage : ContentPage
     {
         // private BackgroundWorker backgroundWorker = new BackgroundWorker();
+        private readonly TodoPageView TodoPageView = new();
+        private readonly PersonTimesPageView PersonTimesPageView = new();
+        private readonly WorkerPageContainerView WorkerPageContainerView = new();
+        private readonly PopupContainerObjectValuesBildView PopupContainerObjectValuesBild = new();
+        private FullscreenModalHostPage _activeFullscreenModalPage;
+        private View _activeFullscreenModalView;
+        private bool _isChangingFullscreenModal;
 
         // Forwarding properties for elements moved into TodoPageView
         public TodoPageView TodoPageViewObject => TodoPageView;
@@ -1519,12 +1526,80 @@ namespace iPMCloud.Mobile
             return;
         }
 
+        private async Task ShowFullscreenModalForViewAsync(View view)
+        {
+            if (_activeFullscreenModalPage != null && _activeFullscreenModalView == view)
+            {
+                return;
+            }
+
+            await CloseFullscreenModalAsync();
+
+            if (_isChangingFullscreenModal)
+            {
+                return;
+            }
+
+            _isChangingFullscreenModal = true;
+            try
+            {
+                var page = new FullscreenModalHostPage(view);
+                _activeFullscreenModalPage = page;
+                _activeFullscreenModalView = view;
+                await Navigation.PushModalAsync(page, animated: false);
+            }
+            finally
+            {
+                _isChangingFullscreenModal = false;
+            }
+        }
+
+        private async Task CloseFullscreenModalAsync(View expectedView = null)
+        {
+            if (_isChangingFullscreenModal)
+            {
+                return;
+            }
+
+            if (_activeFullscreenModalPage == null)
+            {
+                return;
+            }
+
+            if (expectedView != null && _activeFullscreenModalView != expectedView)
+            {
+                return;
+            }
+
+            _isChangingFullscreenModal = true;
+            try
+            {
+                if (Navigation.ModalStack.Count > 0 && Navigation.ModalStack.Last() == _activeFullscreenModalPage)
+                {
+                    await Navigation.PopModalAsync(animated: false);
+                }
+            }
+            finally
+            {
+                _activeFullscreenModalPage = null;
+                _activeFullscreenModalView = null;
+                _isChangingFullscreenModal = false;
+            }
+        }
+
+        public async Task ClosePopupContainerObjectValuesBildModal()
+        {
+            PopupContainerObjectValuesBild.SetVisible(false);
+            await CloseFullscreenModalAsync(PopupContainerObjectValuesBild);
+        }
+
         public async void ShowMainPage()
         {
             isInitialize = true;
             overlay.IsVisible = true;
             await Task.Delay(1);
 
+            await CloseFullscreenModalAsync();
             ClearPageViews();
             StartPage_Container.IsVisible = true;
 
@@ -1600,6 +1675,8 @@ namespace iPMCloud.Mobile
                 //btn_WorkerCategorySearchTapped(null, null);
                 btn_WorkerBuildingSearchTapped(null, null);
             }
+
+            await ShowFullscreenModalForViewAsync(WorkerPageContainerView);
 
             await Task.Delay(1);
             overlay.IsVisible = false;
@@ -3013,6 +3090,7 @@ namespace iPMCloud.Mobile
         private async void OpenCamObjectValuesView()
         {
             PopupContainerObjectValuesBild.SetVisible(true);
+            await ShowFullscreenModalForViewAsync(PopupContainerObjectValuesBild);
             double w = screenWidthDp;
             double h = screenHeightDp;
             //PopupContainerObjectValuesBild.PopupStack.WidthRequest = w;
@@ -6394,7 +6472,7 @@ namespace iPMCloud.Mobile
             SyncObjectValueBild();
 
             RemoveObjektMeterStandBild();
-            PopupContainerObjectValuesBild.SetVisible(false);
+            await ClosePopupContainerObjectValuesBildModal();
 
             await Task.Delay(1);
             overlay.IsVisible = false;
@@ -6792,6 +6870,7 @@ namespace iPMCloud.Mobile
 
             // PersonTimesPage_Container.IsVisible = true; // moved into PersonTimesPageView
             PersonTimesPageView.SetVisible(true);
+            await ShowFullscreenModalForViewAsync(PersonTimesPageView);
 
             await Task.Delay(1);
             overlay.IsVisible = false;
@@ -6899,6 +6978,7 @@ namespace iPMCloud.Mobile
             // TodoPage_Container.IsVisible = true; // moved into TodoPageView
             TodoPageView.SetVisible(true);
             TodoPageView.btn_todo_faelligTapped(null, null);
+            await ShowFullscreenModalForViewAsync(TodoPageView);
 
             await Task.Delay(1);
             overlay.IsVisible = false;

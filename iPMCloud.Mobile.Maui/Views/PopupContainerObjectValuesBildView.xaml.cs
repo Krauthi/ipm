@@ -34,10 +34,10 @@ namespace iPMCloud.Mobile.Views
             
             BtnCancel.GestureRecognizers.Clear();
             var tgr_btn_cancel_objectvaluesbild = new TapGestureRecognizer();
-            tgr_btn_cancel_objectvaluesbild.Tapped += (object o, TappedEventArgs ev) =>
+            tgr_btn_cancel_objectvaluesbild.Tapped += async (object o, TappedEventArgs ev) =>
                 {
                     AppModel.Instance.MainPage.RemoveObjektMeterStandBild(); 
-                    popupContainer_objectvaluesbild.IsVisible = false; 
+                    await AppModel.Instance.MainPage.ClosePopupContainerObjectValuesBildModal();
                 };
             BtnCancel.GestureRecognizers.Add(tgr_btn_cancel_objectvaluesbild);
 

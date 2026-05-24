@@ -153,6 +153,9 @@ namespace iPMCloud.Mobile
 
             try
             {
+                overlay.IsVisible = true;
+                await Task.Delay(1);
+
                 var photo = await MediaPicker.CapturePhotoAsync(new MediaPickerOptions
                 {
                     CompressionQuality = 75,
@@ -162,6 +165,7 @@ namespace iPMCloud.Mobile
                     SelectionLimit = 1,
                     PreserveMetaData = true,
                 });
+
 
                 if (photo != null)
                 {
@@ -212,6 +216,7 @@ namespace iPMCloud.Mobile
             }
             finally
             {
+                overlay.IsVisible = false;
                 AppModel.Instance.UseExternHardware = false;
             }
         }
@@ -229,6 +234,9 @@ namespace iPMCloud.Mobile
 
             try
             {
+                overlay.IsVisible = true;
+                await Task.Delay(1);
+
                 var photos = await MediaPicker.PickPhotosAsync(new MediaPickerOptions
                 {
                     CompressionQuality = 75,
@@ -238,6 +246,7 @@ namespace iPMCloud.Mobile
                     SelectionLimit = 5 - _SelectedBemerkungForNotice.photos.Count,
                     PreserveMetaData = true,
                 });
+
 
                 if (photos != null && photos.Count() > 0)
                 {
@@ -288,6 +297,7 @@ namespace iPMCloud.Mobile
             }
             finally
             {
+                overlay.IsVisible = false;
                 CheckNoticeFalid();
                 AppModel.Instance.UseExternHardware = false;
             }
@@ -301,6 +311,15 @@ namespace iPMCloud.Mobile
             await Task.Delay(1);
             _SelectedBemerkungForNotice.photos.Remove(b);
             CheckNoticeFalid();
+        }
+
+        private void OnOverlayTapped(object sender, EventArgs e)
+        {
+            // Implementierung hier - z.B. das Overlay ausblenden
+            //if (popupContainer_infodialog != null)
+            //{
+            //    popupContainer_infodialog.IsVisible = false;
+            //}
         }
     }
 

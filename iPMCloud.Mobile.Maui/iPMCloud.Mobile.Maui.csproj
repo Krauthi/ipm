@@ -246,6 +246,9 @@
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Interfaces\" />
+	</ItemGroup>
 
 	<!-- <ItemGroup>
 	  <None Update="Assets\backgroundgray0.jpg">

@@ -1,39 +1,64 @@
 using iPMCloud.Mobile.vo;
+using Microsoft.Maui.ApplicationModel;
 
 namespace iPMCloud.Mobile.Views
 {
-    public partial class DayOverPageView : ContentView
+    public partial class DayOverPageView : ContentPage
     {
-        public Grid Container => DayOverPage_Container;
-
         public DayOverPageView()
         {
             InitializeComponent();
-
-
-
-        }
-
-        public void SetVisible(bool visible)
-        {
             btn_back_dayover.GestureRecognizers.Clear();
             var tgr_back_dayover = new TapGestureRecognizer();
-            tgr_back_dayover.Tapped += AppModel.Instance.MainPage.btn_DayOverBackTapped;
+            tgr_back_dayover.Tapped += async (s, e) => await Navigation.PopModalAsync(animated: false);
             btn_back_dayover.GestureRecognizers.Add(tgr_back_dayover);
 
             btn_dayover_yes.GestureRecognizers.Clear();
             var tgr_dayover_yes = new TapGestureRecognizer();
             tgr_dayover_yes.Tapped += btn_DayOverYesTapped;
             btn_dayover_yes.GestureRecognizers.Add(tgr_dayover_yes);
-
-
-            DayOverPage_Container.IsVisible = visible;
         }
 
         public VerticalStackLayout LastDayOverStack => lastDayOverStack;
 
+        public static async Task ShowAsync(Page callerPage)
+        {
+            var page = new DayOverPageView();
+            await MainThread.InvokeOnMainThreadAsync(() =>
+                callerPage.Navigation.PushModalAsync(page, animated: false));
+        }
 
-
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            LastDayOverStack.Children.Clear();
+            var dayOvers = DayOverWSO.LoadAll(AppModel.Instance);
+            dayOvers.ForEach(d =>
+            {
+                var dt = new DateTime(d.endticks);
+                LastDayOverStack.Children.Add(new StackLayout
+                {
+                    Orientation = StackOrientation.Horizontal,
+                    HorizontalOptions = LayoutOptions.Fill,
+                    VerticalOptions = LayoutOptions.Center,
+                    BackgroundColor = Color.FromArgb("#042d53"),
+                    Spacing = 0,
+                    Margin = new Thickness(0, 0, 0, 1),
+                    Padding = new Thickness(5),
+                    Children =
+                    {
+                        new Label
+                        {
+                            Text = "Zuletzt:   " + dt.ToString("dd.MM.yyyy") + "  -  " + dt.ToString("HH:mm"),
+                            FontSize = 14,
+                            Margin = new Thickness(0),
+                            Padding = new Thickness(0),
+                            TextColor = Color.FromArgb("#ffffff"),
+                        }
+                    }
+                });
+            });
+        }
         public async void btn_DayOverYesTapped(object sender, EventArgs e)
         {
             var geo = AppModel.Instance.LocationStr;
@@ -75,11 +100,7 @@ namespace iPMCloud.Mobile.Views
                 // Zurücksetzten aller States für die Auswahl der Ausführungen
                 AppModel.Instance.SetAllObjectAndValuesToNoSelectedBuilding();
             }
-            AppModel.Instance.MainPage.ShowMainPage();
+            await Navigation.PopModalAsync(animated: false);
         }
-
-
     }
-
-
 }

@@ -1650,8 +1650,7 @@ namespace iPMCloud.Mobile
             await Task.Delay(1);
 
             ClearPageViews();
-            DSGVOPageContainerView.SetVisible(true);
-
+            await DSGVOPageContainerView.ShowAsync(this);
 
             await Task.Delay(1);
             overlay.IsVisible = false;
@@ -2464,35 +2463,7 @@ namespace iPMCloud.Mobile
             await Task.Delay(1);
 
             ClearPageViews();
-            DayOverPageView.SetVisible(true);
-            DayOverPageView.LastDayOverStack.Children.Clear();
-            var dayOvers = DayOverWSO.LoadAll(AppModel.Instance);
-            dayOvers.ForEach(d =>
-            {
-                var dt = new DateTime(d.endticks);
-                DayOverPageView.LastDayOverStack.Children.Add(new StackLayout
-                {
-                    Orientation = StackOrientation.Horizontal,
-                    HorizontalOptions = LayoutOptions.Fill,
-                    VerticalOptions = LayoutOptions.Center,
-                    BackgroundColor = Color.FromArgb("#042d53"),
-                    Spacing = 0,
-                    Margin = new Thickness(0, 0, 0, 1),
-                    Padding = new Thickness(5),
-                    Children =
-                    {
-                        new Label
-                        {
-                            Text = "Zuletzt:   " + dt.ToString("dd.MM.yyyy") + "  -  " + dt.ToString("HH:mm"),
-                            FontSize = 14,
-                            Margin = new Thickness(0),
-                            Padding = new Thickness(0),
-                            TextColor = Color.FromArgb("#ffffff"),
-                        }
-                    }
-                });
-            });
-
+            await DayOverPageView.ShowAsync(this);
 
             await Task.Delay(1);
             overlay.IsVisible = false;
@@ -3160,18 +3131,15 @@ namespace iPMCloud.Mobile
             NachbuchenPage_Container.IsVisible = false;
             TodoPageView.SetVisible(false);
             StartPage_Container.IsVisible = false;
-            DSGVOPageContainerView.SetVisible(false);
             //PN_Page_Container.IsVisible = false;
             WorkerPage_Container.IsVisible = false;
             //BuildingScanPage_Container.IsVisible = false;
             //BuildingOutScanPage_Container.IsVisible = false;
             BuildingOrderPage_Container.IsVisible = false;
             RunningWorksPage_Container.IsVisible = false;
-            DayOverPageView.SetVisible(false);
             ObjectValuesPage_Container.IsVisible = false;
             ObjectValuesPage_position_Container.IsVisible = false;
             ObjectValuesPage_Edit_Container.IsVisible = false;
-            SettingsPageView.SetVisible(false);
             //MapPage_Container.IsVisible = false;
         }
 
@@ -3198,10 +3166,8 @@ namespace iPMCloud.Mobile
 
             MainMenuTapped_Done(false);
             await Task.Delay(210);
-
             ClearPageViews();
-            // SettingsPage_Container.IsVisible = true; // ausgelagert nach SettingsPageView (ContentView)
-            SettingsPageView.SetVisible(true);
+            await SettingsPageView.ShowAsync(this);
             ////sw_setting_hintergrundprozess.IsToggled = AppModel.Instance.SettingModel.SettingDTO.RunBackground;
 
             await Task.Delay(1);
@@ -5880,7 +5846,6 @@ namespace iPMCloud.Mobile
         }
         public async void btn_nlogsendTapped(object sender, EventArgs e)
         {
-            SettingsPageView.SetSendLog(false);
             overlay.IsVisible = true;
             await Task.Delay(1);
 
@@ -5892,11 +5857,9 @@ namespace iPMCloud.Mobile
             if (ok)
             {
                 overlay.IsVisible = false;
-                SettingsPageView.SetSendLog(true);
             }
             else
             {
-                SettingsPageView.SetSendLog(true);
                 await Task.Delay(1);
                 overlay.IsVisible = false;
                 ShowSendLog_fail();

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentView
+<ContentPage
     x:Class="iPMCloud.Mobile.Views.DSGVOPageContainerView"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    BackgroundColor="Black">
 
     <Grid
         x:Name="DSGVOPage_Container"
@@ -10,7 +11,7 @@
         Padding="0"
         BackgroundColor="Black"
         HorizontalOptions="Fill"
-        IsVisible="False"
+        IsVisible="True"
         RowSpacing="0"
         VerticalOptions="Fill">
         <Grid.RowDefinitions>
@@ -557,4 +558,4 @@
 
     </Grid>
 
-</ContentView>
+</ContentPage>

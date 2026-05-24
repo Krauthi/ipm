@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentView
+<ContentPage
     x:Class="iPMCloud.Mobile.Views.SettingsPageView"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    BackgroundColor="#000000">
 
     <Grid
         x:Name="SettingsPage_Container"
@@ -11,7 +12,7 @@
         AbsoluteLayout.LayoutBounds="0,0,1,1"
         AbsoluteLayout.LayoutFlags="All"
         HorizontalOptions="Fill"
-        IsVisible="False"
+        IsVisible="True"
         RowSpacing="0"
         VerticalOptions="Fill">
         <Grid.RowDefinitions>
@@ -513,4 +514,4 @@
 
     </Grid>
 
-</ContentView>
+</ContentPage>

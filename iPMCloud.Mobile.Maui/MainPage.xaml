@@ -4821,25 +4821,6 @@
         </Grid>
 
 
-        <views:DayOverPageView
-            x:Name="DayOverPageView"
-            AbsoluteLayout.LayoutBounds="0,0,1,1"
-            AbsoluteLayout.LayoutFlags="All" />
-
-
-        <views:SettingsPageView
-            x:Name="SettingsPageView"
-            AbsoluteLayout.LayoutBounds="0,0,1,1"
-            AbsoluteLayout.LayoutFlags="All" />
-
-
-        <views:DSGVOPageContainerView
-            x:Name="DSGVOPageContainerView"
-            AbsoluteLayout.LayoutBounds="0,0,1,1"
-            AbsoluteLayout.LayoutFlags="All" />
-
-
-
         <AbsoluteLayout
             x:Name="CheckPage_Container"
             Margin="0,0,0,0"

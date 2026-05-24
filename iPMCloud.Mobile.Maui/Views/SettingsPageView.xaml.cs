@@ -1,14 +1,16 @@
 using iPMCloud.Mobile.vo;
+using Microsoft.Maui.ApplicationModel;
 
 namespace iPMCloud.Mobile.Views
 {
-    public partial class SettingsPageView : ContentView
+    public partial class SettingsPageView : ContentPage
     {
-        //public Grid Container => SettingsPage_Container;
+        public static SettingsPageView ActivePage { get; private set; }
 
         public SettingsPageView()
         {
             InitializeComponent();
+            ActivePage = this;
 
             lb_settings_sel_trans.Text = AppModel.Instance.Lang.text.Replace("(Standard)", "");
 
@@ -27,59 +29,79 @@ namespace iPMCloud.Mobile.Views
             var tgr_synctimeadd = new TapGestureRecognizer();
             tgr_synctimeadd.Tapped += btn_settings_synctimeadd_Tapped;
             btn_settings_synctimeadd.GestureRecognizers.Add(tgr_synctimeadd);
+            btn_back_settings.GestureRecognizers.Clear();
+            var tgr_back_settings = new TapGestureRecognizer();
+            tgr_back_settings.Tapped += async (s, e) => await Navigation.PopModalAsync(animated: false);
+            btn_back_settings.GestureRecognizers.Add(tgr_back_settings);
+
+            btn_settings_sendlog.GestureRecognizers.Clear();
+            var tgr_namestacksend = new TapGestureRecognizer();
+            tgr_namestacksend.Tapped += ShowSendLogAsync;
+            btn_settings_sendlog.GestureRecognizers.Add(tgr_namestacksend);
+        }
+
+        public static async Task ShowAsync(Page callerPage)
+        {
+            var page = new SettingsPageView();
+            await MainThread.InvokeOnMainThreadAsync(() =>
+                callerPage.Navigation.PushModalAsync(page, animated: false));
+        }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            SettingsPage_Container.IsVisible = true;
+            btn_settings_sendlog.IsVisible = true;
+            lb_settings_synctimehours.Text = "" + AppModel.Instance.SettingModel.SettingDTO.SyncTimeHours;
+
+            int countAll = AppModel.Instance.MainPage.GetAllSyncFromUploadCount();
+            settings_count_positionen.Text = (countAll > 0 ? "" + countAll : "Keine Daten vorhanden");
+            btn_settings_count_positionen.IsVisible = countAll > 0;
+
+            string lang = AppModel.Instance.Langs.Find(l => l.lang == AppModel.Instance.AppControll.lang)?.text;
+            lb_settings_sel_trans.Text = lang != null ? lang : "Deutsch";
+        }
+
+        protected override void OnDisappearing()
+        {
+            if (ActivePage == this)
+            {
+                ActivePage = null;
+            }
+            base.OnDisappearing();
         }
 
         public void SetSendLog(bool visible)
         {
             btn_settings_sendlog.Opacity = visible ? 1 : 0.4;
             btn_settings_sendlog.IsEnabled = visible;
-            btn_settings_sendlog.IsVisible = !visible;
+            btn_settings_sendlog.IsVisible = visible;
+        }
 
-            string lang = AppModel.Instance.Langs.Find(l => l.lang == AppModel.Instance.AppControll.lang)?.text;
-            lb_settings_sel_trans.Text = lang != null ? lang: "Deutsch";
+        private async void ShowSendLogAsync(object sender, EventArgs e)
+        {
+            var confirm = await DisplayAlertAsync(
+                "Support-Log senden",
+                "Möchten Sie die Log-Daten jetzt an den Support senden?",
+                "Senden",
+                "Abbrechen");
+            if (!confirm) return;
+
+            SetSendLog(false);
+            var ok = AppModel.Instance.SendLogZipFile();
+            await Task.Delay(2000);
+            SetSendLog(true);
+
+            if (!ok)
+            {
+                await DisplayAlertAsync("Fehler", "Log-Daten konnten nicht gesendet werden.", "OK");
+            }
         }
 
         private void Settings_Log_includeCache_Switch_Toggled(object sender, ToggledEventArgs e)
         {
-            AppModel.Instance.InclFilesAsJson = e.Value;            
+            AppModel.Instance.InclFilesAsJson = e.Value;
         }
-
-        public void SetVisible(bool visible)
-        {
-
-
-            btn_back_settings.GestureRecognizers.Clear();
-            var tgr_back_settings = new TapGestureRecognizer();
-            tgr_back_settings.Tapped += AppModel.Instance.MainPage.btn_SettingsBackTapped;
-            btn_back_settings.GestureRecognizers.Add(tgr_back_settings);
-
-            btn_settings_sendlog.GestureRecognizers.Clear();
-            var tgr_namestacksend = new TapGestureRecognizer();
-            tgr_namestacksend.Tapped += AppModel.Instance.MainPage.ShowSendLog;
-            btn_settings_sendlog.GestureRecognizers.Add(tgr_namestacksend);
-
-
-            //btn_settings_sel_trans_lang.GestureRecognizers.Clear();
-            //var tgr_btn_settings_sel_trans_lang = new TapGestureRecognizer();
-            //tgr_btn_settings_sel_trans_lang.Tapped += AppModel.Instance.MainPage.OpenLanguage;
-            //btn_settings_sel_trans_lang.GestureRecognizers.Add(tgr_btn_settings_sel_trans_lang);
-
-
-
-            btn_settings_sendlog.IsVisible = true; // BTN SendLOG wieder aneigen!
-
-            // Einstellungen Defaults
-            lb_settings_synctimehours.Text = "" + AppModel.Instance.SettingModel.SettingDTO.SyncTimeHours;
-
-
-            int countAll = AppModel.Instance.MainPage.GetAllSyncFromUploadCount();
-            settings_count_positionen.Text = (countAll > 0 ? "" + countAll : "Keine Daten vorhanden");
-            btn_settings_count_positionen.IsVisible = countAll > 0;
-
-            SettingsPage_Container.IsVisible = visible;
-            lb_settings_sel_trans.Text = AppModel.Instance.AppControll.lang;
-        }
-
 
         public async void btn_settings_synctimesub_Tapped(object sender, EventArgs e)
         {

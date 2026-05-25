@@ -958,11 +958,11 @@
                 <HorizontalStackLayout
                     x:Name="ObjektPlanWeekMobil_Stack_A"
                     Grid.Row="1"
-                    Margin="0,20,0,0"
+                    Margin="0,15,0,0"
                     Padding="0"
                     HeightRequest="40"
                     HorizontalOptions="Fill"
-                    Spacing="8"
+                    Spacing="4"
                     VerticalOptions="Start">
                     <Border
                         x:Name="frame_plantabA"
@@ -970,6 +970,13 @@
                         Padding="0"
                         BackgroundColor="#333333"
                         HorizontalOptions="Start">
+                        <Border.Shadow>
+                            <Shadow
+                        Brush="Black"
+                        Opacity="0.73"
+                        Radius="5"
+                        Offset="2,2" />
+                        </Border.Shadow>
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Tapped="btn_PlanTabATapped" />
                         </Border.GestureRecognizers>
@@ -1043,6 +1050,13 @@
                         Padding="0"
                         BackgroundColor="#545454"
                         HorizontalOptions="Start">
+                        <Border.Shadow>
+                            <Shadow
+                        Brush="Black"
+                        Opacity="0.73"
+                        Radius="5"
+                        Offset="2,2" ></Shadow>
+                        </Border.Shadow>
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Tapped="btn_PlanTabBTapped" />
                         </Border.GestureRecognizers>
@@ -1088,6 +1102,13 @@
                         BackgroundColor="#a38d04"
                         HorizontalOptions="Start"
                         IsVisible="True">
+                        <Border.Shadow>
+                            <Shadow
+                        Brush="Black"
+                        Opacity="0.73"
+                        Radius="5"
+                        Offset="2,2" ></Shadow>
+                        </Border.Shadow>
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Tapped="btn_PlanTabCeTapped" />
                         </Border.GestureRecognizers>
@@ -1189,23 +1210,24 @@
                         x:Name="frame_plantabC"
                         Margin="0,0,0,0"
                         Padding="1"
-                        BackgroundColor="#041d43"
+                            BackgroundColor="#04532d"
                         HorizontalOptions="Start"
                         IsVisible="False">
+                        <Border.Shadow>
+                            <Shadow
+                        Brush="Black"
+                        Opacity="0.73"
+                        Radius="5"
+                        Offset="2,2" ></Shadow>
+                        </Border.Shadow>
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Tapped="btn_PlanTabCTapped" />
                         </Border.GestureRecognizers>
-                        <StackLayout
-                            Margin="0"
-                            Padding="5,2,5,2"
-                            BackgroundColor="#04532d"
-                            HeightRequest="40"
-                            HorizontalOptions="Fill">
                             <Grid
-                                Margin="0,0,0,0"
-                                Padding="0"
+                                Margin="0"
+                                Padding="5,2,5,2"
                                 ColumnSpacing="0"
-                                HeightRequest="30"
+                                HeightRequest="40"
                                 HorizontalOptions="Fill"
                                 VerticalOptions="Center">
                                 <Grid.ColumnDefinitions>
@@ -1229,10 +1251,10 @@
                                     <Label
                                         Margin="0,-2,0,0"
                                         Padding="0"
-                                        FontSize="10"
+                                        FontSize="9"
                                         HorizontalTextAlignment="Start"
                                         Text="Zu Erledigen"
-                                        TextColor="#cccccc" />
+                                        TextColor="#ffffff" />
                                 </VerticalStackLayout>
                                 <AbsoluteLayout
                                     x:Name="frame_plantabC_badge"
@@ -1264,7 +1286,6 @@
                                     </Border>
                                 </AbsoluteLayout>
                             </Grid>
-                        </StackLayout>
                     </Border>
                 </HorizontalStackLayout>
 

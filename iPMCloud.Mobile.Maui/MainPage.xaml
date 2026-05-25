@@ -4,7 +4,6 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
-    xmlns:views="clr-namespace:iPMCloud.Mobile.Views"
     xmlns:vo="clr-namespace:iPMCloud.Mobile.vo"
     BackgroundColor="Black"
     ClassId="MainPage">
@@ -5581,11 +5580,6 @@
 
 
 
-
-        <views:PopupContainerObjectValuesBildView
-            x:Name="PopupContainerObjectValuesBild"
-            AbsoluteLayout.LayoutBounds="0,0,1,1"
-            AbsoluteLayout.LayoutFlags="All" />
 
         <AbsoluteLayout
             x:Name="panelShowSelectedPos_Container"

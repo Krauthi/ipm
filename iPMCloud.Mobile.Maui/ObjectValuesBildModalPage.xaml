@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="iPMCloud.Mobile.ObjectValuesBildModalPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vo="clr-namespace:iPMCloud.Mobile.vo"
+    BackgroundColor="#000000">
+
+    <Grid
+        Margin="0"
+        Padding="0"
+        HorizontalOptions="Fill"
+        RowSpacing="0"
+        VerticalOptions="Fill">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!--  Header  -->
+        <Grid
+            Grid.Row="0"
+            Margin="0"
+            Padding="1"
+            ColumnSpacing="0"
+            HeightRequest="54"
+            HorizontalOptions="Fill"
+            BackgroundColor="#144d73">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Border
+                x:Name="btn_back_bild"
+                Grid.Column="0"
+                Margin="3,2,2,2"
+                Padding="1"
+                BackgroundColor="Transparent"
+                HorizontalOptions="Start"
+                Stroke="Transparent"
+                VerticalOptions="Center">
+                <Grid
+                    Margin="0"
+                    Padding="0"
+                    ColumnSpacing="0"
+                    HeightRequest="38"
+                    HorizontalOptions="Start"
+                    VerticalOptions="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Image
+                        Grid.Column="0"
+                        Margin="0"
+                        HeightRequest="30"
+                        HorizontalOptions="Start"
+                        Source="DropLeftBlueDoubleImage.png"
+                        VerticalOptions="Center"
+                        WidthRequest="30" />
+                    <Label
+                        Grid.Column="1"
+                        Margin="0"
+                        FontSize="18"
+                        HorizontalOptions="Start"
+                        HorizontalTextAlignment="Start"
+                        LineBreakMode="TailTruncation"
+                        Text="ABBRECHEN"
+                        TextColor="#3f94cd"
+                        VerticalOptions="Center" />
+                </Grid>
+            </Border>
+            <Label
+                Grid.Column="1"
+                Margin="0,0,10,0"
+                FontSize="22"
+                HorizontalOptions="End"
+                HorizontalTextAlignment="End"
+                LineBreakMode="TailTruncation"
+                Text="Bild zum Zähler"
+                TextColor="#ffffff"
+                VerticalOptions="Center" />
+        </Grid>
+
+        <BoxView
+            Grid.Row="0"
+            Margin="0"
+            BackgroundColor="Gray"
+            HeightRequest="1"
+            HorizontalOptions="Fill"
+            VerticalOptions="End" />
+
+        <!--  Content  -->
+        <VerticalStackLayout
+            Grid.Row="1"
+            Margin="20"
+            Padding="10"
+            BackgroundColor="#144d73"
+            HorizontalOptions="Fill"
+            Spacing="0">
+
+            <Label
+                Margin="0"
+                FontSize="24"
+                HorizontalOptions="Fill"
+                HorizontalTextAlignment="Start"
+                Text="Bild zum Zähler aufnehmen"
+                TextColor="#ffffff"
+                VerticalOptions="Center" />
+
+            <BoxView
+                Margin="0,5,0,5"
+                BackgroundColor="Gray"
+                HeightRequest="1"
+                HorizontalOptions="Fill"
+                VerticalOptions="Start" />
+
+            <Grid
+                Margin="0"
+                Padding="0"
+                ColumnSpacing="0"
+                HorizontalOptions="Fill">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <VerticalStackLayout
+                    Grid.Column="0"
+                    Margin="0"
+                    Padding="0"
+                    HorizontalOptions="Fill"
+                    Spacing="0"
+                    VerticalOptions="Start">
+                    <Image
+                        x:Name="img_photo_bild"
+                        Margin="0"
+                        BackgroundColor="#88042d53"
+                        HeightRequest="200"
+                        HorizontalOptions="Fill" />
+                </VerticalStackLayout>
+                <Border
+                    x:Name="btn_newphoto_bild"
+                    Grid.Column="1"
+                    Margin="3,0,3,0"
+                    Padding="1"
+                    BackgroundColor="#042d53"
+                    HorizontalOptions="End"
+                    VerticalOptions="End">
+                    <VerticalStackLayout
+                        Margin="0"
+                        Padding="0"
+                        BackgroundColor="#042d53"
+                        HeightRequest="40"
+                        HorizontalOptions="Center"
+                        Spacing="0"
+                        VerticalOptions="Center"
+                        WidthRequest="40">
+                        <Image
+                            Margin="0,4,0,0"
+                            HeightRequest="30"
+                            HorizontalOptions="Center"
+                            Source="Cam.png"
+                            VerticalOptions="Center"
+                            WidthRequest="30" />
+                    </VerticalStackLayout>
+                </Border>
+            </Grid>
+
+            <BoxView
+                Margin="0,5,0,5"
+                BackgroundColor="Gray"
+                HeightRequest="1"
+                HorizontalOptions="Fill"
+                VerticalOptions="Start" />
+
+            <VerticalStackLayout
+                Margin="0,0,0,5"
+                Padding="0,10,5,0"
+                HeightRequest="92"
+                HorizontalOptions="Fill"
+                MinimumHeightRequest="92"
+                Spacing="0">
+                <Label
+                    Margin="0"
+                    Padding="3,0,0,0"
+                    FontSize="12"
+                    HorizontalOptions="Fill"
+                    HorizontalTextAlignment="Start"
+                    Text="Bemerkung zum Zähler:"
+                    TextColor="#aaaaaa" />
+                <vo:CustomEditor
+                    x:Name="editor_notice_bild"
+                    Margin="0,-13,-5,0"
+                    BackgroundColor="#11ffffff"
+                    FontSize="16"
+                    HeightRequest="100"
+                    HorizontalOptions="Fill"
+                    Keyboard="Text"
+                    MinimumHeightRequest="80"
+                    Text=""
+                    TextColor="#ffffff" />
+            </VerticalStackLayout>
+
+            <Label
+                x:Name="lbl_send_err_bild"
+                Margin="5,0,5,10"
+                FontAttributes="Bold"
+                FontSize="18"
+                HorizontalOptions="End"
+                HorizontalTextAlignment="Start"
+                IsVisible="True"
+                Opacity="0"
+                Text="Kein Bild vorhanden!"
+                TextColor="#ff0000"
+                VerticalOptions="Center" />
+
+            <Grid
+                Margin="0"
+                Padding="5,5,5,0"
+                ColumnSpacing="20"
+                HorizontalOptions="Fill">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <HorizontalStackLayout
+                    x:Name="btn_cancel_bild"
+                    Grid.Column="0"
+                    Margin="0"
+                    Padding="10"
+                    BackgroundColor="#73042d"
+                    HorizontalOptions="Start">
+                    <Label
+                        Margin="0"
+                        Padding="0"
+                        FontSize="16"
+                        HorizontalOptions="Fill"
+                        HorizontalTextAlignment="Center"
+                        Text="Abbrechen"
+                        TextColor="#ffffff" />
+                </HorizontalStackLayout>
+                <HorizontalStackLayout
+                    x:Name="btn_send_bild"
+                    Grid.Column="1"
+                    Margin="0"
+                    Padding="10"
+                    BackgroundColor="#04732d"
+                    HorizontalOptions="End"
+                    IsVisible="False">
+                    <Label
+                        Margin="0"
+                        Padding="0"
+                        FontSize="16"
+                        HorizontalOptions="Fill"
+                        HorizontalTextAlignment="Center"
+                        Text="Jetzt senden"
+                        TextColor="#ffffff" />
+                </HorizontalStackLayout>
+            </Grid>
+        </VerticalStackLayout>
+
+        <!--  Loading overlay  -->
+        <AbsoluteLayout
+            x:Name="overlay_bild"
+            Grid.Row="0"
+            Grid.RowSpan="2"
+            AbsoluteLayout.LayoutBounds="0,0,1,1"
+            AbsoluteLayout.LayoutFlags="All"
+            BackgroundColor="#66000000"
+            IsVisible="False">
+            <ActivityIndicator
+                AbsoluteLayout.LayoutBounds="0,0,1,1"
+                AbsoluteLayout.LayoutFlags="All"
+                BackgroundColor="Transparent"
+                BindingContext="{x:Reference overlay_bild}"
+                HeightRequest="150"
+                HorizontalOptions="Center"
+                IsEnabled="{Binding Path=IsVisible}"
+                IsRunning="True"
+                IsVisible="True"
+                VerticalOptions="Center"
+                WidthRequest="150"
+                Color="#0078d7" />
+        </AbsoluteLayout>
+    </Grid>
+
+</ContentPage>

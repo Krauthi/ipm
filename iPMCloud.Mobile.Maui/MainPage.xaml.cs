@@ -2985,20 +2985,11 @@ namespace iPMCloud.Mobile
 
         private async void OpenCamObjectValuesView()
         {
-            PopupContainerObjectValuesBild.SetVisible(true);
-            double w = screenWidthDp;
-            double h = screenHeightDp;
-            //PopupContainerObjectValuesBild.PopupStack.WidthRequest = w;
-            AbsoluteLayout.SetLayoutFlags(PopupContainerObjectValuesBild.PopupStack, AbsoluteLayoutFlags.None);
-            AbsoluteLayout.SetLayoutBounds(PopupContainerObjectValuesBild.PopupStack, new Rect(0, 30, w, 520));
-
-            PopupContainerObjectValuesBild.EditorNotice.Text = "";
-            PopupContainerObjectValuesBild.ImgPhoto.Source = null;
-            await Task.Delay(1);
-            AppModel.Instance.selectedObjectValueBild = null;
-
-            PopupContainerObjectValuesBild.BtnSend.IsVisible = false;
-            PopupContainerObjectValuesBild.LblSendErr.Opacity = 0;
+            var sent = await ObjectValuesBildModalPage.ShowAsync(this);
+            if (sent)
+            {
+                SyncObjectValueBild();
+            }
         }
 
         private async void SwitchObjectValueFlashlight()
@@ -6231,121 +6222,6 @@ namespace iPMCloud.Mobile
             BackToLoginPage();
             // ShowWorkerPage();
         }
-
-        public async Task btn_takePhotoForMeterstand(object sender, EventArgs e)  // ✅ async Task statt async void
-        {
-            await Task.Delay(1);
-
-            try
-            {
-                AppModel.Instance.UseExternHardware = true;
-
-                // ✅ Prüfen ob Kamera verfügbar
-                if (!MediaPicker.Default.IsCaptureSupported)
-                {
-                    await DisplayAlertAsync("Fehler", "Kamera nicht verfügbar", "OK");
-                    return;
-                }
-
-                overlay.IsVisible = true;
-                await Task.Delay(1);
-                // ✅ MAUI MediaPicker verwenden
-                var photo = await MediaPicker.CapturePhotoAsync(new MediaPickerOptions
-                {
-                    CompressionQuality = 75,
-                    MaximumHeight = 1024,
-                    MaximumWidth = 1024,
-                    RotateImage = true,
-                    SelectionLimit = 1,
-                    PreserveMetaData = true,
-                });
-
-                if (photo != null)
-                {
-  
-                    //using var stream = await photo.OpenReadAsync();  
-                    var photoResponse = await PhotoResize.CreatePhotoResponseAsync(photo);
-                    
-                    // TODO: Später wieder aktivieren bzw. Testen - dauer zu lange!!
-                    //photoResponse = PhotoUtils.AddInfoToImage(photoResponse, AppModel.Instance.LastBuilding);
-
-                    AppModel.Instance.selectedObjectValueBild = new ObjektDatenBildWSO { bytes = photoResponse.imageBytes };
-
-                    PopupContainerObjectValuesBild.ImgPhoto.Source = photoResponse.GetImageSourceAsThumb();
-                                        
-                    PopupContainerObjectValuesBild.BtnSend.IsVisible = true;
-                    await Task.Delay(1);
-                    overlay.IsVisible = false;
-                }
-            }
-            catch (FeatureNotSupportedException)
-            {
-                // Kamera wird nicht unterstützt
-                await DisplayAlertAsync("Fehler", "Kamera wird nicht unterstützt", "OK");
-            }
-            catch (PermissionException)
-            {
-                // Berechtigungen wurden nicht erteilt
-                await DisplayAlertAsync("Fehler", "Keine Kamera-Berechtigung", "OK");
-            }
-            catch (OperationCanceledException)
-            {
-                // Benutzer hat abgebrochen
-            }
-            catch (Exception ex)
-            {
-                // Andere Fehler
-                System.Diagnostics.Debug.WriteLine($"Fehler beim Foto aufnehmen: {ex.Message}");
-            }
-            finally
-            {
-                AppModel.Instance.UseExternHardware = false;
-                overlay.IsVisible = false;  // ✅ Sicherstellen dass Overlay ausgeblendet wird
-            }
-        }
-        
-        public async void RemoveObjektMeterStandBild()
-        {
-            PopupContainerObjectValuesBild.ImgPhoto.Source = null;
-            await Task.Delay(1);
-            AppModel.Instance.selectedObjectValueBild = null;
-
-            PopupContainerObjectValuesBild.BtnSend.IsVisible = false;
-            await Task.Delay(1);
-            PopupContainerObjectValuesBild.LblSendErr.Opacity = 0;
-        }
-        public async void btn_sendPhotoForMeterstand(object sender, EventArgs e)
-        {
-            overlay.IsVisible = true;
-            await Task.Delay(1);
-            if (AppModel.Instance.isFlashLigthAloneON)
-            {
-                AppModel.Instance.Btn_FlashlightAloneTapped(null, null);
-            }
-            await Task.Delay(1);
-
-            AppModel.Instance.selectedObjectValueBild.filename = DateTime.Now.ToString("dd_MM_yyyy_HH_mm_ss");
-            AppModel.Instance.selectedObjectValueBild.bemerkung = PopupContainerObjectValuesBild.EditorNotice.Text.Trim();
-            AppModel.Instance.selectedObjectValueBild.meterid = AppModel.Instance.selectedObjectValue.id;
-            AppModel.Instance.selectedObjectValueBild.lastchange = JavaScriptDateConverter.Convert(DateTime.Now).ToString();
-            AppModel.Instance.selectedObjectValueBild.standid = 0;
-
-            ObjektDatenBildWSO.ToUploadStack(AppModel.Instance, AppModel.Instance.selectedObjectValueBild);
-
-            await Task.Delay(1);
-            SyncObjectValueBild();
-
-            RemoveObjektMeterStandBild();
-            PopupContainerObjectValuesBild.SetVisible(false);
-
-            await Task.Delay(1);
-            overlay.IsVisible = false;
-        }
-
-
-
-
-
 
         /*********************/
         /* WORKERS METHODS   */

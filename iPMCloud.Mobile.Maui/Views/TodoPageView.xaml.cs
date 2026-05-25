@@ -57,6 +57,7 @@ namespace iPMCloud.Mobile.Views
 
         //public Grid Container => TodoPage_Container;
         public void SetVisible(bool visible) => TodoPage_Container.IsVisible = visible;
+        public void ClearTodoList() => list_todo.Children.Clear();
 
         // Expose child elements so MainPage can access them after extraction
         public Border BtnTodoBack => btn_todo_back;

@@ -6889,7 +6889,6 @@ namespace iPMCloud.Mobile
             overlay.IsVisible = true;
             try
             {
-                await Task.Delay(1);
                 var todoModalPage = new TodoModalPage();
                 await Navigation.PushModalAsync(todoModalPage, animated: false);
             }

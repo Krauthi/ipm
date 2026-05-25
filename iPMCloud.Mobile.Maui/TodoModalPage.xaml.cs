@@ -27,7 +27,7 @@ namespace iPMCloud.Mobile
 
         private async void OnBackTapped(object sender, EventArgs e)
         {
-            TodoPageView.ListTodo.Children.Clear();
+            TodoPageView.ClearTodoList();
             this.Focus();
             await Navigation.PopModalAsync(animated: false);
         }

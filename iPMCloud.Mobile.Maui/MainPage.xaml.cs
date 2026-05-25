@@ -7583,7 +7583,7 @@ namespace iPMCloud.Mobile
             }
 
 
-            ObjektPlanWeekMobil_Stack_A.Margin = new Thickness(2, (AppModel.Instance.allPositionInWork == null ? 30 : 0), 2, 0);
+            ObjektPlanWeekMobil_Stack_A.Margin = new Thickness(2, (AppModel.Instance.allPositionInWork == null ? 20 : 0), 2, 0);
 
             // Trennlinie zeigen
             if (AppModel.Instance.AppControll.direktBuchenPos)

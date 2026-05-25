@@ -4702,7 +4702,7 @@
                     Grid.Row="3"
                     Margin="0,0,0,17"
                     Padding="0"
-                    BackgroundColor="Black"
+                    BackgroundColor="Transparent"
                     HorizontalOptions="Fill"
                     VerticalOptions="Fill">
                     <VerticalStackLayout
@@ -4719,6 +4719,7 @@
                     Grid.Row="3"
                     Margin="0,0,0,17"
                     Padding="0"
+                    BackgroundColor="Transparent"
                     HorizontalOptions="Fill"
                     IsVisible="False"
                     VerticalOptions="Fill">
@@ -4739,7 +4740,7 @@
                 Grid.Row="1"
                 Margin="0"
                 Padding="0"
-                BackgroundColor="Black"
+                    BackgroundColor="Transparent"
                 HorizontalOptions="Fill"
                 IsVisible="False"
                 Spacing="0"

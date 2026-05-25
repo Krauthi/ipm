@@ -2398,12 +2398,6 @@ namespace iPMCloud.Mobile
         }
 
 
-        // Shared state for DirektPos notice overlay (NOT for regular notice which uses NoticeModalPage)
-        private LeistungWSO _SelectedPosForNotice = null;
-        private BemerkungWSO _SelectedBemerkungForNotice = null;
-        private string _BackToFromNotice = null;
-        private bool _manuelTextChange = false;
-
         public async void TapNoticeFromPosInWorkDirektPosMuell(LeistungWSO p)
         {
             overlay.IsVisible = true;
@@ -2423,7 +2417,7 @@ namespace iPMCloud.Mobile
             //    winterservice = p.winterservice,
             //    workat = p.workat,
             //};
-            ShowNoticeViewDirektPos(false, p, "muellpos");
+            await ShowNoticeViewDirektPos(false, p, "muellpos");
 
             await Task.Delay(1);
             overlay.IsVisible = false;
@@ -2433,406 +2427,81 @@ namespace iPMCloud.Mobile
             overlay.IsVisible = true;
             await Task.Delay(1);
 
-            ShowNoticeViewDirektPos(false, position, "winterpos");
+            await ShowNoticeViewDirektPos(false, position, "winterpos");
 
             await Task.Delay(1);
             overlay.IsVisible = false;
         }
-        private async void ShowNoticeViewDirektPos(bool prio, LeistungWSO pos = null, string backTo = null)
+        private async Task ShowNoticeViewDirektPos(bool prio, LeistungWSO pos = null, string backTo = null)
         {
-            _SelectedBemerkungForNotice = new BemerkungWSO();
-            _SelectedPosForNotice = pos;
-            _BackToFromNotice = backTo;
-            btn_notice_del_DirektPos.IsVisible = false;
+            View posCard = null;
+            BemerkungWSO existingBemerkung = null;
             if (pos != null)
             {
-
                 BuildingWSO building = BuildingWSO.LoadBuilding(AppModel.Instance, pos.objektid);
                 var o = building.ArrayOfAuftrag.Find(auf => auf.id == pos.auftragid);
                 var c = o.kategorien.Find(kat => kat.id == pos.kategorieid);
                 var l = c.leistungen.Find(f => f.id == pos.id);
-                //var lInWork = AppModel.Instance.allPositionInWork.leistungen.Find(f => f.id == pos.id);
-                var stackPos = LeistungWSO.GetInWorkPositionSmallCardView_DirektPos(o, c, l, l);
+                posCard = LeistungWSO.GetInWorkPositionSmallCardView_DirektPos(o, c, l, l);
 
-                noticeFor_DirektPos.IsVisible = true;
-                noticeFor_Pos_DirektPos.Children.Clear();
-                noticeFor_Pos_DirektPos.Children.Add(stackPos);
-                await Task.Delay(1);
                 if (_SelectedBemerkungForNoticeList_DirektPos != null)
                 {
-                    foreach (var item in _SelectedBemerkungForNoticeList_DirektPos)
-                    {
-                        if (item.id == _SelectedPosForNotice.id && item.bem != null)
-                        {
-                            _SelectedBemerkungForNotice = item.bem;
-                            entry_notice_DirektPos.Text = item.bem.text.Trim();
-                            sw_internmessage_DirektPos.IsToggled = item.bem.prio == 1 || item.bem.prio == 3;
-                            sw_alertmessage_DirektPos.IsToggled = item.bem.prio == 2 || item.bem.prio == 3;
-                            item.bem.photos.ForEach(p =>
-                            {
-                                noticePhotoStack_DirektPos.Children.Add(p.stack);
-                            });
-                            btn_notice_del_DirektPos.IsVisible = true;
-                        }
-                    }
+                    existingBemerkung = _SelectedBemerkungForNoticeList_DirektPos
+                        .FirstOrDefault(item => item.id == pos.id)?.bem;
                 }
             }
-            else
+
+            var result = await NoticeDirektPosModalPage.ShowAsync(this, pos, backTo, prio, posCard, existingBemerkung);
+            if (result == null)
             {
-                noticeFor_DirektPos.IsVisible = false;
+                return;
             }
 
             overlay.IsVisible = true;
             await Task.Delay(1);
-
-            //ClearPageViews();
-
-            popupContainer_quest_direktbuchen.IsVisible = false;
-            CheckNoticeFalid_DirektPos();
-            NoticePage_Container_DirektPos.IsVisible = true;
-
-            await Task.Delay(1);
+            if (result.IsDeleted)
+            {
+                UpdateDirektPosNotice(result.Pos, null);
+            }
+            else if (result.Bemerkung != null)
+            {
+                result.Bemerkung.gruppeid = result.Pos.gruppeid;
+                result.Bemerkung.personid = AppModel.Instance.Person.id;
+                result.Bemerkung.objektid = result.Pos.objektid;
+                result.Bemerkung.leistungid = result.Pos.id;
+                result.Bemerkung.datum = DateTime.Now.Ticks;
+                UpdateDirektPosNotice(result.Pos, result.Bemerkung);
+            }
             overlay.IsVisible = false;
-        }
-        public void btn_NoticeBackTapped_DirektPos(object sender, EventArgs e)
-        {
-            this.Focus();
-
-            entry_notice_DirektPos.Text = "";
-            noticePhotoStack_DirektPos.Children.Clear();
-            //_SelectedBemerkungForNoticeList = null;
-            _SelectedPosForNotice = null;
-            _SelectedBemerkungForNotice = null;
-            _BackToFromNotice = null;
-
-            NoticePage_Container_DirektPos.IsVisible = false;
-            popupContainer_quest_direktbuchen.IsVisible = true;
-        }
-        public async void btn_NoticeDelTapped_DirektPos(object sender, EventArgs e)
-        {
-            if (_SelectedBemerkungForNotice != null && _SelectedBemerkungForNoticeList_DirektPos != null)
-            {
-                foreach (var item in _SelectedBemerkungForNoticeList_DirektPos)
-                {
-                    if (item.id == _SelectedPosForNotice.id)
-                    {
-                        item.badge.Text = "";
-                        item.badgeStack.IsVisible = false;
-                        item.bem = null;
-                        sw_internmessage_DirektPos.IsToggled = false;
-                        sw_alertmessage_DirektPos.IsToggled = false;
-                    }
-                }
-                btn_NoticeBackTapped_DirektPos(null, null);
-            }
-        }
-        public async void btn_NoticeSaveTapped_DirektPos(object sender, EventArgs e)
-        {
-            this.Focus();
-            if (!String.IsNullOrWhiteSpace(entry_notice_DirektPos.Text.Trim()) || (_SelectedBemerkungForNotice.photos != null && _SelectedBemerkungForNotice.photos.Count > 0))
-            {
-                overlay.IsVisible = true;
-                await Task.Delay(1);
-
-                int am = sw_alertmessage_DirektPos.IsToggled ? 2 : 0;
-                int im = sw_internmessage_DirektPos.IsToggled ? 1 : 0;
-                _SelectedBemerkungForNotice.prio = (am + im);
-                _SelectedBemerkungForNotice.gruppeid = _SelectedPosForNotice.gruppeid;
-                _SelectedBemerkungForNotice.personid = AppModel.Instance.Person.id;
-                _SelectedBemerkungForNotice.objektid = _SelectedPosForNotice.objektid;
-                _SelectedBemerkungForNotice.leistungid = _SelectedPosForNotice.id;
-                _SelectedBemerkungForNotice.datum = DateTime.Now.Ticks;
-                _SelectedBemerkungForNotice.text = "" + entry_notice_DirektPos.Text.Trim();
-
-                foreach (var item in _SelectedBemerkungForNoticeList_DirektPos)
-                {
-                    if (item.id == _SelectedPosForNotice.id)
-                    {
-                        item.bem = _SelectedBemerkungForNotice;
-                        item.badge.Text = "" + (_SelectedBemerkungForNotice.photos.Count + (string.IsNullOrWhiteSpace(item.bem.text) ? 0 : 1));
-                        item.badgeStack.IsVisible = _SelectedBemerkungForNotice.photos.Count() > 0 || !string.IsNullOrWhiteSpace(item.bem.text);
-                    }
-                }
-                //if (_SelectedPosForNotice != null)
-                //{
-                //    var posInWork = AppModel.Instance.allPositionInWork.leistungen.Find(pos => pos.id == _SelectedPosForNotice.id);
-                //    if (posInWork.bemerkungen == null) { posInWork.bemerkungen = new List<BemerkungWSO>(); }
-                //    _SelectedBemerkungForNotice.leistungid = _SelectedPosForNotice.id;
-                //    posInWork.bemerkungen.Add(_SelectedBemerkungForNotice);
-                //    LeistungPackWSO.Save(AppModel.Instance, AppModel.Instance.allPositionInWork);
-                //}
-                //else
-                //{
-                //    BemerkungWSO.ToUploadStack(AppModel.Instance, _SelectedBemerkungForNotice);
-                //    SyncSingleNotice();
-                //}
-
-
-                await Task.Delay(1);
-                btn_NoticeBackTapped_DirektPos(null, null);
-                overlay.IsVisible = false;
-                await Task.Delay(1);
-            }
-        }
-        private void AlertMessage_Switch_Toggled_DirektPos(object sender, ToggledEventArgs e)
-        {
-            btn_alertmessage_img2_DirektPos.IsVisible = e.Value;
-        }
-        private void InternMessage_Switch_Toggled_DirektPos(object sender, ToggledEventArgs e)
-        {
-            btn_internmessage_img2_DirektPos.IsVisible = e.Value;
-        }
-       
-
-
-        public async Task btn_takePhoto_DirektPos(object sender, TappedEventArgs e) 
-        {
-            if (_SelectedBemerkungForNotice.photos.Count >= 5)
-            {
-                await DisplayAlertAsync("Limit erreicht", "Maximal 5 Fotos erlaubt", "OK");
-                return;
-            }
-            notizSave_stack_DirektPos.IsVisible = false;
             await Task.Delay(1);
-
-            AppModel.Instance.UseExternHardware = true;
-
-            try
-            {
-                overlay.IsVisible = true;
-                await Task.Delay(1);
-                var photo = await MediaPicker.CapturePhotoAsync(new MediaPickerOptions
-                {
-                    CompressionQuality = 75,
-                    MaximumHeight = 1024,
-                    MaximumWidth = 1024,
-                    RotateImage = true,
-                    SelectionLimit = 1,
-                    PreserveMetaData = true,
-                });
-
-                if (photo != null)
-                {
-                    var photoResponse = await PhotoResize.CreatePhotoResponseAsync(photo);
-
-                    // TODO: Später wieder aktivieren bzw. Testen - dauer zu lange!!
-                    //string buildingText = null;
-                    //if (AppModel.Instance.LastBuilding == null && _SelectedPosForNotice != null)
-                    //{
-                    //    var bui = BuildingWSO.LoadBuilding(AppModel.Instance, _SelectedPosForNotice.objektid);
-                    //    if (bui != null)
-                    //    {
-                    //        buildingText = $"{bui.plz} {bui.ort} - {bui.strasse} {bui.hsnr}";
-                    //    }
-                    //}
-                    //photoResponse = PhotoUtils.AddInfoToImage(photoResponse, AppModel.Instance.LastBuilding);
-
-                    var reCo = new Command<BildWSO>(RemoveBildInWork_DirektPos);
-
-                    long bildName = DateTime.Now.Ticks;
-                    var bildWSO = new BildWSO(_SelectedBemerkungForNotice.guid)
-                    {
-                        bytes = photoResponse.imageBytes,
-                        name = bildName.ToString(),
-                        stack = BildWSO.GetAttachmentForNoticeElement(
-                            photoResponse.GetImageSourceAsThumb(),
-                            new DateTime(bildName).ToString("dd.MM.yyyy-HH:mm:ss"),
-                            reCo)
-                    };
-                    var frame = (Border)((StackLayout)(bildWSO.stack.Children[0])).Children[2];
-                    frame.GestureRecognizers.Clear();
-                    frame.GestureRecognizers.Add(new TapGestureRecognizer()
-                    {
-                        Command = reCo,
-                        CommandParameter = bildWSO
-                    });
-
-
-                    if (bildWSO != null)
-                    {
-                        BildWSO.Save(AppModel.Instance, bildWSO);
-                        _SelectedBemerkungForNotice.photos.Add(bildWSO);
-                        noticePhotoStack_DirektPos.Children.Add(bildWSO.stack);
-
-                        CheckNoticeFalid_DirektPos();
-                    }
-                }
-            }
-            catch (FeatureNotSupportedException)
-            {
-                // Kamera wird nicht unterstützt
-                await DisplayAlertAsync("Fehler", "Kamera wird nicht unterstützt", "OK");
-            }
-            catch (PermissionException)
-            {
-                // Berechtigungen wurden nicht erteilt
-                await DisplayAlertAsync("Fehler", "Keine Kamera-Berechtigung", "OK");
-            }
-            catch (OperationCanceledException)
-            {
-                // Benutzer hat abgebrochen
-            }
-            catch (Exception ex)
-            {
-                // Andere Fehler
-                System.Diagnostics.Debug.WriteLine($"Fehler beim Foto aufnehmen: {ex.Message}");
-            }
-            finally
-            {
-                AppModel.Instance.UseExternHardware = false;
-                overlay.IsVisible = false;
-            }
         }
 
-        public async Task btn_pickPhotos_DirektPos(object sender, TappedEventArgs e)  
+        private void UpdateDirektPosNotice(LeistungWSO position, BemerkungWSO bemerkung)
         {
-            if (_SelectedBemerkungForNotice.photos.Count >= 5)
+            if (position == null || _SelectedBemerkungForNoticeList_DirektPos == null)
             {
-                await DisplayAlertAsync("Limit erreicht", "Maximal 5 Fotos erlaubt", "OK");
                 return;
             }
 
-            notizSave_stack_DirektPos.IsVisible = false;
-            AppModel.Instance.UseExternHardware = true;
-
-            try
+            foreach (var item in _SelectedBemerkungForNoticeList_DirektPos)
             {
-                if (!MediaPicker.Default.IsCaptureSupported)
+                if (item.id != position.id)
                 {
-                    await DisplayAlertAsync("Fehler", "Kamera nicht verfügbar", "OK");
-                    return;
+                    continue;
                 }
 
-                overlay.IsVisible = true;
-                _ = Task.Delay(1);
-
-
-
-                var photos = await MediaPicker.PickPhotosAsync(new MediaPickerOptions
+                item.bem = bemerkung;
+                if (item.bem == null)
                 {
-                    CompressionQuality = 75,
-                    MaximumHeight = 1024,
-                    MaximumWidth = 1024,
-                    RotateImage = true,
-                    SelectionLimit = 5 - _SelectedBemerkungForNotice.photos.Count,
-                    PreserveMetaData = true,
-                });
-
-                if (photos != null && photos.Count() > 0)
-                {
-                    foreach (var photo in photos)
-                    {
-                        var reCo = new Command<BildWSO>(RemoveBildInWork_DirektPos);
-                        //using var stream = await photo.OpenReadAsync();  
-                        var photoResponse = await PhotoResize.CreatePhotoResponseAsync(photo);
-
-                        // TODO: Später wieder aktivieren bzw. Testen - dauer zu lange!!
-                        // Building-Text vorbereiten
-                        //string buildingText = null;
-                        //if (AppModel.Instance.LastBuilding == null && _SelectedPosForNotice != null)
-                        //{
-                        //    var bui = BuildingWSO.LoadBuilding(AppModel.Instance, _SelectedPosForNotice.objektid);
-                        //    if (bui != null)
-                        //    {
-                        //        buildingText = $"{bui.plz} {bui.ort} - {bui.strasse} {bui.hsnr}";
-                        //    }
-                        //}
-                        //photoResponse = PhotoUtils.AddInfoToImage(
-                        //    photoResponse,
-                        //    building,
-                        //    customBuildingText);
-
-                        long bildName = DateTime.Now.Ticks;
-                        var bildWSO = new BildWSO(_SelectedBemerkungForNotice.guid)
-                        {
-                            bytes = photoResponse.imageBytes,
-                            name = bildName.ToString(),
-                            stack = BildWSO.GetAttachmentForNoticeElement(
-                                photoResponse.GetImageSourceAsThumb(),
-                                new DateTime(bildName).ToString("dd.MM.yyyy-HH:mm:ss"),
-                                reCo)
-                        };
-                        var frame = (Border)((StackLayout)(bildWSO.stack.Children[0])).Children[2];
-                        frame.GestureRecognizers.Clear();
-                        frame.GestureRecognizers.Add(new TapGestureRecognizer()
-                        {
-                            Command = reCo,
-                            CommandParameter = bildWSO
-                        });
-
-                        BildWSO.Save(AppModel.Instance, bildWSO);
-                        _SelectedBemerkungForNotice.photos.Add(bildWSO);
-                        noticePhotoStack_DirektPos.Children.Add(bildWSO.stack);
-                    }
-                    _ = Task.Delay(1);
-                    overlay.IsVisible = false;
+                    item.badge.Text = "";
+                    item.badgeStack.IsVisible = false;
                 }
-            }
-            catch (FeatureNotSupportedException exn)
-            {
-                // Kamera wird nicht unterstützt
-                AppModel.Logger.Error($"Fehler Kamera wird nicht unterstützt: {exn.Message}");
-            }
-            catch (PermissionException exp)
-            {
-                // Berechtigungen wurden nicht erteilt
-                AppModel.Logger.Error($"Fehler Keine Kamera-Berechtigung: {exp.Message}");
-            }
-            catch (OperationCanceledException)
-            {
-                // Benutzer hat abgebrochen
-            }
-            catch (Exception ex)
-            {
-                // Andere Fehler
-                AppModel.Logger.Error($"Fehler beim Foto aufnehmen: {ex.Message}");
-            }
-            finally
-            {
-                CheckNoticeFalid_DirektPos();
-                AppModel.Instance.UseExternHardware = false;
-                overlay.IsVisible = false;  // ✅ Sicherstellen dass Overlay ausgeblendet wird                
-            }
-        }
-
-        public async void RemoveBildInWork_DirektPos(BildWSO b)
-        {
-            overlay.IsVisible = true;
-            await Task.Delay(1);
-
-            noticePhotoStack_DirektPos.Children.Remove(b.stack);
-            await Task.Delay(1);
-            BildWSO.Delete(AppModel.Instance, b);
-            await Task.Delay(1);
-            _SelectedBemerkungForNotice.photos.Remove(b);
-            CheckNoticeFalid_DirektPos();
-
-            await Task.Delay(1);
-            overlay.IsVisible = false;
-        }
-
-        private void entry_notice_TextChanged_DirektPos(object sender, TextChangedEventArgs e)
-        {
-            if (_SelectedBemerkungForNotice != null && !_manuelTextChange)
-            {
-                _manuelTextChange = true;
-                //_SelectedBemerkungForNotice.text = e.NewTextValue;
-                CheckNoticeFalid_DirektPos();
-                _manuelTextChange = false;
-            }
-        }
-
-        private void CheckNoticeFalid_DirektPos()
-        {
-            if (_SelectedBemerkungForNotice != null)
-            {
-                notizSave_stack_DirektPos.IsVisible = !String.IsNullOrWhiteSpace(entry_notice_DirektPos.Text) || _SelectedBemerkungForNotice.photos.Count > 0;
-                btn_notice_del_DirektPos.IsVisible = true;
-            }
-            else
-            {
-                notizSave_stack_DirektPos.IsVisible = false;
-                btn_notice_del_DirektPos.IsVisible = false;
+                else
+                {
+                    item.badge.Text = "" + (item.bem.photos.Count + (string.IsNullOrWhiteSpace(item.bem.text) ? 0 : 1));
+                    item.badgeStack.IsVisible = item.bem.photos.Count() > 0 || !string.IsNullOrWhiteSpace(item.bem.text);
+                }
+                return;
             }
         }
 
@@ -4250,18 +3919,6 @@ namespace iPMCloud.Mobile
             });
             var start = DateTime.Now.AddTicks(addTicksWinter);
             var end = start.AddMinutes(maxEndMin);
-
-
-            if (_SelectedBemerkungForNotice != null && _SelectedBemerkungForNoticeList_DirektPos != null)
-            {
-                foreach (var item in _SelectedBemerkungForNoticeList_DirektPos)
-                {
-                    if (item.id == _SelectedPosForNotice.id)
-                    {
-                    }
-                }
-            }
-
 
             AppModel.Instance.allPositionDirectWork = new LeistungPackWSO
             {
@@ -7444,38 +7101,6 @@ namespace iPMCloud.Mobile
                 tgr_message_container.Tapped += btn_ShowNoticeTapped;
                 btn_message_container.GestureRecognizers.Add(tgr_message_container);
 
-
-                /*btn_alertmessage_container_DirektPos.GestureRecognizers.Clear();
-                var tgr_alertmessage_container_DirektPos = new TapGestureRecognizer();
-                tgr_alertmessage_container_DirektPos.Tapped += btn_ShowNoticePrioTapped;
-                btn_alertmessage_container_DirektPos.GestureRecognizers.Add(tgr_alertmessage_container_DirektPos);
-                btn_message_container_DirektPos.GestureRecognizers.Clear();
-                var tgr_message_container_DirektPos = new TapGestureRecognizer();
-                tgr_message_container_DirektPos.Tapped += btn_ShowNoticeTapped;
-                btn_message_container_DirektPos.GestureRecognizers.Add(tgr_message_container_DirektPos);*/
-                btn_back_notice_DirektPos.GestureRecognizers.Clear();
-                var tgr_back_notice_DirektPos = new TapGestureRecognizer();
-                tgr_back_notice_DirektPos.Tapped += btn_NoticeBackTapped_DirektPos;
-                btn_back_notice_DirektPos.GestureRecognizers.Add(tgr_back_notice_DirektPos);
-
-                btn_notice_save_DirektPos.GestureRecognizers.Clear();
-                var tgr_back_notice_save_DirektPos = new TapGestureRecognizer();
-                tgr_back_notice_save_DirektPos.Tapped += btn_NoticeSaveTapped_DirektPos;
-                btn_notice_save_DirektPos.GestureRecognizers.Add(tgr_back_notice_save_DirektPos);
-
-                btn_notice_del_DirektPos.GestureRecognizers.Clear();
-                var tgr_back_notice_del_DirektPos = new TapGestureRecognizer();
-                tgr_back_notice_del_DirektPos.Tapped += btn_NoticeDelTapped_DirektPos;
-                btn_notice_del_DirektPos.GestureRecognizers.Add(tgr_back_notice_del_DirektPos);
-
-                btn_takePhoto_frame_DirektPos.GestureRecognizers.Clear();
-                var tgr_btn_takePhoto_DirektPos = new TapGestureRecognizer();
-                tgr_btn_takePhoto_DirektPos.Tapped += async (s, e) => await btn_takePhoto_DirektPos(s, e);
-                btn_takePhoto_frame_DirektPos.GestureRecognizers.Add(tgr_btn_takePhoto_DirektPos);
-                btn_takePhotoAttachment_frame_DirektPos.GestureRecognizers.Clear();
-                var tgr_btn_takePhotoAttachment_DirektPos = new TapGestureRecognizer();
-                tgr_btn_takePhotoAttachment_DirektPos.Tapped += async (s, e) => await btn_pickPhotos_DirektPos(s, e);
-                btn_takePhotoAttachment_frame_DirektPos.GestureRecognizers.Add(tgr_btn_takePhotoAttachment_DirektPos);
 
                 //ChecklistContainer
                 btn_back_check.GestureRecognizers.Clear();

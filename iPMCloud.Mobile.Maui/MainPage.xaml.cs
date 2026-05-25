@@ -2556,7 +2556,7 @@ namespace iPMCloud.Mobile
                 else
                 {
                     BemerkungWSO.ToUploadStack(AppModel.Instance, result.Bemerkung);
-                    SyncSingleNotice();
+                    CheckAllSyncFromUpload(); //SyncSingleNotice();
                 }
 
                 await Task.Delay(1);
@@ -2657,7 +2657,7 @@ namespace iPMCloud.Mobile
             var sent = await ObjectValuesBildModalPage.ShowAsync(this);
             if (sent)
             {
-                SyncObjectValueBild();
+                CheckAllSyncFromUpload(); //SyncObjectValueBild();
             }
         }
 
@@ -2702,7 +2702,7 @@ namespace iPMCloud.Mobile
             newod.stand = Utils.formatDEStr3(decimal.Parse(newod.firstStand));
             ObjektDataWSO.ToUploadStack(AppModel.Instance, newod);
             await Task.Delay(1);
-            SyncObjectValues();
+            CheckAllSyncFromUpload(); //SyncObjectValues();
 
             await Task.Delay(1);
             ShowObjectValuesView();
@@ -3872,7 +3872,7 @@ namespace iPMCloud.Mobile
             overlay.IsVisible = false;
 
             CloseDirektbuchenWinterAusPlanliste();
-            SyncPosition();
+            CheckAllSyncFromUpload(); //SyncPosition();
         }
         private long addTicksWinter = 0;
         public async void SaveDirektbuchenWinterAusPlanlisteNow(List<LeistungWSO> leis)
@@ -4131,7 +4131,7 @@ namespace iPMCloud.Mobile
                         var today = (int)DateTime.Now.DayOfWeek;
                         Update_PlanTabs(today);
                     }
-                    SyncPosition();
+                    CheckAllSyncFromUpload(); //SyncPosition();
                 }
             }
 
@@ -4464,7 +4464,7 @@ namespace iPMCloud.Mobile
             }
         }
 
-        public void SetAllSyncState()
+        public int SetAllSyncState()
         {
             ShowDisconnected();
             var countAll = GetAllSyncFromUploadCount();
@@ -4472,6 +4472,7 @@ namespace iPMCloud.Mobile
             btn_StartPage_frame_count.IsVisible = countAll > 0;
             btn_settings_count.Text = "" + countAll;
             btn_StartPage_count.Text = "" + countAll;
+            return countAll;
         }
         public void btn_BuildingScanTapped(object sender, EventArgs e)
         {
@@ -4732,7 +4733,7 @@ namespace iPMCloud.Mobile
 
                 BuildingWSO.Save(AppModel.Instance, AppModel.Instance.LastBuilding);
                 LeistungPackWSO.ToUploadStack(AppModel.Instance, AppModel.Instance.allPositionDirectWork);
-                SyncPosition();
+                CheckAllSyncFromUpload(); //SyncPosition();
                 UpdateObjektPersonPlanMobileAfterUpload(AppModel.Instance.allPositionDirectWork);
             }
 
@@ -4808,7 +4809,7 @@ namespace iPMCloud.Mobile
             if (AppModel.Instance.allPositionInWork.leistungen.Count > 0)
             {
                 LeistungPackWSO.Save(AppModel.Instance, AppModel.Instance.allPositionInWork);
-                SyncPositionAgain();
+                CheckAllSyncFromUpload(); //SyncPositionAgain();
             }
             else
             {
@@ -5019,7 +5020,7 @@ namespace iPMCloud.Mobile
                 dummyLeistungInWork = null;
 
                 // Versuche direkt zu senden sonst von Stack!
-                SyncPosition();
+                CheckAllSyncFromUpload(); //SyncPosition();
 
                 // Dialog schliessen
                 popupContainer_quest_endwork.IsVisible = false;
@@ -5794,7 +5795,7 @@ namespace iPMCloud.Mobile
                         token = AppModel.Instance.SettingModel.SettingDTO.LoginToken
                     };
                     AllTransSign.ToUploadStack(allTransSignsItem);
-                    SyncTransSigns();
+                    CheckAllSyncFromUpload(); //SyncTransSigns();
                 }
 
                 //popupContainer_container_changelang_status.Text = "" + countReady + " von " + countFrom;
@@ -7795,8 +7796,8 @@ namespace iPMCloud.Mobile
                 return;
             }
 
-            overlay.IsVisible = true;
-            await Task.Delay(1);
+            //overlay.IsVisible = true;
+            //await Task.Delay(1);
 
             iPMCloud.Mobile.Services.UploadCoordinator.ProgressChanged -= OnUploadProgress;
             iPMCloud.Mobile.Services.UploadCoordinator.UploadCompleted -= OnUploadCompleted;
@@ -7830,7 +7831,7 @@ namespace iPMCloud.Mobile
 #endif
             if (!await EnsureNotificationPermissionForForegroundWorkAsync())
             {
-                overlay.IsVisible = false;
+                //overlay.IsVisible = false;
                 return;
             }
 
@@ -7870,7 +7871,7 @@ namespace iPMCloud.Mobile
             {
                 try
                 {
-                    overlay.IsVisible = true;
+                    //overlay.IsVisible = true;
                 }
                 catch (Exception ex)
                 {
@@ -7889,13 +7890,17 @@ namespace iPMCloud.Mobile
                 try
                 {
                     overlay.IsVisible = false;
-                    SetAllSyncState();
+                    int c = SetAllSyncState();
 
                     if (!e.Success && !string.IsNullOrWhiteSpace(e.ErrorMessage))
                     {
                         AppModel.Logger.Warn("Uploads fehlgeschlagen: " + e.ErrorMessage);
                     }
                     await Task.Delay(1);
+                    if(c > 0)
+                    {
+                        CheckAllSyncFromUpload();
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -7903,6 +7908,7 @@ namespace iPMCloud.Mobile
                 }
                 finally
                 {
+                    overlay.IsVisible = false;
 #if IOS
                     DeviceDisplay.Current.KeepScreenOn = false;
 #endif

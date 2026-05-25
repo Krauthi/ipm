@@ -216,7 +216,7 @@
                         FontSize="16"
                         HeightRequest="100"
                         HorizontalOptions="Fill"
-                        Keyboard="Default"
+                        Keyboard="Text"
                         MinimumHeightRequest="80"
                         Text=""
                         TextChanged="entry_notice_TextChanged"

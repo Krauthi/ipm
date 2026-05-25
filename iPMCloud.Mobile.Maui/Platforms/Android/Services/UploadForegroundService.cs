@@ -34,20 +34,9 @@ namespace iPMCloud.Mobile.Platforms.Android.Services
 
         public override StartCommandResult OnStartCommand(Intent intent, StartCommandFlags flags, int startId)
         {
-            if (intent?.Action == ACTION_STOP)
-            {
-                _cts?.Cancel();
-                StopSelf();
-                return StartCommandResult.NotSticky;
-            }
-
-            if (UploadCoordinator.Instance.IsRunning)
-            {
-                return StartCommandResult.NotSticky;
-            }
-
+            // CRITICAL: StartForeground() must be called within 5 seconds of startForegroundService()
+            // Do this IMMEDIATELY before any other operations
             CreateNotificationChannel();
-            //StartForeground(NOTIFICATION_ID, BuildNotification("Uploads laufen…", 0)); 
             var notification = BuildNotification("Uploads laufen…", 0);
 
             if (Build.VERSION.SdkInt >= BuildVersionCodes.Q)
@@ -63,6 +52,22 @@ namespace iPMCloud.Mobile.Platforms.Android.Services
             {
                 StartForeground(NOTIFICATION_ID, notification);
             }
+
+            // Now handle stop action after we're in foreground
+            if (intent?.Action == ACTION_STOP)
+            {
+                _cts?.Cancel();
+                StopSelf();
+                return StartCommandResult.NotSticky;
+            }
+
+            // Check if already running after we're in foreground
+            if (UploadCoordinator.Instance.IsRunning)
+            {
+                StopSelf();
+                return StartCommandResult.NotSticky;
+            }
+
             AcquireWakeLock();
 
             _cts = new CancellationTokenSource();

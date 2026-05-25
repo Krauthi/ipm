@@ -90,7 +90,8 @@ namespace iPMCloud.Mobile.Views
             };
             DayOverWSO.Save(AppModel.Instance, d);
             DayOverWSO.ToUploadStack(AppModel.Instance, d);
-            AppModel.Instance.MainPage.SyncDayOver();
+            
+            AppModel.Instance.MainPage.CheckAllSyncFromUpload(); //AppModel.Instance.MainPage.SyncDayOver();
             var dt = new DateTime(d.endticks);
             AppModel.Instance.MainPage
                 .SetDayOverLastDate(dt.ToString("dd.MM.yyyy") + " - " + dt.ToString("HH:mm"));

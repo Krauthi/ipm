@@ -119,7 +119,7 @@ namespace iPMCloud.Mobile
             if (_SelectedBemerkungForNotice != null && !_manuelTextChange)
             {
                 _manuelTextChange = true;
-                _SelectedBemerkungForNotice.text = e.NewTextValue?.Trim() ?? "";
+                //_SelectedBemerkungForNotice.text = e.NewTextValue?.Trim() ?? "";
                 CheckNoticeFalid();
                 _manuelTextChange = false;
             }
@@ -127,10 +127,11 @@ namespace iPMCloud.Mobile
 
         private void CheckNoticeFalid()
         {
-            if (_SelectedBemerkungForNotice != null)
+            var text = entry_notice.Text?.Trim() ?? "";
+            if (text != null && text.Length > 0)
             {
                 notizSave_stack.IsVisible =
-                    !string.IsNullOrWhiteSpace(_SelectedBemerkungForNotice.text) ||
+                    !string.IsNullOrWhiteSpace(text) ||
                     _SelectedBemerkungForNotice.photos.Count > 0;
             }
             else
@@ -277,6 +278,7 @@ namespace iPMCloud.Mobile
                         _SelectedBemerkungForNotice.photos.Add(bildWSO);
                         noticePhotoStack.Children.Add(bildWSO.stack);
                     }
+                    CheckNoticeFalid();
                 }
             }
             catch (FeatureNotSupportedException exn)

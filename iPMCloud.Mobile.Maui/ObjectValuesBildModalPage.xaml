@@ -22,10 +22,10 @@
             Grid.Row="0"
             Margin="0"
             Padding="1"
+            BackgroundColor="black"
             ColumnSpacing="0"
             HeightRequest="54"
-            HorizontalOptions="Fill"
-            BackgroundColor="black">
+            HorizontalOptions="Fill">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />

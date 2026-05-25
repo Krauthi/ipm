@@ -6471,7 +6471,7 @@
             </VerticalStackLayout>
         </AbsoluteLayout>
 
-        <AbsoluteLayout
+        <!--<AbsoluteLayout
             x:Name="popupContainer_trans"
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             AbsoluteLayout.LayoutFlags="All"
@@ -6551,7 +6551,7 @@
                 VerticalOptions="Center"
                 WidthRequest="70"
                 Color="#0078d7" />
-        </AbsoluteLayout>
+        </AbsoluteLayout>-->
 
         <AbsoluteLayout
             x:Name="popupContainer_quest_startwork"

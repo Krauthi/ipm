@@ -98,7 +98,7 @@ namespace iPMCloud.Mobile.Views
             if (AppModel.Instance.LastBuilding != null)
             {
                 // Zurücksetzten aller States für die Auswahl der Ausführungen
-                AppModel.Instance.SetAllObjectAndValuesToNoSelectedBuilding();
+                //AppModel.Instance.SetAllObjectAndValuesToNoSelectedBuilding();
             }
             await Navigation.PopModalAsync(animated: false);
         }

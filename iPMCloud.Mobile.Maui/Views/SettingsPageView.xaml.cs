@@ -5,7 +5,7 @@ namespace iPMCloud.Mobile.Views
 {
     public partial class SettingsPageView : ContentPage
     {
-        private const int LogSendDelayMilliseconds = 2000;
+        //private const int LogSendDelayMilliseconds = 2000;
 
         public SettingsPageView()
         {
@@ -49,8 +49,9 @@ namespace iPMCloud.Mobile.Views
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            SettingsPage_Container.IsVisible = true;
-            btn_settings_sendlog.IsVisible = true;
+
+            SetSendLog(true);
+
             lb_settings_synctimehours.Text = "" + AppModel.Instance.SettingModel.SettingDTO.SyncTimeHours;
 
             int countAll = AppModel.Instance.MainPage.GetAllSyncFromUploadCount();
@@ -63,14 +64,12 @@ namespace iPMCloud.Mobile.Views
 
         public void SetSendLog(bool visible)
         {
-            btn_settings_sendlog.Opacity = visible ? 1 : 0.4;
-            btn_settings_sendlog.IsEnabled = visible;
             btn_settings_sendlog.IsVisible = visible;
         }
 
         private async void ShowSendLogAsync(object sender, EventArgs e)
         {
-            var confirm = await DisplayAlert(
+            var confirm = await DisplayAlertAsync(
                 "Support-Log senden",
                 "Möchten Sie die Log-Daten jetzt an den Support senden?",
                 "Senden",
@@ -79,12 +78,12 @@ namespace iPMCloud.Mobile.Views
 
             SetSendLog(false);
             var ok = AppModel.Instance.SendLogZipFile();
-            await Task.Delay(LogSendDelayMilliseconds);
-            SetSendLog(true);
+            //await Task.Delay(LogSendDelayMilliseconds);
+            //SetSendLog(true);
 
             if (!ok)
             {
-                await DisplayAlert("Fehler", "Log-Daten konnten nicht gesendet werden.", "OK");
+                await DisplayAlertAsync("Fehler", "Log-Daten konnten nicht gesendet werden.", "OK");
             }
         }
 

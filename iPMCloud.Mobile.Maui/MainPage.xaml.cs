@@ -1570,16 +1570,11 @@ namespace iPMCloud.Mobile
 
         private async void ShowDSGVOPage()
         {
-            isInitialize = true;
             overlay.IsVisible = true;
             await Task.Delay(1);
-
-            ClearPageViews();
+            MainMenuTapped_Done(false);
             await DSGVOPageContainerView.ShowAsync(this);
-
-            await Task.Delay(1);
             overlay.IsVisible = false;
-            isInitialize = false;
         }
 
 
@@ -2381,16 +2376,11 @@ namespace iPMCloud.Mobile
 
         private async void ShowDayOverPage()
         {
-            isInitialize = true;
             overlay.IsVisible = true;
             await Task.Delay(1);
-
-            ClearPageViews();
+            MainMenuTapped_Done(false);
             await DayOverPageView.ShowAsync(this);
-
-            await Task.Delay(1);
             overlay.IsVisible = false;
-            isInitialize = false;
         }
 
 
@@ -2844,8 +2834,6 @@ namespace iPMCloud.Mobile
             overlay.IsVisible = true;
             await Task.Delay(1);
 
-            ClearPageViews();
-
             View posCard = null;
             if (pos != null)
             {
@@ -3066,14 +3054,6 @@ namespace iPMCloud.Mobile
         }
 
 
-        ////private void Settings_Hintergrundprozess_Switch_Toggled(object sender, ToggledEventArgs e)
-        ////{
-        ////    if (!isInitialize)
-        ////    {
-        ////        AppModel.Instance.SettingModel.SettingDTO.RunBackground = e.Value;
-        ////        AppModel.Instance.SettingModel.SaveSettings();
-        ////    }
-        ////}
         public void btn_SettingsBackTapped(object sender, EventArgs e)
         {
             this.Focus();
@@ -3081,20 +3061,11 @@ namespace iPMCloud.Mobile
         }
         public async void btn_SettingsTapped(object sender, EventArgs e)
         {
-            isInitialize = true;
             overlay.IsVisible = true;
             await Task.Delay(1);
-
-
             MainMenuTapped_Done(false);
-            await Task.Delay(210);
-            ClearPageViews();
             await SettingsPageView.ShowAsync(this);
-            ////sw_setting_hintergrundprozess.IsToggled = AppModel.Instance.SettingModel.SettingDTO.RunBackground;
-
-            await Task.Delay(1);
             overlay.IsVisible = false;
-            isInitialize = false;
         }
 
 
@@ -4821,22 +4792,17 @@ namespace iPMCloud.Mobile
         }
         public async void MainMenuTapped_Done(bool visible)
         {
-            double w = screenWidthDp;
-            double h = screenHeightDp;
-            // MainStettings Menü
             if (!visible)
             {
-                //await panelContainer_frame.TranslateToAsync(-w, 0, 200, Easing.Linear);
                 panelContainer.IsVisible = visible;
             }
             else
             {
-                //await panelContainer_frame.TranslateToAsync(-w, 0, 0);
                 panelContainer.IsVisible = visible;
-                //await panelContainer_frame.TranslateToAsync(-2, 0, 200, Easing.Linear);
                 SetAllSyncState();
             }
         }
+
         public void SetAllSyncState()
         {
             ShowDisconnected();

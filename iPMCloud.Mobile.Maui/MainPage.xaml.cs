@@ -43,11 +43,6 @@ namespace iPMCloud.Mobile
     {
         // private BackgroundWorker backgroundWorker = new BackgroundWorker();
 
-        // Forwarding properties for elements moved into TodoPageView
-        public TodoPageView TodoPageViewObject => TodoPageView;
-        private Border btn_todo_back => TodoPageView.BtnTodoBack;
-        private VerticalStackLayout list_todo => TodoPageView.ListTodo;
-
         // Forwarding properties for elements moved into DSGVOPageContainerView
         //private Grid DSGVOPage_Container => DSGVOPageContainerView.ContainerGrid;
         //private Border btn_back_dsgvo => DSGVOPageContainerView.BtnBackDsgvo;
@@ -3080,7 +3075,6 @@ namespace iPMCloud.Mobile
             NotScanPage_Container.IsVisible = false;
             PersonTimesPageView.SetVisible(false);
             NachbuchenPage_Container.IsVisible = false;
-            TodoPageView.SetVisible(false);
             StartPage_Container.IsVisible = false;
             DSGVOPageContainerView.SetVisible(false);
             //PN_Page_Container.IsVisible = false;
@@ -6887,29 +6881,23 @@ namespace iPMCloud.Mobile
             // Handwerker Liste
             MainMenuTapped_Done(false);
             await Task.Delay(210);
-            ShowTodoPage();
+            await ShowTodoPage();
         }
-        private async void ShowTodoPage()
+        private async Task ShowTodoPage()
         {
             isInitialize = true;
             overlay.IsVisible = true;
-            await Task.Delay(1);
-
-            ClearPageViews();
-            // TodoPage_Container.IsVisible = true; // moved into TodoPageView
-            TodoPageView.SetVisible(true);
-            TodoPageView.btn_todo_faelligTapped(null, null);
-
-            await Task.Delay(1);
-            overlay.IsVisible = false;
-            isInitialize = false;
-        }
-
-        public void btn_TodoBackTapped(object sender, EventArgs e)
-        {
-            list_todo.Children.Clear();
-            this.Focus();
-            ShowMainPage();
+            try
+            {
+                await Task.Delay(1);
+                var todoModalPage = new TodoModalPage();
+                await Navigation.PushModalAsync(todoModalPage, animated: false);
+            }
+            finally
+            {
+                overlay.IsVisible = false;
+                isInitialize = false;
+            }
         }
 
         public void btn_NotScanBackTapped(object sender, EventArgs e)
@@ -7444,11 +7432,6 @@ namespace iPMCloud.Mobile
                 var tgr_WorkerBack = new TapGestureRecognizer();
                 tgr_WorkerBack.Tapped += btn_WorkerBackTapped;
                 btn_worker_back.GestureRecognizers.Add(tgr_WorkerBack);
-
-                btn_todo_back.GestureRecognizers.Clear();
-                var tgr_TodoBack = new TapGestureRecognizer();
-                tgr_TodoBack.Tapped += btn_TodoBackTapped;
-                btn_todo_back.GestureRecognizers.Add(tgr_TodoBack);
 
                 btn_notscan_back.GestureRecognizers.Clear();
                 var tgr_NotScanBack = new TapGestureRecognizer();

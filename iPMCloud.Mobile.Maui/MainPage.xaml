@@ -3514,13 +3514,6 @@
 
         </Grid>
 
-        <!--  TODO Page  -->
-        <views:TodoPageView
-            x:Name="TodoPageView"
-            AbsoluteLayout.LayoutBounds="0,0,1,1"
-            AbsoluteLayout.LayoutFlags="All" />
-
-
         <!--  Objektauswahl ohne Scan - Container  -->
         <Grid
             x:Name="NotScanPage_Container"

@@ -72,6 +72,8 @@ namespace iPMCloud.Mobile
 
         public bool isInitialize = false;
         public bool _isShowing = false;
+        private bool _isOpeningWorkerModal = false;
+        private bool _isOpeningPersonTimesModal = false;
 
         // Platform-specific sync service resolved lazily from DI (Android → ForegroundService, iOS → inline)
         private iPMCloud.Mobile.Services.ISyncService _syncService;
@@ -1580,27 +1582,36 @@ namespace iPMCloud.Mobile
 
         private async void ShowWorkerPage()
         {
+            if (_isOpeningWorkerModal) { return; }
+            _isOpeningWorkerModal = true;
             isInitialize = true;
             overlay.IsVisible = true;
-            await Task.Delay(1);
-
-            if (!Navigation.ModalStack.Contains(WorkerPageContainerView))
+            try
             {
-                await Navigation.PushModalAsync(WorkerPageContainerView, animated: false);
-            }
-            WorkerPage_Container.IsVisible = true;
+                await Task.Delay(1);
 
-            // Handwerker nach Kategorien start anzeigen
-            if (workerSelectedViewIndex == 0)
+                if (!Navigation.ModalStack.Contains(WorkerPageContainerView))
+                {
+                    await Navigation.PushModalAsync(WorkerPageContainerView, animated: false);
+                }
+                WorkerPage_Container.IsVisible = true;
+
+                // Handwerker nach Kategorien start anzeigen
+                if (workerSelectedViewIndex == 0)
+                {
+                    // Wenn noch nicht aufgerufen, dann Initialisieren
+                    //btn_WorkerCategorySearchTapped(null, null);
+                    btn_WorkerBuildingSearchTapped(null, null);
+                }
+
+                await Task.Delay(1);
+                overlay.IsVisible = false;
+                isInitialize = false;
+            }
+            finally
             {
-                // Wenn noch nicht aufgerufen, dann Initialisieren
-                //btn_WorkerCategorySearchTapped(null, null);
-                btn_WorkerBuildingSearchTapped(null, null);
+                _isOpeningWorkerModal = false;
             }
-
-            await Task.Delay(1);
-            overlay.IsVisible = false;
-            isInitialize = false;
         }
 
         private async void ShowNachbuchenPage(int pos)
@@ -6690,6 +6701,7 @@ namespace iPMCloud.Mobile
                 await Navigation.PopModalAsync(animated: false);
             }
             this.Focus();
+            ShowMainPage();
         }
 
         // PersonTimes
@@ -6703,37 +6715,46 @@ namespace iPMCloud.Mobile
 
         private async void ShowPersonTimesPage()
         {
+            if (_isOpeningPersonTimesModal) { return; }
+            _isOpeningPersonTimesModal = true;
             isInitialize = true;
             overlay.IsVisible = true;
-            await Task.Delay(1);
-
-            if (!Navigation.ModalStack.Contains(PersonTimesPageView))
+            try
             {
-                await Navigation.PushModalAsync(PersonTimesPageView, animated: false);
+                await Task.Delay(1);
+
+                if (!Navigation.ModalStack.Contains(PersonTimesPageView))
+                {
+                    await Navigation.PushModalAsync(PersonTimesPageView, animated: false);
+                }
+                await Task.Delay(1);
+                // await list_persontimes_scroll.ScrollToAsync(0, 0, false); // moved into PersonTimesPageView
+                await PersonTimesPageView.ListPersontimesScroll.ScrollToAsync(0, 0, false);
+
+                // pick_persontimes_year.Items.Clear(); // moved into PersonTimesPageView
+                // pick_persontimes_year.Items.Add(DateTime.Now.ToString("yyyy")); // moved into PersonTimesPageView
+                // pick_persontimes_year.Items.Add(DateTime.Now.AddYears(-1).ToString("yyyy")); // moved into PersonTimesPageView
+                // pick_persontimes_year.Items.Add(DateTime.Now.AddYears(-2).ToString("yyyy")); // moved into PersonTimesPageView
+                // pick_persontimes_year.SelectedItem = DateTime.Now.ToString("yyyy"); // moved into PersonTimesPageView
+                // pick_persontimes_month.SelectedItem = DateTime.Now.ToString("MMMM"); // moved into PersonTimesPageView
+                PersonTimesPageView.PickPersontimesYear.Items.Clear();
+                PersonTimesPageView.PickPersontimesYear.Items.Add(DateTime.Now.ToString("yyyy"));
+                PersonTimesPageView.PickPersontimesYear.Items.Add(DateTime.Now.AddYears(-1).ToString("yyyy"));
+                PersonTimesPageView.PickPersontimesYear.Items.Add(DateTime.Now.AddYears(-2).ToString("yyyy"));
+                PersonTimesPageView.PickPersontimesYear.SelectedItem = DateTime.Now.ToString("yyyy");
+                PersonTimesPageView.PickPersontimesMonth.SelectedItem = DateTime.Now.ToString("MMMM");
+
+                // PersonTimesPage_Container.IsVisible = true; // moved into PersonTimesPageView
+                PersonTimesPageView.SetVisible(true);
+
+                await Task.Delay(1);
+                overlay.IsVisible = false;
+                isInitialize = false;
             }
-            await Task.Delay(1);
-            // await list_persontimes_scroll.ScrollToAsync(0, 0, false); // moved into PersonTimesPageView
-            await PersonTimesPageView.ListPersontimesScroll.ScrollToAsync(0, 0, false);
-
-            // pick_persontimes_year.Items.Clear(); // moved into PersonTimesPageView
-            // pick_persontimes_year.Items.Add(DateTime.Now.ToString("yyyy")); // moved into PersonTimesPageView
-            // pick_persontimes_year.Items.Add(DateTime.Now.AddYears(-1).ToString("yyyy")); // moved into PersonTimesPageView
-            // pick_persontimes_year.Items.Add(DateTime.Now.AddYears(-2).ToString("yyyy")); // moved into PersonTimesPageView
-            // pick_persontimes_year.SelectedItem = DateTime.Now.ToString("yyyy"); // moved into PersonTimesPageView
-            // pick_persontimes_month.SelectedItem = DateTime.Now.ToString("MMMM"); // moved into PersonTimesPageView
-            PersonTimesPageView.PickPersontimesYear.Items.Clear();
-            PersonTimesPageView.PickPersontimesYear.Items.Add(DateTime.Now.ToString("yyyy"));
-            PersonTimesPageView.PickPersontimesYear.Items.Add(DateTime.Now.AddYears(-1).ToString("yyyy"));
-            PersonTimesPageView.PickPersontimesYear.Items.Add(DateTime.Now.AddYears(-2).ToString("yyyy"));
-            PersonTimesPageView.PickPersontimesYear.SelectedItem = DateTime.Now.ToString("yyyy");
-            PersonTimesPageView.PickPersontimesMonth.SelectedItem = DateTime.Now.ToString("MMMM");
-
-            // PersonTimesPage_Container.IsVisible = true; // moved into PersonTimesPageView
-            PersonTimesPageView.SetVisible(true);
-
-            await Task.Delay(1);
-            overlay.IsVisible = false;
-            isInitialize = false;
+            finally
+            {
+                _isOpeningPersonTimesModal = false;
+            }
         }
         private async void pick_persontimes_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -6821,6 +6842,7 @@ namespace iPMCloud.Mobile
                 await Navigation.PopModalAsync(animated: false);
             }
             this.Focus();
+            ShowMainPage();
         }
 
 

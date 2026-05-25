@@ -46,6 +46,11 @@ namespace iPMCloud.Mobile
         // Forwarding properties for elements moved into DSGVOPageContainerView
         //private Grid DSGVOPage_Container => DSGVOPageContainerView.ContainerGrid;
         //private Border btn_back_dsgvo => DSGVOPageContainerView.BtnBackDsgvo;
+        private WorkerPageContainerView _workerPageContainerView;
+        private PersonTimesPageView _personTimesPageView;
+        private WorkerPageContainerView WorkerPageContainerView => _workerPageContainerView ??= new WorkerPageContainerView();
+        private PersonTimesPageView PersonTimesPageView => _personTimesPageView ??= new PersonTimesPageView();
+
         // Forwarding properties for elements moved into WorkerPageContainerView
         private Grid WorkerPage_Container => WorkerPageContainerView.ContainerGrid;
         private Border btn_worker_back => WorkerPageContainerView.BtnWorkerBack;
@@ -1579,7 +1584,10 @@ namespace iPMCloud.Mobile
             overlay.IsVisible = true;
             await Task.Delay(1);
 
-            ClearPageViews();
+            if (!Navigation.ModalStack.Contains(WorkerPageContainerView))
+            {
+                await Navigation.PushModalAsync(WorkerPageContainerView, animated: false);
+            }
             WorkerPage_Container.IsVisible = true;
 
             // Handwerker nach Kategorien start anzeigen
@@ -3032,11 +3040,11 @@ namespace iPMCloud.Mobile
         public void ClearPageViews()
         {
             NotScanPage_Container.IsVisible = false;
-            PersonTimesPageView.SetVisible(false);
+            _personTimesPageView?.SetVisible(false);
             NachbuchenPage_Container.IsVisible = false;
             StartPage_Container.IsVisible = false;
             //PN_Page_Container.IsVisible = false;
-            WorkerPage_Container.IsVisible = false;
+            _workerPageContainerView?.ContainerGrid.IsVisible = false;
             //BuildingScanPage_Container.IsVisible = false;
             //BuildingOutScanPage_Container.IsVisible = false;
             BuildingOrderPage_Container.IsVisible = false;
@@ -6674,10 +6682,14 @@ namespace iPMCloud.Mobile
             });
         }
 
-        public void btn_WorkerBackTapped(object sender, EventArgs e)
+        public async void btn_WorkerBackTapped(object sender, EventArgs e)
         {
+            WorkerPage_Container.IsVisible = false;
+            if (Navigation.ModalStack.LastOrDefault() == WorkerPageContainerView)
+            {
+                await Navigation.PopModalAsync(animated: false);
+            }
             this.Focus();
-            ShowMainPage();
         }
 
         // PersonTimes
@@ -6695,7 +6707,10 @@ namespace iPMCloud.Mobile
             overlay.IsVisible = true;
             await Task.Delay(1);
 
-            ClearPageViews();
+            if (!Navigation.ModalStack.Contains(PersonTimesPageView))
+            {
+                await Navigation.PushModalAsync(PersonTimesPageView, animated: false);
+            }
             await Task.Delay(1);
             // await list_persontimes_scroll.ScrollToAsync(0, 0, false); // moved into PersonTimesPageView
             await PersonTimesPageView.ListPersontimesScroll.ScrollToAsync(0, 0, false);
@@ -6794,14 +6809,18 @@ namespace iPMCloud.Mobile
             }
             return 0;
         }
-        public void btn_PersontimesBackTapped(object sender, EventArgs e)
+        public async void btn_PersontimesBackTapped(object sender, EventArgs e)
         {
             // list_persontimes.Children.Clear(); // moved into PersonTimesPageView
             // list_persontimes_scroll.ScrollToAsync(0, 0, false); // moved into PersonTimesPageView
             PersonTimesPageView.ListPersontimes.Children.Clear();
             PersonTimesPageView.ListPersontimesScroll.ScrollToAsync(0, 0, false);
+            PersonTimesPageView.SetVisible(false);
+            if (Navigation.ModalStack.LastOrDefault() == PersonTimesPageView)
+            {
+                await Navigation.PopModalAsync(animated: false);
+            }
             this.Focus();
-            ShowMainPage();
         }
 
 

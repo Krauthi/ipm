@@ -2,7 +2,7 @@ using iPMCloud.Mobile.vo;
 
 namespace iPMCloud.Mobile.Views
 {
-    public partial class WorkerPageContainerView : ContentView
+    public partial class WorkerPageContainerView : ContentPage
     {
         public Grid ContainerGrid => WorkerPage_Container;
         public Border BtnWorkerBack => btn_worker_back;

@@ -3735,19 +3735,6 @@
 
         </Grid>
 
-        <!--  Zeiten person  -->
-        <views:PersonTimesPageView
-            x:Name="PersonTimesPageView"
-            AbsoluteLayout.LayoutBounds="0,0,1,1"
-            AbsoluteLayout.LayoutFlags="All" />
-
-
-        <views:WorkerPageContainerView
-            x:Name="WorkerPageContainerView"
-            AbsoluteLayout.LayoutBounds="0,0,1,1"
-            AbsoluteLayout.LayoutFlags="All" />
-
-
         <Grid
             x:Name="BuildingOrderPage_Container"
             Margin="0,0,0,0"

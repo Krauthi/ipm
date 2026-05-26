@@ -101,6 +101,11 @@ namespace iPMCloud.Mobile
 
         private static void ConfigureModalPage(Page modalPage)
         {
+            if (modalPage == null)
+            {
+                return;
+            }
+
             NavigationPage.SetHasNavigationBar(modalPage, false);
 #if IOS
             modalPage.On<iOS>().SetUseSafeArea(false);

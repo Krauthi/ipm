@@ -2,7 +2,7 @@ using iPMCloud.Mobile.Views;
 
 namespace iPMCloud.Mobile
 {
-    public partial class TodoModalPage : ContentPage
+    public partial class TodoModalPage : ModalFullscreenPage
     {
         public TodoModalPage()
         {

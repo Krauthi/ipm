@@ -6,6 +6,8 @@ using Microsoft.Maui.Hosting;
 using NLog.Extensions.Logging;
 using ZXing.Net.Maui.Controls;
 using iPMCloud.Mobile.Services;
+using MintedTextEditor.Maui;
+
 #if ANDROID
 using iPMCloud.Mobile.Platforms.Android;
 #elif IOS
@@ -34,6 +36,7 @@ namespace iPMCloud.Mobile
                 .UseMauiApp<App>()
                 .UseBarcodeReader()
                 .UseMauiCommunityToolkit()
+                .UseMintedTextEditor()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");

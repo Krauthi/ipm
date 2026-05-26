@@ -1,4 +1,4 @@
-﻿using Microsoft.Maui.Graphics;
+using Microsoft.Maui.Graphics;
 using Microsoft.Maui.Controls;
 
 namespace iPMCloud.Mobile.Controls;
@@ -67,14 +67,20 @@ public class SignaturePadView : GraphicsView, IDrawable
         _isDrawing = true;
         _currentPath = new List<PointF> { e.Touches[0] };
         _paths.Add(_currentPath);
+        Invalidate();
     }
 
     private void OnDragInteraction(object sender, TouchEventArgs e)
     {
         if (_isDrawing && _currentPath != null)
         {
-            _currentPath.Add(e.Touches[0]);
-            Invalidate();
+            var point = e.Touches[0];
+
+            if (_currentPath.Count == 0 || Distance(_currentPath[^1], point) >= 0.5f)
+            {
+                _currentPath.Add(point);
+                Invalidate();
+            }
         }
     }
 
@@ -82,6 +88,7 @@ public class SignaturePadView : GraphicsView, IDrawable
     {
         _isDrawing = false;
         _currentPath = null;
+        Invalidate();
     }
 
     public void Draw(ICanvas canvas, RectF dirtyRect)
@@ -96,21 +103,58 @@ public class SignaturePadView : GraphicsView, IDrawable
         canvas.StrokeLineCap = LineCap.Round;
         canvas.StrokeLineJoin = LineJoin.Round;
 
-        foreach (var path in _paths)
+        foreach (var points in _paths)
         {
-            if (path.Count > 1)
-            {
-                var pathF = new PathF();
-                pathF.MoveTo(path[0]);
-
-                for (int i = 1; i < path.Count; i++)
-                {
-                    pathF.LineTo(path[i]);
-                }
-
-                canvas.DrawPath(pathF);
-            }
+            DrawSmoothPath(canvas, points);
         }
+    }
+
+    private void DrawSmoothPath(ICanvas canvas, List<PointF> points)
+    {
+        if (points == null || points.Count == 0)
+            return;
+
+        if (points.Count == 1)
+        {
+            canvas.FillColor = StrokeColor;
+            canvas.FillCircle(points[0].X, points[0].Y, StrokeWidth / 2f);
+            return;
+        }
+
+        if (points.Count == 2)
+        {
+            var linePath = new PathF();
+            linePath.MoveTo(points[0]);
+            linePath.LineTo(points[1]);
+            canvas.DrawPath(linePath);
+            return;
+        }
+
+        var smoothPath = new PathF();
+        smoothPath.MoveTo(points[0]);
+
+        for (int i = 1; i < points.Count - 1; i++)
+        {
+            var current = points[i];
+            var next = points[i + 1];
+            var midpoint = GetMidpoint(current, next);
+            smoothPath.QuadTo(current.X, current.Y, midpoint.X, midpoint.Y);
+        }
+
+        smoothPath.LineTo(points[^1]);
+        canvas.DrawPath(smoothPath);
+    }
+
+    private static PointF GetMidpoint(PointF first, PointF second)
+    {
+        return new PointF((first.X + second.X) / 2f, (first.Y + second.Y) / 2f);
+    }
+
+    private static float Distance(PointF first, PointF second)
+    {
+        var dx = second.X - first.X;
+        var dy = second.Y - first.Y;
+        return MathF.Sqrt((dx * dx) + (dy * dy));
     }
 
     // Signatur löschen

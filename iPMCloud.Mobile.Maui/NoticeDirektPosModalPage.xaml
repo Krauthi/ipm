@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage
+<local:ModalFullscreenPage
     x:Class="iPMCloud.Mobile.NoticeDirektPosModalPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:iPMCloud.Mobile"
     xmlns:vo="clr-namespace:iPMCloud.Mobile.vo"
     BackgroundColor="#000000">
 
@@ -495,4 +496,4 @@
                 Color="#0078d7" />
         </AbsoluteLayout>
     </Grid>
-</ContentPage>
+</local:ModalFullscreenPage>

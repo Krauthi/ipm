@@ -2,7 +2,7 @@ using iPMCloud.Mobile.vo;
 
 namespace iPMCloud.Mobile
 {
-    public partial class NoticeModalPage : ContentPage
+    public partial class NoticeModalPage : ModalFullscreenPage
     {
         private readonly TaskCompletionSource<NoticeResult?> _tcs = new();
 

@@ -1,6 +1,6 @@
 namespace iPMCloud.Mobile.Views
 {
-    public partial class PersonTimesPageView : ContentPage
+    public partial class PersonTimesPageView : iPMCloud.Mobile.ModalFullscreenPage
     {
         public Grid Container => PersonTimesPage_Container;
 

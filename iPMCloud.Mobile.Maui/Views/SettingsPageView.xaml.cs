@@ -3,7 +3,7 @@ using Microsoft.Maui.ApplicationModel;
 
 namespace iPMCloud.Mobile.Views
 {
-    public partial class SettingsPageView : ContentPage
+    public partial class SettingsPageView : iPMCloud.Mobile.ModalFullscreenPage
     {
         //private const int LogSendDelayMilliseconds = 2000;
 

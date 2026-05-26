@@ -6,55 +6,62 @@ namespace iPMCloud.Mobile;
 
 public static class iOSFullscreen
 {
-    private static UIWindow? _overlayWindow;
-
     public static void SetFullscreen(bool enabled)
     {
         MainThread.BeginInvokeOnMainThread(() =>
         {
-            if (enabled)
-                ShowOverlayThatHidesStatusBar();
-            else
-                HideOverlay();
+            ApplyStatusBarVisibility(enabled);
+            ApplyToActiveViewController(enabled);
         });
     }
 
-    private static void ShowOverlayThatHidesStatusBar()
+    private static void ApplyStatusBarVisibility(bool hidden)
     {
-        if (_overlayWindow != null)
-            return;
+        UIApplication.SharedApplication.SetStatusBarHidden(hidden, UIStatusBarAnimation.None);
+    }
 
-        var windowScene = UIApplication.SharedApplication.ConnectedScenes
+    private static void ApplyToActiveViewController(bool hidden)
+    {
+        var activeScene = UIApplication.SharedApplication.ConnectedScenes
             .OfType<UIWindowScene>()
-            .FirstOrDefault(s => s.ActivationState == UISceneActivationState.ForegroundActive);
+            .FirstOrDefault(scene => scene.ActivationState == UISceneActivationState.ForegroundActive);
 
-        if (windowScene == null)
-            return;
-
-        _overlayWindow = new UIWindow(windowScene)
+        if (activeScene == null)
         {
-            WindowLevel = UIWindowLevel.StatusBar + 1, // über der Statusbar
-            RootViewController = new StatusBarHiddenController(),
-            Hidden = false
-        };
-
-        _overlayWindow.MakeKeyAndVisible();
-    }
-
-    private static void HideOverlay()
-    {
-        if (_overlayWindow == null)
             return;
+        }
 
-        _overlayWindow.Hidden = true;
-        _overlayWindow.RootViewController?.Dispose();
-        _overlayWindow.Dispose();
-        _overlayWindow = null;
+        foreach (var window in activeScene.Windows)
+        {
+            if (window.RootViewController == null)
+            {
+                continue;
+            }
+
+            ApplyToController(window.RootViewController, hidden);
+        }
     }
 
-    private sealed class StatusBarHiddenController : UIViewController
+    private static void ApplyToController(UIViewController controller, bool hidden)
     {
-        public override bool PrefersStatusBarHidden() => true;
+        if (hidden)
+        {
+            controller.ModalPresentationStyle = UIModalPresentationStyle.FullScreen;
+        }
+
+        controller.ModalPresentationCapturesStatusBarAppearance = hidden;
+        controller.SetNeedsStatusBarAppearanceUpdate();
+
+        var presentedController = controller.PresentedViewController;
+        if (presentedController != null)
+        {
+            ApplyToController(presentedController, hidden);
+        }
+
+        foreach (var child in controller.Children)
+        {
+            ApplyToController(child, hidden);
+        }
     }
 }
 #endif

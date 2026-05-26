@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace iPMCloud.Mobile
 { 
-    public partial class SignatureModalPage : ContentPage
+    public partial class SignatureModalPage : ModalFullscreenPage
     {
         private readonly TaskCompletionSource<SignatureResult?> _tcs = new();
         public Task<SignatureResult?> Result => _tcs.Task;

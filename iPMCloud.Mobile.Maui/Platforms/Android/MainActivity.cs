@@ -139,6 +139,15 @@ namespace iPMCloud.Mobile
             Log.Debug(TAG, "OnResume");
         }
 
+        public override void OnWindowFocusChanged(bool hasFocus)
+        {
+            base.OnWindowFocusChanged(hasFocus);
+            if (hasFocus)
+            {
+                HideNavAndStatusBar();
+            }
+        }
+
         protected override void OnPause()
         {
             base.OnPause();
@@ -217,37 +226,7 @@ namespace iPMCloud.Mobile
         {
             try
             {
-                if (Window?.DecorView == null) return;
-
-                if (Build.VERSION.SdkInt >= BuildVersionCodes.R) // Android 11+ (API 30)
-                {
-                    // ✅ Moderne API: WindowInsetsController
-                    var windowInsetsController = Window.InsetsController;
-
-                    if (windowInsetsController != null)
-                    {
-                        // System Bars verstecken
-                        windowInsetsController.Hide(WindowInsets.Type.StatusBars() | WindowInsets.Type.NavigationBars());
-
-                        // Immersive Sticky Mode
-                        windowInsetsController.SystemBarsBehavior = (int)WindowInsetsControllerBehavior.ShowTransientBarsBySwipe;
-                    }
-                }
-                else
-                {
-                    // ✅ Fallback für Android 10 und älter
-#pragma warning disable CS0618 // Type or member is obsolete
-                    var uiOptions = (int)Window.DecorView.SystemUiVisibility;
-                    uiOptions |= (int)SystemUiFlags.LayoutStable;
-                    uiOptions |= (int)SystemUiFlags.LayoutHideNavigation;
-                    uiOptions |= (int)SystemUiFlags.LayoutFullscreen;
-                    uiOptions |= (int)SystemUiFlags.HideNavigation;
-                    uiOptions |= (int)SystemUiFlags.Fullscreen;
-                    uiOptions |= (int)SystemUiFlags.ImmersiveSticky;
-
-                    Window.DecorView.SystemUiVisibility = (StatusBarVisibility)uiOptions;
-#pragma warning restore CS0618
-                }
+                AndroidFullscreen.SetFullscreen(true);
             }
             catch (Exception ex)
             {

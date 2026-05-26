@@ -2,7 +2,7 @@ using iPMCloud.Mobile.vo;
 
 namespace iPMCloud.Mobile
 {
-    public partial class NoticeDirektPosModalPage : ContentPage
+    public partial class NoticeDirektPosModalPage : ModalFullscreenPage
     {
         private readonly TaskCompletionSource<NoticeDirektPosResult?> _tcs = new();
         private readonly LeistungWSO _selectedPosForNotice;

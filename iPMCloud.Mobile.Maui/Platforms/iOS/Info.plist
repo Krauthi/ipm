@@ -55,7 +55,7 @@
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
-	<true/>
+	<false/>
 	<key>UIRequiresFullScreen</key>
 	<true/>
 	<key>UIBackgroundModes</key>

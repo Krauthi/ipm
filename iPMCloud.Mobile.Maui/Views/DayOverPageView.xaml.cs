@@ -3,7 +3,7 @@ using Microsoft.Maui.ApplicationModel;
 
 namespace iPMCloud.Mobile.Views
 {
-    public partial class DayOverPageView : ContentPage
+    public partial class DayOverPageView : iPMCloud.Mobile.ModalFullscreenPage
     {
         public DayOverPageView()
         {

@@ -4,7 +4,7 @@ using ZXing.Net.Maui;
 
 namespace iPMCloud.Mobile
 {
-    public partial class ScanObjModalPage : ContentPage
+    public partial class ScanObjModalPage : ModalFullscreenPage
     {
         private TaskCompletionSource<string> _tcs;
         private bool _completed;

@@ -1,8 +1,9 @@
 ﻿#if ANDROID
 using Android.App;
-using Android.OS;
-using Android.Views;
+using AndroidX.Core.View;
 using Microsoft.Maui.ApplicationModel;
+
+namespace iPMCloud.Mobile;
 
 public static class AndroidFullscreen
 {
@@ -13,36 +14,22 @@ public static class AndroidFullscreen
             var activity = Platform.CurrentActivity;
             if (activity == null) return;
 
-            if (Build.VERSION.SdkInt >= BuildVersionCodes.R)
-            {
-                var controller = activity.Window.InsetsController;
-                if (controller == null) return;
+            var window = activity.Window;
+            if (window == null || window.DecorView == null) return;
 
-                if (enabled)
-                {
-                    controller.Hide(WindowInsets.Type.StatusBars() | WindowInsets.Type.NavigationBars());
-                    controller.SystemBarsBehavior =
-                        (int)WindowInsetsControllerBehavior.ShowTransientBarsBySwipe;
-                }
-                else
-                {
-                    controller.Show(WindowInsets.Type.StatusBars() | WindowInsets.Type.NavigationBars());
-                }
+            WindowCompat.SetDecorFitsSystemWindows(window, !enabled);
+
+            var controller = WindowCompat.GetInsetsController(window, window.DecorView);
+            if (controller == null) return;
+
+            if (enabled)
+            {
+                controller.Hide(WindowInsetsCompat.Type.StatusBars() | WindowInsetsCompat.Type.NavigationBars());
+                controller.SystemBarsBehavior = WindowInsetsControllerCompat.BehaviorShowTransientBarsBySwipe;
             }
             else
             {
-#pragma warning disable CS0618
-                if (enabled)
-                    activity.Window.DecorView.SystemUiVisibility = (StatusBarVisibility)(
-                        SystemUiFlags.Fullscreen |
-                        SystemUiFlags.HideNavigation |
-                        SystemUiFlags.ImmersiveSticky |
-                        SystemUiFlags.LayoutFullscreen |
-                        SystemUiFlags.LayoutHideNavigation |
-                        SystemUiFlags.LayoutStable);
-                else
-                    activity.Window.DecorView.SystemUiVisibility = StatusBarVisibility.Visible;
-#pragma warning restore CS0618
+                controller.Show(WindowInsetsCompat.Type.StatusBars() | WindowInsetsCompat.Type.NavigationBars());
             }
         });
     }

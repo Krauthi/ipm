@@ -10,6 +10,10 @@ using System.Collections.Generic;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Controls.Xaml;
 using Microsoft.Maui.ApplicationModel;
+#if IOS
+using Microsoft.Maui.Controls.PlatformConfiguration;
+using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
+#endif
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace iPMCloud.Mobile
@@ -37,6 +41,8 @@ namespace iPMCloud.Mobile
         {
 
             InitializeComponent();
+            ConfigureModalFullscreenHandling();
+            EnforceFullscreen();
 
             if (StorageMigration.HasMigrateIpmFolder())
             {
@@ -69,6 +75,46 @@ namespace iPMCloud.Mobile
                 });
             }
 
+        }
+
+        private void ConfigureModalFullscreenHandling()
+        {
+            ModalPushing += OnModalPushing;
+            ModalPushed += OnModalPushed;
+            ModalPopped += OnModalPopped;
+        }
+
+        private void OnModalPushing(object sender, ModalPushingEventArgs e)
+        {
+            ConfigureModalPage(e.Modal);
+        }
+
+        private void OnModalPushed(object sender, ModalPushedEventArgs e)
+        {
+            EnforceFullscreen();
+        }
+
+        private void OnModalPopped(object sender, ModalPoppedEventArgs e)
+        {
+            EnforceFullscreen();
+        }
+
+        private static void ConfigureModalPage(Page modalPage)
+        {
+            NavigationPage.SetHasNavigationBar(modalPage, false);
+#if IOS
+            modalPage.On<iOS>().SetUseSafeArea(false);
+#endif
+        }
+
+        private static void EnforceFullscreen()
+        {
+#if ANDROID
+            AndroidFullscreen.SetFullscreen(true);
+#endif
+#if IOS
+            iOSFullscreen.SetFullscreen(true);
+#endif
         }
         public void AppStart()
         {
@@ -147,6 +193,7 @@ namespace iPMCloud.Mobile
 
         protected override void OnStart()
         {
+            EnforceFullscreen();
             if (AppModel.Instance.DeviceSystem == "ios")
             {
                 // TODO: Replace DependencyService with DI
@@ -236,6 +283,7 @@ namespace iPMCloud.Mobile
         {
             try
             {
+                EnforceFullscreen();
                 if (AppModel.Instance.DeviceSystem == "ios")
                 {
                     // TODO: Replace DependencyService with DI

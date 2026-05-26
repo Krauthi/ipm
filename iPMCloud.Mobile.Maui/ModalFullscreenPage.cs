@@ -8,6 +8,8 @@ namespace iPMCloud.Mobile;
 
 public abstract class ModalFullscreenPage : ContentPage
 {
+    private const int FirstDelayedReapplyMs = 60;
+    private const int SecondDelayedReapplyMs = 160;
     private int _fullscreenPassId;
 
     protected ModalFullscreenPage()
@@ -71,7 +73,7 @@ public abstract class ModalFullscreenPage : ContentPage
         }
 
         await MainThread.InvokeOnMainThreadAsync(ApplyFullscreenNow);
-        await Task.Delay(60);
+        await Task.Delay(FirstDelayedReapplyMs);
 
         if (passId != _fullscreenPassId || !IsVisible)
         {
@@ -79,7 +81,7 @@ public abstract class ModalFullscreenPage : ContentPage
         }
 
         await MainThread.InvokeOnMainThreadAsync(ApplyFullscreenNow);
-        await Task.Delay(160);
+        await Task.Delay(SecondDelayedReapplyMs);
 
         if (passId != _fullscreenPassId || !IsVisible)
         {

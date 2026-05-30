@@ -38,36 +38,36 @@ namespace iPMCloud.Mobile
 
             InitializeComponent();
 
-            if (StorageMigration.HasMigrateIpmFolder())
-            {
+            //if (StorageMigration.HasMigrateIpmFolder())
+            //{
                 AppStart(); 
-            }
-            else
-            {
-                Task.Run(async () =>
-                {
-                    var migrated = await StorageMigration.MigrateIpmFolderAsync();
-                    if (migrated)
-                    {
-                        // Alte Files wurden erfolgreich migriert
-                        MainThread.BeginInvokeOnMainThread(() =>
-                        {
-                            AppModel.Logger.Info("INFO: Alte Files wurden erfolgreich migriert");
-                            AppStart();
-                        });
-                    }
-                    else
-                    {
-                        // Alte Files konnten nicht migriert werden, wahrscheinlich weil sie nicht mehr existieren
-                        MainThread.BeginInvokeOnMainThread(() =>
-                        {
-                            AppModel.Logger.Error("ERROR: Alte Files konnten nicht migriert werden, wahrscheinlich weil sie nicht mehr existieren");
-                            AppModel.Instance.MigrationFailed = true;
-                            AppStart();
-                        });
-                    }
-                });
-            }
+            //}
+            //else
+            //{
+            //    Task.Run(async () =>
+            //    {
+            //        var migrated = await StorageMigration.MigrateIpmFolderAsync();
+            //        if (migrated)
+            //        {
+            //            // Alte Files wurden erfolgreich migriert
+            //            MainThread.BeginInvokeOnMainThread(() =>
+            //            {
+            //                AppModel.Logger.Info("INFO: Alte Files wurden erfolgreich migriert");
+            //                AppStart();
+            //            });
+            //        }
+            //        else
+            //        {
+            //            // Alte Files konnten nicht migriert werden, wahrscheinlich weil sie nicht mehr existieren
+            //            MainThread.BeginInvokeOnMainThread(() =>
+            //            {
+            //                AppModel.Logger.Error("ERROR: Alte Files konnten nicht migriert werden, wahrscheinlich weil sie nicht mehr existieren");
+            //                AppModel.Instance.MigrationFailed = true;
+            //                AppStart();
+            //            });
+            //        }
+            //    });
+            //}
 
         }
         public void AppStart()

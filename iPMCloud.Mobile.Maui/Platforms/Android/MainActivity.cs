@@ -90,7 +90,7 @@ namespace iPMCloud.Mobile
 
 
                 // Status Bar Color
-                if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop)
+                if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop && Build.VERSION.SdkInt < (BuildVersionCodes)35)
                 {
                     Window?.SetStatusBarColor(Android.Graphics.Color.Argb(255, 0, 0, 0));
                 }
@@ -135,6 +135,20 @@ namespace iPMCloud.Mobile
         protected override void OnResume()
         {
             base.OnResume();
+            if (Window != null)
+            {
+                // SetNavigationBarColor ist ab API 35 veraltet
+                if (Build.VERSION.SdkInt < (BuildVersionCodes)35)
+                {
+                    Window.SetNavigationBarColor(Android.Graphics.Color.Black);
+                }
+                
+                // SetStatusBarColor könnte auch betroffen sein
+                if (Build.VERSION.SdkInt < (BuildVersionCodes)35)
+                {
+                    Window.SetStatusBarColor(Android.Graphics.Color.Black);
+                }
+            }
             HideNavAndStatusBar();
             Log.Debug(TAG, "OnResume");
         }
@@ -200,6 +214,20 @@ namespace iPMCloud.Mobile
         {
             try
             {
+                if (Window != null)
+                {
+                    // SetNavigationBarColor ist ab API 35 veraltet
+                    if (Build.VERSION.SdkInt < (BuildVersionCodes)35)
+                    {
+                        Window.SetNavigationBarColor(Android.Graphics.Color.Black);
+                    }
+
+                    // SetStatusBarColor könnte auch betroffen sein
+                    if (Build.VERSION.SdkInt < (BuildVersionCodes)35)
+                    {
+                        Window.SetStatusBarColor(Android.Graphics.Color.Black);
+                    }
+                }
                 HideNavAndStatusBar();
                 
                 if (Window?.DecorView != null)
@@ -279,6 +307,20 @@ namespace iPMCloud.Mobile
 
         private void DecorView_SystemUiVisibilityChange(object sender, Android.Views.View.SystemUiVisibilityChangeEventArgs e)
         {
+            if (Window != null)
+            {
+                // SetNavigationBarColor ist ab API 35 veraltet
+                if (Build.VERSION.SdkInt < (BuildVersionCodes)35)
+                {
+                    Window.SetNavigationBarColor(Android.Graphics.Color.Black);
+                }
+
+                // SetStatusBarColor könnte auch betroffen sein
+                if (Build.VERSION.SdkInt < (BuildVersionCodes)35)
+                {
+                    Window.SetStatusBarColor(Android.Graphics.Color.Black);
+                }
+            }
             HideNavAndStatusBar();
         }
 

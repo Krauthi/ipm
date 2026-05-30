@@ -128,16 +128,9 @@ namespace iPMCloud.Mobile
         private void CheckNoticeFalid()
         {
             var text = entry_notice.Text?.Trim() ?? "";
-            if (text != null && text.Length > 0)
-            {
-                notizSave_stack.IsVisible =
+            notizSave_stack.IsVisible =
                     !string.IsNullOrWhiteSpace(text) ||
                     _SelectedBemerkungForNotice.photos.Count > 0;
-            }
-            else
-            {
-                notizSave_stack.IsVisible = false;
-            }
         }
 
         public async Task btn_takePhotos(object sender, TappedEventArgs e)
@@ -217,6 +210,7 @@ namespace iPMCloud.Mobile
             }
             finally
             {
+                CheckNoticeFalid();
                 overlay.IsVisible = false;
                 AppModel.Instance.UseExternHardware = false;
             }

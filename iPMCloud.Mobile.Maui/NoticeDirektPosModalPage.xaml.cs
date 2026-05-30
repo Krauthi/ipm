@@ -165,19 +165,13 @@ namespace iPMCloud.Mobile
 
         private void CheckNoticeFalid()
         {
-            if (_selectedBemerkungForNotice != null)
-            {
-                notizSave_stack.IsVisible =
-                    !string.IsNullOrWhiteSpace(entry_notice.Text) ||
+            var text = entry_notice.Text?.Trim() ?? "";
+            notizSave_stack.IsVisible =
+                    !string.IsNullOrWhiteSpace(text) ||
                     _selectedBemerkungForNotice.photos.Count > 0;
-                btn_notice_del.IsVisible = true;
-            }
-            else
-            {
-                notizSave_stack.IsVisible = false;
-                btn_notice_del.IsVisible = false;
-            }
+            btn_notice_del.IsVisible = notizSave_stack.IsVisible;
         }
+       
 
         public async Task btn_takePhoto(object sender, TappedEventArgs e)
         {
@@ -252,6 +246,7 @@ namespace iPMCloud.Mobile
             }
             finally
             {
+                CheckNoticeFalid();
                 AppModel.Instance.UseExternHardware = false;
                 overlay.IsVisible = false;
             }
@@ -318,6 +313,7 @@ namespace iPMCloud.Mobile
                         _selectedBemerkungForNotice.photos.Add(bildWSO);
                         noticePhotoStack.Children.Add(bildWSO.stack);
                     }
+                    CheckNoticeFalid();
                 }
             }
             catch (FeatureNotSupportedException exn)

@@ -7228,7 +7228,7 @@ namespace iPMCloud.Mobile
             if (AppModel.Instance.LastBuilding != null)
             {
                 last_building_name.IsVisible = !String.IsNullOrWhiteSpace(AppModel.Instance.LastBuilding.objektname);
-                last_building_addressZipCity.IsVisible = !String.IsNullOrWhiteSpace(AppModel.Instance.LastBuilding.objektname);
+                //last_building_addressZipCity.IsVisible = !String.IsNullOrWhiteSpace(AppModel.Instance.LastBuilding.objektname);
                 last_building_name.Text = AppModel.Instance.LastBuilding.objektname;
                 last_building_address.Text = AppModel.Instance.LastBuilding.strasse + " " + AppModel.Instance.LastBuilding.hsnr;
                 var la = AppModel.Instance.LastBuilding.land.Length > 2 ? AppModel.Instance.LastBuilding.land.Substring(0, 3) : ((String.IsNullOrWhiteSpace(AppModel.Instance.LastBuilding.land) ? "" : AppModel.Instance.LastBuilding.land));

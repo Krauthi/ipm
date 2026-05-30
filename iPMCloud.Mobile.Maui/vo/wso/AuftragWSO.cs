@@ -841,7 +841,7 @@ namespace iPMCloud.Mobile
             value.IsVisible = !value.IsVisible;
         }
 
-        public static StackLayout GetOrderTodoCardView(AuftragWSO order, AppModel model, double _prio, bool onlyText)
+        public static VerticalStackLayout GetOrderTodoCardView(AuftragWSO order, AppModel model, double _prio, bool onlyText)
         {
             var imageL = new Image
             {
@@ -858,16 +858,15 @@ namespace iPMCloud.Mobile
                 TextColor = Color.FromArgb("#cccccc"),
                 Margin = new Thickness(5, 0, 5, 1),
                 FontSize = 16,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
                 LineBreakMode = LineBreakMode.WordWrap,
             };
-            var h = new StackLayout()
+            var h = new HorizontalStackLayout()
             {
                 Padding = new Thickness(5, 5, 5, 5),
                 Margin = new Thickness(0, 0, 0, 0),
                 Spacing = 0,
-                Orientation = StackOrientation.Horizontal,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
                 BackgroundColor = onlyText ? Color.FromArgb("#aa04532d") : Color.FromArgb("#aa042d53"),
             };
 
@@ -892,39 +891,39 @@ namespace iPMCloud.Mobile
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(20, 1, 0, 1),
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
                 BackgroundColor = Colors.Transparent,
                 Content = h,
                 ClassId = "" + order.id,
             };
 
-            var container = new StackLayout
+            var container = new VerticalStackLayout
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(0),
                 Spacing = 0,
-                Orientation = StackOrientation.Vertical,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
                 IsVisible = false,
+                MinimumHeightRequest = 100,
+                BackgroundColor = Color.FromArgb("#22f42d53"),
             };
 
             mainFrame.GestureRecognizers.Clear();
-            mainFrame.GestureRecognizers.Add(new TapGestureRecognizer() { Command = new Command<StackLayout>(ShowCategoryContainer), CommandParameter = container });
+            mainFrame.GestureRecognizers.Add(new TapGestureRecognizer() { Command = new Command<VerticalStackLayout>(ShowCategoryContainer), CommandParameter = container });
 
-            var wrapper = new StackLayout
+            var wrapper = new VerticalStackLayout
             {
                 Padding = new Thickness(0),
                 Margin = new Thickness(0),
                 Spacing = 0,
-                Orientation = StackOrientation.Vertical,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
                 Children = { mainFrame, container }
             };
 
             return wrapper;
         }
         
-        public static void ShowCategoryContainer(StackLayout value)
+        public static void ShowCategoryContainer(VerticalStackLayout value)
         {
             value.IsVisible = !value.IsVisible;
         }

@@ -5,9 +5,9 @@ using Microsoft.Maui.Storage;
 namespace iPMCloud.Mobile.vo
 {
 
-    public static class StorageMigration
+    public static class StorageMigrationX
     {
-        private const string MigrationKey = "Migrated_ipm_To_LocalApplicationData_ipm_3000020";
+        private const string MigrationKey = "Migrated_ipm_To_LocalApplicationData_ipm_3000032";
 
         public static bool HasMigrateIpmFolder()
         {

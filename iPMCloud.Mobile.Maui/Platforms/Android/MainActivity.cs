@@ -42,6 +42,12 @@ namespace iPMCloud.Mobile
         internal static readonly int NOTIFICATION_ID = 100;
 
         private static readonly string TAG = "IPM-CLOUD-MainActivity";
+        private const long SystemUiDebounceMs = 250;
+
+        private bool _systemUiHandlerAttached;
+        private bool _pendingSystemUiApply;
+        private bool _isApplyingSystemUi;
+        private long _lastSystemUiApplyAt;
 
         #endregion
 
@@ -51,56 +57,35 @@ namespace iPMCloud.Mobile
         {
             try
             {
-                Instance = this;
-                
-                // ✅ MAUI Platform initialisieren (WICHTIG!)
-                Platform.Init(this, savedInstanceState);
-
-                // NLog initialisieren
-                InitializeNLog();
-
-                // AppModel initialisieren
-                model = AppModel.Instance;
-                //model.Activity = this;
-                // AppModel initialisieren
-                model.HasInitAppmodel = model.InitAppModel();
-
-                // Font Scale vor base.OnCreate setzen
-                InitFontScale();
-
-
-                // UI Konfiguration
-                ConfigureUI();
-
-                // App Version setzen
-                SetAppVersion();
-
-
-                // Notification Channel erstellen
-                //CreateNotificationChannel();
+                Log.Info(TAG, $"OnCreate start (savedInstanceState={(savedInstanceState != null ? "available" : "null")})");
 
                 base.OnCreate(savedInstanceState);
 
-                // Google Play Services Check
+                Instance = this;
+
+                Platform.Init(this, savedInstanceState);
+                InitializeNLog();
+
+                model = AppModel.Instance;
+                model.HasInitAppmodel = model.InitAppModel();
+
+                InitFontScale();
+                SetAppVersion();
+                ConfigureUI();
+                LogDeferredPermissionStrategy();
+
                 if (!GooglePlayServicesChecker.IsAvailable(this))
                 {
                     Log.Warn(TAG, "Google Play Services nicht verfügbar");
-                }
-
-
-
-                // Status Bar Color
-                if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop && Build.VERSION.SdkInt < (BuildVersionCodes)35)
-                {
-                    Window?.SetStatusBarColor(Android.Graphics.Color.Argb(255, 0, 0, 0));
                 }
 
                 Log.Info(TAG, "MainActivity erfolgreich initialisiert");
             }
             catch (Exception ex)
             {
-                Log.Error(TAG, $"OnCreate Error: {ex.Message}");
-                AppModel.Logger?.Error($"MainActivity OnCreate: {ex.Message}");
+                Log.Error(TAG, $"Fatal OnCreate Error: {ex}");
+                AppModel.Logger?.Error($"MainActivity OnCreate fatal: {ex}");
+                FinishAfterFatalInitializationError();
             }
         }
 
@@ -122,7 +107,7 @@ namespace iPMCloud.Mobile
             }
             catch (Exception ex)
             {
-                Log.Error(TAG, $"OnNewIntent Error: {ex.Message}");
+                Log.Error(TAG, $"OnNewIntent Error: {ex}");
             }
         }
 
@@ -135,21 +120,8 @@ namespace iPMCloud.Mobile
         protected override void OnResume()
         {
             base.OnResume();
-            if (Window != null)
-            {
-                // SetNavigationBarColor ist ab API 35 veraltet
-                if (Build.VERSION.SdkInt < (BuildVersionCodes)35)
-                {
-                    Window.SetNavigationBarColor(Android.Graphics.Color.Black);
-                }
-                
-                // SetStatusBarColor könnte auch betroffen sein
-                if (Build.VERSION.SdkInt < (BuildVersionCodes)35)
-                {
-                    Window.SetStatusBarColor(Android.Graphics.Color.Black);
-                }
-            }
-            HideNavAndStatusBar();
+            ApplySystemBarColors();
+            ScheduleSystemUiUpdate("OnResume");
             Log.Debug(TAG, "OnResume");
         }
 
@@ -169,18 +141,26 @@ namespace iPMCloud.Mobile
         {
             try
             {
-                if (Window?.DecorView != null)
-                {
-                    Window.DecorView.SystemUiVisibilityChange -= DecorView_SystemUiVisibilityChange;
-                }
+                DetachSystemUiVisibilityHandler();
             }
             catch (Exception ex)
             {
-                Log.Error(TAG, $"OnDestroy Error: {ex.Message}");
+                Log.Error(TAG, $"OnDestroy Error: {ex}");
             }
             
             base.OnDestroy();
             Log.Debug(TAG, "OnDestroy");
+        }
+
+        public override void OnWindowFocusChanged(bool hasFocus)
+        {
+            base.OnWindowFocusChanged(hasFocus);
+            Log.Debug(TAG, $"OnWindowFocusChanged: hasFocus={hasFocus}");
+
+            if (hasFocus)
+            {
+                ScheduleSystemUiUpdate("OnWindowFocusChanged", force: true);
+            }
         }
 
         #endregion
@@ -206,7 +186,7 @@ namespace iPMCloud.Mobile
             }
             catch (Exception ex)
             {
-                Log.Error(TAG, $"InitFontScale Error: {ex.Message}");
+                Log.Error(TAG, $"InitFontScale Error: {ex}");
             }
         }
 
@@ -214,56 +194,73 @@ namespace iPMCloud.Mobile
         {
             try
             {
-                if (Window != null)
-                {
-                    // SetNavigationBarColor ist ab API 35 veraltet
-                    if (Build.VERSION.SdkInt < (BuildVersionCodes)35)
-                    {
-                        Window.SetNavigationBarColor(Android.Graphics.Color.Black);
-                    }
-
-                    // SetStatusBarColor könnte auch betroffen sein
-                    if (Build.VERSION.SdkInt < (BuildVersionCodes)35)
-                    {
-                        Window.SetStatusBarColor(Android.Graphics.Color.Black);
-                    }
-                }
-                HideNavAndStatusBar();
-                
-                if (Window?.DecorView != null)
-                {
-                    Window.DecorView.SystemUiVisibilityChange += DecorView_SystemUiVisibilityChange;
-                }
+                ApplySystemBarColors();
+                AttachSystemUiVisibilityHandlerIfNeeded();
             }
             catch (Exception ex)
             {
-                Log.Error(TAG, $"ConfigureUI Error: {ex.Message}");
+                Log.Error(TAG, $"ConfigureUI Error: {ex}");
             }
         }
 
-        private void HideNavAndStatusBar()
+        private void ScheduleSystemUiUpdate(string source, bool force = false)
         {
             try
             {
-                if (Window?.DecorView == null) return;
+                var decorView = Window?.DecorView;
+                if (decorView == null || IsFinishing || IsDestroyed)
+                {
+                    return;
+                }
+
+                if (_pendingSystemUiApply && !force)
+                {
+                    return;
+                }
+
+                _pendingSystemUiApply = true;
+                decorView.Post(() =>
+                {
+                    _pendingSystemUiApply = false;
+                    HideNavAndStatusBar(source, force);
+                });
+            }
+            catch (Exception ex)
+            {
+                Log.Error(TAG, $"ScheduleSystemUiUpdate Error ({source}): {ex}");
+            }
+        }
+
+        private void HideNavAndStatusBar(string source, bool force = false)
+        {
+            try
+            {
+                if (Window?.DecorView == null || IsFinishing || IsDestroyed || _isApplyingSystemUi)
+                {
+                    return;
+                }
+
+                var now = SystemClock.ElapsedRealtime();
+                if (!force && now - _lastSystemUiApplyAt < SystemUiDebounceMs)
+                {
+                    return;
+                }
+
+                _isApplyingSystemUi = true;
+                ApplySystemBarColors();
 
                 if (Build.VERSION.SdkInt >= BuildVersionCodes.R) // Android 11+ (API 30)
                 {
-                    // ✅ Moderne API: WindowInsetsController
                     var windowInsetsController = Window.InsetsController;
 
                     if (windowInsetsController != null)
                     {
-                        // System Bars verstecken
                         windowInsetsController.Hide(WindowInsets.Type.StatusBars() | WindowInsets.Type.NavigationBars());
-
-                        // Immersive Sticky Mode
                         windowInsetsController.SystemBarsBehavior = (int)WindowInsetsControllerBehavior.ShowTransientBarsBySwipe;
                     }
                 }
                 else
                 {
-                    // ✅ Fallback für Android 10 und älter
 #pragma warning disable CS0618 // Type or member is obsolete
                     var uiOptions = (int)Window.DecorView.SystemUiVisibility;
                     uiOptions |= (int)SystemUiFlags.LayoutStable;
@@ -276,10 +273,17 @@ namespace iPMCloud.Mobile
                     Window.DecorView.SystemUiVisibility = (StatusBarVisibility)uiOptions;
 #pragma warning restore CS0618
                 }
+
+                _lastSystemUiApplyAt = now;
+                Log.Debug(TAG, $"System UI applied from {source}");
             }
             catch (Exception ex)
             {
-                Log.Error(TAG, $"HideNavAndStatusBar Error: {ex.Message}");
+                Log.Error(TAG, $"HideNavAndStatusBar Error ({source}): {ex}");
+            }
+            finally
+            {
+                _isApplyingSystemUi = false;
             }
         }
 
@@ -307,21 +311,29 @@ namespace iPMCloud.Mobile
 
         private void DecorView_SystemUiVisibilityChange(object sender, Android.Views.View.SystemUiVisibilityChangeEventArgs e)
         {
-            if (Window != null)
+            try
             {
-                // SetNavigationBarColor ist ab API 35 veraltet
-                if (Build.VERSION.SdkInt < (BuildVersionCodes)35)
+                if (Build.VERSION.SdkInt >= BuildVersionCodes.R || _isApplyingSystemUi)
                 {
-                    Window.SetNavigationBarColor(Android.Graphics.Color.Black);
+                    return;
                 }
 
-                // SetStatusBarColor könnte auch betroffen sein
-                if (Build.VERSION.SdkInt < (BuildVersionCodes)35)
+                ApplySystemBarColors();
+
+#pragma warning disable CS0618 // Type or member is obsolete
+                var isNavigationVisible = (((SystemUiFlags)e.Visibility) & SystemUiFlags.HideNavigation) == 0;
+                var isStatusVisible = (((SystemUiFlags)e.Visibility) & SystemUiFlags.Fullscreen) == 0;
+#pragma warning restore CS0618
+
+                if (isNavigationVisible || isStatusVisible)
                 {
-                    Window.SetStatusBarColor(Android.Graphics.Color.Black);
+                    ScheduleSystemUiUpdate("SystemUiVisibilityChange");
                 }
             }
-            HideNavAndStatusBar();
+            catch (Exception ex)
+            {
+                Log.Error(TAG, $"DecorView_SystemUiVisibilityChange Error: {ex}");
+            }
         }
 
         #endregion
@@ -339,7 +351,13 @@ namespace iPMCloud.Mobile
                 base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
 
                 // Log granted/denied permissions
-                for (int i = 0; i < permissions.Length; i++)
+                var resultCount = Math.Min(permissions?.Length ?? 0, grantResults?.Length ?? 0);
+                if (resultCount != (permissions?.Length ?? 0))
+                {
+                    Log.Warn(TAG, $"Permission result count mismatch: permissions={permissions?.Length ?? 0}, grantResults={grantResults?.Length ?? 0}");
+                }
+
+                for (int i = 0; i < resultCount; i++)
                 {
                     var granted = grantResults[i] == Permission.Granted;
                     Log.Debug(TAG, $"Permission {permissions[i]}: {(granted ? "Granted" : "Denied")}");
@@ -347,7 +365,7 @@ namespace iPMCloud.Mobile
             }
             catch (Exception ex)
             {
-                Log.Error(TAG, $"OnRequestPermissionsResult Error: {ex.Message}");
+                Log.Error(TAG, $"OnRequestPermissionsResult Error: {ex}");
             }
         }
 
@@ -394,7 +412,7 @@ namespace iPMCloud.Mobile
             }
             catch (Exception ex)
             {
-                Log.Error(TAG, $"CreateNotificationChannel Error: {ex.Message}");
+                Log.Error(TAG, $"CreateNotificationChannel Error: {ex}");
             }
         }
 
@@ -413,7 +431,7 @@ namespace iPMCloud.Mobile
             }
             catch (Exception ex)
             {
-                Log.Error(TAG, $"SetAppVersion Error: {ex.Message}");
+                Log.Error(TAG, $"SetAppVersion Error: {ex}");
             }
         }
 
@@ -428,7 +446,7 @@ namespace iPMCloud.Mobile
             }
             catch (Exception ex)
             {
-                Log.Error(TAG, $"GetVersion Error: {ex.Message}");
+                Log.Error(TAG, $"GetVersion Error: {ex}");
                 return "Unknown";
             }
         }
@@ -454,7 +472,7 @@ namespace iPMCloud.Mobile
             }
             catch (Exception ex)
             {
-                Log.Error(TAG, $"GetBuild Error: {ex.Message}");
+                Log.Error(TAG, $"GetBuild Error: {ex}");
                 return 0;
             }
         }
@@ -477,7 +495,7 @@ namespace iPMCloud.Mobile
             }
             catch (Exception ex)
             {
-                Log.Error(TAG, $"InitializeNLog Error: {ex.Message}");
+                Log.Error(TAG, $"InitializeNLog Error: {ex}");
             }
         }
 
@@ -508,7 +526,74 @@ namespace iPMCloud.Mobile
             }
             catch (Exception ex)
             {
-                Log.Error(TAG, $"OnActivityResult Error: {ex.Message}");
+                Log.Error(TAG, $"OnActivityResult Error: {ex}");
+            }
+        }
+
+        private void ApplySystemBarColors()
+        {
+            if (Window == null || Build.VERSION.SdkInt >= (BuildVersionCodes)35)
+            {
+                return;
+            }
+
+            Window.SetNavigationBarColor(Android.Graphics.Color.Black);
+            Window.SetStatusBarColor(Android.Graphics.Color.Black);
+        }
+
+        private void AttachSystemUiVisibilityHandlerIfNeeded()
+        {
+            if (_systemUiHandlerAttached || Build.VERSION.SdkInt >= BuildVersionCodes.R || Window?.DecorView == null)
+            {
+                return;
+            }
+
+            Window.DecorView.SystemUiVisibilityChange += DecorView_SystemUiVisibilityChange;
+            _systemUiHandlerAttached = true;
+        }
+
+        private void DetachSystemUiVisibilityHandler()
+        {
+            if (!_systemUiHandlerAttached || Window?.DecorView == null)
+            {
+                return;
+            }
+
+            Window.DecorView.SystemUiVisibilityChange -= DecorView_SystemUiVisibilityChange;
+            _systemUiHandlerAttached = false;
+        }
+
+        private void LogDeferredPermissionStrategy()
+        {
+            Log.Info(TAG, "Runtime permissions are requested contextually after startup; no blanket startup permission request is performed.");
+
+            if (Build.VERSION.SdkInt >= BuildVersionCodes.Tiramisu)
+            {
+                Log.Info(TAG, "Android 13+ notification permission remains deferred until foreground sync or upload requires it.");
+            }
+        }
+
+        private void FinishAfterFatalInitializationError()
+        {
+            try
+            {
+                DetachSystemUiVisibilityHandler();
+
+                if (!IsFinishing)
+                {
+                    if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop)
+                    {
+                        FinishAndRemoveTask();
+                    }
+                    else
+                    {
+                        Finish();
+                    }
+                }
+            }
+            catch (Exception finishEx)
+            {
+                Log.Error(TAG, $"FinishAfterFatalInitializationError Error: {finishEx}");
             }
         }
 

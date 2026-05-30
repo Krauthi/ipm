@@ -7,6 +7,7 @@ using Android.Views;
 using AndroidX.AppCompat.App;
 using AndroidX.Core.View;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace iPMCloud.Mobile
@@ -31,23 +32,25 @@ namespace iPMCloud.Mobile
         private static readonly string TAG = "iPMCloud-SplashActivity";
         private const int SPLASH_DELAY_MS = 500;
 
+        private int _mainActivityLaunchStarted;
+
         #region Lifecycle
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
             try
             {
+                Log.Info(TAG, $"SplashActivity.OnCreate start (savedInstanceState={(savedInstanceState != null ? "available" : "null")})");
                 base.OnCreate(savedInstanceState);
                 
                 SetFullscreenMode();
                 
-                Log.Debug(TAG, "SplashActivity.OnCreate");
+                Log.Debug(TAG, "SplashActivity.OnCreate complete");
             }
             catch (Exception ex)
             {
-                Log.Error(TAG, $"OnCreate Error: {ex.Message}");
+                Log.Error(TAG, $"SplashActivity.OnCreate Error: {ex}");
                 
-                // Fallback: Direkt zur MainActivity
                 StartMainActivityImmediate();
             }
         }
@@ -57,15 +60,13 @@ namespace iPMCloud.Mobile
             try
             {
                 base.OnResume();
-                
                 Log.Debug(TAG, "SplashActivity.OnResume");
-                
-                // Asynchroner Start der MainActivity
-                _ = StartMainActivityAsync();
+                SetFullscreenMode();
+                TryStartMainActivity();
             }
             catch (Exception ex)
             {
-                Log.Error(TAG, $"OnResume Error: {ex.Message}");
+                Log.Error(TAG, $"SplashActivity.OnResume Error: {ex}");
                 StartMainActivityImmediate();
             }
         }
@@ -79,11 +80,10 @@ namespace iPMCloud.Mobile
             {
                 if (Window?.DecorView == null) return;
 
-                // ✅ Moderne API (Android 11+)
                 if (Build.VERSION.SdkInt >= BuildVersionCodes.R)
                 {
                     var controller = Window.InsetsController;
-                    controller?.Hide(WindowInsets.Type.StatusBars() | WindowInsets.Type.NavigationBars());
+                    controller?.Hide(WindowInsets.Type.StatusBars());
                     if (controller != null)
                     {
                         controller.SystemBarsBehavior = (int)WindowInsetsControllerBehavior.ShowTransientBarsBySwipe;
@@ -91,11 +91,10 @@ namespace iPMCloud.Mobile
                 }
                 else
                 {
-                    // ✅ AndroidX Compat (funktioniert überall)
                     var controller = WindowCompat.GetInsetsController(Window, Window.DecorView);
                     if (controller != null)
                     {
-                        controller.Hide(WindowInsetsCompat.Type.SystemBars());
+                        controller.Hide(WindowInsetsCompat.Type.StatusBars());
                         controller.SystemBarsBehavior = WindowInsetsControllerCompat.BehaviorShowTransientBarsBySwipe;
                     }
                 }
@@ -108,7 +107,7 @@ namespace iPMCloud.Mobile
             }
             catch (Exception ex)
             {
-                Log.Error(TAG, $"SetFullscreenMode Error: {ex.Message}");
+                Log.Error(TAG, $"SetFullscreenMode Error: {ex}");
             }
         }
         //private void SetFullscreenMode()
@@ -148,11 +147,21 @@ namespace iPMCloud.Mobile
 
         #region Navigation
 
+        private void TryStartMainActivity()
+        {
+            if (Interlocked.Exchange(ref _mainActivityLaunchStarted, 1) == 1)
+            {
+                Log.Debug(TAG, "MainActivity-Start bereits geplant");
+                return;
+            }
+
+            _ = StartMainActivityAsync();
+        }
+
         private async Task StartMainActivityAsync()
         {
             try
             {
-                // Kurze Verzögerung für Logo-Anzeige
                 await Task.Delay(SPLASH_DELAY_MS);
 
                 if (IsFinishing || IsDestroyed)
@@ -164,7 +173,6 @@ namespace iPMCloud.Mobile
                 var mainIntent = new Intent(this, typeof(MainActivity));
                 mainIntent.SetFlags(ActivityFlags.NewTask | ActivityFlags.ClearTask);
 
-                // Intent Extras weiterleiten (z.B. von Notifications)
                 if (Intent?.Extras != null)
                 {
                     mainIntent.PutExtras(Intent.Extras);
@@ -175,15 +183,13 @@ namespace iPMCloud.Mobile
                 StartActivity(mainIntent);
                 Finish();
                 
-                // Smooth Transition
-                //OverridePendingTransition(Android.Resource.Animation.FadeIn, Android.Resource.Animation.FadeOut);
-                if(Build.VERSION.SdkInt >= BuildVersionCodes.UpsideDownCake) // Android 14 (API 34)
+                if (Build.VERSION.SdkInt >= BuildVersionCodes.UpsideDownCake) // Android 14 (API 34)
                 {
 #pragma warning disable CA1416 // Plattformkompatibilität überprüfen
                     OverrideActivityTransition(OverrideTransition.Open, 0, 0);
 #pragma warning restore CA1416 // Plattformkompatibilität überprüfen
                 }
-        else
+                else
                 {
 #pragma warning disable CA1422 // Validate platform compatibility
                     OverridePendingTransition(0, 0);
@@ -194,9 +200,9 @@ namespace iPMCloud.Mobile
             }
             catch (Exception ex)
             {
-                Log.Error(TAG, $"StartMainActivityAsync Error: {ex.Message}");
+                Interlocked.Exchange(ref _mainActivityLaunchStarted, 0);
+                Log.Error(TAG, $"StartMainActivityAsync Error: {ex}");
                 
-                // Fallback ohne Intent Extras
                 StartMainActivityImmediate();
             }
         }
@@ -205,6 +211,8 @@ namespace iPMCloud.Mobile
         {
             try
             {
+                Interlocked.Exchange(ref _mainActivityLaunchStarted, 1);
+
                 if (IsFinishing || IsDestroyed) return;
 
                 var mainIntent = new Intent(this, typeof(MainActivity));
@@ -217,7 +225,7 @@ namespace iPMCloud.Mobile
             }
             catch (Exception ex)
             {
-                Log.Error(TAG, $"StartMainActivityImmediate Error: {ex.Message}");
+                Log.Error(TAG, $"StartMainActivityImmediate Error: {ex}");
             }
         }
 

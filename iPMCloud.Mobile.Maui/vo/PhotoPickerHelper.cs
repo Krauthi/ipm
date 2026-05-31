@@ -10,13 +10,16 @@ namespace iPMCloud.Mobile.Helpers
         {
             try
             {
-                // Berechtigungen prüfen
-                var status = await Permissions.CheckStatusAsync<Permissions.Photos>();
-                if (status != PermissionStatus.Granted)
+                // Berechtigungen prüfen (iOS), Android nutzt den systemeigenen Picker-Flow
+                if (DeviceInfo.Platform == DevicePlatform.iOS)
                 {
-                    status = await Permissions.RequestAsync<Permissions.Photos>();
+                    var status = await Permissions.CheckStatusAsync<Permissions.Photos>();
                     if (status != PermissionStatus.Granted)
-                        return null;
+                    {
+                        status = await Permissions.RequestAsync<Permissions.Photos>();
+                        if (status != PermissionStatus.Granted)
+                            return null;
+                    }
                 }
 
                 // File Types definieren

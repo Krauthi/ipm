@@ -4,6 +4,7 @@ namespace iPMCloud.Mobile
 {
     public partial class ObjectValuesBildModalPage : ContentPage
     {
+        private static readonly SemaphoreSlim _modalSemaphore = new(1, 1);
         private readonly TaskCompletionSource<bool> _tcs = new();
 
         private ObjectValuesBildModalPage()
@@ -38,10 +39,22 @@ namespace iPMCloud.Mobile
         /// </summary>
         public static async Task<bool> ShowAsync(Page callerPage)
         {
-            var page = new ObjectValuesBildModalPage();
-            await MainThread.InvokeOnMainThreadAsync(() =>
-                callerPage.Navigation.PushModalAsync(page, animated: false));
-            return await page._tcs.Task;
+            if (!await _modalSemaphore.WaitAsync(0))
+            {
+                return false;
+            }
+
+            try
+            {
+                var page = new ObjectValuesBildModalPage();
+                await MainThread.InvokeOnMainThreadAsync(() =>
+                    callerPage.Navigation.PushModalAsync(page, animated: false));
+                return await page._tcs.Task;
+            }
+            finally
+            {
+                _modalSemaphore.Release();
+            }
         }
 
         protected override void OnAppearing()

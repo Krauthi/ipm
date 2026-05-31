@@ -5,6 +5,7 @@ namespace iPMCloud.Mobile.Views
 {
     public partial class SettingsPageView : ContentPage
     {
+        private static int _isModalOpen;
         //private const int LogSendDelayMilliseconds = 2000;
 
         public SettingsPageView()
@@ -41,9 +42,22 @@ namespace iPMCloud.Mobile.Views
 
         public static async Task ShowAsync(Page callerPage)
         {
-            var page = new SettingsPageView();
-            await MainThread.InvokeOnMainThreadAsync(() =>
-                callerPage.Navigation.PushModalAsync(page, animated: false));
+            if (Interlocked.Exchange(ref _isModalOpen, 1) == 1)
+            {
+                return;
+            }
+
+            try
+            {
+                var page = new SettingsPageView();
+                await MainThread.InvokeOnMainThreadAsync(() =>
+                    callerPage.Navigation.PushModalAsync(page, animated: false));
+            }
+            catch
+            {
+                Interlocked.Exchange(ref _isModalOpen, 0);
+                throw;
+            }
         }
 
         protected override void OnAppearing()
@@ -60,6 +74,12 @@ namespace iPMCloud.Mobile.Views
 
             string lang = AppModel.Instance.Langs.Find(l => l.lang == AppModel.Instance.AppControll.lang)?.text;
             lb_settings_sel_trans.Text = lang != null ? lang : "Deutsch";
+        }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            Interlocked.Exchange(ref _isModalOpen, 0);
         }
 
         public void SetSendLog(bool visible)

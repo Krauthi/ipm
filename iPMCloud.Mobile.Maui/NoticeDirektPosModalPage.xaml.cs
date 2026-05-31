@@ -4,6 +4,7 @@ namespace iPMCloud.Mobile
 {
     public partial class NoticeDirektPosModalPage : ContentPage
     {
+        private static readonly SemaphoreSlim _modalSemaphore = new(1, 1);
         private readonly TaskCompletionSource<NoticeDirektPosResult?> _tcs = new();
         private readonly LeistungWSO _selectedPosForNotice;
         private readonly string _backToFromNotice;
@@ -83,10 +84,22 @@ namespace iPMCloud.Mobile
             View posCard,
             BemerkungWSO existingBemerkung = null)
         {
-            var page = new NoticeDirektPosModalPage(pos, backTo, isPrio, posCard, existingBemerkung);
-            await MainThread.InvokeOnMainThreadAsync(() =>
-                callerPage.Navigation.PushModalAsync(page, animated: false));
-            return await page._tcs.Task;
+            if (!await _modalSemaphore.WaitAsync(0))
+            {
+                return null;
+            }
+
+            try
+            {
+                var page = new NoticeDirektPosModalPage(pos, backTo, isPrio, posCard, existingBemerkung);
+                await MainThread.InvokeOnMainThreadAsync(() =>
+                    callerPage.Navigation.PushModalAsync(page, animated: false));
+                return await page._tcs.Task;
+            }
+            finally
+            {
+                _modalSemaphore.Release();
+            }
         }
 
         protected override void OnDisappearing()

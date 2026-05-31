@@ -4,6 +4,7 @@ namespace iPMCloud.Mobile
 {
     public partial class NoticeModalPage : ContentPage
     {
+        private static readonly SemaphoreSlim _modalSemaphore = new(1, 1);
         private readonly TaskCompletionSource<NoticeResult?> _tcs = new();
 
         private BemerkungWSO _SelectedBemerkungForNotice;
@@ -65,10 +66,28 @@ namespace iPMCloud.Mobile
             bool isPrio,
             View posCard)
         {
-            var page = new NoticeModalPage(pos, backTo, isPrio, posCard);
-            await MainThread.InvokeOnMainThreadAsync(() =>
-                callerPage.Navigation.PushModalAsync(page, animated: false));
-            return await page._tcs.Task;
+            if (!await _modalSemaphore.WaitAsync(0))
+            {
+                return null;
+            }
+
+            try
+            {
+                var page = new NoticeModalPage(pos, backTo, isPrio, posCard);
+                await MainThread.InvokeOnMainThreadAsync(() =>
+                    callerPage.Navigation.PushModalAsync(page, animated: false));
+                return await page._tcs.Task;
+            }
+            finally
+            {
+                _modalSemaphore.Release();
+            }
+        }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            _tcs.TrySetResult(null);
         }
 
         private async void OnBackTapped(object sender, EventArgs e)

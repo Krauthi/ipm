@@ -5,6 +5,8 @@ namespace iPMCloud.Mobile.Views
 {
     public partial class DayOverPageView : ContentPage
     {
+        private static int _isModalOpen;
+
         public DayOverPageView()
         {
             InitializeComponent();
@@ -23,9 +25,22 @@ namespace iPMCloud.Mobile.Views
 
         public static async Task ShowAsync(Page callerPage)
         {
-            var page = new DayOverPageView();
-            await MainThread.InvokeOnMainThreadAsync(() =>
-                callerPage.Navigation.PushModalAsync(page, animated: false));
+            if (Interlocked.Exchange(ref _isModalOpen, 1) == 1)
+            {
+                return;
+            }
+
+            try
+            {
+                var page = new DayOverPageView();
+                await MainThread.InvokeOnMainThreadAsync(() =>
+                    callerPage.Navigation.PushModalAsync(page, animated: false));
+            }
+            catch
+            {
+                Interlocked.Exchange(ref _isModalOpen, 0);
+                throw;
+            }
         }
 
         protected override void OnAppearing()
@@ -59,6 +74,13 @@ namespace iPMCloud.Mobile.Views
                 });
             });
         }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            Interlocked.Exchange(ref _isModalOpen, 0);
+        }
+
         public async void btn_DayOverYesTapped(object sender, EventArgs e)
         {
             var geo = AppModel.Instance.LocationStr;

@@ -5,6 +5,8 @@ namespace iPMCloud.Mobile.Views
 {
     public partial class DSGVOPageContainerView : ContentPage
     {
+        private static int _isModalOpen;
+
         public DSGVOPageContainerView()
         {
             InitializeComponent();
@@ -16,9 +18,28 @@ namespace iPMCloud.Mobile.Views
 
         public static async Task ShowAsync(Page callerPage)
         {
-            var page = new DSGVOPageContainerView();
-            await MainThread.InvokeOnMainThreadAsync(() =>
-                callerPage.Navigation.PushModalAsync(page, animated: false));
+            if (Interlocked.Exchange(ref _isModalOpen, 1) == 1)
+            {
+                return;
+            }
+
+            try
+            {
+                var page = new DSGVOPageContainerView();
+                await MainThread.InvokeOnMainThreadAsync(() =>
+                    callerPage.Navigation.PushModalAsync(page, animated: false));
+            }
+            catch
+            {
+                Interlocked.Exchange(ref _isModalOpen, 0);
+                throw;
+            }
+        }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            Interlocked.Exchange(ref _isModalOpen, 0);
         }
     }
 }

@@ -870,10 +870,7 @@ namespace iPMCloud.Mobile
 
         public async void OpenCheckA_Singature(CheckLeistungAntwort quest)
         {
-            var modal = new SignatureModalPage();
-                await Navigation.PushModalAsync(modal, animated: false);
-
-                SignatureResult? result = await modal.Result;
+            SignatureResult? result = await SignatureModalPage.ShowAsync(this);
             if (result is null)
             {
                 quest.img_sig.Source = null;
@@ -6403,8 +6400,7 @@ namespace iPMCloud.Mobile
             overlay.IsVisible = true;
             try
             {
-                var todoModalPage = new TodoModalPage();
-                await Navigation.PushModalAsync(todoModalPage, animated: false);
+                await TodoModalPage.ShowAsync(this);
             }
             finally
             {

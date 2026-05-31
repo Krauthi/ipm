@@ -9,6 +9,7 @@ namespace iPMCloud.Mobile
 { 
     public partial class SignatureModalPage : ContentPage
     {
+        private static readonly SemaphoreSlim _modalSemaphore = new(1, 1);
         private readonly TaskCompletionSource<SignatureResult?> _tcs = new();
         public Task<SignatureResult?> Result => _tcs.Task;
 
@@ -27,6 +28,32 @@ namespace iPMCloud.Mobile
             tgr3.Tapped -= OnCancelClicked;
             tgr3.Tapped += OnCancelClicked;
             btn_back_sign.GestureRecognizers.Add(tgr3);
+        }
+
+        public static async Task<SignatureResult?> ShowAsync(Page callerPage)
+        {
+            if (!await _modalSemaphore.WaitAsync(0))
+            {
+                return null;
+            }
+
+            try
+            {
+                var modal = new SignatureModalPage();
+                await MainThread.InvokeOnMainThreadAsync(() =>
+                    callerPage.Navigation.PushModalAsync(modal, animated: false));
+                return await modal.Result;
+            }
+            finally
+            {
+                _modalSemaphore.Release();
+            }
+        }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            _tcs.TrySetResult(null);
         }
 
 

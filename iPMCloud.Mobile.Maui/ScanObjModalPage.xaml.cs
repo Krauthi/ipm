@@ -7,7 +7,8 @@ namespace iPMCloud.Mobile
     public partial class ScanObjModalPage : ContentPage
     {
         private TaskCompletionSource<string> _tcs;
-        private bool _completed;
+        private bool _completed; 
+        private bool _isClosing;
 
         private ScanObjModalPage()
         {
@@ -27,6 +28,48 @@ namespace iPMCloud.Mobile
             tgr7.Tapped -= OnCancelClicked;
             tgr7.Tapped += OnCancelClicked;
             btn_back_inAddRegScan.GestureRecognizers.Add(tgr7);
+        }
+
+        private bool IsThisPageTopModal()
+        {
+            var modalStack = Navigation?.ModalStack;
+            return modalStack != null
+                   && modalStack.Count > 0
+                   && ReferenceEquals(modalStack[^1], this);
+        }
+
+        private async Task CloseModalSafeAsync(string result = null)
+        {
+            if (_isClosing)
+                return;
+
+            _isClosing = true;
+            _completed = true;
+
+            await MainThread.InvokeOnMainThreadAsync(async () =>
+            {
+                try
+                {
+                    btn_back_inAddRegScan.InputTransparent = true;
+
+                    ReaderView.IsTorchOn = false;
+                    ReaderView.IsDetecting = false;
+
+#if ANDROID
+                    await Task.Delay(250);
+#endif
+
+                    _tcs?.TrySetResult(result);
+
+                    if (IsThisPageTopModal())
+                        await Navigation.PopModalAsync(animated: false);
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"CloseModalSafeAsync error: {ex}");
+                    _tcs?.TrySetResult(result);
+                }
+            });
         }
 
         /// <summary>
@@ -67,8 +110,9 @@ namespace iPMCloud.Mobile
         {
             base.OnAppearing();
             _completed = false;
+            _isClosing = false;
+            btn_back_inAddRegScan.InputTransparent = false;
             ReaderView.IsDetecting = true;
-
         }
 
         protected override void OnDisappearing()
@@ -94,16 +138,23 @@ namespace iPMCloud.Mobile
 
         private async void OnCancelClicked(object sender, TappedEventArgs e)
         {
-            if (_completed) return;
-            _completed = true;
-
-            ReaderView.IsTorchOn = false;
-            ReaderView.IsDetecting = false;
-            _tcs?.TrySetResult(null);
-            await Navigation.PopModalAsync(animated: false);
+            await CloseModalSafeAsync(null);
         }
 
         private async void ReaderView_BarcodesDetected(object sender, BarcodeDetectionEventArgs e)
+        {
+            if (_completed || _isClosing)
+                return;
+
+            var value = e.Results?.FirstOrDefault()?.Value;
+            if (string.IsNullOrWhiteSpace(value))
+                return;
+
+            await CloseModalSafeAsync(value);
+        }
+
+
+        private async void ReaderView_BarcodesDetected_old(object sender, BarcodeDetectionEventArgs e)
         {
             if (_completed) return;
 

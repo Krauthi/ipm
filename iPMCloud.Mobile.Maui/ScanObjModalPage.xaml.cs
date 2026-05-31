@@ -6,6 +6,9 @@ namespace iPMCloud.Mobile
 {
     public partial class ScanObjModalPage : ContentPage
     {
+        // Guards ScanAsync so only one instance of this modal can be open at a time.
+        private static readonly SemaphoreSlim _scanSemaphore = new SemaphoreSlim(1, 1);
+
         private TaskCompletionSource<string> _tcs;
         private bool _completed; 
         private bool _isClosing;
@@ -79,31 +82,42 @@ namespace iPMCloud.Mobile
         /// </summary>
         public static async Task<string> ScanAsync(Page callerPage)
         {
-            // Check / request camera permission before opening the scanner.
-            var status = await Permissions.CheckStatusAsync<Permissions.Camera>();
-            if (status != PermissionStatus.Granted)
-            {
-                status = await Permissions.RequestAsync<Permissions.Camera>();
-            }
-
-            if (status != PermissionStatus.Granted)
-            {
-                await callerPage.DisplayAlertAsync(
-                    "Kamerazugriff verweigert",
-                    "Bitte erlauben Sie den Kamerazugriff in den Einstellungen.",
-                    "OK");
+            // Prevent concurrent opens: if a modal is already being shown, silently ignore the tap.
+            if (!await _scanSemaphore.WaitAsync(0))
                 return null;
+
+            try
+            {
+                // Check / request camera permission before opening the scanner.
+                var status = await Permissions.CheckStatusAsync<Permissions.Camera>();
+                if (status != PermissionStatus.Granted)
+                {
+                    status = await Permissions.RequestAsync<Permissions.Camera>();
+                }
+
+                if (status != PermissionStatus.Granted)
+                {
+                    await callerPage.DisplayAlertAsync(
+                        "Kamerazugriff verweigert",
+                        "Bitte erlauben Sie den Kamerazugriff in den Einstellungen.",
+                        "OK");
+                    return null;
+                }
+
+                var page = new ScanObjModalPage();
+                page._tcs = new TaskCompletionSource<string>();
+
+                // PushModalAsync works without a NavigationPage wrapper because
+                // modal presentation is handled at the OS / Window level.
+                await MainThread.InvokeOnMainThreadAsync(() =>
+                    callerPage.Navigation.PushModalAsync(page, animated: false));
+
+                return await page._tcs.Task;
             }
-
-            var page = new ScanObjModalPage();
-            page._tcs = new TaskCompletionSource<string>();
-
-            // PushModalAsync works without a NavigationPage wrapper because
-            // modal presentation is handled at the OS / Window level.
-            await MainThread.InvokeOnMainThreadAsync(() =>
-                callerPage.Navigation.PushModalAsync(page, animated: false));
-
-            return await page._tcs.Task;
+            finally
+            {
+                _scanSemaphore.Release();
+            }
         }
 
         protected override void OnAppearing()

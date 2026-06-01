@@ -14,10 +14,17 @@ namespace iPMCloud.Mobile
     {
         /// <summary>Minimum time (ms) the splash overlay is visible.</summary>
         private const int MinimumSplashDisplayTimeMs = 1000;
+        private readonly bool _navigateToStartPageOnAppear;
 
         public SplashOverlayPage()
+            : this(true)
+        {
+        }
+
+        public SplashOverlayPage(bool navigateToStartPageOnAppear)
         {
             InitializeComponent();
+            _navigateToStartPageOnAppear = navigateToStartPageOnAppear;
         }
 
         protected override async void OnAppearing()
@@ -30,6 +37,11 @@ namespace iPMCloud.Mobile
                 // App.InitApp() already ran synchronously in the App constructor,
                 // so StartPage is available immediately; this delay is purely visual.
                 await Task.Delay(MinimumSplashDisplayTimeMs);
+                if (!_navigateToStartPageOnAppear)
+                {
+                    return;
+                }
+
                 AppModel.Instance?.PageNavigator.NavigateTo(TFPageNavigator.PAGE_STARTPAGE);
                 //ContentPage startPage = AppModel.Instance?.StartPage ?? new ContentPage { BackgroundColor = Colors.Black };
 
@@ -46,8 +58,9 @@ namespace iPMCloud.Mobile
                 // Emergency fallback
                 try
                 {
-                    var fallback = AppModel.Instance?.StartPage
-                        ?? new ContentPage { BackgroundColor = Colors.Black };
+                    var fallback = _navigateToStartPageOnAppear
+                        ? (AppModel.Instance?.StartPage ?? new ContentPage { BackgroundColor = Colors.Black })
+                        : new ContentPage { BackgroundColor = Colors.Black };
                     if (Application.Current?.Windows?.Count > 0)
                         Application.Current.Windows[0].Page = fallback;
                 }

@@ -760,7 +760,7 @@ namespace iPMCloud.Mobile.vo
                     await Flashlight.Default.TurnOnAsync();
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
             }
         }

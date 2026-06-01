@@ -2794,7 +2794,179 @@ namespace iPMCloud.Mobile
             return mainFrame;
         }
 
+
+
         public static Border GetPositionTodoCardView(LeistungWSO pos, AppModel model, bool onlyText)
+        {
+            var imageL = new Image
+            {
+                Margin = new Thickness(0, 0, 5, 0),
+                HeightRequest = 24,
+                WidthRequest = 24,
+                VerticalOptions = LayoutOptions.Start,
+                HorizontalOptions = LayoutOptions.Start,
+                Source = (pos.art == "Leistung" ? "LeistungSymbol.png" :
+                            (pos.art == "Produkt" ? "ProduktSymbol.png" :
+                                (pos.art == "Texte" ? "TextSymbol.png" :
+                                (pos.art == "Check" ? "CheckWhite.png" :
+                                    "Quest.png"
+                         ))))
+            };
+
+            var lb = new Label
+            {
+                Text = pos.GetMobileText(),
+                TextColor = Color.FromArgb("#cccccc"),
+                Margin = new Thickness(5, 0, 5, 1),
+                FontSize = 12,
+                HorizontalOptions = LayoutOptions.Start,
+                LineBreakMode = LineBreakMode.WordWrap,
+            };
+
+            var direkt = new Label
+            {
+                Text = "Direkterfassung: " + pos.dstd.ToString("00") + ":" + pos.dmin.ToString("00"),
+                TextColor = Color.FromArgb("#ffcc00"),
+                Margin = new Thickness(5, 0, 0, 0),
+                FontSize = 12,
+                LineBreakMode = LineBreakMode.WordWrap,
+                HorizontalOptions = LayoutOptions.Start,
+                IsVisible = pos.type == "1" && !onlyText,
+            };
+
+            var typ = new Label
+            {
+                Text = pos.timeval + " --- Zuletzt: " + (pos.prio != null && pos.prio.lastWorkDate != null ? pos.prio.lastWorkDate.Value.ToString("dd.MM.yyyy") : "Nicht bekannt!"),
+                TextColor = Color.FromArgb("#ffcc00"),
+                Margin = new Thickness(5, 0, 0, 0),
+                FontSize = 12,
+                LineBreakMode = LineBreakMode.WordWrap,
+                HorizontalOptions = LayoutOptions.Start,
+                IsVisible = !onlyText,
+            };
+
+            var imageMuellSign2 = new Image
+            {
+                Margin = new Thickness(0, -32, 0, 0),
+                HeightRequest = 32,
+                WidthRequest = 32,
+                VerticalOptions = LayoutOptions.Start,
+                HorizontalOptions = LayoutOptions.End,
+                Source = "Muell_Sign.png",
+            };
+
+            var imageMuellSign = new Image
+            {
+                Margin = new Thickness(0, -32, -8, 0),
+                HeightRequest = 32,
+                WidthRequest = 32,
+                VerticalOptions = LayoutOptions.Start,
+                HorizontalOptions = LayoutOptions.End,
+                Source = pos.muell == 1 ? (pos.inout.inout == 1 ? "Muell_OutTonne.png" : "Muell_InTonne.png") : null,
+            };
+
+            var badge = new Border
+            {
+                BackgroundColor = Color.FromArgb(pos.prio.badgeColor),
+                Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
+                HorizontalOptions = LayoutOptions.Start,
+                VerticalOptions = LayoutOptions.Start,
+                Margin = new Thickness(-13, -3, 0, 0),
+                Padding = new Thickness(4, 2, 4, 2),
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = 5 },
+                IsVisible = pos.prio.showBadge && (pos.prio.days > 10000000 ? false : true),
+                Content = new Label
+                {
+                    Text = Int32.Parse((pos.prio.days > 10000000 ? "0" : pos.prio.days + "")).ToString(),
+                    Margin = new Thickness(0),
+                    Padding = new Thickness(0),
+                    HorizontalOptions = LayoutOptions.Center,
+                    VerticalOptions = LayoutOptions.Center,
+                    FontSize = 10,
+                    TextColor = Colors.White,
+                    FontAttributes = FontAttributes.Bold,
+                    MinimumWidthRequest = 20,
+                    LineBreakMode = LineBreakMode.NoWrap,
+                    HorizontalTextAlignment = TextAlignment.Center
+                }
+            };
+
+            var hmuell = new Grid
+            {
+                Padding = new Thickness(0),
+                Margin = new Thickness(0),
+                HeightRequest = 1,
+                HorizontalOptions = LayoutOptions.Fill,
+                IsVisible = pos.muell == 1,
+                ColumnDefinitions =
+        {
+            new ColumnDefinition { Width = GridLength.Star },
+            new ColumnDefinition { Width = GridLength.Auto }
+        }
+            };
+
+            hmuell.Add(imageMuellSign, 1, 0);
+            hmuell.Add(imageMuellSign2, 1, 0);
+
+            var contentGrid = new Grid
+            {
+                Padding = new Thickness(0),
+                Margin = new Thickness(0),
+                HorizontalOptions = LayoutOptions.Fill,
+                RowSpacing = 0
+            };
+
+            contentGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            contentGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            contentGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+
+            int currentRow = 0;
+
+            contentGrid.Add(lb, 0, currentRow++);
+            contentGrid.Add(direkt, 0, currentRow++);
+            contentGrid.Add(typ, 0, currentRow++);
+
+            if (double.Parse(pos.lastwork) == 0 && pos.timevaldays > 0)
+            {
+                contentGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+                contentGrid.Add(GetWarningLineText(pos.prio.warnText, pos.prio.barColor), 0, currentRow++);
+            }
+
+            contentGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            contentGrid.Add(hmuell, 0, currentRow++);
+
+            var h = new Grid
+            {
+                Padding = new Thickness(5),
+                Margin = new Thickness(0),
+                HorizontalOptions = LayoutOptions.Fill,
+                BackgroundColor = Color.FromArgb(pos.nichtpauschal == 1 ? "#044320" : "#042d53"),
+                ColumnSpacing = 0,
+                ColumnDefinitions =
+        {
+            new ColumnDefinition { Width = GridLength.Auto },
+            new ColumnDefinition { Width = GridLength.Auto },
+            new ColumnDefinition { Width = GridLength.Star }
+        }
+            };
+
+            h.Add(imageL, 0, 0);
+            h.Add(badge, 1, 0);
+            h.Add(contentGrid, 2, 0);
+
+            var mainFrame = new Border
+            {
+                Padding = new Thickness(0),
+                Margin = new Thickness(60, 1, 0, 1),
+                HorizontalOptions = LayoutOptions.Fill,
+                BackgroundColor = Colors.Transparent,
+                Content = h,
+                ClassId = "" + pos.id,
+            };
+
+            return mainFrame;
+        }
+        public static Border GetPositionTodoCardView_aaa(LeistungWSO pos, AppModel model, bool onlyText)
         {
             var imageL = new Image
             {

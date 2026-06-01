@@ -870,7 +870,7 @@ namespace iPMCloud.Mobile
 
         public async void OpenCheckA_Singature(CheckLeistungAntwort quest)
         {
-            SignatureResult? result = await SignatureModalPage.ShowAsync(this);
+            SignatureResult result = await SignatureModalPage.ShowAsync(this);
             if (result is null)
             {
                 quest.img_sig.Source = null;
@@ -2839,7 +2839,7 @@ namespace iPMCloud.Mobile
                 frame_planConA_veroffenGrid.IsVisible = false;
                 frame_planConA_erlhead.IsVisible = false;
                 frame_planConA_veroffenhead.IsVisible = false;
-                FadeIn(frame_planConA_offenhead);
+                frame_planConA_offenhead.IsVisible = true;
             };
             frame_planConA_offenbtn.GestureRecognizers.Add(t_frame_planConA_offentxt);
 
@@ -2850,7 +2850,7 @@ namespace iPMCloud.Mobile
                 frame_planConA_erlGrid.IsVisible = true;
                 frame_planConA_offenhead.IsVisible = false;
                 frame_planConA_veroffenhead.IsVisible = false;
-                FadeIn(frame_planConA_erlhead);
+                frame_planConA_erlhead.IsVisible = true;
                 frame_planConA_veroffenGrid.IsVisible = false; 
             };
             frame_planConA_erlbtn.GestureRecognizers.Add(t_frame_planConA_erltxt);
@@ -2862,7 +2862,7 @@ namespace iPMCloud.Mobile
                 frame_planConA_veroffenGrid.IsVisible = true;
                 frame_planConA_offenhead.IsVisible = false;
                 frame_planConA_erlhead.IsVisible = false;
-                FadeIn(frame_planConA_veroffenhead);
+                frame_planConA_veroffenhead.IsVisible = true;
             };
             frame_planConA_veroffenbtn.GestureRecognizers.Add(t_frame_planConA_veroffentxt);
 
@@ -2872,7 +2872,7 @@ namespace iPMCloud.Mobile
                 tourScrollerB_containerA.IsVisible = true;
                 tourScrollerB_containerB.IsVisible = false;
                 frame_planConB_erlhead.IsVisible = false;
-                FadeIn(frame_planConB_offenhead);
+                frame_planConB_offenhead.IsVisible = true;
             };
             frame_planConB_offenbtn.GestureRecognizers.Add(t_frame_planConB_offentxt);
             frame_planConB_erlbtn.GestureRecognizers.Clear();
@@ -2881,7 +2881,7 @@ namespace iPMCloud.Mobile
                 tourScrollerB_containerA.IsVisible = false; 
                 tourScrollerB_containerB.IsVisible = true;
                 frame_planConB_offenhead.IsVisible = false; 
-                FadeIn(frame_planConB_erlhead);
+                frame_planConB_erlhead.IsVisible = true;
             };
             frame_planConB_erlbtn.GestureRecognizers.Add(t_frame_planConB_erltxt);
 
@@ -6376,7 +6376,7 @@ namespace iPMCloud.Mobile
             // list_persontimes.Children.Clear(); // moved into PersonTimesPageView
             // list_persontimes_scroll.ScrollToAsync(0, 0, false); // moved into PersonTimesPageView
             PersonTimesPageView.ListPersontimes.Children.Clear();
-            PersonTimesPageView.ListPersontimesScroll.ScrollToAsync(0, 0, false);
+            await PersonTimesPageView.ListPersontimesScroll.ScrollToAsync(0, 0, false);
             PersonTimesPageView.SetVisible(false);
             if (Navigation.ModalStack.LastOrDefault() == PersonTimesPageView)
             {

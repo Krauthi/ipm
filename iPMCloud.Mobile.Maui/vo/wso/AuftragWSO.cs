@@ -638,22 +638,6 @@ namespace iPMCloud.Mobile
 
 
 
-
-        public static StackLayout GetNewStack()
-        {
-            return new StackLayout
-            {
-                Padding = new Thickness(0, 0, 0, 0),
-                Margin = new Thickness(0, 0, 0, 0),
-                Spacing = 0,
-                HeightRequest = 20,
-                BackgroundColor = Colors.Red,
-                Orientation = StackOrientation.Vertical,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-            };
-        }
-
-
         public static async void KategorieTapped(KategorieParameter obj)
         {
             //obj.stack = GetOrderTodoListView_Pos(obj.model, obj.cat);
@@ -681,78 +665,6 @@ namespace iPMCloud.Mobile
             });
             return stack;
         }
-
-
-        //public static StackLayout GetOrderInclWinterCardView(AuftragWSO order)
-        //{
-        //    var imageL = new Image
-        //    {
-        //        Margin = new Thickness(0, 0, 5, 0),
-        //        HeightRequest = 24,
-        //        WidthRequest = 24,
-        //        VerticalOptions = LayoutOptions.Start,
-        //        HorizontalOptions = LayoutOptions.Start,
-        //        Source = AppModel.Instance.imagesBase.OrderFolderTools
-        //    };
-        //    var lb = new Label()
-        //    {
-        //        Text = order.bezeichnung,
-        //        TextColor = Color.FromArgb("#cccccc"),
-        //        Margin = new Thickness(5, 0, 5, 1),
-        //        FontSize = 16,
-        //        HorizontalOptions = LayoutOptions.FillAndExpand,
-        //        LineBreakMode = LineBreakMode.WordWrap,
-        //    };
-        //    var h = new StackLayout()
-        //    {
-        //        Padding = new Thickness(5, 5, 5, 5),
-        //        Margin = new Thickness(0, 0, 0, 0),
-        //        Spacing = 0,
-        //        Orientation = StackOrientation.Horizontal,
-        //        HorizontalOptions = LayoutOptions.FillAndExpand,
-        //        BackgroundColor = Color.FromHex("#aa042d53"),
-        //    };
-
-        //    h.Children.Add(imageL);
-        //    h.Children.Add(lb);
-
-        //    var mainFrame = new Frame()
-        //    {
-        //        Padding = new Thickness(0),
-        //        Margin = new Thickness(20, 1, 0, 1),
-        //        HorizontalOptions = LayoutOptions.FillAndExpand,
-        //        BackgroundColor = Color.Transparent,
-        //        Content = h,
-        //        StrokeShape = new RoundRectangle { CornerRadius = 0 },
-        //        
-        //        
-        //        ClassId = "" + order.id,
-        //    };
-
-        //    var container = new StackLayout
-        //    {
-        //        Padding = new Thickness(0),
-        //        Margin = new Thickness(0),
-        //        Spacing = 0,
-        //        Orientation = StackOrientation.Vertical,
-        //        HorizontalOptions = LayoutOptions.FillAndExpand,
-        //    };
-
-        //    //mainFrame.GestureRecognizers.Clear();
-        //    //mainFrame.GestureRecognizers.Add(new TapGestureRecognizer() { Command = new Command<StackLayout>(ShowCategoryContainer), CommandParameter = container });
-
-        //    var wrapper = new StackLayout
-        //    {
-        //        Padding = new Thickness(0),
-        //        Margin = new Thickness(0),
-        //        Spacing = 0,
-        //        Orientation = StackOrientation.Vertical,
-        //        HorizontalOptions = LayoutOptions.FillAndExpand,
-        //        Children = { mainFrame, container }
-        //    };
-
-        //    return wrapper;
-        //}
 
         public static StackLayout GetOrderTodoCardViewOnlyKat(AuftragWSO order, AppModel model, double _prio, bool onlyText)
         {

@@ -527,7 +527,8 @@ namespace iPMCloud.Mobile
                                         {
                                             //if (prioPos < 8)  // vorschau 1 Woche
                                             //{
-                                            (categories.Children[1] as VerticalStackLayout).Children.Add(LeistungWSO.GetPositionTodoCardView(l, model, onlyText));
+                                            (categories.Children[1] as VerticalStackLayout).Children.Add(
+                                                LeistungWSO.GetPositionTodoCardView(l, model, onlyText));
                                             //}
                                         }
                                     });
@@ -608,7 +609,8 @@ namespace iPMCloud.Mobile
                                     {
                                         //if (prioPos < 8)  // vorschau 1 Woche
                                         //{
-                                        (categories.Children[1] as VerticalStackLayout).Children.Add(LeistungWSO.GetPositionTodoCardView(l, model, onlyText));
+                                        (categories.Children[1] as VerticalStackLayout).Children.Add(
+                                            LeistungWSO.GetPositionTodoCardView(l, model, onlyText));
                                         //}
                                     }
                                 });

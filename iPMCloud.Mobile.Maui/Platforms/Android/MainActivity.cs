@@ -69,7 +69,7 @@ namespace iPMCloud.Mobile
                 model = AppModel.Instance;
                 model.HasInitAppmodel = model.InitAppModel();
 
-                InitFontScale();
+                //InitFontScale();
                 SetAppVersion();
                 ConfigureUI();
                 LogDeferredPermissionStrategy();
@@ -167,28 +167,33 @@ namespace iPMCloud.Mobile
 
         #region Configuration Methods
 
-        private void InitFontScale()
-        {
-            try
-            {
-                Configuration configuration = Resources?.Configuration;
-                if (configuration == null) return;
+        //private void InitFontScale()
+        //{
+        //    try
+        //    {
+        //        Configuration configuration = Resources?.Configuration;
+        //        if (configuration == null) return;
 
-                configuration.FontScale = 1.00f; // Fixed font scale
-                DisplayMetrics metrics = new DisplayMetrics();
-                WindowManager?.DefaultDisplay?.GetMetrics(metrics);
+        //        configuration.FontScale = 1.00f; // Fixed font scale
+        //        DisplayMetrics metrics = new DisplayMetrics();
+        //        WindowManager?.DefaultDisplay?.GetMetrics(metrics);
                 
-                if (metrics != null)
-                {
-                    metrics.ScaledDensity = configuration.FontScale * metrics.Density;
-                    BaseContext?.Resources?.UpdateConfiguration(configuration, metrics);
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Error(TAG, $"InitFontScale Error: {ex}");
-            }
-        }
+        //        if (metrics != null)
+        //        {
+        //            try
+        //            {
+        //                metrics.ScaledDensity = configuration.FontScale * metrics.Density;
+        //                BaseContext?.Resources?.UpdateConfiguration(configuration, metrics);
+        //            } catch (Exception ex) {
+        //                Log.Error(TAG, $"InitFontScale Inner Error: {ex}");
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Log.Error(TAG, $"InitFontScale Error: {ex}");
+        //    }
+        //}
 
         private void ConfigureUI()
         {
@@ -255,23 +260,32 @@ namespace iPMCloud.Mobile
 
                     if (windowInsetsController != null)
                     {
-                        windowInsetsController.Hide(WindowInsets.Type.StatusBars() | WindowInsets.Type.NavigationBars());
-                        windowInsetsController.SystemBarsBehavior = (int)WindowInsetsControllerBehavior.ShowTransientBarsBySwipe;
+                        try
+                        {
+                            windowInsetsController.Hide(WindowInsets.Type.StatusBars() | WindowInsets.Type.NavigationBars());
+                            windowInsetsController.SystemBarsBehavior = (int)WindowInsetsControllerBehavior.ShowTransientBarsBySwipe;
+                        }
+                        catch (Exception)
+                        {
+                        }
                     }
                 }
                 else
                 {
+                    try
+                    {
 #pragma warning disable CS0618 // Type or member is obsolete
-                    var uiOptions = (int)Window.DecorView.SystemUiVisibility;
-                    uiOptions |= (int)SystemUiFlags.LayoutStable;
-                    uiOptions |= (int)SystemUiFlags.LayoutHideNavigation;
-                    uiOptions |= (int)SystemUiFlags.LayoutFullscreen;
-                    uiOptions |= (int)SystemUiFlags.HideNavigation;
-                    uiOptions |= (int)SystemUiFlags.Fullscreen;
-                    uiOptions |= (int)SystemUiFlags.ImmersiveSticky;
+                        var uiOptions = (int)Window.DecorView.SystemUiVisibility;
+                        uiOptions |= (int)SystemUiFlags.LayoutStable;
+                        uiOptions |= (int)SystemUiFlags.LayoutHideNavigation;
+                        uiOptions |= (int)SystemUiFlags.LayoutFullscreen;
+                        uiOptions |= (int)SystemUiFlags.HideNavigation;
+                        uiOptions |= (int)SystemUiFlags.Fullscreen;
+                        uiOptions |= (int)SystemUiFlags.ImmersiveSticky;
 
-                    Window.DecorView.SystemUiVisibility = (StatusBarVisibility)uiOptions;
+                        Window.DecorView.SystemUiVisibility = (StatusBarVisibility)uiOptions;
 #pragma warning restore CS0618
+                    } catch (Exception) { }
                 }
 
                 _lastSystemUiApplyAt = now;
@@ -435,7 +449,7 @@ namespace iPMCloud.Mobile
             }
         }
 
-        public string GetVersion()
+        public static string GetVersion()
         {
             try
             {
@@ -451,24 +465,27 @@ namespace iPMCloud.Mobile
             }
         }
 
-        public int GetBuild()
+        public static int GetBuild()
         {
             try
             {
                 var context = Android.App.Application.Context;
                 var manager = context.PackageManager;
                 var info = manager?.GetPackageInfo(context.PackageName, 0);
-
-                if (Build.VERSION.SdkInt >= BuildVersionCodes.P)
-                {
-                    return (int)(info?.LongVersionCode ?? 0);
-                }
-                else
-                {
-#pragma warning disable CS0618 // Type or member is obsolete
-                    return info?.VersionCode ?? 0;
-#pragma warning restore CS0618
-                }
+#if ANDROID
+long versionCode;
+if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.P)
+{
+    versionCode = info.LongVersionCode;
+}
+else
+{
+#pragma warning disable CA1422
+    versionCode = info.VersionCode;
+#pragma warning restore CA1422
+}
+#endif
+                return (int)versionCode;
             }
             catch (Exception ex)
             {
@@ -536,9 +553,15 @@ namespace iPMCloud.Mobile
             {
                 return;
             }
-
-            Window.SetNavigationBarColor(Android.Graphics.Color.Black);
-            Window.SetStatusBarColor(Android.Graphics.Color.Black);
+            try
+            {
+                Window.SetNavigationBarColor(Android.Graphics.Color.Black);
+                Window.SetStatusBarColor(Android.Graphics.Color.Black);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(TAG, $"ApplySystemBarColors Error: {ex}");
+            }
         }
 
         private void AttachSystemUiVisibilityHandlerIfNeeded()
@@ -563,7 +586,7 @@ namespace iPMCloud.Mobile
             _systemUiHandlerAttached = false;
         }
 
-        private void LogDeferredPermissionStrategy()
+        private static void LogDeferredPermissionStrategy()
         {
             Log.Info(TAG, "Runtime permissions are requested contextually after startup; no blanket startup permission request is performed.");
 

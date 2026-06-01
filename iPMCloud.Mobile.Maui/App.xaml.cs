@@ -35,41 +35,10 @@ namespace iPMCloud.Mobile
 
         public App()
         {
-
             InitializeComponent();
-
-            //if (StorageMigration.HasMigrateIpmFolder())
-            //{
-                AppStart(); 
-            //}
-            //else
-            //{
-            //    Task.Run(async () =>
-            //    {
-            //        var migrated = await StorageMigration.MigrateIpmFolderAsync();
-            //        if (migrated)
-            //        {
-            //            // Alte Files wurden erfolgreich migriert
-            //            MainThread.BeginInvokeOnMainThread(() =>
-            //            {
-            //                AppModel.Logger.Info("INFO: Alte Files wurden erfolgreich migriert");
-            //                AppStart();
-            //            });
-            //        }
-            //        else
-            //        {
-            //            // Alte Files konnten nicht migriert werden, wahrscheinlich weil sie nicht mehr existieren
-            //            MainThread.BeginInvokeOnMainThread(() =>
-            //            {
-            //                AppModel.Logger.Error("ERROR: Alte Files konnten nicht migriert werden, wahrscheinlich weil sie nicht mehr existieren");
-            //                AppModel.Instance.MigrationFailed = true;
-            //                AppStart();
-            //            });
-            //        }
-            //    });
-            //}
-
+            AppStart(); 
         }
+
         public void AppStart()
         {
 
@@ -96,17 +65,10 @@ namespace iPMCloud.Mobile
 
         public void InitApp()
         {
-
-
-
-
-
             // TODO: Migrate to MAUI-compatible Firebase
             // Plugin.FirebasePushNotification is not MAUI-compatible
             // Consider: Plugin.Firebase or native Firebase SDK
             // OnStartIntiFirebase();
-
-
 
             AppModel.Instance.InitDeviceInformation();
             AppModel.Instance.App = this;
@@ -121,27 +83,11 @@ namespace iPMCloud.Mobile
             {
                 AppModel.Logger.Warn("WARN: App neu gestartet (Person noch nicht bekannt - Neuinstallation)");
             }
-
-            //AppModel.Instance.SendLogZipFile();
-
-            // StartPage is created lazily by TFPageNavigator when needed –
-            // no premature construction here so the splash is not delayed.
-            //if (AppModel.Instance.MainPage == null)
-            //{
-            //    var mainPage = new MainPage();
-            //    AppModel.Instance.MainPage = mainPage;
-            //}
-
         }
 
 
         protected override Window CreateWindow(IActivationState activationState)
         {
-            //var page = AppModel.Instance.StartPage ??
-            //    new ContentPage { BackgroundColor = Colors.DarkRed };
-            //return new Window(page);
-            // Show the splash overlay (screen.png background + spinning loader) first.
-            // SplashOverlayPage transitions automatically to StartPage after a short delay.
             return new Window(new SplashOverlayPage());
         }
 
@@ -155,79 +101,15 @@ namespace iPMCloud.Mobile
 
             //OnStartIntiFirebase();
 
-            //if (AppModel.Instance.DeviceSystem == "android")
-            //{
-            //    DependencyService.Get<IDependentService>().Start();
-            //}
-
-            //StartBackgroundService();
-            AppModel.Instance.isInBackground = false;
             AppModel.Instance.AppOnStart = DateTime.Now;
             base.OnStart();
-
-
-            //// Ensure PageNavigator is initialized before navigating
-            //if (AppModel.Instance.PageNavigator != null)
-            //{
-            //    if (AppModel.Instance.SettingModel.SettingDTO.Autologin &&
-            //        !String.IsNullOrWhiteSpace(AppModel.Instance.SettingModel.SettingDTO.LoginToken))
-            //    {
-            //        //Es gibt ein Token und Autologin
-            //        AppModel.Instance.CheckLogin(true);//SmallLoginCheck
-            //        AppModel.Logger.Error("STEP: App.xaml :87");
-            //    }
-            //    else
-            //    {
-            //        AppModel.Instance.PageNavigator.NavigateTo(TFPageNavigator.PAGE_STARTPAGE);
-            //        AppModel.Logger.Error("STEP: App.xaml :92 (.NavigateTo(Startpage))");
-            //    }
-            //}
-            //else
-            //{
-            //    AppModel.Logger.Error("ERROR: PageNavigator is null - cannot navigate to start page");
-            //}
         }
 
         protected async override void OnSleep()
         {
             AppModel.Instance.isInBackground = true;
-            //AppModel.Logger.Info("(OnSleep) App in den Hintergrund gelegt");
+            AppModel.Logger.Info("(OnSleep) App in den Hintergrund gelegt");
             AppModel.Instance.AppOnSleep = DateTime.Now;
-            AppModel.Instance.AppOnResume = AppModel.Instance.AppOnSleep;
-            //if (!AppModel.Instance.UseExternHardware)
-            //{
-            //    await Task.Delay(10000);
-            //}
-            //// OnResume ich öffne früher als 10 Sek die App, dann hier nicht ausführen!
-            //if (AppModel.Instance.AppOnResume == AppModel.Instance.AppOnSleep || AppModel.Instance.UseExternHardware)
-            //{
-            //    if (AppModel.Instance.DeviceSystem == "android")
-            //    {
-            //        //DependencyService.Get<IDependentService>().Stop();
-            //    }
-            //    AppModel.Instance.isInBackground = !AppModel.Instance.UseExternHardware;
-            //    if (!AppModel.Instance.UseExternHardware)
-            //    {
-            //        ////if (AppModel.Instance.DeviceSystem == "ios")
-            //        ////{
-
-            //        //BackgroundAggregatorService.StopBackgroundService();
-
-            //        ////Thread.CurrentThread.Abort();
-            //        ////}
-            //        ////else if (AppModel.Instance.DeviceSystem == "android")
-            //        ////{
-            //        ////AppModel.Logger.Info("(OnSleep) App komplett geschlossen");
-            //        ////AppModel.Logger.Info("Service abgeschaltet");
-            //        ////System.Diagnostics.Process.GetCurrentProcess().CloseMainWindow();// Close to Background
-            //        ////System.Diagnostics.Process.GetCurrentProcess().Kill();// Complete Close App
-            //        ////}
-            //    }
-            //    else
-            //    {
-            //        //AppModel.Logger.Info("(UseHardware) App vorübergehend in den Hintergrund gelegt");
-            //    }
-            //}
 
             base.OnSleep();
         }
@@ -243,7 +125,6 @@ namespace iPMCloud.Mobile
                 }
 
                 AppModel.Instance.AppOnResume = DateTime.Now;
-                AppModel.Instance.isInBackground = false;
 
                 //if (AppModel.Instance.AppOnResume > AppModel.Instance.AppOnSleep.AddSeconds(10) || AppModel.Instance.UseExternHardware)
                 //{
@@ -285,31 +166,6 @@ namespace iPMCloud.Mobile
             base.OnResume();
         }
 
-        public static void StartBackgroundService()
-        {
-            // TODO: Implement MAUI-compatible background service
-            // Matcha.BackgroundService is not MAUI-compatible
-            // Consider: Native Android WorkManager / iOS Background Tasks
-            /*
-            try
-            {
-                //AppModel.Logger.Info("GPS Job gestartet");
-                BackgroundAggregatorService.Add(() => new LocationInfo(5));
-
-                ////if (AppModel.Instance.SettingModel.SettingDTO.RunBackground) {
-                ////    //BackgroundAggregatorService.Instance.Clear();
-                ////    AppModel.Logger.Info("STARTE Backgroundprozess SYNC");
-                ////    BackgroundAggregatorService.Add(() => new SendUpload(10));
-                ////}
-                BackgroundAggregatorService.StartBackgroundService();
-            }
-            catch (Exception ex)
-            {
-                AppModel.Logger.Error("ERROR StartBackgroundService");
-                AppModel.Logger.Error(ex);
-            }
-            */
-        }
 
 
         private void OnStartIntiFirebase()

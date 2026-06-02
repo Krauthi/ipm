@@ -130,12 +130,14 @@ namespace iPMCloud.Mobile.vo
                         return;
                     }
 
-                    if (Interlocked.Exchange(ref _skipStartToMainTransitionOnce, 0) == 1)
+                    bool continueFromTransitionSplash = Interlocked.Exchange(ref _skipStartToMainTransitionOnce, 0) == 1;
+
+                    if (continueFromTransitionSplash)
                     {
                         AppModel.Logger.Info("StartPage -> MainPage transition splash finished; continuing to MainPage.");
                     }
 
-                    if (LastMainPage != CurrentMainPage)
+                    if (LastMainPage != CurrentMainPage || continueFromTransitionSplash)
                     {
                         if(AppModel.Instance.MainPage != null)
                         {

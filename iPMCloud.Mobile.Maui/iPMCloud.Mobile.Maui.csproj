@@ -22,8 +22,14 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">12.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">28.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.19041.0</SupportedOSPlatformVersion>
-	</PropertyGroup>
 
+		<Configurations>Debug;ReleaseAPK;DebugDevice;Release</Configurations>
+	</PropertyGroup>
+		
+	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
+	  <WindowsPackageType>None</WindowsPackageType>
+	</PropertyGroup>
+	
 	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
 		<SupportedOSPlatformVersion>14.0</SupportedOSPlatformVersion>
 		<CodesignKey>iPhone Developer</CodesignKey>
@@ -60,6 +66,21 @@
 		<!-- Optional: Für detaillierte Diagnose -->
 		<!-- <AndroidDiagnosticBuild>true</AndroidDiagnosticBuild> -->
 	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='DebugDevice|net10.0-android|AnyCPU'">
+		<Optimize>false</Optimize>
+		<DebugSymbols>true</DebugSymbols>
+		<DebugType>portable</DebugType>
+		<AndroidEnableSGenConcurrent>true</AndroidEnableSGenConcurrent>
+		<AndroidUseAapt2>true</AndroidUseAapt2>
+		<AndroidPackageFormat>apk</AndroidPackageFormat>
+		<AndroidLinkMode>SdkOnly</AndroidLinkMode>
+		<AndroidEnableMultiDex>true</AndroidEnableMultiDex>
+		<AndroidEnableR8>false</AndroidEnableR8>
+		<EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
+		<PublishTrimmed>true</PublishTrimmed>
+		<!-- Optional: Für detaillierte Diagnose -->
+		<!-- <AndroidDiagnosticBuild>true</AndroidDiagnosticBuild> -->
+	</PropertyGroup>
 
 	<!-- Release-Konfiguration für Store/QA-Builds -->
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net10.0-android|AnyCPU'">
@@ -69,6 +90,14 @@
 		<AndroidEnableMultiDex>true</AndroidEnableMultiDex> -->
 		<AndroidLinkMode>SdkOnly</AndroidLinkMode>
 		<PublishTrimmed>true</PublishTrimmed>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='ReleaseAPK|net10.0-android|AnyCPU'">
+		<Optimize>true</Optimize>
+		<AndroidPackageFormat>apk</AndroidPackageFormat>
+		<!-- <AndroidUseAapt2>true</AndroidUseAapt2>
+		<AndroidEnableMultiDex>true</AndroidEnableMultiDex> -->
+		<AndroidLinkMode>None</AndroidLinkMode>
+		<PublishTrimmed>false</PublishTrimmed>
 	</PropertyGroup>
 
 	<!-- <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net10.0-android|AnyCPU'">

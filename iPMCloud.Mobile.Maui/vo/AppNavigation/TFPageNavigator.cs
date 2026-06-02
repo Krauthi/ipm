@@ -8,7 +8,6 @@ using Microsoft.Maui.Controls;
 using System.Threading.Tasks;
 using System.Threading;
 using Microsoft.Maui.ApplicationModel;
-using iPMCloud.Mobile;
 
 namespace iPMCloud.Mobile.vo
 {
@@ -21,7 +20,6 @@ namespace iPMCloud.Mobile.vo
         //public const string SUBPAGE_STARTPAGE_SETTINGS = "startpage_settings";
 
         public const string PAGE_MAINPAGE = "mainpage";
-        private const int StartToMainTransitionDisplayTimeMs = 600;
 
                               
 
@@ -118,13 +116,6 @@ namespace iPMCloud.Mobile.vo
                 case PAGE_MAINPAGE:
                     if (LastMainPage != CurrentMainPage)
                     {
-                        if (LastMainPage == PAGE_STARTPAGE)
-                        {
-                            AppModel.Logger.Info("INFO: Showing splash transition from StartPage to MainPage.");
-                            await SetPageAsync(new SplashOverlayPage(false));
-                            await Task.Delay(StartToMainTransitionDisplayTimeMs);
-                        }
-
                         if(AppModel.Instance.MainPage != null)
                         {
                             AppModel.Logger.Info("Reusing existing MainPage instance.");

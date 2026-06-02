@@ -13,18 +13,11 @@ namespace iPMCloud.Mobile
     public partial class SplashOverlayPage : ContentPage
     {
         /// <summary>Minimum time (ms) the splash overlay is visible.</summary>
-        private const int MinimumSplashDisplayTimeMs = 1000;
-        private readonly bool _navigateToStartPageOnAppear;
+        private const int MinimumSplashDisplayTimeMs = 500;
 
         public SplashOverlayPage()
-            : this(true)
-        {
-        }
-
-        public SplashOverlayPage(bool navigateToStartPageOnAppear)
         {
             InitializeComponent();
-            _navigateToStartPageOnAppear = navigateToStartPageOnAppear;
         }
 
         protected override async void OnAppearing()
@@ -33,36 +26,35 @@ namespace iPMCloud.Mobile
 
             try
             {
-                // Minimum display time so the splash + loader is visible.
-                // App.InitApp() already ran synchronously in the App constructor,
-                // so StartPage is available immediately; this delay is purely visual.
-                await Task.Delay(MinimumSplashDisplayTimeMs);
-                if (!_navigateToStartPageOnAppear)
+                // Run the login check and the minimum splash delay concurrently so the
+                // total wait is max(loginCheckTime, MinimumSplashDisplayTimeMs).
+                var splashDelayTask = Task.Delay(MinimumSplashDisplayTimeMs);
+                var loginTask = AppModel.Instance?.CheckLoginAsync() ?? Task.FromResult(false);
+
+                await Task.WhenAll(splashDelayTask, loginTask);
+
+                bool loginValid = loginTask.Result;
+
+                if (loginValid)
                 {
-                    return;
+                    AppModel.Logger.Info("SplashOverlayPage: valid login -> navigating to MainPage");
+                    AppModel.Instance?.PageNavigator.NavigateTo(TFPageNavigator.PAGE_MAINPAGE);
                 }
-
-                AppModel.Instance?.PageNavigator.NavigateTo(TFPageNavigator.PAGE_STARTPAGE);
-                //ContentPage startPage = AppModel.Instance?.StartPage ?? new ContentPage { BackgroundColor = Colors.Black };
-
-                // Switch the window's root page – no navigation stack needed
-                //if (Application.Current?.Windows?.Count > 0)
-                //{
-                //    Application.Current.Windows[0].Page = startPage;
-                //}
+                else
+                {
+                    AppModel.Logger.Info("SplashOverlayPage: no valid login -> navigating to StartPage");
+                    AppModel.Instance?.PageNavigator.NavigateTo(TFPageNavigator.PAGE_STARTPAGE);
+                }
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"SplashOverlayPage.OnAppearing error: {ex.Message}");
+                AppModel.Logger.Error($"SplashOverlayPage: startup decision failed: {ex.Message}");
 
-                // Emergency fallback
+                // Fallback: navigate to StartPage so the app doesn't get stuck
                 try
                 {
-                    var fallback = _navigateToStartPageOnAppear
-                        ? (AppModel.Instance?.StartPage ?? new ContentPage { BackgroundColor = Colors.Black })
-                        : new ContentPage { BackgroundColor = Colors.Black };
-                    if (Application.Current?.Windows?.Count > 0)
-                        Application.Current.Windows[0].Page = fallback;
+                    AppModel.Instance?.PageNavigator.NavigateTo(TFPageNavigator.PAGE_STARTPAGE);
                 }
                 catch (Exception innerEx)
                 {

@@ -96,10 +96,6 @@ namespace iPMCloud.Mobile
             density = di.Density;
             screenWidthDp = di.Width / di.Density;
             screenHeightDp = di.Height / di.Density;
-#if DEBUG
-            swCtor.Stop();
-            AppModel.Logger.Info($"PERF: MainPage display-info setup took {swCtor.ElapsedMilliseconds} ms");
-#endif
             //MainPageAgain();
         }
 
@@ -129,23 +125,10 @@ namespace iPMCloud.Mobile
                 sw.Restart();
 #endif
                 AppModel.Instance.Lang = Lang.Load();
-#if DEBUG
-                AppModel.Logger.Info($"PERF: MainPageAgain Lang.Load took {sw.ElapsedMilliseconds} ms");
-                sw.Restart();
-#endif
 
                 ShowDisconnected();
-#if DEBUG
-                AppModel.Logger.Info($"PERF: MainPageAgain ShowDisconnected took {sw.ElapsedMilliseconds} ms");
-                sw.Restart();
-#endif
 
                 var checkPerm = await CheckLocationPermissionsAndInitGps();
-#if DEBUG
-                AppModel.Logger.Info($"PERF: MainPageAgain CheckPermissions took {sw.ElapsedMilliseconds} ms");
-                sw.Restart();
-#endif
-
                 if (checkPerm)
                 {
                     CheckAllSyncFromUpload();
@@ -1133,10 +1116,12 @@ namespace iPMCloud.Mobile
                 // Kamera wird nicht unterstützt
                 await DisplayAlertAsync("Fehler", "Kamera wird nicht unterstützt", "OK");
             }
-            catch (PermissionException)
+            catch (PermissionException exp)
             {
                 // Berechtigungen wurden nicht erteilt
                 await DisplayAlertAsync("Fehler", "Keine Kamera-Berechtigung", "OK");
+
+                AppModel.Logger.Error("(btn_takePhoto_check_bem) Keine Kamera-Berechtigung: " + exp.Message + " :: " + exp.StackTrace);
             }
             catch (OperationCanceledException)
             {
@@ -1291,7 +1276,7 @@ namespace iPMCloud.Mobile
             catch (PermissionException exp)
             {
                 // Berechtigungen wurden nicht erteilt
-                AppModel.Logger.Error($"Fehler Keine Kamera-Berechtigung: {exp.Message}");
+                AppModel.Logger.Error("(btn_pickPhotos_check_bem) Keine Kamera-Berechtigung: " + exp.Message + " :: " + exp.StackTrace);
             }
             catch (OperationCanceledException)
             {
@@ -1391,9 +1376,10 @@ namespace iPMCloud.Mobile
             {
                 await DisplayAlertAsync("Fehler", "Kamera wird nicht unterstützt", "OK");
             }
-            catch (PermissionException)
+            catch (PermissionException exp)
             {
                 await DisplayAlertAsync("Fehler", "Keine Kamera-Berechtigung", "OK");
+                AppModel.Logger.Error("(btn_pickPhotos_check_bem) Keine Kamera-Berechtigung: " + exp.Message + " :: " + exp.StackTrace);
             }
             catch (OperationCanceledException)
             {
@@ -1689,71 +1675,14 @@ namespace iPMCloud.Mobile
                         AppModel.Instance.UseExternHardware = false;
                     }
 
-
-                    /*
-
-
-                    var sp = result
-                        .Replace("https://", "http://")
-                        .Replace("httpss://", "https://")
-                        .Split(new[] { "###" }, StringSplitOptions.RemoveEmptyEntries);
-
-                    if (sp.Length < 3)
-                    {
-                        await DisplayAlertAsync("QR-Code nicht gültig!",
-                                                "Dieser QR-Code kann für die Registrierung eines weiteren Unternehmens mit der iPM-Cloud-App nicht verwendet werden.",
-                                                "OK");
-                        return;
-                    }
-
-                    AppModel.Instance.UseExternHardware = true;
-                    var newScanSettings = new SettingDTO
-                    {
-                        ServerUrl = sp[0],
-                        CustomerNumber = sp[1],
-                        CustomerName = sp[2]
-                    };
-                    var cn = AppModel.Instance.SettingModel.SettingDTO.CustomerNumber;
-                    if (!string.IsNullOrWhiteSpace(newScanSettings.ServerUrl) &&
-                        !string.IsNullOrWhiteSpace(newScanSettings.CustomerNumber) &&
-                        !string.IsNullOrWhiteSpace(newScanSettings.CustomerName) &&
-                        newScanSettings.CustomerNumber != cn)
-                    {
-                        Company.AddUpdateCompany(AppModel.Instance, AppModel.Instance.SettingModel.SettingDTO);
-
-                        string directoryPath = Path.Combine(
-                            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                            "ipm/" + newScanSettings.CustomerNumber);
-
-                        if (!Directory.Exists(directoryPath)) Directory.CreateDirectory(directoryPath);
-
-                        AppModel.Instance.SettingModel.SettingDTO = newScanSettings;
-                        AppModel.Instance.SettingModel.SaveSettings();
-
-                        AppModel.Instance.UseExternHardware = false;
-
-                    }
-                    else
-                    {
-                        AppModel.Logger.Error("QR-Code nicht erkannt!" + " Dieser QR-Code kann für die Registrierung eines weiteren Unternehmens mit der iPM-Cloud-App nicht verwendet werden!");
-                        await DisplayAlertAsync("QR-Code nicht erkannt!",
-                                                "Dieser QR-Code kann für die Registrierung eines weiteren Unternehmens mit der iPM-Cloud-App nicht verwendet werden.",
-                                                "OK");
-                        AppModel.Instance.UseExternHardware = false;
-                    }*/
                 }
                 else
                 {
-                    //AppModel.Logger.Error("Keine Kamera!" + " Vermutlich ist die Berechtigung der Kamera nicht gesetzt!");
-                    //await DisplayAlertAsync("Keine Kamera!",
-                    //                        "Vermutlich ist die Berechtigung der Kamera nicht gesetzt!",
-                    //                        "OK");
                     AppModel.Instance.UseExternHardware = false;
                 }
             }
             catch (Exception ex)
             {
-                //AppModel.Logger.Error("Fehler beim Scannen: " + ex.Message);
                 await DisplayAlertAsync("Fehler beim Scannen!", "QR-Code konnte nicht gelesen werden.", "OK");
                 AppModel.Instance.UseExternHardware = false;
             }
@@ -2887,18 +2816,18 @@ namespace iPMCloud.Mobile
 
             frame_planConC_offenbtn.GestureRecognizers.Clear();
             var t_frame_planConC_offentxt = new TapGestureRecognizer();
-            t_frame_planConC_offentxt.Tapped -= async (object o, TappedEventArgs ev) => { await tourScrollerC.ScrollToAsync(0, 0, true); };
-            t_frame_planConC_offentxt.Tapped += async (object o, TappedEventArgs ev) => { await tourScrollerC.ScrollToAsync(0, 0, true); };
+            t_frame_planConC_offentxt.Tapped -= async (object o, TappedEventArgs ev) => { tourScrollerCaa.IsVisible = true; tourScrollerCbb.IsVisible = false; tourScrollerCcc.IsVisible = false; };
+            t_frame_planConC_offentxt.Tapped += async (object o, TappedEventArgs ev) => { tourScrollerCaa.IsVisible = true; tourScrollerCbb.IsVisible = false; tourScrollerCcc.IsVisible = false; };
             frame_planConC_offenbtn.GestureRecognizers.Add(t_frame_planConC_offentxt);
             frame_planConC_workbtn.GestureRecognizers.Clear();
             var t_frame_planConC_worktxt = new TapGestureRecognizer();
-            t_frame_planConC_worktxt.Tapped -= async (object o, TappedEventArgs ev) => { await tourScrollerC.ScrollToAsync(tabContentWidth * 1, 0, true); };
-            t_frame_planConC_worktxt.Tapped += async (object o, TappedEventArgs ev) => { await tourScrollerC.ScrollToAsync(tabContentWidth * 1, 0, true); };
+            t_frame_planConC_worktxt.Tapped -= async (object o, TappedEventArgs ev) => { tourScrollerCaa.IsVisible = false; tourScrollerCbb.IsVisible = true; tourScrollerCcc.IsVisible = false; };
+            t_frame_planConC_worktxt.Tapped += async (object o, TappedEventArgs ev) => { tourScrollerCaa.IsVisible = false; tourScrollerCbb.IsVisible = true; tourScrollerCcc.IsVisible = false; };
             frame_planConC_workbtn.GestureRecognizers.Add(t_frame_planConC_worktxt);
             frame_planConC_erlbtn.GestureRecognizers.Clear();
             var t_frame_planConC_erltxt = new TapGestureRecognizer();
-            t_frame_planConC_erltxt.Tapped -= async (object o, TappedEventArgs ev) => { await tourScrollerC.ScrollToAsync(tabContentWidth * 2, 0, true); };
-            t_frame_planConC_erltxt.Tapped += async (object o, TappedEventArgs ev) => { await tourScrollerC.ScrollToAsync(tabContentWidth * 2, 0, true); };
+            t_frame_planConC_erltxt.Tapped -= async (object o, TappedEventArgs ev) => { tourScrollerCaa.IsVisible = false; tourScrollerCbb.IsVisible = false; tourScrollerCcc.IsVisible = true; };
+            t_frame_planConC_erltxt.Tapped += async (object o, TappedEventArgs ev) => { tourScrollerCaa.IsVisible = false; tourScrollerCbb.IsVisible = false; tourScrollerCcc.IsVisible = true; };
             frame_planConC_erlbtn.GestureRecognizers.Add(t_frame_planConC_erltxt);
 
             Init_PlanTabs();
@@ -6798,6 +6727,7 @@ namespace iPMCloud.Mobile
                 //var t_frame_plantabCe = new TapGestureRecognizer();
                 //t_frame_plantabCe.Tapped += btn_PlanTabCeTapped;
                 //frame_plantabCe.GestureRecognizers.Add(t_frame_plantabCe);
+                
                 //frame_plantabC.GestureRecognizers.Clear();
                 //var t_frame_plantabC = new TapGestureRecognizer();
                 //t_frame_plantabC.Tapped += btn_PlanTabCTapped;
@@ -8780,7 +8710,7 @@ namespace iPMCloud.Mobile
                     frame_plantabA.IsVisible = false;
                     frame_plantabB.IsVisible = false;
                     frame_plantabCe.IsVisible = AppModel.Instance.AppControll.showChecks;
-                    // TODO: frame_plantabC.IsVisible = true;
+                    frame_plantabC.IsVisible = true;
                     frame_planConA.IsVisible = false;
                     frame_planConB.IsVisible = false;
                     frame_planConCe.IsVisible = false;
@@ -8798,7 +8728,7 @@ namespace iPMCloud.Mobile
                     frame_plantabA.IsVisible = true;
                     frame_plantabB.IsVisible = true;
                     frame_plantabCe.IsVisible = AppModel.Instance.AppControll.showChecks;
-                    // TODO: frame_plantabC.IsVisible = true;
+                    frame_plantabC.IsVisible = true;
 
                     frame_planConA.IsVisible = true;
                     frame_planConB.IsVisible = false;

@@ -1279,7 +1279,7 @@
                                             FontSize="9"
                                             HorizontalOptions="Center"
                                             HorizontalTextAlignment="Center"
-                                            Text="65"
+                                            Text="1"
                                             TextColor="#ffffff"
                                             VerticalOptions="Center" />
                                     </Border>
@@ -2516,204 +2516,199 @@
                                 HorizontalOptions="Fill"
                                 VerticalOptions="Start" />
 
-                            <ScrollView
+                            <Grid
                                 x:Name="tourScrollerC"
                                 Grid.Row="2"
                                 Margin="0"
                                 Padding="0"
                                 HorizontalOptions="Fill"
-                                Orientation="Horizontal"
+                                RowSpacing="0"
                                 VerticalOptions="Fill">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
                                 <Grid
-                                    Margin="0"
-                                    Padding="0"
-                                    HorizontalOptions="Fill"
-                                    RowSpacing="0"
-                                    VerticalOptions="Fill">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="*" />
-                                    </Grid.RowDefinitions>
-                                    <Grid
+                                    x:Name="tourScrollerCaa"
                                         Grid.Row="0"
                                         Margin="0"
                                         Padding="0"
-                                        ColumnSpacing="1"
                                         HorizontalOptions="Fill"
+                                        RowSpacing="0"
                                         VerticalOptions="Fill">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="Auto" />
-                                        </Grid.ColumnDefinitions>
-                                        <Grid
-                                            Grid.Column="0"
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="*" />
+                                        </Grid.RowDefinitions>
+                                        <HorizontalStackLayout
+                                            x:Name="frame_planConC_offenhead"
+                                            Grid.Row="0"
+                                            Margin="0"
+                                            Padding="3"
+                                            BackgroundColor="#33ff0000"
+                                            HorizontalOptions="Fill"
+                                            Spacing="0"
+                                            VerticalOptions="Start">
+                                            <Label
+                                                x:Name="frame_planConC_offenheadtxt"
+                                                Margin="3,0,0,1"
+                                                Padding="0"
+                                                FontSize="18"
+                                                HorizontalOptions="Start"
+                                                Text="Offen"
+                                                TextColor="#ffffff"
+                                                VerticalOptions="Start" />
+                                        </HorizontalStackLayout>
+                                        <ScrollView
+                                            Grid.Row="1"
                                             Margin="0"
                                             Padding="0"
                                             HorizontalOptions="Fill"
-                                            RowSpacing="0"
                                             VerticalOptions="Fill">
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="Auto" />
-                                                <RowDefinition Height="*" />
-                                            </Grid.RowDefinitions>
-                                            <HorizontalStackLayout
-                                                x:Name="frame_planConC_offenhead"
-                                                Grid.Row="0"
+                                            <VerticalStackLayout
+                                                x:Name="frame_planListCoffen"
                                                 Margin="0"
-                                                Padding="3"
-                                                BackgroundColor="#33ff0000"
+                                                Padding="0"
                                                 HorizontalOptions="Fill"
+                                                IsVisible="True"
                                                 Spacing="0"
-                                                VerticalOptions="Start">
+                                                VerticalOptions="Fill">
                                                 <Label
-                                                    x:Name="frame_planConC_offenheadtxt"
                                                     Margin="3,0,0,1"
                                                     Padding="0"
-                                                    FontSize="18"
-                                                    HorizontalOptions="Start"
+                                                    FontSize="12"
+                                                    HorizontalOptions="Fill"
                                                     Text="Offen"
-                                                    TextColor="#ffffff"
+                                                    TextColor="#ff0000"
                                                     VerticalOptions="Start" />
-                                            </HorizontalStackLayout>
-                                            <ScrollView
-                                                Grid.Row="1"
-                                                Margin="0"
-                                                Padding="0"
-                                                HorizontalOptions="Fill"
-                                                VerticalOptions="Fill">
-                                                <VerticalStackLayout
-                                                    x:Name="frame_planListCoffen"
-                                                    Margin="0"
-                                                    Padding="0"
-                                                    HorizontalOptions="Fill"
-                                                    IsVisible="True"
-                                                    Spacing="0"
-                                                    VerticalOptions="Fill">
-                                                    <Label
-                                                        Margin="3,0,0,1"
-                                                        Padding="0"
-                                                        FontSize="12"
-                                                        HorizontalOptions="Fill"
-                                                        Text="Offen"
-                                                        TextColor="#ff0000"
-                                                        VerticalOptions="Start" />
-                                                </VerticalStackLayout>
-                                            </ScrollView>
-                                        </Grid>
-                                        <Grid
-                                            Grid.Column="1"
-                                            Margin="0"
-                                            Padding="0"
-                                            HorizontalOptions="Fill"
-                                            RowSpacing="0"
-                                            VerticalOptions="Fill">
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="Auto" />
-                                                <RowDefinition Height="*" />
-                                            </Grid.RowDefinitions>
-                                            <HorizontalStackLayout
-                                                x:Name="frame_planConC_workhead"
-                                                Grid.Row="0"
-                                                Margin="0"
-                                                Padding="3"
-                                                BackgroundColor="#33ffcc00"
-                                                HorizontalOptions="Fill"
-                                                Spacing="0"
-                                                VerticalOptions="Start">
-                                                <Label
-                                                    x:Name="frame_planConC_workheadtxt"
-                                                    Margin="3,0,0,1"
-                                                    Padding="0"
-                                                    FontSize="18"
-                                                    HorizontalOptions="Start"
-                                                    Text="In Arbeit"
-                                                    TextColor="#ffffff"
-                                                    VerticalOptions="Start" />
-                                            </HorizontalStackLayout>
-                                            <ScrollView
-                                                Grid.Row="1"
-                                                Margin="0"
-                                                Padding="0"
-                                                HorizontalOptions="Fill"
-                                                VerticalOptions="Fill">
-                                                <VerticalStackLayout
-                                                    x:Name="frame_planListCwork"
-                                                    Margin="0"
-                                                    Padding="0"
-                                                    HorizontalOptions="Fill"
-                                                    IsVisible="True"
-                                                    Spacing="0"
-                                                    VerticalOptions="Fill">
-                                                    <Label
-                                                        Margin="3,0,0,1"
-                                                        Padding="0"
-                                                        FontSize="12"
-                                                        HorizontalOptions="Fill"
-                                                        Text="In Arbeit"
-                                                        TextColor="#ffcc00"
-                                                        VerticalOptions="Start" />
-                                                </VerticalStackLayout>
-                                            </ScrollView>
-                                        </Grid>
-                                        <Grid
-                                            Grid.Column="2"
-                                            Margin="0"
-                                            Padding="0"
-                                            HorizontalOptions="Fill"
-                                            RowSpacing="0"
-                                            VerticalOptions="Fill">
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="Auto" />
-                                                <RowDefinition Height="*" />
-                                            </Grid.RowDefinitions>
-                                            <HorizontalStackLayout
-                                                x:Name="frame_planConC_erlhead"
-                                                Grid.Row="0"
-                                                Margin="0"
-                                                Padding="3"
-                                                BackgroundColor="#3300ff00"
-                                                HorizontalOptions="Fill"
-                                                Spacing="0"
-                                                VerticalOptions="Start">
-                                                <Label
-                                                    x:Name="frame_planConC_erlheadtxt"
-                                                    Margin="3,0,0,1"
-                                                    Padding="0"
-                                                    FontSize="18"
-                                                    HorizontalOptions="Start"
-                                                    Text="Erledigte"
-                                                    TextColor="#ffffff"
-                                                    VerticalOptions="Start" />
-                                            </HorizontalStackLayout>
-                                            <ScrollView
-                                                Grid.Row="1"
-                                                Margin="0"
-                                                Padding="0"
-                                                HorizontalOptions="Fill"
-                                                VerticalOptions="Fill">
-                                                <VerticalStackLayout
-                                                    x:Name="frame_planListCerl"
-                                                    Margin="0"
-                                                    Padding="0"
-                                                    HorizontalOptions="Fill"
-                                                    IsVisible="True"
-                                                    Spacing="0"
-                                                    VerticalOptions="Fill">
-                                                    <Label
-                                                        Margin="3,0,0,1"
-                                                        Padding="0"
-                                                        FontSize="12"
-                                                        HorizontalOptions="Fill"
-                                                        Text="Erledigte"
-                                                        TextColor="#00ff00"
-                                                        VerticalOptions="Start" />
-                                                </VerticalStackLayout>
-                                            </ScrollView>
-                                        </Grid>
+                                            </VerticalStackLayout>
+                                        </ScrollView>
                                     </Grid>
-                                </Grid>
-                            </ScrollView>
+                                <Grid
+                                    x:Name="tourScrollerCbb"
+                                    Grid.Row="0"
+                                    IsVisible="False"
+                                        Margin="0"
+                                        Padding="0"
+                                        HorizontalOptions="Fill"
+                                        RowSpacing="0"
+                                        VerticalOptions="Fill">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="*" />
+                                        </Grid.RowDefinitions>
+                                        <HorizontalStackLayout
+                                            x:Name="frame_planConC_workhead"
+                                            Grid.Row="0"
+                                            Margin="0"
+                                            Padding="3"
+                                            BackgroundColor="#33ffcc00"
+                                            HorizontalOptions="Fill"
+                                            Spacing="0"
+                                            VerticalOptions="Start">
+                                            <Label
+                                                x:Name="frame_planConC_workheadtxt"
+                                                Margin="3,0,0,1"
+                                                Padding="0"
+                                                FontSize="18"
+                                                HorizontalOptions="Start"
+                                                Text="In Arbeit"
+                                                TextColor="#ffffff"
+                                                VerticalOptions="Start" />
+                                        </HorizontalStackLayout>
+                                        <ScrollView
+                                            Grid.Row="1"
+                                            Margin="0"
+                                            Padding="0"
+                                            HorizontalOptions="Fill"
+                                            VerticalOptions="Fill">
+                                            <VerticalStackLayout
+                                                x:Name="frame_planListCwork"
+                                                Margin="0"
+                                                Padding="0"
+                                                HorizontalOptions="Fill"
+                                                IsVisible="True"
+                                                Spacing="0"
+                                                VerticalOptions="Fill">
+                                                <Label
+                                                    Margin="3,0,0,1"
+                                                    Padding="0"
+                                                    FontSize="12"
+                                                    HorizontalOptions="Fill"
+                                                    Text="In Arbeit"
+                                                    TextColor="#ffcc00"
+                                                    VerticalOptions="Start" />
+                                            </VerticalStackLayout>
+                                        </ScrollView>
+                                    </Grid>
+                                <Grid
+                                    x:Name="tourScrollerCcc"
+                                    IsVisible="False"
+                                        Grid.Row="0"
+                                        Margin="0"
+                                        Padding="0"
+                                        HorizontalOptions="Fill"
+                                        RowSpacing="0"
+                                        VerticalOptions="Fill">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="*" />
+                                        </Grid.RowDefinitions>
+                                        <HorizontalStackLayout
+                                            x:Name="frame_planConC_erlhead"
+                                            Grid.Row="0"
+                                            Margin="0"
+                                            Padding="3"
+                                            BackgroundColor="#3300ff00"
+                                            HorizontalOptions="Fill"
+                                            Spacing="0"
+                                            VerticalOptions="Start">
+                                            <Label
+                                                x:Name="frame_planConC_erlheadtxt"
+                                                Margin="3,0,0,1"
+                                                Padding="0"
+                                                FontSize="18"
+                                                HorizontalOptions="Start"
+                                                Text="Erledigte"
+                                                TextColor="#ffffff"
+                                                VerticalOptions="Start" />
+                                        </HorizontalStackLayout>
+                                        <ScrollView
+                                            Grid.Row="1"
+                                            Margin="0"
+                                            Padding="0"
+                                            HorizontalOptions="Fill"
+                                            VerticalOptions="Fill">
+                                            <VerticalStackLayout
+                                                x:Name="frame_planListCerl"
+                                                Margin="0"
+                                                Padding="0"
+                                                HorizontalOptions="Fill"
+                                                IsVisible="True"
+                                                Spacing="0"
+                                                VerticalOptions="Fill">
+                                                <Label
+                                                    Margin="3,0,0,1"
+                                                    Padding="0"
+                                                    FontSize="12"
+                                                    HorizontalOptions="Fill"
+                                                    Text="Erledigte"
+                                                    TextColor="#00ff00"
+                                                    VerticalOptions="Start" />
+                                            </VerticalStackLayout>
+                                        </ScrollView>
+                                    </Grid>
+                            </Grid>
 
+                            <BoxView
+                                Grid.Row="3"
+                                Margin="0"
+                                BackgroundColor="#ccc"
+                                HeightRequest="1"
+                                HorizontalOptions="Fill"
+                                VerticalOptions="Start" />
+                            <!-- Ticket Buttons untere Reihe -->
                             <Grid
                                 Grid.Row="3"
                                 Margin="0"

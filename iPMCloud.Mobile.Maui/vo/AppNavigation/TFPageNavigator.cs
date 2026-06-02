@@ -8,6 +8,7 @@ using Microsoft.Maui.Controls;
 using System.Threading.Tasks;
 using System.Threading;
 using Microsoft.Maui.ApplicationModel;
+using iPMCloud.Mobile;
 
 namespace iPMCloud.Mobile.vo
 {
@@ -25,6 +26,7 @@ namespace iPMCloud.Mobile.vo
 
         public StartPage StartPageObj { get; set; }
         public MainPage MainPageObj { get; set; }
+        private int _skipStartToMainTransitionOnce;
 
         public string CurrentMainPage { get; set; } = "";
         public string CurrentSubPage { get; set; } = "";
@@ -51,6 +53,12 @@ namespace iPMCloud.Mobile.vo
                     System.Diagnostics.Debug.WriteLine($"NavigateTo Error: {ex.Message}");
                 }
             });
+        }
+
+        public void NavigateToMainPageAfterStartTransition(string subPage = "")
+        {
+            Interlocked.Exchange(ref _skipStartToMainTransitionOnce, 1);
+            NavigateTo(PAGE_MAINPAGE, subPage);
         }
 
         private async Task NavigateToAsync(string mainPage, string subPage = "")
@@ -114,6 +122,19 @@ namespace iPMCloud.Mobile.vo
 
 
                 case PAGE_MAINPAGE:
+                    if (LastMainPage == PAGE_STARTPAGE &&
+                        Interlocked.CompareExchange(ref _skipStartToMainTransitionOnce, 0, 0) == 0)
+                    {
+                        AppModel.Logger.Info("Showing StartPage -> MainPage transition splash.");
+                        await SetPageAsync(new StartToMainTransitionSplashPage(subPage));
+                        return;
+                    }
+
+                    if (Interlocked.Exchange(ref _skipStartToMainTransitionOnce, 0) == 1)
+                    {
+                        AppModel.Logger.Info("StartPage -> MainPage transition splash finished; continuing to MainPage.");
+                    }
+
                     if (LastMainPage != CurrentMainPage)
                     {
                         if(AppModel.Instance.MainPage != null)

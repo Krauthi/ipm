@@ -1,11 +1,144 @@
-﻿using iPMCloud.Mobile.vo;
+﻿using System.Diagnostics;
+using iPMCloud.Mobile.vo;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Storage;
 
 namespace iPMCloud.Mobile.Helpers
 {
+    public enum PhotoPickerFailureKind
+    {
+        PermissionDenied,
+        CaptureNotSupported,
+        CaptureFailed,
+        ProcessingFailed
+    }
+
+    public sealed class PhotoPickerException : Exception
+    {
+        public PhotoPickerException(
+            PhotoPickerFailureKind failureKind,
+            string userMessage,
+            string stage,
+            Exception innerException = null)
+            : base(userMessage, innerException)
+        {
+            FailureKind = failureKind;
+            UserMessage = userMessage;
+            Stage = stage;
+        }
+
+        public PhotoPickerFailureKind FailureKind { get; }
+        public string UserMessage { get; }
+        public string Stage { get; }
+    }
+
     public static class PhotoPickerHelper
     {
+        private const string LogPrefix = "[PhotoPickerHelper]";
+
+        private static void LogInfo(string message)
+        {
+            var logMessage = $"{LogPrefix} {message}";
+            Debug.WriteLine(logMessage);
+            AppModel.Logger?.Info(logMessage);
+        }
+
+        private static void LogWarning(string message)
+        {
+            var logMessage = $"{LogPrefix} {message}";
+            Debug.WriteLine(logMessage);
+            AppModel.Logger?.Warn(logMessage);
+        }
+
+        private static void LogError(string message, Exception ex)
+        {
+            var logMessage = $"{LogPrefix} {message}";
+            Debug.WriteLine($"{logMessage}{Environment.NewLine}{ex}");
+            AppModel.Logger?.Error(ex, logMessage);
+        }
+
+        private static async Task<PhotoResponse> ProcessPhotoResponseAsync(
+            FileResult photo,
+            BuildingWSO building,
+            string customBuildingText,
+            string operationName)
+        {
+            if (photo == null)
+                throw new ArgumentNullException(nameof(photo));
+
+            Stream stream = null;
+            try
+            {
+                LogInfo($"{operationName}: Öffne Stream für '{photo.FileName}'.");
+                stream = await photo.OpenReadAsync();
+                LogInfo($"{operationName}: Stream geöffnet.");
+            }
+            catch (Exception ex)
+            {
+                LogError($"{operationName}: OpenReadAsync fehlgeschlagen.", ex);
+                throw new PhotoPickerException(
+                    PhotoPickerFailureKind.ProcessingFailed,
+                    "Das aufgenommene Foto konnte nicht geöffnet werden.",
+                    "OpenReadAsync",
+                    ex);
+            }
+
+            try
+            {
+                return await Task.Run(() =>
+                {
+                    PhotoResponse photoResponse;
+
+                    try
+                    {
+                        LogInfo($"{operationName}: Starte PhotoUtils.GetImages.");
+                        photoResponse = PhotoUtils.GetImages(stream);
+                        LogInfo($"{operationName}: PhotoUtils.GetImages abgeschlossen.");
+                    }
+                    catch (Exception ex)
+                    {
+                        LogError($"{operationName}: PhotoUtils.GetImages fehlgeschlagen.", ex);
+                        throw new PhotoPickerException(
+                            PhotoPickerFailureKind.ProcessingFailed,
+                            "Das Foto konnte nicht verarbeitet werden.",
+                            "PhotoUtils.GetImages",
+                            ex);
+                    }
+
+                    try
+                    {
+                        LogInfo($"{operationName}: Starte PhotoUtils.AddInfoToImage.");
+                        photoResponse = PhotoUtils.AddInfoToImage(photoResponse, building, customBuildingText);
+                        LogInfo($"{operationName}: PhotoUtils.AddInfoToImage abgeschlossen.");
+                    }
+                    catch (Exception ex)
+                    {
+                        LogError($"{operationName}: PhotoUtils.AddInfoToImage fehlgeschlagen.", ex);
+                        throw new PhotoPickerException(
+                            PhotoPickerFailureKind.ProcessingFailed,
+                            "Das Foto konnte nicht nachbearbeitet werden.",
+                            "PhotoUtils.AddInfoToImage",
+                            ex);
+                    }
+
+                    if (photoResponse?.imageBytes == null || photoResponse.imageBytes.Length == 0)
+                    {
+                        throw new PhotoPickerException(
+                            PhotoPickerFailureKind.ProcessingFailed,
+                            "Das Foto konnte nicht verarbeitet werden.",
+                            "ProcessedPhotoValidation");
+                    }
+
+                    return photoResponse;
+                });
+            }
+            finally
+            {
+                stream?.Dispose();
+                LogInfo($"{operationName}: Stream geschlossen.");
+            }
+        }
+
         public static async Task<List<FileResult>> PickMultiplePhotosAsync(int maxCount)
         {
             try
@@ -49,7 +182,7 @@ namespace iPMCloud.Mobile.Helpers
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Fehler beim Foto-Picker: {ex.Message}");
+                LogError("Fehler beim Foto-Picker.", ex);
                 return null;
             }
         }
@@ -93,13 +226,11 @@ namespace iPMCloud.Mobile.Helpers
                 {
                     try
                     {
-                        using var stream = await photo.OpenReadAsync();
-
-                        var photoResponse = PhotoUtils.GetImages(stream);
-                        photoResponse = PhotoUtils.AddInfoToImage(
-                            photoResponse,
+                        var photoResponse = await ProcessPhotoResponseAsync(
+                            photo,
                             building,
-                            customBuildingText);
+                            customBuildingText,
+                            $"PickAndProcessPhotosAsync[{photo?.FileName ?? "unknown"}]");
 
                         long bildName = DateTime.Now.Ticks;
                         var bildWSO = new BildWSO(parentGuid)
@@ -126,7 +257,7 @@ namespace iPMCloud.Mobile.Helpers
                     }
                     catch (Exception photoEx)
                     {
-                        System.Diagnostics.Debug.WriteLine($"Fehler: {photoEx.Message}");
+                        LogError($"Fehler beim Verarbeiten von '{photo?.FileName ?? "unknown"}'.", photoEx);
                     }
                 }
 
@@ -135,7 +266,7 @@ namespace iPMCloud.Mobile.Helpers
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Fehler: {ex.Message}");
+                LogError("Fehler in PickAndProcessPhotosAsync.", ex);
                 return false;
             }
         }
@@ -150,29 +281,59 @@ namespace iPMCloud.Mobile.Helpers
         {
             try
             {
+                LogInfo("TakeAndProcessPhotoAsync: Starte Fotoaufnahme.");
+
                 // Berechtigungen prüfen
                 var status = await Permissions.CheckStatusAsync<Permissions.Camera>();
+                LogInfo($"TakeAndProcessPhotoAsync: Kamera-Berechtigungsstatus = {status}.");
                 if (status != PermissionStatus.Granted)
                 {
+                    LogInfo("TakeAndProcessPhotoAsync: Fordere Kamera-Berechtigung an.");
                     status = await Permissions.RequestAsync<Permissions.Camera>();
+                    LogInfo($"TakeAndProcessPhotoAsync: Ergebnis Berechtigungsanfrage = {status}.");
                     if (status != PermissionStatus.Granted)
-                        return null;
+                    {
+                        throw new PhotoPickerException(
+                            PhotoPickerFailureKind.PermissionDenied,
+                            "Bitte erlauben Sie Kamera-Zugriff.",
+                            "Permissions.RequestAsync");
+                    }
                 }
 
                 // Kamera verfügbar?
                 if (!MediaPicker.Default.IsCaptureSupported)
-                    return null;
+                {
+                    LogWarning("TakeAndProcessPhotoAsync: Capture wird auf diesem Gerät nicht unterstützt.");
+                    throw new PhotoPickerException(
+                        PhotoPickerFailureKind.CaptureNotSupported,
+                        "Kamera nicht verfügbar.",
+                        "MediaPicker.IsCaptureSupported");
+                }
 
                 // Foto aufnehmen
-                var photo = await MediaPicker.Default.CapturePhotoAsync();
+                LogInfo("TakeAndProcessPhotoAsync: Starte MediaPicker.Default.CapturePhotoAsync.");
+                var photo = await MediaPicker.Default.CapturePhotoAsync(new MediaPickerOptions
+                {
+                    CompressionQuality = 75,
+                    MaximumHeight = 1024,
+                    MaximumWidth = 1024,
+                    RotateImage = true,
+                    SelectionLimit = 1,
+                    PreserveMetaData = true,
+                });
+                LogInfo("TakeAndProcessPhotoAsync: MediaPicker.Default.CapturePhotoAsync beendet.");
                 if (photo == null)
+                {
+                    LogInfo("TakeAndProcessPhotoAsync: Keine Datei zurückgegeben (Abbruch oder kein Ergebnis).");
                     return null;
+                }
 
-                // Foto verarbeiten
-                using var stream = await photo.OpenReadAsync();
-
-                var photoResponse = PhotoUtils.GetImages(stream);
-                photoResponse = PhotoUtils.AddInfoToImage(photoResponse, building, customBuildingText);
+                LogInfo($"TakeAndProcessPhotoAsync: Capture-Datei erhalten '{photo.FileName}' ({photo.FullPath}).");
+                var photoResponse = await ProcessPhotoResponseAsync(
+                    photo,
+                    building,
+                    customBuildingText,
+                    "TakeAndProcessPhotoAsync");
 
                 long bildName = DateTime.Now.Ticks;
                 var bildWSO = new BildWSO(parentGuid)
@@ -194,12 +355,44 @@ namespace iPMCloud.Mobile.Helpers
                     CommandParameter = bildWSO
                 });
 
+                LogInfo("TakeAndProcessPhotoAsync: Bild erfolgreich verarbeitet.");
                 return bildWSO;
+            }
+            catch (OperationCanceledException)
+            {
+                LogInfo("TakeAndProcessPhotoAsync: Benutzer hat die Aktion abgebrochen.");
+                throw;
+            }
+            catch (PhotoPickerException)
+            {
+                throw;
+            }
+            catch (PermissionException ex)
+            {
+                LogError("TakeAndProcessPhotoAsync: PermissionException.", ex);
+                throw new PhotoPickerException(
+                    PhotoPickerFailureKind.PermissionDenied,
+                    "Bitte erlauben Sie Kamera-Zugriff.",
+                    "PermissionException",
+                    ex);
+            }
+            catch (FeatureNotSupportedException ex)
+            {
+                LogError("TakeAndProcessPhotoAsync: FeatureNotSupportedException.", ex);
+                throw new PhotoPickerException(
+                    PhotoPickerFailureKind.CaptureNotSupported,
+                    "Kamera wird nicht unterstützt.",
+                    "FeatureNotSupportedException",
+                    ex);
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Fehler beim Foto aufnehmen: {ex.Message}");
-                return null;
+                LogError("TakeAndProcessPhotoAsync: Unerwarteter Fehler beim Foto aufnehmen.", ex);
+                throw new PhotoPickerException(
+                    PhotoPickerFailureKind.CaptureFailed,
+                    "Foto konnte nicht aufgenommen oder verarbeitet werden.",
+                    "Unhandled",
+                    ex);
             }
         }
 

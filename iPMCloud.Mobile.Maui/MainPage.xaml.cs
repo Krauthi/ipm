@@ -1032,96 +1032,28 @@ namespace iPMCloud.Mobile
 
             try
             {
-                var status = await Permissions.CheckStatusAsync<Permissions.Camera>();
-                if (status != PermissionStatus.Granted)
-                {
-                    status = await Permissions.RequestAsync<Permissions.Camera>();
-                    if (status != PermissionStatus.Granted)
-                    {
-                        await DisplayAlertAsync("Berechtigung erforderlich",
-                            "Bitte erlauben Sie Kamera-Zugriff", "OK");
-                        return;
-                    }
-                }
-
-                if (!MediaPicker.Default.IsCaptureSupported)
-                {
-                    await DisplayAlertAsync("Fehler", "Kamera nicht verfügbar", "OK");
-                    return;
-                }
-
                 overlay.IsVisible = true;
                 await Task.Delay(1);
-                var photo = await MediaPicker.CapturePhotoAsync(new MediaPickerOptions
+                var bild = await PhotoPickerHelper.TakeAndProcessPhotoAsync(
+                    _SelectedPosForNotice_check_bem.bemWSO.guid,
+                    new Command<BildWSO>(RemoveBildInWork_check_bem),
+                    AppModel.Instance.LastBuilding);
+
+                if (bild != null)
                 {
-                    CompressionQuality = 75,
-                    MaximumHeight = 1024,
-                    MaximumWidth = 1024,
-                    RotateImage = true,
-                    SelectionLimit = 1,
-                    PreserveMetaData = true,
-                });
+                    // BildWSO.Save(AppModel.Instance, bild);
+                    _SelectedPosForNotice_check_bem.bemWSO.photos.Add(bild);
+                    noticePhotoStack_check_bem.Children.Add(bild.stack);
 
-                if (photo != null)
-                {
-                    var photoResponse = await PhotoResize.CreatePhotoResponseAsync(photo);
-
-                    // TODO: Später wieder aktivieren bzw. Testen - dauer zu lange!!
-                    //string buildingText = null;
-                    //if (AppModel.Instance.LastBuilding == null && _SelectedPosForNotice != null)
-                    //{
-                    //    var bui = BuildingWSO.LoadBuilding(AppModel.Instance, _SelectedPosForNotice.objektid);
-                    //    if (bui != null)
-                    //    {
-                    //        buildingText = $"{bui.plz} {bui.ort} - {bui.strasse} {bui.hsnr}";
-                    //    }
-                    //}
-                    //var photoResponse = PhotoUtils.GetImages(stream);
-                    //photoResponse = PhotoUtils.AddInfoToImage(photoResponse, AppModel.Instance.LastBuilding);
-
-                    var reCo = new Command<BildWSO>(RemoveBildInWork_check_bem);
-
-                    long bildName = DateTime.Now.Ticks;
-                    var b = new BildWSO(_SelectedPosForNotice_check_bem.bemWSO.guid)
-                    {
-                        bytes = photoResponse.imageBytes,
-                        name = bildName.ToString(),
-                        stack = BildWSO.GetAttachmentForNoticeElement(
-                            photoResponse.GetImageSourceAsThumb(),
-                            new DateTime(bildName).ToString("dd.MM.yyyy-HH:mm:ss"),
-                            reCo)
-                    };
-
-                    var frame = (Border)((StackLayout)(b.stack.Children[0])).Children[2];
-                    frame.GestureRecognizers.Clear();
-                    frame.GestureRecognizers.Add(new TapGestureRecognizer()
-                    {
-                        Command = reCo,
-                        CommandParameter = b
-                    });
-
-
-                    if (b != null)
-                    {
-                        // BildWSO.Save(AppModel.Instance, b);
-                        _SelectedPosForNotice_check_bem.bemWSO.photos.Add(b);
-                        noticePhotoStack_check_bem.Children.Add(b.stack);
-
-                        UpdatePhotoButtonsVisibility_check_bem();
-                    }
+                    UpdatePhotoButtonsVisibility_check_bem();
                 }
             }
-            catch (FeatureNotSupportedException)
+            catch (PhotoPickerException photoEx)
             {
-                // Kamera wird nicht unterstützt
-                await DisplayAlertAsync("Fehler", "Kamera wird nicht unterstützt", "OK");
-            }
-            catch (PermissionException exp)
-            {
-                // Berechtigungen wurden nicht erteilt
-                await DisplayAlertAsync("Fehler", "Keine Kamera-Berechtigung", "OK");
-
-                AppModel.Logger.Error("(btn_takePhoto_check_bem) Keine Kamera-Berechtigung: " + exp.Message + " :: " + exp.StackTrace);
+                AppModel.Logger.Error(
+                    photoEx,
+                    $"(btn_takePhoto_check_bem) Kamera-Fehler in Schritt '{photoEx.Stage}' ({photoEx.FailureKind}).");
+                await DisplayAlertAsync("Fehler", photoEx.UserMessage, "OK");
             }
             catch (OperationCanceledException)
             {
@@ -1130,7 +1062,8 @@ namespace iPMCloud.Mobile
             catch (Exception ex)
             {
                 // Andere Fehler
-                System.Diagnostics.Debug.WriteLine($"Fehler beim Foto aufnehmen: {ex.Message}");
+                AppModel.Logger.Error(ex, "(btn_takePhoto_check_bem) Unerwarteter Fehler beim Foto aufnehmen.");
+                await DisplayAlertAsync("Fehler", "Foto konnte nicht aufgenommen werden.", "OK");
             }
             finally
             {

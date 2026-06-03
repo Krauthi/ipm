@@ -121,7 +121,7 @@ namespace iPMCloud.Mobile.Helpers
                             ex);
                     }
 
-                    if (photoResponse?.imageBytes == null || photoResponse.imageBytes.Length == 0)
+                    if (photoResponse == null || photoResponse.imageBytes == null || photoResponse.imageBytes.Length == 0)
                     {
                         throw new PhotoPickerException(
                             PhotoPickerFailureKind.ProcessingFailed,
@@ -318,7 +318,6 @@ namespace iPMCloud.Mobile.Helpers
                     MaximumHeight = 1024,
                     MaximumWidth = 1024,
                     RotateImage = true,
-                    SelectionLimit = 1,
                     PreserveMetaData = true,
                 });
                 LogInfo("TakeAndProcessPhotoAsync: MediaPicker.Default.CapturePhotoAsync beendet.");

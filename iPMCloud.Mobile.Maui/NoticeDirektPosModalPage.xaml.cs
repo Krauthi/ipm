@@ -203,59 +203,36 @@ namespace iPMCloud.Mobile
             {
                 overlay.IsVisible = true;
                 await Task.Delay(1);
-                var photo = await MediaPicker.CapturePhotoAsync(new MediaPickerOptions
+                var result = await Helpers.PhotoPickerHelper.TryTakeAndProcessPhotoAsync(
+                    parentGuid: _selectedBemerkungForNotice.guid,
+                    removeCommand: new Command<BildWSO>(RemoveBildInWork));
+
+                if (result.IsSuccess)
                 {
-                    CompressionQuality = 75,
-                    MaximumHeight = 1024,
-                    MaximumWidth = 1024,
-                    RotateImage = true,
-                    SelectionLimit = 1,
-                    PreserveMetaData = true,
-                });
-
-                if (photo != null)
-                {
-                    var photoResponse = await PhotoResize.CreatePhotoResponseAsync(photo);
-                    var reCo = new Command<BildWSO>(RemoveBildInWork);
-
-                    long bildName = DateTime.Now.Ticks;
-                    var bildWSO = new BildWSO(_selectedBemerkungForNotice.guid)
-                    {
-                        bytes = photoResponse.imageBytes,
-                        name = bildName.ToString(),
-                        stack = BildWSO.GetAttachmentForNoticeElement(
-                            photoResponse.GetImageSourceAsThumb(),
-                            new DateTime(bildName).ToString("dd.MM.yyyy-HH:mm:ss"),
-                            reCo)
-                    };
-                    var frame = (Border)((StackLayout)(bildWSO.stack.Children[0])).Children[2];
-                    frame.GestureRecognizers.Clear();
-                    frame.GestureRecognizers.Add(new TapGestureRecognizer()
-                    {
-                        Command = reCo,
-                        CommandParameter = bildWSO
-                    });
-
-                    BildWSO.Save(AppModel.Instance, bildWSO);
-                    _selectedBemerkungForNotice.photos.Add(bildWSO);
-                    noticePhotoStack.Children.Add(bildWSO.stack);
+                    BildWSO.Save(AppModel.Instance, result.Photo);
+                    _selectedBemerkungForNotice.photos.Add(result.Photo);
+                    noticePhotoStack.Children.Add(result.Photo.stack);
                     CheckNoticeFalid();
+                    return;
                 }
-            }
-            catch (FeatureNotSupportedException)
-            {
-                await DisplayAlertAsync("Fehler", "Kamera wird nicht unterstützt", "OK");
-            }
-            catch (PermissionException)
-            {
-                await DisplayAlertAsync("Fehler", "Keine Kamera-Berechtigung", "OK");
-            }
-            catch (OperationCanceledException)
-            {
-            }
-            catch (Exception ex)
-            {
-                AppModel.Logger.Error($"Fehler beim Foto aufnehmen: {ex.Message}");
+
+                switch (result.FailureReason)
+                {
+                    case Helpers.PhotoCaptureFailureReason.PermissionDenied:
+                        await DisplayAlertAsync("Fehler", "Keine Kamera-Berechtigung", "OK");
+                        break;
+                    case Helpers.PhotoCaptureFailureReason.CaptureNotSupported:
+                        await DisplayAlertAsync("Fehler", "Kamera wird nicht unterstützt", "OK");
+                        break;
+                    case Helpers.PhotoCaptureFailureReason.UserCanceled:
+                        break;
+                    case Helpers.PhotoCaptureFailureReason.ProcessingFailed:
+                        await DisplayAlertAsync("Fehler", "Foto konnte nicht verarbeitet werden", "OK");
+                        break;
+                    default:
+                        await DisplayAlertAsync("Fehler", "Foto konnte nicht aufgenommen werden", "OK");
+                        break;
+                }
             }
             finally
             {
@@ -331,18 +308,18 @@ namespace iPMCloud.Mobile
             }
             catch (FeatureNotSupportedException exn)
             {
-                AppModel.Logger.Error($"Fehler Kamera wird nicht unterstützt: {exn.Message}");
+                AppModel.Logger.Error($"Fehler Kamera wird nicht unterstützt: {exn}");
             }
             catch (PermissionException exp)
             {
-                AppModel.Logger.Error($"Fehler Keine Kamera-Berechtigung: {exp.Message}");
+                AppModel.Logger.Error($"Fehler Keine Kamera-Berechtigung: {exp}");
             }
             catch (OperationCanceledException)
             {
             }
             catch (Exception ex)
             {
-                AppModel.Logger.Error($"Fehler beim Foto aufnehmen: {ex.Message}");
+                AppModel.Logger.Error($"Fehler beim Foto aufnehmen: {ex}");
             }
             finally
             {

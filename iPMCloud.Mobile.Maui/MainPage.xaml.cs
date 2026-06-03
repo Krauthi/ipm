@@ -1032,105 +1032,37 @@ namespace iPMCloud.Mobile
 
             try
             {
-                var status = await Permissions.CheckStatusAsync<Permissions.Camera>();
-                if (status != PermissionStatus.Granted)
-                {
-                    status = await Permissions.RequestAsync<Permissions.Camera>();
-                    if (status != PermissionStatus.Granted)
-                    {
-                        await DisplayAlertAsync("Berechtigung erforderlich",
-                            "Bitte erlauben Sie Kamera-Zugriff", "OK");
-                        return;
-                    }
-                }
+                overlay.IsVisible = true;
+                await Task.Delay(1);
+                var result = await Helpers.PhotoPickerHelper.TryTakeAndProcessPhotoAsync(
+                    parentGuid: _SelectedPosForNotice_check_bem.bemWSO.guid,
+                    removeCommand: new Command<BildWSO>(RemoveBildInWork_check_bem));
 
-                if (!MediaPicker.Default.IsCaptureSupported)
+                if (result.IsSuccess)
                 {
-                    await DisplayAlertAsync("Fehler", "Kamera nicht verfügbar", "OK");
+                    _SelectedPosForNotice_check_bem.bemWSO.photos.Add(result.Photo);
+                    noticePhotoStack_check_bem.Children.Add(result.Photo.stack);
+                    UpdatePhotoButtonsVisibility_check_bem();
                     return;
                 }
 
-                overlay.IsVisible = true;
-                await Task.Delay(1);
-                var photo = await MediaPicker.CapturePhotoAsync(new MediaPickerOptions
+                switch (result.FailureReason)
                 {
-                    CompressionQuality = 75,
-                    MaximumHeight = 1024,
-                    MaximumWidth = 1024,
-                    RotateImage = true,
-                    SelectionLimit = 1,
-                    PreserveMetaData = true,
-                });
-
-                if (photo != null)
-                {
-                    var photoResponse = await PhotoResize.CreatePhotoResponseAsync(photo);
-
-                    // TODO: Später wieder aktivieren bzw. Testen - dauer zu lange!!
-                    //string buildingText = null;
-                    //if (AppModel.Instance.LastBuilding == null && _SelectedPosForNotice != null)
-                    //{
-                    //    var bui = BuildingWSO.LoadBuilding(AppModel.Instance, _SelectedPosForNotice.objektid);
-                    //    if (bui != null)
-                    //    {
-                    //        buildingText = $"{bui.plz} {bui.ort} - {bui.strasse} {bui.hsnr}";
-                    //    }
-                    //}
-                    //var photoResponse = PhotoUtils.GetImages(stream);
-                    //photoResponse = PhotoUtils.AddInfoToImage(photoResponse, AppModel.Instance.LastBuilding);
-
-                    var reCo = new Command<BildWSO>(RemoveBildInWork_check_bem);
-
-                    long bildName = DateTime.Now.Ticks;
-                    var b = new BildWSO(_SelectedPosForNotice_check_bem.bemWSO.guid)
-                    {
-                        bytes = photoResponse.imageBytes,
-                        name = bildName.ToString(),
-                        stack = BildWSO.GetAttachmentForNoticeElement(
-                            photoResponse.GetImageSourceAsThumb(),
-                            new DateTime(bildName).ToString("dd.MM.yyyy-HH:mm:ss"),
-                            reCo)
-                    };
-
-                    var frame = (Border)((StackLayout)(b.stack.Children[0])).Children[2];
-                    frame.GestureRecognizers.Clear();
-                    frame.GestureRecognizers.Add(new TapGestureRecognizer()
-                    {
-                        Command = reCo,
-                        CommandParameter = b
-                    });
-
-
-                    if (b != null)
-                    {
-                        // BildWSO.Save(AppModel.Instance, b);
-                        _SelectedPosForNotice_check_bem.bemWSO.photos.Add(b);
-                        noticePhotoStack_check_bem.Children.Add(b.stack);
-
-                        UpdatePhotoButtonsVisibility_check_bem();
-                    }
+                    case Helpers.PhotoCaptureFailureReason.PermissionDenied:
+                        await DisplayAlertAsync("Berechtigung erforderlich", "Bitte erlauben Sie Kamera-Zugriff", "OK");
+                        break;
+                    case Helpers.PhotoCaptureFailureReason.CaptureNotSupported:
+                        await DisplayAlertAsync("Fehler", "Kamera wird nicht unterstützt", "OK");
+                        break;
+                    case Helpers.PhotoCaptureFailureReason.UserCanceled:
+                        break;
+                    case Helpers.PhotoCaptureFailureReason.ProcessingFailed:
+                        await DisplayAlertAsync("Fehler", "Foto konnte nicht verarbeitet werden", "OK");
+                        break;
+                    default:
+                        await DisplayAlertAsync("Fehler", "Foto konnte nicht aufgenommen werden", "OK");
+                        break;
                 }
-            }
-            catch (FeatureNotSupportedException)
-            {
-                // Kamera wird nicht unterstützt
-                await DisplayAlertAsync("Fehler", "Kamera wird nicht unterstützt", "OK");
-            }
-            catch (PermissionException exp)
-            {
-                // Berechtigungen wurden nicht erteilt
-                await DisplayAlertAsync("Fehler", "Keine Kamera-Berechtigung", "OK");
-
-                AppModel.Logger.Error("(btn_takePhoto_check_bem) Keine Kamera-Berechtigung: " + exp.Message + " :: " + exp.StackTrace);
-            }
-            catch (OperationCanceledException)
-            {
-                // Benutzer hat abgebrochen
-            }
-            catch (Exception ex)
-            {
-                // Andere Fehler
-                System.Diagnostics.Debug.WriteLine($"Fehler beim Foto aufnehmen: {ex.Message}");
             }
             finally
             {
@@ -1271,12 +1203,12 @@ namespace iPMCloud.Mobile
             catch (FeatureNotSupportedException exn)
             {
                 // Kamera wird nicht unterstützt
-                AppModel.Logger.Error($"Fehler Kamera wird nicht unterstützt: {exn.Message}");
+                AppModel.Logger.Error($"Fehler Kamera wird nicht unterstützt: {exn}");
             }
             catch (PermissionException exp)
             {
                 // Berechtigungen wurden nicht erteilt
-                AppModel.Logger.Error("(btn_pickPhotos_check_bem) Keine Kamera-Berechtigung: " + exp.Message + " :: " + exp.StackTrace);
+                AppModel.Logger.Error($"(btn_pickPhotos_check_bem) Keine Kamera-Berechtigung: {exp}");
             }
             catch (OperationCanceledException)
             {
@@ -1285,7 +1217,7 @@ namespace iPMCloud.Mobile
             catch (Exception ex)
             {
                 // Andere Fehler
-                AppModel.Logger.Error($"Fehler beim Foto aufnehmen: {ex.Message}");
+                AppModel.Logger.Error($"Fehler beim Foto aufnehmen: {ex}");
             }
             finally
             {
@@ -1379,7 +1311,7 @@ namespace iPMCloud.Mobile
             catch (PermissionException exp)
             {
                 await DisplayAlertAsync("Fehler", "Keine Kamera-Berechtigung", "OK");
-                AppModel.Logger.Error("(btn_pickPhotos_check_bem) Keine Kamera-Berechtigung: " + exp.Message + " :: " + exp.StackTrace);
+                AppModel.Logger.Error($"(btn_pickPhotos_check_bem) Keine Kamera-Berechtigung: {exp}");
             }
             catch (OperationCanceledException)
             {
@@ -1387,7 +1319,7 @@ namespace iPMCloud.Mobile
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Fehler beim Foto aufnehmen: {ex.Message}");
+                AppModel.Logger.Error($"Fehler beim Foto aufnehmen: {ex}");
                 await DisplayAlertAsync("Fehler", "Foto konnte nicht aufgenommen werden", "OK");
             }
             finally

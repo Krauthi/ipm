@@ -89,7 +89,23 @@ namespace iPMCloud.Mobile
             {
                 AppModel.Instance.UseExternHardware = true;
 
-                if (!MediaPicker.Default.IsCaptureSupported)
+                var status = await Permissions.CheckStatusAsync<Permissions.Camera>();
+                AppModel.Logger.Info($"ObjectValuesBildModalPage.TakePhotoAsync - Kamera PermissionStatus (check): {status}");
+                if (status != PermissionStatus.Granted)
+                {
+                    status = await Permissions.RequestAsync<Permissions.Camera>();
+                    AppModel.Logger.Info($"ObjectValuesBildModalPage.TakePhotoAsync - Kamera PermissionStatus (request): {status}");
+                }
+
+                if (status != PermissionStatus.Granted)
+                {
+                    await DisplayAlertAsync("Fehler", "Keine Kamera-Berechtigung", "OK");
+                    return;
+                }
+
+                var isCaptureSupported = MediaPicker.Default.IsCaptureSupported;
+                AppModel.Logger.Info($"ObjectValuesBildModalPage.TakePhotoAsync - IsCaptureSupported: {isCaptureSupported}");
+                if (!isCaptureSupported)
                 {
                     await DisplayAlertAsync("Fehler", "Kamera nicht verfügbar", "OK");
                     return;
@@ -108,6 +124,8 @@ namespace iPMCloud.Mobile
                     PreserveMetaData = true,
                 });
 
+                AppModel.Logger.Info($"ObjectValuesBildModalPage.TakePhotoAsync - Capture result null: {photo == null}");
+
                 if (photo != null)
                 {
                     var photoResponse = await PhotoResize.CreatePhotoResponseAsync(photo);
@@ -124,9 +142,10 @@ namespace iPMCloud.Mobile
             {
                 await DisplayAlertAsync("Fehler", "Kamera wird nicht unterstützt", "OK");
             }
-            catch (PermissionException)
+            catch (PermissionException ex)
             {
                 await DisplayAlertAsync("Fehler", "Keine Kamera-Berechtigung", "OK");
+                AppModel.Logger.Error($"ObjectValuesBildModalPage.TakePhotoAsync PermissionException: {ex}");
             }
             catch (OperationCanceledException)
             {
@@ -134,7 +153,7 @@ namespace iPMCloud.Mobile
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Fehler beim Foto aufnehmen: {ex.Message}");
+                AppModel.Logger.Error($"ObjectValuesBildModalPage.TakePhotoAsync Fehler: {ex}");
             }
             finally
             {

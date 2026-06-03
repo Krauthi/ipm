@@ -105,21 +105,21 @@ namespace iPMCloud.Mobile.Helpers
                             ex);
                     }
 
-                    try
-                    {
-                        LogInfo($"{operationName}: Starte PhotoUtils.AddInfoToImage.");
-                        photoResponse = PhotoUtils.AddInfoToImage(photoResponse, building, customBuildingText);
-                        LogInfo($"{operationName}: PhotoUtils.AddInfoToImage abgeschlossen.");
-                    }
-                    catch (Exception ex)
-                    {
-                        LogError($"{operationName}: PhotoUtils.AddInfoToImage fehlgeschlagen.", ex);
-                        throw new PhotoPickerException(
-                            PhotoPickerFailureKind.ProcessingFailed,
-                            "Das Foto konnte nicht nachbearbeitet werden.",
-                            "PhotoUtils.AddInfoToImage",
-                            ex);
-                    }
+                    //try
+                    //{
+                    //    LogInfo($"{operationName}: Starte PhotoUtils.AddInfoToImage.");
+                    //    photoResponse = PhotoUtils.AddInfoToImage(photoResponse, building, customBuildingText);
+                    //    LogInfo($"{operationName}: PhotoUtils.AddInfoToImage abgeschlossen.");
+                    //}
+                    //catch (Exception ex)
+                    //{
+                    //    LogError($"{operationName}: PhotoUtils.AddInfoToImage fehlgeschlagen.", ex);
+                    //    throw new PhotoPickerException(
+                    //        PhotoPickerFailureKind.ProcessingFailed,
+                    //        "Das Foto konnte nicht nachbearbeitet werden.",
+                    //        "PhotoUtils.AddInfoToImage",
+                    //        ex);
+                    //}
 
                     if (photoResponse == null || photoResponse.imageBytes == null || photoResponse.imageBytes.Length == 0)
                     {

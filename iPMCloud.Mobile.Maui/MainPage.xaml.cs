@@ -1027,25 +1027,60 @@ namespace iPMCloud.Mobile
             }
 
 
+            overlay.IsVisible = true;
+            await Task.Delay(1);
 
             AppModel.Instance.UseExternHardware = true;
 
             try
             {
-                overlay.IsVisible = true;
-                await Task.Delay(1);
-                var bild = await PhotoPickerHelper.TakeAndProcessPhotoAsync(
-                    _SelectedPosForNotice_check_bem.bemWSO.guid,
-                    new Command<BildWSO>(RemoveBildInWork_check_bem),
-                    AppModel.Instance.LastBuilding);
 
-                if (bild != null)
+                var photo = await MediaPicker.CapturePhotoAsync(new MediaPickerOptions
                 {
-                    // BildWSO.Save(AppModel.Instance, bild);
-                    _SelectedPosForNotice_check_bem.bemWSO.photos.Add(bild);
-                    noticePhotoStack_check_bem.Children.Add(bild.stack);
+                    CompressionQuality = 75,
+                    MaximumHeight = 1024,
+                    MaximumWidth = 1024,
+                    RotateImage = true,
+                    SelectionLimit = 1,
+                    PreserveMetaData = true,
+                });
 
-                    UpdatePhotoButtonsVisibility_check_bem();
+                if (photo != null)
+                {
+                    var photoResponse = await PhotoResize.CreatePhotoResponseAsync(photo);
+                    var reCo = new Command<BildWSO>(RemoveBildInWork_check_bem);
+
+                    long bildName = DateTime.Now.Ticks;
+                    var bildWSO = new BildWSO(_SelectedPosForNotice_check_bem.guid)
+                    {
+                        bytes = photoResponse.imageBytes,
+                        name = bildName.ToString(),
+                        stack = BildWSO.GetAttachmentForNoticeElement(
+                            photoResponse.GetImageSourceAsThumb(),
+                            new DateTime(bildName).ToString("dd.MM.yyyy-HH:mm:ss"),
+                            reCo)
+                    };
+                    var frame = (Border)((StackLayout)(bildWSO.stack.Children[0])).Children[2];
+                    frame.GestureRecognizers.Clear();
+                    frame.GestureRecognizers.Add(new TapGestureRecognizer()
+                    {
+                        Command = reCo,
+                        CommandParameter = bildWSO
+                    });
+
+                    //BildWSO.Save(AppModel.Instance, bildWSO);
+                    //_selectedBemerkungForNotice.photos.Add(bildWSO);
+                    //noticePhotoStack.Children.Add(bildWSO.stack);
+                    //CheckNoticeFalid();
+
+                    if (bildWSO != null)
+                    {
+                        // BildWSO.Save(AppModel.Instance, bild);
+                        _SelectedPosForNotice_check_bem.bemWSO.photos.Add(bildWSO);
+                        noticePhotoStack_check_bem.Children.Add(bildWSO.stack);
+
+                        UpdatePhotoButtonsVisibility_check_bem();
+                    }
                 }
             }
             catch (PhotoPickerException photoEx)
@@ -1276,7 +1311,7 @@ namespace iPMCloud.Mobile
                     using var stream = await photo.OpenReadAsync();  // ✅ using für automatic dispose
 
                     var photoResponse = PhotoUtils.GetImages(stream);
-                    photoResponse = PhotoUtils.AddInfoToImage(photoResponse, AppModel.Instance.LastBuilding);
+                    //photoResponse = PhotoUtils.AddInfoToImage(photoResponse, AppModel.Instance.LastBuilding);
 
                     long bildName = DateTime.Now.Ticks;
                     var b = new BildWSO(_SelectedPosForNotice_check_bem.bemWSO.guid)
@@ -7766,10 +7801,7 @@ namespace iPMCloud.Mobile
                         AppModel.Logger.Warn("Uploads fehlgeschlagen: " + e.ErrorMessage);
                     }
                     await Task.Delay(1);
-                    if(c > 0)
-                    {
-                        CheckAllSyncFromUpload();
-                    }
+                    CheckAllSyncFromUpload();
                 }
                 catch (Exception ex)
                 {

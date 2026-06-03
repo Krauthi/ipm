@@ -754,7 +754,7 @@
                     HorizontalOptions="Fill"
                     VerticalOptions="Start">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
@@ -785,7 +785,7 @@
                                 WidthRequest="28" />
                             <VerticalStackLayout
                                 Grid.Column="1"
-                                Margin="0,-4,0,0"
+                                Margin="0,-4,8,0"
                                 Padding="0"
                                 HorizontalOptions="Start"
                                 Spacing="0"
@@ -793,7 +793,7 @@
                                 <Label
                                     Margin="0"
                                     Padding="0"
-                                    FontSize="18"
+                                    FontSize="16"
                                     HorizontalOptions="Fill"
                                     HorizontalTextAlignment="Start"
                                     Text="Feierabend"
@@ -924,7 +924,7 @@
                                     FontSize="12"
                                     HorizontalOptions="Fill"
                                     HorizontalTextAlignment="Start"
-                                    Text="Auswahl ohne Scan"
+                                    Text="Auswählen"
                                     TextColor="#aaaaaa" />
                             </VerticalStackLayout>
                             <Image

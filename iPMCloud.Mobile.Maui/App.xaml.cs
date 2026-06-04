@@ -143,12 +143,12 @@ namespace iPMCloud.Mobile
                 //AppModel.Instance.isInBackground = false;
 
                 // ⬇️ Schutz: Nicht ausführen wenn App gerade erst gestartet wurde (< 5 Sekunden)
-                var timeSinceStart = (DateTime.Now - AppModel.Instance.AppOnStart).TotalSeconds;
-                if (timeSinceStart < 5)
-                {
-                    base.OnResume();
-                    return;
-                }
+                //var timeSinceStart = (DateTime.Now - AppModel.Instance.AppOnStart).TotalSeconds;
+                //if (timeSinceStart < 5)
+                //{
+                //    base.OnResume();
+                //    return;
+                //}
 
                 var dt = String.IsNullOrEmpty(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks) ? DateTime.Now.AddDays(-2) : new DateTime(long.Parse(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks));
                 if (dt.AddHours(AppModel.Instance.SettingModel.SettingDTO.SyncTimeHours) < DateTime.Now && !AppModel.Instance.UseExternHardware) //(dt.AddHours(4) < DateTime.Now || manuellSync)

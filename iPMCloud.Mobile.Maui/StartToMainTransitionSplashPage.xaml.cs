@@ -37,7 +37,7 @@ namespace iPMCloud.Mobile
             {
                 await Task.Delay(MinimumDisplayTimeMs, _navigationCts.Token);
                 AppModel.Logger.Info("StartToMainTransitionSplashPage: transitioning to MainPage");
-                AppModel.Instance?.PageNavigator?.NavigateToMainPageAfterStartTransition(_targetSubPage);
+                AppModel.Instance?.PageNavigator?.NavigateToMainPageAfterStartTransition();
             }
             catch (OperationCanceledException)
             {
@@ -46,7 +46,7 @@ namespace iPMCloud.Mobile
             catch (Exception ex)
             {
                 AppModel.Logger.Error($"StartToMainTransitionSplashPage failed: {ex.Message}");
-                AppModel.Instance?.PageNavigator?.NavigateToMainPageAfterStartTransition(_targetSubPage);
+                AppModel.Instance?.PageNavigator?.NavigateToMainPageAfterStartTransition();
             }
         }
 

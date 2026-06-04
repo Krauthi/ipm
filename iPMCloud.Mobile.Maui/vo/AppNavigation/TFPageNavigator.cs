@@ -29,23 +29,21 @@ namespace iPMCloud.Mobile.vo
         private int _skipStartToMainTransitionOnce;
 
         public string CurrentMainPage { get; set; } = "";
-        public string CurrentSubPage { get; set; } = "";
         public string LastMainPage { get; set; } = "";
-        public string LastSubPage { get; set; } = "";
 
 
         public TFPageNavigator()
         {
         }
 
-        public void NavigateTo(string mainPage, string subPage = "")
+        public void NavigateTo(string mainPage)
         {
             // Ensure navigation happens on the main thread
             MainThread.BeginInvokeOnMainThread(async () =>
             {
                 try
                 {
-                    await NavigateToAsync(mainPage, subPage);
+                    await NavigateToAsync(mainPage);
                 }
                 catch (Exception ex)
                 {
@@ -55,20 +53,18 @@ namespace iPMCloud.Mobile.vo
             });
         }
 
-        public void NavigateToMainPageAfterStartTransition(string subPage = "")
+        public void NavigateToMainPageAfterStartTransition()
         {
             Interlocked.Exchange(ref _skipStartToMainTransitionOnce, 1);
-            NavigateTo(PAGE_MAINPAGE, subPage);
+            NavigateTo(PAGE_MAINPAGE);
         }
 
-        private async Task NavigateToAsync(string mainPage, string subPage = "")
+        private async Task NavigateToAsync(string mainPage)
         {
             LastMainPage = ""+CurrentMainPage;
-            LastSubPage = ""+CurrentSubPage; 
             CurrentMainPage = mainPage;
-            CurrentSubPage = subPage;
             
-            AppModel.Logger.Info($"INFO: Navigating to page '{mainPage}' with subPage '{subPage}'");
+            AppModel.Logger.Info($"INFO: Navigating to page '{mainPage}'");
             
             switch (mainPage)
             {
@@ -96,7 +92,7 @@ namespace iPMCloud.Mobile.vo
 #if DEBUG
                         var swStartGetPage = Stopwatch.StartNew();
 #endif
-                        var startPage = StartPageObj.GetPage(subPage);
+                        var startPage = StartPageObj.GetPage();
 #if DEBUG
                         swStartGetPage.Stop();
                         AppModel.Logger.Info($"PERF: StartPageObj.GetPage took {swStartGetPage.ElapsedMilliseconds} ms");
@@ -122,22 +118,23 @@ namespace iPMCloud.Mobile.vo
 
 
                 case PAGE_MAINPAGE:
-                    if (LastMainPage == PAGE_STARTPAGE &&
-                        Interlocked.CompareExchange(ref _skipStartToMainTransitionOnce, 0, 0) == 0)
-                    {
-                        AppModel.Logger.Info("Showing StartPage -> MainPage transition splash.");
-                        await SetPageAsync(new StartToMainTransitionSplashPage(subPage));
-                        return;
-                    }
+                    //if (LastMainPage == PAGE_STARTPAGE &&
+                    //    Interlocked.CompareExchange(ref _skipStartToMainTransitionOnce, 0, 0) == 0)
+                    //{
+                    //    AppModel.Logger.Info("Showing StartPage -> MainPage transition splash.");
+                    //    await SetPageAsync(new StartToMainTransitionSplashPage());
+                    //    return;
+                    //}
 
-                    bool continueFromTransitionSplash = Interlocked.Exchange(ref _skipStartToMainTransitionOnce, 0) == 1;
+                    //bool continueFromTransitionSplash = Interlocked.Exchange(ref _skipStartToMainTransitionOnce, 0) == 1;
 
-                    if (continueFromTransitionSplash)
-                    {
-                        AppModel.Logger.Info("StartPage -> MainPage transition splash finished; continuing to MainPage.");
-                    }
+                    //if (continueFromTransitionSplash)
+                    //{
+                    //    AppModel.Logger.Info("StartPage -> MainPage transition splash finished; continuing to MainPage.");
+                    //}
 
-                    if (LastMainPage != CurrentMainPage || continueFromTransitionSplash)
+                    //if (LastMainPage != CurrentMainPage || continueFromTransitionSplash)
+                    if (LastMainPage != CurrentMainPage)
                     {
                         if(AppModel.Instance.MainPage != null)
                         {
@@ -160,7 +157,7 @@ namespace iPMCloud.Mobile.vo
 #if DEBUG
                         var swMainGetPage = Stopwatch.StartNew();
 #endif
-                        var mainPageContent = MainPageObj.GetPage(subPage);
+                        var mainPageContent = MainPageObj.GetPage();
 #if DEBUG
                         swMainGetPage.Stop();
                         AppModel.Logger.Info($"PERF: MainPageObj.GetPage took {swMainGetPage.ElapsedMilliseconds} ms");
@@ -248,33 +245,33 @@ namespace iPMCloud.Mobile.vo
             });
         }
 
-        public bool NavigateBackToPreviousPage()
-        {
-            switch (CurrentMainPage)
-            {
-                case PAGE_STARTPAGE:
-                    //switch (CurrentSubPage)
-                    //{
-                    //    case SUBPAGE_STARTPAGE_MENU:
-                    //        // APP ENDE
-                    //        return true;
-                    //        //case SUBPAGE_STARTPAGE_SETTINGS:
-                    //        //    NavigateTo(PAGE_STARTPAGE, SUBPAGE_STARTPAGE_MENU);
-                    //        //    break;
-                    //}
-                    return true;
-                    //break;
+        //public bool NavigateBackToPreviousPage()
+        //{
+        //    switch (CurrentMainPage)
+        //    {
+        //        case PAGE_STARTPAGE:
+        //            //switch (CurrentSubPage)
+        //            //{
+        //            //    case SUBPAGE_STARTPAGE_MENU:
+        //            //        // APP ENDE
+        //            //        return true;
+        //            //        //case SUBPAGE_STARTPAGE_SETTINGS:
+        //            //        //    NavigateTo(PAGE_STARTPAGE, SUBPAGE_STARTPAGE_MENU);
+        //            //        //    break;
+        //            //}
+        //            return true;
+        //            //break;
 
 
-                case PAGE_MAINPAGE:
-                    NavigateTo(PAGE_STARTPAGE);
-                    break;
+        //        case PAGE_MAINPAGE:
+        //            NavigateTo(PAGE_STARTPAGE);
+        //            break;
 
-                default:
-                    return true;// close app (only Android)
-            }
-            return false;
-        }
+        //        default:
+        //            return true;// close app (only Android)
+        //    }
+        //    return false;
+        //}
 
     }
 }

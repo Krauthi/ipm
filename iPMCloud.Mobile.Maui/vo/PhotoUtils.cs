@@ -420,15 +420,20 @@ namespace iPMCloud.Mobile.vo
             }
 
             var cacheDirectory = Path.Combine(FileSystem.CacheDirectory, "photoresponse");
-            if (!Directory.Exists(cacheDirectory))
-            {
-                Directory.CreateDirectory(cacheDirectory);
-            }
+            Directory.CreateDirectory(cacheDirectory);
 
             var cachePath = Path.Combine(cacheDirectory, $"{prefix}_{hash}.jpg");
             if (!File.Exists(cachePath))
             {
-                File.WriteAllBytes(cachePath, bytes);
+                try
+                {
+                    using var fileStream = new FileStream(cachePath, FileMode.CreateNew, FileAccess.Write, FileShare.Read);
+                    fileStream.Write(bytes, 0, bytes.Length);
+                }
+                catch (IOException) when (File.Exists(cachePath))
+                {
+                    // Datei wurde parallel bereits erstellt.
+                }
             }
 
             cachedHash = hash;

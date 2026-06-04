@@ -8,6 +8,9 @@ namespace iPMCloud.Mobile.Helpers
     {
         private const string LogPrefix = "[PermissionHelper]";
 
+        private static bool IsGranted(PermissionStatus status) =>
+            status == PermissionStatus.Granted || status == PermissionStatus.Restricted;
+
         private static void LogInfo(string message)
         {
             var logMessage = $"{LogPrefix} {message}";
@@ -30,7 +33,7 @@ namespace iPMCloud.Mobile.Helpers
             var status = await Permissions.CheckStatusAsync<TPermission>();
             LogInfo($"{flowName}: {permissionName} status before request = {status}.");
 
-            if (status != PermissionStatus.Granted && status != PermissionStatus.Restricted)
+            if (!IsGranted(status))
             {
                 status = await Permissions.RequestAsync<TPermission>();
                 LogInfo($"{flowName}: {permissionName} status after request = {status}.");
@@ -44,7 +47,7 @@ namespace iPMCloud.Mobile.Helpers
             try
             {
                 var status = await EnsurePermissionAsync<Permissions.Camera>(flowName, "Camera");
-                var granted = status == PermissionStatus.Granted || status == PermissionStatus.Restricted;
+                var granted = IsGranted(status);
                 if (!granted && onDenied != null)
                 {
                     await onDenied();
@@ -63,8 +66,8 @@ namespace iPMCloud.Mobile.Helpers
         {
             try
             {
-                var status = await EnsurePermissionAsync<Permissions.Photos>(flowName, "PhotosRead");
-                var granted = status == PermissionStatus.Granted || status == PermissionStatus.Restricted;
+                var status = await EnsurePermissionAsync<Permissions.Photos>(flowName, "Photos");
+                var granted = IsGranted(status);
                 if (!granted && onDenied != null)
                 {
                     await onDenied();

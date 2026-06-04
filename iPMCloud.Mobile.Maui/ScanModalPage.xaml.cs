@@ -1,4 +1,5 @@
 using iPMCloud.Mobile.vo;
+using iPMCloud.Mobile.Helpers;
 using System.Windows.Input;
 using ZXing.Net.Maui;
 
@@ -89,19 +90,15 @@ namespace iPMCloud.Mobile
 
             try
             {
-                // Check / request camera permission before opening the scanner.
-                var status = await Permissions.CheckStatusAsync<Permissions.Camera>();
-                if (status != PermissionStatus.Granted)
-                {
-                    status = await Permissions.RequestAsync<Permissions.Camera>();
-                }
-
-                if (status != PermissionStatus.Granted)
-                {
-                    await callerPage.DisplayAlertAsync(
+                var hasCameraPermission = await PermissionHelper.EnsureCameraPermissionAsync(
+                    "ScanModalPage.ScanAsync",
+                    async () => await callerPage.DisplayAlertAsync(
                         "Kamerazugriff verweigert",
                         "Bitte erlauben Sie den Kamerazugriff in den Einstellungen.",
-                        "OK");
+                        "OK"));
+
+                if (!hasCameraPermission)
+                {
                     return null;
                 }
 

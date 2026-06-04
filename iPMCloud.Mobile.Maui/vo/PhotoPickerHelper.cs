@@ -143,17 +143,15 @@ namespace iPMCloud.Mobile.Helpers
         {
             try
             {
-                if (DeviceInfo.Platform == DevicePlatform.iOS)
-                {
-                    // Berechtigungen prüfen
-                    var status = await Permissions.CheckStatusAsync<Permissions.Photos>();
-                    if (status != PermissionStatus.Granted)
+                var hasPhotoReadPermission = await PermissionHelper.EnsurePhotosReadPermissionAsync(
+                    "PhotoPickerHelper.PickMultiplePhotosAsync",
+                    () =>
                     {
-                        status = await Permissions.RequestAsync<Permissions.Photos>();
-                        if (status != PermissionStatus.Granted)
-                            return null;
-                    }
-                }
+                        LogWarning("PickMultiplePhotosAsync: Fotos/Medien-Lesezugriff wurde nicht erteilt.");
+                        return Task.CompletedTask;
+                    });
+                if (!hasPhotoReadPermission)
+                    return null;
 
                 // File Types definieren
                 var customFileType = new FilePickerFileType(
@@ -283,21 +281,14 @@ namespace iPMCloud.Mobile.Helpers
             {
                 LogInfo("TakeAndProcessPhotoAsync: Starte Fotoaufnahme.");
 
-                // Berechtigungen prüfen
-                var status = await Permissions.CheckStatusAsync<Permissions.Camera>();
-                LogInfo($"TakeAndProcessPhotoAsync: Kamera-Berechtigungsstatus = {status}.");
-                if (status != PermissionStatus.Granted)
+                var hasCameraPermission = await PermissionHelper.EnsureCameraPermissionAsync(
+                    "PhotoPickerHelper.TakeAndProcessPhotoAsync");
+                if (!hasCameraPermission)
                 {
-                    LogInfo("TakeAndProcessPhotoAsync: Fordere Kamera-Berechtigung an.");
-                    status = await Permissions.RequestAsync<Permissions.Camera>();
-                    LogInfo($"TakeAndProcessPhotoAsync: Ergebnis Berechtigungsanfrage = {status}.");
-                    if (status != PermissionStatus.Granted)
-                    {
-                        throw new PhotoPickerException(
-                            PhotoPickerFailureKind.PermissionDenied,
-                            "Bitte erlauben Sie Kamera-Zugriff.",
-                            "Permissions.RequestAsync");
-                    }
+                    throw new PhotoPickerException(
+                        PhotoPickerFailureKind.PermissionDenied,
+                        "Bitte erlauben Sie Kamera-Zugriff.",
+                        "Permissions.RequestAsync");
                 }
 
                 // Kamera verfügbar?

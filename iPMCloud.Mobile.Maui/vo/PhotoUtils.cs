@@ -9,6 +9,7 @@ using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Formats.Jpeg;
+using Microsoft.Maui.Storage;
 
 // Aliase für Namenskonflikte
 using MauiImageSource = Microsoft.Maui.Controls.ImageSource;
@@ -375,6 +376,10 @@ namespace iPMCloud.Mobile.vo
         public byte[] thumbBytes { get; set; } = null;
         public string createDate { get; set; } = string.Empty;
         public string objektAdress { get; set; } = string.Empty;
+        private string _imageCachePath;
+        private string _thumbCachePath;
+        private string _imageCacheHash;
+        private string _thumbCacheHash;
 
         public PhotoResponse() { }
 
@@ -388,7 +393,8 @@ namespace iPMCloud.Mobile.vo
                 return null;
             }
 
-            return MauiImageSource.FromStream(() => new MemoryStream(imageBytes));
+            _imageCachePath = EnsureCacheFile(imageBytes, "photo_full", _imageCachePath, ref _imageCacheHash);
+            return MauiImageSource.FromFile(_imageCachePath);
         }
 
         /// <summary>
@@ -401,7 +407,32 @@ namespace iPMCloud.Mobile.vo
                 return null;
             }
 
-            return MauiImageSource.FromStream(() => new MemoryStream(thumbBytes));
+            _thumbCachePath = EnsureCacheFile(thumbBytes, "photo_thumb", _thumbCachePath, ref _thumbCacheHash);
+            return MauiImageSource.FromFile(_thumbCachePath);
+        }
+
+        private static string EnsureCacheFile(byte[] bytes, string prefix, string cachedPath, ref string cachedHash)
+        {
+            var hash = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(bytes));
+            if (!string.IsNullOrWhiteSpace(cachedPath) && cachedHash == hash && File.Exists(cachedPath))
+            {
+                return cachedPath;
+            }
+
+            var cacheDirectory = Path.Combine(FileSystem.CacheDirectory, "photoresponse");
+            if (!Directory.Exists(cacheDirectory))
+            {
+                Directory.CreateDirectory(cacheDirectory);
+            }
+
+            var cachePath = Path.Combine(cacheDirectory, $"{prefix}_{hash}.jpg");
+            if (!File.Exists(cachePath))
+            {
+                File.WriteAllBytes(cachePath, bytes);
+            }
+
+            cachedHash = hash;
+            return cachePath;
         }
 
         /// <summary>

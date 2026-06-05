@@ -231,6 +231,10 @@ namespace iPMCloud.Mobile
                     }
                     await AppModel.Instance.InitGPSTimer();
                 }
+                else
+                {
+                    _ = await AppModel.Instance.CheckPermissionCam();
+                }
                 return true;
             }
             catch (Exception ex)

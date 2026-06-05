@@ -69,6 +69,9 @@ namespace iPMCloud.Mobile
         public double screenWidthDp = 0;//> di.Width / di.Density;
         public double screenHeightDp = 0;//> di.height / di.Density;
 
+        public string lastPlanTab = "A";
+        public string lastPlanTabView = "A";
+
 
         public bool isInitialize = false;
         public bool _isShowing = false;
@@ -7697,6 +7700,7 @@ namespace iPMCloud.Mobile
             var pendingUploads = iPMCloud.Mobile.Services.UploadCoordinator.Instance.GetPendingUploadCount();
             if (pendingUploads <= 0)
             {
+                ReloadPlanData(0);
                 return;
             }
 

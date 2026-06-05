@@ -523,22 +523,26 @@ namespace iPMCloud.Mobile.vo
         public async Task<string> CheckPermissionGPS()
         {
             checkPermissionGPSMessage = "";
-
+            string allErr = "";
             try
             {
-                var statusCam = await MainThread.InvokeOnMainThreadAsync(() =>
-                    Permissions.CheckStatusAsync<Permissions.Camera>());
-                if (statusCam != PermissionStatus.Granted)
+                try
                 {
-                    statusCam = await Permissions.RequestAsync<Permissions.Camera>();
-                    //if (statusCam != PermissionStatus.Granted)
-                    //{
-                    //    await DisplayAlertAsync("Berechtigung erforderlich",
-                    //        "Bitte erlauben Sie Kamera-Zugriff", "OK");
-                    //    return;
-                    //}
-                }
+                    var statusCam = await MainThread.InvokeOnMainThreadAsync(() =>
+                        Permissions.CheckStatusAsync<Permissions.Camera>());
+                    if (statusCam != PermissionStatus.Granted)
+                    {
+                        statusCam = await Permissions.RequestAsync<Permissions.Camera>();
+                        //if (statusCam != PermissionStatus.Granted)
+                        //{
+                        //    await DisplayAlertAsync("Berechtigung erforderlich",
+                        //        "Bitte erlauben Sie Kamera-Zugriff", "OK");
+                        //    return;
+                        //}
+                    }
+                }catch (Exception ex) { allErr += "Camera: " + ex.Message + " | "; }
 
+                try { 
                 var statusCams = await MainThread.InvokeOnMainThreadAsync(() =>
                     Permissions.CheckStatusAsync<Permissions.Media>()); 
                 if (statusCams != PermissionStatus.Granted)
@@ -546,48 +550,65 @@ namespace iPMCloud.Mobile.vo
                     statusCams = await Permissions.RequestAsync<Permissions.Media>();
                 }
 
+                }
+                catch (Exception ex) { allErr += "Media: " + ex.Message + " | "; }
+
+                try { 
                 var statusPhotos = await MainThread.InvokeOnMainThreadAsync(() =>
                     Permissions.CheckStatusAsync<Permissions.Photos>());
                 if (statusPhotos != PermissionStatus.Granted)
                 {
                     statusPhotos = await Permissions.RequestAsync<Permissions.Photos>();
                 }
+            }
+            catch (Exception ex) { allErr += "Photos: " + ex.Message + " | "; }
 
-                var statusStorage = await MainThread.InvokeOnMainThreadAsync(() =>
+                try { 
+            var statusStorage = await MainThread.InvokeOnMainThreadAsync(() =>
                     Permissions.CheckStatusAsync<Permissions.StorageRead>());
                 if (statusStorage != PermissionStatus.Granted)
                 {
                     statusStorage = await Permissions.RequestAsync<Permissions.StorageRead>();
                 }
+            }
+            catch (Exception ex) { allErr += "StorageRead: " + ex.Message + " | "; }
 
-                var statusStorageW = await MainThread.InvokeOnMainThreadAsync(() =>
+                try { 
+            var statusStorageW = await MainThread.InvokeOnMainThreadAsync(() =>
                     Permissions.CheckStatusAsync<Permissions.StorageWrite>()); 
                 if (statusStorageW != PermissionStatus.Granted)
                 {
                     statusStorageW = await Permissions.RequestAsync<Permissions.StorageWrite>();
+                    }
                 }
+                catch (Exception ex) { allErr += "StorageWrite: " + ex.Message + " | "; }
 
+                try { 
                 var statusNotifications = await MainThread.InvokeOnMainThreadAsync(() =>
                     Permissions.CheckStatusAsync<Permissions.PostNotifications>());
                 if (statusNotifications != PermissionStatus.Granted)
                 {
                     statusNotifications = await Permissions.RequestAsync<Permissions.PostNotifications>();
                 }
+            }
+            catch (Exception ex) { allErr += "PostNotifications: " + ex.Message + " | "; }
 
-
-                var statusMaps = await MainThread.InvokeOnMainThreadAsync(() =>
-                    Permissions.CheckStatusAsync<Permissions.Maps>());
-                if (statusMaps != PermissionStatus.Granted)
+                try
                 {
-                    statusMaps = await Permissions.RequestAsync<Permissions.Maps>();
-                }
+                    var statusMaps = await MainThread.InvokeOnMainThreadAsync(() =>
+                            Permissions.CheckStatusAsync<Permissions.Maps>());
+                    //if (statusMaps != PermissionStatus.Granted)
+                    //{
+                    //    statusMaps = await Permissions.RequestAsync<Permissions.Maps>();
+                    //}
+                
+            }
+            catch (Exception ex) { allErr += "Maps: " + ex.Message + " | "; }
 
-                var statusFlashlight = await MainThread.InvokeOnMainThreadAsync(() =>
+            var statusFlashlight = await MainThread.InvokeOnMainThreadAsync(() =>
                     Permissions.CheckStatusAsync<Permissions.Flashlight>());
-                if (statusFlashlight != PermissionStatus.Granted)
-                {
-                    statusFlashlight = await Permissions.RequestAsync<Permissions.Flashlight>();
-                }
+                
+
 
                 var statusGPS = await MainThread.InvokeOnMainThreadAsync(() =>
                     Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>());
@@ -623,8 +644,9 @@ namespace iPMCloud.Mobile.vo
             catch (Exception ex)
             {
                 gpsPermissionReady = false;
-                checkPermissionGPSMessage = "Permission Error - Die (GPS)-Standortabfrage ist deaktiviert!";
-                AppModel.Logger.Error("ERROR: CheckPermissionGPS -> " + ex.Message);
+                AppModel.Logger.Error("ERROR: CheckPermissionGPS -> " + ex.Message + " ::: "+ allErr);
+                AppModel.Instance.SendLogZipFile();
+                checkPermissionGPSMessage = "Permission Error - Die (GPS)-Standortabfrage ist deaktiviert!" + allErr;
             }
 
             return checkPermissionGPSMessage;
@@ -666,6 +688,7 @@ namespace iPMCloud.Mobile.vo
                 gpsPermissionReady = false;
                 checkPermissionGPSMessage = "Permission Error - ! " + ex.Message;
                 AppModel.Logger.Error("ERROR: CheckPermission -> " + ex.Message);
+                AppModel.Instance.SendLogZipFile();
             }
 
             return checkPermissionGPSMessage;

@@ -1,4 +1,5 @@
-﻿using Google.Apis.Services;
+﻿using CommunityToolkit.Maui.Core.Platform;
+using Google.Apis.Services;
 using Google.Apis.Translate.v2;
 using Google.Cloud.Translation.V2;
 using iPMCloud.Mobile.Helpers;
@@ -1247,7 +1248,7 @@ namespace iPMCloud.Mobile
             catch (PermissionException exp)
             {
                 // Berechtigungen wurden nicht erteilt
-                AppModel.Logger.Error("(btn_pickPhotos_check_bem) Keine Kamera-Berechtigung: " + exp.Message + " :: " + exp.StackTrace);
+                AppModel.Logger.Error("Keine Kamera-Berechtigung (1): " + exp.Message + " :: " + exp.StackTrace);
             }
             catch (OperationCanceledException)
             {
@@ -1288,12 +1289,12 @@ namespace iPMCloud.Mobile
                 if (status != PermissionStatus.Granted)
                 {
                     status = await Permissions.RequestAsync<Permissions.Camera>();
-                    if (status != PermissionStatus.Granted)
-                    {
-                        await DisplayAlertAsync("Berechtigung erforderlich",
-                            "Bitte erlauben Sie Kamera-Zugriff", "OK");
-                        return;
-                    }
+                    //if (status != PermissionStatus.Granted)
+                    //{
+                    //    await DisplayAlertAsync("Berechtigung erforderlich",
+                    //        "Bitte erlauben Sie Kamera-Zugriff", "OK");
+                    //    return;
+                    //}
                 }
 
                 // ✅ Kamera verfügbar prüfen
@@ -1349,8 +1350,8 @@ namespace iPMCloud.Mobile
             }
             catch (PermissionException exp)
             {
-                await DisplayAlertAsync("Fehler", "Keine Kamera-Berechtigung", "OK");
-                AppModel.Logger.Error("(btn_pickPhotos_check_bem) Keine Kamera-Berechtigung: " + exp.Message + " :: " + exp.StackTrace);
+                await DisplayAlertAsync("Fehler", "Keine Kamera-Berechtigung (0)", "OK");
+                AppModel.Logger.Error("Keine Kamera-Berechtigung (0): " + exp.Message + " :: " + exp.StackTrace);
             }
             catch (OperationCanceledException)
             {

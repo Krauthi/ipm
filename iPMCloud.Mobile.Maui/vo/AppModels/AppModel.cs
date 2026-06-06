@@ -563,25 +563,25 @@ namespace iPMCloud.Mobile.vo
             }
             catch (Exception ex) { allErr += "Photos: " + ex.Message + " | "; }
 
-                try { 
-            var statusStorage = await MainThread.InvokeOnMainThreadAsync(() =>
-                    Permissions.CheckStatusAsync<Permissions.StorageRead>());
-                if (statusStorage != PermissionStatus.Granted)
-                {
-                    statusStorage = await Permissions.RequestAsync<Permissions.StorageRead>();
-                }
-            }
-            catch (Exception ex) { allErr += "StorageRead: " + ex.Message + " | "; }
+            //    try { 
+            //var statusStorage = await MainThread.InvokeOnMainThreadAsync(() =>
+            //        Permissions.CheckStatusAsync<Permissions.StorageRead>());
+            //    if (statusStorage != PermissionStatus.Granted)
+            //    {
+            //        statusStorage = await Permissions.RequestAsync<Permissions.StorageRead>();
+            //    }
+            //}
+            //catch (Exception ex) { allErr += "StorageRead: " + ex.Message + " | "; }
 
-                try { 
-            var statusStorageW = await MainThread.InvokeOnMainThreadAsync(() =>
-                    Permissions.CheckStatusAsync<Permissions.StorageWrite>()); 
-                if (statusStorageW != PermissionStatus.Granted)
-                {
-                    statusStorageW = await Permissions.RequestAsync<Permissions.StorageWrite>();
-                    }
-                }
-                catch (Exception ex) { allErr += "StorageWrite: " + ex.Message + " | "; }
+            //    try { 
+            //var statusStorageW = await MainThread.InvokeOnMainThreadAsync(() =>
+            //        Permissions.CheckStatusAsync<Permissions.StorageWrite>()); 
+            //    if (statusStorageW != PermissionStatus.Granted)
+            //    {
+            //        statusStorageW = await Permissions.RequestAsync<Permissions.StorageWrite>();
+            //        }
+            //    }
+            //    catch (Exception ex) { allErr += "StorageWrite: " + ex.Message + " | "; }
 
                 try { 
                 var statusNotifications = await MainThread.InvokeOnMainThreadAsync(() =>
@@ -666,11 +666,11 @@ namespace iPMCloud.Mobile.vo
                 var statusPhotos = await MainThread.InvokeOnMainThreadAsync(() =>
                     Permissions.CheckStatusAsync<Permissions.Photos>());
 
-                var statusStorage = await MainThread.InvokeOnMainThreadAsync(() =>
-                    Permissions.CheckStatusAsync<Permissions.StorageRead>());
+                //var statusStorage = await MainThread.InvokeOnMainThreadAsync(() =>
+                //    Permissions.CheckStatusAsync<Permissions.StorageRead>());
 
-                var statusStorageW = await MainThread.InvokeOnMainThreadAsync(() =>
-                    Permissions.CheckStatusAsync<Permissions.StorageWrite>());
+                //var statusStorageW = await MainThread.InvokeOnMainThreadAsync(() =>
+                //    Permissions.CheckStatusAsync<Permissions.StorageWrite>());
 
                 var statusNotifications = await MainThread.InvokeOnMainThreadAsync(() =>
                     Permissions.CheckStatusAsync<Permissions.PostNotifications>());
@@ -1282,7 +1282,7 @@ namespace iPMCloud.Mobile.vo
 
             headstr += "<p style=\"margin:2px 5px;\">Von:" +
                 AppModel.Instance.SettingModel.SettingDTO.CustomerName + ": " +
-                AppModel.Instance.Person.name + " " + AppModel.Instance.Person.vorname + "</p>";
+                (AppModel.Instance.Person != null ? (AppModel.Instance.Person.name + " " + AppModel.Instance.Person.vorname) : "Person noch nicht angemeldet!") + "</p>";
             headstr += "<p style=\"margin:2px 5px;\">Last GPS: " + AppModel.Instance.LocationStr + "</p>";
 
 

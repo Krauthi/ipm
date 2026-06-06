@@ -468,54 +468,56 @@ namespace iPMCloud.Mobile
                     Int32 holdAufId = 0;
                     p.more.ForEach(pp =>
                     {
-                        if (b != null && b.ArrayOfAuftrag.Count > 0)
+                        if (pp != null)
                         {
-                            isAufInclude = false;
-                            auft = b.ArrayOfAuftrag.Find(_ => _.id == pp.auftragid);
-                            isAufInclude = (auft != null);
-                        }
+                            if (b != null && b.ArrayOfAuftrag != null && b.ArrayOfAuftrag.Count > 0)
+                            {
+                                isAufInclude = false;
+                                auft = b.ArrayOfAuftrag.Find(_ => _.id == pp.auftragid);
+                                isAufInclude = (auft != null);
+                            }
 
-                        if (auft != null)
-                        {
-                            kategorie = auft.kategorien.Find(k => k.id == pp.katid);
+                            if (auft != null)
+                            {
+                                kategorie = auft.kategorien.Find(k => k.id == pp.katid);
+                            }
+                            var vertretend = pp.personid != pp.vonpersonid;
+                            var text = "";
+                            if (b != null && b.ArrayOfAuftrag != null && b.ArrayOfAuftrag.Count > 1 && auft != null)
+                            {
+                                if (holdAufId != pp.auftragid) { text = text + "(" + auft.id + ")"; }
+                                text = text + (" - " + (pp.katname != null && pp.katname.Length == 0 ? "Alle Kategorien" : pp.katname)) +
+                                    (vertretend ? " (" + GetPlanedPersonInitialien(pp.vonpersonid) + ")" : "");
+                            }
+                            else
+                            {
+                                text = ("- " + (pp.katname != null && pp.katname.Length == 0 ? "Alle Kategorien" : pp.katname)) +
+                                    (vertretend ? " (" + GetPlanedPersonInitialien(pp.vonpersonid) + ")" : "");
+                            }
+                            if (auft != null)
+                            {
+                                if (kategorie == null) { text = "Kategorie nicht gefunden! (Synchronisieren)"; }
+                            }
+                            else
+                            {
+                                text = "Auftrag nicht gefunden! (Synchronisieren)";
+                            }
+                            if (auft != null)
+                            {
+                                if (holdAufId != pp.auftragid) { holdAufId = auft.id; }
+                            }
+                            var lbK = new Label()
+                            {
+                                Padding = new Thickness(2, 0, 2, 0),
+                                Text = text,
+                                TextColor = kategorie != null ? (vertretend ? Color.FromArgb("#ffaa00") : Color.FromArgb("#cccccc")) : Color.FromArgb("#ffcc00"),
+                                Margin = new Thickness(0, 0, 0, 0),
+                                FontSize = 12,
+                                LineBreakMode = LineBreakMode.TailTruncation,
+                                HorizontalOptions = LayoutOptions.Start,
+                            };
+                            stpos.Children.Add(lbK);
                         }
-                        var vertretend = pp.personid != pp.vonpersonid;
-                        var text = "";
-                        if (b.ArrayOfAuftrag.Count > 1 && auft != null)
-                        {
-                            if (holdAufId != pp.auftragid) { text = text + "(" + auft.id + ")"; }
-                            text = text + (" - " + (pp.katname != null && pp.katname.Length == 0 ? "Alle Kategorien" : pp.katname)) +
-                                (vertretend ? " (" + GetPlanedPersonInitialien(pp.vonpersonid) + ")" : "");
-                        }
-                        else
-                        {
-                            text = ("- " + (pp.katname != null && pp.katname.Length == 0 ? "Alle Kategorien" : pp.katname)) +
-                                (vertretend ? " (" + GetPlanedPersonInitialien(pp.vonpersonid) + ")" : "");
-                        }
-                        if (auft != null)
-                        {
-                            if (kategorie == null) { text = "Kategorie nicht gefunden! (Synchronisieren)"; }
-                        }
-                        else
-                        {
-                            text = "Auftrag nicht gefunden! (Synchronisieren)";
-                        }
-                        if (auft != null)
-                        {
-                            if (holdAufId != pp.auftragid) { holdAufId = auft.id; }
-                        }
-                        var lbK = new Label()
-                        {
-                            Padding = new Thickness(2, 0, 2, 0),
-                            Text = text,
-                            TextColor = kategorie != null ? (vertretend ? Color.FromArgb("#ffaa00") : Color.FromArgb("#cccccc")) : Color.FromArgb("#ffcc00"),
-                            Margin = new Thickness(0, 0, 0, 0),
-                            FontSize = 12,
-                            LineBreakMode = LineBreakMode.TailTruncation,
-                            HorizontalOptions = LayoutOptions.Start,
-                        };
-                        stpos.Children.Add(lbK);
-
                     });
                 }
                 stv.Children.Add(stpos);

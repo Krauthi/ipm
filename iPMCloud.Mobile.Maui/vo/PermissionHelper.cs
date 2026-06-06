@@ -8,7 +8,7 @@ namespace iPMCloud.Mobile.Helpers
     {
         private const string LogPrefix = "[PermissionHelper]";
 
-        private static bool IsGranted(PermissionStatus status) =>
+        public static bool IsGranted(PermissionStatus status) =>
             status == PermissionStatus.Granted || status == PermissionStatus.Restricted;
 
         private static void LogInfo(string message)

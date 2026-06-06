@@ -199,6 +199,19 @@ namespace iPMCloud.Mobile
 
             AppModel.Instance.UseExternHardware = true;
 
+            // ✅ Berechtigungen prüfen
+            var status = await Permissions.CheckStatusAsync<Permissions.Camera>();
+            if (status != PermissionStatus.Granted)
+            {
+                status = await Permissions.RequestAsync<Permissions.Camera>();
+                //if (status != PermissionStatus.Granted)
+                //{
+                //    await DisplayAlertAsync("Berechtigung erforderlich",
+                //        "Bitte erlauben Sie Kamera-Zugriff", "OK");
+                //    return;
+                //}
+            }
+
             try
             {
                 overlay.IsVisible = true;
@@ -246,9 +259,10 @@ namespace iPMCloud.Mobile
             {
                 await DisplayAlertAsync("Fehler", "Kamera wird nicht unterstützt", "OK");
             }
-            catch (PermissionException)
+            catch (PermissionException exp)
             {
-                await DisplayAlertAsync("Fehler", "Keine Kamera-Berechtigung", "OK");
+                AppModel.Logger.Error("Keine Kamera-Berechtigung: " + exp.Message + " :: " + exp.StackTrace);
+                await DisplayAlertAsync("Fehler", "Keine Kamera-Berechtigung (2)", "OK");
             }
             catch (OperationCanceledException)
             {
@@ -335,7 +349,7 @@ namespace iPMCloud.Mobile
             }
             catch (PermissionException exp)
             {
-                AppModel.Logger.Error($"Fehler Keine Kamera-Berechtigung: {exp.Message}");
+                AppModel.Logger.Error($"Fehler Keine Kamera-Berechtigung (3): {exp.Message}" + " ::: " + exp.StackTrace);
             }
             catch (OperationCanceledException)
             {

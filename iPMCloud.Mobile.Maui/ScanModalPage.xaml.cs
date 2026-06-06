@@ -99,6 +99,7 @@ namespace iPMCloud.Mobile
 
                 if (!hasCameraPermission)
                 {
+                    AppModel.Logger.Error("ScanObjModalPage.ScanAsync: Kamerazugriff verweigert");
                     return null;
                 }
 

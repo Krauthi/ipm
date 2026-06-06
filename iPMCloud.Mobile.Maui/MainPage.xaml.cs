@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Maui.Core.Platform;
+﻿using Android.Media;
+using CommunityToolkit.Maui.Core.Platform;
 using Google.Apis.Services;
 using Google.Apis.Translate.v2;
 using Google.Cloud.Translation.V2;
@@ -20,6 +21,7 @@ using Microsoft.Maui.Devices;
 //using Microsoft.Maui.Storage;
 using Microsoft.Maui.Devices;
 using Microsoft.Maui.Devices;
+using Microsoft.Maui.Devices;
 using Microsoft.Maui.Layouts;
 using Microsoft.Maui.Storage;
 // TODO: NativeMedia not MAUI-compatible - needs replacement with Microsoft.Maui.Media
@@ -31,6 +33,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.ConstrainedExecution;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -3315,7 +3318,17 @@ namespace iPMCloud.Mobile
                         frame_planConA_erl_count_con.IsVisible = plansReady.Count > 0;
                         plansReady.ForEach(p =>
                         {
-                            var containerReady = ObjektPlanWeekMobile.GetPlanedReadyTodayList(p);
+                            VerticalStackLayout containerReady = new VerticalStackLayout();
+                            try
+                            {
+                                containerReady = ObjektPlanWeekMobile.GetPlanedReadyTodayList(p);
+                            }
+                            catch (Exception ex)
+                            {
+                                containerReady.Children.Add( new Label() { Text = "Fehler beim Laden der erledigten Leistung: ",TextColor = Colors.Red });
+                                AppModel.Logger.Warn("ERROR: Fehler beim Laden der erledigten Leistung: " + (p == null ? "(p = null) :: ":" ") 
+                                        + ex.Message + "-- - " + ex.StackTrace != null ? ex.StackTrace : "");
+                            }
                             //containerReady.IsVisible = true;
                             //p.view = containerReady;
                             frame_planListAb.Children.Add(containerReady);

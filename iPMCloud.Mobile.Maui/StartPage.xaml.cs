@@ -145,45 +145,54 @@ namespace iPMCloud.Mobile
                                             "OK");
                     return;
                 }
-
-                AppModel.Instance.UseExternHardware = true;
-                var newScanSettings = new SettingDTO
-                {
-                    ServerUrl = sp[0],
-                    CustomerNumber = sp[1],
-                    CustomerName = sp[2]
-                };
-                var cn = AppModel.Instance.SettingModel.SettingDTO.CustomerNumber;
-                if (!string.IsNullOrWhiteSpace(newScanSettings.ServerUrl) &&
-                    !string.IsNullOrWhiteSpace(newScanSettings.CustomerNumber) &&
-                    !string.IsNullOrWhiteSpace(newScanSettings.CustomerName) &&
-                    newScanSettings.CustomerNumber != cn)
-                {
-
-                    string directoryPath = Path.Combine(
-                        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                        "ipm/" + newScanSettings.CustomerNumber);
-
-                    if (!Directory.Exists(directoryPath)) Directory.CreateDirectory(directoryPath);
-
-                    Company.AddUpdateCompany(AppModel.Instance, AppModel.Instance.SettingModel.SettingDTO);
-
-                    AppModel.Instance.SettingModel.SettingDTO = newScanSettings;
-                    AppModel.Instance.SettingModel.SaveSettings();
-
-                    AppModel.Instance.UseExternHardware = false;
-
-                    BeforeLogin_Container.IsVisible = false;
-                    //StartGPS();
-                    popupContainer_gpsinfo.IsVisible = true;
-                }
                 else
                 {
-                    AppModel.Logger.Error("QR-Code nicht erkannt!" + " Dieser QR-Code kann für die Registrierung des Unternehmens mit der iPM-Cloud-App nicht verwendet werden!");
-                    await DisplayAlertAsync("QR-Code nicht erkannt!",
-                                            "Dieser QR-Code kann für die Registrierung des Unternehmens mit der iPM-Cloud-App nicht verwendet werden.",
-                                            "OK");
-                    AppModel.Instance.UseExternHardware = false;
+
+                    AppModel.Instance.UseExternHardware = true;
+                    //var newScanSettings = new SettingDTO
+                    //{
+                    //    ServerUrl = sp[0],
+                    //    CustomerNumber = sp[1],
+                    //    CustomerName = sp[2]
+                    //};
+                    var cn = AppModel.Instance.SettingModel.SettingDTO.CustomerNumber;
+                    if (!string.IsNullOrWhiteSpace(sp[0]) &&
+                        !string.IsNullOrWhiteSpace(sp[1]) &&
+                        !string.IsNullOrWhiteSpace(sp[2]) &&
+                        sp[1] != cn)
+                    {
+                        var newScanSettings = new SettingDTO
+                        {
+                            ServerUrl = sp[0],
+                            CustomerNumber = sp[1],
+                            CustomerName = sp[2]
+                        };
+
+                        string directoryPath = Path.Combine(
+                            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                            "ipm/" + newScanSettings.CustomerNumber);
+
+                        if (!Directory.Exists(directoryPath)) Directory.CreateDirectory(directoryPath);
+
+                        Company.AddUpdateCompany(AppModel.Instance, AppModel.Instance.SettingModel.SettingDTO);
+
+                        AppModel.Instance.SettingModel.SettingDTO = newScanSettings;
+                        AppModel.Instance.SettingModel.SaveSettings();
+
+                        AppModel.Instance.UseExternHardware = false;
+
+                        BeforeLogin_Container.IsVisible = false;
+                        //StartGPS();
+                        popupContainer_gpsinfo.IsVisible = true;
+                    }
+                    else
+                    {
+                        AppModel.Logger.Error("QR-Code nicht erkannt!" + " Dieser QR-Code kann für die Registrierung des Unternehmens mit der iPM-Cloud-App nicht verwendet werden!");
+                        await DisplayAlertAsync("QR-Code nicht erkannt!",
+                                                "Dieser QR-Code kann für die Registrierung des Unternehmens mit der iPM-Cloud-App nicht verwendet werden.",
+                                                "OK");
+                        AppModel.Instance.UseExternHardware = false;
+                    }
                 }
             }
             else

@@ -14,6 +14,9 @@ namespace iPMCloud.Mobile
         private bool _completed; 
         private bool _isClosing;
 #if ANDROID
+        private const int PreviewWarmupDelayMs = 120;
+        private const int PreviewCameraToggleDelayMs = 120;
+        private const int PreviewEnableResetDelayMs = 60;
         private CancellationTokenSource _previewCts;
 #endif
 
@@ -139,20 +142,18 @@ namespace iPMCloud.Mobile
             {
                 try
                 {
-                    AppModel.Logger.Info("[ScanModalPage] Android preview workaround: delay 120ms before reinit.");
-                    await Task.Delay(120, token);
+                    AppModel.Logger.Info($"[ScanModalPage] Android preview workaround: delay {PreviewWarmupDelayMs}ms before reinit.");
+                    await Task.Delay(PreviewWarmupDelayMs, token);
 
                     var originalCamera = ReaderView.CameraLocation;
                     var toggledCamera = originalCamera == CameraLocation.Rear ? CameraLocation.Front : CameraLocation.Rear;
-                    AppModel.Logger.Info($"[ScanModalPage] Android preview workaround: camera toggle {originalCamera} -> {toggledCamera}.");
-                    ReaderView.CameraLocation = toggledCamera;
-                    await Task.Delay(120, token);
-                    AppModel.Logger.Info($"[ScanModalPage] Android preview workaround: camera toggle {toggledCamera} -> {originalCamera}.");
-                    ReaderView.CameraLocation = originalCamera;
+                    await TrySetCameraLocationAsync(toggledCamera, originalCamera, token);
+                    await Task.Delay(PreviewCameraToggleDelayMs, token);
+                    await TrySetCameraLocationAsync(originalCamera, toggledCamera, token);
 
                     AppModel.Logger.Info("[ScanModalPage] Android preview workaround: ReaderView IsEnabled false -> true.");
                     ReaderView.IsEnabled = false;
-                    await Task.Delay(60, token);
+                    await Task.Delay(PreviewEnableResetDelayMs, token);
                     ReaderView.IsEnabled = true;
 
                     AppModel.Logger.Info($"[ScanModalPage] Android preview workaround: enabling detection. {GetReaderViewStateForLog()}");
@@ -240,6 +241,24 @@ namespace iPMCloud.Mobile
             return $"Page={Width:F0}x{Height:F0}, ReaderView={ReaderView.Width:F0}x{ReaderView.Height:F0}, " +
                    $"Visible={ReaderView.IsVisible}, Enabled={ReaderView.IsEnabled}, " +
                    $"Camera={ReaderView.CameraLocation}, Detecting={ReaderView.IsDetecting}";
+        }
+
+        private Task TrySetCameraLocationAsync(CameraLocation targetCamera, CameraLocation currentCamera, CancellationToken token)
+        {
+            if (token.IsCancellationRequested)
+                return Task.CompletedTask;
+
+            try
+            {
+                AppModel.Logger.Info($"[ScanModalPage] Android preview workaround: camera toggle {currentCamera} -> {targetCamera}.");
+                ReaderView.CameraLocation = targetCamera;
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger.Warn($"[ScanModalPage] Android preview workaround: camera toggle {currentCamera} -> {targetCamera} skipped ({ex.Message}).");
+            }
+
+            return Task.CompletedTask;
         }
     }
     public class OverlayViewModel

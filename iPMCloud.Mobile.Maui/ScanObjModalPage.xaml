@@ -144,7 +144,9 @@
                         x:Name="ReaderView"
                         BarcodesDetected="ReaderView_BarcodesDetected"
                         CameraLocation="Rear"
-                        IsDetecting="False" />
+                        HorizontalOptions="Fill"
+                        IsDetecting="False"
+                        VerticalOptions="Fill" />
 
                 </Grid>
 

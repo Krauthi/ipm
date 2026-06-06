@@ -13,6 +13,9 @@ namespace iPMCloud.Mobile
         private TaskCompletionSource<string> _tcs;
         private bool _completed; 
         private bool _isClosing;
+#if ANDROID
+        private CancellationTokenSource _previewCts;
+#endif
 
         private ScanObjModalPage()
         {
@@ -124,11 +127,41 @@ namespace iPMCloud.Mobile
             _completed = false;
             _isClosing = false;
             btn_back_inAddRegScan.InputTransparent = false;
+
+#if ANDROID
+            // On some Android devices (e.g. Xiaomi/MIUI) the camera surface is not yet
+            // ready when OnAppearing fires, causing a black preview even though frames
+            // are still decoded. A short delay gives the renderer time to attach the
+            // SurfaceView before detection is enabled.
+            _previewCts?.Cancel();
+            _previewCts = new CancellationTokenSource();
+            var token = _previewCts.Token;
+            System.Diagnostics.Debug.WriteLine(
+                $"[ScanObjModalPage] OnAppearing – scheduling IsDetecting=true after 300 ms " +
+                $"(Width={Width:F0}, Height={Height:F0})");
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                try
+                {
+                    await Task.Delay(300, token);
+                    System.Diagnostics.Debug.WriteLine("[ScanObjModalPage] IsDetecting = true");
+                    ReaderView.IsDetecting = true;
+                }
+                catch (OperationCanceledException)
+                {
+                    System.Diagnostics.Debug.WriteLine("[ScanObjModalPage] IsDetecting start cancelled");
+                }
+            });
+#else
             ReaderView.IsDetecting = true;
+#endif
         }
 
         protected override void OnDisappearing()
         {
+#if ANDROID
+            _previewCts?.Cancel();
+#endif
             // Stop the camera feed whenever the page leaves the screen.
             ReaderView.IsTorchOn = false;
             ReaderView.IsDetecting = false;

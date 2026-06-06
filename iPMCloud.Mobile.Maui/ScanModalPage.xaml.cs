@@ -130,27 +130,43 @@ namespace iPMCloud.Mobile
             btn_back_inAddRegScan.InputTransparent = false;
 
 #if ANDROID
-            // On some Android devices (e.g. Xiaomi/MIUI) the camera surface is not yet
-            // ready when OnAppearing fires, causing a black preview even though frames
-            // are still decoded. A short delay gives the renderer time to attach the
-            // SurfaceView before detection is enabled.
             _previewCts?.Cancel();
             _previewCts = new CancellationTokenSource();
             var token = _previewCts.Token;
-            System.Diagnostics.Debug.WriteLine(
-                $"[ScanModalPage] OnAppearing – scheduling IsDetecting=true after 300 ms " +
-                $"(Width={Width:F0}, Height={Height:F0})");
+            AppModel.Logger.Info($"[ScanModalPage] OnAppearing start (Android). {GetReaderViewStateForLog()}");
+            ReaderView.IsDetecting = false;
             MainThread.BeginInvokeOnMainThread(async () =>
             {
                 try
                 {
-                    await Task.Delay(300, token);
-                    System.Diagnostics.Debug.WriteLine("[ScanModalPage] IsDetecting = true");
+                    AppModel.Logger.Info("[ScanModalPage] Android preview workaround: delay 120ms before reinit.");
+                    await Task.Delay(120, token);
+
+                    var originalCamera = ReaderView.CameraLocation;
+                    var toggledCamera = originalCamera == CameraLocation.Rear ? CameraLocation.Front : CameraLocation.Rear;
+                    AppModel.Logger.Info($"[ScanModalPage] Android preview workaround: camera toggle {originalCamera} -> {toggledCamera}.");
+                    ReaderView.CameraLocation = toggledCamera;
+                    await Task.Delay(120, token);
+                    AppModel.Logger.Info($"[ScanModalPage] Android preview workaround: camera toggle {toggledCamera} -> {originalCamera}.");
+                    ReaderView.CameraLocation = originalCamera;
+
+                    AppModel.Logger.Info("[ScanModalPage] Android preview workaround: ReaderView IsEnabled false -> true.");
+                    ReaderView.IsEnabled = false;
+                    await Task.Delay(60, token);
+                    ReaderView.IsEnabled = true;
+
+                    AppModel.Logger.Info($"[ScanModalPage] Android preview workaround: enabling detection. {GetReaderViewStateForLog()}");
                     ReaderView.IsDetecting = true;
+                    AppModel.Logger.Info($"[ScanModalPage] Android preview workaround complete. {GetReaderViewStateForLog()}");
                 }
                 catch (OperationCanceledException)
                 {
-                    System.Diagnostics.Debug.WriteLine("[ScanModalPage] IsDetecting start cancelled");
+                    AppModel.Logger.Info("[ScanModalPage] Android preview workaround cancelled.");
+                }
+                catch (Exception ex)
+                {
+                    AppModel.Logger.Error($"[ScanModalPage] Android preview workaround failed: {ex}");
+                    ReaderView.IsDetecting = true;
                 }
             });
 #else
@@ -217,6 +233,13 @@ namespace iPMCloud.Mobile
                 _tcs?.TrySetResult(value);
                 await Navigation.PopModalAsync(animated: false);
             });
+        }
+
+        private string GetReaderViewStateForLog()
+        {
+            return $"Page={Width:F0}x{Height:F0}, ReaderView={ReaderView.Width:F0}x{ReaderView.Height:F0}, " +
+                   $"Visible={ReaderView.IsVisible}, Enabled={ReaderView.IsEnabled}, " +
+                   $"Camera={ReaderView.CameraLocation}, Detecting={ReaderView.IsDetecting}";
         }
     }
     public class OverlayViewModel

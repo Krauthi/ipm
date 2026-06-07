@@ -73,6 +73,7 @@ namespace iPMCloud.Mobile
                 SetAppVersion();
                 ConfigureUI();
                 LogDeferredPermissionStrategy();
+                CreateNotificationChannel();
 
                 if (!GooglePlayServicesChecker.IsAvailable(this))
                 {

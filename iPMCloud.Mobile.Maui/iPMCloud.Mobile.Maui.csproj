@@ -201,10 +201,6 @@
   <PackageReference Include="Xamarin.AndroidX.Compose.Runtime.Annotation.Jvm" Version="1.10.6" ExcludeAssets="all" />
 </ItemGroup>
 
-	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
-		<PackageReference Include="Xamarin.Firebase.iOS.CloudMessaging" Version="10.24.0" />
-	</ItemGroup>
-
 <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
   <WindowsPackageType>None</WindowsPackageType>
 </PropertyGroup>

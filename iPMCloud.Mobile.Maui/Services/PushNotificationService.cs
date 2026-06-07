@@ -7,7 +7,6 @@ using Android.Content;
 using Android.OS;
 using AndroidX.Core.App;
 using Firebase.Messaging;
-using Microsoft.Maui.ApplicationModel.Platform;
 using AndroidApp = Android.App.Application;
 #elif IOS
 using Foundation;
@@ -133,7 +132,7 @@ namespace iPMCloud.Mobile.Services
             var pendingIntent = PendingIntent.GetActivity(AndroidApp.Context, 0, launchIntent, pendingFlags);
 
             var builder = new NotificationCompat.Builder(AndroidApp.Context, AndroidChannelId)
-                .SetSmallIcon(Resource.Drawable.icon)
+                .SetSmallIcon(Resource.Drawable.Icon)
                 .SetContentTitle(title)
                 .SetContentText(body)
                 .SetStyle(new NotificationCompat.BigTextStyle().BigText(body))

@@ -3,8 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.ipmcloud.ipm.mobile"
-    android:versionName="3.0.47"
-    android:versionCode="3000047">
+    android:versionName="3.0.50"
+    android:versionCode="3000050">
 	<uses-sdk android:minSdkVersion="28" android:targetSdkVersion="36" 
         tools:overrideLibrary="androidx.lifecycle.runtime,com.google.android.play.core,com.google.android.gms.base,com.google.android.gms.common,com.google.android.gms.tasks" />
 

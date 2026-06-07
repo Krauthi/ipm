@@ -20,7 +20,6 @@
 
         <Grid.RowDefinitions>
             <RowDefinition Height="54" />
-            <RowDefinition Height="100" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
@@ -28,50 +27,43 @@
         <StackLayout
             Grid.Row="0"
             Margin="0"
-            Padding="10,10,10,10"
+            HeightRequest="54"
+            Padding="0"
             HorizontalOptions="Fill"
             Spacing="0"
             VerticalOptions="Fill">
-            <Border
-                Margin="3,2,2,2"
-                Padding="1"
-                BackgroundColor="Transparent"
-                HorizontalOptions="Fill"
-                Stroke="Transparent"
-                VerticalOptions="Center">
-                <HorizontalStackLayout
+            <HorizontalStackLayout
                     x:Name="btn_back_inAddRegScan"
-                    Margin="0"
+                    Margin="0,12,0,5"
                     Padding="0"
                     BackgroundColor="Transparent"
-                    HeightRequest="28"
                     HorizontalOptions="Start"
                     Spacing="0"
                     VerticalOptions="Center">
-                    <Image
+                <Image
                         Margin="0,0,10,0"
                         HeightRequest="26"
                         HorizontalOptions="Start"
                         Source="DropLeftBlueDoubleImage.png"
                         VerticalOptions="Center"
                         WidthRequest="26" />
-                    <Label
+                <Label
                         Margin="0"
                         FontSize="20"
                         HorizontalOptions="Fill"
                         HorizontalTextAlignment="Start"
                         LineBreakMode="TailTruncation"
                         Text="Scann abbrechen"
-                        TextColor="#4fa4dd"
+                        TextColor="#4fa4ed"
                         VerticalOptions="Center" />
-                </HorizontalStackLayout>
-            </Border>
+            </HorizontalStackLayout>
         </StackLayout>
 
         <VerticalStackLayout
             Grid.Row="1"
-            Margin="0,0,0,5"
+            Margin="0,0,0,0"
             Padding="15,15,15,20"
+            HeightRequest="130"
             BackgroundColor="#90144d93"
             HorizontalOptions="Fill"
             Spacing="0">
@@ -95,68 +87,29 @@
             VerticalOptions="Fill">
 
             <Grid.RowDefinitions>
+                <!--<RowDefinition Height="30" />-->
                 <RowDefinition Height="*" />
-                <RowDefinition Height="2*" />
-                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <!--  Top Text  -->
-            <Label
+
+
+            <zxing:CameraBarcodeReaderView
                 Grid.Row="0"
-                Margin="0,0,0,30"
-                FontSize="16"
-                HorizontalOptions="Center"
-                Text="{Binding TopText}"
-                TextColor="White"
-                VerticalOptions="End">
-                <Label.Shadow>
-                    <Shadow
-                        Brush="Black"
-                        Opacity="0.7"
-                        Radius="7"
-                        Offset="3,3" />
-                </Label.Shadow>
-            </Label>
-
-            <!--  Scanner Frame (Mitte)  -->
-            <Border
-                Grid.Row="1"
-                Padding="0"
-                BackgroundColor="Transparent"
-                HeightRequest="250"
-                HorizontalOptions="Center"
-                Stroke="White"
-                VerticalOptions="Center"
-                WidthRequest="250">
-                <Border.StrokeShape>
-                    <RoundRectangle CornerRadius="10" />
-                </Border.StrokeShape>
-                <Border.Shadow>
-                    <Shadow
-                        Brush="Black"
-                        Opacity="0.3"
-                        Radius="5"
-                        Offset="2,2" />
-                </Border.Shadow>
-                <Grid RowDefinitions="*">
-
-                    <zxing:CameraBarcodeReaderView
                         x:Name="ReaderView"
                         BarcodesDetected="ReaderView_BarcodesDetected"
                         CameraLocation="Rear"
                         HorizontalOptions="Fill"
-                        IsDetecting="False"
+                        IsDetecting="True" 
                         VerticalOptions="Fill" />
 
-                </Grid>
-
-            </Border>
             <!--  Bottom Stack  -->
             <StackLayout
-                Grid.Row="2"
-                Margin="0,30,0,0"
-                HorizontalOptions="Center"
-                Spacing="10"
+                Grid.Row="1"
+                Margin="0,20,0,40"
+                BackgroundColor="Black"
+                HorizontalOptions="Fill"
+                Spacing="0"
                 VerticalOptions="Start">
 
                 <Label
@@ -164,47 +117,23 @@
                     HorizontalOptions="Center"
                     Text="{Binding BottomText}"
                     TextColor="White">
-                    <Label.Shadow>
-                        <Shadow
-                            Brush="Black"
-                            Opacity="0.7"
-                            Radius="7"
-                            Offset="3,3" />
-                    </Label.Shadow>
                 </Label>
 
                 <!--  Flash Button  -->
                 <Button
                     Margin="0,20,0,0"
-                    Padding="5"
+                    Padding="8"
                     BackgroundColor="#144D93"
                     Command="{Binding FlashButtonCommand}"
                     CornerRadius="0"
-                    HeightRequest="70"
+                    HeightRequest="60"
                     HorizontalOptions="Center"
                     ImageSource="Flashlight.png"
-                    WidthRequest="70" />
+                    WidthRequest="60" />
             </StackLayout>
 
         </Grid>
 
-
-
-
-
-
-
-
-
-
-
-
-        <BoxView
-            Grid.Row="3"
-            Margin="0,40,0,13"
-            BackgroundColor="Black"
-            HorizontalOptions="Fill"
-            VerticalOptions="Fill" />
     </Grid>
 
 

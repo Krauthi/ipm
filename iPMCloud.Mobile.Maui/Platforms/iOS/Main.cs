@@ -1,6 +1,6 @@
 using UIKit;
 
-namespace iPMCloud.Mobile.Maui;
+namespace iPMCloud.Mobile;
 
 public class Program
 {

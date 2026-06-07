@@ -202,7 +202,7 @@
 </ItemGroup>
 
 	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
-		<PackageReference Include="Xamarin.Firebase.iOS.CloudMessaging" Version="10.24.0" />
+		<PackageReference Include="Xamarin.Firebase.iOS.CloudMessaging" Version="8.10.0.3" />
 	</ItemGroup>
 
 <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">

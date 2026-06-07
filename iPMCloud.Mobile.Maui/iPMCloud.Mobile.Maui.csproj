@@ -193,6 +193,7 @@
 
 	<!-- Android-only Packages -->
 <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+  <PackageReference Include="Xamarin.Firebase.Messaging" Version="124.1.0" />
   <PackageReference Include="Xamarin.Google.Android.Play.Core" Version="1.10.3.21" />
   <PackageReference Include="Xamarin.GooglePlayServices.Base" Version="118.10.0.1" />
   <PackageReference Include="Xamarin.GooglePlayServices.Basement" Version="118.10.0.1" />

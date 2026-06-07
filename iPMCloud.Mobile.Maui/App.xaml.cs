@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Controls.Xaml;
 using Microsoft.Maui.ApplicationModel;
+using iPMCloud.Mobile.Services;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace iPMCloud.Mobile
@@ -99,6 +100,7 @@ namespace iPMCloud.Mobile
             }
 
             AppModel.Instance.InitDeviceInformation();
+            PushNotificationService.Initialize();
             AppModel.Instance.App = this;
             if (!AppModel.Instance.HasInitAppmodel) { 
                 AppModel.Instance.HasInitAppmodel = AppModel.Instance.InitAppModel(); 

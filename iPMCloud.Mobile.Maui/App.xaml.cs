@@ -70,6 +70,34 @@ namespace iPMCloud.Mobile
             // Consider: Plugin.Firebase or native Firebase SDK
             // OnStartIntiFirebase();
 
+            // Reset stale page-navigator state that may survive in the AppModel singleton
+            // across an Android ClearTask restart (e.g. when the user taps a push
+            // notification and the OS destroys/recreates the MainActivity).  Without this
+            // reset, TFPageNavigator's guard "if (LastMainPage != CurrentMainPage)" is
+            // never true on the second session and SplashOverlayPage never navigates away
+            // — causing the app to hang on the splash screen indefinitely.
+            try
+            {
+                var model = AppModel.Instance;
+                if (model != null)
+                {
+                    if (model.PageNavigator != null)
+                    {
+                        model.PageNavigator.CurrentMainPage = "";
+                        model.PageNavigator.LastMainPage = "";
+                    }
+                    // Drop stale page references so the navigator always creates fresh pages
+                    // bound to the new MAUI window instead of reusing pages from the previous
+                    // window that was destroyed by ClearTask.
+                    model.MainPage = null;
+                    model.StartPage = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error($"App.InitApp: failed to reset navigator state: {ex.Message}");
+            }
+
             AppModel.Instance.InitDeviceInformation();
             AppModel.Instance.App = this;
             if (!AppModel.Instance.HasInitAppmodel) { 

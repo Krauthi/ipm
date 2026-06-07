@@ -10,6 +10,7 @@ using Android.Views;
 using iPMCloud.Mobile.vo;
 using iPMCloud.Mobile.Platforms.Android.Services;
 using System;
+using System.Linq;
 using System.Reflection;
 using Microsoft.Maui;
 using Microsoft.Maui.ApplicationModel;
@@ -92,22 +93,31 @@ namespace iPMCloud.Mobile
         protected override void OnNewIntent(Intent intent)
         {
             base.OnNewIntent(intent);
+
+            // Always update the activity's current intent so subsequent calls to
+            // Intent property return the notification-triggered intent rather than
+            // the original launch intent.
+            Intent = intent;
             
             try
             {
-                // Notification Intent Handling
-                if (intent?.Extras != null)
+                if (intent?.Extras != null && intent.Extras.KeySet()?.Count > 0)
                 {
-                    foreach (var key in intent.Extras.KeySet())
-                    {
-                        var value = intent.Extras.GetString(key);
-                        Log.Debug(TAG, $"Intent Extra: {key} = {value}");
-                    }
+                    var extras = string.Join("; ",
+                        intent.Extras.KeySet().Select(k => $"{k}={intent.Extras.GetString(k)}"));
+                    Log.Debug(TAG, $"OnNewIntent Extras: {extras}");
+                    AppModel.Logger?.Info($"Notification tap (OnNewIntent): {extras}");
+                }
+                else
+                {
+                    Log.Debug(TAG, "OnNewIntent called without notification extras");
+                    AppModel.Logger?.Info("OnNewIntent: no notification extras present");
                 }
             }
             catch (Exception ex)
             {
                 Log.Error(TAG, $"OnNewIntent Error: {ex}");
+                AppModel.Logger?.Error($"OnNewIntent failed: {ex.Message}");
             }
         }
 

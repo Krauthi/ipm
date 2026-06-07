@@ -6,6 +6,7 @@ using Android.Util;
 using Android.Views;
 using AndroidX.AppCompat.App;
 using AndroidX.Core.View;
+using iPMCloud.Mobile.vo;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -171,13 +172,31 @@ namespace iPMCloud.Mobile
                 }
 
                 var mainIntent = new Intent(this, typeof(MainActivity));
-                mainIntent.SetFlags(ActivityFlags.NewTask | ActivityFlags.ClearTask);
+
+                // When MainActivity is already alive (app is in the background), bring it
+                // to the foreground without destroying the running MAUI session.  Using
+                // ClearTask in that situation kills the live MAUI window and triggers a
+                // full re-initialization that races with the still-live process singleton
+                // (AppModel) — the root cause of the splash-screen hang on notification tap.
+                if (MainActivity.Instance != null)
+                {
+                    mainIntent.SetFlags(ActivityFlags.NewTask | ActivityFlags.ClearTop | ActivityFlags.SingleTop);
+                    Log.Info(TAG, "MainActivity bereits aktiv – BringToFront ohne ClearTask");
+                    AppModel.Logger?.Info("SplashActivity: MainActivity already running – using SingleTop to bring to front");
+                }
+                else
+                {
+                    mainIntent.SetFlags(ActivityFlags.NewTask | ActivityFlags.ClearTask);
+                    Log.Info(TAG, "Kalt-Start – ClearTask");
+                    AppModel.Logger?.Info("SplashActivity: cold start – using ClearTask");
+                }
 
                 if (Intent?.Extras != null)
                 {
                     mainIntent.PutExtras(Intent.Extras);
                     
                     Log.Debug(TAG, $"Intent Extras weitergeleitet: {Intent.Extras.KeySet()?.Count ?? 0}");
+                    AppModel.Logger?.Info($"SplashActivity: forwarding {Intent.Extras.KeySet()?.Count ?? 0} notification extras to MainActivity");
                 }
 
                 StartActivity(mainIntent);
@@ -202,6 +221,7 @@ namespace iPMCloud.Mobile
             {
                 Interlocked.Exchange(ref _mainActivityLaunchStarted, 0);
                 Log.Error(TAG, $"StartMainActivityAsync Error: {ex}");
+                AppModel.Logger?.Error($"SplashActivity.StartMainActivityAsync failed: {ex.Message}");
                 
                 StartMainActivityImmediate();
             }
@@ -216,8 +236,23 @@ namespace iPMCloud.Mobile
                 if (IsFinishing || IsDestroyed) return;
 
                 var mainIntent = new Intent(this, typeof(MainActivity));
-                mainIntent.SetFlags(ActivityFlags.NewTask | ActivityFlags.ClearTask);
-                
+
+                // Apply the same smart-flag logic as StartMainActivityAsync to avoid
+                // destroying a live MAUI session in the fallback path.
+                if (MainActivity.Instance != null)
+                {
+                    mainIntent.SetFlags(ActivityFlags.NewTask | ActivityFlags.ClearTop | ActivityFlags.SingleTop);
+                }
+                else
+                {
+                    mainIntent.SetFlags(ActivityFlags.NewTask | ActivityFlags.ClearTask);
+                }
+
+                if (Intent?.Extras != null)
+                {
+                    mainIntent.PutExtras(Intent.Extras);
+                }
+
                 StartActivity(mainIntent);
                 Finish();
                 

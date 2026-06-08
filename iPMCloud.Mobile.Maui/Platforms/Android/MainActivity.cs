@@ -528,14 +528,10 @@ else
 
         #region Back Button Handling
 
-        //public override void OnBackPressed()
-        //{
-        //    // Custom back button handling hier einfügen
-        //    // Beispiel: Popups schließen, Navigation zurück, etc.
-            
-        //    // Standard-Verhalten (App schließen)
-        //    base.OnBackPressed();
-        //}
+        public override void OnBackPressed()
+        {
+            Log.Debug(TAG, "Back Button ignoriert");
+        }
 
         #endregion
 

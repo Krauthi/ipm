@@ -1,61 +1,71 @@
 using Foundation;
 using iPMCloud.Mobile.Services;
 using iPMCloud.Mobile.vo;
+using System;
 using UIKit;
 using UserNotifications;
-using FirebaseApp = Firebase.Core.App;
 
 namespace iPMCloud.Mobile;
 
 [Register("AppDelegate")]
-public class AppDelegate : MauiUIApplicationDelegate, IUNUserNotificationCenterDelegate, IMessagingDelegate
+public class AppDelegate : MauiUIApplicationDelegate, IUNUserNotificationCenterDelegate
 {
     protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();
 
     public override bool FinishedLaunching(UIApplication application, NSDictionary launchOptions)
     {
-        if (FirebaseApp.DefaultInstance == null)
+        try
         {
-            FirebaseApp.Configure();
+            UNUserNotificationCenter.Current.Delegate = this;
+            UNUserNotificationCenter.Current.RequestAuthorization(
+                UNAuthorizationOptions.Alert | UNAuthorizationOptions.Badge | UNAuthorizationOptions.Sound,
+                (granted, error) =>
+                {
+                    if (error != null)
+                    {
+                        AppModel.Logger?.Error($"Push authorization error: {error.LocalizedDescription}");
+                    }
+                    else if (!granted)
+                    {
+                        AppModel.Logger?.Warn("Push authorization not granted by user.");
+                    }
+                });
+
+            PushNotificationService.Initialize();
         }
-
-        UNUserNotificationCenter.Current.Delegate = this;
-        UNUserNotificationCenter.Current.RequestAuthorization(
-            UNAuthorizationOptions.Alert | UNAuthorizationOptions.Badge | UNAuthorizationOptions.Sound,
-            (granted, error) =>
-            {
-                if (error != null)
-                {
-                    AppModel.Logger?.Error($"Push authorization error: {error.LocalizedDescription}");
-                }
-                else if (!granted)
-                {
-                    AppModel.Logger?.Warn("Push authorization not granted by user.");
-                }
-            });
-
-        PushNotificationService.Initialize();
-        Messaging.SharedInstance.Delegate = this;
+        catch (Exception ex)
+        {
+            AppModel.Logger?.Error(ex, "ERROR: iOS push initialization failed");
+        }
 
         return base.FinishedLaunching(application, launchOptions);
     }
 
-    public override void RegisteredForRemoteNotifications(UIApplication application, NSData deviceToken)
+    [Export("application:didRegisterForRemoteNotificationsWithDeviceToken:")]
+    public void RegisteredForRemoteNotifications(UIApplication application, NSData deviceToken)
     {
-        Messaging.SharedInstance.ApnsToken = deviceToken;
-        base.RegisteredForRemoteNotifications(application, deviceToken);
+        try
+        {
+            if (deviceToken == null || deviceToken.Length == 0)
+            {
+                AppModel.Logger?.Warn("Push registration succeeded but APNs token is empty.");
+                return;
+            }
+
+            var tokenBytes = deviceToken.ToArray();
+            var apnsToken = BitConverter.ToString(tokenBytes).Replace("-", string.Empty).ToLowerInvariant();
+            PushNotificationService.HandleTokenRefresh(apnsToken);
+        }
+        catch (Exception ex)
+        {
+            AppModel.Logger?.Error(ex, "ERROR: Failed to process APNs device token");
+        }
     }
 
-    public override void FailedToRegisterForRemoteNotifications(UIApplication application, NSError error)
+    [Export("application:didFailToRegisterForRemoteNotificationsWithError:")]
+    public void FailedToRegisterForRemoteNotifications(UIApplication application, NSError error)
     {
         AppModel.Logger?.Error($"FailedToRegisterForRemoteNotifications: {error?.LocalizedDescription}");
-        base.FailedToRegisterForRemoteNotifications(application, error);
-    }
-
-    [Export("messaging:didReceiveRegistrationToken:")]
-    public void DidReceiveRegistrationToken(Messaging messaging, string fcmToken)
-    {
-        PushNotificationService.HandleTokenRefresh(fcmToken);
     }
 
     [Export("userNotificationCenter:willPresentNotification:withCompletionHandler:")]

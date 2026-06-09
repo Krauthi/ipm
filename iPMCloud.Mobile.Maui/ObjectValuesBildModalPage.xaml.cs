@@ -2,7 +2,7 @@ using iPMCloud.Mobile.vo;
 
 namespace iPMCloud.Mobile
 {
-    public partial class ObjectValuesBildModalPage : ContentPage
+    public partial class ObjectValuesBildModalPage : AndroidBackBlockedModalPage
     {
         private static readonly SemaphoreSlim _modalSemaphore = new(1, 1);
         private readonly TaskCompletionSource<bool> _tcs = new();

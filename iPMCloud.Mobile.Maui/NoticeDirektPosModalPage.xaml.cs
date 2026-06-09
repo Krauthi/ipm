@@ -2,7 +2,7 @@ using iPMCloud.Mobile.vo;
 
 namespace iPMCloud.Mobile
 {
-    public partial class NoticeDirektPosModalPage : ContentPage
+    public partial class NoticeDirektPosModalPage : AndroidBackBlockedModalPage
     {
         private static readonly SemaphoreSlim _modalSemaphore = new(1, 1);
         private readonly TaskCompletionSource<NoticeDirektPosResult?> _tcs = new();

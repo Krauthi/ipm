@@ -3,7 +3,7 @@ using Microsoft.Maui.ApplicationModel;
 
 namespace iPMCloud.Mobile.Views
 {
-    public partial class DSGVOPageContainerView : ContentPage
+    public partial class DSGVOPageContainerView : global::iPMCloud.Mobile.AndroidBackBlockedModalPage
     {
         private static int _isModalOpen;
 

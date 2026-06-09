@@ -5,7 +5,7 @@ using ZXing.Net.Maui;
 
 namespace iPMCloud.Mobile
 {
-    public partial class ScanModalPage : ContentPage
+    public partial class ScanModalPage : AndroidBackBlockedModalPage
     {
         // Guards ScanAsync so only one instance of this modal can be open at a time.
         private static readonly SemaphoreSlim _scanSemaphore = new SemaphoreSlim(1, 1);

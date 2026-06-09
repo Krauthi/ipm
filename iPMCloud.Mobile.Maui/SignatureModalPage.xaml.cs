@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace iPMCloud.Mobile
 { 
-    public partial class SignatureModalPage : ContentPage
+    public partial class SignatureModalPage : AndroidBackBlockedModalPage
     {
         private static readonly SemaphoreSlim _modalSemaphore = new(1, 1);
         private readonly TaskCompletionSource<SignatureResult?> _tcs = new();

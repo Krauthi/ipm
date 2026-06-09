@@ -2,7 +2,7 @@ using iPMCloud.Mobile.vo;
 
 namespace iPMCloud.Mobile
 {
-    public partial class NoticeModalPage : ContentPage
+    public partial class NoticeModalPage : AndroidBackBlockedModalPage
     {
         private static readonly SemaphoreSlim _modalSemaphore = new(1, 1);
         private readonly TaskCompletionSource<NoticeResult?> _tcs = new();

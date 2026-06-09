@@ -3,7 +3,7 @@ using Microsoft.Maui.ApplicationModel;
 
 namespace iPMCloud.Mobile.Views
 {
-    public partial class DayOverPageView : ContentPage
+    public partial class DayOverPageView : global::iPMCloud.Mobile.AndroidBackBlockedModalPage
     {
         private static int _isModalOpen;
 

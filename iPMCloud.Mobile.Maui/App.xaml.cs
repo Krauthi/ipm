@@ -100,7 +100,7 @@ namespace iPMCloud.Mobile
             }
 
             AppModel.Instance.InitDeviceInformation();
-            //PushNotificationService.Initialize();
+            PushNotificationService.Initialize();
             AppModel.Instance.App = this;
             if (!AppModel.Instance.HasInitAppmodel) { 
                 AppModel.Instance.HasInitAppmodel = AppModel.Instance.InitAppModel(); 

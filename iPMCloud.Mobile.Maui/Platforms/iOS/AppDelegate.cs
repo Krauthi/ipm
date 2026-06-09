@@ -1,10 +1,6 @@
 using Foundation;
-using Firebase.CloudMessaging;
-using Firebase.Core;
 using iPMCloud.Mobile.Services;
 using iPMCloud.Mobile.vo;
-using Microsoft.Maui;
-using Microsoft.Maui.Hosting;
 using UIKit;
 using UserNotifications;
 using FirebaseApp = Firebase.Core.App;

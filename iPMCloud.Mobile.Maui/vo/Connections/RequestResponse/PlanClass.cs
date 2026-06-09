@@ -530,7 +530,7 @@ namespace iPMCloud.Mobile
 
         public static VerticalStackLayout GetPlanedReadyTodayList(PlanPersonMobile p)
         {
-            var b = AppModel.Instance.AllBuildings.Find(o => o.id == p.objektid);
+            var bu = AppModel.Instance.AllBuildings.Find(o => o.id == p.objektid);
             Image imgPin = new Image
             {
                 Source = p.haswork == 1 ? "CheckWhite.png" : "gpson.png",
@@ -540,12 +540,12 @@ namespace iPMCloud.Mobile
                 VerticalOptions = LayoutOptions.Center,
                 HorizontalOptions = LayoutOptions.End,
             };
-            if (p.haswork == 0 && b != null)
+            if (p.haswork == 0 && bu != null)
             {
                 imgPin.GestureRecognizers.Clear();
                 var tgr_imgPin = new TapGestureRecognizer();
-                tgr_imgPin.Tapped -= (object o, TappedEventArgs ev) => { BuildingWSO.btn_MapTapped(b); };
-                tgr_imgPin.Tapped += (object o, TappedEventArgs ev) => { BuildingWSO.btn_MapTapped(b); };
+                tgr_imgPin.Tapped -= (object o, TappedEventArgs ev) => { BuildingWSO.btn_MapTapped(bu); };
+                tgr_imgPin.Tapped += (object o, TappedEventArgs ev) => { BuildingWSO.btn_MapTapped(bu); };
                 imgPin.GestureRecognizers.Add(tgr_imgPin);
             }
             var imgInfo = new Image
@@ -556,13 +556,13 @@ namespace iPMCloud.Mobile
                 HeightRequest = 22,
                 WidthRequest = 22,
                 Source = "ic_info_b.png",//AppModel._Instance.imagesBase.InfoCircle,
-                IsVisible = !String.IsNullOrWhiteSpace(b.notiz),
+                IsVisible = bu != null && !String.IsNullOrWhiteSpace(bu.notiz),
             };
-            if (!String.IsNullOrWhiteSpace(b.notiz))
+            if (bu != null && !String.IsNullOrWhiteSpace(bu.notiz))
             {
                 imgInfo.GestureRecognizers.Clear();
                 var t_btn_objektinfo = new TapGestureRecognizer();
-                t_btn_objektinfo.Tapped += (object ooo, TappedEventArgs ev) => { AppModel._Instance.MainPage.OpenObjektInfoDialogB(b.notiz); };
+                t_btn_objektinfo.Tapped += (object ooo, TappedEventArgs ev) => { AppModel._Instance.MainPage.OpenObjektInfoDialogB(bu.notiz); };
                 imgInfo.GestureRecognizers.Add(t_btn_objektinfo);
             }
 
@@ -584,8 +584,8 @@ namespace iPMCloud.Mobile
                     new Label()
                     {
                         Padding = new Thickness(0),
-                        Text = b != null ? "" + b.plz + " " + b.ort + " - " + b.strasse + " " + b.hsnr:"Objekt nicht gefunden! (Synchronisieren)",
-                        TextColor = (b == null ? Color.FromArgb("#ffcc00") : (p.haswork == 1 ? Color.FromArgb("#00ff00"):Color.FromArgb("#ffffff"))),
+                        Text = bu != null ? ("" + bu.plz + " " + bu.ort + " - " + bu.strasse + " " + bu.hsnr):"Objekt nicht gefunden! (Synchronisieren)",
+                        TextColor = (bu == null ? Color.FromArgb("#ffcc00") : (p.haswork == 1 ? Color.FromArgb("#00ff00"):Color.FromArgb("#ffffff"))),
                         Margin = new Thickness(3, 3, 5, 3),
                         FontSize = 13,
                         HorizontalOptions = LayoutOptions.Start,

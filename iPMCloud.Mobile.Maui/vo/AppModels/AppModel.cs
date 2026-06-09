@@ -178,10 +178,10 @@ namespace iPMCloud.Mobile.vo
 
 #if DEBUG
         public bool IsTest { get; set; } = false;
-        public bool RefreshPNToken = false;
+        public bool RefreshPNToken { get; set; } = false;
 #else
         public bool IsTest { get; set; } = false;
-        public bool RefreshPNToken = false;
+        public bool RefreshPNToken { get; set; } = false;
 #endif
         // ********************************
 

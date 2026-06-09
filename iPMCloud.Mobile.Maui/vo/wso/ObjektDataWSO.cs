@@ -44,30 +44,30 @@ namespace iPMCloud.Mobile
 
         //public List<ObjektDataStandWSO> objektdatenstandlist = new List<ObjektDataStandWSO>();
 
-
+        
         public ObjektDataWSO()
         {
             this.guid = Guid.NewGuid().ToString();
             this.ticks = DateTime.Now.Ticks;
         }
 
-        public static StackLayout GetObjektDataListView(AppModel model, ICommand func, bool isChangedToday = false)
+        public static VerticalStackLayout GetObjektDataListView(AppModel model, ICommand func, AbsoluteLayout overlay, bool isChangedToday = false)
         {
-            var stack = new StackLayout
+            var stack = new VerticalStackLayout
             {
                 Padding = new Thickness(5, 0, 5, 0),
                 Margin = new Thickness(0, 0, 0, 0),
                 Spacing = 0,
-                Orientation = StackOrientation.Vertical,
                 HorizontalOptions = LayoutOptions.Fill,
             };
             string lastyp = "";
             model.LastBuilding.ArrayOfObjektdata = model.LastBuilding.ArrayOfObjektdata.OrderBy(s => s.typ).ToList();//.ThenBy(s => s.Name);
+
+           
             model.LastBuilding.ArrayOfObjektdata.ForEach(od =>
             {
                 if (od.status == "Aktiv")
                 {
-                    Border stackPos = null;
                     var changed = JavaScriptDateConverter.Convert(long.Parse(od.standdatum)).ToString("ddMMyyyy");
                     var today = DateTime.Now.ToString("ddMMyyyy");
 
@@ -78,11 +78,8 @@ namespace iPMCloud.Mobile
                             if (od.typ != lastyp)
                             {
                                 stack.Children.Add(Elements.GetBoxViewLine());
-                                stack.Children.Add(GetTypInfoElement(od.typ, model));
-                                //stack.Children.Add(Elements.GetBoxViewLine());
+                                stack.Children.Add(GetTypInfoElement(od, func, overlay));
                             }
-                            stackPos = GetCardView(od, model, func);
-                            stack.Children.Add(stackPos);
                             lastyp = od.typ;
                         }
                     }
@@ -93,11 +90,8 @@ namespace iPMCloud.Mobile
                             if (od.typ != lastyp)
                             {
                                 stack.Children.Add(Elements.GetBoxViewLine());
-                                stack.Children.Add(GetTypInfoElement(od.typ, model));
-                                //stack.Children.Add(Elements.GetBoxViewLine());
+                                stack.Children.Add(GetTypInfoElement(od, func, overlay));
                             }
-                            stackPos = GetCardView(od, model, func);
-                            stack.Children.Add(stackPos);
                             lastyp = od.typ;
                         }
                     }
@@ -106,7 +100,7 @@ namespace iPMCloud.Mobile
             return stack;
         }
 
-        public static Border GetCardView(ObjektDataWSO od, AppModel model, ICommand func)
+        public static Border GetCardView(ObjektDataWSO od, ICommand func)
         {
             //var _prio = CalcOverdue(pos);
             var imageL = new Image
@@ -116,7 +110,7 @@ namespace iPMCloud.Mobile
                 WidthRequest = 22,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.Start,
-                Source = GetImageFromTyp(od.typ, model),
+                Source = GetImageFromTyp(od.typ),
             };
             var lb_nr = new Label()
             {
@@ -329,7 +323,7 @@ namespace iPMCloud.Mobile
                 WidthRequest = 22,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.Start,
-                Source = GetImageFromTyp(od.typ, model),
+                Source = GetImageFromTyp(od.typ),
             };
             var lb_nr = new Label()
             {
@@ -1083,41 +1077,126 @@ namespace iPMCloud.Mobile
             }
         }
 
-        public static StackLayout GetTypInfoElement(string typ, AppModel model)
+        public static Grid GetTypInfoElement(ObjektDataWSO od, ICommand func, AbsoluteLayout overlay, bool isVis = false)
         {
-            return new StackLayout
+
+            var count = AppModel.Instance.LastBuilding.ArrayOfObjektdata.Count(_ => _.typ == od.typ);
+            var gh = new Grid
             {
                 Padding = new Thickness(5, 5, 5, 5),
                 Margin = new Thickness(0, 10, 0, 0),
-                Spacing = 0,
-                Orientation = StackOrientation.Horizontal,
+                RowSpacing = 0,
                 HorizontalOptions = LayoutOptions.Fill,
-                BackgroundColor = Color.FromArgb("#90144d73"),
-                Children = {
-                    new Image
-                    {
-                        Margin = new Thickness(0, 0, 10, 0),
-                        HeightRequest = 28,
-                        WidthRequest = 28,
-                        VerticalOptions = LayoutOptions.Start,
-                        HorizontalOptions = LayoutOptions.Start,
-                        Source = GetImageFromTyp(typ, model)
-                    },
-                    new Label {
-                        Text = typ,
-                        VerticalOptions = LayoutOptions.Center,
-                        HorizontalOptions = LayoutOptions.Fill,
-                        FontSize = 18,
-                        TextColor = Colors.White,
-                        HorizontalTextAlignment = TextAlignment.Start,
-                        Margin = new Thickness(0, 0, 0, 0),
-                        Padding = new Thickness(0, 0, 0, 0)
-                    }
+                //BackgroundColor = Color.FromArgb("#90144d73"),
+                RowDefinitions =
+                {
+                    new RowDefinition { Height = GridLength.Auto },
+                    new RowDefinition { Height = GridLength.Auto },
                 }
             };
+
+            var g = new Grid
+            {
+                Padding = new Thickness(5, 5, 5, 5),
+                Margin = new Thickness(0, 10, 0, 0),
+                ColumnSpacing = 0,
+                HorizontalOptions = LayoutOptions.Fill,
+                BackgroundColor = Color.FromArgb("#90144d73"),
+                ColumnDefinitions =
+                {
+                    new ColumnDefinition { Width = GridLength.Auto },
+                    new ColumnDefinition { Width = GridLength.Star },
+                    new ColumnDefinition { Width = GridLength.Auto },
+                }
+            };
+
+            g.Add(new Image
+            {
+                Margin = new Thickness(0, 0, 10, 0),
+                HeightRequest = 28,
+                WidthRequest = 28,
+                VerticalOptions = LayoutOptions.Start,
+                HorizontalOptions = LayoutOptions.Start,
+                Source = GetImageFromTyp(od.typ)
+            }, 0);
+            g.Add(new Label
+            {
+                Text = od.typ + " (" + count + ")",
+                VerticalOptions = LayoutOptions.Center,
+                HorizontalOptions = LayoutOptions.Fill,
+                FontSize = 18,
+                TextColor = Colors.White,
+                HorizontalTextAlignment = TextAlignment.Start,
+                Margin = new Thickness(0, 0, 0, 0),
+                Padding = new Thickness(0, 0, 0, 0)
+            }, 1);
+            var i = new Image
+            {
+                Margin = new Thickness(0, 0, 10, 0),
+                HeightRequest = 28,
+                WidthRequest = 28,
+                VerticalOptions = LayoutOptions.Start,
+                HorizontalOptions = LayoutOptions.Start,
+                Source = "back2.png"
+            };
+            g.Add(i, 2);
+
+            var stack = new VerticalStackLayout
+            {
+                Padding = new Thickness(5, 0, 5, 0),
+                Margin = new Thickness(0, 0, 0, 0),
+                Spacing = 0,
+                HorizontalOptions = LayoutOptions.Fill,
+                IsVisible = isVis,
+            };
+
+            g.GestureRecognizers.Clear();
+            g.GestureRecognizers.Add(new TapGestureRecognizer()
+            {
+                Command = new Command(async () =>
+                {
+                    await OpenOD(od, stack, i, func, overlay);
+                })
+            });
+
+            gh.Add(g,0,0);
+            gh.Add(stack,0,1);
+
+            return gh;
         }
 
-        public static ImageSource GetImageFromTyp(string typ, AppModel model)
+        public async static Task OpenOD(ObjektDataWSO od, VerticalStackLayout stack, Image i, ICommand func, AbsoluteLayout overlay)
+        {
+            overlay.IsVisible = true;
+            await Task.Delay(1);
+
+            if (i.Source.ToString().Contains("back2.png"))
+            {
+                i.Source = "down2.png";
+                
+                stack.Children.Clear();
+
+                AppModel.Instance.LastBuilding.ArrayOfObjektdata.ForEach(odl =>
+                {
+                    if (odl.typ == od.typ)
+                    {
+                        stack.Children.Add(GetCardView(odl, func));
+                    }
+                });
+                stack.IsVisible = true;
+            }
+            else
+            {
+                i.Source = "back2.png";
+                stack.IsVisible = false;
+                stack.Children.Clear();
+            }
+            await Task.Delay(1);
+            overlay.IsVisible = false;
+        }
+
+
+        public static ImageSource GetImageFromTyp(string typ)
         {
             switch (typ)
             {

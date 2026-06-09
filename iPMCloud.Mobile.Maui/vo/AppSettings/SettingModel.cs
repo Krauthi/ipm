@@ -127,6 +127,11 @@ namespace iPMCloud.Mobile.vo
                 SettingDTO.CustomerNumber = "1"; // "10074";
                 SettingDTO.ServerUrl = "https://test-hensel.ipmcloud.de";
 
+
+                SettingDTO.LoginName = "AlessandroGioia";
+                SettingDTO.LoginPassword = "111111111";
+                SettingDTO.ServerUrl = "https://hms-muminovic.ipmcloud.de";
+                SettingDTO.CustomerNumber = "10013";
                 SaveSettings();
             }
         }

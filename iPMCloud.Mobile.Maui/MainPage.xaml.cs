@@ -2497,11 +2497,11 @@ namespace iPMCloud.Mobile
             //ObjectValues_BuildingInfo.Children.Add(Elements.GetBoxViewLine());
 
             ObjectValuesStack.Children.Clear();
-            var vStack = ObjektDataWSO.GetObjektDataListView(AppModel.Instance, new Command<ObjektDataWSO>(TapObjektData));
+            var vStack = ObjektDataWSO.GetObjektDataListView(AppModel.Instance, new Command<ObjektDataWSO>(TapObjektData), overlay);
             ObjectValuesStack.Children.Add(vStack);
 
             ObjectValuesStackChangedToday.Children.Clear();
-            var vStackToday = ObjektDataWSO.GetObjektDataListView(AppModel.Instance, new Command<ObjektDataWSO>(TapObjektData), true);
+            var vStackToday = ObjektDataWSO.GetObjektDataListView(AppModel.Instance, new Command<ObjektDataWSO>(TapObjektData), overlay, true);
             ObjectValuesStackChangedToday.Children.Add(vStackToday);
 
             AppModel.Instance.selectedObjectValue = null;
@@ -3051,6 +3051,17 @@ namespace iPMCloud.Mobile
             frame_planConA_otherperson_name.TextColor = Colors.White;
             AppModel.Instance.PlanResponse.selectedPerson = null;
 
+            frame_planListA.Children.Clear();
+            frame_planListAb.Children.Clear();
+            frame_planListAc.Children.Clear();
+            frame_planListBoffen.Children.Clear();
+            frame_planListBerl.Children.Clear();
+            frame_planListCoffen.Children.Clear();
+            frame_planListCwork.Children.Clear();
+            frame_planListCerl.Children.Clear();
+
+            await Task.Delay(10);
+
             if (reloadOr)
             {
                 Update_PlanTabs((int)DateTime.Now.DayOfWeek);
@@ -3260,10 +3271,11 @@ namespace iPMCloud.Mobile
                         frame_planConA_offen_count_con.IsVisible = plansToday.Count > 0;
                         frame_planConA_offen_typecount_con.IsVisible = plansToday.Count > 0;
 
-                        //frame_planListA.IsVisible = false;
+                        frame_planListA.IsVisible = false;
+                        frame_planListA.Children.Clear();
+                        plansToday = [.. plansToday.Distinct()];
                         plansToday.ForEach(p =>
                         {
-
                             var objekt = AppModel.Instance.AllBuildings.Find(ob => ob.id == p.objektid);
                             var stack = ObjektPlanWeekMobile.GetPlanedTodayList(p, new Command<IntBoolParam>(SelectedObjektAufterNotScan));
                             var containerA = new VerticalStackLayout
@@ -3273,7 +3285,7 @@ namespace iPMCloud.Mobile
                                 Spacing = 0,
                                 HorizontalOptions = LayoutOptions.Fill,
                                 Children = { stack },
-                                ClassId = p.muelltoid > 0 ? "Muell" : "",
+                                ClassId = p.muelltoid > 0 ? "Muell" : "",                                
                                 IsVisible = AppModel.Instance.AppSetModel.ViewOnlyMuell == 0 || AppModel.Instance.AppSetModel.ViewOnlyMuell == 1 && p.muelltoid == 0 || AppModel.Instance.AppSetModel.ViewOnlyMuell == 2 && p.muelltoid > 0
                             };
                             var containerB = new VerticalStackLayout
@@ -3311,7 +3323,7 @@ namespace iPMCloud.Mobile
 
                             //frame_planListA.Children.Add(ObjektPlanWeekMobile.GetPlanedTodayList(p));
                         });
-                        //frame_planListA.IsVisible = true;
+                        frame_planListA.IsVisible = true;
 
 
                         frame_planConA_erl_count_con.IsVisible = plansReady.Count > 0;

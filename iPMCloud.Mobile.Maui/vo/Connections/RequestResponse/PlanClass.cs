@@ -211,7 +211,7 @@ namespace iPMCloud.Mobile
                     HorizontalOptions = LayoutOptions.Fill,
                     Children = {
                         new Image {
-                            Source = p.haswork == 1 ? "CheckWhite.png" : "gpson.png",
+                            Source = p.haswork == 1 ? "check_white.png" : "gpson.png",
                             HeightRequest = 28,
                             WidthRequest = 28,
                             VerticalOptions = LayoutOptions.Center,
@@ -432,7 +432,7 @@ namespace iPMCloud.Mobile
                         {
                             Image imgMuell = new Image
                             {
-                                Source = statem == "1" ? "muellOut5.png" : (statem == "2" ? "muellIn5.png" : "muellInOut5.png"),
+                                Source = statem == "1" ? "muell_out5_img.png" : (statem == "2" ? "muell_in5_img.png" : "muell_in_out5_img.png"),
                                 Margin = new Thickness(2, -2, 0, 0),
                                 HeightRequest = 20,
                                 WidthRequest = 20,
@@ -533,7 +533,7 @@ namespace iPMCloud.Mobile
             var bu = AppModel.Instance.AllBuildings.Find(o => o.id == p.objektid);
             Image imgPin = new Image
             {
-                Source = p.haswork == 1 ? "CheckWhite.png" : "gpson.png",
+                Source = p.haswork == 1 ? "check_white.png" : "gpson.png",
                 Margin = new Thickness(5, 0, 5, 0),
                 HeightRequest = p.haswork == 1 ? 16 : 22,
                 WidthRequest = p.haswork == 1 ? 16 : 22,
@@ -649,7 +649,7 @@ namespace iPMCloud.Mobile
 
                         Image imgMuell = new Image
                         {
-                            Source = statem == "1" ? "muellOut5.png" : (statem == "2" ? "muellIn5.png" : "muellInOut5.png"),
+                            Source = statem == "1" ? "muell_out5_img.png" : (statem == "2" ? "muell_in5_img.png" : "muell_in_out5_img.png"),
                             Margin = new Thickness(2, -2, 0, 0),
                             HeightRequest = 20,
                             WidthRequest = 20,
@@ -763,7 +763,7 @@ namespace iPMCloud.Mobile
 
                 Image imgMuell = new Image
                 {
-                    Source = statem == "1" ? "muellOut5.png" : (statem == "2" ? "muellIn5.png" : "muellInOut5.png"),
+                    Source = statem == "1" ? "muell_out5_img.png" : (statem == "2" ? "muell_in5_img.png" : "muell_in_out5_img.png"),
                     Margin = new Thickness(3, -2, 3, 0),
                     HeightRequest = 20,
                     WidthRequest = 20,
@@ -824,7 +824,7 @@ namespace iPMCloud.Mobile
                 Margin = new Thickness(0, 0, 0, 0),
                 HeightRequest = 22,
                 WidthRequest = 22,
-                Source = "win_26.png",
+                Source = "win_26_img.png",
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Center,
             };
@@ -926,7 +926,7 @@ namespace iPMCloud.Mobile
                     WidthRequest = 15,
                     VerticalOptions = LayoutOptions.Start,
                     HorizontalOptions = LayoutOptions.Start,
-                    Source = "OrderFolderTools.png"
+                    Source = "order_folder_tools.png"
                 };
                 var lbOrder = new Label()
                 {
@@ -965,11 +965,11 @@ namespace iPMCloud.Mobile
                         WidthRequest = 16,
                         VerticalOptions = LayoutOptions.Start,
                         HorizontalOptions = LayoutOptions.Start,
-                        Source = (c.art == "Leistung" ? "LeistungSymbol.png" :
-                                    (c.art == "Produkt" ? "ProduktSymbol.png" :
-                                        (c.art == "Texte" ? "TextSymbol.png" :
-                                        (c.art == "Check" ? "CheckWhite.png" :
-                                            "Quest.png"
+                        Source = (c.art == "Leistung" ? "leistung_symbol.png" :
+                                    (c.art == "Produkt" ? "produkt_symbol.png" :
+                                        (c.art == "Texte" ? "text_symbol.png" :
+                                        (c.art == "Check" ? "check_white.png" :
+                                            "quest.png"
                                     ))))
                     };
                     var imageLCat = new Image
@@ -979,11 +979,11 @@ namespace iPMCloud.Mobile
                         WidthRequest = 16,
                         VerticalOptions = LayoutOptions.Start,
                         HorizontalOptions = LayoutOptions.Start,
-                        Source = (c.art == "Leistung" ? "KLSymbol.png" :
-                            (c.art == "Produkt" ? "KPSymbol.png" :
-                                (c.art == "Texte" ? "KTSymbol.png" :
-                                (c.art == "Check" ? "KCSymbol.png" :
-                                    "Quest.png"))))
+                        Source = (c.art == "Leistung" ? "kl_symbol.png" :
+                            (c.art == "Produkt" ? "kp_symbol.png" :
+                                (c.art == "Texte" ? "kt_symbol.png" :
+                                (c.art == "Check" ? "kc_symbol.png" :
+                                    "quest.png"))))
                     };
                     var lbCat = new Label()
                     {
@@ -1115,7 +1115,7 @@ namespace iPMCloud.Mobile
                     WidthRequest = 32,
                     VerticalOptions = LayoutOptions.Center,
                     HorizontalOptions = LayoutOptions.Center,
-                    Source = "CamMessageWarn.png",
+                    Source = "cam_message_warn.png",
                 },
                 Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
             };
@@ -1408,7 +1408,7 @@ namespace iPMCloud.Mobile
 
                 Image imgMuell = new Image
                 {
-                    Source = statem == "1" ? "muellOut5.png" : (statem == "2" ? "muellIn5.png" : "muellInOut5.png"),
+                    Source = statem == "1" ? "muell_out5_img.png" : (statem == "2" ? "muell_in5_img.png" : "muell_in_out5_img.png"),
                     Margin = new Thickness(3, -2, 3, 0),
                     HeightRequest = 20,
                     WidthRequest = 20,
@@ -1497,7 +1497,7 @@ namespace iPMCloud.Mobile
                         WidthRequest = 32,
                         VerticalOptions = LayoutOptions.Center,
                         HorizontalOptions = LayoutOptions.Center,
-                        Source = "CamMessageWarn.png",
+                        Source = "cam_message_warn.png",
                     }
 
                 }
@@ -1703,7 +1703,7 @@ namespace iPMCloud.Mobile
             var b = AppModel.Instance.AllBuildings.Find(o => o.id == p.objektid);
             Image imgPin = new Image
             {
-                Source = "Pin.png",
+                Source = "pin.png",
                 Margin = new Thickness(5, 0, 5, 0),
                 HeightRequest = 22,
                 WidthRequest = 22,
@@ -1715,7 +1715,7 @@ namespace iPMCloud.Mobile
                 Margin = new Thickness(0, 0, 0, 0),
                 HeightRequest = 22,
                 WidthRequest = 22,
-                Source = "win_26.png",
+                Source = "win_26_img.png",
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Center,
             };
@@ -1830,7 +1830,7 @@ namespace iPMCloud.Mobile
                         WidthRequest = 15,
                         VerticalOptions = LayoutOptions.Start,
                         HorizontalOptions = LayoutOptions.Start,
-                        Source = "OrderFolderTools.png"
+                        Source = "order_folder_tools.png"
                     };
                     var lbOrder = new Label()
                     {
@@ -1863,11 +1863,11 @@ namespace iPMCloud.Mobile
                             WidthRequest = 16,
                             VerticalOptions = LayoutOptions.Start,
                             HorizontalOptions = LayoutOptions.Start,
-                            Source = (c.art == "Leistung" ? "LeistungSymbol.png" :
-                                        (c.art == "Produkt" ? "ProduktSymbol.png" :
-                                            (c.art == "Texte" ? "TextSymbol.png" :
-                                            (c.art == "Check" ? "CheckWhite.png" :
-                                                "Quest.png"
+                            Source = (c.art == "Leistung" ? "leistung_symbol.png" :
+                                        (c.art == "Produkt" ? "produkt_symbol.png" :
+                                            (c.art == "Texte" ? "text_symbol.png" :
+                                            (c.art == "Check" ? "check_white.png" :
+                                                "quest.png"
                                      ))))
                         };
                         var imageLCat = new Image
@@ -1877,11 +1877,11 @@ namespace iPMCloud.Mobile
                             WidthRequest = 16,
                             VerticalOptions = LayoutOptions.Start,
                             HorizontalOptions = LayoutOptions.Start,
-                            Source = (c.art == "Leistung" ? "KLSymbol.png" :
-                              (c.art == "Produkt" ? "KPSymbol.png" :
-                                  (c.art == "Texte" ? "KTSymbol.png" :
-                                  (c.art == "Check" ? "KCSymbol.png" :
-                                      "Quest.png"))))
+                            Source = (c.art == "Leistung" ? "kl_symbol.png" :
+                              (c.art == "Produkt" ? "kp_symbol.png" :
+                                  (c.art == "Texte" ? "kt_symbol.png" :
+                                  (c.art == "Check" ? "kc_symbol.png" :
+                                      "quest.png"))))
                         };
                         var lbCat = new Label()
                         {
@@ -1954,7 +1954,7 @@ namespace iPMCloud.Mobile
             var b = AppModel.Instance.AllBuildings.Find(o => o.id == p.objektid);
             Image imgPin = new Image
             {
-                Source = "Pin.png",
+                Source = "pin.png",
                 Margin = new Thickness(5, 0, 5, 0),
                 HeightRequest = p.haswork == 1 ? 16 : 22,
                 WidthRequest = p.haswork == 1 ? 16 : 22,
@@ -1967,7 +1967,7 @@ namespace iPMCloud.Mobile
                 Margin = new Thickness(0, 0, 0, 0),
                 HeightRequest = p.haswork == 1 ? 16 : 22,
                 WidthRequest = p.haswork == 1 ? 16 : 22,
-                Source = "win_26.png",
+                Source = "win_26_img.png",
                 HorizontalOptions = LayoutOptions.Start,
                 VerticalOptions = LayoutOptions.Center,
             };
@@ -2078,7 +2078,7 @@ namespace iPMCloud.Mobile
             var b = AppModel.Instance.AllBuildings.Find(o => o.id == p.objektid);
             Image imgPin = new Image
             {
-                Source = p.haswork == 1 ? "CheckWhite.png" : "gpson.png",
+                Source = p.haswork == 1 ? "check_white.png" : "gpson.png",
                 Margin = new Thickness(5, 0, 5, 0),
                 HeightRequest = p.haswork == 1 ? 16 : 22,
                 WidthRequest = p.haswork == 1 ? 16 : 22,
@@ -2159,7 +2159,7 @@ namespace iPMCloud.Mobile
                 };
                 Image imgMuell = new Image
                 {
-                    Source = statem == "1" ? "muellOut5.png" : (statem == "2" ? "muellIn5.png" : "muellInOut5.png"),
+                    Source = statem == "1" ? "muell_out5_img.png" : (statem == "2" ? "muell_in5_img.png" : "muell_in_out5_img.png"),
                     Margin = new Thickness(3, -2, 5, 0),
                     HeightRequest = 20,
                     WidthRequest = 20,

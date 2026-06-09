@@ -94,7 +94,7 @@
                         Grid.Column="2"
                         Margin="0,0,0,1"
                         HeightRequest="12"
-                        Source="gpsoff2.png"
+                        Source="gpsoff2_img.png"
                         VerticalOptions="Center"
                         WidthRequest="12" />
 
@@ -428,7 +428,7 @@
                     Margin="0,2,0,1"
                     HeightRequest="37"
                     HorizontalOptions="End"
-                    Source="Logo2.png" />
+                    Source="logo2_img.png" />
             </Grid>
             <BoxView
                 Grid.Row="1"
@@ -493,7 +493,7 @@
                             <Image
                                 Margin="0,0,8,0"
                                 HeightRequest="26"
-                                Source="AddImageWithe.png"
+                                Source="add_image_withe.png"
                                 VerticalOptions="Center"
                                 WidthRequest="26" />
                             <VerticalStackLayout
@@ -548,7 +548,7 @@
                             <Image
                                 Margin="0,2,8,0"
                                 HeightRequest="30"
-                                Source="Change.png"
+                                Source="change.png"
                                 VerticalOptions="Center"
                                 WidthRequest="30" />
                             <VerticalStackLayout
@@ -705,7 +705,7 @@
                                 Margin="0"
                                 HeightRequest="24"
                                 HorizontalOptions="Center"
-                                Source="Login.png"
+                                Source="login.png"
                                 VerticalOptions="Center"
                                 WidthRequest="24" />
                             <Label
@@ -803,7 +803,7 @@
                             Margin="0,0,0,0"
                             HeightRequest="30"
                             HorizontalOptions="Start"
-                            Source="DropLeftBlueDoubleImage.png"
+                            Source="drop_left_blue_double_image.png"
                             VerticalOptions="Center"
                             WidthRequest="30" />
                         <Label
@@ -888,7 +888,7 @@
                                 <Image
                                     Margin="0,0,8,0"
                                     HeightRequest="30"
-                                    Source="AddImageWithe.png"
+                                    Source="add_image_withe.png"
                                     VerticalOptions="Center"
                                     WidthRequest="30" />
                                 <VerticalStackLayout
@@ -985,7 +985,7 @@
                             Margin="0,0,10,0"
                             HeightRequest="36"
                             HorizontalOptions="Center"
-                            Source="Time.png"
+                            Source="time.png"
                             VerticalOptions="Center"
                             WidthRequest="36" />
                         <Label
@@ -1094,7 +1094,7 @@
                             Margin="0,0,10,0"
                             HeightRequest="36"
                             HorizontalOptions="Center"
-                            Source="Pin.png"
+                            Source="pin.png"
                             VerticalOptions="Center"
                             WidthRequest="36" />
                         <Label

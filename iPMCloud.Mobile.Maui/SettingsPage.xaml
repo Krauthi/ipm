@@ -27,7 +27,7 @@
                 Aspect="Fill"
                 HorizontalOptions="Center"
                 Opacity="1"
-                Source="backgroundgray2.jpg"
+                Source="backgroundgray2_img.jpg"
                 VerticalOptions="End" />
         </AbsoluteLayout>
 
@@ -100,7 +100,7 @@
                             Margin="0,0,4,0"
                             HeightRequest="14"
                             HorizontalOptions="End"
-                            Source="islogin2.png"
+                            Source="islogin2_img.png"
                             WidthRequest="14" />
                     </StackLayout>
                 </StackLayout>

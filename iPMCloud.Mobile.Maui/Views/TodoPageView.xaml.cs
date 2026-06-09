@@ -286,7 +286,7 @@ namespace iPMCloud.Mobile.Views
                             WidthRequest = 32,
                             VerticalOptions = LayoutOptions.Center,
                             HorizontalOptions = LayoutOptions.Start,
-                            Source = "Building.png"
+                            Source = "building.png"
                         },
                         new Label {
                         Text = pos.objekt.plz + " " + pos.objekt.ort + "\n" + pos.objekt.strasse + " " + pos.objekt.hsnr,
@@ -401,7 +401,7 @@ namespace iPMCloud.Mobile.Views
                 WidthRequest = 32,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.EndAndExpand,
-                Source = pos.muell == 1 ? (pos.inout.inout == 1 ? "Muell_Out.png" : "Muell_In.png") : null,
+                Source = pos.muell == 1 ? (pos.inout.inout == 1 ? "muell_out.png" : "muell_in.png") : null,
             };
             hmuell.Children.Add(imageMuellSign);
             var v = new StackLayout()
@@ -424,7 +424,7 @@ namespace iPMCloud.Mobile.Views
                 WidthRequest = 24,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.Start,
-                Source = "Muell_Sign.png"
+                Source = "muell_sign.png"
             });
             h.Children.Add(v);
 
@@ -461,7 +461,7 @@ namespace iPMCloud.Mobile.Views
 
             Image imgPin = new Image
             {
-                Source = "Pin.png",
+                Source = "pin.png",
                 Margin = new Thickness(10, 0, 5, 0),
                 HeightRequest = 24,
                 WidthRequest = 24,
@@ -753,7 +753,7 @@ namespace iPMCloud.Mobile.Views
                     WidthRequest = 32,
                     VerticalOptions = LayoutOptions.Start,
                     HorizontalOptions = LayoutOptions.End,
-                    Source = "Muell_Sign.png",
+                    Source = "muell_sign.png",
                 };
                 var imageMuellSign = new Image
                 {
@@ -762,7 +762,7 @@ namespace iPMCloud.Mobile.Views
                     WidthRequest = 32,
                     VerticalOptions = LayoutOptions.Start,
                     HorizontalOptions = LayoutOptions.End,
-                    Source = pos.muell == 1 ? (pos.inout.inout == 1 ? "Muell_OutTonne.png" : "Muell_InTonne.png") : null,
+                    Source = pos.muell == 1 ? (pos.inout.inout == 1 ? "muell_out_tonne.png" : "muell_in_tonne.png") : null,
                 };
                 hmuell.Children.Add(imageMuellSign);
                 hmuell.Children.Add(imageMuellSign2);
@@ -792,7 +792,7 @@ namespace iPMCloud.Mobile.Views
                 WidthRequest = 18,
                 VerticalOptions = LayoutOptions.Center,
                 HorizontalOptions = LayoutOptions.Start,
-                Source = "WarnTriangleYellow.png",
+                Source = "warn_triangle_yellow.png",
             };
             var lb = new Label()
             {
@@ -828,7 +828,7 @@ namespace iPMCloud.Mobile.Views
                 WidthRequest = 24,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.Start,
-                Source = "OrderFolderTools.png"
+                Source = "order_folder_tools.png"
             };
             var lb = new Label()
             {
@@ -982,11 +982,11 @@ namespace iPMCloud.Mobile.Views
                 WidthRequest = 24,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.Start,
-                Source = (cat.art == "Leistung" ? "KLSymbol.png" :
-                            (cat.art == "Produkt" ? "KPSymbol.png" :
-                                (cat.art == "Texte" ? "KTSymbol.png" :
-                                (cat.art == "Check" ? "KCSymbol.png" :
-                                    "Quest.png"))))
+                Source = (cat.art == "Leistung" ? "kl_symbol.png" :
+                            (cat.art == "Produkt" ? "kp_symbol.png" :
+                                (cat.art == "Texte" ? "kt_symbol.png" :
+                                (cat.art == "Check" ? "kc_symbol.png" :
+                                    "quest.png"))))
             };
             var lb = new Label()
             {

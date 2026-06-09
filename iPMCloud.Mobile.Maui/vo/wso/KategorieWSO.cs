@@ -142,11 +142,11 @@ namespace iPMCloud.Mobile
                 WidthRequest = 32,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.Start,
-                Source = (cat.art == "Leistung" ? "KLSymbol.png" :
-                            (cat.art == "Produkt" ? "KPSymbol.png" :
-                                (cat.art == "Texte" ? "KTSymbol.png" :
-                                (cat.art == "Check" ? "KCSymbol.png" :
-                                    "Quest.png"))))
+                Source = (cat.art == "Leistung" ? "kl_symbol.png" :
+                            (cat.art == "Produkt" ? "kp_symbol.png" :
+                                (cat.art == "Texte" ? "kt_symbol.png" :
+                                (cat.art == "Check" ? "kc_symbol.png" :
+                                    "quest.png"))))
             };
             var imgInfo = new Image
             {
@@ -282,11 +282,11 @@ namespace iPMCloud.Mobile
                 WidthRequest = 24,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.Start,
-                Source = (cat.art == "Leistung" ? "KLSymbol.png" :
-                            (cat.art == "Produkt" ? "KPSymbol.png" :
-                                (cat.art == "Texte" ? "KTSymbol.png" :
-                                (cat.art == "Check" ? "KCSymbol.png" :
-                                    "Quest.png"))))
+                Source = (cat.art == "Leistung" ? "kl_symbol.png" :
+                            (cat.art == "Produkt" ? "kp_symbol.png" :
+                                (cat.art == "Texte" ? "kt_symbol.png" :
+                                (cat.art == "Check" ? "kc_symbol.png" :
+                                    "quest.png"))))
             };
             var lb = new Label()
             {
@@ -356,11 +356,11 @@ namespace iPMCloud.Mobile
                 WidthRequest = 24,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.Start,
-                Source = (cat.art == "Leistung" ? "KLSymbol.png" :
-                            (cat.art == "Produkt" ? "KPSymbol.png" :
-                                (cat.art == "Texte" ? "KTSymbol.png" :
-                                (cat.art == "Check" ? "KCSymbol.png" :
-                                    "Quest.png"))))
+                Source = (cat.art == "Leistung" ? "kl_symbol.png" :
+                            (cat.art == "Produkt" ? "kp_symbol.png" :
+                                (cat.art == "Texte" ? "kt_symbol.png" :
+                                (cat.art == "Check" ? "kc_symbol.png" :
+                                    "quest.png"))))
             };
             var lb = new Label()
             {
@@ -450,7 +450,7 @@ namespace iPMCloud.Mobile
                 WidthRequest = 18,
                 VerticalOptions = LayoutOptions.Center,
                 HorizontalOptions = LayoutOptions.Start,
-                Source = "WarnTriangleYellow.png"
+                Source = "warn_triangle_yellow.png"
             };
             var lb = new Label()
             {
@@ -514,10 +514,10 @@ namespace iPMCloud.Mobile
                         HeightRequest = 30,
                         WidthRequest = 30,
                         VerticalOptions = LayoutOptions.Center,
-                        Source = (c.art == "Leistung" ? "KLSymbol.png" :
-                                 (c.art == "Produkt" ? "KPSymbol.png" :
-                                 (c.art == "Texte" ? "KTSymbol.png" :
-                                 (c.art == "Check" ? "KCSymbol.png" : "Quest.png"))))
+                        Source = (c.art == "Leistung" ? "kl_symbol.png" :
+                                 (c.art == "Produkt" ? "kp_symbol.png" :
+                                 (c.art == "Texte" ? "kt_symbol.png" :
+                                 (c.art == "Check" ? "kc_symbol.png" : "quest.png"))))
                     },
                     new Label {
                         Text = c.GetMobileText(),// + " \nNr.: " + c.id,// + "  Art: " + c.art + "  Saison: " + c.saison,
@@ -581,11 +581,11 @@ namespace iPMCloud.Mobile
                 WidthRequest = 32,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.Start,
-                Source = (cat.art == "Leistung" ? "KLSymbol.png" :
-                            (cat.art == "Produkt" ? "KPSymbol.png" :
-                                (cat.art == "Texte" ? "KTSymbol.png" :
-                                (cat.art == "Check" ? "KCSymbol.png" :
-                                    "Quest.png"))))
+                Source = (cat.art == "Leistung" ? "kl_symbol.png" :
+                            (cat.art == "Produkt" ? "kp_symbol.png" :
+                                (cat.art == "Texte" ? "kt_symbol.png" :
+                                (cat.art == "Check" ? "kc_symbol.png" :
+                                    "quest.png"))))
             };
             var lb = new Label()
             {

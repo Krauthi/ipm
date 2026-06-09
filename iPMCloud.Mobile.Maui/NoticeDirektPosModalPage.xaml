@@ -17,7 +17,7 @@
             Aspect="Fill"
             HorizontalOptions="Fill"
             Opacity="1"
-            Source="backgroundgray2.jpg"
+            Source="backgroundgray2_img.jpg"
             VerticalOptions="Fill" />
 
         <Grid
@@ -78,7 +78,7 @@
                             Margin="0"
                             HeightRequest="30"
                             HorizontalOptions="Start"
-                            Source="DropLeftBlueDoubleImage.png"
+                            Source="drop_left_blue_double_image.png"
                             VerticalOptions="Center"
                             WidthRequest="30" />
                         <Label
@@ -111,7 +111,7 @@
                     HeightRequest="34"
                     HorizontalOptions="End"
                     IsVisible="False"
-                    Source="WarnTriangleYellow.png"
+                    Source="warn_triangle_yellow.png"
                     VerticalOptions="Center"
                     WidthRequest="34" />
                 <Image
@@ -121,7 +121,7 @@
                     HeightRequest="30"
                     HorizontalOptions="End"
                     IsVisible="False"
-                    Source="InternalNoCustomer.png"
+                    Source="internal_no_customer.png"
                     VerticalOptions="Center"
                     WidthRequest="30" />
             </Grid>
@@ -312,7 +312,7 @@
                                 Margin="0,5,0,0"
                                 HeightRequest="30"
                                 HorizontalOptions="Center"
-                                Source="Cam.png"
+                                Source="cam.png"
                                 VerticalOptions="Center"
                                 WidthRequest="30" />
                         </VerticalStackLayout>
@@ -338,7 +338,7 @@
                                 Margin="0,5,0,0"
                                 HeightRequest="30"
                                 HorizontalOptions="Center"
-                                Source="Attachment.png"
+                                Source="attachment.png"
                                 VerticalOptions="Center"
                                 WidthRequest="30" />
                         </VerticalStackLayout>
@@ -414,7 +414,7 @@
                             <Image
                                 Margin="0,3,8,0"
                                 HeightRequest="30"
-                                Source="CheckWhite.png"
+                                Source="check_white.png"
                                 VerticalOptions="Center"
                                 WidthRequest="30" />
                             <VerticalStackLayout

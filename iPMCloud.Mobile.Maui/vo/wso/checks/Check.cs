@@ -726,7 +726,7 @@ namespace iPMCloud.Mobile
                     Margin = new Thickness(0),
                     HorizontalOptions = LayoutOptions.Center,
                     VerticalOptions = LayoutOptions.Center,
-                    Source = "CamMessage.png",
+                    Source = "cam_message.png",
                     HeightRequest = 24,
                     WidthRequest = 24,
                 },
@@ -828,7 +828,7 @@ namespace iPMCloud.Mobile
                     Margin = new Thickness(0),
                     HorizontalOptions = LayoutOptions.Center,
                     VerticalOptions = LayoutOptions.Center,
-                    Source = "Undo.png",
+                    Source = "undo.png",
                     HeightRequest = 24,
                     WidthRequest = 24,
                 },
@@ -871,7 +871,7 @@ namespace iPMCloud.Mobile
             {
                 IsVisible = quest.isReady,
                 Margin = new Thickness(0, 0, 0, -20),
-                Source = "CheckGreen.png",
+                Source = "check_green.png",
                 HeightRequest = 20,
                 WidthRequest = 20,
                 HorizontalOptions = LayoutOptions.End
@@ -946,7 +946,7 @@ namespace iPMCloud.Mobile
                 Content = new Image
                 {
                     Margin = new Thickness(0),
-                    Source = "CamMessage.png",
+                    Source = "cam_message.png",
                     HeightRequest = 24,
                     WidthRequest = 24,
                 },
@@ -1020,7 +1020,7 @@ namespace iPMCloud.Mobile
                 Content = new Image
                 {
                     Margin = new Thickness(0),
-                    Source = "Undo.png",
+                    Source = "undo.png",
                     HeightRequest = 24,
                     WidthRequest = 24,
                 },
@@ -1063,7 +1063,7 @@ namespace iPMCloud.Mobile
             {
                 IsVisible = quest.isReady,
                 Margin = new Thickness(0, 0, 0, -20),
-                Source = "CheckGreen.png",
+                Source = "check_green.png",
                 HeightRequest = 20,
                 WidthRequest = 20,
                 HorizontalOptions = LayoutOptions.End
@@ -1135,7 +1135,7 @@ namespace iPMCloud.Mobile
                 Content = new Image
                 {
                     Margin = new Thickness(0),
-                    Source = "CamMessage.png",
+                    Source = "cam_message.png",
                     HeightRequest = 24,
                     WidthRequest = 24,
                 },
@@ -1212,7 +1212,7 @@ namespace iPMCloud.Mobile
                     Margin = new Thickness(0),
                     HorizontalOptions = LayoutOptions.Center,
                     VerticalOptions = LayoutOptions.Center,
-                    Source = "Undo.png",
+                    Source = "undo.png",
                     HeightRequest = 24,
                     WidthRequest = 24,
                 },
@@ -1255,7 +1255,7 @@ namespace iPMCloud.Mobile
             {
                 IsVisible = quest.isReady,
                 Margin = new Thickness(0, 0, 0, -20),
-                Source = "CheckGreen.png",
+                Source = "check_green.png",
                 HeightRequest = 20,
                 WidthRequest = 20,
                 HorizontalOptions = LayoutOptions.End
@@ -1371,7 +1371,7 @@ namespace iPMCloud.Mobile
                 Content = new Image
                 {
                     Margin = new Thickness(0),
-                    Source = "CamMessage.png",
+                    Source = "cam_message.png",
                     HeightRequest = 24,
                     WidthRequest = 24,
                 },
@@ -1389,7 +1389,7 @@ namespace iPMCloud.Mobile
                 Content = new Image
                 {
                     Margin = new Thickness(0),
-                    Source = "Undo.png",
+                    Source = "undo.png",
                     HeightRequest = 24,
                     WidthRequest = 24,
                 },
@@ -1432,7 +1432,7 @@ namespace iPMCloud.Mobile
             {
                 IsVisible = quest.isReady,
                 Margin = new Thickness(0, 0, 0, -20),
-                Source = "CheckGreen.png",
+                Source = "check_green.png",
                 HeightRequest = 20,
                 WidthRequest = 20,
                 HorizontalOptions = LayoutOptions.End
@@ -1567,7 +1567,7 @@ namespace iPMCloud.Mobile
                 var img = new Image
                 {
                     Margin = new Thickness(5, 0, 0, 0),
-                    Source = ants.Contains(z.ToString()) ? "Yes.png" : "No.png",
+                    Source = ants.Contains(z.ToString()) ? "yes.png" : "no.png",
                     Opacity = ants.Contains(z.ToString()) ? 1 : 0.5,
                     HeightRequest = 38,
                     WidthRequest = 38,
@@ -1659,7 +1659,7 @@ namespace iPMCloud.Mobile
                     Margin = new Thickness(0),
                     HorizontalOptions = LayoutOptions.Center,
                     VerticalOptions = LayoutOptions.Center,
-                    Source = "CamMessage.png",
+                    Source = "cam_message.png",
                     HeightRequest = 24,
                     WidthRequest = 24,
                 },
@@ -1715,7 +1715,7 @@ namespace iPMCloud.Mobile
                     Margin = new Thickness(0),
                     HorizontalOptions = LayoutOptions.Center,
                     VerticalOptions = LayoutOptions.Center,
-                    Source = "Undo.png",
+                    Source = "undo.png",
                     HeightRequest = 24,
                     WidthRequest = 24,
                 },
@@ -1758,7 +1758,7 @@ namespace iPMCloud.Mobile
             {
                 IsVisible = quest.isReady,
                 Margin = new Thickness(0, 0, 0, -20),
-                Source = "CheckGreen.png",
+                Source = "check_green.png",
                 HeightRequest = 20,
                 WidthRequest = 20,
                 HorizontalOptions = LayoutOptions.End
@@ -1827,7 +1827,7 @@ namespace iPMCloud.Mobile
                 var img = new Image
                 {
                     Margin = new Thickness(5, 0, 0, 0),
-                    Source = ants.Contains(z.ToString()) ? "Yes_Round.png" : "No_Round.png",
+                    Source = ants.Contains(z.ToString()) ? "yes_round.png" : "no_round.png",
                     Opacity = ants.Contains(z.ToString()) ? 1 : 0.5,
                     HeightRequest = 38,
                     WidthRequest = 38,
@@ -1919,7 +1919,7 @@ namespace iPMCloud.Mobile
                     Margin = new Thickness(0),
                     HorizontalOptions = LayoutOptions.Center,
                     VerticalOptions = LayoutOptions.Center,
-                    Source = "CamMessage.png",
+                    Source = "cam_message.png",
                     HeightRequest = 24,
                     WidthRequest = 24,
                 },
@@ -1977,7 +1977,7 @@ namespace iPMCloud.Mobile
                     Margin = new Thickness(0),
                     HorizontalOptions = LayoutOptions.Center,
                     VerticalOptions = LayoutOptions.Center,
-                    Source = "Undo.png",
+                    Source = "undo.png",
                     HeightRequest = 24,
                     WidthRequest = 24,
                 },
@@ -2020,7 +2020,7 @@ namespace iPMCloud.Mobile
             {
                 IsVisible = quest.isReady,
                 Margin = new Thickness(0, 0, 0, -20),
-                Source = "CheckGreen.png",
+                Source = "check_green.png",
                 HeightRequest = 20,
                 WidthRequest = 20,
                 HorizontalOptions = LayoutOptions.End
@@ -2106,7 +2106,7 @@ namespace iPMCloud.Mobile
                     Margin = new Thickness(0),
                     HorizontalOptions = LayoutOptions.Center,
                     VerticalOptions = LayoutOptions.Center,
-                    Source = "CamMessage.png",
+                    Source = "cam_message.png",
                     HeightRequest = 24,
                     WidthRequest = 24,
                 },
@@ -2167,7 +2167,7 @@ namespace iPMCloud.Mobile
                     Margin = new Thickness(0),
                     HorizontalOptions = LayoutOptions.Center,
                     VerticalOptions = LayoutOptions.Center,
-                    Source = "Undo.png",
+                    Source = "undo.png",
                     HeightRequest = 24,
                     WidthRequest = 24,
                 },
@@ -2210,7 +2210,7 @@ namespace iPMCloud.Mobile
             {
                 IsVisible = quest.isReady,
                 Margin = new Thickness(0, 0, 0, -20),
-                Source = "CheckGreen.png",
+                Source = "check_green.png",
                 HeightRequest = 20,
                 WidthRequest = 20,
                 HorizontalOptions = LayoutOptions.End
@@ -2219,7 +2219,7 @@ namespace iPMCloud.Mobile
             {
                 Margin = new Thickness(0),
                 Source = String.IsNullOrWhiteSpace(quest.a7) ?
-                    "SignPad.png" :
+                    "sign_pad.png" :
                     ImageSource.FromStream(() => new MemoryStream(Convert.FromBase64String(quest.a7))),
                 HorizontalOptions = LayoutOptions.Fill,
                 VerticalOptions = LayoutOptions.Start,

@@ -74,7 +74,7 @@
                             Margin="0,0,0,0"
                             HeightRequest="30"
                             HorizontalOptions="Start"
-                            Source="DropLeftBlueDoubleImage.png"
+                            Source="drop_left_blue_double_image.png"
                             VerticalOptions="Center"
                             WidthRequest="30" />
                         <Label
@@ -165,14 +165,14 @@
                             Margin="5,0,0,0"
                             HeightRequest="30"
                             HorizontalOptions="Center"
-                            Source="Muell_Sign.png"
+                            Source="muell_sign.png"
                             VerticalOptions="Center"
                             WidthRequest="30" />
                         <Image
                             Margin="1,0,8,0"
                             HeightRequest="30"
                             HorizontalOptions="Center"
-                            Source="Muell_Out.png"
+                            Source="muell_out.png"
                             VerticalOptions="Center"
                             WidthRequest="30" />
                     </StackLayout>
@@ -257,7 +257,7 @@
                         Margin="0,5,0,0"
                         HeightRequest="30"
                         HorizontalOptions="Center"
-                        Source="SearchImage.png"
+                        Source="search_image.png"
                         VerticalOptions="Center"
                         WidthRequest="30" />
                 </StackLayout>

@@ -131,7 +131,7 @@
 //            {
 //                var flashButton = new Button
 //                {
-//                    ImageSource = "Flashlight.png",
+//                    ImageSource = "flashlight.png",
 //                    Padding = 5,
 //                    BackgroundColor = Color.FromRgb(20, 77, 147),
 //                    CornerRadius = 0,

@@ -238,7 +238,7 @@ namespace iPMCloud.Mobile
                         WidthRequest = 28,
                         VerticalOptions = LayoutOptions.Center,
                         HorizontalOptions = LayoutOptions.Center,
-                        Source = "Pen.png"
+                        Source = "pen.png"
                     }
                 };
 
@@ -808,7 +808,7 @@ namespace iPMCloud.Mobile
                             Margin = new Thickness(5,0,5,0),
                             HeightRequest = 30,
                             WidthRequest = 30,
-                            Source = "CheckWhite.png",
+                            Source = "check_white.png",
                             VerticalOptions = LayoutOptions.Center,
                         },
                         new Label
@@ -853,7 +853,7 @@ namespace iPMCloud.Mobile
                             Margin = new Thickness(0),
                             HeightRequest = 30,
                             WidthRequest = 30,
-                            Source = "Flashlight.png"
+                            Source = "flashlight.png"
                         }
                     }
                 }
@@ -889,7 +889,7 @@ namespace iPMCloud.Mobile
                             Margin = new Thickness(0),
                             HeightRequest = 30,
                             WidthRequest = 30,
-                            Source = "Cam.png"
+                            Source = "cam.png"
                         }
                     }
                 }
@@ -1137,7 +1137,7 @@ namespace iPMCloud.Mobile
                 WidthRequest = 28,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.Start,
-                Source = "back2.png"
+                Source = "back2_img.png"
             };
             g.Add(i, 2);
 
@@ -1170,9 +1170,9 @@ namespace iPMCloud.Mobile
             overlay.IsVisible = true;
             await Task.Delay(1);
 
-            if (i.Source.ToString().Contains("back2.png"))
+            if (i.Source.ToString().Contains("back2_img.png"))
             {
-                i.Source = "down2.png";
+                i.Source = "down2_img.png";
                 
                 stack.Children.Clear();
 
@@ -1187,7 +1187,7 @@ namespace iPMCloud.Mobile
             }
             else
             {
-                i.Source = "back2.png";
+                i.Source = "back2_img.png";
                 stack.IsVisible = false;
                 stack.Children.Clear();
             }
@@ -1201,25 +1201,25 @@ namespace iPMCloud.Mobile
             switch (typ)
             {
                 case "Strom":
-                    return "ZStrom.png";
+                    return "z_strom.png";
 
                 case "Gas":
-                    return "ZGas.png";
+                    return "z_gas.png";
 
                 case "Wasser":
-                    return "ZWasser.png";
+                    return "z_wasser.png";
 
                 case "Öl":
-                    return "ZOil.png";
+                    return "z_oil.png";
 
                 case "Heizung":
-                    return "ZHeizung.png";
+                    return "z_heizung.png";
 
                 case "Fernwärme":
-                    return "ZFernwaerme.png";
+                    return "z_fernwaerme.png";
 
                 default:
-                    return "ObjectValues.png";
+                    return "object_values.png";
             }
         }
 

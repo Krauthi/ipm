@@ -2227,7 +2227,7 @@ namespace iPMCloud.Mobile
                     HeightRequest = 30,
                     WidthRequest = 30,
                     VerticalOptions = LayoutOptions.Center,
-                    Source = "Time.png"
+                    Source = "time.png"
                 },0,0);
                 timespan_inwork.Add(new Label
                 {
@@ -2945,7 +2945,7 @@ namespace iPMCloud.Mobile
 
 
                     //ObjektPlanWeekMobile.Save(AppModel.Instance, AppModel.Instance.PlanResponse);
-                    frame_planConA_img_reloadx.Source = "muellInOutX" + AppModel.Instance.AppSetModel.ViewOnlyMuell + ".png";
+                    frame_planConA_img_reloadx.Source = GetMuellInOutXImageName(AppModel.Instance.AppSetModel.ViewOnlyMuell);
                     //frame_planConA_img_reload.Source = AppModel.Instance.imagesBase.DropLeftImage;
                     //frame_planConA_img_reload2.Source = AppModel.Instance.imagesBase.DropLeftImage;
 
@@ -2993,7 +2993,7 @@ namespace iPMCloud.Mobile
             {
                 AppModel.Instance.AppSetModel.ViewOnlyMuell++;
             }
-            frame_planConA_img_reloadx.Source = "muellInOutX" + AppModel.Instance.AppSetModel.ViewOnlyMuell + ".png";
+            frame_planConA_img_reloadx.Source = GetMuellInOutXImageName(AppModel.Instance.AppSetModel.ViewOnlyMuell);
 
             //foreach (var o in frame_planListA.Children)
             //{
@@ -3040,7 +3040,7 @@ namespace iPMCloud.Mobile
 
             bool reloadOr = frame_planConA_reload_text.Text == "Mein Plan";
             if (!AppModel.Instance.AppControll.showObjektPlans) { return; }
-            frame_planConA_img_reloadx.Source = "muellInOutX" + AppModel.Instance.AppSetModel.ViewOnlyMuell + ".png";
+            frame_planConA_img_reloadx.Source = GetMuellInOutXImageName(AppModel.Instance.AppSetModel.ViewOnlyMuell);
             frame_planConA_reload_text.Text = "Neu laden";
             frame_planConA_reload2_text.Text = "Neu laden";
             frame_planConA_otherperson_name.Text = "Arbeiter";
@@ -3491,7 +3491,7 @@ namespace iPMCloud.Mobile
                                     Margin = new Thickness(0,0,0,0),
                                     HeightRequest = 22,
                                     WidthRequest = 22,
-                                    Source = "win_26.png",
+                                    Source = "win_26_img.png",
                                     HorizontalOptions = LayoutOptions.Start,
                                     VerticalOptions = LayoutOptions.End,
                                 },
@@ -4494,8 +4494,8 @@ namespace iPMCloud.Mobile
         {
             // !!! Hier ist der Status INVERS   - rausstellen heist hier status = 0!
             obj.pos.inout.inout = status; //obj.pos.inout.inout == 1 ? 0 : 1;
-            obj.img.Source = obj.pos.inout.inout == 0 ? "Muell_OutTonne.png" : "Muell_In.png";
-            obj.img2.Source = obj.pos.inout.inout == 0 ? "Muell_Out.png" : "Muell_InTonne.png";
+            obj.img.Source = obj.pos.inout.inout == 0 ? "muell_out_tonne.png" : "muell_in.png";
+            obj.img2.Source = obj.pos.inout.inout == 0 ? "muell_out.png" : "muell_in_tonne.png";
             obj.lb.Text = obj.pos.inout.inout == 0 ? "Ich werde RAUSSTELLEN" : "Ich werde REINSTELLEN";
             obj.lb.TextColor = Color.FromArgb(obj.pos.inout.inout == 0 ? "#dd0000" : "#00aa00");
 
@@ -5912,7 +5912,7 @@ namespace iPMCloud.Mobile
                     {
                         if (category == ha.kategorie)
                         {
-                            var sfbgf = Elements.GetWorkerTreeItem(ha, "Worker.png", null, _navigationCommand);
+                            var sfbgf = Elements.GetWorkerTreeItem(ha, "worker.png", null, _navigationCommand);
                             //sfbgf.ClassId = ("bu_" + ha.firma + "," + ha.name + "," + ha.vorname + "," + ha.strasse + "," + ha.plz + "," + ha.ort + "," + ha.kategorie).ToLower();
                             sfbgf.IsVisible = true;
                             sfbgf.HorizontalOptions = LayoutOptions.Fill;
@@ -5992,7 +5992,7 @@ namespace iPMCloud.Mobile
 
                 var tapGestureRecognizer = new TapGestureRecognizer();
                 tapGestureRecognizer.Tapped += (s, e) => { _NamesCommand(s, e); };
-                Border sfb = Elements.GetWorkerNamesTreeItem(item.Value, "Worker.png", null);
+                Border sfb = Elements.GetWorkerNamesTreeItem(item.Value, "worker.png", null);
                 sfb.GestureRecognizers.Clear();
                 sfb.GestureRecognizers.Add(tapGestureRecognizer);
                 sfb.ClassId = ("##" + (String.IsNullOrEmpty(item.Value.firma) ? item.Value.name : item.Value.firma) + ";" + item.Value.strasse + ";" + item.Value.plz + ";" + item.Value.ort + ";" + item.Value.kategorie).ToLower();
@@ -6024,7 +6024,7 @@ namespace iPMCloud.Mobile
                     {
                         if (workerid == ("" + ha.id))
                         {
-                            var sfbgf = Elements.GetWorkerDetailsTreeItem(ha, "Worker.png", null, _navigationCommand);
+                            var sfbgf = Elements.GetWorkerDetailsTreeItem(ha, "worker.png", null, _navigationCommand);
                             sfbgf.IsVisible = true;
                             sfbgf.HorizontalOptions = LayoutOptions.Fill;
                             container.Children.Add(sfbgf);
@@ -6098,7 +6098,7 @@ namespace iPMCloud.Mobile
 
                     var tapGestureRecognizer = new TapGestureRecognizer();
                     tapGestureRecognizer.Tapped += (s, e) => { WorkerBuildingCommand(s, e); };
-                    Border sfb = Elements.GetWorkerBuildingTreeItem(item.Value, "Building.png", null);
+                    Border sfb = Elements.GetWorkerBuildingTreeItem(item.Value, "building.png", null);
                     sfb.GestureRecognizers.Clear();
                     sfb.GestureRecognizers.Add(tapGestureRecognizer);
                     sfb.ClassId = ("bu_" + item.Value.strasse + ";" + item.Value.hsnr + ";" + item.Value.plz + ";" + item.Value.ort + ";" + item.Value.objektname + ";" + item.Value.objektnr).ToLower();
@@ -6137,7 +6137,7 @@ namespace iPMCloud.Mobile
                 {
                     AppModel.Instance.AllBuildings.Find(b => ("" + b.id) == buildingid).ArrayOfHandwerker.ForEach(ha =>
                     {
-                        var sfbgf = Elements.GetWorkerTreeItem(ha, "Worker.png", null, _navigationCommand);
+                        var sfbgf = Elements.GetWorkerTreeItem(ha, "worker.png", null, _navigationCommand);
                         sfbgf.IsVisible = true;
                         sfbgf.HorizontalOptions = LayoutOptions.Fill;
                         container.Children.Add(sfbgf);
@@ -6594,7 +6594,7 @@ namespace iPMCloud.Mobile
             {
                 //btn_regScanWarn_img.Source = imagesBase.AlertMessage;
 
-                frame_planConA_img_reloadx.Source = "muellInOutX" + AppModel.Instance.AppSetModel.ViewOnlyMuell + ".png";
+                frame_planConA_img_reloadx.Source = GetMuellInOutXImageName(AppModel.Instance.AppSetModel.ViewOnlyMuell);
                                 
                 // LoginPerson and Version 
                 lb_LoginUser.Text = AppModel.Instance.Person.anrede + " " + (String.IsNullOrWhiteSpace(AppModel.Instance.Person.vorname) ? "" : (AppModel.Instance.Person.vorname.Length > 0 ? AppModel.Instance.Person.vorname.Substring(0, 1) + ". " : "")) + AppModel.Instance.Person.name;
@@ -8757,7 +8757,7 @@ namespace iPMCloud.Mobile
 
         public void ShowDisconnected()
         {
-            img_onlinestate.Source = AppModel.Instance.IsInternet ? "isonlineB.png" : "isofflineB.png";
+            img_onlinestate.Source = AppModel.Instance.IsInternet ? "isonline_b.png" : "isoffline_b.png";
             string statetext = "";
             int l = AppModel.Instance.connectionProfiles.Count;
             AppModel.Instance.connectionProfiles.ForEach(profile =>
@@ -8780,7 +8780,7 @@ namespace iPMCloud.Mobile
             }
             else
             {
-                img_gpsstate.Source = "gpsoff2.png";
+                img_gpsstate.Source = "gpsoff2_img.png";
             }
             //string vor = "--:--";
             //if (AppModel.Instance.lastServerPing > 0)
@@ -8820,6 +8820,14 @@ namespace iPMCloud.Mobile
             //    popupContainer_infodialog.IsVisible = false;
             //}
         }
+
+        private static string GetMuellInOutXImageName(int viewOnlyMuell) => viewOnlyMuell switch
+        {
+            0 => "muell_in_out_x0_img.png",
+            1 => "muell_in_out_x1_img.png",
+            2 => "muell_in_out_x2_img.png",
+            _ => "muell_in_out_x.png"
+        };
 
     }
 

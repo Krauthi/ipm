@@ -170,11 +170,11 @@ namespace iPMCloud.Mobile
                 WidthRequest = 32,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.Start,
-                Source = (pos.art == "Leistung" ? "LeistungSymbol.png" :
-                            (pos.art == "Produkt" ? "ProduktSymbol.png" :
-                                (pos.art == "Texte" ? "TextSymbol.png" :
-                                (pos.art == "Check" ? "CheckWhite.png" :
-                                    "Quest.png"
+                Source = (pos.art == "Leistung" ? "leistung_symbol.png" :
+                            (pos.art == "Produkt" ? "produkt_symbol.png" :
+                                (pos.art == "Texte" ? "text_symbol.png" :
+                                (pos.art == "Check" ? "check_white.png" :
+                                    "quest.png"
                          ))))
             };
 
@@ -276,7 +276,7 @@ namespace iPMCloud.Mobile
                 WidthRequest = 32,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.End,
-                Source = "Muell_Sign.png",
+                Source = "muell_sign.png",
             };
             var imageMuellSign = new Image
             {
@@ -285,7 +285,7 @@ namespace iPMCloud.Mobile
                 WidthRequest = 32,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.End,
-                Source = pos.muell == 1 ? (pos.inout.inout == 1 ? "Muell_OutTonne.png" : "Muell_InTonne.png") : null,
+                Source = pos.muell == 1 ? (pos.inout.inout == 1 ? "muell_out_tonne.png" : "muell_in_tonne.png") : null,
             };
             hmuell.Children.Add(imageMuellSign);
             hmuell.Children.Add(imageMuellSign2);
@@ -372,11 +372,11 @@ namespace iPMCloud.Mobile
                 WidthRequest = 32,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.Start,
-                Source = (pos.art == "Leistung" ? "LeistungSymbol.png" :
-                            (pos.art == "Produkt" ? "ProduktSymbol.png" :
-                                (pos.art == "Texte" ? "TextSymbol.png" :
-                                (pos.art == "Check" ? "CheckWhite.png" :
-                                    "Quest.png"
+                Source = (pos.art == "Leistung" ? "leistung_symbol.png" :
+                            (pos.art == "Produkt" ? "produkt_symbol.png" :
+                                (pos.art == "Texte" ? "text_symbol.png" :
+                                (pos.art == "Check" ? "check_white.png" :
+                                    "quest.png"
                          ))))
             };
             var imageR = new Image
@@ -386,7 +386,7 @@ namespace iPMCloud.Mobile
                 WidthRequest = 32,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.Start,
-                Source = "CheckWhite.png"
+                Source = "check_white.png"
             };
             var lb = new Label()
             {
@@ -448,7 +448,7 @@ namespace iPMCloud.Mobile
                 WidthRequest = 32,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.End,
-                Source = "Muell_Sign.png",
+                Source = "muell_sign.png",
             };
             hmuell.Children.Add(imageMuellSign);
             var v = new StackLayout()
@@ -524,11 +524,11 @@ namespace iPMCloud.Mobile
                 WidthRequest = 32,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.Start,
-                Source = (pos.art == "Leistung" ? "LeistungSymbol.png" :
-                            (pos.art == "Produkt" ? "ProduktSymbol.png" :
-                                (pos.art == "Texte" ? "TextSymbol.png" :
-                                (pos.art == "Check" ? "CheckWhite.png" :
-                                    "Quest.png"
+                Source = (pos.art == "Leistung" ? "leistung_symbol.png" :
+                            (pos.art == "Produkt" ? "produkt_symbol.png" :
+                                (pos.art == "Texte" ? "text_symbol.png" :
+                                (pos.art == "Check" ? "check_white.png" :
+                                    "quest.png"
                          ))))
             };
             var hi = new HorizontalStackLayout()
@@ -547,7 +547,7 @@ namespace iPMCloud.Mobile
                 WidthRequest = 24,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.End,
-                Source = "DisableRed.png",
+                Source = "disable_red.png",
             };
             hi.Children.Add(imageR);
 
@@ -614,7 +614,7 @@ namespace iPMCloud.Mobile
                 WidthRequest = 32,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.End,
-                Source = "Muell_Sign.png",
+                Source = "muell_sign.png",
             };
             var imageMuellSign = new Image
             {
@@ -623,7 +623,7 @@ namespace iPMCloud.Mobile
                 WidthRequest = 32,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.End,
-                Source = pos.muell == 1 ? (pos.inout.inout == 1 ? "Muell_OutTonne.png" : "Muell_InTonne.png") : null,
+                Source = pos.muell == 1 ? (pos.inout.inout == 1 ? "muell_out_tonne.png" : "muell_in_tonne.png") : null,
             };
             hmuell.Children.Add(imageMuellSign);
             hmuell.Children.Add(imageMuellSign2);
@@ -700,11 +700,11 @@ namespace iPMCloud.Mobile
                 WidthRequest = 32,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.Start,
-                Source = (pos.art == "Leistung" ? "LeistungSymbol.png" :
-                            (pos.art == "Produkt" ? "ProduktSymbol.png" :
-                                (pos.art == "Texte" ? "TextSymbol.png" :
-                                (pos.art == "Check" ? "CheckWhite.png" :
-                                    "Quest.png"
+                Source = (pos.art == "Leistung" ? "leistung_symbol.png" :
+                            (pos.art == "Produkt" ? "produkt_symbol.png" :
+                                (pos.art == "Texte" ? "text_symbol.png" :
+                                (pos.art == "Check" ? "check_white.png" :
+                                    "quest.png"
                          ))))
             };
             var lb = new Label()
@@ -768,7 +768,7 @@ namespace iPMCloud.Mobile
                 WidthRequest = 32,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.End,
-                Source = "Muell_Sign.png",
+                Source = "muell_sign.png",
             };
             var imageMuellSign = new Image
             {
@@ -777,7 +777,7 @@ namespace iPMCloud.Mobile
                 WidthRequest = 32,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.End,
-                Source = pos.muell == 1 ? (pos.inout.inout == 1 ? "Muell_OutTonne.png" : "Muell_InTonne.png") : null,
+                Source = pos.muell == 1 ? (pos.inout.inout == 1 ? "muell_out_tonne.png" : "muell_in_tonne.png") : null,
             };
             hmuell.Children.Add(imageMuellSign);
             hmuell.Children.Add(imageMuellSign2);
@@ -938,7 +938,7 @@ namespace iPMCloud.Mobile
             var item = new SwipeItem
             {
                 Text = "Entfernen",
-                IconImageSource = "Trash.png",
+                IconImageSource = "trash.png",
                 BackgroundColor = Colors.DarkRed,
                 Command = func,
                 CommandParameter = leistung,
@@ -964,11 +964,11 @@ namespace iPMCloud.Mobile
                 WidthRequest = 24,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.Start,
-                Source = (leistung.art == "Leistung" ? "LeistungSymbol.png" :
-                            (leistung.art == "Produkt" ? "ProduktSymbol.png" :
-                                (leistung.art == "Texte" ? "TextSymbol.png" :
-                                (leistung.art == "Check" ? "CheckWhite.png" :
-                                    "Quest.png"
+                Source = (leistung.art == "Leistung" ? "leistung_symbol.png" :
+                            (leistung.art == "Produkt" ? "produkt_symbol.png" :
+                                (leistung.art == "Texte" ? "text_symbol.png" :
+                                (leistung.art == "Check" ? "check_white.png" :
+                                    "quest.png"
                          ))))
             };
             //var _removeBtn = new ImageButton
@@ -978,7 +978,7 @@ namespace iPMCloud.Mobile
             //    WidthRequest = 24,
             //    VerticalOptions = LayoutOptions.Start,
             //    HorizontalOptions = LayoutOptions.Start,
-            //    Source = "XImageBoldRed.png",
+            //    Source = "x_image_bold_red.png",
             //    BackgroundColor = Colors.Transparent,
             //    Command = func,
             //    CommandParameter = leistung
@@ -1163,7 +1163,7 @@ namespace iPMCloud.Mobile
                     WidthRequest = 26,
                     VerticalOptions = LayoutOptions.Start,
                     HorizontalOptions = LayoutOptions.End,
-                    Source = leistung.muell == 1 ? (leistung.inout.inout == 0 ? "Muell_Out.png" : "Muell_InTonne.png") : null,
+                    Source = leistung.muell == 1 ? (leistung.inout.inout == 0 ? "muell_out.png" : "muell_in_tonne.png") : null,
                 };
                 var imageMuellSign = new Image
                 {
@@ -1172,7 +1172,7 @@ namespace iPMCloud.Mobile
                     WidthRequest = 26,
                     VerticalOptions = LayoutOptions.Start,
                     HorizontalOptions = LayoutOptions.End,
-                    Source = leistung.muell == 1 ? (leistung.inout.inout == 0 ? "Muell_OutTonne.png" : "Muell_In.png") : null,
+                    Source = leistung.muell == 1 ? (leistung.inout.inout == 0 ? "muell_out_tonne.png" : "muell_in.png") : null,
                 };
                 var lbMuell = new Label()
                 {
@@ -1204,7 +1204,7 @@ namespace iPMCloud.Mobile
                     WidthRequest = 23,
                     VerticalOptions = LayoutOptions.Start,
                     HorizontalOptions = LayoutOptions.End,
-                    Source = "Change.png",
+                    Source = "change.png",
                 }, 0, 0);
                 hmuellquest.Add(new Label()
                 {
@@ -1451,7 +1451,7 @@ namespace iPMCloud.Mobile
             var item = new SwipeItem
             {
                 Text = "Entfernen",
-                IconImageSource = "Trash.png",
+                IconImageSource = "trash.png",
                 BackgroundColor = Colors.DarkRed,
                 Command = func,
                 CommandParameter = leistung,
@@ -1477,11 +1477,11 @@ namespace iPMCloud.Mobile
                 WidthRequest = 24,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.Start,
-                Source = (leistung.art == "Leistung" ? "LeistungSymbol.png" :
-                            (leistung.art == "Produkt" ? "ProduktSymbol.png" :
-                                (leistung.art == "Texte" ? "TextSymbol.png" :
-                                (leistung.art == "Check" ? "CheckWhite.png" :
-                                    "Quest.png"
+                Source = (leistung.art == "Leistung" ? "leistung_symbol.png" :
+                            (leistung.art == "Produkt" ? "produkt_symbol.png" :
+                                (leistung.art == "Texte" ? "text_symbol.png" :
+                                (leistung.art == "Check" ? "check_white.png" :
+                                    "quest.png"
                          ))))
             };
             //var _removeBtn = new ImageButton
@@ -1491,7 +1491,7 @@ namespace iPMCloud.Mobile
             //    WidthRequest = 24,
             //    VerticalOptions = LayoutOptions.Start,
             //    HorizontalOptions = LayoutOptions.Start,
-            //    Source = "XImageBoldRed.png",
+            //    Source = "x_image_bold_red.png",
             //    BackgroundColor = Colors.Transparent,
             //    Command = func,
             //    CommandParameter = leistung
@@ -1676,7 +1676,7 @@ namespace iPMCloud.Mobile
                     WidthRequest = 26,
                     VerticalOptions = LayoutOptions.Start,
                     HorizontalOptions = LayoutOptions.End,
-                    Source = leistung.muell == 1 ? (leistung.inout.inout == 0 ? "Muell_Out.png" : "Muell_InTonne.png") : null,
+                    Source = leistung.muell == 1 ? (leistung.inout.inout == 0 ? "muell_out.png" : "muell_in_tonne.png") : null,
                 };
                 var imageMuellSign = new Image
                 {
@@ -1685,7 +1685,7 @@ namespace iPMCloud.Mobile
                     WidthRequest = 26,
                     VerticalOptions = LayoutOptions.Start,
                     HorizontalOptions = LayoutOptions.End,
-                    Source = leistung.muell == 1 ? (leistung.inout.inout == 0 ? "Muell_OutTonne.png" : "Muell_In.png") : null,
+                    Source = leistung.muell == 1 ? (leistung.inout.inout == 0 ? "muell_out_tonne.png" : "muell_in.png") : null,
                 };
                 var lbMuell = new Label()
                 {
@@ -1717,7 +1717,7 @@ namespace iPMCloud.Mobile
                     WidthRequest = 23,
                     VerticalOptions = LayoutOptions.Start,
                     HorizontalOptions = LayoutOptions.End,
-                    Source = "Change.png",
+                    Source = "change.png",
                 }, 0, 0);
                 hmuellquest.Add(new Label()
                 {
@@ -1899,11 +1899,11 @@ namespace iPMCloud.Mobile
                 WidthRequest = 32,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.Start,
-                Source = (leistung.art == "Leistung" ? "LeistungSymbol.png" :
-                            (leistung.art == "Produkt" ? "ProduktSymbol.png" :
-                                (leistung.art == "Texte" ? "TextSymbol.png" :
-                                (leistung.art == "Check" ? "CheckWhite.png" :
-                                    "Quest.png"
+                Source = (leistung.art == "Leistung" ? "leistung_symbol.png" :
+                            (leistung.art == "Produkt" ? "produkt_symbol.png" :
+                                (leistung.art == "Texte" ? "text_symbol.png" :
+                                (leistung.art == "Check" ? "check_white.png" :
+                                    "quest.png"
                          ))))
             };
             var lb = new Label()
@@ -1959,7 +1959,7 @@ namespace iPMCloud.Mobile
                             WidthRequest = 30,
                             VerticalOptions = LayoutOptions.Center,
                             HorizontalOptions = LayoutOptions.Center,
-                            Source = "CamMessageWarn.png"
+                            Source = "cam_message_warn.png"
                         }
                     }
                 },
@@ -2149,7 +2149,7 @@ namespace iPMCloud.Mobile
                     WidthRequest = 26,
                     VerticalOptions = LayoutOptions.Start,
                     HorizontalOptions = LayoutOptions.End,
-                    Source = leistung.muell == 1 ? (leistung.inout.inout == 0 ? "Muell_Out.png" : "Muell_InTonne.png") : null,
+                    Source = leistung.muell == 1 ? (leistung.inout.inout == 0 ? "muell_out.png" : "muell_in_tonne.png") : null,
                 };
                 var imageMuellSign = new Image
                 {
@@ -2158,7 +2158,7 @@ namespace iPMCloud.Mobile
                     WidthRequest = 26,
                     VerticalOptions = LayoutOptions.Start,
                     HorizontalOptions = LayoutOptions.End,
-                    Source = leistung.muell == 1 ? (leistung.inout.inout == 0 ? "Muell_OutTonne.png" : "Muell_In.png") : null,
+                    Source = leistung.muell == 1 ? (leistung.inout.inout == 0 ? "muell_out_tonne.png" : "muell_in.png") : null,
                 };
                 var lbMuell = new Label()
                 {
@@ -2190,7 +2190,7 @@ namespace iPMCloud.Mobile
                 //    WidthRequest = 23,
                 //    VerticalOptions = LayoutOptions.Start,
                 //    HorizontalOptions = LayoutOptions.End,
-                //    Source = "Change.png",
+                //    Source = "change.png",
                 //}, 0, 0);
                 //hmuellquest.Add(new Label()
                 //{
@@ -2384,11 +2384,11 @@ namespace iPMCloud.Mobile
                 WidthRequest = 32,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.Start,
-                Source = (pos.art == "Leistung" ? "LeistungSymbol.png" :
-                            (pos.art == "Produkt" ? "ProduktSymbol.png" :
-                                (pos.art == "Texte" ? "TextSymbol.png" :
-                                (pos.art == "Check" ? "CheckWhite.png" :
-                                    "Quest.png"
+                Source = (pos.art == "Leistung" ? "leistung_symbol.png" :
+                            (pos.art == "Produkt" ? "produkt_symbol.png" :
+                                (pos.art == "Texte" ? "text_symbol.png" :
+                                (pos.art == "Check" ? "check_white.png" :
+                                    "quest.png"
                          ))))
             };
             var lb = new Label()
@@ -2477,11 +2477,11 @@ namespace iPMCloud.Mobile
                 WidthRequest = 32,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.Start,
-                Source = (pos.art == "Leistung" ? "LeistungSymbol.png" :
-                            (pos.art == "Produkt" ? "ProduktSymbol.png" :
-                                (pos.art == "Texte" ? "TextSymbol.png" :
-                                (pos.art == "Check" ? "CheckWhite.png" :
-                                    "Quest.png"
+                Source = (pos.art == "Leistung" ? "leistung_symbol.png" :
+                            (pos.art == "Produkt" ? "produkt_symbol.png" :
+                                (pos.art == "Texte" ? "text_symbol.png" :
+                                (pos.art == "Check" ? "check_white.png" :
+                                    "quest.png"
                          ))))
             };
             var lb = new Label()
@@ -2579,7 +2579,7 @@ namespace iPMCloud.Mobile
                 WidthRequest = 26,
                 VerticalOptions = LayoutOptions.Center,
                 HorizontalOptions = LayoutOptions.Start,
-                Source = "WorkerInProgressWarnRed.png"
+                Source = "worker_in_progress_warn_red.png"
             };
             var lb = new Label()
             {
@@ -2678,7 +2678,7 @@ namespace iPMCloud.Mobile
                 WidthRequest = 18,
                 VerticalOptions = LayoutOptions.Center,
                 HorizontalOptions = LayoutOptions.Start,
-                Source = "WarnTriangleYellow.png",
+                Source = "warn_triangle_yellow.png",
             };
             var lb = new Label()
             {
@@ -2715,11 +2715,11 @@ namespace iPMCloud.Mobile
                 WidthRequest = 24,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.Start,
-                Source = (pos.art == "Leistung" ? "LeistungSymbol.png" :
-                            (pos.art == "Produkt" ? "ProduktSymbol.png" :
-                                (pos.art == "Texte" ? "TextSymbol.png" :
-                                (pos.art == "Check" ? "CheckWhite.png" :
-                                    "Quest.png"
+                Source = (pos.art == "Leistung" ? "leistung_symbol.png" :
+                            (pos.art == "Produkt" ? "produkt_symbol.png" :
+                                (pos.art == "Texte" ? "text_symbol.png" :
+                                (pos.art == "Check" ? "check_white.png" :
+                                    "quest.png"
                          ))))
             };
             var lb = new Label()
@@ -2805,11 +2805,11 @@ namespace iPMCloud.Mobile
                 WidthRequest = 24,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.Start,
-                Source = (pos.art == "Leistung" ? "LeistungSymbol.png" :
-                            (pos.art == "Produkt" ? "ProduktSymbol.png" :
-                                (pos.art == "Texte" ? "TextSymbol.png" :
-                                (pos.art == "Check" ? "CheckWhite.png" :
-                                    "Quest.png"
+                Source = (pos.art == "Leistung" ? "leistung_symbol.png" :
+                            (pos.art == "Produkt" ? "produkt_symbol.png" :
+                                (pos.art == "Texte" ? "text_symbol.png" :
+                                (pos.art == "Check" ? "check_white.png" :
+                                    "quest.png"
                          ))))
             };
 
@@ -2852,7 +2852,7 @@ namespace iPMCloud.Mobile
                 WidthRequest = 32,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.End,
-                Source = "Muell_Sign.png",
+                Source = "muell_sign.png",
             };
 
             var imageMuellSign = new Image
@@ -2862,7 +2862,7 @@ namespace iPMCloud.Mobile
                 WidthRequest = 32,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.End,
-                Source = pos.muell == 1 ? (pos.inout.inout == 1 ? "Muell_OutTonne.png" : "Muell_InTonne.png") : null,
+                Source = pos.muell == 1 ? (pos.inout.inout == 1 ? "muell_out_tonne.png" : "muell_in_tonne.png") : null,
             };
 
             var badge = new Border
@@ -2975,11 +2975,11 @@ namespace iPMCloud.Mobile
                 WidthRequest = 24,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.Start,
-                Source = (pos.art == "Leistung" ? "LeistungSymbol.png" :
-                            (pos.art == "Produkt" ? "ProduktSymbol.png" :
-                                (pos.art == "Texte" ? "TextSymbol.png" :
-                                (pos.art == "Check" ? "CheckWhite.png" :
-                                    "Quest.png"
+                Source = (pos.art == "Leistung" ? "leistung_symbol.png" :
+                            (pos.art == "Produkt" ? "produkt_symbol.png" :
+                                (pos.art == "Texte" ? "text_symbol.png" :
+                                (pos.art == "Check" ? "check_white.png" :
+                                    "quest.png"
                          ))))
             };
             var lb = new Label()
@@ -3037,7 +3037,7 @@ namespace iPMCloud.Mobile
                 WidthRequest = 32,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.End,
-                Source = "Muell_Sign.png",
+                Source = "muell_sign.png",
             };
             var imageMuellSign = new Image
             {
@@ -3046,7 +3046,7 @@ namespace iPMCloud.Mobile
                 WidthRequest = 32,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.End,
-                Source = pos.muell == 1 ? (pos.inout.inout == 1 ? "Muell_OutTonne.png" : "Muell_InTonne.png") : null,
+                Source = pos.muell == 1 ? (pos.inout.inout == 1 ? "muell_out_tonne.png" : "muell_in_tonne.png") : null,
             };
             hmuell.Children.Add(imageMuellSign);
             hmuell.Children.Add(imageMuellSign2);
@@ -3154,7 +3154,7 @@ namespace iPMCloud.Mobile
                 prio.barColor = l.nichtpauschal == 1 ? "#70044320" : "#70ff8000";
                 prio.showBadge = false;
                 prio.warnText = "Ausführung " + (l.nichtpauschal == 1 ? (l.timeval + " (Optional)") : l.timeval);
-                prio.image = l.nichtpauschal == 1 ? "Quest.png" : "Time.png";
+                prio.image = l.nichtpauschal == 1 ? "quest.png" : "time.png";
             }
             else if (double.Parse(l.lastwork) == 0 && l.timevaldays > 0)
             {
@@ -3179,7 +3179,7 @@ namespace iPMCloud.Mobile
                 prio.badgeColor = prio.days < 0 ? "#ff0000" : (prio.days < limitDays ? "#ffcc00" : "#009900");
                 prio.barColor = prio.days < 0 ? "#50ff0000" : (prio.days < limitDays ? "#50ffcc00" : "#50009900");
                 prio.warnText = prio.days < 0 ? "Überfällig seit (Tagen): " : (prio.days < limitDays ? "Heute fällig! " : "Erst fällig in (Tagen) ");
-                prio.image = prio.days < 0 ? "WarnTriangleYellow.png" : (prio.days < limitDays ? "WarnTriangleWhite.png" : "Time.png");
+                prio.image = prio.days < 0 ? "warn_triangle_yellow.png" : (prio.days < limitDays ? "warn_triangle_white.png" : "time.png");
             }
             prio.showWarn = prio.days < 1 || true;
 

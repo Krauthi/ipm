@@ -44,7 +44,7 @@
                         Margin="0,0,10,0"
                         HeightRequest="26"
                         HorizontalOptions="Start"
-                        Source="DropLeftBlueDoubleImage.png"
+                        Source="drop_left_blue_double_image.png"
                         VerticalOptions="Center"
                         WidthRequest="26" />
                     <Label
@@ -128,7 +128,7 @@
                     CornerRadius="0"
                     HeightRequest="60"
                     HorizontalOptions="Center"
-                    ImageSource="Flashlight.png"
+                    ImageSource="flashlight.png"
                     WidthRequest="60" />
             </StackLayout>
 

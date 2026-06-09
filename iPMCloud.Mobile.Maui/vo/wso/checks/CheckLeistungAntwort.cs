@@ -416,14 +416,14 @@ namespace iPMCloud.Mobile
             if (ants.Contains(img.ClassId))
             {
                 ants.Remove(img.ClassId);
-                img.Source = "No.png";
+                img.Source = "no.png";
                 img.Opacity = 0.5;
                 foreach (var item in frame_ants) { if (item.ClassId == img.ClassId) item.Stroke = Colors.Transparent; };
             }
             else
             {
                 ants.Add(img.ClassId);
-                img.Source = "Yes.png";
+                img.Source = "yes.png";
                 img.Opacity = 1;
                 foreach (var item in frame_ants) { if (item.ClassId == img.ClassId) item.Stroke = Colors.White; };
             }
@@ -443,7 +443,7 @@ namespace iPMCloud.Mobile
                     item.Stroke = Colors.Transparent;
                     if (item.Content is Layout layout && layout.Count > 1 && layout[1] is Image img)
                     {
-                        img.Source = "No.png";
+                        img.Source = "no.png";
                         img.Opacity = 0.5;
                     }
                 }
@@ -499,7 +499,7 @@ namespace iPMCloud.Mobile
             if (ants.Contains(img.ClassId))
             {
                 ants.Remove(img.ClassId);
-                img.Source = "No_Round.png";
+                img.Source = "no_round.png";
                 img.Opacity = 0.5;
                 wasSet = true;
                 foreach (var item in frame_ants)
@@ -510,7 +510,7 @@ namespace iPMCloud.Mobile
             else
             {
                 ants.Add(img.ClassId);
-                img.Source = "Yes_Round.png";
+                img.Source = "yes_round.png";
                 img.Opacity = 1;
                 foreach (var item in frame_ants)
                 {
@@ -543,7 +543,7 @@ namespace iPMCloud.Mobile
                     item.Stroke = Colors.Transparent;
                     if (item.Content is Layout layout && layout.Count > 1 && layout[1] is Image img)
                     {
-                        img.Source = "No_Round.png";
+                        img.Source = "no_round.png";
                         img.Opacity = 0.5;
                     }
                 }
@@ -622,7 +622,7 @@ namespace iPMCloud.Mobile
 
             img_sig.IsVisible = !none;
             //img_sig.Source = String.IsNullOrWhiteSpace(a7) ?
-            //    "SignPad.png" :
+            //    "sign_pad.png" :
             //    ImageSource.FromStream(() => new MemoryStream(Convert.FromBase64String(a7)));
 
             mainFrame.BackgroundColor = isReady ? Color.FromArgb("#66cccccc") : Color.FromArgb("#99042d53");

@@ -259,7 +259,7 @@ namespace iPMCloud.Mobile
         {
             try
             {
-                img_onlinestate.Source = AppModel.Instance.IsInternet ? "isonlineB.png" : "isofflineB.png";
+                img_onlinestate.Source = AppModel.Instance.IsInternet ? "isonline_b.png" : "isoffline_b.png";
                 string statetext = "";
                 int l = AppModel.Instance.connectionProfiles.Count;
                 AppModel.Instance.connectionProfiles.ForEach(profile =>
@@ -287,7 +287,7 @@ namespace iPMCloud.Mobile
             }
             else
             {
-                img_gpsstate.Source = "gpsoff2.png";
+                img_gpsstate.Source = "gpsoff2_img.png";
             }
             //string vor = "--:--";
             //if (AppModel.Instance.lastServerPing > 0)

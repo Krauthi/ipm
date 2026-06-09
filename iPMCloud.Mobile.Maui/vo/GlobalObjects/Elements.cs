@@ -87,7 +87,7 @@ namespace iPMCloud.Mobile.vo
                 WidthRequest = 24,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.Start,
-                Source = "Tools.png"
+                Source = "tools.png"
             };
             var lb = new Label()
             {
@@ -564,7 +564,7 @@ namespace iPMCloud.Mobile.vo
                 WidthRequest = 36,
                 VerticalOptions = LayoutOptions.Start,
                 HorizontalOptions = LayoutOptions.Start,
-                Source = "Building.png"
+                Source = "building.png"
             };
             var lb = new Label()
             {

@@ -72,7 +72,7 @@
                     Margin="0,0,0,1"
                     HeightRequest="12"
                     HorizontalOptions="End"
-                    Source="gpsoff2.png"
+                    Source="gpsoff2_img.png"
                     WidthRequest="12" />
                 <Label
                     x:Name="lb_onlinestate"
@@ -152,7 +152,7 @@
                             Margin="0"
                             HeightRequest="30"
                             HorizontalOptions="Start"
-                            Source="MenuImage.png"
+                            Source="menu_image.png"
                             VerticalOptions="Center"
                             WidthRequest="30" />
                     </Grid>
@@ -171,7 +171,7 @@
 
                     <Image
                         HorizontalOptions="Fill"
-                        Source="dot2.png"
+                        Source="dot2_img.png"
                         VerticalOptions="Fill" />
 
                     <Label
@@ -334,7 +334,7 @@
                             Margin="0"
                             HeightRequest="30"
                             HorizontalOptions="Center"
-                            Source="WarnTriangleYellow.png"
+                            Source="warn_triangle_yellow.png"
                             VerticalOptions="Center"
                             WidthRequest="30" />
                     </Border>
@@ -352,7 +352,7 @@
                             Margin="0"
                             HeightRequest="30"
                             HorizontalOptions="Center"
-                            Source="CamMessage.png"
+                            Source="cam_message.png"
                             VerticalOptions="Center"
                             WidthRequest="30" />
                     </Border>
@@ -370,7 +370,7 @@
                             Margin="0"
                             HeightRequest="30"
                             HorizontalOptions="Center"
-                            Source="ObjectValues.png"
+                            Source="object_values.png"
                             VerticalOptions="Center"
                             WidthRequest="30" />
                     </Border>
@@ -387,7 +387,7 @@
                         <Image
                             HeightRequest="30"
                             HorizontalOptions="Center"
-                            Source="BuildingOut.png"
+                            Source="building_out.png"
                             VerticalOptions="Center"
                             WidthRequest="30" />
                     </Border>
@@ -478,7 +478,7 @@
                             Grid.Column="0"
                             Margin="0,0,10,0"
                             HeightRequest="32"
-                            Source="Work.png"
+                            Source="work.png"
                             VerticalOptions="Center"
                             WidthRequest="33" />
                         <VerticalStackLayout
@@ -529,7 +529,7 @@
                             Grid.Column="3"
                             Margin="10,0,0,0"
                             HeightRequest="30"
-                            Source="DropRightImage.png"
+                            Source="drop_right_image.png"
                             VerticalOptions="Center"
                             WidthRequest="30" />
                     </Grid>
@@ -561,7 +561,7 @@
                             Grid.Column="0"
                             Margin="0,0,10,0"
                             HeightRequest="30"
-                            Source="WorkerInProgressWarn.png"
+                            Source="worker_in_progress_warn.png"
                             VerticalOptions="Center"
                             WidthRequest="30" />
                         <VerticalStackLayout
@@ -640,7 +640,7 @@
                     HeightRequest="70"
                     HorizontalOptions="Start"
                     IsVisible="{Binding Path=IsVisible}"
-                    Source="AddArrow.png"
+                    Source="add_arrow.png"
                     VerticalOptions="Start"
                     WidthRequest="90" />
 
@@ -670,14 +670,14 @@
                             Grid.Column="0"
                             Margin="0,-3,0,0"
                             HeightRequest="30"
-                            Source="LeistungSymbol.png"
+                            Source="leistung_symbol.png"
                             VerticalOptions="Center"
                             WidthRequest="30" />
                         <Image
                             Grid.Column="1"
                             Margin="-10,3,10,0"
                             HeightRequest="30"
-                            Source="ProduktSymbol.png"
+                            Source="produkt_symbol.png"
                             VerticalOptions="Center"
                             WidthRequest="30" />
                         <VerticalStackLayout
@@ -708,7 +708,7 @@
                             Grid.Column="3"
                             Margin="10,0,0,0"
                             HeightRequest="30"
-                            Source="DropRightImage.png"
+                            Source="drop_right_image.png"
                             VerticalOptions="Center"
                             WidthRequest="30" />
                     </Grid>
@@ -780,7 +780,7 @@
                                 Grid.Column="0"
                                 Margin="0,2,6,0"
                                 HeightRequest="28"
-                                Source="Exit.png"
+                                Source="exit.png"
                                 VerticalOptions="Center"
                                 WidthRequest="28" />
                             <VerticalStackLayout
@@ -873,7 +873,7 @@
                                 Grid.Column="2"
                                 Margin="5,0,0,0"
                                 HeightRequest="30"
-                                Source="DropRightImage.png"
+                                Source="drop_right_image.png"
                                 VerticalOptions="Center"
                                 WidthRequest="30" />
                         </Grid>
@@ -900,7 +900,7 @@
                                 Grid.Column="0"
                                 Margin="0,0,8,0"
                                 HeightRequest="28"
-                                Source="SearchImage.png"
+                                Source="search_image.png"
                                 VerticalOptions="Center"
                                 WidthRequest="28" />
                             <VerticalStackLayout
@@ -931,7 +931,7 @@
                                 Grid.Column="2"
                                 Margin="5,0,0,0"
                                 HeightRequest="30"
-                                Source="DropRightImage.png"
+                                Source="drop_right_image.png"
                                 VerticalOptions="Center"
                                 WidthRequest="30" />
                         </Grid>
@@ -1390,7 +1390,7 @@
                                         Margin="0,5,0,0"
                                         HeightRequest="18"
                                         HorizontalOptions="Center"
-                                        Source="refresh2.png"
+                                        Source="refresh2_img.png"
                                         VerticalOptions="Center"
                                         WidthRequest="18" />
                                     <Label
@@ -1415,7 +1415,7 @@
                                         Margin="0,5,0,0"
                                         HeightRequest="18"
                                         HorizontalOptions="End"
-                                        Source="Worker.png"
+                                        Source="worker.png"
                                         VerticalOptions="Center"
                                         WidthRequest="18" />
                                     <Label
@@ -1450,7 +1450,7 @@
                                         Margin="3,7,0,2"
                                         HeightRequest="22"
                                         HorizontalOptions="Start"
-                                        Source="DropDownImage.png"
+                                        Source="drop_down_image.png"
                                         VerticalOptions="Center"
                                         WidthRequest="22" />
                                 </HorizontalStackLayout>
@@ -1878,7 +1878,7 @@
                                         Margin="5,5,0,0"
                                         HeightRequest="18"
                                         HorizontalOptions="Center"
-                                        Source="refresh2.png"
+                                        Source="refresh2_img.png"
                                         VerticalOptions="Center"
                                         WidthRequest="18" />
                                     <Label
@@ -1904,7 +1904,7 @@
                                         Margin="5,5,0,0"
                                         HeightRequest="18"
                                         HorizontalOptions="End"
-                                        Source="Worker.png"
+                                        Source="worker.png"
                                         VerticalOptions="Center"
                                         WidthRequest="18" />
                                     <Label
@@ -2231,7 +2231,7 @@
                                         Margin="5,5,0,0"
                                         HeightRequest="18"
                                         HorizontalOptions="Center"
-                                        Source="refresh2.png"
+                                        Source="refresh2_img.png"
                                         VerticalOptions="Center"
                                         WidthRequest="18" />
                                     <Label
@@ -2256,7 +2256,7 @@
                                         Margin="5,5,0,0"
                                         HeightRequest="18"
                                         HorizontalOptions="Center"
-                                        Source="refresh2.png"
+                                        Source="refresh2_img.png"
                                         VerticalOptions="Center"
                                         WidthRequest="18" />
                                     <Label
@@ -2282,7 +2282,7 @@
                                         Margin="5,5,0,0"
                                         HeightRequest="18"
                                         HorizontalOptions="Center"
-                                        Source="refresh2.png"
+                                        Source="refresh2_img.png"
                                         VerticalOptions="Center"
                                         WidthRequest="18" />
                                     <Label
@@ -2493,7 +2493,7 @@
                                         Margin="5,5,0,0"
                                         HeightRequest="18"
                                         HorizontalOptions="Center"
-                                        Source="refresh2.png"
+                                        Source="refresh2_img.png"
                                         VerticalOptions="Center"
                                         WidthRequest="18" />
                                     <Label
@@ -2962,7 +2962,7 @@
                             <Image
                                 Margin="0,0,8,0"
                                 HeightRequest="30"
-                                Source="PosList.png"
+                                Source="pos_list.png"
                                 VerticalOptions="Center"
                                 WidthRequest="30" />
                             <Label
@@ -3055,7 +3055,7 @@
                             Margin="0,0,0,0"
                             HeightRequest="30"
                             HorizontalOptions="Start"
-                            Source="DropLeftBlueDoubleImage.png"
+                            Source="drop_left_blue_double_image.png"
                             VerticalOptions="Center"
                             WidthRequest="30" />
                         <Label
@@ -3182,7 +3182,7 @@
                     Grid.Column="0"
                     Margin="3,0,8,0"
                     HeightRequest="24"
-                    Source="OrderFolderTools.png"
+                    Source="order_folder_tools.png"
                     VerticalOptions="Start"
                     WidthRequest="24" />
                 <Label
@@ -3239,7 +3239,7 @@
                             Margin="0,0,0,0"
                             HeightRequest="30"
                             HorizontalOptions="Start"
-                            Source="DropLeftWhiteDoubleImage.png"
+                            Source="drop_left_white_double_image.png"
                             VerticalOptions="Center"
                             WidthRequest="30" />
                     </HorizontalStackLayout>
@@ -3261,7 +3261,7 @@
                         Grid.Column="0"
                         Margin="3,0,8,0"
                         HeightRequest="30"
-                        Source="KategorieSymbol.png"
+                        Source="kategorie_symbol.png"
                         VerticalOptions="Start"
                         WidthRequest="30" />
                     <Label
@@ -3493,7 +3493,7 @@
                             <Image
                                 Margin="0,0,8,0"
                                 HeightRequest="30"
-                                Source="PosList.png"
+                                Source="pos_list.png"
                                 VerticalOptions="Center"
                                 WidthRequest="30" />
                             <Label
@@ -3586,7 +3586,7 @@
                             Margin="0,0,0,0"
                             HeightRequest="30"
                             HorizontalOptions="Start"
-                            Source="DropLeftBlueDoubleImage.png"
+                            Source="drop_left_blue_double_image.png"
                             VerticalOptions="Center"
                             WidthRequest="30" />
                         <Label
@@ -3680,7 +3680,7 @@
                         Margin="0,0,0,0"
                         HeightRequest="30"
                         HorizontalOptions="Center"
-                        Source="SearchImage.png"
+                        Source="search_image.png"
                         VerticalOptions="Center"
                         WidthRequest="30" />
                 </StackLayout>
@@ -3819,7 +3819,7 @@
                                 Margin="0,0,0,0"
                                 HeightRequest="30"
                                 HorizontalOptions="Start"
-                                Source="DropLeftBlueDoubleImage.png"
+                                Source="drop_left_blue_double_image.png"
                                 VerticalOptions="Center"
                                 WidthRequest="30" />
                             <Label
@@ -3926,7 +3926,7 @@
                                 Margin="0,0,0,0"
                                 HeightRequest="30"
                                 HorizontalOptions="Start"
-                                Source="DropLeftBlueDoubleImage.png"
+                                Source="drop_left_blue_double_image.png"
                                 VerticalOptions="Center"
                                 WidthRequest="30" />
                             <Label
@@ -4003,7 +4003,7 @@
                         Grid.Column="0"
                         Margin="3,0,8,0"
                         HeightRequest="24"
-                        Source="OrderFolderTools.png"
+                        Source="order_folder_tools.png"
                         VerticalOptions="Start"
                         WidthRequest="24" />
                     <Label
@@ -4101,7 +4101,7 @@
                                 Margin="0,0,0,0"
                                 HeightRequest="30"
                                 HorizontalOptions="Start"
-                                Source="DropLeftBlueDoubleImage.png"
+                                Source="drop_left_blue_double_image.png"
                                 VerticalOptions="Center"
                                 WidthRequest="30" />
                             <Label
@@ -4149,7 +4149,7 @@
                         Grid.Column="0"
                         Margin="4,0,6,0"
                         HeightRequest="24"
-                        Source="OrderFolderTools.png"
+                        Source="order_folder_tools.png"
                         VerticalOptions="Start"
                         WidthRequest="24" />
                     <Label
@@ -4186,7 +4186,7 @@
                         Grid.Column="0"
                         Margin="3,0,8,0"
                         HeightRequest="24"
-                        Source="KategorieSymbol.png"
+                        Source="kategorie_symbol.png"
                         VerticalOptions="Start"
                         WidthRequest="24" />
                     <Label
@@ -4280,7 +4280,7 @@
                             <Image
                                 Margin="0,0,8,0"
                                 HeightRequest="30"
-                                Source="PosList.png"
+                                Source="pos_list.png"
                                 VerticalOptions="Center"
                                 WidthRequest="30" />
                             <Label
@@ -4387,7 +4387,7 @@
                                 Margin="0,0,0,0"
                                 HeightRequest="30"
                                 HorizontalOptions="Start"
-                                Source="DropLeftBlueDoubleImage.png"
+                                Source="drop_left_blue_double_image.png"
                                 VerticalOptions="Center"
                                 WidthRequest="30" />
                             <Label
@@ -4492,7 +4492,7 @@
                         <Image
                             Margin="10,0,8,0"
                             HeightRequest="30"
-                            Source="CheckWhite.png"
+                            Source="check_white.png"
                             VerticalOptions="Center"
                             WidthRequest="30" />
                         <VerticalStackLayout
@@ -4554,7 +4554,7 @@
                         Margin="0,0,0,0"
                         HeightRequest="30"
                         HorizontalOptions="Start"
-                        Source="DropLeftBlueDoubleImage.png"
+                        Source="drop_left_blue_double_image.png"
                         VerticalOptions="Center"
                         WidthRequest="30" />
                     <Label
@@ -4765,7 +4765,7 @@
                             Margin="0,0,0,0"
                             HeightRequest="30"
                             HorizontalOptions="Start"
-                            Source="DropLeftBlueDoubleImage.png"
+                            Source="drop_left_blue_double_image.png"
                             VerticalOptions="Center"
                             WidthRequest="30" />
                         <Label
@@ -4835,7 +4835,7 @@
                 Aspect="AspectFill"
                 HorizontalOptions="Center"
                 Opacity=".75"
-                Source="backgroundgray2.jpg"
+                Source="backgroundgray2_img.jpg"
                 VerticalOptions="End" />
 
             <Grid
@@ -4890,7 +4890,7 @@
                                 Margin="0,0,0,0"
                                 HeightRequest="30"
                                 HorizontalOptions="Start"
-                                Source="DropLeftBlueDoubleImage.png"
+                                Source="drop_left_blue_double_image.png"
                                 VerticalOptions="Center"
                                 WidthRequest="30" />
                             <VerticalStackLayout
@@ -4960,7 +4960,7 @@
                         Margin="0"
                         HeightRequest="30"
                         HorizontalOptions="Start"
-                        Source="CheckSymbol.png"
+                        Source="check_symbol.png"
                         VerticalOptions="Start"
                         WidthRequest="30" />
                     <VerticalStackLayout
@@ -5019,7 +5019,7 @@
                                 Margin="4,0,0,0"
                                 HeightRequest="29"
                                 HorizontalOptions="Center"
-                                Source="Trash.png"
+                                Source="trash.png"
                                 VerticalOptions="Center"
                                 WidthRequest="30" />
                         </HorizontalStackLayout>
@@ -5167,7 +5167,7 @@
                 Aspect="Fill"
                 HorizontalOptions="Center"
                 Opacity="1"
-                Source="backgroundgray2.jpg"
+                Source="backgroundgray2_img.jpg"
                 VerticalOptions="End" />-->
 
             <Grid
@@ -5221,7 +5221,7 @@
                                 Margin="0,0,0,0"
                                 HeightRequest="30"
                                 HorizontalOptions="Start"
-                                Source="DropLeftBlueDoubleImage.png"
+                                Source="drop_left_blue_double_image.png"
                                 VerticalOptions="Center"
                                 WidthRequest="30" />
                             <Label
@@ -5284,7 +5284,7 @@
                 Aspect="Fill"
                 HorizontalOptions="Center"
                 Opacity="0.7"
-                Source="backgroundgray2.jpg"
+                Source="backgroundgray2_img.jpg"
                 VerticalOptions="End" />-->
 
             <StackLayout
@@ -5329,7 +5329,7 @@
                                 Margin="0,0,0,0"
                                 HeightRequest="30"
                                 HorizontalOptions="Start"
-                                Source="DropLeftBlueDoubleImage.png"
+                                Source="drop_left_blue_double_image.png"
                                 VerticalOptions="Center"
                                 WidthRequest="30" />
                             <Label
@@ -5480,7 +5480,7 @@
                                 Margin="0,0,0,0"
                                 HeightRequest="30"
                                 HorizontalOptions="Center"
-                                Source="Cam.png"
+                                Source="cam.png"
                                 VerticalOptions="Center"
                                 WidthRequest="30" />
                         </Border>
@@ -5496,7 +5496,7 @@
                                 Margin="0,0,0,0"
                                 HeightRequest="30"
                                 HorizontalOptions="Center"
-                                Source="Attachment.png"
+                                Source="attachment.png"
                                 VerticalOptions="Center"
                                 WidthRequest="30" />
                         </Border>
@@ -5553,7 +5553,7 @@
                             <Image
                                 Margin="0,0,8,0"
                                 HeightRequest="30"
-                                Source="CheckWhite.png"
+                                Source="check_white.png"
                                 VerticalOptions="Center"
                                 WidthRequest="30" />
                             <VerticalStackLayout
@@ -5623,7 +5623,7 @@
                             Margin="0,0,10,0"
                             HeightRequest="30"
                             HorizontalOptions="Start"
-                            Source="PosList.png"
+                            Source="pos_list.png"
                             VerticalOptions="Center"
                             WidthRequest="30" />
                         <Label
@@ -5644,7 +5644,7 @@
                             Clicked="btn_AuswahlAnzeigen"
                             HeightRequest="32"
                             HorizontalOptions="End"
-                            Source="x128_2.png"
+                            Source="x128_2_img.png"
                             VerticalOptions="Center"
                             WidthRequest="32" />
                     </Grid>
@@ -5697,7 +5697,7 @@
                             <Image
                                 Margin="0,0,8,0"
                                 HeightRequest="30"
-                                Source="CheckWhite.png"
+                                Source="check_white.png"
                                 VerticalOptions="Center"
                                 WidthRequest="30" />
                             <Label
@@ -5788,7 +5788,7 @@
                                 Clicked="btn_MainMenuTapped"
                                 HeightRequest="36"
                                 HorizontalOptions="End"
-                                Source="x128_2.png"
+                                Source="x128_2_img.png"
                                 VerticalOptions="Center"
                                 WidthRequest="36" />
                         </Grid>
@@ -5829,7 +5829,7 @@
                                         Grid.Column="0"
                                         Margin="0,0,8,0"
                                         HeightRequest="33"
-                                        Source="Todos.png"
+                                        Source="todos.png"
                                         VerticalOptions="Center"
                                         WidthRequest="33" />
                                     <VerticalStackLayout
@@ -5888,7 +5888,7 @@
                                         Grid.Column="0"
                                         Margin="0,0,8,0"
                                         HeightRequest="33"
-                                        Source="Time.png"
+                                        Source="time.png"
                                         VerticalOptions="Center"
                                         WidthRequest="33" />
                                     <VerticalStackLayout
@@ -5953,7 +5953,7 @@
                                         Grid.Column="0"
                                         Margin="0,0,8,0"
                                         HeightRequest="33"
-                                        Source="Worker.png"
+                                        Source="worker.png"
                                         VerticalOptions="Center"
                                         WidthRequest="33" />
                                     <VerticalStackLayout
@@ -6027,7 +6027,7 @@
                                         Grid.Column="0"
                                         Margin="0,0,8,0"
                                         HeightRequest="33"
-                                        Source="refresh2.png"
+                                        Source="refresh2_img.png"
                                         VerticalOptions="Center"
                                         WidthRequest="33" />
                                     <VerticalStackLayout
@@ -6094,7 +6094,7 @@
                                         Margin="0,0,8,0"
                                         HeightRequest="33"
                                         HorizontalOptions="Start"
-                                        Source="Setting.png"
+                                        Source="setting.png"
                                         VerticalOptions="Center"
                                         WidthRequest="33" />
                                     <VerticalStackLayout
@@ -6143,7 +6143,7 @@
                                                 Grid.Row="0"
                                                 Margin="0,0,0,0"
                                                 HorizontalOptions="Fill"
-                                                Source="dot2.png"
+                                                Source="dot2_img.png"
                                                 VerticalOptions="Fill" />
                                         </Grid>
                                         <VerticalStackLayout
@@ -6206,7 +6206,7 @@
                                         Grid.Column="0"
                                         Margin="0,0,8,0"
                                         HeightRequest="33"
-                                        Source="Logo2.png"
+                                        Source="logo2_img.png"
                                         VerticalOptions="Center"
                                         WidthRequest="33" />
                                     <VerticalStackLayout
@@ -7102,7 +7102,7 @@
                         Margin="0,0,10,0"
                         HeightRequest="30"
                         HorizontalOptions="Start"
-                        Source="WarnTriangleYellow.png"
+                        Source="warn_triangle_yellow.png"
                         VerticalOptions="Center"
                         WidthRequest="30" />
                     <Label
@@ -7752,7 +7752,7 @@
                         Margin="0"
                         HeightRequest="28"
                         HorizontalOptions="Start"
-                        Source="Worker.png"
+                        Source="worker.png"
                         VerticalOptions="Center"
                         WidthRequest="28" />
                     <Label
@@ -8054,7 +8054,7 @@
                                 Margin="0,0,0,0"
                                 HeightRequest="30"
                                 HorizontalOptions="Start"
-                                Source="DropLeftBlueDoubleImage.png"
+                                Source="drop_left_blue_double_image.png"
                                 VerticalOptions="Center"
                                 WidthRequest="30" />
                             <Label

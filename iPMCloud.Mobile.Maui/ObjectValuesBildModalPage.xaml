@@ -55,7 +55,7 @@
                         Margin="0"
                         HeightRequest="30"
                         HorizontalOptions="Start"
-                        Source="DropLeftBlueDoubleImage.png"
+                        Source="drop_left_blue_double_image.png"
                         VerticalOptions="Center"
                         WidthRequest="30" />
                     <Label
@@ -159,7 +159,7 @@
                             Margin="0,4,0,0"
                             HeightRequest="30"
                             HorizontalOptions="Center"
-                            Source="Cam.png"
+                            Source="cam.png"
                             VerticalOptions="Center"
                             WidthRequest="30" />
                     </VerticalStackLayout>

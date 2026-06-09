@@ -538,18 +538,8 @@ else
         #endregion
 
         #region Back Button Handling
-        public override void OnBackPressed()
-        {
-            //Log.Debug(TAG, "Back Button ignoriert");
-        }
-        //public override void OnBackPressed()
-        //{
-        //    // Custom back button handling hier einfügen
-        //    // Beispiel: Popups schließen, Navigation zurück, etc.
-
-        //    // Standard-Verhalten (App schließen)
-        //    base.OnBackPressed();
-        //}
+        // Global back handling is intentionally left at Android default.
+        // Camera/scanner-specific back behavior is handled in those pages.
 
         #endregion
 

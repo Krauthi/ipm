@@ -168,6 +168,24 @@ namespace iPMCloud.Mobile
             base.OnDisappearing();
         }
 
+        protected override bool OnBackButtonPressed()
+        {
+#if ANDROID
+            CloseModalFromBackButton();
+            return true;
+#else
+            return base.OnBackButtonPressed();
+#endif
+        }
+
+        private void CloseModalFromBackButton()
+        {
+            _ = CloseModalSafeAsync(null).ContinueWith(t =>
+            {
+                System.Diagnostics.Debug.WriteLine($"CloseModalFromBackButton error: {t.Exception}");
+            }, TaskContinuationOptions.OnlyOnFaulted);
+        }
+
         private void OnSwitchCameraClicked(object sender, EventArgs e)
         {
             ReaderView.CameraLocation =

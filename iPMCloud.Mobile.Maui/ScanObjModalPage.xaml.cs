@@ -171,11 +171,19 @@ namespace iPMCloud.Mobile
         protected override bool OnBackButtonPressed()
         {
 #if ANDROID
-            _ = CloseModalSafeAsync(null);
+            CloseModalFromBackButton();
             return true;
 #else
             return base.OnBackButtonPressed();
 #endif
+        }
+
+        private void CloseModalFromBackButton()
+        {
+            _ = CloseModalSafeAsync(null).ContinueWith(t =>
+            {
+                System.Diagnostics.Debug.WriteLine($"CloseModalFromBackButton error: {t.Exception}");
+            }, TaskContinuationOptions.OnlyOnFaulted);
         }
 
         private void OnSwitchCameraClicked(object sender, EventArgs e)

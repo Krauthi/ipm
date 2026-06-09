@@ -1,6 +1,8 @@
+using iPMCloud.Mobile;
+
 namespace iPMCloud.Mobile.Views
 {
-    public partial class PersonTimesPageView : global::iPMCloud.Mobile.AndroidBackBlockedModalPage
+    public partial class PersonTimesPageView : AndroidBackBlockedModalPage
     {
         public Grid Container => PersonTimesPage_Container;
 

@@ -1,8 +1,9 @@
 using iPMCloud.Mobile.vo;
+using iPMCloud.Mobile;
 
 namespace iPMCloud.Mobile.Views
 {
-    public partial class WorkerPageContainerView : global::iPMCloud.Mobile.AndroidBackBlockedModalPage
+    public partial class WorkerPageContainerView : AndroidBackBlockedModalPage
     {
         public Grid ContainerGrid => WorkerPage_Container;
         public Border BtnWorkerBack => btn_worker_back;

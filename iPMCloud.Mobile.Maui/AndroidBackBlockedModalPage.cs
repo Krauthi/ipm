@@ -1,6 +1,6 @@
 namespace iPMCloud.Mobile
 {
-    internal class AndroidBackBlockedModalPage : ContentPage
+    public class AndroidBackBlockedModalPage : ContentPage
     {
         protected override bool OnBackButtonPressed()
         {

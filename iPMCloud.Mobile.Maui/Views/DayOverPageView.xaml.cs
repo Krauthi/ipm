@@ -1,9 +1,10 @@
 using iPMCloud.Mobile.vo;
+using iPMCloud.Mobile;
 using Microsoft.Maui.ApplicationModel;
 
 namespace iPMCloud.Mobile.Views
 {
-    public partial class DayOverPageView : global::iPMCloud.Mobile.AndroidBackBlockedModalPage
+    public partial class DayOverPageView : AndroidBackBlockedModalPage
     {
         private static int _isModalOpen;
 

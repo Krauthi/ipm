@@ -26,17 +26,20 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<ApplicationId>com.ipmcloud.ipm.mobile</ApplicationId>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Debug|net10.0-ios'">
 		<ApplicationId>com.ipmcloud.ipm.mobile.app</ApplicationId>
-		<!--<CodesignKey>Apple Development: Created via API (4RDNR6C66G)</CodesignKey>
-		<CodesignProvision>VS: com.ipmcloud.ipm.mobile.app Development</CodesignProvision>-->
 	</PropertyGroup>
+
+	
+	<PropertyGroup Condition="'$(TargetFramework)'=='net10.0-ios'">
+		<ApplicationId>com.ipmcloud.ipm.mobile.app</ApplicationId>
+		<CodesignKey>Apple Development: Created via API (4RDNR6C66G)</CodesignKey>
+		<CodesignProvision>VS: com.ipmcloud.ipm.mobile.app Development</CodesignProvision>
+	</PropertyGroup>
+	
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Release|net10.0-ios'">
-		<!--<ApplicationId>com.ipmcloud.ipm.mobile.app</ApplicationId>
-		<CodesignKey>8W3QR96FUF.com.ipmcloud.ipm.mobile.app</CodesignKey>
-		<CodesignProvision>VS: com.ipmcloud.ipm.mobile.app Dist</CodesignProvision>-->
+		<ApplicationId>com.ipmcloud.ipm.mobile.app</ApplicationId>
+		<CodesignKey>Apple Distribution: Markus Krauthausen (8W3QR96FUF)</CodesignKey>
+		<CodesignProvision>DistVersion3Profile</CodesignProvision>
 	</PropertyGroup>
 	
 	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
@@ -45,8 +48,6 @@
 	
 	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
 		<SupportedOSPlatformVersion>14.0</SupportedOSPlatformVersion>
-		<CodesignKey>iPhone Developer</CodesignKey>
-		<CodesignProvision>Automatic</CodesignProvision>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
@@ -177,11 +178,6 @@
 
 <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
   <WindowsPackageType>None</WindowsPackageType>
-</PropertyGroup>
-
-<PropertyGroup Condition="'$(TargetFramework)'=='net10.0-ios'">
-  <CodesignKey>Apple Development: Created via API (4RDNR6C66G)</CodesignKey>
-  <CodesignProvision>VS: com.ipmcloud.ipm.mobile.app Development</CodesignProvision>
 </PropertyGroup>
 
 

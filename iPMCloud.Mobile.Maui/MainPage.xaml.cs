@@ -2891,7 +2891,7 @@ namespace iPMCloud.Mobile
         {
             popupContainer_quest_personpicker.IsVisible = false;
         }
-
+          
 
         public void OpenLeistungInfoDialog(LeistungWSO o)
         {

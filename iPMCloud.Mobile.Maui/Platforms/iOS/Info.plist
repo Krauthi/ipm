@@ -34,6 +34,8 @@
 	<string>2.1.111</string>
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/AppIcon.appiconset</string>
+	<key>CFBundleIconName</key>
+	<string>AppIcon</string>
 	<key>UIStatusBarHidden</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>

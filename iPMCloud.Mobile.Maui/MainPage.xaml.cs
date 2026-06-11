@@ -65,7 +65,182 @@ namespace iPMCloud.Mobile
         private ScrollView list_worker_scroll => WorkerPageContainerView.ListWorkerScroll;
         private StackLayout list_worker => WorkerPageContainerView.ListWorker;
 
+        // Deferred overlays view
+        private Views.MainPageOverlaysView _overlaysView;
 
+        // Forwarding properties for elements moved into MainPageOverlaysView
+        private AbsoluteLayout CheckPage_Bem_Container => _overlaysView?.CheckPageBemContainer;
+        private Label CheckPage_Bem_Title => _overlaysView?.CheckPageBemTitle;
+        private StackLayout CheckPage_Bem_inner_Container => _overlaysView?.CheckPageBemInnerContainer;
+        private AbsoluteLayout CheckPage_Container => _overlaysView?.CheckPageContainer;
+        private AbsoluteLayout CheckPage_Signature_Container => _overlaysView?.CheckPageSignatureContainer;
+        private Grid CheckPage_position_Container => _overlaysView?.CheckPagePositionContainer;
+        private Grid CheckPage_position_Container2 => _overlaysView?.CheckPagePositionContainer2;
+        private AbsoluteLayout NoticePage_Container_DirektPos => _overlaysView?.NoticePageContainerDirektPos;
+        private Grid NoticePage_position_Container_DirektPos => _overlaysView?.NoticePagePositionContainerDirektPos;
+        private Grid PN_Page_Container => _overlaysView?.PNPageContainer;
+        private StackLayout PN_Page_position_Container => _overlaysView?.PNPagePositionContainer;
+        private Image btn_alertmessage_img2_DirektPos => _overlaysView?.BtnAlertmessageImg2DirektPos;
+        private Label btn_alertmessage_tit_DirektPos => _overlaysView?.BtnAlertmessageTitDirektPos;
+        private Border btn_back_check => _overlaysView?.BtnBackCheck;
+        private Border btn_back_check_signature => _overlaysView?.BtnBackCheckSignature;
+        private Border btn_back_notice_DirektPos => _overlaysView?.BtnBackNoticeDirektPos;
+        private Border btn_back_notice_check_bem => _overlaysView?.BtnBackNoticeCheckBem;
+        private Border btn_back_pn => _overlaysView?.BtnBackPn;
+        private Label btn_back_pn_headtext => _overlaysView?.BtnBackPnHeadtext;
+        private Border btn_cancelchangelang_fail => _overlaysView?.BtnCancelchangelangFail;
+        private Border btn_cancelclearlogtosupport => _overlaysView?.BtnCancelclearlogtosupport;
+        private Border btn_cancellang => _overlaysView?.BtnCancellang;
+        private Border btn_cancellogtosupport => _overlaysView?.BtnCancellogtosupport;
+        private Border btn_cancellogtosupport_fail => _overlaysView?.BtnCancellogtosupportFail;
+        private Border btn_changelang => _overlaysView?.BtnChangelang;
+        private Border btn_check_add => _overlaysView?.BtnCheckAdd;
+        private Border btn_check_del => _overlaysView?.BtnCheckDel;
+        private Border btn_check_ready => _overlaysView?.BtnCheckReady;
+        private Border btn_check_sub => _overlaysView?.BtnCheckSub;
+        private Border btn_clearlogtosupport => _overlaysView?.BtnClearlogtosupport;
+        private Border btn_delcheckquest => _overlaysView?.BtnDelcheckquest;
+        private Border btn_delcheckquestcancel => _overlaysView?.BtnDelcheckquestcancel;
+        private HorizontalStackLayout btn_dsgvo => _overlaysView?.BtnDsgvo;
+        private Border btn_endselectedcancel => _overlaysView?.BtnEndselectedcancel;
+        private Border btn_endselectedwork => _overlaysView?.BtnEndselectedwork;
+        private Label btn_info_check_text1 => _overlaysView?.BtnInfoCheckText1;
+        private Label btn_info_check_text2 => _overlaysView?.BtnInfoCheckText2;
+        private Image btn_internmessage_img2_DirektPos => _overlaysView?.BtnInternmessageImg2DirektPos;
+        private Border btn_notice_del_DirektPos => _overlaysView?.BtnNoticeDelDirektPos;
+        private Border btn_notice_save_DirektPos => _overlaysView?.BtnNoticeSaveDirektPos;
+        private Border btn_notice_save_check_bem => _overlaysView?.BtnNoticeSaveCheckBem;
+        private Border btn_notice_save_check_ready => _overlaysView?.BtnNoticeSaveCheckReady;
+        private Border btn_overtootherBuildingSave => _overlaysView?.BtnOvertootherBuildingSave;
+        private StackLayout btn_persontimes => _overlaysView?.BtnPersontimes;
+        private Image btn_persontimes_rimg => _overlaysView?.BtnPersontimesRimg;
+        private StackLayout btn_pn_message => _overlaysView?.BtnPnMessage;
+        private Border btn_pn_message_ablehnen => _overlaysView?.BtnPnMessageAblehnen;
+        private Border btn_pn_message_antwort => _overlaysView?.BtnPnMessageAntwort;
+        private Border btn_pn_message_close => _overlaysView?.BtnPnMessageClose;
+        private Border btn_pn_message_goto => _overlaysView?.BtnPnMessageGoto;
+        private Border btn_pn_message_start => _overlaysView?.BtnPnMessageStart;
+        private Border btn_quest_changemuellPos => _overlaysView?.BtnQuestChangemuellPos;
+        private Border btn_quest_changemuellpos_raus => _overlaysView?.BtnQuestChangemuellposRaus;
+        private Border btn_quest_countfromuploadCancel => _overlaysView?.BtnQuestCountfromuploadCancel;
+        private Border btn_quest_countfromuploadSave => _overlaysView?.BtnQuestCountfromuploadSave;
+        private Border btn_quest_direktbuchen => _overlaysView?.BtnQuestDirektbuchen;
+        private Border btn_quest_direktbuchen_cancel => _overlaysView?.BtnQuestDirektbuchenCancel;
+        private Label btn_quest_direktbuchen_i => _overlaysView?.BtnQuestDirektbuchenI;
+        private VerticalStackLayout btn_quest_direktbuchen_pos => _overlaysView?.BtnQuestDirektbuchenPos;
+        private Border btn_quest_direktbuchenwinter => _overlaysView?.BtnQuestDirektbuchenwinter;
+        private Border btn_quest_direktbuchenwinter_cancel => _overlaysView?.BtnQuestDirektbuchenwinterCancel;
+        private Border btn_quest_removeLastBuildingCancel => _overlaysView?.BtnQuestRemoveLastBuildingCancel;
+        private Border btn_quest_removeLastBuildingSave => _overlaysView?.BtnQuestRemoveLastBuildingSave;
+        private Border btn_regist => _overlaysView?.BtnRegist;
+        private Border btn_sendlogtosupport => _overlaysView?.BtnSendlogtosupport;
+        private StackLayout btn_settings => _overlaysView?.BtnSettings;
+        private Label btn_settings_count => _overlaysView?.BtnSettingsCount;
+        private HorizontalStackLayout btn_settings_frame_count => _overlaysView?.BtnSettingsFrameCount;
+        private Border btn_startcheckquest => _overlaysView?.BtnStartcheckquest;
+        private Border btn_startcheckquestcancel => _overlaysView?.BtnStartcheckquestcancel;
+        private HorizontalStackLayout btn_startselected_pos => _overlaysView?.BtnStartselectedPos;
+        private Border btn_startselected_pos_frame => _overlaysView?.BtnStartselectedPosFrame;
+        private Border btn_startselectedcancel => _overlaysView?.BtnStartselectedcancel;
+        private Border btn_startselectedwork => _overlaysView?.BtnStartselectedwork;
+        private Label btn_startselectedwork_text => _overlaysView?.BtnStartselectedworkText;
+        private StackLayout btn_sync => _overlaysView?.BtnSync;
+        private Border btn_takePhotoAttachment_frame_DirektPos => _overlaysView?.BtnTakePhotoAttachmentFrameDirektPos;
+        private Border btn_takePhotoAttachment_frame_check_bem => _overlaysView?.BtnTakePhotoAttachmentFrameCheckBem;
+        private Border btn_takePhoto_frame_DirektPos => _overlaysView?.BtnTakePhotoFrameDirektPos;
+        private Border btn_takePhoto_frame_check_bem => _overlaysView?.BtnTakePhotoFrameCheckBem;
+        private StackLayout btn_todos => _overlaysView?.BtnTodos;
+        private StackLayout btn_workerlist => _overlaysView?.BtnWorkerlist;
+        private VerticalStackLayout checkQuestStack => _overlaysView?.CheckQuestStack;
+        private ScrollView checkQuestStack_scroll => _overlaysView?.CheckQuestStackScroll;
+        private VerticalStackLayout checkQuestStack_signature => _overlaysView?.CheckQuestStackSignature;
+        private ScrollView checkQuestStack_signature_scroll => _overlaysView?.CheckQuestStackSignatureScroll;
+        private VerticalStackLayout daypicker_items => _overlaysView?.DaypickerItems;
+        private CollectionView empListView => _overlaysView?.EmpListView;
+        private VerticalStackLayout entry_notice_container_check_bem => _overlaysView?.EntryNoticeContainerCheckBem;
+        private Border frame_PersonTimes => _overlaysView?.FramePersonTimes;
+        private VerticalStackLayout frame_info_check_badge => _overlaysView?.FrameInfoCheckBadge;
+        private VerticalStackLayout img_info_check_typ_container => _overlaysView?.ImgInfoCheckTypContainer;
+        private Label info_check_text1a => _overlaysView?.InfoCheckText1a;
+        private Label info_check_text2a => _overlaysView?.InfoCheckText2a;
+        private Label info_check_text3a => _overlaysView?.InfoCheckText3a;
+        private CollectionView langListView => _overlaysView?.LangListView;
+        private VerticalStackLayout noticeFor_DirektPos => _overlaysView?.NoticeForDirektPos;
+        private VerticalStackLayout noticeFor_Pos_DirektPos => _overlaysView?.NoticeForPosDirektPos;
+        private VerticalStackLayout noticeFor_Pos_check_bem => _overlaysView?.NoticeForPosCheckBem;
+        private VerticalStackLayout noticePhotoStack_DirektPos => _overlaysView?.NoticePhotoStackDirektPos;
+        private VerticalStackLayout noticePhotoStack_check_bem => _overlaysView?.NoticePhotoStackCheckBem;
+        private ScrollView noticePhotoStack_scroll_check_bem => _overlaysView?.NoticePhotoStackScrollCheckBem;
+        private Grid notizSave_stack_DirektPos => _overlaysView?.NotizSaveStackDirektPos;
+        private AbsoluteLayout overlay => _overlaysView?.Overlay;
+        private ActivityIndicator overlaySync => _overlaysView?.OverlaySync;
+        private ActivityIndicator overlaySync_trans => _overlaysView?.OverlaySyncTrans;
+        private ActivityIndicator overlayb => _overlaysView?.Overlayb;
+        private AbsoluteLayout panelContainer => _overlaysView?.PanelContainer;
+        private Border panelContainer_frame => _overlaysView?.PanelContainerFrame;
+        private AbsoluteLayout panelShowSelectedPos_Container => _overlaysView?.PanelShowSelectedPosContainer;
+        private Border panelShowSelectedPos_frame => _overlaysView?.PanelShowSelectedPosFrame;
+        private Grid photobar_check_bem => _overlaysView?.PhotobarCheckBem;
+        private VerticalStackLayout pn_Stack => _overlaysView?.PnStack;
+        private AbsoluteLayout popupContainer => _overlaysView?.PopupContainer;
+        private AbsoluteLayout popupContainerSyncFaild => _overlaysView?.PopupContainerSyncFaild;
+        private StackLayout popupContainerSyncFaild_btn => _overlaysView?.PopupContainerSyncFaildBtn;
+        private AbsoluteLayout popupContainer_Alert => _overlaysView?.PopupContainerAlert;
+        private Label popupContainer_Alert_Text => _overlaysView?.PopupContainerAlertText;
+        private Label popupContainer_Alert_Titel => _overlaysView?.PopupContainerAlertTitel;
+        private Border popupContainer_Alert_btn => _overlaysView?.PopupContainerAlertBtn;
+        private VerticalStackLayout popupContainer_container_changelang => _overlaysView?.PopupContainerContainerChangelang;
+        private VerticalStackLayout popupContainer_container_changelang_fail => _overlaysView?.PopupContainerContainerChangelangFail;
+        private Label popupContainer_container_changelang_status => _overlaysView?.PopupContainerContainerChangelangStatus;
+        private Label popupContainer_container_changelang_titel => _overlaysView?.PopupContainerContainerChangelangTitel;
+        private VerticalStackLayout popupContainer_container_clearlog => _overlaysView?.PopupContainerContainerClearlog;
+        private VerticalStackLayout popupContainer_container_sendlog => _overlaysView?.PopupContainerContainerSendlog;
+        private VerticalStackLayout popupContainer_container_sendlog_fail => _overlaysView?.PopupContainerContainerSendlogFail;
+        private Label popupContainer_count => _overlaysView?.PopupContainerCount;
+        private AbsoluteLayout popupContainer_dialog => _overlaysView?.PopupContainerDialog;
+        private Border popupContainer_dialog_btn_ok => _overlaysView?.PopupContainerDialogBtnOk;
+        private Label popupContainer_dialog_text => _overlaysView?.PopupContainerDialogText;
+        private Label popupContainer_dialog_titel => _overlaysView?.PopupContainerDialogTitel;
+        private AbsoluteLayout popupContainer_info_notscan => _overlaysView?.PopupContainerInfoNotscan;
+        private Border popupContainer_info_notscan_okbtn => _overlaysView?.PopupContainerInfoNotscanOkbtn;
+        private Label popupContainer_info_notscan_text => _overlaysView?.PopupContainerInfoNotscanText;
+        private Label popupContainer_info_notscan_titel => _overlaysView?.PopupContainerInfoNotscanTitel;
+        private AbsoluteLayout popupContainer_infodialog => _overlaysView?.PopupContainerInfodialog;
+        private Border popupContainer_infodialog_close => _overlaysView?.PopupContainerInfodialogClose;
+        private Label popupContainer_infodialog_text => _overlaysView?.PopupContainerInfodialogText;
+        //private Label popupContainer_infodialog_titel => _overlaysView?.PopupContainerInfodialogTitel;
+        private AbsoluteLayout popupContainer_quest_changelang => _overlaysView?.PopupContainerQuestChangelang;
+        private AbsoluteLayout popupContainer_quest_changelang_fail => _overlaysView?.PopupContainerQuestChangelangFail;
+        private AbsoluteLayout popupContainer_quest_changemuellpos => _overlaysView?.PopupContainerQuestChangemuellpos;
+        private AbsoluteLayout popupContainer_quest_clearlog => _overlaysView?.PopupContainerQuestClearlog;
+        private AbsoluteLayout popupContainer_quest_countfromupload => _overlaysView?.PopupContainerQuestCountfromupload;
+        private AbsoluteLayout popupContainer_quest_daypicker => _overlaysView?.PopupContainerQuestDaypicker;
+        private Border popupContainer_quest_daypicker_close => _overlaysView?.PopupContainerQuestDaypickerClose;
+        private AbsoluteLayout popupContainer_quest_delcheckquest => _overlaysView?.PopupContainerQuestDelcheckquest;
+        private AbsoluteLayout popupContainer_quest_direktbuchen => _overlaysView?.PopupContainerQuestDirektbuchen;
+        private Grid popupContainer_quest_direktbuchen_st => _overlaysView?.PopupContainerQuestDirektbuchenSt;
+        private AbsoluteLayout popupContainer_quest_endwork => _overlaysView?.PopupContainerQuestEndwork;
+        private AbsoluteLayout popupContainer_quest_langpicker => _overlaysView?.PopupContainerQuestLangpicker;
+        private Border popupContainer_quest_langpicker_close => _overlaysView?.PopupContainerQuestLangpickerClose;
+        private Image popupContainer_quest_langpicker_img => _overlaysView?.PopupContainerQuestLangpickerImg;
+        private Grid popupContainer_quest_langpicker_inner => _overlaysView?.PopupContainerQuestLangpickerInner;
+        private AbsoluteLayout popupContainer_quest_overtootherBuilding => _overlaysView?.PopupContainerQuestOvertootherBuilding;
+        private AbsoluteLayout popupContainer_quest_personpicker => _overlaysView?.PopupContainerQuestPersonpicker;
+        private Border popupContainer_quest_personpicker_close => _overlaysView?.PopupContainerQuestPersonpickerClose;
+        private Grid popupContainer_quest_personpicker_inner => _overlaysView?.PopupContainerQuestPersonpickerInner;
+        private AbsoluteLayout popupContainer_quest_removeLastBuilding => _overlaysView?.PopupContainerQuestRemoveLastBuilding;
+        private AbsoluteLayout popupContainer_quest_sendlog => _overlaysView?.PopupContainerQuestSendlog;
+        private AbsoluteLayout popupContainer_quest_sendlog_fail => _overlaysView?.PopupContainerQuestSendlogFail;
+        private AbsoluteLayout popupContainer_quest_startcheckquest => _overlaysView?.PopupContainerQuestStartcheckquest;
+        private AbsoluteLayout popupContainer_quest_startwork => _overlaysView?.PopupContainerQuestStartwork;
+        private AbsoluteLayout popupContainer_trans => _overlaysView?.PopupContainerTrans;
+        private Label popupContainer_trans_status => _overlaysView?.PopupContainerTransStatus;
+        private VerticalStackLayout selectedPosList_container => _overlaysView?.SelectedPosListContainer;
+        private Microsoft.Maui.Controls.Switch sw_alertmessage_DirektPos => _overlaysView?.SwAlertmessageDirektPos;
+        private Microsoft.Maui.Controls.Switch sw_internmessage_DirektPos => _overlaysView?.SwInternmessageDirektPos;
+        private Views.PopupContainerObjectValuesBildView PopupContainerObjectValuesBild => _overlaysView?.GetPopupContainerObjectValuesBild();
+        private iPMCloud.Mobile.vo.CustomEditor entry_notice_DirektPos => _overlaysView?.EntryNoticeDirektPos;
+        private iPMCloud.Mobile.vo.CustomEditor entry_notice_check_bem => _overlaysView?.EntryNoticeCheckBem;
 
         public DisplayInfo di = DeviceDisplay.MainDisplayInfo;
         public double density = 0;//> di.Density;           // px pro dp
@@ -103,10 +278,55 @@ namespace iPMCloud.Mobile
             screenWidthDp = di.Width / di.Density;
             screenHeightDp = di.Height / di.Density;
             //MainPageAgain();
+            this.Loaded += OnPageLoaded;
+        }
+
+        private void OnPageLoaded(object sender, EventArgs e)
+        {
+            this.Loaded -= OnPageLoaded;
+
+//#if DEBUG
+//            var swDeferred = System.Diagnostics.Stopwatch.StartNew();
+//            AppModel.Logger.Info("PERF: MainPage deferred overlays load start");
+//#endif
+//            _overlaysView = new Views.MainPageOverlaysView();
+//            WireOverlayEvents();
+//            DeferredOverlaysHost.Content = _overlaysView;
+//#if DEBUG
+//            swDeferred.Stop();
+//            AppModel.Logger.Info($"PERF: MainPage deferred overlays load done in {swDeferred.ElapsedMilliseconds} ms");
+//#endif
+        }
+
+        private void WireOverlayEvents()
+        {
+            if (_overlaysView == null) return;
+            _overlaysView.EntryNoticeCheckBem.TextChanged += entry_notice_TextChanged_check_bem;
+            _overlaysView.LangListView.SelectionChanged += langListView_SelectionChanged;
+            _overlaysView.BtnOverlayAuswahlAnzeigen.Clicked += btn_AuswahlAnzeigen;
+            _overlaysView.BtnOverlayMainMenuTapped.Clicked += btn_MainMenuTapped;
+            _overlaysView.EntryNoticeDirektPos.TextChanged += entry_notice_TextChanged_DirektPos;
+            _overlaysView.EmpListView.SelectionChanged += empListView_SelectionChanged;
+            _overlaysView.SwAlertmessageDirektPos.Toggled += AlertMessage_Switch_Toggled_DirektPos;
+            _overlaysView.SwInternmessageDirektPos.Toggled += InternMessage_Switch_Toggled_DirektPos;
         }
 
         public async void MainPageAgain()
         {
+            if (_overlaysView == null)
+            {
+#if DEBUG
+                var swOv = System.Diagnostics.Stopwatch.StartNew();
+                AppModel.Logger.Info("PERF: MainPageAgain – loading deferred overlays synchronously");
+#endif
+                _overlaysView = new Views.MainPageOverlaysView();
+                WireOverlayEvents();
+                DeferredOverlaysHost.Content = _overlaysView;
+#if DEBUG
+                swOv.Stop();
+                AppModel.Logger.Info($"PERF: MainPageAgain – deferred overlays loaded in {swOv.ElapsedMilliseconds} ms");
+#endif
+            }
             try
             {
 #if DEBUG

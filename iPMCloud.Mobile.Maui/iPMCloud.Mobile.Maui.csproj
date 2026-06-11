@@ -8,13 +8,12 @@
 		<SingleProject>true</SingleProject>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ApplicationTitle>iPM-Cloud</ApplicationTitle>
-		<ApplicationId>com.ipmcloud.ipm.mobile</ApplicationId>
 		<ApplicationIdGuid>201CEFAB-590D-414F-9660-9EFF31FE2078</ApplicationIdGuid>
-		<ApplicationDisplayVersion>3.0.52</ApplicationDisplayVersion>
+		<ApplicationDisplayVersion>3.0.54</ApplicationDisplayVersion>
 		<ApplicationVersion>1</ApplicationVersion>
-		<Version>3000052</Version>
-		<AssemblyVersion>3.0.52.0</AssemblyVersion>
-		<FileVersion>3.0.52.0</FileVersion>
+		<Version>3000054</Version>
+		<AssemblyVersion>3.0.54.0</AssemblyVersion>
+		<FileVersion>3.0.54.0</FileVersion>
 		<NeutralLanguage>de-DE</NeutralLanguage>
 		<Copyright>iPM-Cloud</Copyright>
 		<Nullable>disable</Nullable>
@@ -25,7 +24,21 @@
 
 		<Configurations>Debug;ReleaseAPK;DebugDevice;Release</Configurations>
 	</PropertyGroup>
-		
+
+	<PropertyGroup>
+		<ApplicationId>com.ipmcloud.ipm.mobile</ApplicationId>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Debug|net10.0-ios'">
+		<ApplicationId>com.ipmcloud.ipm.mobile.app</ApplicationId>
+		<!--<CodesignKey>Apple Development: Created via API (4RDNR6C66G)</CodesignKey>
+		<CodesignProvision>VS: com.ipmcloud.ipm.mobile.app Development</CodesignProvision>-->
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Release|net10.0-ios'">
+		<!--<ApplicationId>com.ipmcloud.ipm.mobile.app</ApplicationId>
+		<CodesignKey>8W3QR96FUF.com.ipmcloud.ipm.mobile.app</CodesignKey>
+		<CodesignProvision>VS: com.ipmcloud.ipm.mobile.app Dist</CodesignProvision>-->
+	</PropertyGroup>
+	
 	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
 	  <WindowsPackageType>None</WindowsPackageType>
 	</PropertyGroup>
@@ -110,6 +123,7 @@
 		<MauiImage Include="Resources\Images\*" />
 		<MauiFont Include="Resources\Fonts\*" />
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+		<MauiIcon Include="Resources\AppIcon\mauilogo.png" Color="#000000" />
 	</ItemGroup>
 
 
@@ -169,6 +183,8 @@
   <CodesignKey>Apple Development: Created via API (4RDNR6C66G)</CodesignKey>
   <CodesignProvision>VS: com.ipmcloud.ipm.mobile.app Development</CodesignProvision>
 </PropertyGroup>
+
+
 
 	<!-- NLog Konfiguration - KORRIGIERT mit LogicalName -->
 	<!-- Android: LogService sucht "iPMCloud.Mobile.Droid.NLog.config" -->

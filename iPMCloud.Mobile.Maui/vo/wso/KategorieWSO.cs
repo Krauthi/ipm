@@ -134,6 +134,35 @@ namespace iPMCloud.Mobile
         }
         public static Grid GetCategoryCardView(KategorieWSO cat, AppModel model, ICommand func)
         {
+            if (model != null && model.MainPage == null || cat == null)
+            {
+                return new Grid()
+                {
+                    Padding = new Thickness(5, 5, 5, 5),
+                    Margin = new Thickness(0, 15, 0, 5),
+                    ColumnSpacing = 0,
+                    HorizontalOptions = LayoutOptions.Fill,
+                    BackgroundColor = Color.FromArgb("#042d53"),
+                    Shadow = new Shadow { Brush = Colors.Black, Opacity = 0.3f, Radius = 5, Offset = new Point(2, 2) },
+                    ClassId = "" + cat.id,
+                    ColumnDefinitions = new ColumnDefinitionCollection
+                                {
+                                    new ColumnDefinition { Width = GridLength.Star },
+                                 },
+                    Children = {
+                        new Label()
+                        {
+                            Text = "Keine Kategorie - Bitte manuell Synchronisieren!",
+                            TextColor = Color.FromArgb("#ffcc00"),
+                            Margin = new Thickness(3, 0, 5, 1),
+                            FontSize = 18,
+                            HorizontalOptions = LayoutOptions.Fill,
+                            LineBreakMode = LineBreakMode.WordWrap,
+                        } 
+                    }
+                };
+            }
+
             var _prio = CalcOverdue(cat, model);
             var imageL = new Image
             {
@@ -170,9 +199,17 @@ namespace iPMCloud.Mobile
             };
             hInfo.Children.Add(imgInfo);
             hInfo.GestureRecognizers.Clear();
+
             var t_imgInfo = new TapGestureRecognizer();
-            t_imgInfo.Tapped += (object o, TappedEventArgs ev) => { AppModel.Instance.MainPage.OpenKategorieInfoDialog(cat); };
+            t_imgInfo.Tapped += (object o, TappedEventArgs ev) =>
+            {
+                if (AppModel.Instance?.MainPage == null || cat == null || cat.notiz == null)
+                    return;
+
+                AppModel.Instance.MainPage.OpenKategorieInfoDialog(cat);
+            };
             hInfo.GestureRecognizers.Add(t_imgInfo);
+
 
             var lb = new Label()
             {

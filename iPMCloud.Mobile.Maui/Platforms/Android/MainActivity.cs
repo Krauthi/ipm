@@ -91,6 +91,51 @@ namespace iPMCloud.Mobile
             }
         }
 
+
+        //protected override void AttachBaseContext(Android.Content.Context @base)
+        //{
+        //    // Setzt den FontScale und die Density fest auf den Standardwert (1.0)
+        //    // Dadurch werden Änderungen in den Android-Einstellungen ignoriert.
+        //    Configuration configuration = new(@base.Resources.Configuration)
+        //    {
+        //        FontScale = 1.0f,
+        //        DensityDpi = (int)(@base.Resources.DisplayMetrics.Density * 160)
+        //    };
+
+        //    base.AttachBaseContext(@base.CreateConfigurationContext(configuration));
+        //}
+        protected override void AttachBaseContext(Context @base)
+        {
+            var configuration = new Configuration(@base.Resources.Configuration)
+            {
+                FontScale = 1.0f,
+                //DensityDpi = (int)(@base.Resources.DisplayMetrics.Density * 160)
+            };
+
+            var context = @base.CreateConfigurationContext(configuration);
+
+            //var metrics = context.Resources.DisplayMetrics;
+            //metrics.Density = 1.0f;
+            //metrics.ScaledDensity = 1.0f;
+            
+            //metrics.DensityDpi = DisplayMetricsDensity.Xxhigh;
+
+            base.AttachBaseContext(context);
+        }
+
+        public override void ApplyOverrideConfiguration(Configuration? overrideConfiguration)
+        {
+            if (overrideConfiguration != null)
+            {
+                overrideConfiguration.FontScale = 1.0f;
+                //overrideConfiguration.DensityDpi = 160;
+            }
+
+            base.ApplyOverrideConfiguration(overrideConfiguration);
+        }
+
+
+
         protected override void OnNewIntent(Intent intent)
         {
             base.OnNewIntent(intent);
@@ -182,33 +227,35 @@ namespace iPMCloud.Mobile
 
         #region Configuration Methods
 
-        //private void InitFontScale()
-        //{
-        //    try
-        //    {
-        //        Configuration configuration = Resources?.Configuration;
-        //        if (configuration == null) return;
+        private void InitFontScale()
+        {
+            try
+            {
+                Configuration configuration = Resources?.Configuration;
+                if (configuration == null) return;
 
-        //        configuration.FontScale = 1.00f; // Fixed font scale
-        //        DisplayMetrics metrics = new DisplayMetrics();
-        //        WindowManager?.DefaultDisplay?.GetMetrics(metrics);
-                
-        //        if (metrics != null)
-        //        {
-        //            try
-        //            {
-        //                metrics.ScaledDensity = configuration.FontScale * metrics.Density;
-        //                BaseContext?.Resources?.UpdateConfiguration(configuration, metrics);
-        //            } catch (Exception ex) {
-        //                Log.Error(TAG, $"InitFontScale Inner Error: {ex}");
-        //            }
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Log.Error(TAG, $"InitFontScale Error: {ex}");
-        //    }
-        //}
+                configuration.FontScale = 1.00f; // Fixed font scale
+                DisplayMetrics metrics = new DisplayMetrics();
+                WindowManager?.DefaultDisplay?.GetMetrics(metrics);
+
+                if (metrics != null)
+                {
+                    try
+                    {
+                        metrics.ScaledDensity = configuration.FontScale * metrics.Density;
+                        BaseContext?.Resources?.UpdateConfiguration(configuration, metrics);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error(TAG, $"InitFontScale Inner Error: {ex}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(TAG, $"InitFontScale Error: {ex}");
+            }
+        }
 
         private void ConfigureUI()
         {

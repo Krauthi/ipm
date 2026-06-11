@@ -18,16 +18,24 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>MinimumOSVersion</key>
+	<string>14.0</string>
 	<key>CFBundleDisplayName</key>
 	<string>iPM Cloud</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.ipmcloud.ipm.mobile.app</string>
 	<key>CFBundleVersion</key>
-	<string>3000050</string>
+	<string>2201111</string>
 	<key>UILaunchStoryboardName</key>
 	<string>MauiSplash</string>
 	<key>CFBundleName</key>
 	<string>iPMCloud.Mobile</string>
+	<key>CFBundleShortVersionString</key>
+	<string>2.1.111</string>
+	<key>XSAppIconAssets</key>
+	<string>Assets.xcassets/AppIcon.appiconset</string>
+	<key>CFBundleIconName</key>
+	<string>AppIcon</string>
 	<key>UIStatusBarHidden</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>

@@ -20,6 +20,8 @@ namespace iPMCloud.Mobile
         // private BackgroundWorker backgroundWorker = new BackgroundWorker();
 
         public bool isInitialize { get; set; } = false;
+        private bool _isUpdatingLoginName = false;
+        private bool _isUpdatingLoginPassword = false;
 
         public StartPage()
         {
@@ -691,11 +693,17 @@ namespace iPMCloud.Mobile
 
         public void LoginNameChangedHandeler(object sender, TextChangedEventArgs e)
         {
+            if (_isUpdatingLoginName) { return; }
             try
             {
-                if (e.NewTextValue.IndexOf(" ") > -1) { entry_login_name.Text = e.NewTextValue.Replace(" ", String.Empty); }
-                ;
-                AppModel.Instance.SettingModel.SettingDTO.LoginName = entry_login_name.Text;
+                var sanitized = e.NewTextValue ?? string.Empty;
+                if (sanitized.IndexOf(" ") > -1)
+                {
+                    sanitized = sanitized.Replace(" ", string.Empty);
+                    _isUpdatingLoginName = true;
+                    try { entry_login_name.Text = sanitized; } finally { _isUpdatingLoginName = false; }
+                }
+                AppModel.Instance.SettingModel.SettingDTO.LoginName = sanitized;
             }
             catch (Exception ex)
             {
@@ -705,11 +713,17 @@ namespace iPMCloud.Mobile
 
         public void LoginPasswordChangedHandeler(object sender, TextChangedEventArgs e)
         {
+            if (_isUpdatingLoginPassword) { return; }
             try
             {
-                if (e.NewTextValue.IndexOf(" ") > -1) { entry_login_password.Text = e.NewTextValue.Replace(" ", String.Empty); }
-                ;
-                AppModel.Instance.SettingModel.SettingDTO.LoginPassword = entry_login_password.Text;
+                var sanitized = e.NewTextValue ?? string.Empty;
+                if (sanitized.IndexOf(" ") > -1)
+                {
+                    sanitized = sanitized.Replace(" ", string.Empty);
+                    _isUpdatingLoginPassword = true;
+                    try { entry_login_password.Text = sanitized; } finally { _isUpdatingLoginPassword = false; }
+                }
+                AppModel.Instance.SettingModel.SettingDTO.LoginPassword = sanitized;
             }
             catch (Exception ex)
             {

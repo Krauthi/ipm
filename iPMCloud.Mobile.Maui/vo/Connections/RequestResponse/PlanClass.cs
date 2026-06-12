@@ -193,7 +193,7 @@ namespace iPMCloud.Mobile
 
         public static VerticalStackLayout GetPlanedTodayList(PlanPersonMobile p, ICommand func)
         {
-            var b = AppModel.Instance.AllBuildings.Find(o => o.id == p.objektid);
+            var bb = AppModel.Instance.AllBuildings.Find(o => o.id == p.objektid);
 
             var pinBtn = new HorizontalStackLayout
             {
@@ -221,11 +221,11 @@ namespace iPMCloud.Mobile
                 }
         }
             };
-            if (p.haswork == 0 && b != null)
+            if (p.haswork == 0 && bb != null)
             {
                 pinBtn.GestureRecognizers.Clear();
                 var tgr_imgPin = new TapGestureRecognizer();
-                tgr_imgPin.Tapped += (object o, TappedEventArgs ev) => { BuildingWSO.btn_MapTapped(b); };
+                tgr_imgPin.Tapped += (object o, TappedEventArgs ev) => { BuildingWSO.btn_MapTapped(bb); };
                 pinBtn.GestureRecognizers.Add(tgr_imgPin);
             }
 
@@ -236,7 +236,7 @@ namespace iPMCloud.Mobile
                 Spacing = 0,
                 VerticalOptions = LayoutOptions.Fill,
                 HorizontalOptions = LayoutOptions.End,
-                IsVisible = b != null && !String.IsNullOrWhiteSpace(b.notiz),
+                IsVisible = bb != null && !String.IsNullOrWhiteSpace(bb.notiz),
                 Children = { new HorizontalStackLayout
                 {
                     Padding = new Thickness(2),
@@ -256,11 +256,17 @@ namespace iPMCloud.Mobile
                 }
         }
             };
-            if (b != null && !String.IsNullOrWhiteSpace(b.notiz))
+            if (bb != null && !String.IsNullOrWhiteSpace(bb.notiz))
             {
                 infoBtn.GestureRecognizers.Clear();
                 var t_btn_objektinfo = new TapGestureRecognizer();
-                t_btn_objektinfo.Tapped += (object ooo, TappedEventArgs ev) => { AppModel._Instance.MainPage.OpenObjektInfoDialogB(b.notiz); };
+                t_btn_objektinfo.Tapped += (object ooo, TappedEventArgs ev) =>
+                {
+                    if (AppModel._Instance?.MainPage == null || bb == null || string.IsNullOrWhiteSpace(bb.notiz))
+                        return;
+
+                    AppModel._Instance.MainPage.OpenObjektInfoDialogB(bb.notiz);
+                };
                 infoBtn.GestureRecognizers.Add(t_btn_objektinfo);
             }
 
@@ -292,7 +298,7 @@ namespace iPMCloud.Mobile
                 }
         }
             };
-            if (func != null && b != null && AppModel.Instance.AppControll.direktBuchenPos)
+            if (func != null && bb != null && AppModel.Instance.AppControll.direktBuchenPos)
             {
                 chooseStack.GestureRecognizers.Clear();
                 chooseStack.GestureRecognizers.Add(new TapGestureRecognizer()
@@ -348,8 +354,8 @@ namespace iPMCloud.Mobile
             st.Add(new Label()
             {
                 Padding = new Thickness(0),
-                Text = b != null ? "" + b.plz + " " + b.ort + " - " + b.strasse + " " + b.hsnr : "Nicht gefunden! (Synchronisieren)",
-                TextColor = (b == null ? Color.FromArgb("#ffcc00") : (p.haswork == 1 ? Color.FromArgb("#00ff00") : Color.FromArgb("#ffffff"))),
+                Text = bb != null ? ("" + bb.plz + " " + bb.ort + " - " + bb.strasse + " " + bb.hsnr) : "Nicht gefunden! (Synchronisieren)",
+                TextColor = (bb == null ? Color.FromArgb("#ffcc00") : (p.haswork == 1 ? Color.FromArgb("#00ff00") : Color.FromArgb("#ffffff"))),
                 Margin = new Thickness(3, 3, 5, 3),
                 FontSize = 13,
                 HorizontalOptions = LayoutOptions.Fill,
@@ -470,10 +476,10 @@ namespace iPMCloud.Mobile
                     {
                         if (pp != null)
                         {
-                            if (b != null && b.ArrayOfAuftrag != null && b.ArrayOfAuftrag.Count > 0)
+                            if (bb != null && bb.ArrayOfAuftrag != null && bb.ArrayOfAuftrag.Count > 0)
                             {
                                 isAufInclude = false;
-                                auft = b.ArrayOfAuftrag.Find(_ => _.id == pp.auftragid);
+                                auft = bb.ArrayOfAuftrag.Find(_ => _.id == pp.auftragid);
                                 isAufInclude = (auft != null);
                             }
 
@@ -483,7 +489,7 @@ namespace iPMCloud.Mobile
                             }
                             var vertretend = pp.personid != pp.vonpersonid;
                             var text = "";
-                            if (b != null && b.ArrayOfAuftrag != null && b.ArrayOfAuftrag.Count > 1 && auft != null)
+                            if (bb != null && bb.ArrayOfAuftrag != null && bb.ArrayOfAuftrag.Count > 1 && auft != null)
                             {
                                 if (holdAufId != pp.auftragid) { text = text + "(" + auft.id + ")"; }
                                 text = text + (" - " + (pp.katname != null && pp.katname.Length == 0 ? "Alle Kategorien" : pp.katname)) +
@@ -562,7 +568,11 @@ namespace iPMCloud.Mobile
             {
                 imgInfo.GestureRecognizers.Clear();
                 var t_btn_objektinfo = new TapGestureRecognizer();
-                t_btn_objektinfo.Tapped += (object ooo, TappedEventArgs ev) => { AppModel._Instance.MainPage.OpenObjektInfoDialogB(bu.notiz); };
+                t_btn_objektinfo.Tapped += (object ooo, TappedEventArgs ev) => {
+                    if (AppModel._Instance?.MainPage == null || bu == null || string.IsNullOrWhiteSpace(bu.notiz))
+                        return;
+                    AppModel._Instance.MainPage.OpenObjektInfoDialogB(bu.notiz); 
+                };
                 imgInfo.GestureRecognizers.Add(t_btn_objektinfo);
             }
 
@@ -1741,7 +1751,11 @@ namespace iPMCloud.Mobile
             {
                 imgInfo.GestureRecognizers.Clear();
                 var t_btn_objektinfo = new TapGestureRecognizer();
-                t_btn_objektinfo.Tapped += (object ooo, TappedEventArgs ev) => { AppModel._Instance.MainPage.OpenObjektInfoDialogB(obj.notiz); };
+                t_btn_objektinfo.Tapped += (object ooo, TappedEventArgs ev) => {
+                    if (AppModel._Instance?.MainPage == null || obj == null || string.IsNullOrWhiteSpace(obj.notiz))
+                        return;
+                    AppModel._Instance.MainPage.OpenObjektInfoDialogB(obj.notiz); 
+                };
                 imgInfo.GestureRecognizers.Add(t_btn_objektinfo);
             }
 
@@ -1993,7 +2007,11 @@ namespace iPMCloud.Mobile
             {
                 imgInfo.GestureRecognizers.Clear();
                 var t_btn_objektinfo = new TapGestureRecognizer();
-                t_btn_objektinfo.Tapped += (object ooo, TappedEventArgs ev) => { AppModel._Instance.MainPage.OpenObjektInfoDialogB(b.notiz); };
+                t_btn_objektinfo.Tapped += (object ooo, TappedEventArgs ev) => {
+                    if (AppModel._Instance?.MainPage == null || b == null || string.IsNullOrWhiteSpace(b.notiz))
+                        return;
+                    AppModel._Instance.MainPage.OpenObjektInfoDialogB(b.notiz); 
+                };
                 imgInfo.GestureRecognizers.Add(t_btn_objektinfo);
             }
 

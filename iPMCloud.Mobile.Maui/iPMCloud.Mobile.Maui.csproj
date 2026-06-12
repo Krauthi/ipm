@@ -29,18 +29,18 @@
 		<ApplicationId>com.ipmcloud.ipm.mobile.app</ApplicationId>
 	</PropertyGroup>
 
-	
-	<PropertyGroup Condition="'$(TargetFramework)'=='net10.0-ios'">
+	<!--
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Debug|net10.0-ios'">
 		<ApplicationId>com.ipmcloud.ipm.mobile.app</ApplicationId>
-		<CodesignKey>Apple Development: Created via API (4RDNR6C66G)</CodesignKey>
-		<CodesignProvision>VS: com.ipmcloud.ipm.mobile.app Development</CodesignProvision>
+		<CodesignKey>Apple Development: Markus Krauthausen (8W3QR96FUF)</CodesignKey>
+		<CodesignProvision>DevVersion3Profile</CodesignProvision>
 	</PropertyGroup>
 	
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Release|net10.0-ios'">
 		<ApplicationId>com.ipmcloud.ipm.mobile.app</ApplicationId>
 		<CodesignKey>Apple Distribution: Markus Krauthausen (8W3QR96FUF)</CodesignKey>
 		<CodesignProvision>DistVersion3Profile</CodesignProvision>
-	</PropertyGroup>
+	</PropertyGroup>-->
 	
 	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
 	  <WindowsPackageType>None</WindowsPackageType>

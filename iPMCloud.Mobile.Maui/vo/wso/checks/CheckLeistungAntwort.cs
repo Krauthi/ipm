@@ -114,6 +114,12 @@ namespace iPMCloud.Mobile
         }
         public void Tap_SetAllGuis_a0()
         {
+            if (frame_Yes == null || frame_No == null || frame_None == null ||
+                frame_Reset == null || lb_required == null || img_ready == null ||
+                lb_quest == null || lb_notiz == null || mainFrame == null)
+            {
+                return;
+            }
             frame_Yes.Stroke = isReady && a0 == 2 ? Colors.White : Colors.Transparent;
             frame_Yes.BackgroundColor = isReady && a0 != 2 ? Color.FromArgb("#666666") : Color.FromArgb("#04732d");
             frame_Yes.Opacity = isReady && a0 != 2 ? 0.5 : 1;
@@ -209,6 +215,12 @@ namespace iPMCloud.Mobile
         }
         public void Tap_SetAllGuis_a1()
         {
+            if (frame_None == null ||
+                frame_Reset == null || lb_required == null || img_ready == null ||
+                lb_quest == null || lb_notiz == null || mainFrame == null)
+            {
+                return;
+            }
             frame_Reset.IsVisible = isReady;
             lb_required.IsVisible = required == 1 && !isReady;
             img_ready.IsVisible = isReady;
@@ -295,6 +307,12 @@ namespace iPMCloud.Mobile
         }
         public void Tap_SetAllGuis_a2()
         {
+            if (frame_None == null ||
+                frame_Reset == null || lb_required == null || img_ready == null ||
+                lb_quest == null || lb_notiz == null || mainFrame == null)
+            {
+                return;
+            }
             frame_Reset.IsVisible = isReady;
             lb_required.IsVisible = required == 1 && !isReady;
             img_ready.IsVisible = isReady;
@@ -338,6 +356,12 @@ namespace iPMCloud.Mobile
         }
         public async void Tap_SetAllGuis_a3()
         {
+            if (frame_None == null ||
+                frame_Reset == null || lb_required == null || img_ready == null ||
+                lb_quest == null || lb_notiz == null || mainFrame == null || frame_Pic == null || stack_Badge == null)
+            {
+                return;
+            }
             frame_None.Stroke = none ? Colors.White : Colors.Transparent;
             frame_None.BackgroundColor = !none ? Color.FromArgb("#666666") : Color.FromArgb("#938302");
             frame_None.Opacity = !none ? 0.5 : 1;
@@ -460,6 +484,12 @@ namespace iPMCloud.Mobile
         }
         public void Tap_SetAllGuis_a4a()
         {
+            if (frame_None == null ||
+                frame_Reset == null || lb_required == null || img_ready == null ||
+                lb_quest == null || lb_notiz == null || mainFrame == null)
+            {
+                return;
+            }
             frame_Reset.IsVisible = isReady;
             lb_required.IsVisible = required == 1 && !isReady;
             img_ready.IsVisible = isReady;
@@ -567,6 +597,13 @@ namespace iPMCloud.Mobile
         }
         public void Tap_SetAllGuis_a4b()
         {
+            if (frame_None == null ||
+                frame_Reset == null || lb_required == null || img_ready == null ||
+                lb_quest == null || lb_notiz == null || mainFrame == null)
+            {
+                return;
+            }
+
             frame_Reset.IsVisible = isReady;
             lb_required.IsVisible = required == 1 && !isReady;
             img_ready.IsVisible = isReady;
@@ -606,6 +643,13 @@ namespace iPMCloud.Mobile
         }
         public void Tap_SetAllGuis_a7()
         {
+            if (frame_None == null ||
+                frame_Reset == null || lb_required == null || img_ready == null ||
+                lb_quest == null || lb_notiz == null || mainFrame == null || frame_Yes == null || frame_Bem == null || img_sig == null)
+            {
+                return;
+            }
+
             frame_None.Stroke = none ? Colors.White : Colors.Transparent;
             frame_None.BackgroundColor = !none ? Color.FromArgb("#666666") : Color.FromArgb("#938302");
             frame_None.Opacity = !none ? 0.5 : 1;

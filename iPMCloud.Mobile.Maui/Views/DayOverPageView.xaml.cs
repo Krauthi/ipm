@@ -83,7 +83,11 @@ namespace iPMCloud.Mobile.Views
 
         public async void btn_DayOverYesTapped(object sender, EventArgs e)
         {
-            var geo = AppModel.Instance.LocationStr;
+            var instance = AppModel.Instance;
+            if (instance?.Person == null || instance.MainPage == null)
+                return;
+
+            var geo = instance.LocationStr;
             string geoMessage = "";
             if (geo != null && geo.Length > 0)
             {
@@ -98,8 +102,9 @@ namespace iPMCloud.Mobile.Views
             //AppModel.Logger.Info("Info: --------------- FEIERABEND => btn_DayOverYesTapped");
             //AppModel.Logger.Info("Info: Verwendete GPS (" + geoMessage + " - " + AppModel.Instance.LocationStr + ")");
 
-            var latin = geo != null ? geo.Split(';')[0] : "";
-            var lonin = geo != null ? (geo.Split(';').Length > 0 ? geo.Split(';')[1] : "") : "";
+            var geoParts = geo?.Split(';');
+            var latin = geoParts != null && geoParts.Length > 0 ? geoParts[0] : "";
+            var lonin = geoParts != null && geoParts.Length > 1 ? geoParts[1] : "";
 
             var d = new DayOverWSO
             {
@@ -107,18 +112,18 @@ namespace iPMCloud.Mobile.Views
                 latin = latin,
                 lonin = lonin,
                 messagein = geoMessage,
-                personid = AppModel.Instance.Person.id,
-                gruppeid = AppModel.Instance.Person.gruppeid,
+                personid = instance.Person.id,
+                gruppeid = instance.Person.gruppeid,
             };
-            DayOverWSO.Save(AppModel.Instance, d);
-            DayOverWSO.ToUploadStack(AppModel.Instance, d);
+            DayOverWSO.Save(instance, d);
+            DayOverWSO.ToUploadStack(instance, d);
             
-            AppModel.Instance.MainPage.CheckAllSyncFromUpload(); //AppModel.Instance.MainPage.SyncDayOver();
+            instance.MainPage.CheckAllSyncFromUpload(); //AppModel.Instance.MainPage.SyncDayOver();
             var dt = new DateTime(d.endticks);
-            AppModel.Instance.MainPage
+            instance.MainPage
                 .SetDayOverLastDate(dt.ToString("dd.MM.yyyy") + " - " + dt.ToString("HH:mm"));
 
-            if (AppModel.Instance.LastBuilding != null)
+            if (instance.LastBuilding != null)
             {
                 // Zurücksetzten aller States für die Auswahl der Ausführungen
                 //AppModel.Instance.SetAllObjectAndValuesToNoSelectedBuilding();

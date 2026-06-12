@@ -12,6 +12,8 @@ using MintedTextEditor.Maui;
 using iPMCloud.Mobile.Platforms.Android;
 #elif IOS
 using iPMCloud.Mobile.Platforms.iOS;
+using Microsoft.Maui.Handlers;
+using UIKit;
 #endif
 
 namespace iPMCloud.Mobile
@@ -72,6 +74,30 @@ namespace iPMCloud.Mobile
             // TODO: Initialize Maps
             // TODO: Initialize ZXing Scanner
             // TODO: Configure Permissions
+
+#if IOS
+            // Disable Dynamic Type so that changing the system text size in iOS Settings
+            // does not affect the app's font sizes (mirrors the Android FontScale = 1.0f fix).
+            LabelHandler.Mapper.AppendToMapping("NoDynamicType", (handler, _) =>
+                handler.PlatformView.AdjustsFontForContentSizeCategory = false);
+
+            EntryHandler.Mapper.AppendToMapping("NoDynamicType", (handler, _) =>
+                handler.PlatformView.AdjustsFontForContentSizeCategory = false);
+
+            EditorHandler.Mapper.AppendToMapping("NoDynamicType", (handler, _) =>
+                handler.PlatformView.AdjustsFontForContentSizeCategory = false);
+
+            ButtonHandler.Mapper.AppendToMapping("NoDynamicType", (handler, _) =>
+                handler.PlatformView.TitleLabel.AdjustsFontForContentSizeCategory = false);
+
+            SearchBarHandler.Mapper.AppendToMapping("NoDynamicType", (handler, _) =>
+            {
+                handler.PlatformView.SearchTextField.AdjustsFontForContentSizeCategory = false;
+            });
+
+            PickerHandler.Mapper.AppendToMapping("NoDynamicType", (handler, _) =>
+                handler.PlatformView.AdjustsFontForContentSizeCategory = false);
+#endif
 
             return builder.Build();
         }

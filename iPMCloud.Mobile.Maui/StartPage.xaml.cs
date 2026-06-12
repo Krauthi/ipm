@@ -696,12 +696,19 @@ namespace iPMCloud.Mobile
             if (_isUpdatingLoginName) { return; }
             try
             {
-                var sanitized = e.NewTextValue ?? string.Empty;
-                if (sanitized.IndexOf(" ") > -1)
+                var original = e.NewTextValue ?? string.Empty;
+                var sanitized = original.Replace(" ", string.Empty);
+                if (sanitized != original)
                 {
-                    sanitized = sanitized.Replace(" ", string.Empty);
                     _isUpdatingLoginName = true;
-                    try { entry_login_name.Text = sanitized; } finally { _isUpdatingLoginName = false; }
+                    try
+                    {
+                        entry_login_name.Text = sanitized;
+                    }
+                    finally
+                    {
+                        _isUpdatingLoginName = false;
+                    }
                 }
                 AppModel.Instance.SettingModel.SettingDTO.LoginName = sanitized;
             }
@@ -716,12 +723,19 @@ namespace iPMCloud.Mobile
             if (_isUpdatingLoginPassword) { return; }
             try
             {
-                var sanitized = e.NewTextValue ?? string.Empty;
-                if (sanitized.IndexOf(" ") > -1)
+                var original = e.NewTextValue ?? string.Empty;
+                var sanitized = original.Replace(" ", string.Empty);
+                if (sanitized != original)
                 {
-                    sanitized = sanitized.Replace(" ", string.Empty);
                     _isUpdatingLoginPassword = true;
-                    try { entry_login_password.Text = sanitized; } finally { _isUpdatingLoginPassword = false; }
+                    try
+                    {
+                        entry_login_password.Text = sanitized;
+                    }
+                    finally
+                    {
+                        _isUpdatingLoginPassword = false;
+                    }
                 }
                 AppModel.Instance.SettingModel.SettingDTO.LoginPassword = sanitized;
             }

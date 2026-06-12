@@ -88,11 +88,15 @@ namespace iPMCloud.Mobile
                 handler.PlatformView.AdjustsFontForContentSizeCategory = false);
 
             ButtonHandler.Mapper.AppendToMapping("NoDynamicType", (handler, _) =>
-                handler.PlatformView.TitleLabel.AdjustsFontForContentSizeCategory = false);
+            {
+                if (handler.PlatformView.TitleLabel is { } titleLabel)
+                    titleLabel.AdjustsFontForContentSizeCategory = false;
+            });
 
             SearchBarHandler.Mapper.AppendToMapping("NoDynamicType", (handler, _) =>
             {
-                handler.PlatformView.SearchTextField.AdjustsFontForContentSizeCategory = false;
+                if (handler.PlatformView.SearchTextField is { } searchTextField)
+                    searchTextField.AdjustsFontForContentSizeCategory = false;
             });
 
             PickerHandler.Mapper.AppendToMapping("NoDynamicType", (handler, _) =>

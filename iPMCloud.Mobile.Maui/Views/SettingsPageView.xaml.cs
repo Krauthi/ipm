@@ -6,10 +6,12 @@ namespace iPMCloud.Mobile.Views
     public partial class SettingsPageView : ContentPage
     {
         private static int _isModalOpen;
+        private readonly iPMCloud.Mobile.MainPage _mainPage;
         //private const int LogSendDelayMilliseconds = 2000;
 
-        public SettingsPageView()
+        public SettingsPageView(iPMCloud.Mobile.MainPage mainPage = null)
         {
+            _mainPage = mainPage;
             InitializeComponent();
 
             lb_settings_sel_trans.Text = AppModel.Instance.Lang.text.Replace("(Standard)", "");
@@ -49,7 +51,7 @@ namespace iPMCloud.Mobile.Views
 
             try
             {
-                var page = new SettingsPageView();
+                var page = new SettingsPageView(callerPage as iPMCloud.Mobile.MainPage);
                 await MainThread.InvokeOnMainThreadAsync(() =>
                     callerPage.Navigation.PushModalAsync(page, animated: false));
             }
@@ -63,12 +65,13 @@ namespace iPMCloud.Mobile.Views
         protected override void OnAppearing()
         {
             base.OnAppearing();
+            var mainPage = _mainPage ?? AppModel.Instance.MainPage;
 
             SetSendLog(true);
 
             lb_settings_synctimehours.Text = "" + AppModel.Instance.SettingModel.SettingDTO.SyncTimeHours;
 
-            int countAll = AppModel.Instance.MainPage.GetAllSyncFromUploadCount();
+            int countAll = mainPage?.GetAllSyncFromUploadCount() ?? 0;
             settings_count_positionen.Text = (countAll > 0 ? "" + countAll : "Keine Daten vorhanden");
             btn_settings_count_positionen.IsVisible = countAll > 0;
 
@@ -129,7 +132,8 @@ namespace iPMCloud.Mobile.Views
 
         public async void btn_SettingsSyncUploadTapped(object sender, EventArgs e)
         {
-            AppModel.Instance.MainPage.CheckAllSyncFromUpload();
+            var mainPage = _mainPage ?? AppModel.Instance.MainPage;
+            mainPage?.CheckAllSyncFromUpload();
             settings_count_positionen.Text = "Versucht hochzuladen";
             btn_settings_count_positionen.IsVisible = false;
         }

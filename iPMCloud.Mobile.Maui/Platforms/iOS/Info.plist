@@ -24,6 +24,8 @@
 	<string>com.ipmcloud.ipm.mobile.app</string>
 	<key>CFBundleIconName</key>
 	<string>AppIcon</string>
+	<key>XSAppIconAssets</key>
+	<string>Assets.xcassets/appicon.appiconset</string>
 	<key>CFBundleVersion</key>
 	<string>3000054</string>
 	<key>UILaunchStoryboardName</key>

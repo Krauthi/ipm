@@ -3,7 +3,7 @@
   <PropertyGroup>
     <IsFirstTimeProjectOpen>False</IsFirstTimeProjectOpen>
     <ActiveDebugFramework>net10.0-ios</ActiveDebugFramework>
-    <ActiveDebugProfile>iPhone von Markus - Über Netzwerk verbunden</ActiveDebugProfile>
+    <ActiveDebugProfile>Remotegerät</ActiveDebugProfile>
     <SelectedPlatformGroup>RemoteDevice</SelectedPlatformGroup>
     <DefaultDevice>pixel_9_pro_xl_-_api_36_0</DefaultDevice>
     <AndroidDesignerPreferredTheme>Maui.SplashTheme</AndroidDesignerPreferredTheme>

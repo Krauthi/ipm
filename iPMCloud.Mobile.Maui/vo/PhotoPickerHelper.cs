@@ -228,15 +228,16 @@ namespace iPMCloud.Mobile.Helpers
 
                 LogInfo($"PickAndProcessPhotosAsync: Picker liefert {selectedPhotos.Count} Bild(er).");
 
-                int index = 0;
+                int total = selectedPhotos.Count;
                 int successCount = 0;
 
                 // Fotos verarbeiten
-                foreach (var photo in selectedPhotos)
+                for (int index = 0; index < total; index++)
                 {
-                    index++;
+                    var photo = selectedPhotos[index];
                     string photoName = photo?.FileName ?? "unknown";
-                    LogInfo($"PickAndProcessPhotosAsync: Verarbeite Bild {index}/{selectedPhotos.Count}: '{photoName}'.");
+                    int displayIndex = index + 1;
+                    LogInfo($"PickAndProcessPhotosAsync: Verarbeite Bild {displayIndex}/{total}: '{photoName}'.");
 
                     try
                     {
@@ -251,8 +252,7 @@ namespace iPMCloud.Mobile.Helpers
                         // UI-Elemente erstellen und UI-Änderungen explizit auf dem MainThread ausführen.
                         // Dies ist auf iOS zwingend erforderlich, da UI-Operationen außerhalb des
                         // MainThreads zu Race Conditions und unvollständiger Anzeige führen können.
-                        LogInfo($"PickAndProcessPhotosAsync: Bild {index}/{selectedPhotos.Count} '{photoName}' verarbeitet – füge auf MainThread hinzu.");
-                        bool photoAdded = false;
+                        LogInfo($"PickAndProcessPhotosAsync: Bild {displayIndex}/{total} '{photoName}' verarbeitet – füge auf MainThread hinzu.");
                         await MainThread.InvokeOnMainThreadAsync(() =>
                         {
                             var bildWSO = new BildWSO(parentGuid)
@@ -280,22 +280,18 @@ namespace iPMCloud.Mobile.Helpers
                             targetStack.Children.Add(bildWSO.stack);
                             int afterCount = targetStack.Children.Count;
 
-                            LogInfo($"PickAndProcessPhotosAsync: Bild {index}/{selectedPhotos.Count} '{photoName}' in photoList und targetStack aufgenommen (Stack-Einträge: {beforeCount} → {afterCount}).");
-                            photoAdded = true;
+                            LogInfo($"PickAndProcessPhotosAsync: Bild {displayIndex}/{total} '{photoName}' in photoList und targetStack aufgenommen (Stack-Einträge: {beforeCount} → {afterCount}).");
                         });
 
-                        if (photoAdded)
-                            successCount++;
-                        else
-                            LogWarning($"PickAndProcessPhotosAsync: Bild {index}/{selectedPhotos.Count} '{photoName}' wurde NICHT zur UI hinzugefügt.");
+                        successCount++;
                     }
                     catch (Exception photoEx)
                     {
-                        LogError($"PickAndProcessPhotosAsync: Fehler beim Verarbeiten von Bild {index}/{selectedPhotos.Count} '{photoName}'.", photoEx);
+                        LogError($"PickAndProcessPhotosAsync: Fehler beim Verarbeiten von Bild {displayIndex}/{total} '{photoName}'.", photoEx);
                     }
                 }
 
-                LogInfo($"PickAndProcessPhotosAsync: Abgeschlossen – {successCount}/{selectedPhotos.Count} Bild(er) erfolgreich übernommen.");
+                LogInfo($"PickAndProcessPhotosAsync: Abgeschlossen – {successCount}/{total} Bild(er) erfolgreich übernommen.");
                 onComplete?.Invoke();
                 return true;
             }

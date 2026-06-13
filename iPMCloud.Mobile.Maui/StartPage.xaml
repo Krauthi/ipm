@@ -615,14 +615,13 @@
                             Text="Benutzername:"
                             TextColor="#aaaaaa"
                             VerticalOptions="Start" />
-                        <custom:CustomEntry
+                        <Entry
                             x:Name="entry_login_name"
                             Margin="0"
                             BackgroundColor="Transparent"
                             FontSize="17"
                             HorizontalOptions="Fill"
                             HorizontalTextAlignment="Start"
-                            IsCurvedCornersEnabled="False"
                             TextChanged="LoginNameChangedHandeler"
                             TextColor="White"
                             VerticalOptions="Start" />
@@ -656,14 +655,13 @@
                             TextColor="#aaaaaa"
                             VerticalOptions="Start" />
 
-                        <custom:CustomEntry
+                        <Entry
                             x:Name="entry_login_password"
                             Margin="0"
                             BackgroundColor="Transparent"
                             FontSize="17"
                             HorizontalOptions="Fill"
                             HorizontalTextAlignment="Start"
-                            IsCurvedCornersEnabled="False"
                             IsPassword="True"
                             TextChanged="LoginPasswordChangedHandeler"
                             TextColor="White"

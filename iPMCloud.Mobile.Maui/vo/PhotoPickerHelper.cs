@@ -212,53 +212,90 @@ namespace iPMCloud.Mobile.Helpers
                 // Prüfe Limit
                 int remainingPhotos = maxPhotos - photoList.Count;
                 if (remainingPhotos <= 0)
+                {
+                    LogInfo("PickAndProcessPhotosAsync: Limit erreicht, keine weiteren Bilder möglich.");
                     return false;
+                }
 
                 // Photo Picker
+                LogInfo($"PickAndProcessPhotosAsync: Starte Picker (max. {remainingPhotos} Bilder).");
                 var selectedPhotos = await PickMultiplePhotosAsync(remainingPhotos);
                 if (selectedPhotos == null || !selectedPhotos.Any())
+                {
+                    LogInfo("PickAndProcessPhotosAsync: Keine Bilder ausgewählt oder Picker abgebrochen.");
                     return false;
+                }
+
+                LogInfo($"PickAndProcessPhotosAsync: Picker liefert {selectedPhotos.Count} Bild(er).");
+
+                int index = 0;
+                int successCount = 0;
 
                 // Fotos verarbeiten
                 foreach (var photo in selectedPhotos)
                 {
+                    index++;
+                    string photoName = photo?.FileName ?? "unknown";
+                    LogInfo($"PickAndProcessPhotosAsync: Verarbeite Bild {index}/{selectedPhotos.Count}: '{photoName}'.");
+
                     try
                     {
                         var photoResponse = await ProcessPhotoResponseAsync(
                             photo,
                             building,
                             customBuildingText,
-                            $"PickAndProcessPhotosAsync[{photo?.FileName ?? "unknown"}]");
+                            $"PickAndProcessPhotosAsync[{photoName}]");
 
                         long bildName = DateTime.Now.Ticks;
-                        var bildWSO = new BildWSO(parentGuid)
-                        {
-                            bytes = photoResponse.imageBytes,
-                            name = bildName.ToString(),
-                            stack = BildWSO.GetAttachmentForNoticeElement(
-                                photoResponse.GetImageSourceAsThumb(),
-                                new DateTime(bildName).ToString("dd.MM.yyyy-HH:mm:ss"),
-                                removeCommand)
-                        };
 
-                        var frame = (Border)((StackLayout)(bildWSO.stack.Children[0])).Children[2];
-                        frame.GestureRecognizers.Clear();
-                        frame.GestureRecognizers.Add(new TapGestureRecognizer()
+                        // UI-Elemente erstellen und UI-Änderungen explizit auf dem MainThread ausführen.
+                        // Dies ist auf iOS zwingend erforderlich, da UI-Operationen außerhalb des
+                        // MainThreads zu Race Conditions und unvollständiger Anzeige führen können.
+                        LogInfo($"PickAndProcessPhotosAsync: Bild {index}/{selectedPhotos.Count} '{photoName}' verarbeitet – füge auf MainThread hinzu.");
+                        bool photoAdded = false;
+                        await MainThread.InvokeOnMainThreadAsync(() =>
                         {
-                            Command = removeCommand,
-                            CommandParameter = bildWSO
+                            var bildWSO = new BildWSO(parentGuid)
+                            {
+                                bytes = photoResponse.imageBytes,
+                                name = bildName.ToString(),
+                                stack = BildWSO.GetAttachmentForNoticeElement(
+                                    photoResponse.GetImageSourceAsThumb(),
+                                    new DateTime(bildName).ToString("dd.MM.yyyy-HH:mm:ss"),
+                                    removeCommand)
+                            };
+
+                            var frame = (Border)((StackLayout)(bildWSO.stack.Children[0])).Children[2];
+                            frame.GestureRecognizers.Clear();
+                            frame.GestureRecognizers.Add(new TapGestureRecognizer()
+                            {
+                                Command = removeCommand,
+                                CommandParameter = bildWSO
+                            });
+
+                            BildWSO.Save(AppModel.Instance, bildWSO);
+
+                            int beforeCount = targetStack.Children.Count;
+                            photoList.Add(bildWSO);
+                            targetStack.Children.Add(bildWSO.stack);
+                            int afterCount = targetStack.Children.Count;
+
+                            LogInfo($"PickAndProcessPhotosAsync: Bild {index}/{selectedPhotos.Count} '{photoName}' in photoList und targetStack aufgenommen (Stack-Einträge: {beforeCount} → {afterCount}).");
+                            photoAdded = true;
                         });
 
-                        BildWSO.Save(AppModel.Instance, bildWSO);
-                        photoList.Add(bildWSO);
-                        targetStack.Children.Add(bildWSO.stack);
+                        if (photoAdded)
+                            successCount++;
+                        else
+                            LogWarning($"PickAndProcessPhotosAsync: Bild {index}/{selectedPhotos.Count} '{photoName}' wurde NICHT zur UI hinzugefügt.");
                     }
                     catch (Exception photoEx)
                     {
-                        LogError($"Fehler beim Verarbeiten von '{photo?.FileName ?? "unknown"}'.", photoEx);
+                        LogError($"PickAndProcessPhotosAsync: Fehler beim Verarbeiten von Bild {index}/{selectedPhotos.Count} '{photoName}'.", photoEx);
                     }
                 }
 
+                LogInfo($"PickAndProcessPhotosAsync: Abgeschlossen – {successCount}/{selectedPhotos.Count} Bild(er) erfolgreich übernommen.");
                 onComplete?.Invoke();
                 return true;
             }

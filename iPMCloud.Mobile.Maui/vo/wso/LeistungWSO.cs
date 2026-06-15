@@ -888,7 +888,7 @@ namespace iPMCloud.Mobile
                 });
                 if (foundInOrderSelected != null)
                 {
-                    stack.Children.Add(new BoxView
+                    stack.Children.Add(new Border
                     {
                         BackgroundColor = Colors.Gray,
                         HeightRequest = 1,
@@ -901,7 +901,7 @@ namespace iPMCloud.Mobile
                         var foundSelected = c.leistungen.Find(f => f.selected == true);
                         if (foundSelected != null)
                         {
-                            stack.Children.Add(new BoxView
+                            stack.Children.Add(new Border
                             {
                                 BackgroundColor = Colors.Gray,
                                 HeightRequest = 1,
@@ -909,7 +909,7 @@ namespace iPMCloud.Mobile
                                 Margin = new Thickness(0, 0, 0, 0)
                             });
                             stack.Children.Add(KategorieWSO.GetCategoryInfoElement(c, model));
-                            stack.Children.Add(new BoxView
+                            stack.Children.Add(new Border
                             {
                                 BackgroundColor = Colors.Gray,
                                 HeightRequest = 1,
@@ -1402,7 +1402,7 @@ namespace iPMCloud.Mobile
                 });
                 if (foundInOrderSelected != null)
                 {
-                    stack.Children.Add(new BoxView
+                    stack.Children.Add(new Border
                     {
                         BackgroundColor = Colors.Gray,
                         HeightRequest = 1,
@@ -1415,7 +1415,7 @@ namespace iPMCloud.Mobile
                         var foundSelected = c.leistungen.Find(f => f.selected == true);
                         if (foundSelected != null)
                         {
-                            stack.Children.Add(new BoxView
+                            stack.Children.Add(new Border
                             {
                                 BackgroundColor = Colors.Gray,
                                 HeightRequest = 1,
@@ -1423,7 +1423,7 @@ namespace iPMCloud.Mobile
                                 Margin = new Thickness(0, 0, 0, 0)
                             });
                             stack.Children.Add(KategorieWSO.GetCategoryInfoElement(c, AppModel.Instance));
-                            stack.Children.Add(new BoxView
+                            stack.Children.Add(new Border
                             {
                                 BackgroundColor = Colors.Gray,
                                 HeightRequest = 1,

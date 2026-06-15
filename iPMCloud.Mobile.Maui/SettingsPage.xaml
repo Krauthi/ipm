@@ -104,10 +104,10 @@
                             WidthRequest="14" />
                     </StackLayout>
                 </StackLayout>
-                <BoxView
+                <Border
                     Margin="0,0,0,0"
                     BackgroundColor="#666"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="FillAndExpand"
                     VerticalOptions="Start" />
             </StackLayout>
@@ -131,11 +131,11 @@
                         TextColor="#0078d7"
                         VerticalOptions="Center" />
 
-                    <BoxView
+                    <Border
                         Margin="0,15,0,5"
                         BackgroundColor="#0078d7"
                         CornerRadius="0"
-                        HeightRequest="1"
+                        HeightRequest="2"
                         HorizontalOptions="FillAndExpand"
                         VerticalOptions="Start" />
 
@@ -206,11 +206,11 @@
                     </StackLayout>
 
 
-                    <BoxView
+                    <Border
                         Margin="0,40,0,5"
                         BackgroundColor="#0078d7"
                         CornerRadius="0"
-                        HeightRequest="1"
+                        HeightRequest="2"
                         HorizontalOptions="FillAndExpand"
                         VerticalOptions="Start" />
                     <Label
@@ -232,11 +232,11 @@
                         </sfbuttons:SfRadioGroup>-->
                     </StackLayout>
 
-                    <BoxView
+                    <Border
                         Margin="0,40,0,5"
                         BackgroundColor="#0078d7"
                         CornerRadius="0"
-                        HeightRequest="1"
+                        HeightRequest="2"
                         HorizontalOptions="FillAndExpand"
                         VerticalOptions="Start" />
                     <Label
@@ -254,11 +254,11 @@
                         <Button Clicked="FlashOFF_Handle_Clicked_1" Text="Flash off" />
                     </StackLayout>
 
-                    <BoxView
+                    <Border
                         Margin="0,40,0,25"
                         BackgroundColor="#0078d7"
                         CornerRadius="0"
-                        HeightRequest="1"
+                        HeightRequest="2"
                         HorizontalOptions="FillAndExpand"
                         VerticalOptions="Start" />
                     <Label

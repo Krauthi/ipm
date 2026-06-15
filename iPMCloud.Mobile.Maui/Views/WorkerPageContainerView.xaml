@@ -216,11 +216,11 @@
                 Spacing="0"
                 VerticalOptions="Fill" />
         </ScrollView>
-        <BoxView
+        <Border
             Grid.Row="3"
             Margin="0,0,0,0"
             BackgroundColor="Black"
-            HeightRequest="1"
+            HeightRequest="2"
             HorizontalOptions="Fill"
             VerticalOptions="Start" />
 

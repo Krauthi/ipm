@@ -135,11 +135,11 @@
                         WidthRequest="30" />
                 </Grid>
 
-                <BoxView
+                <Border
                     Grid.Row="1"
                     Margin="0"
                     BackgroundColor="#666"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
 
@@ -185,11 +185,11 @@
                         HorizontalOptions="Fill"
                         Spacing="0" />
                 </VerticalStackLayout>
-                <BoxView
+                <Border
                     Grid.Row="4"
                     Margin="0,0,0,0"
                     BackgroundColor="#666"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <VerticalStackLayout
@@ -222,11 +222,11 @@
                         TextChanged="entry_notice_TextChanged"
                         TextColor="#ffffff" />
                 </VerticalStackLayout>
-                <BoxView
+                <Border
                     Grid.Row="6"
                     Margin="0,0,0,0"
                     BackgroundColor="#666"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Grid
@@ -345,11 +345,11 @@
 
                 </Grid>
 
-                <BoxView
+                <Border
                     Grid.Row="8"
                     Margin="0,0,0,0"
                     BackgroundColor="#666"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <ScrollView
@@ -380,10 +380,10 @@
                 IsVisible="False"
                 Spacing="0"
                 VerticalOptions="End">
-                <BoxView
+                <Border
                     Margin="0,0,0,0"
                     BackgroundColor="White"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="End" />
                 <Border

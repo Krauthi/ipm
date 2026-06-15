@@ -206,11 +206,11 @@
             HorizontalOptions="Fill"
             IsVisible="True"
             Spacing="0" />
-        <BoxView
+        <Border
             Grid.Row="3"
             Margin="0"
             BackgroundColor="#666"
-            HeightRequest="1"
+            HeightRequest="2"
             HorizontalOptions="Fill" />
 
         <ScrollView
@@ -229,7 +229,7 @@
                 Spacing="0"
                 VerticalOptions="Fill" />
         </ScrollView>
-        <BoxView
+        <Border
             Grid.Row="5"
             Margin="0"
             BackgroundColor="#eeeeee"

@@ -82,11 +82,11 @@
                 TextColor="#ffffff"
                 VerticalOptions="Center" />
         </Grid>
-        <BoxView
+        <Border
             Grid.Row="1"
             Margin="0"
             BackgroundColor="#666"
-            HeightRequest="1"
+            HeightRequest="2"
             HorizontalOptions="Fill"
             VerticalOptions="Start" />
 

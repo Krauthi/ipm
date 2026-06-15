@@ -1290,13 +1290,55 @@ namespace iPMCloud.Mobile.vo
             if (NLog.LogManager.IsLoggingEnabled())
             {
                 string folder;
+                string logFolder;
 
                 if (DeviceInfo.Platform == DevicePlatform.iOS)
-                    folder = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "..", "Library");
+                {
+                    // On iOS, NLog's ${specialfolder:folder=LocalApplicationData} resolves to Library directory
+                    // Try multiple potential paths to find where NLog actually wrote the logs
+                    string[] possibleBasePaths = new[]
+                    {
+                        // Try LocalApplicationData first (might be Library on iOS)
+                        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                        // Try Library path explicitly
+                        System.IO.Path.GetFullPath(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "..", "Library")),
+                        // Try from Personal (Documents)
+                        System.IO.Path.GetFullPath(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "..", "Library"))
+                    };
+
+                    folder = null;
+                    logFolder = null;
+
+                    // Find the first path where logs directory actually exists
+                    foreach (var basePath in possibleBasePaths)
+                    {
+                        var testLogFolder = System.IO.Path.Combine(basePath, "logs");
+                        if (System.IO.Directory.Exists(testLogFolder))
+                        {
+                            folder = basePath;
+                            logFolder = testLogFolder;
+                            AppModel.Logger.Info($"INFO: Found log folder on iOS at: {logFolder}");
+                            break;
+                        }
+                    }
+
+                    if (folder == null)
+                    {
+                        // Log the attempted paths for debugging
+                        AppModel.Logger.Warn($"WARN: Could not find logs folder. Tried paths: {string.Join(", ", possibleBasePaths.Select(p => System.IO.Path.Combine(p, "logs")))}");
+                        folder = possibleBasePaths[0]; // Default to first path
+                        logFolder = System.IO.Path.Combine(folder, "logs");
+                    }
+                }
                 else if (DeviceInfo.Platform == DevicePlatform.Android)
+                {
                     folder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                    logFolder = System.IO.Path.Combine(folder, "logs");
+                }
                 else
+                {
                     throw new Exception("Could not show log: Platform undefined.");
+                }
 
                 //Delete old zipfiles (housekeeping)
                 try
@@ -1311,7 +1353,6 @@ namespace iPMCloud.Mobile.vo
                     AppModel.Logger.Error("ERROR: SendLog -> Error deleting old zip files: {e.Message}");
                 }
 
-                string logFolder = System.IO.Path.Combine(folder, "logs");
                 if (System.IO.Directory.Exists(logFolder))
                 {
                     zipFilename = $"{folder}/{DateTime.Now.ToString("yyyyMMdd-HHmmss")}.zip";

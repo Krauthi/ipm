@@ -128,7 +128,7 @@ namespace iPMCloud.Mobile
                             deleteButton
                         }
                     },
-                    new BoxView
+                    new Border
                     {
                         BackgroundColor = Colors.Gray,
                         HeightRequest = 1,

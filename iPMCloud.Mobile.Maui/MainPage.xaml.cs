@@ -2680,10 +2680,10 @@ namespace iPMCloud.Mobile
                 t_lb.Tapped += (object o, TappedEventArgs ev) => { daypicker_SelectedIndexChanged(o, i); };
                 lb_day.GestureRecognizers.Add(t_lb);
                 daypicker_items.Children.Add(lb_day);
-                var bv = new BoxView
+                var bv = new Border
                 {
                     BackgroundColor = Colors.Gray,
-                    HeightRequest = 1,
+                    HeightRequest = 2,
                     VerticalOptions = LayoutOptions.Start,
                     HorizontalOptions = LayoutOptions.Fill,
                     Margin = new Thickness(0)

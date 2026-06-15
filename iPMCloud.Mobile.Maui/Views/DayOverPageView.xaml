@@ -92,10 +92,10 @@
             HorizontalOptions="Fill"
             IsVisible="True"
             VerticalOptions="Start">
-            <BoxView
+            <Border
                 Margin="0,0,0,0"
                 BackgroundColor="#666"
-                HeightRequest="1"
+                HeightRequest="2"
                 HorizontalOptions="Fill"
                 VerticalOptions="Start" />
 
@@ -136,10 +136,10 @@
                 HorizontalTextAlignment="Start"
                 Text="Ihre letzten 20 Feierabendbestätigungen:"
                 TextColor="#ffffff" />
-            <BoxView
+            <Border
                 Margin="0,0,0,0"
                 BackgroundColor="#666"
-                HeightRequest="1"
+                HeightRequest="2"
                 HorizontalOptions="Fill"
                 VerticalOptions="Start" />
             <ScrollView

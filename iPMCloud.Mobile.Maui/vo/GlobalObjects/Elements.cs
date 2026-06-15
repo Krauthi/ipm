@@ -661,13 +661,13 @@ namespace iPMCloud.Mobile.vo
         }
 
 
-        public static BoxView GetBoxViewLine()
+        public static Border GetBoxViewLine()
         {
-            return new BoxView() { Margin = new Thickness(0, 0, 0, 0), HeightRequest = 1, BackgroundColor = Colors.Gray };
+            return new Border() { Margin = new Thickness(0, 0, 0, 0), HeightRequest = 1, BackgroundColor = Colors.Gray };
         }
-        public static BoxView GetHeightSpacer(double height = 5)
+        public static Border GetHeightSpacer(double height = 5)
         {
-            return new BoxView() { Margin = new Thickness(0, 0, 0, 0), HeightRequest = height, BackgroundColor = Colors.Transparent };
+            return new Border() { Margin = new Thickness(0, 0, 0, 0), HeightRequest = height, BackgroundColor = Colors.Transparent };
         }
 
     }

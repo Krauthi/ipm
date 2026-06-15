@@ -125,11 +125,11 @@
                     VerticalOptions="Center"
                     WidthRequest="30" />
             </Grid>
-            <BoxView
+            <Border
                 Grid.Row="1"
                 Margin="0"
                 BackgroundColor="#666"
-                HeightRequest="1"
+                HeightRequest="2"
                 HorizontalOptions="Fill"
                 VerticalOptions="Start" />
 
@@ -157,11 +157,11 @@
                     HorizontalOptions="Fill"
                     Spacing="0" />
             </VerticalStackLayout>
-            <BoxView
+            <Border
                 Grid.Row="3"
                 Margin="0"
                 BackgroundColor="#666"
-                HeightRequest="1"
+                HeightRequest="2"
                 HorizontalOptions="Fill"
                 VerticalOptions="Start" />
             <VerticalStackLayout
@@ -192,11 +192,11 @@
                     TextChanged="entry_notice_TextChanged"
                     TextColor="#ffffff" />
             </VerticalStackLayout>
-            <BoxView
+            <Border
                 Grid.Row="5"
                 Margin="0"
                 BackgroundColor="#666"
-                HeightRequest="1"
+                HeightRequest="2"
                 HorizontalOptions="Fill"
                 VerticalOptions="Start" />
             <Grid
@@ -346,11 +346,11 @@
                 </Grid>
             </Grid>
 
-            <BoxView
+            <Border
                 Grid.Row="7"
                 Margin="0"
                 BackgroundColor="#666"
-                HeightRequest="1"
+                HeightRequest="2"
                 HorizontalOptions="Fill"
                 VerticalOptions="Start" />
             <ScrollView
@@ -369,11 +369,11 @@
                     VerticalOptions="Fill" />
             </ScrollView>
 
-            <BoxView
+            <Border
                 Grid.Row="9"
                 Margin="0"
                 BackgroundColor="White"
-                HeightRequest="1"
+                HeightRequest="2"
                 HorizontalOptions="Fill"
                 VerticalOptions="End" />
             <Grid

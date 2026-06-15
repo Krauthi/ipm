@@ -82,11 +82,11 @@
                 TextColor="#ffffff"
                 VerticalOptions="Center" />
         </Grid>
-        <BoxView
+        <Border
             Grid.Row="1"
             Margin="0,0,0,0"
             BackgroundColor="#666"
-            HeightRequest="1"
+            HeightRequest="2"
             HorizontalOptions="Fill"
             VerticalOptions="Start" />
 
@@ -114,10 +114,10 @@
                     TextColor="#ffffff"
                     VerticalOptions="Center" />
 
-                <BoxView
+                <Border
                     Margin="10,0,10,0"
                     BackgroundColor="#666"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <VerticalStackLayout
@@ -183,7 +183,7 @@
                 </VerticalStackLayout>
 
 
-                <BoxView
+                <Border
                     Margin="0,0,0,0"
                     BackgroundColor="White"
                     HeightRequest="2"
@@ -200,10 +200,10 @@
                     TextColor="#ffffff"
                     VerticalOptions="Center" />
 
-                <BoxView
+                <Border
                     Margin="10,0,10,0"
                     BackgroundColor="#666"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <VerticalStackLayout
@@ -271,7 +271,7 @@
                     </HorizontalStackLayout>
                 </VerticalStackLayout>
 
-                <BoxView
+                <Border
                     Margin="0,0,0,0"
                     BackgroundColor="White"
                     HeightRequest="2"
@@ -287,10 +287,10 @@
                     TextColor="#ffffff"
                     VerticalOptions="Center" />
 
-                <BoxView
+                <Border
                     Margin="10,0,10,0"
                     BackgroundColor="#666"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <VerticalStackLayout
@@ -378,7 +378,7 @@
                 </VerticalStackLayout>
 
 
-                <BoxView
+                <Border
                     Margin="0,0,0,0"
                     BackgroundColor="White"
                     HeightRequest="2"
@@ -394,10 +394,10 @@
                     TextColor="#ffffff"
                     VerticalOptions="Center" />
 
-                <BoxView
+                <Border
                     Margin="10,0,10,0"
                     BackgroundColor="#666"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <VerticalStackLayout

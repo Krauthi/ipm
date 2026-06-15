@@ -82,11 +82,11 @@
                 VerticalOptions="Center" />
         </Grid>
 
-        <BoxView
+        <Border
             Grid.Row="0"
             Margin="0"
             BackgroundColor="#666"
-            HeightRequest="1"
+            HeightRequest="2"
             HorizontalOptions="Fill"
             VerticalOptions="End" />
 
@@ -108,10 +108,10 @@
                 TextColor="#ffffff"
                 VerticalOptions="Center" />
 
-            <BoxView
+            <Border
                 Margin="0,5,0,5"
                 BackgroundColor="#666"
-                HeightRequest="1"
+                HeightRequest="2"
                 HorizontalOptions="Fill"
                 VerticalOptions="Start" />
 
@@ -166,10 +166,10 @@
                 </Border>
             </Grid>
 
-            <BoxView
+            <Border
                 Margin="0,5,0,5"
                 BackgroundColor="#666"
-                HeightRequest="1"
+                HeightRequest="2"
                 HorizontalOptions="Fill"
                 VerticalOptions="Start" />
 

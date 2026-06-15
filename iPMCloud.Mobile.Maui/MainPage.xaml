@@ -238,11 +238,11 @@
             </Grid>
 
 
-            <BoxView
+            <Border
                 Grid.Row="1"
                 Margin="0,0,0,0"
                 BackgroundColor="#666"
-                HeightRequest="1"
+                HeightRequest="2"
                 HorizontalOptions="Fill"
                 VerticalOptions="Start" />
 
@@ -717,12 +717,12 @@
             </VerticalStackLayout>
 
 
-            <BoxView
+            <Border
                 x:Name="lastBuilding_ContainerBottom"
                 Grid.Row="3"
                 Margin="0,0,0,10"
                 BackgroundColor="#666"
-                HeightRequest="1"
+                HeightRequest="2"
                 IsVisible="False"
                 HorizontalOptions="Fill"
                 VerticalOptions="Start" />
@@ -1496,11 +1496,11 @@
                                             <RowDefinition Height="Auto" />
                                         </Grid.RowDefinitions>
 
-                                        <BoxView
+                                        <Border
                                             Grid.Row="0"
                                             Margin="0"
                                             BackgroundColor="#ccc"
-                                            HeightRequest="1"
+                                            HeightRequest="2"
                                             HorizontalOptions="Fill"
                                             VerticalOptions="Start" />
                                         <HorizontalStackLayout
@@ -1540,11 +1540,11 @@
                                                 Spacing="1"
                                                 VerticalOptions="Fill" />
                                         </ScrollView>
-                                        <BoxView
+                                        <Border
                                             Grid.Row="3"
                                             Margin="0"
                                             BackgroundColor="#ccc"
-                                            HeightRequest="1"
+                                            HeightRequest="2"
                                             HorizontalOptions="Fill"
                                             VerticalOptions="Start" />
                                     </Grid>
@@ -1563,11 +1563,11 @@
                                             <RowDefinition Height="*" />
                                             <RowDefinition Height="Auto" />
                                         </Grid.RowDefinitions>
-                                        <BoxView
+                                        <Border
                                             Grid.Row="0"
                                             Margin="0"
                                             BackgroundColor="#ccc"
-                                            HeightRequest="1"
+                                            HeightRequest="2"
                                             HorizontalOptions="Fill"
                                             VerticalOptions="Start" />
                                         <HorizontalStackLayout
@@ -1606,11 +1606,11 @@
                                                 Spacing="0"
                                                 VerticalOptions="Fill" />
                                         </ScrollView>
-                                        <BoxView
+                                        <Border
                                             Grid.Row="3"
                                             Margin="0"
                                             BackgroundColor="#aaa"
-                                            HeightRequest="1"
+                                            HeightRequest="2"
                                             HorizontalOptions="Fill"
                                             VerticalOptions="Start" />
                                     </Grid>
@@ -1629,11 +1629,11 @@
                                             <RowDefinition Height="*" />
                                             <RowDefinition Height="Auto" />
                                         </Grid.RowDefinitions>
-                                        <BoxView
+                                        <Border
                                             Grid.Row="0"
                                             Margin="0"
                                             BackgroundColor="#ccc"
-                                            HeightRequest="1"
+                                            HeightRequest="2"
                                             HorizontalOptions="Fill"
                                             VerticalOptions="Start" />
                                         <HorizontalStackLayout
@@ -1673,11 +1673,11 @@
                                                 Spacing="0"
                                                 VerticalOptions="Fill" />
                                         </ScrollView>
-                                        <BoxView
+                                        <Border
                                             Grid.Row="3"
                                             Margin="0"
                                             BackgroundColor="#aaa"
-                                            HeightRequest="1"
+                                            HeightRequest="2"
                                             HorizontalOptions="Fill"
                                             VerticalOptions="Start" />
                                     </Grid>
@@ -1947,11 +1947,11 @@
                                         <RowDefinition Height="*" />
                                         <RowDefinition Height="Auto" />
                                     </Grid.RowDefinitions>
-                                    <BoxView
+                                    <Border
                                         Grid.Row="0"
                                         Margin="0"
                                         BackgroundColor="#ccc"
-                                        HeightRequest="1"
+                                        HeightRequest="2"
                                         HorizontalOptions="Fill"
                                         VerticalOptions="Start" />
                                     <HorizontalStackLayout
@@ -1999,11 +1999,11 @@
                                                 VerticalOptions="Start" />
                                         </VerticalStackLayout>
                                     </ScrollView>
-                                    <BoxView
+                                    <Border
                                         Grid.Row="3"
                                         Margin="0"
                                         BackgroundColor="#ccc"
-                                        HeightRequest="1"
+                                        HeightRequest="2"
                                         HorizontalOptions="Fill"
                                         VerticalOptions="Start" />
                                 </Grid>
@@ -2022,11 +2022,11 @@
                                         <RowDefinition Height="*" />
                                         <RowDefinition Height="Auto" />
                                     </Grid.RowDefinitions>
-                                    <BoxView
+                                    <Border
                                         Grid.Row="0"
                                         Margin="0"
                                         BackgroundColor="#ccc"
-                                        HeightRequest="1"
+                                        HeightRequest="2"
                                         HorizontalOptions="Fill"
                                         VerticalOptions="Start" />
                                     <HorizontalStackLayout
@@ -2074,11 +2074,11 @@
                                                 VerticalOptions="Start" />
                                         </VerticalStackLayout>
                                     </ScrollView>
-                                    <BoxView
+                                    <Border
                                         Grid.Row="3"
                                         Margin="0"
                                         BackgroundColor="#ccc"
-                                        HeightRequest="1"
+                                        HeightRequest="2"
                                         HorizontalOptions="Fill"
                                         VerticalOptions="Start" />
                                 </Grid>
@@ -2297,11 +2297,11 @@
                                 </HorizontalStackLayout>
                             </Grid>
 
-                            <BoxView
+                            <Border
                                 Grid.Row="1"
                                 Margin="0"
                                 BackgroundColor="#ccc"
-                                HeightRequest="1"
+                                HeightRequest="2"
                                 HorizontalOptions="Fill"
                                 VerticalOptions="Start" />
 
@@ -2445,11 +2445,11 @@
                             </ScrollView>
 
 
-                            <BoxView
+                            <Border
                                 Grid.Row="3"
                                 Margin="0"
                                 BackgroundColor="#ccc"
-                                HeightRequest="1"
+                                HeightRequest="2"
                                 HorizontalOptions="Fill"
                                 VerticalOptions="Start" />
 
@@ -2508,11 +2508,11 @@
                                 </HorizontalStackLayout>
                             </Grid>
 
-                            <BoxView
+                            <Border
                                 Grid.Row="1"
                                 Margin="0"
                                 BackgroundColor="#ccc"
-                                HeightRequest="1"
+                                HeightRequest="2"
                                 HorizontalOptions="Fill"
                                 VerticalOptions="Start" />
 
@@ -2701,11 +2701,11 @@
                                     </Grid>
                             </Grid>
 
-                            <BoxView
+                            <Border
                                 Grid.Row="3"
                                 Margin="0"
                                 BackgroundColor="#ccc"
-                                HeightRequest="1"
+                                HeightRequest="2"
                                 HorizontalOptions="Fill"
                                 VerticalOptions="Start" />
                             <!-- Ticket Buttons untere Reihe -->
@@ -2931,10 +2931,10 @@
                 IsVisible="False"
                 Spacing="0"
                 VerticalOptions="End">
-                <BoxView
+                <Border
                     Margin="0,0,0,0"
                     BackgroundColor="White"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="End" />
                 <Grid
@@ -3088,11 +3088,11 @@
                         VerticalOptions="Center" />
                 </StackLayout>
             </Grid>
-            <BoxView
+            <Border
                 Grid.Row="1"
                 Margin="0,0,0,0"
                 BackgroundColor="#666"
-                HeightRequest="1"
+                HeightRequest="2"
                 HorizontalOptions="Fill"
                 VerticalOptions="Start" />
             <Grid
@@ -3160,11 +3160,11 @@
                 </Border>
             </Grid>
 
-            <BoxView
+            <Border
                 Grid.Row="3"
                 Margin="0,0,0,0"
                 BackgroundColor="#666"
-                HeightRequest="1"
+                HeightRequest="2"
                 HorizontalOptions="Fill"
                 VerticalOptions="Start" />
             <Grid
@@ -3197,12 +3197,12 @@
                     TextColor="#ffffff"
                     VerticalOptions="Start" />
             </Grid>
-            <BoxView
+            <Border
                 Grid.Row="5"
                 Margin="0,0,0,0"
                 BackgroundColor="#666"
                 BindingContext="{x:Reference inBuildingOrder_position_stack_Again}"
-                HeightRequest="1"
+                HeightRequest="2"
                 HorizontalOptions="Fill"
                 IsVisible="{Binding Path=IsVisible}"
                 VerticalOptions="Start" />
@@ -3278,11 +3278,11 @@
                 </Grid>
             </Grid>
 
-            <BoxView
+            <Border
                 Grid.Row="7"
                 Margin="0,0,0,0"
                 BackgroundColor="#666"
-                HeightRequest="1"
+                HeightRequest="2"
                 HorizontalOptions="Fill"
                 VerticalOptions="Start" />
             <VerticalStackLayout
@@ -3294,11 +3294,11 @@
                 IsVisible="False"
                 Spacing="0"
                 VerticalOptions="Start" />
-            <BoxView
+            <Border
                 Grid.Row="9"
                 Margin="0,0,0,0"
                 BackgroundColor="#666"
-                HeightRequest="1"
+                HeightRequest="2"
                 HorizontalOptions="Fill"
                 VerticalOptions="Start" />
 
@@ -3447,7 +3447,7 @@
                 Margin="0,0,0,12"
                 Padding="0"
                 BackgroundColor="Transparent"
-                HeightRequest="1"
+                HeightRequest="2"
                 HorizontalOptions="Fill"
                 Spacing="0"
                 VerticalOptions="End" />
@@ -3462,10 +3462,10 @@
                 IsVisible="False"
                 Spacing="0"
                 VerticalOptions="End">
-                <BoxView
+                <Border
                     Margin="0,0,0,0"
                     BackgroundColor="White"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="End" />
                 <Grid
@@ -3619,11 +3619,11 @@
                         VerticalOptions="Center" />
                 </StackLayout>
             </Grid>
-            <BoxView
+            <Border
                 Grid.Row="1"
                 Margin="0,0,0,0"
                 BackgroundColor="#666"
-                HeightRequest="1"
+                HeightRequest="2"
                 HorizontalOptions="Fill"
                 VerticalOptions="Start" />
 
@@ -3714,12 +3714,12 @@
                 </VerticalStackLayout>
             </Grid>
 
-            <BoxView
+            <Border
                 x:Name="entry_workersearch_container_bv"
                 Grid.Row="4"
                 Margin="0,0,0,0"
                 BackgroundColor="#666"
-                HeightRequest="1"
+                HeightRequest="2"
                 HorizontalOptions="Fill"
                 IsVisible="False"
                 VerticalOptions="Start" />
@@ -3740,11 +3740,11 @@
                     Spacing="0"
                     VerticalOptions="Fill" />
             </ScrollView>
-            <BoxView
+            <Border
                 Grid.Row="6"
                 Margin="0,0,0,0"
                 BackgroundColor="#666"
-                HeightRequest="1"
+                HeightRequest="2"
                 HorizontalOptions="Fill"
                 VerticalOptions="Start" />
 
@@ -3846,11 +3846,11 @@
                         TextColor="#ffffff"
                         VerticalOptions="Center" />
                 </Grid>
-                <BoxView
+                <Border
                     Grid.Row="1"
                     Margin="0,0,0,3"
                     BackgroundColor="#666"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
 
@@ -3981,11 +3981,11 @@
                         </StackLayout>
                     </Border>
                 </Grid>
-                <BoxView
+                <Border
                     Grid.Row="1"
                     Margin="0,0,0,0"
                     BackgroundColor="#666"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Grid
@@ -4018,11 +4018,11 @@
                         TextColor="#ffffff"
                         VerticalOptions="Start" />
                 </Grid>
-                <BoxView
+                <Border
                     Grid.Row="3"
                     Margin="0,0,0,0"
                     BackgroundColor="#666"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
 
@@ -4127,11 +4127,11 @@
                         TextColor="#ffffff"
                         VerticalOptions="Center" />
                 </Grid>
-                <BoxView
+                <Border
                     Grid.Row="1"
                     Margin="0,0,0,0"
                     BackgroundColor="#666"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Grid
@@ -4164,11 +4164,11 @@
                         TextColor="#ffffff"
                         VerticalOptions="Start" />
                 </Grid>
-                <BoxView
+                <Border
                     Grid.Row="3"
                     Margin="0,0,0,0"
                     BackgroundColor="#666"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Grid
@@ -4201,11 +4201,11 @@
                         TextColor="#ffffff"
                         VerticalOptions="Start" />
                 </Grid>
-                <BoxView
+                <Border
                     Grid.Row="5"
                     Margin="0,0,0,0"
                     BackgroundColor="#666"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
 
@@ -4234,7 +4234,7 @@
                 Margin="0,0,0,12"
                 Padding="0"
                 BackgroundColor="Transparent"
-                HeightRequest="1"
+                HeightRequest="2"
                 HorizontalOptions="Fill"
                 Spacing="0"
                 VerticalOptions="End" />
@@ -4249,10 +4249,10 @@
                 IsVisible="False"
                 Spacing="0"
                 VerticalOptions="End">
-                <BoxView
+                <Border
                     Margin="0,0,0,0"
                     BackgroundColor="White"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="End" />
                 <Grid
@@ -4413,11 +4413,11 @@
                         TextColor="#ffffff"
                         VerticalOptions="Center" />
                 </Grid>
-                <BoxView
+                <Border
                     Grid.Row="1"
                     Margin="0,0,0,0"
                     BackgroundColor="#666"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
 
@@ -4438,11 +4438,11 @@
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                 </Grid>
-                <BoxView
+                <Border
                     Grid.Row="3"
                     Margin="0,0,0,3"
                     BackgroundColor="#666"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
 
@@ -4470,10 +4470,10 @@
                 BackgroundColor="#33000000"
                 Spacing="0"
                 VerticalOptions="End">
-                <BoxView
+                <Border
                     Margin="0,-10,0,0"
                     BackgroundColor="#fff"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="End" />
                 <Border
@@ -4596,11 +4596,11 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                <BoxView
+                <Border
                     Grid.Row="0"
                     Margin="0,0,0,0"
                     BackgroundColor="#666"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
 
@@ -4791,10 +4791,10 @@
                         VerticalOptions="Center" />
 
                 </Grid>
-                <BoxView
+                <Border
                     Margin="0,0,0,0"
                     BackgroundColor="#666"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
 
@@ -4934,11 +4934,11 @@
                         VerticalOptions="Center" />
 
                 </Grid>
-                <BoxView
+                <Border
                     Grid.Row="1"
                     Margin="0"
                     BackgroundColor="#666"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
 
@@ -5026,11 +5026,11 @@
                     </Border>
                 </Grid>
 
-                <BoxView
+                <Border
                     Grid.Row="3"
                     Margin="0"
                     BackgroundColor="#666"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
 
@@ -5060,10 +5060,10 @@
                     BackgroundColor="#99042d53"
                     HorizontalOptions="Fill"
                     Spacing="0">
-                    <BoxView
+                    <Border
                         Margin="0,0,0,0"
                         BackgroundColor="#666"
-                        HeightRequest="1"
+                        HeightRequest="2"
                         HorizontalOptions="Fill"
                         VerticalOptions="Start" />
                     <HorizontalStackLayout
@@ -5356,10 +5356,10 @@
                         TextColor="#ffffff"
                         VerticalOptions="Center" />
                 </Grid>
-                <BoxView
+                <Border
                     Margin="0,0,0,0"
                     BackgroundColor="#666"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
 
@@ -5394,10 +5394,10 @@
                         Scale="0.80"
                         Spacing="0" />
                 </VerticalStackLayout>
-                <BoxView
+                <Border
                     Margin="0,0,0,0"
                     BackgroundColor="#666"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <VerticalStackLayout
@@ -5429,10 +5429,10 @@
                         Text=""
                         TextColor="#ffffff" />
                 </VerticalStackLayout>
-                <BoxView
+                <Border
                     Margin="0,0,0,0"
                     BackgroundColor="#666"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Grid
@@ -5503,10 +5503,10 @@
                     </Grid>
                 </Grid>
 
-                <BoxView
+                <Border
                     Margin="0,0,0,0"
                     BackgroundColor="#666"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <ScrollView
@@ -5532,10 +5532,10 @@
                     HorizontalOptions="Fill"
                     Spacing="0"
                     VerticalOptions="End">
-                    <BoxView
+                    <Border
                         Margin="0,0,0,0"
                         BackgroundColor="White"
-                        HeightRequest="1"
+                        HeightRequest="2"
                         HorizontalOptions="Fill"
                         VerticalOptions="End" />
                     <Border
@@ -5648,11 +5648,11 @@
                             VerticalOptions="Center"
                             WidthRequest="32" />
                     </Grid>
-                    <BoxView
+                    <Border
                         Grid.Row="1"
                         Margin="0,0,0,0"
                         BackgroundColor="White"
-                        HeightRequest="1"
+                        HeightRequest="2"
                         HorizontalOptions="Fill"
                         VerticalOptions="Start" />
 
@@ -5671,11 +5671,11 @@
                             VerticalOptions="Fill" />
                     </ScrollView>
 
-                    <BoxView
+                    <Border
                         Grid.Row="3"
                         Margin="0"
                         BackgroundColor="White"
-                        HeightRequest="1"
+                        HeightRequest="2"
                         HorizontalOptions="Fill"
                         VerticalOptions="Start" />
                     <Border
@@ -5792,11 +5792,11 @@
                                 VerticalOptions="Center"
                                 WidthRequest="36" />
                         </Grid>
-                        <BoxView
+                        <Border
                             Grid.Row="1"
                             Margin="0,8,0,8"
                             BackgroundColor="#666"
-                            HeightRequest="1"
+                            HeightRequest="2"
                             HorizontalOptions="Fill"
                             VerticalOptions="Start" />
                         <Border
@@ -5915,11 +5915,11 @@
                                 </Grid>
                             </StackLayout>
                         </Border>
-                        <BoxView
+                        <Border
                             Grid.Row="4"
                             Margin="0,8,0,8"
                             BackgroundColor="#666"
-                            HeightRequest="1"
+                            HeightRequest="2"
                             HorizontalOptions="Fill"
                             VerticalOptions="Start" />
 
@@ -5989,11 +5989,11 @@
                             Spacing="1"
                             VerticalOptions="Fill" />
 
-                        <BoxView
+                        <Border
                             Grid.Row="7"
                             Margin="0,23,0,8"
                             BackgroundColor="#666"
-                            HeightRequest="1"
+                            HeightRequest="2"
                             HorizontalOptions="Fill"
                             IsVisible="True"
                             VerticalOptions="Start" />
@@ -6054,11 +6054,11 @@
                                 </Grid>
                             </StackLayout>
                         </Border>
-                        <BoxView
+                        <Border
                             Grid.Row="9"
                             Margin="0,8,0,8"
                             BackgroundColor="#666"
-                            HeightRequest="1"
+                            HeightRequest="2"
                             HorizontalOptions="Fill"
                             IsVisible="True"
                             VerticalOptions="Start" />
@@ -6169,11 +6169,11 @@
                                 </Grid>
                             </StackLayout>
                         </Border>
-                        <BoxView
+                        <Border
                             Grid.Row="11"
                             Margin="0,8,0,8"
                             BackgroundColor="#666"
-                            HeightRequest="1"
+                            HeightRequest="2"
                             HorizontalOptions="Fill"
                             VerticalOptions="Start" />
                         <Border
@@ -6232,11 +6232,11 @@
                                 </Grid>
                             </HorizontalStackLayout>
                         </Border>
-                        <BoxView
+                        <Border
                             Grid.Row="13"
                             Margin="0,8,0,8"
                             BackgroundColor="#666"
-                            HeightRequest="1"
+                            HeightRequest="2"
                             HorizontalOptions="Fill"
                             VerticalOptions="Start" />
 
@@ -6329,10 +6329,10 @@
                     Text="SYNCHRONISATION:"
                     TextColor="#ffffff"
                     VerticalOptions="Center" />
-                <BoxView
+                <Border
                     Margin="0,3,0,3"
                     BackgroundColor="#666"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <VerticalStackLayout
@@ -6405,11 +6405,11 @@
                     Text="SYNC Fehlgeschlagen!"
                     TextColor="#ffffff"
                     VerticalOptions="Center" />
-                <BoxView
+                <Border
                     Grid.Row="1"
                     Margin="0,3,0,3"
                     BackgroundColor="#fff"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Label
@@ -6475,10 +6475,10 @@
                     Text="ÜBERSETZUNG:"
                     TextColor="#ffffff"
                     VerticalOptions="Center" />
-                <BoxView
+                <Border
                     Margin="0,3,0,3"
                     BackgroundColor="#666"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <VerticalStackLayout
@@ -6558,11 +6558,11 @@
                     Text="Nachbuchen?"
                     TextColor="#ffffff"
                     VerticalOptions="Center" />
-                <BoxView
+                <Border
                     Grid.Row="1"
                     Margin="0,3,0,13"
                     BackgroundColor="#fff"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Label
@@ -6574,11 +6574,11 @@
                     HorizontalTextAlignment="Start"
                     Text="Möchten Sie wirklich mit der Ausführung Ihrer Auswahl beginnen?"
                     TextColor="#ffffff" />
-                <BoxView
+                <Border
                     Grid.Row="3"
                     Margin="0,10,0,10"
                     BackgroundColor="#fff"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Grid
@@ -6653,11 +6653,11 @@
                     Text="Checkliste jetzt starten?"
                     TextColor="#ffffff"
                     VerticalOptions="Center" />
-                <BoxView
+                <Border
                     Grid.Row="1"
                     Margin="0,3,0,13"
                     BackgroundColor="#fff"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Label
@@ -6678,11 +6678,11 @@
                     Text="Wenn Sie die Checkliste gestartet haben, wird auch die Arbeitszeit dafür gemessen. Deshalb sollte diese auch in einem Arbeitsdurchgang durchgeführt werden."
                     TextColor="#ffcc00"
                     VerticalOptions="Center" />
-                <BoxView
+                <Border
                     Grid.Row="4"
                     Margin="0,10,0,10"
                     BackgroundColor="#fff"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Grid
@@ -6756,11 +6756,11 @@
                     Text="Checkliste löschen?"
                     TextColor="#ffcc00"
                     VerticalOptions="Center" />
-                <BoxView
+                <Border
                     Grid.Row="1"
                     Margin="0,3,0,13"
                     BackgroundColor="#fff"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Label
@@ -6781,11 +6781,11 @@
                     Text="Alle bisher bearbeitete Fragen gehen dadurch verloren!"
                     TextColor="#ffcc00"
                     VerticalOptions="Center" />
-                <BoxView
+                <Border
                     Grid.Row="4"
                     Margin="0,10,0,10"
                     BackgroundColor="#ccc"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill" />
                 <Grid
                     Grid.Row="5"
@@ -6858,11 +6858,11 @@
                     Text=""
                     TextColor="#ffffff"
                     VerticalOptions="Center" />
-                <BoxView
+                <Border
                     Margin="0,3,0,3"
                     Grid.Row="1"
                     BackgroundColor="#fff"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Label
@@ -6875,11 +6875,11 @@
                     Text=""
                     TextColor="#ffffff"
                     VerticalOptions="Center" />
-                <BoxView
+                <Border
                     Grid.Row="3"
                     Margin="0,10,0,10"
                     BackgroundColor="#fff"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Grid
@@ -6938,11 +6938,11 @@
                     Text="Jetzt beenden?"
                     TextColor="#ffffff"
                     VerticalOptions="Center" />
-                <BoxView
+                <Border
                     Grid.Row="1"
                     Margin="0,3,0,13"
                     BackgroundColor="#fff"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Label
@@ -6954,11 +6954,11 @@
                     Text="Möchten Sie wirklich Ihre Ausführungen jetzt beenden?"
                     TextColor="#ffffff"
                     VerticalOptions="Center" />
-                <BoxView
+                <Border
                     Grid.Row="3"
                     Margin="0,10,0,10"
                     BackgroundColor="#fff"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Grid
@@ -7034,11 +7034,11 @@
                     Text="Senden an den Support (iPM-Cloud)"
                     TextColor="#ffffff"
                     VerticalOptions="Center" />
-                <BoxView
+                <Border
                     Grid.Row="1"
                     Margin="0,3,0,3"
                     BackgroundColor="#666"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Label
@@ -7047,11 +7047,11 @@
                     FontSize="18"
                     Text="Hier mit senden Sie Ihre LOG-Daten zur Analyse bei Problemfällen an den Support der iPM-Cloud. Möchte Sie wircklich diese LOG-Daten jetzt senden?"
                     TextColor="#ffffff" />
-                <BoxView
+                <Border
                     Grid.Row="3"
                     Margin="0,10,0,10"
                     BackgroundColor="#666"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Grid
@@ -7145,11 +7145,11 @@
                         TextColor="#ffdd00"
                         VerticalOptions="Center" />
                 </Grid>
-                <BoxView
+                <Border
                     Grid.Row="1"
                     Margin="0,3,0,3"
                     BackgroundColor="#fff"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Label
@@ -7161,11 +7161,11 @@
                     Text="Es wurde versucht ein LogFile an den Support der iPM-Cloud zu senden. Leider konnte dies nicht ausgeführt werden. Bitte prüfen Sie ob Sie Online sind bzw. das Internet erreichen können."
                     TextColor="#ffffff"
                     VerticalOptions="Center" />
-                <BoxView
+                <Border
                     Grid.Row="3"
                     Margin="0,10,0,10"
                     BackgroundColor="#fff"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Grid
@@ -7224,11 +7224,11 @@
                     Text="Zur Info!"
                     TextColor="#ffffff"
                     VerticalOptions="Center" />
-                <BoxView
+                <Border
                     Grid.Row="1"
                     Margin="0,3,0,3"
                     BackgroundColor="#fff"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Label
@@ -7240,11 +7240,11 @@
                     Text="Für das Beenden der letzten Ausführungen wurde nicht das Ursprungsobjekt gescannt!"
                     TextColor="#ffffff"
                     VerticalOptions="Center" />
-                <BoxView
+                <Border
                     Grid.Row="3"
                     Margin="0,10,0,10"
                     BackgroundColor="#fff"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Grid
@@ -7301,11 +7301,11 @@
                     Text="OBJEKT VERLASSEN"
                     TextColor="#ffcc00"
                     VerticalOptions="Center" />
-                <BoxView
+                <Border
                     Grid.Row="1"
                     Margin="0,3,0,3"
                     BackgroundColor="#fff"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Label
@@ -7327,12 +7327,12 @@
                     Text="Wollen Sie die offenen Ausführungen jetzt beenden? "
                     TextColor="#ffcc00"
                     VerticalOptions="Center" />
-                <BoxView
+                <Border
                     
                     Grid.Row="4"
                     Margin="0,10,0,10"
                     BackgroundColor="#fff"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Grid
@@ -7406,11 +7406,11 @@
                     HorizontalOptions="Fill"
                     Text="MÜLLPOSITION ÄNDERN"
                     TextColor="#ffcc00" />
-                <BoxView
+                <Border
                     Grid.Row="1"
                     Margin="0,10"
                     BackgroundColor="#fff"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"/>
                 <Label
                     Grid.Row="2"
@@ -7428,11 +7428,11 @@
                     Text="Entscheiden Sie hier was Sie wircklich tun werden."
                     TextColor="#ffffff"
                     VerticalOptions="Center" />
-                <BoxView
+                <Border
                     Grid.Row="4"
                     Margin="0,0,0,0"
                     BackgroundColor="#fff"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Grid
@@ -7509,11 +7509,11 @@
                     Text="DIREKTBUCHEN OHNE SCAN"
                     TextColor="#ffcc00"
                     VerticalOptions="Center" />
-                <BoxView
+                <Border
                     Grid.Row="1"
                     Margin="0,1,0,3"
                     BackgroundColor="#666"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Label
@@ -7525,11 +7525,11 @@
                     Text="Hier buchen Sie eine Leistung, für die das Direktbuchen möglich ist, ohne sich am Objekt ein- und wieder auszuscannen."
                     TextColor="#ffffff"
                     VerticalOptions="Center" />
-                <BoxView
+                <Border
                     Grid.Row="3"
                     Margin="0,0,0,-5"
                     BackgroundColor="#666"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <ScrollView
@@ -7546,11 +7546,11 @@
                         Spacing="0"
                         VerticalOptions="Fill" />
                 </ScrollView>
-                <BoxView
+                <Border
                     Grid.Row="5"
                     Margin="0,-5,0,8"
                     BackgroundColor="#666"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Grid
@@ -7673,27 +7673,27 @@
                     </Grid.ColumnDefinitions>
                     <Image
                         Grid.Column="0"
-                        Margin="0,0,10,0"
-                        HeightRequest="24"
+                        Margin="5,0,10,0"
+                        HeightRequest="28"
                         HorizontalOptions="Start"
                         Source="ic_info.png"
                         VerticalOptions="Center"
-                        WidthRequest="24" />
+                        WidthRequest="28" />
                     <Label
                         Grid.Column="1"
                         Margin="10"
-                        FontSize="18"
+                        FontSize="22"
                         HorizontalOptions="Fill"
                         HorizontalTextAlignment="Start"
                         Text="Zusätzliche Information"
                         TextColor="#ffffff"
                         VerticalOptions="Center" />
                 </Grid>
-                <BoxView
+                <Border
                     Grid.Row="1"
                     Margin="0,10,0,10"
                     BackgroundColor="#fff"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <!--<Label x:Name="popupContainer_infodialog_titel" Margin="10" HorizontalOptions="Fill" VerticalOptions="Center"
@@ -7702,17 +7702,17 @@
                     x:Name="popupContainer_infodialog_text"
                     Grid.Row="2"
                     Margin="10"
-                    FontSize="14"
+                    FontSize="16"
                     HorizontalOptions="Fill"
                     LineBreakMode="WordWrap"
                     Text=""
                     TextColor="#ffffff"
                     WidthRequest="280" />
-                <BoxView
+                <Border
                     Grid.Row="3"
                     Margin="0,10,0,10"
                     BackgroundColor="#fff"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Grid
@@ -7796,11 +7796,11 @@
                         TextColor="#ffffff"
                         VerticalOptions="Center" />
                 </Grid>
-                <BoxView
+                <Border
                     Grid.Row="1"
                     Margin="0,0,0,0"
                     BackgroundColor="#fff"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                     <Label
@@ -7812,11 +7812,11 @@
                         LineBreakMode="WordWrap"
                         Text="Wählen sie die Person von dem Sie die geplanten Arbeiten einsehen möchten:"
                         TextColor="#eee" />
-                <BoxView
+                <Border
                     Grid.Row="3"
                     Margin="0,0,0,0"
                     BackgroundColor="#fff"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <CollectionView
@@ -7854,10 +7854,10 @@
                                         TextColor="White" />
                                 </HorizontalStackLayout>
                                 <!--<Label Text="{Binding mobile}" FontSize="16" LineBreakMode="NoWrap" Margin="20,0,0,0"/>-->
-                                <BoxView
+                                <Border
                                     Margin="0,3,0,3"
                                     BackgroundColor="#cccccc"
-                                    HeightRequest="1"
+                                    HeightRequest="2"
                                     HorizontalOptions="Fill"
                                     VerticalOptions="Start" />
                             </VerticalStackLayout>
@@ -7882,11 +7882,11 @@
                         </DataTemplate>
                     </CollectionView.GroupHeaderTemplate>
                 </CollectionView>
-                <BoxView
+                <Border
                     Grid.Row="5"
                     Margin="0"
                     BackgroundColor="#fff"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Grid
@@ -7944,11 +7944,11 @@
                     Text="Tag auswählen"
                     TextColor="#ffffff"
                     VerticalOptions="Center" />
-                <BoxView
+                <Border
                     Grid.Row="1"
                     Margin="0,3,0,3"
                     BackgroundColor="#fff"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <VerticalStackLayout
@@ -7959,11 +7959,11 @@
                     BackgroundColor="Transparent"
                     HorizontalOptions="Fill"
                     Spacing="3" />
-                <BoxView
+                <Border
                     Grid.Row="3"
                     Margin="0,10,0,10"
                     BackgroundColor="#fff"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Grid
@@ -8045,7 +8045,7 @@
                 Spacing="0"
                 VerticalOptions="Fill">
 
-                <BoxView
+                <Border
                     Margin="0"
                     BackgroundColor="Black"
                     HeightRequest="65"
@@ -8114,10 +8114,10 @@
                         TextColor="#ffffff"
                         VerticalOptions="Center" />
                 </Grid>
-                <BoxView
+                <Border
                     Margin="0,-1,0,0"
                     BackgroundColor="#666"
-                    HeightRequest="1"
+                    HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
 
@@ -8229,10 +8229,10 @@
                                     </Border>
                                 </Grid>
 
-                                <BoxView
+                                <Border
                                     Margin="-4,4,-4,1"
                                     BackgroundColor="White"
-                                    HeightRequest="1"
+                                    HeightRequest="2"
                                     HorizontalOptions="Fill"
                                     VerticalOptions="Start" />
 
@@ -8268,10 +8268,10 @@
                                         VerticalOptions="Start" />
                                 </Grid>
 
-                                <BoxView
+                                <Border
                                     Margin="0,4,0,1"
                                     BackgroundColor="White"
-                                    HeightRequest="1"
+                                    HeightRequest="2"
                                     HorizontalOptions="Fill"
                                     VerticalOptions="Start" />
 
@@ -8292,10 +8292,10 @@
                                     TextColor="#ddd"
                                     VerticalOptions="Start" />
 
-                                <BoxView
+                                <Border
                                     Margin="0,4,0,1"
                                     BackgroundColor="White"
-                                    HeightRequest="1"
+                                    HeightRequest="2"
                                     HorizontalOptions="Fill"
                                     VerticalOptions="Start" />
 
@@ -8308,10 +8308,10 @@
                                     TextColor="#ffffff"
                                     VerticalOptions="Start" />
 
-                                <BoxView
+                                <Border
                                     Margin="-4,4,-4,10"
                                     BackgroundColor="White"
-                                    HeightRequest="1"
+                                    HeightRequest="2"
                                     HorizontalOptions="Fill"
                                     VerticalOptions="Start" />
 

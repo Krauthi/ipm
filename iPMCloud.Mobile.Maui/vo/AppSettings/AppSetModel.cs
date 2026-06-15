@@ -319,7 +319,7 @@ namespace iPMCloud.Mobile.vo
                 if (!File.Exists(FilePath))
                     return;
 
-                string backupPath = FilePath + $".corrupted_{DateTime.UtcNow:yyyyMMdd_HHmmss_fff}";
+                string backupPath = FilePath + $".corrupted_{DateTime.UtcNow:yyyyMMdd_HHmmss_fff}_{Guid.NewGuid():N}";
                 File.Copy(FilePath, backupPath, overwrite: true);
                 File.Delete(FilePath);
                 AppModel.Logger?.Info($"Load AppSet: Corrupted file backed up to {backupPath}");

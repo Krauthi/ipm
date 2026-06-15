@@ -85,7 +85,7 @@
         <BoxView
             Grid.Row="0"
             Margin="0"
-            BackgroundColor="Gray"
+            BackgroundColor="#666"
             HeightRequest="1"
             HorizontalOptions="Fill"
             VerticalOptions="End" />
@@ -110,7 +110,7 @@
 
             <BoxView
                 Margin="0,5,0,5"
-                BackgroundColor="Gray"
+                BackgroundColor="#666"
                 HeightRequest="1"
                 HorizontalOptions="Fill"
                 VerticalOptions="Start" />
@@ -168,7 +168,7 @@
 
             <BoxView
                 Margin="0,5,0,5"
-                BackgroundColor="Gray"
+                BackgroundColor="#666"
                 HeightRequest="1"
                 HorizontalOptions="Fill"
                 VerticalOptions="Start" />

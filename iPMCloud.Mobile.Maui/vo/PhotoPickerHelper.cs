@@ -271,120 +271,121 @@ namespace iPMCloud.Mobile.Helpers
         /// <summary>
         /// Nimmt ein Foto auf und verarbeitet es komplett
         /// </summary>
-        public static async Task<BildWSO> TakeAndProcessPhotoAsync(
-            string parentGuid,
-            Command<BildWSO> removeCommand,
-            BuildingWSO building = null,
-            string customBuildingText = null)
-        {
-            try
-            {
-                LogInfo("TakeAndProcessPhotoAsync: Starte Fotoaufnahme.");
+        //public static async Task<BildWSO> TakeAndProcessPhotoAsync(
+        //    string parentGuid,
+        //    Command<BildWSO> removeCommand,
+        //    BuildingWSO building = null,
+        //    string customBuildingText = null)
+        //{
+        //    try
+        //    {
+        //        LogInfo("TakeAndProcessPhotoAsync: Starte Fotoaufnahme.");
 
-                var hasCameraPermission = await PermissionHelper.EnsureCameraPermissionAsync(
-                    "PhotoPickerHelper.TakeAndProcessPhotoAsync");
-                if (!hasCameraPermission)
-                {
-                    throw new PhotoPickerException(
-                        PhotoPickerFailureKind.PermissionDenied,
-                        "Bitte erlauben Sie Kamera-Zugriff.",
-                        "Permissions.RequestAsync");
-                }
+        //        var hasCameraPermission = await PermissionHelper.EnsureCameraPermissionAsync(
+        //            "PhotoPickerHelper.TakeAndProcessPhotoAsync");
+        //        if (!hasCameraPermission)
+        //        {
+        //            throw new PhotoPickerException(
+        //                PhotoPickerFailureKind.PermissionDenied,
+        //                "Bitte erlauben Sie Kamera-Zugriff.",
+        //                "Permissions.RequestAsync");
+        //        }
 
-                // Kamera verfügbar?
-                if (!MediaPicker.Default.IsCaptureSupported)
-                {
-                    LogWarning("TakeAndProcessPhotoAsync: Capture wird auf diesem Gerät nicht unterstützt.");
-                    throw new PhotoPickerException(
-                        PhotoPickerFailureKind.CaptureNotSupported,
-                        "Kamera nicht verfügbar.",
-                        "MediaPicker.IsCaptureSupported");
-                }
+        //        // Kamera verfügbar?
+        //        if (!MediaPicker.Default.IsCaptureSupported)
+        //        {
+        //            LogWarning("TakeAndProcessPhotoAsync: Capture wird auf diesem Gerät nicht unterstützt.");
+        //            throw new PhotoPickerException(
+        //                PhotoPickerFailureKind.CaptureNotSupported,
+        //                "Kamera nicht verfügbar.",
+        //                "MediaPicker.IsCaptureSupported");
+        //        }
 
-                // Foto aufnehmen
-                LogInfo("TakeAndProcessPhotoAsync: Starte MediaPicker.Default.CapturePhotoAsync.");
-                var photo = await MediaPicker.Default.CapturePhotoAsync(new MediaPickerOptions
-                {
-                    CompressionQuality = 75,
-                    MaximumHeight = 1024,
-                    MaximumWidth = 1024,
-                    RotateImage = true,
-                    PreserveMetaData = true,
-                });
-                LogInfo("TakeAndProcessPhotoAsync: MediaPicker.Default.CapturePhotoAsync beendet.");
-                if (photo == null)
-                {
-                    LogInfo("TakeAndProcessPhotoAsync: Keine Datei zurückgegeben (Abbruch oder kein Ergebnis).");
-                    return null;
-                }
+        //        // Foto aufnehmen
+        //        LogInfo("TakeAndProcessPhotoAsync: Starte MediaPicker.Default.CapturePhotoAsync.");
 
-                LogInfo($"TakeAndProcessPhotoAsync: Capture-Datei erhalten '{photo.FileName}' ({photo.FullPath}).");
-                var photoResponse = await ProcessPhotoResponseAsync(
-                    photo,
-                    building,
-                    customBuildingText,
-                    "TakeAndProcessPhotoAsync");
+        //        var photo = await MediaPicker.Default.CapturePhotoAsync(new MediaPickerOptions
+        //        {
+        //            CompressionQuality = 75,
+        //            MaximumHeight = 1024,
+        //            MaximumWidth = 1024,
+        //            RotateImage = true,
+        //            PreserveMetaData = true,
+        //        });
+        //        LogInfo("TakeAndProcessPhotoAsync: MediaPicker.Default.CapturePhotoAsync beendet.");
+        //        if (photo == null)
+        //        {
+        //            LogInfo("TakeAndProcessPhotoAsync: Keine Datei zurückgegeben (Abbruch oder kein Ergebnis).");
+        //            return null;
+        //        }
 
-                long bildName = DateTime.Now.Ticks;
-                var bildWSO = new BildWSO(parentGuid)
-                {
-                    bytes = photoResponse.imageBytes,
-                    name = bildName.ToString(),
-                    stack = BildWSO.GetAttachmentForNoticeElement(
-                        photoResponse.GetImageSourceAsThumb(),
-                        new DateTime(bildName).ToString("dd.MM.yyyy-HH:mm:ss"),
-                        removeCommand)
-                };
+        //        LogInfo($"TakeAndProcessPhotoAsync: Capture-Datei erhalten '{photo.FileName}' ({photo.FullPath}).");
+        //        var photoResponse = await ProcessPhotoResponseAsync(
+        //            photo,
+        //            building,
+        //            customBuildingText,
+        //            "TakeAndProcessPhotoAsync");
 
-                // Frame Gesture Recognizer einrichten
-                var frame = (Border)((StackLayout)(bildWSO.stack.Children[0])).Children[2];
-                frame.GestureRecognizers.Clear();
-                frame.GestureRecognizers.Add(new TapGestureRecognizer()
-                {
-                    Command = removeCommand,
-                    CommandParameter = bildWSO
-                });
+        //        long bildName = DateTime.Now.Ticks;
+        //        var bildWSO = new BildWSO(parentGuid)
+        //        {
+        //            bytes = photoResponse.imageBytes,
+        //            name = bildName.ToString(),
+        //            stack = BildWSO.GetAttachmentForNoticeElement(
+        //                photoResponse.GetImageSourceAsThumb(),
+        //                new DateTime(bildName).ToString("dd.MM.yyyy-HH:mm:ss"),
+        //                removeCommand)
+        //        };
 
-                LogInfo("TakeAndProcessPhotoAsync: Bild erfolgreich verarbeitet.");
-                return bildWSO;
-            }
-            catch (OperationCanceledException)
-            {
-                LogInfo("TakeAndProcessPhotoAsync: Benutzer hat die Aktion abgebrochen.");
-                throw;
-            }
-            catch (PhotoPickerException)
-            {
-                throw;
-            }
-            catch (PermissionException ex)
-            {
-                LogError("TakeAndProcessPhotoAsync: PermissionException.", ex);
-                throw new PhotoPickerException(
-                    PhotoPickerFailureKind.PermissionDenied,
-                    "Bitte erlauben Sie Kamera-Zugriff.",
-                    "PermissionException",
-                    ex);
-            }
-            catch (FeatureNotSupportedException ex)
-            {
-                LogError("TakeAndProcessPhotoAsync: FeatureNotSupportedException.", ex);
-                throw new PhotoPickerException(
-                    PhotoPickerFailureKind.CaptureNotSupported,
-                    "Kamera wird nicht unterstützt.",
-                    "FeatureNotSupportedException",
-                    ex);
-            }
-            catch (Exception ex)
-            {
-                LogError("TakeAndProcessPhotoAsync: Unerwarteter Fehler beim Foto aufnehmen.", ex);
-                throw new PhotoPickerException(
-                    PhotoPickerFailureKind.CaptureFailed,
-                    "Foto konnte nicht aufgenommen oder verarbeitet werden.",
-                    "Unhandled",
-                    ex);
-            }
-        }
+        //        // Frame Gesture Recognizer einrichten
+        //        var frame = (Border)((StackLayout)(bildWSO.stack.Children[0])).Children[2];
+        //        frame.GestureRecognizers.Clear();
+        //        frame.GestureRecognizers.Add(new TapGestureRecognizer()
+        //        {
+        //            Command = removeCommand,
+        //            CommandParameter = bildWSO
+        //        });
+
+        //        LogInfo("TakeAndProcessPhotoAsync: Bild erfolgreich verarbeitet.");
+        //        return bildWSO;
+        //    }
+        //    catch (OperationCanceledException)
+        //    {
+        //        LogInfo("TakeAndProcessPhotoAsync: Benutzer hat die Aktion abgebrochen.");
+        //        throw;
+        //    }
+        //    catch (PhotoPickerException)
+        //    {
+        //        throw;
+        //    }
+        //    catch (PermissionException ex)
+        //    {
+        //        LogError("TakeAndProcessPhotoAsync: PermissionException.", ex);
+        //        throw new PhotoPickerException(
+        //            PhotoPickerFailureKind.PermissionDenied,
+        //            "Bitte erlauben Sie Kamera-Zugriff.",
+        //            "PermissionException",
+        //            ex);
+        //    }
+        //    catch (FeatureNotSupportedException ex)
+        //    {
+        //        LogError("TakeAndProcessPhotoAsync: FeatureNotSupportedException.", ex);
+        //        throw new PhotoPickerException(
+        //            PhotoPickerFailureKind.CaptureNotSupported,
+        //            "Kamera wird nicht unterstützt.",
+        //            "FeatureNotSupportedException",
+        //            ex);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        LogError("TakeAndProcessPhotoAsync: Unerwarteter Fehler beim Foto aufnehmen.", ex);
+        //        throw new PhotoPickerException(
+        //            PhotoPickerFailureKind.CaptureFailed,
+        //            "Foto konnte nicht aufgenommen oder verarbeitet werden.",
+        //            "Unhandled",
+        //            ex);
+        //    }
+        //}
 
 
     }

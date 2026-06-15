@@ -576,7 +576,7 @@
             <BoxView
                 Grid.Row="3"
                 Margin="0,0,0,3"
-                BackgroundColor="Gray"
+                BackgroundColor="#666"
                 HeightRequest="1"
                 HorizontalOptions="Fill"
                 VerticalOptions="Start" />
@@ -714,7 +714,7 @@
                 </Grid>
                 <BoxView
                     Margin="0,0,0,0"
-                    BackgroundColor="Gray"
+                    BackgroundColor="#666"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
@@ -741,7 +741,7 @@
                 </HorizontalStackLayout>
                 <BoxView
                     Margin="0,0,0,0"
-                    BackgroundColor="Gray"
+                    BackgroundColor="#666"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
@@ -991,7 +991,7 @@
                     </HorizontalStackLayout>
                     <BoxView
                         Margin="0,3,0,13"
-                        BackgroundColor="Gray"
+                        BackgroundColor="#666"
                         HeightRequest="1"
                         HorizontalOptions="Fill"
                         VerticalOptions="Start" />
@@ -1013,7 +1013,7 @@
                         VerticalOptions="Center" />
                     <BoxView
                         Margin="0,10,0,10"
-                        BackgroundColor="Gray"
+                        BackgroundColor="#666"
                         HeightRequest="1"
                         HorizontalOptions="Fill"
                         VerticalOptions="Start" />
@@ -1100,7 +1100,7 @@
                     </HorizontalStackLayout>
                     <BoxView
                         Margin="0,3,0,13"
-                        BackgroundColor="Gray"
+                        BackgroundColor="#666"
                         HeightRequest="1"
                         HorizontalOptions="Fill"
                         VerticalOptions="Start" />
@@ -1114,7 +1114,7 @@
                         VerticalOptions="Center" />
                     <BoxView
                         Margin="0,10,0,10"
-                        BackgroundColor="Gray"
+                        BackgroundColor="#666"
                         HeightRequest="1"
                         HorizontalOptions="Fill"
                         VerticalOptions="Start" />
@@ -1166,7 +1166,7 @@
                     VerticalOptions="Center" />
                 <BoxView
                     Margin="0,3,0,3"
-                    BackgroundColor="Gray"
+                    BackgroundColor="#666"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
@@ -1181,7 +1181,7 @@
                     VerticalOptions="Center" />
                 <BoxView
                     Margin="0,10,0,10"
-                    BackgroundColor="Gray"
+                    BackgroundColor="#666"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />

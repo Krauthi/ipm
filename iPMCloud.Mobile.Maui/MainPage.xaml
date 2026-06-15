@@ -241,7 +241,7 @@
             <BoxView
                 Grid.Row="1"
                 Margin="0,0,0,0"
-                BackgroundColor="Gray"
+                BackgroundColor="#666"
                 HeightRequest="1"
                 HorizontalOptions="Fill"
                 VerticalOptions="Start" />
@@ -721,7 +721,7 @@
                 x:Name="lastBuilding_ContainerBottom"
                 Grid.Row="3"
                 Margin="0,0,0,10"
-                BackgroundColor="Gray"
+                BackgroundColor="#666"
                 HeightRequest="1"
                 IsVisible="False"
                 HorizontalOptions="Fill"
@@ -3091,7 +3091,7 @@
             <BoxView
                 Grid.Row="1"
                 Margin="0,0,0,0"
-                BackgroundColor="Gray"
+                BackgroundColor="#666"
                 HeightRequest="1"
                 HorizontalOptions="Fill"
                 VerticalOptions="Start" />
@@ -3163,7 +3163,7 @@
             <BoxView
                 Grid.Row="3"
                 Margin="0,0,0,0"
-                BackgroundColor="Gray"
+                BackgroundColor="#666"
                 HeightRequest="1"
                 HorizontalOptions="Fill"
                 VerticalOptions="Start" />
@@ -3200,7 +3200,7 @@
             <BoxView
                 Grid.Row="5"
                 Margin="0,0,0,0"
-                BackgroundColor="Gray"
+                BackgroundColor="#666"
                 BindingContext="{x:Reference inBuildingOrder_position_stack_Again}"
                 HeightRequest="1"
                 HorizontalOptions="Fill"
@@ -3281,7 +3281,7 @@
             <BoxView
                 Grid.Row="7"
                 Margin="0,0,0,0"
-                BackgroundColor="Gray"
+                BackgroundColor="#666"
                 HeightRequest="1"
                 HorizontalOptions="Fill"
                 VerticalOptions="Start" />
@@ -3297,7 +3297,7 @@
             <BoxView
                 Grid.Row="9"
                 Margin="0,0,0,0"
-                BackgroundColor="Gray"
+                BackgroundColor="#666"
                 HeightRequest="1"
                 HorizontalOptions="Fill"
                 VerticalOptions="Start" />
@@ -3622,7 +3622,7 @@
             <BoxView
                 Grid.Row="1"
                 Margin="0,0,0,0"
-                BackgroundColor="Gray"
+                BackgroundColor="#666"
                 HeightRequest="1"
                 HorizontalOptions="Fill"
                 VerticalOptions="Start" />
@@ -3718,7 +3718,7 @@
                 x:Name="entry_workersearch_container_bv"
                 Grid.Row="4"
                 Margin="0,0,0,0"
-                BackgroundColor="Gray"
+                BackgroundColor="#666"
                 HeightRequest="1"
                 HorizontalOptions="Fill"
                 IsVisible="False"
@@ -3743,7 +3743,7 @@
             <BoxView
                 Grid.Row="6"
                 Margin="0,0,0,0"
-                BackgroundColor="Gray"
+                BackgroundColor="#666"
                 HeightRequest="1"
                 HorizontalOptions="Fill"
                 VerticalOptions="Start" />
@@ -3849,7 +3849,7 @@
                 <BoxView
                     Grid.Row="1"
                     Margin="0,0,0,3"
-                    BackgroundColor="Gray"
+                    BackgroundColor="#666"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
@@ -3984,7 +3984,7 @@
                 <BoxView
                     Grid.Row="1"
                     Margin="0,0,0,0"
-                    BackgroundColor="Gray"
+                    BackgroundColor="#666"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
@@ -4021,7 +4021,7 @@
                 <BoxView
                     Grid.Row="3"
                     Margin="0,0,0,0"
-                    BackgroundColor="Gray"
+                    BackgroundColor="#666"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
@@ -4130,7 +4130,7 @@
                 <BoxView
                     Grid.Row="1"
                     Margin="0,0,0,0"
-                    BackgroundColor="Gray"
+                    BackgroundColor="#666"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
@@ -4167,7 +4167,7 @@
                 <BoxView
                     Grid.Row="3"
                     Margin="0,0,0,0"
-                    BackgroundColor="Gray"
+                    BackgroundColor="#666"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
@@ -4204,7 +4204,7 @@
                 <BoxView
                     Grid.Row="5"
                     Margin="0,0,0,0"
-                    BackgroundColor="Gray"
+                    BackgroundColor="#666"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
@@ -4416,7 +4416,7 @@
                 <BoxView
                     Grid.Row="1"
                     Margin="0,0,0,0"
-                    BackgroundColor="Gray"
+                    BackgroundColor="#666"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
@@ -4441,7 +4441,7 @@
                 <BoxView
                     Grid.Row="3"
                     Margin="0,0,0,3"
-                    BackgroundColor="Gray"
+                    BackgroundColor="#666"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
@@ -4464,22 +4464,22 @@
             <VerticalStackLayout
                 Grid.Row="1"
                 Margin="0,0,0,12"
-                Padding="0"
-                BackgroundColor="#333333"
+                Padding="0,4"
                 HeightRequest="54"
                 HorizontalOptions="Fill"
+                BackgroundColor="#33000000"
                 Spacing="0"
                 VerticalOptions="End">
                 <BoxView
-                    Margin="0,0,0,0"
-                    BackgroundColor="White"
+                    Margin="0,-10,0,0"
+                    BackgroundColor="#fff"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="End" />
                 <Border
                     x:Name="btn_runningworks_over"
                     Margin="10,5"
-                    Padding="2"
+                    Padding="5"
                     BackgroundColor="#04532d"
                     HorizontalOptions="Start">
                     <HorizontalStackLayout
@@ -4503,7 +4503,7 @@
                             <Label
                                 Margin="0,4,0,0"
                                 Padding="0"
-                                FontSize="16"
+                                FontSize="18"
                                 Text="JETZT BEENDEN"
                                 TextColor="#ffffff" />
                         </VerticalStackLayout>
@@ -4599,7 +4599,7 @@
                 <BoxView
                     Grid.Row="0"
                     Margin="0,0,0,0"
-                    BackgroundColor="Gray"
+                    BackgroundColor="#666"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
@@ -4793,7 +4793,7 @@
                 </Grid>
                 <BoxView
                     Margin="0,0,0,0"
-                    BackgroundColor="Gray"
+                    BackgroundColor="#666"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
@@ -4937,7 +4937,7 @@
                 <BoxView
                     Grid.Row="1"
                     Margin="0"
-                    BackgroundColor="Gray"
+                    BackgroundColor="#666"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
@@ -5029,7 +5029,7 @@
                 <BoxView
                     Grid.Row="3"
                     Margin="0"
-                    BackgroundColor="Gray"
+                    BackgroundColor="#666"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
@@ -5062,7 +5062,7 @@
                     Spacing="0">
                     <BoxView
                         Margin="0,0,0,0"
-                        BackgroundColor="Gray"
+                        BackgroundColor="#666"
                         HeightRequest="1"
                         HorizontalOptions="Fill"
                         VerticalOptions="Start" />
@@ -5358,7 +5358,7 @@
                 </Grid>
                 <BoxView
                     Margin="0,0,0,0"
-                    BackgroundColor="Gray"
+                    BackgroundColor="#666"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
@@ -5396,7 +5396,7 @@
                 </VerticalStackLayout>
                 <BoxView
                     Margin="0,0,0,0"
-                    BackgroundColor="Gray"
+                    BackgroundColor="#666"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
@@ -5431,7 +5431,7 @@
                 </VerticalStackLayout>
                 <BoxView
                     Margin="0,0,0,0"
-                    BackgroundColor="Gray"
+                    BackgroundColor="#666"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
@@ -5505,7 +5505,7 @@
 
                 <BoxView
                     Margin="0,0,0,0"
-                    BackgroundColor="Gray"
+                    BackgroundColor="#666"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
@@ -5721,7 +5721,7 @@
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             AbsoluteLayout.LayoutFlags="All"
             BackgroundColor="#66000000"
-            IsVisible="false">
+            IsVisible="False">
             <AbsoluteLayout.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnOverlayTapped" />
             </AbsoluteLayout.GestureRecognizers>
@@ -5795,7 +5795,7 @@
                         <BoxView
                             Grid.Row="1"
                             Margin="0,8,0,8"
-                            BackgroundColor="Gray"
+                            BackgroundColor="#666"
                             HeightRequest="1"
                             HorizontalOptions="Fill"
                             VerticalOptions="Start" />
@@ -5918,7 +5918,7 @@
                         <BoxView
                             Grid.Row="4"
                             Margin="0,8,0,8"
-                            BackgroundColor="Gray"
+                            BackgroundColor="#666"
                             HeightRequest="1"
                             HorizontalOptions="Fill"
                             VerticalOptions="Start" />
@@ -5992,7 +5992,7 @@
                         <BoxView
                             Grid.Row="7"
                             Margin="0,23,0,8"
-                            BackgroundColor="Gray"
+                            BackgroundColor="#666"
                             HeightRequest="1"
                             HorizontalOptions="Fill"
                             IsVisible="True"
@@ -6057,7 +6057,7 @@
                         <BoxView
                             Grid.Row="9"
                             Margin="0,8,0,8"
-                            BackgroundColor="Gray"
+                            BackgroundColor="#666"
                             HeightRequest="1"
                             HorizontalOptions="Fill"
                             IsVisible="True"
@@ -6172,7 +6172,7 @@
                         <BoxView
                             Grid.Row="11"
                             Margin="0,8,0,8"
-                            BackgroundColor="Gray"
+                            BackgroundColor="#666"
                             HeightRequest="1"
                             HorizontalOptions="Fill"
                             VerticalOptions="Start" />
@@ -6235,7 +6235,7 @@
                         <BoxView
                             Grid.Row="13"
                             Margin="0,8,0,8"
-                            BackgroundColor="Gray"
+                            BackgroundColor="#666"
                             HeightRequest="1"
                             HorizontalOptions="Fill"
                             VerticalOptions="Start" />
@@ -6307,7 +6307,7 @@
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             AbsoluteLayout.LayoutFlags="All"
             BackgroundColor="#88000000"
-            IsVisible="false">
+            IsVisible="False">
             <AbsoluteLayout.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnOverlayTapped" />
             </AbsoluteLayout.GestureRecognizers>
@@ -6331,7 +6331,7 @@
                     VerticalOptions="Center" />
                 <BoxView
                     Margin="0,3,0,3"
-                    BackgroundColor="Gray"
+                    BackgroundColor="#666"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
@@ -6362,6 +6362,7 @@
             <ActivityIndicator
                 x:Name="overlaySync"
                 Margin="0,0,30,0"
+                Scale="{OnPlatform iOS=3, Default=1}"
                 AbsoluteLayout.LayoutBounds="0,0,1,1"
                 AbsoluteLayout.LayoutFlags="All"
                 BackgroundColor="Transparent"
@@ -6385,16 +6386,18 @@
             <AbsoluteLayout.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnOverlayTapped" />
             </AbsoluteLayout.GestureRecognizers>
-            <VerticalStackLayout
-                Margin="10"
+            <Grid
+                Margin="20"
                 Padding="10"
                 AbsoluteLayout.LayoutBounds="0,0,1,1"
                 AbsoluteLayout.LayoutFlags="All"
                 BackgroundColor="#73042d"
                 HorizontalOptions="Fill"
-                Spacing="0"
-                VerticalOptions="Center">
+                RowSpacing="0"
+                RowDefinitions="Auto,Auto,Auto,Auto,*"
+                VerticalOptions="Start">
                 <Label
+                    Grid.Row="0"
                     Margin="0"
                     FontSize="24"
                     HorizontalOptions="Fill"
@@ -6403,67 +6406,47 @@
                     TextColor="#ffffff"
                     VerticalOptions="Center" />
                 <BoxView
+                    Grid.Row="1"
                     Margin="0,3,0,3"
-                    BackgroundColor="Gray"
+                    BackgroundColor="#fff"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
-                <VerticalStackLayout
-                    Margin="0"
-                    Padding="0,10,0,20"
-                    HorizontalOptions="Fill"
-                    Spacing="0"
-                    VerticalOptions="Center">
-                    <Label
-                        Margin="0"
-                        FontSize="16"
+                <Label
+                    Grid.Row="2"
+                        Margin="0,5"
+                        FontSize="18"
                         HorizontalOptions="Fill"
                         HorizontalTextAlignment="Start"
                         Text="Bitte bleiben Sie im empfangbereich eines Netzes oder im WLAN!"
                         TextColor="#ffffff"
                         VerticalOptions="Center" />
-                    <Label
+                <Label
+                    Grid.Row="3"
                         Margin="0,10"
-                        FontSize="16"
+                        FontSize="18"
                         HorizontalOptions="Fill"
                         HorizontalTextAlignment="Start"
                         Text="Beenden Sie nicht die App oder legen Sie diese nicht in den Hintergrund! Diese Download muss einwandfrei durchlaufen!"
                         TextColor="#ffffff"
                         VerticalOptions="Center" />
-                </VerticalStackLayout>
 
-                <StackLayout
+                <VerticalStackLayout
+                    Grid.Row="4"
                     x:Name="popupContainerSyncFaild_btn"
-                    Margin="0"
-                    Padding="2,2,10,2"
-                    BackgroundColor="#1f74ad"
-                    HeightRequest="40"
-                    HorizontalOptions="Fill">
-                    <HorizontalStackLayout
-                        Margin="0,0,0,0"
-                        Padding="0"
-                        HeightRequest="26"
-                        HorizontalOptions="Fill"
-                        Spacing="0"
-                        VerticalOptions="Center">
-                        <VerticalStackLayout
-                            Margin="0,-2,10,0"
-                            Padding="0"
-                            HorizontalOptions="Center"
-                            Spacing="0"
-                            VerticalOptions="Center">
+                    Margin="0,10"
+                    Padding="10,6"
+                    BackgroundColor="#1f74ad">
                             <Label
                                 Margin="0"
                                 Padding="0"
-                                FontSize="16"
+                                FontSize="18"
                                 HorizontalOptions="Center"
                                 HorizontalTextAlignment="Center"
                                 Text="JETZT NOCHMAL STARTEN"
                                 TextColor="#ffffff" />
-                        </VerticalStackLayout>
-                    </HorizontalStackLayout>
-                </StackLayout>
-            </VerticalStackLayout>
+                </VerticalStackLayout>
+            </Grid>
         </AbsoluteLayout>
 
         <!--<AbsoluteLayout
@@ -6494,7 +6477,7 @@
                     VerticalOptions="Center" />
                 <BoxView
                     Margin="0,3,0,3"
-                    BackgroundColor="Gray"
+                    BackgroundColor="#666"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
@@ -6557,47 +6540,53 @@
             <AbsoluteLayout.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnOverlayTapped" />
             </AbsoluteLayout.GestureRecognizers>
-            <VerticalStackLayout
+            <Grid
                 Margin="20"
                 Padding="10"
-                AbsoluteLayout.LayoutBounds="0,200,350,225"
-                AbsoluteLayout.LayoutFlags="None"
+                AbsoluteLayout.LayoutBounds="0,0,1,1"
+                AbsoluteLayout.LayoutFlags="All"
+                RowDefinitions="Auto,Auto,Auto,Auto,Auto"
+                VerticalOptions="Start"
                 BackgroundColor="#144d73"
-                HorizontalOptions="Fill"
-                Spacing="0">
+                RowSpacing="0">
                 <Label
-                    Margin="0"
+                    Grid.Row="0"
+                    Margin="0,5"
                     FontSize="24"
                     HorizontalOptions="Fill"
-                    HorizontalTextAlignment="Start"
+                    FontAttributes="Bold"
                     Text="Nachbuchen?"
                     TextColor="#ffffff"
                     VerticalOptions="Center" />
                 <BoxView
-                    Margin="0,3,0,3"
-                    BackgroundColor="Gray"
+                    Grid.Row="1"
+                    Margin="0,3,0,13"
+                    BackgroundColor="#fff"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Label
+                    Grid.Row="2"
                     x:Name="btn_startselectedwork_text"
                     Margin="0,0,0,20"
-                    FontSize="16"
+                    FontSize="18"
                     HorizontalOptions="Fill"
                     HorizontalTextAlignment="Start"
                     Text="Möchten Sie wirklich mit der Ausführung Ihrer Auswahl beginnen?"
-                    TextColor="#ffffff"
-                    VerticalOptions="Center" />
+                    TextColor="#ffffff" />
                 <BoxView
+                    Grid.Row="3"
                     Margin="0,10,0,10"
-                    BackgroundColor="Gray"
+                    BackgroundColor="#fff"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Grid
+                    Grid.Row="4"
                     Margin="0"
                     Padding="0"
                     ColumnSpacing="0"
+                    VerticalOptions="End"
                     HorizontalOptions="Fill">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
@@ -6613,7 +6602,7 @@
                         <Label
                             Margin="0"
                             Padding="0"
-                            FontSize="16"
+                            FontSize="18"
                             Text="JETZT NACHBUCHEN"
                             TextColor="#ffffff" />
                     </Border>
@@ -6627,12 +6616,12 @@
                         <Label
                             Margin="0"
                             Padding="0"
-                            FontSize="16"
+                            FontSize="18"
                             Text="Abbrechen"
                             TextColor="#ffffff" />
                     </Border>
                 </Grid>
-            </VerticalStackLayout>
+            </Grid>
 
         </AbsoluteLayout>
 
@@ -6645,15 +6634,18 @@
             <AbsoluteLayout.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnOverlayTapped" />
             </AbsoluteLayout.GestureRecognizers>
-            <VerticalStackLayout
+            <Grid
                 Margin="20"
                 Padding="10"
-                AbsoluteLayout.LayoutBounds="0.4,0.4,1,0.42"
+                AbsoluteLayout.LayoutBounds="0,0,1,1"
                 AbsoluteLayout.LayoutFlags="All"
+                VerticalOptions="Start"
                 BackgroundColor="#144d73"
                 HorizontalOptions="Fill"
-                Spacing="0">
+                RowDefinitions="Auto,Auto,Auto,Auto,Auto,*"
+                RowSpacing="0">
                 <Label
+                    Grid.Row="0"
                     Margin="0"
                     FontSize="24"
                     HorizontalOptions="Fill"
@@ -6662,38 +6654,44 @@
                     TextColor="#ffffff"
                     VerticalOptions="Center" />
                 <BoxView
+                    Grid.Row="1"
                     Margin="0,3,0,13"
-                    BackgroundColor="Gray"
+                    BackgroundColor="#fff"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Label
+                    Grid.Row="2"
                     Margin="0,0,0,10"
-                    FontSize="16"
+                    FontSize="18"
                     HorizontalOptions="Fill"
                     HorizontalTextAlignment="Start"
                     Text="Möchten Sie jetzt die Checkliste bearbeiten?"
                     TextColor="#ffffff"
                     VerticalOptions="Center" />
                 <Label
-                    Margin="0,0,0,20"
-                    FontSize="16"
+                    Grid.Row="3"
+                    Margin="0,10,0,20"
+                    FontSize="18"
                     HorizontalOptions="Fill"
                     HorizontalTextAlignment="Start"
                     Text="Wenn Sie die Checkliste gestartet haben, wird auch die Arbeitszeit dafür gemessen. Deshalb sollte diese auch in einem Arbeitsdurchgang durchgeführt werden."
                     TextColor="#ffcc00"
                     VerticalOptions="Center" />
                 <BoxView
+                    Grid.Row="4"
                     Margin="0,10,0,10"
-                    BackgroundColor="Gray"
+                    BackgroundColor="#fff"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Grid
+                    Grid.Row="5"
                     Margin="0"
                     Padding="0"
                     ColumnSpacing="0"
-                    HorizontalOptions="Fill">
+                    HorizontalOptions="Fill"
+                    VerticalOptions="End">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
@@ -6708,7 +6706,7 @@
                         <Label
                             Margin="0"
                             Padding="0"
-                            FontSize="16"
+                            FontSize="18"
                             Text="ABBRECHEN"
                             TextColor="#ffffff" />
                     </Border>
@@ -6722,12 +6720,12 @@
                         <Label
                             Margin="0"
                             Padding="0"
-                            FontSize="16"
+                            FontSize="18"
                             Text="JETZT STARTEN"
                             TextColor="#ffffff" />
                     </Border>
                 </Grid>
-            </VerticalStackLayout>
+            </Grid>
         </AbsoluteLayout>
 
         <AbsoluteLayout
@@ -6739,55 +6737,63 @@
             <AbsoluteLayout.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnOverlayTapped" />
             </AbsoluteLayout.GestureRecognizers>
-            <VerticalStackLayout
+            <Grid
                 Margin="20"
                 Padding="10"
-                AbsoluteLayout.LayoutBounds="0,200,350,286"
-                AbsoluteLayout.LayoutFlags="None"
+                AbsoluteLayout.LayoutBounds="0,0,1,1"
+                AbsoluteLayout.LayoutFlags="All"
+                VerticalOptions="Start"
                 BackgroundColor="#144d73"
                 HorizontalOptions="Fill"
-                Spacing="0">
+                RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto"
+                RowSpacing="0">
                 <Label
+                    Grid.Row="0"
                     Margin="0"
-                    FontSize="24"
+                    FontSize="26"
                     HorizontalOptions="Fill"
-                    HorizontalTextAlignment="Start"
+                    FontAttributes="Bold"
                     Text="Checkliste löschen?"
-                    TextColor="#ff0000"
+                    TextColor="#ffcc00"
                     VerticalOptions="Center" />
                 <BoxView
+                    Grid.Row="1"
                     Margin="0,3,0,13"
-                    BackgroundColor="Gray"
+                    BackgroundColor="#fff"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Label
+                    Grid.Row="2"
                     Margin="0,0,0,10"
-                    FontSize="16"
+                    FontSize="18"
                     HorizontalOptions="Fill"
                     HorizontalTextAlignment="Start"
                     Text="Möchten Sie jetzt wirklich die offene Checkliste abbrechen und löschen?"
                     TextColor="#ffffff"
                     VerticalOptions="Center" />
                 <Label
+                    Grid.Row="3"
                     Margin="0,0,0,20"
-                    FontSize="16"
+                    FontSize="18"
                     HorizontalOptions="Fill"
                     HorizontalTextAlignment="Start"
                     Text="Alle bisher bearbeitete Fragen gehen dadurch verloren!"
                     TextColor="#ffcc00"
                     VerticalOptions="Center" />
                 <BoxView
+                    Grid.Row="4"
                     Margin="0,10,0,10"
-                    BackgroundColor="Gray"
+                    BackgroundColor="#ccc"
                     HeightRequest="1"
-                    HorizontalOptions="Fill"
-                    VerticalOptions="Start" />
+                    HorizontalOptions="Fill" />
                 <Grid
+                    Grid.Row="5"
                     Margin="0"
                     Padding="0"
                     ColumnSpacing="0"
-                    HorizontalOptions="Fill">
+                    HorizontalOptions="Fill"
+                    VerticalOptions="End">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
@@ -6802,7 +6808,7 @@
                         <Label
                             Margin="0"
                             Padding="0"
-                            FontSize="16"
+                            FontSize="18"
                             Text="ABBRECHEN"
                             TextColor="#ffffff" />
                     </Border>
@@ -6816,12 +6822,12 @@
                         <Label
                             Margin="0"
                             Padding="0"
-                            FontSize="16"
+                            FontSize="18"
                             Text="JETZT LÖSCHEN"
                             TextColor="#ffffff" />
                     </Border>
                 </Grid>
-            </VerticalStackLayout>
+            </Grid>
         </AbsoluteLayout>
 
 
@@ -6834,30 +6840,33 @@
             <AbsoluteLayout.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnOverlayTapped" />
             </AbsoluteLayout.GestureRecognizers>
-            <VerticalStackLayout
+            <Grid
                 Margin="20"
                 Padding="10"
-                AbsoluteLayout.LayoutBounds="0,200,350,285"
-                AbsoluteLayout.LayoutFlags="None"
+                AbsoluteLayout.LayoutBounds="0,0,1,1"
+                AbsoluteLayout.LayoutFlags="All"
+                VerticalOptions="Start"
                 BackgroundColor="#144d73"
-                HorizontalOptions="Fill"
-                Spacing="0">
+                RowDefinitions="Auto,Auto,Auto,Auto,*"
+                RowSpacing="0">
                 <Label
+                    Grid.Row="0"
                     x:Name="popupContainer_info_notscan_titel"
                     Margin="0"
                     FontSize="24"
                     HorizontalOptions="Fill"
-                    HorizontalTextAlignment="Start"
                     Text=""
                     TextColor="#ffffff"
                     VerticalOptions="Center" />
                 <BoxView
                     Margin="0,3,0,3"
-                    BackgroundColor="Gray"
+                    Grid.Row="1"
+                    BackgroundColor="#fff"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Label
+                    Grid.Row="2"
                     x:Name="popupContainer_info_notscan_text"
                     Margin="0,0,0,20"
                     FontSize="16"
@@ -6867,16 +6876,19 @@
                     TextColor="#ffffff"
                     VerticalOptions="Center" />
                 <BoxView
+                    Grid.Row="3"
                     Margin="0,10,0,10"
-                    BackgroundColor="Gray"
+                    BackgroundColor="#fff"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Grid
+                    Grid.Row="4"
                     Margin="0"
                     Padding="0"
                     ColumnSpacing="0"
-                    HorizontalOptions="Fill">
+                    HorizontalOptions="Fill"
+                    VerticalOptions="End">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
@@ -6890,12 +6902,12 @@
                         <Label
                             Margin="0"
                             Padding="10,0,10,0"
-                            FontSize="16"
+                            FontSize="18"
                             Text="OK"
                             TextColor="#ffffff" />
                     </Border>
                 </Grid>
-            </VerticalStackLayout>
+            </Grid>
         </AbsoluteLayout>
 
         <AbsoluteLayout
@@ -6907,43 +6919,50 @@
             <AbsoluteLayout.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnOverlayTapped" />
             </AbsoluteLayout.GestureRecognizers>
-            <VerticalStackLayout
+            <Grid
                 Margin="20"
                 Padding="10"
-                AbsoluteLayout.LayoutBounds="0,200,350,225"
-                AbsoluteLayout.LayoutFlags="None"
+                AbsoluteLayout.LayoutBounds="0,0,1,1"
+                AbsoluteLayout.LayoutFlags="All"
+                VerticalOptions="Start"
                 BackgroundColor="#144d73"
                 HorizontalOptions="Fill"
-                Spacing="0">
+                RowDefinitions="Auto,Auto,Auto,Auto,Auto"
+                RowSpacing="0">
                 <Label
-                    Margin="0"
-                    FontSize="24"
+                    Grid.Row="0"
+                    Margin="0,5"
+                    FontSize="26"
                     HorizontalOptions="Fill"
-                    HorizontalTextAlignment="Start"
+                    FontAttributes="Bold"
                     Text="Jetzt beenden?"
                     TextColor="#ffffff"
                     VerticalOptions="Center" />
                 <BoxView
-                    Margin="0,3,0,3"
-                    BackgroundColor="Gray"
+                    Grid.Row="1"
+                    Margin="0,3,0,13"
+                    BackgroundColor="#fff"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Label
+                    Grid.Row="2"
                     Margin="0,0,0,20"
-                    FontSize="16"
+                    FontSize="18"
                     HorizontalOptions="Fill"
                     HorizontalTextAlignment="Start"
                     Text="Möchten Sie wirklich Ihre Ausführungen jetzt beenden?"
                     TextColor="#ffffff"
                     VerticalOptions="Center" />
                 <BoxView
+                    Grid.Row="3"
                     Margin="0,10,0,10"
-                    BackgroundColor="Gray"
+                    BackgroundColor="#fff"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Grid
+                    Grid.Row="4"
                     Margin="0"
                     Padding="0"
                     ColumnSpacing="0"
@@ -6962,7 +6981,7 @@
                         <Label
                             Margin="0"
                             Padding="0"
-                            FontSize="16"
+                            FontSize="18"
                             Text="JETZT BEENDEN"
                             TextColor="#ffffff" />
                     </Border>
@@ -6976,12 +6995,12 @@
                         <Label
                             Margin="0"
                             Padding="0"
-                            FontSize="16"
+                            FontSize="18"
                             Text="Abbrechen"
                             TextColor="#ffffff" />
                     </Border>
                 </Grid>
-            </VerticalStackLayout>
+            </Grid>
 
         </AbsoluteLayout>
 
@@ -6995,42 +7014,48 @@
             <AbsoluteLayout.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnOverlayTapped" />
             </AbsoluteLayout.GestureRecognizers>
-            <VerticalStackLayout
+            <Grid
                 x:Name="popupContainer_container_sendlog"
-                Margin="10,200,20,0"
+                Margin="20"
                 Padding="10"
+                AbsoluteLayout.LayoutBounds="0,0,1,1"
+                AbsoluteLayout.LayoutFlags="All"
+                VerticalOptions="Start"
                 BackgroundColor="#144d73"
-                HorizontalOptions="Fill"
-                Spacing="0">
+                HorizontalOptions="Fill"                
+                RowDefinitions="Auto,Auto,Auto,Auto,Auto"
+                RowSpacing="0">
                 <Label
+                    Grid.Row="0"
                     Margin="0"
-                    FontSize="18"
+                    FontSize="20"
                     HorizontalOptions="Fill"
                     HorizontalTextAlignment="Start"
-                    Text="Senden an den Support der iPM-Cloud"
+                    Text="Senden an den Support (iPM-Cloud)"
                     TextColor="#ffffff"
                     VerticalOptions="Center" />
                 <BoxView
+                    Grid.Row="1"
                     Margin="0,3,0,3"
-                    BackgroundColor="Gray"
+                    BackgroundColor="#666"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Label
+                    Grid.Row="2"
                     Margin="0,0,0,20"
-                    FontSize="16"
-                    HorizontalOptions="Fill"
-                    HorizontalTextAlignment="Start"
+                    FontSize="18"
                     Text="Hier mit senden Sie Ihre LOG-Daten zur Analyse bei Problemfällen an den Support der iPM-Cloud. Möchte Sie wircklich diese LOG-Daten jetzt senden?"
-                    TextColor="#ffffff"
-                    VerticalOptions="Center" />
+                    TextColor="#ffffff" />
                 <BoxView
+                    Grid.Row="3"
                     Margin="0,10,0,10"
-                    BackgroundColor="Gray"
+                    BackgroundColor="#666"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Grid
+                    Grid.Row="4"
                     Margin="0"
                     Padding="0"
                     ColumnSpacing="0"
@@ -7049,7 +7074,7 @@
                         <Label
                             Margin="0"
                             Padding="0"
-                            FontSize="16"
+                            FontSize="18"
                             Text="JETZT SENDEN"
                             TextColor="#ffffff" />
                     </Border>
@@ -7063,12 +7088,12 @@
                         <Label
                             Margin="0"
                             Padding="0"
-                            FontSize="16"
+                            FontSize="18"
                             Text="Abbrechen"
                             TextColor="#ffffff" />
                     </Border>
                 </Grid>
-            </VerticalStackLayout>
+            </Grid>
 
         </AbsoluteLayout>
 
@@ -7081,14 +7106,19 @@
             <AbsoluteLayout.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnOverlayTapped" />
             </AbsoluteLayout.GestureRecognizers>
-            <VerticalStackLayout
+            <Grid
                 x:Name="popupContainer_container_sendlog_fail"
-                Margin="10,200,20,0"
+                Margin="10"
                 Padding="10"
+                AbsoluteLayout.LayoutBounds="0,0,1,1"
+                AbsoluteLayout.LayoutFlags="All"
+                VerticalOptions="Start"
+                RowDefinitions="Auto,Auto,Auto,Auto,Auto"
                 BackgroundColor="#144d73"
                 HorizontalOptions="Fill"
-                Spacing="0">
+                RowSpacing="0">
                 <Grid
+                    Grid.Row="0"
                     Margin="0"
                     Padding="0"
                     ColumnSpacing="0"
@@ -7110,32 +7140,36 @@
                         Margin="0"
                         FontSize="18"
                         HorizontalOptions="Fill"
-                        HorizontalTextAlignment="Start"
+                        FontAttributes="Bold"
                         Text="Das Senden an den Support der iPM-Cloud war nicht erfolgreich!"
                         TextColor="#ffdd00"
                         VerticalOptions="Center" />
                 </Grid>
                 <BoxView
+                    Grid.Row="1"
                     Margin="0,3,0,3"
-                    BackgroundColor="Gray"
+                    BackgroundColor="#fff"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Label
-                    Margin="0,0,0,20"
-                    FontSize="16"
+                    Grid.Row="2"
+                    Margin="0,10,0,20"
+                    FontSize="18"
                     HorizontalOptions="Fill"
                     HorizontalTextAlignment="Start"
                     Text="Es wurde versucht ein LogFile an den Support der iPM-Cloud zu senden. Leider konnte dies nicht ausgeführt werden. Bitte prüfen Sie ob Sie Online sind bzw. das Internet erreichen können."
                     TextColor="#ffffff"
                     VerticalOptions="Center" />
                 <BoxView
+                    Grid.Row="3"
                     Margin="0,10,0,10"
-                    BackgroundColor="Gray"
+                    BackgroundColor="#fff"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Grid
+                    Grid.Row="4"
                     Margin="0"
                     Padding="0"
                     ColumnSpacing="0"
@@ -7158,7 +7192,7 @@
                             TextColor="#ffffff" />
                     </Border>
                 </Grid>
-            </VerticalStackLayout>
+            </Grid>
         </AbsoluteLayout>
 
         <AbsoluteLayout
@@ -7170,15 +7204,18 @@
             <AbsoluteLayout.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnOverlayTapped" />
             </AbsoluteLayout.GestureRecognizers>
-            <VerticalStackLayout
+            <Grid
                 Margin="20"
                 Padding="10"
-                AbsoluteLayout.LayoutBounds="0,200,350,245"
-                AbsoluteLayout.LayoutFlags="None"
+                AbsoluteLayout.LayoutBounds="0,0,1,1"
+                AbsoluteLayout.LayoutFlags="All"
+                VerticalOptions="Start"
+                RowDefinitions="Auto,Auto,Auto,Auto,Auto"
                 BackgroundColor="#144d73"
                 HorizontalOptions="Fill"
-                Spacing="0">
+                RowSpacing="0">
                 <Label
+                    Grid.Row="0"
                     Margin="0"
                     FontAttributes="Bold"
                     FontSize="24"
@@ -7188,36 +7225,41 @@
                     TextColor="#ffffff"
                     VerticalOptions="Center" />
                 <BoxView
+                    Grid.Row="1"
                     Margin="0,3,0,3"
-                    BackgroundColor="Gray"
+                    BackgroundColor="#fff"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Label
-                    Margin="0,0,0,20"
-                    FontSize="16"
+                    Grid.Row="2"
+                    Margin="0,10,0,20"
+                    FontSize="18"
                     HorizontalOptions="Fill"
                     HorizontalTextAlignment="Start"
                     Text="Für das Beenden der letzten Ausführungen wurde nicht das Ursprungsobjekt gescannt!"
                     TextColor="#ffffff"
                     VerticalOptions="Center" />
                 <BoxView
+                    Grid.Row="3"
                     Margin="0,10,0,10"
-                    BackgroundColor="Gray"
+                    BackgroundColor="#fff"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
-                <HorizontalStackLayout
+                <Grid
+                    Grid.Row="4"
                     Margin="0"
                     Padding="0"
+                    ColumnDefinitions="*"
                     HorizontalOptions="Fill"
-                    Spacing="0">
+                    ColumnSpacing="0">
                     <Border
                         x:Name="btn_overtootherBuildingSave"
                         Margin="0"
                         Padding="10"
                         BackgroundColor="#04732d"
-                        HorizontalOptions="Start">
+                        HorizontalOptions="End">
                         <Label
                             Margin="0"
                             Padding="10,2,10,2"
@@ -7225,8 +7267,8 @@
                             Text="WEITER"
                             TextColor="#ffffff" />
                     </Border>
-                </HorizontalStackLayout>
-            </VerticalStackLayout>
+                </Grid>
+            </Grid>
         </AbsoluteLayout>
 
 
@@ -7239,52 +7281,62 @@
             <AbsoluteLayout.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnOverlayTapped" />
             </AbsoluteLayout.GestureRecognizers>
-            <VerticalStackLayout
+            <Grid
                 Margin="20"
                 Padding="10"
-                AbsoluteLayout.LayoutBounds="0,140,350,345"
-                AbsoluteLayout.LayoutFlags="None"
+                AbsoluteLayout.LayoutBounds="0,0,1,1"
+                AbsoluteLayout.LayoutFlags="All"
+                VerticalOptions="Start"
                 BackgroundColor="#144d73"
                 HorizontalOptions="Fill"
-                Spacing="0">
+                RowSpacing="0"
+                RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
                 <Label
+                    Grid.Row="0"
                     Margin="0"
                     FontAttributes="Bold"
                     FontSize="24"
                     HorizontalOptions="Fill"
                     HorizontalTextAlignment="Start"
                     Text="OBJEKT VERLASSEN"
-                    TextColor="#ff0000"
+                    TextColor="#ffcc00"
                     VerticalOptions="Center" />
                 <BoxView
+                    Grid.Row="1"
                     Margin="0,3,0,3"
-                    BackgroundColor="Gray"
+                    BackgroundColor="#fff"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Label
-                    Margin="0,0,0,20"
-                    FontSize="16"
+                    
+                    Grid.Row="2"
+                    Margin="0,10,0,20"
+                    FontSize="18"
                     HorizontalOptions="Fill"
                     HorizontalTextAlignment="Start"
                     Text="Sie haben noch Ausführungen die noch nicht beendet wurden. Es ist wichtig bevor sie das Objekt verlassen, dass die offenen Positionen am zugehörigen Objekt beendet werden!"
                     TextColor="#ffffff"
                     VerticalOptions="Center" />
                 <Label
+                    Grid.Row="3"
                     Margin="0,0,0,20"
-                    FontSize="16"
+                    FontSize="18"
                     HorizontalOptions="Fill"
                     HorizontalTextAlignment="Start"
                     Text="Wollen Sie die offenen Ausführungen jetzt beenden? "
-                    TextColor="#ff0000"
+                    TextColor="#ffcc00"
                     VerticalOptions="Center" />
                 <BoxView
+                    
+                    Grid.Row="4"
                     Margin="0,10,0,10"
-                    BackgroundColor="Gray"
+                    BackgroundColor="#fff"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Grid
+                    Grid.Row="5"
                     Margin="0"
                     Padding="0"
                     ColumnSpacing="0"
@@ -7322,7 +7374,7 @@
                             TextColor="#ffffff" />
                     </Border>
                 </Grid>
-            </VerticalStackLayout>
+            </Grid>
 
         </AbsoluteLayout>
 
@@ -7339,22 +7391,13 @@
             <Grid
                 Margin="20"
                 Padding="10"
-                AbsoluteLayout.LayoutBounds="0.5, 0.25, -1, -1"
-                AbsoluteLayout.LayoutFlags="PositionProportional"
+                AbsoluteLayout.LayoutBounds="0,0,1,1"
+                AbsoluteLayout.LayoutFlags="All"
+                VerticalOptions="Start"
                 BackgroundColor="#144d73"
                 HorizontalOptions="Fill"
+                RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto"
                 RowSpacing="0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
                 <Label
                     Grid.Row="0"
                     Margin="0"
@@ -7362,47 +7405,39 @@
                     FontSize="24"
                     HorizontalOptions="Fill"
                     Text="MÜLLPOSITION ÄNDERN"
-                    TextColor="#ff0000" />
+                    TextColor="#ffcc00" />
                 <BoxView
                     Grid.Row="1"
-                    Margin="0,3,0,3"
-                    BackgroundColor="Gray"
+                    Margin="0,10"
+                    BackgroundColor="#fff"
                     HeightRequest="1"
-                    HorizontalOptions="Fill"
-                    VerticalOptions="Start" />
+                    HorizontalOptions="Fill"/>
                 <Label
                     Grid.Row="2"
-                    Margin="0,0,0,0"
-                    FontSize="14"
+                    Margin="0,0,0,10"
+                    FontSize="18"
                     LineBreakMode="WordWrap"
-                    Text="Falls die Müllposition anderes ist als erwartet,"
+                    Text="Falls die Müllposition anderes ist als erwartet, können Sie hier die Position berichtigen."
                     TextColor="#ffffff" />
                 <Label
                     Grid.Row="3"
-                    Margin="0,0,0,20"
-                    FontSize="14"
-                    LineBreakMode="WordWrap"
-                    Text="können Sie hier die Position berichtigen."
-                    TextColor="#ffffff" />
-                <Label
-                    Grid.Row="4"
-                    Margin="0,0,0,20"
-                    FontSize="14"
+                    Margin="0,10,0,30"
+                    FontSize="18"
                     HorizontalOptions="Fill"
                     HorizontalTextAlignment="Start"
                     Text="Entscheiden Sie hier was Sie wircklich tun werden."
                     TextColor="#ffffff"
                     VerticalOptions="Center" />
                 <BoxView
-                    Grid.Row="5"
-                    Margin="0,10,0,10"
-                    BackgroundColor="Gray"
+                    Grid.Row="4"
+                    Margin="0,0,0,0"
+                    BackgroundColor="#fff"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Grid
-                    Grid.Row="6"
-                    Margin="0"
+                    Grid.Row="5"
+                    Margin="0,10,0,0"
                     Padding="0"
                     ColumnSpacing="0"
                     HorizontalOptions="Fill">
@@ -7420,7 +7455,7 @@
                         <Label
                             Margin="0"
                             Padding="0"
-                            FontSize="14"
+                            FontSize="18"
                             Text="REINSTELLEN"
                             TextColor="#ffffff" />
                     </Border>
@@ -7434,7 +7469,7 @@
                         <Label
                             Margin="0"
                             Padding="0"
-                            FontSize="14"
+                            FontSize="18"
                             Text="RAUSSTELLEN"
                             TextColor="#ffffff" />
                     </Border>
@@ -7456,43 +7491,35 @@
 
             <Grid
                 x:Name="popupContainer_quest_direktbuchen_st"
-                Margin="10,10,0,0"
+                Margin="10"
                 Padding="0"
                 BackgroundColor="#144d73"
-                HeightRequest="600"
-                HorizontalOptions="Center"
-                RowSpacing="0"
-                VerticalOptions="Start">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
+                AbsoluteLayout.LayoutBounds="0,0,1,1"
+                AbsoluteLayout.LayoutFlags="All"
+                VerticalOptions="Start"
+                HorizontalOptions="Fill"
+                RowDefinitions="Auto,Auto,Auto,Auto,*,Auto,Auto"
+                RowSpacing="0">
                 <Label
                     Grid.Row="0"
-                    Margin="10,8"
+                    Margin="10"
                     FontAttributes="Bold"
-                    FontSize="18"
+                    FontSize="22"
                     HorizontalOptions="Fill"
-                    HorizontalTextAlignment="Start"
                     Text="DIREKTBUCHEN OHNE SCAN"
                     TextColor="#ffcc00"
                     VerticalOptions="Center" />
                 <BoxView
                     Grid.Row="1"
                     Margin="0,1,0,3"
-                    BackgroundColor="Gray"
+                    BackgroundColor="#666"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Label
                     Grid.Row="2"
                     Margin="10,3,10,5"
-                    FontSize="14"
+                    FontSize="16"
                     HorizontalOptions="Fill"
                     HorizontalTextAlignment="Start"
                     Text="Hier buchen Sie eine Leistung, für die das Direktbuchen möglich ist, ohne sich am Objekt ein- und wieder auszuscannen."
@@ -7501,7 +7528,7 @@
                 <BoxView
                     Grid.Row="3"
                     Margin="0,0,0,-5"
-                    BackgroundColor="Gray"
+                    BackgroundColor="#666"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
@@ -7522,7 +7549,7 @@
                 <BoxView
                     Grid.Row="5"
                     Margin="0,-5,0,8"
-                    BackgroundColor="Gray"
+                    BackgroundColor="#666"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
@@ -7546,9 +7573,9 @@
                         HorizontalOptions="Start"
                         IsVisible="False">
                         <Label
-                            Margin="10,0,0,0"
+                            Margin="0"
                             Padding="0"
-                            FontSize="14"
+                            FontSize="16"
                             Text="ABBRECHEN"
                             TextColor="#ffffff" />
                     </Border>
@@ -7563,7 +7590,7 @@
                         <Label
                             Margin="0"
                             Padding="0"
-                            FontSize="14"
+                            FontSize="16"
                             Text="JETZT BUCHEN"
                             TextColor="#ffffff" />
                     </Border>
@@ -7578,7 +7605,7 @@
                         <Label
                             Margin="0"
                             Padding="0"
-                            FontSize="14"
+                            FontSize="16"
                             Text="ABBRECHEN"
                             TextColor="#ffffff" />
                     </Border>
@@ -7593,7 +7620,7 @@
                         <Label
                             Margin="0"
                             Padding="0"
-                            FontSize="14"
+                            FontSize="16"
                             Text="JETZT BUCHEN"
                             TextColor="#ffffff" />
                     </Border>
@@ -7630,14 +7657,16 @@
                 Margin="20"
                 Padding="10"
                 BackgroundColor="#144d73"
+                AbsoluteLayout.LayoutBounds="0,0,1,1"
+                AbsoluteLayout.LayoutFlags="All"
+                VerticalOptions="Start"
                 RowDefinitions="44,Auto,*,Auto,Auto"
                 RowSpacing="0">
                 <Grid
                     Grid.Row="0"
                     Margin="0"
                     Padding="0"
-                    ColumnSpacing="0"
-                    HorizontalOptions="Fill">
+                    ColumnSpacing="0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
@@ -7663,7 +7692,7 @@
                 <BoxView
                     Grid.Row="1"
                     Margin="0,10,0,10"
-                    BackgroundColor="Gray"
+                    BackgroundColor="#fff"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
@@ -7682,7 +7711,7 @@
                 <BoxView
                     Grid.Row="3"
                     Margin="0,10,0,10"
-                    BackgroundColor="Gray"
+                    BackgroundColor="#fff"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
@@ -7705,7 +7734,7 @@
                         <Label
                             Margin="0"
                             Padding="0"
-                            FontSize="14"
+                            FontSize="18"
                             Text="SCHLIESSEN"
                             TextColor="#ffffff" />
                     </Border>
@@ -7725,8 +7754,11 @@
             </AbsoluteLayout.GestureRecognizers>
             <Grid
                 x:Name="popupContainer_quest_personpicker_inner"
-                Margin="20,20,0,0"
+                Margin="10"
                 Padding="0"
+                AbsoluteLayout.LayoutBounds="0,0,1,1"
+                AbsoluteLayout.LayoutFlags="All"
+                VerticalOptions="Start"
                 BackgroundColor="#144d73"
                 RowSpacing="0">
                 <Grid.RowDefinitions>
@@ -7758,9 +7790,8 @@
                     <Label
                         Grid.Column="1"
                         Margin="10"
-                        FontSize="24"
+                        FontSize="24" FontAttributes="Bold"
                         HorizontalOptions="Fill"
-                        HorizontalTextAlignment="Start"
                         Text="Person auswählen"
                         TextColor="#ffffff"
                         VerticalOptions="Center" />
@@ -7768,29 +7799,23 @@
                 <BoxView
                     Grid.Row="1"
                     Margin="0,0,0,0"
-                    BackgroundColor="Gray"
+                    BackgroundColor="#fff"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
-                <VerticalStackLayout
-                    Grid.Row="2"
-                    Margin="0"
-                    Padding="15"
-                    BackgroundColor="#99042d53"
-                    HorizontalOptions="Fill"
-                    Spacing="0">
                     <Label
+                    BackgroundColor="#99042d53"
+                    Grid.Row="2"
                         Margin="0"
-                        Padding="0"
-                        FontSize="16"
+                    Padding="16,10"
+                        FontSize="18"
                         LineBreakMode="WordWrap"
                         Text="Wählen sie die Person von dem Sie die geplanten Arbeiten einsehen möchten:"
                         TextColor="#eee" />
-                </VerticalStackLayout>
                 <BoxView
                     Grid.Row="3"
                     Margin="0,0,0,0"
-                    BackgroundColor="Gray"
+                    BackgroundColor="#fff"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
@@ -7860,13 +7885,13 @@
                 <BoxView
                     Grid.Row="5"
                     Margin="0"
-                    BackgroundColor="Gray"
+                    BackgroundColor="#fff"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Grid
                     Grid.Row="6"
-                    Margin="20"
+                    Margin="10"
                     Padding="0"
                     ColumnSpacing="0"
                     HorizontalOptions="Fill">
@@ -7883,7 +7908,7 @@
                         <Label
                             Margin="0"
                             Padding="0"
-                            FontSize="14"
+                            FontSize="18"
                             Text="ABBRECHEN"
                             TextColor="#ffffff" />
                     </Border>
@@ -7901,14 +7926,17 @@
             <AbsoluteLayout.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnOverlayTapped" />
             </AbsoluteLayout.GestureRecognizers>
-            <VerticalStackLayout
+            <Grid
                 Margin="20"
                 Padding="10"
-                AbsoluteLayout.LayoutBounds="0.5, 0.5, -1, -1"
-                AbsoluteLayout.LayoutFlags="PositionProportional"
+                AbsoluteLayout.LayoutBounds="0,0,1,1"
+                AbsoluteLayout.LayoutFlags="All"
+                VerticalOptions="Center"
                 BackgroundColor="#144d73"
-                Spacing="0">
+                RowDefinitions="Auto,Auto,*,Auto,Auto"
+                RowSpacing="0">
                 <Label
+                    Grid.Row="0"
                     Margin="10"
                     FontSize="24"
                     HorizontalOptions="Fill"
@@ -7917,25 +7945,29 @@
                     TextColor="#ffffff"
                     VerticalOptions="Center" />
                 <BoxView
+                    Grid.Row="1"
                     Margin="0,3,0,3"
-                    BackgroundColor="Gray"
+                    BackgroundColor="#fff"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <VerticalStackLayout
+                    Grid.Row="2"
                     x:Name="daypicker_items"
                     Margin="0"
                     Padding="15,10,15,10"
                     BackgroundColor="Transparent"
                     HorizontalOptions="Fill"
-                    Spacing="1" />
+                    Spacing="3" />
                 <BoxView
+                    Grid.Row="3"
                     Margin="0,10,0,10"
-                    BackgroundColor="Gray"
+                    BackgroundColor="#fff"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Grid
+                    Grid.Row="4"
                     Margin="0"
                     Padding="0"
                     ColumnSpacing="0"
@@ -7953,12 +7985,12 @@
                         <Label
                             Margin="0"
                             Padding="0"
-                            FontSize="14"
+                            FontSize="16"
                             Text="ABBRECHEN"
                             TextColor="#ffffff" />
                     </Border>
                 </Grid>
-            </VerticalStackLayout>
+            </Grid>
 
         </AbsoluteLayout>
 
@@ -7972,7 +8004,8 @@
                 <TapGestureRecognizer Tapped="OnOverlayTapped" />
             </AbsoluteLayout.GestureRecognizers>
             <ActivityIndicator
-                x:Name="overlayb"
+                x:Name="overlayb" 
+                Scale="{OnPlatform iOS=7, Default=1}"
                 AbsoluteLayout.LayoutBounds="0,0,1,1"
                 AbsoluteLayout.LayoutFlags="All"
                 BackgroundColor="Transparent"
@@ -8083,7 +8116,7 @@
                 </Grid>
                 <BoxView
                     Margin="0,-1,0,0"
-                    BackgroundColor="Gray"
+                    BackgroundColor="#666"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />

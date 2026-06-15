@@ -58,7 +58,7 @@ namespace iPMCloud.Mobile
         {
             try
             {
-                Log.Info(TAG, $"OnCreate start (savedInstanceState={(savedInstanceState != null ? "available" : "null")})");
+                //Log.Info(TAG, $"OnCreate start (savedInstanceState={(savedInstanceState != null ? "available" : "null")})");
 
                 base.OnCreate(savedInstanceState);
 
@@ -81,7 +81,7 @@ namespace iPMCloud.Mobile
                     Log.Warn(TAG, "Google Play Services nicht verfügbar");
                 }
 
-                Log.Info(TAG, "MainActivity erfolgreich initialisiert");
+                //Log.Info(TAG, "MainActivity erfolgreich initialisiert");
             }
             catch (Exception ex)
             {
@@ -170,7 +170,7 @@ namespace iPMCloud.Mobile
         protected override void OnStart()
         {
             base.OnStart();
-            Log.Debug(TAG, "OnStart");
+            //Log.Debug(TAG, "OnStart");
         }
 
         protected override void OnResume()
@@ -178,19 +178,19 @@ namespace iPMCloud.Mobile
             base.OnResume();
             ApplySystemBarColors();
             ScheduleSystemUiUpdate("OnResume");
-            Log.Debug(TAG, "OnResume");
+            //Log.Debug(TAG, "OnResume");
         }
 
         protected override void OnPause()
         {
             base.OnPause();
-            Log.Debug(TAG, "OnPause");
+            //Log.Debug(TAG, "OnPause");
         }
 
         protected override void OnStop()
         {
             base.OnStop();
-            Log.Debug(TAG, "OnStop");
+            //Log.Debug(TAG, "OnStop");
         }
 
         protected override void OnDestroy()
@@ -205,13 +205,13 @@ namespace iPMCloud.Mobile
             }
             
             base.OnDestroy();
-            Log.Debug(TAG, "OnDestroy");
+            //Log.Debug(TAG, "OnDestroy");
         }
 
         public override void OnWindowFocusChanged(bool hasFocus)
         {
             base.OnWindowFocusChanged(hasFocus);
-            Log.Debug(TAG, $"OnWindowFocusChanged: hasFocus={hasFocus}");
+            //Log.Debug(TAG, $"OnWindowFocusChanged: hasFocus={hasFocus}");
             if(AppModel.Logger != null && AppModel.Instance != null)
             {
                 AppModel.Logger.Info(TAG, $"OnWindowFocusChanged: hasFocus={hasFocus}");
@@ -297,7 +297,7 @@ namespace iPMCloud.Mobile
                 Log.Error(TAG, $"ScheduleSystemUiUpdate Error ({source}): {ex}");
                 if (AppModel.Logger != null && AppModel.Instance != null)
                 {
-                    AppModel.Logger.Info(TAG, $"ScheduleSystemUiUpdate Error ({source}): {ex}");
+                    AppModel.Logger.Error(TAG, $"ScheduleSystemUiUpdate Error ({source}): {ex}");
                 }
             }
         }
@@ -355,7 +355,7 @@ namespace iPMCloud.Mobile
                 }
 
                 _lastSystemUiApplyAt = now;
-                Log.Debug(TAG, $"System UI applied from {source}");
+                //Log.Debug(TAG, $"System UI applied from {source}");
             }
             catch (Exception ex)
             {
@@ -608,7 +608,7 @@ else
             {
                 base.OnActivityResult(requestCode, resultCode, data);
                 
-                Log.Debug(TAG, $"OnActivityResult: RequestCode={requestCode}, ResultCode={resultCode}");
+                //Log.Debug(TAG, $"OnActivityResult: RequestCode={requestCode}, ResultCode={resultCode}");
             }
             catch (Exception ex)
             {
@@ -657,11 +657,11 @@ else
 
         private static void LogDeferredPermissionStrategy()
         {
-            Log.Info(TAG, "Runtime permissions are requested contextually after startup; no blanket startup permission request is performed.");
+            //Log.Info(TAG, "Runtime permissions are requested contextually after startup; no blanket startup permission request is performed.");
 
             if (Build.VERSION.SdkInt >= BuildVersionCodes.Tiramisu)
             {
-                Log.Info(TAG, "Android 13+ notification permission remains deferred until foreground sync or upload requires it.");
+                //Log.Info(TAG, "Android 13+ notification permission remains deferred until foreground sync or upload requires it.");
             }
         }
 

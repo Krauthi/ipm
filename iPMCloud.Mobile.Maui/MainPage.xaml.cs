@@ -1150,16 +1150,20 @@ namespace iPMCloud.Mobile
                 _ = Task.Delay(1);
 
 
-
-                var photos = await MediaPicker.PickPhotosAsync(new MediaPickerOptions
+                var options = new MediaPickerOptions
                 {
                     CompressionQuality = 75,
                     MaximumHeight = 1024,
                     MaximumWidth = 1024,
-                    RotateImage = true,
                     SelectionLimit = 3 - zp,
                     PreserveMetaData = true,
-                });
+                };
+#if !IOS
+                options.RotateImage = true;
+#endif
+
+                var photos = await MediaPicker.PickPhotosAsync(options);
+
 
                 if (photos != null && photos.Count() > 0)
                 {
@@ -1269,148 +1273,6 @@ namespace iPMCloud.Mobile
             }
         }
 
-
-
-        public async Task btn_takePhoto_check_bem_old(object sender, EventArgs e)  // ✅ Task statt void
-        {
-            await Task.Delay(1);
-
-            try
-            {
-                AppModel.Instance.UseExternHardware = true;
-
-                // ✅ Limit prüfen
-                if (_SelectedPosForNotice_check_bem.bemWSO?.photos?.Count >= 3)
-                {
-                    await DisplayAlertAsync("Limit erreicht", "Maximal 3 Fotos erlaubt", "OK");
-                    return;
-                }
-
-                // ✅ Berechtigungen prüfen
-                var status = await Permissions.CheckStatusAsync<Permissions.Camera>();
-                if (status != PermissionStatus.Granted)
-                {
-                    status = await Permissions.RequestAsync<Permissions.Camera>();
-                    //if (status != PermissionStatus.Granted)
-                    //{
-                    //    await DisplayAlertAsync("Berechtigung erforderlich",
-                    //        "Bitte erlauben Sie Kamera-Zugriff", "OK");
-                    //    return;
-                    //}
-                }
-
-                // ✅ Kamera verfügbar prüfen
-                if (!MediaPicker.Default.IsCaptureSupported)
-                {
-                    await DisplayAlertAsync("Fehler", "Kamera nicht verfügbar", "OK");
-                    return;
-                }
-
-                // ✅ Foto aufnehmen mit MAUI MediaPicker
-                var photo = await MediaPicker.Default.CapturePhotoAsync();
-
-                if (photo != null)
-                {
-                    overlay.IsVisible = true;
-                    await Task.Delay(1);
-
-                    using var stream = await photo.OpenReadAsync();  // ✅ using für automatic dispose
-
-                    var photoResponse = PhotoUtils.GetImages(stream);
-                    //photoResponse = PhotoUtils.AddInfoToImage(photoResponse, AppModel.Instance.LastBuilding);
-
-                    long bildName = DateTime.Now.Ticks;
-                    var b = new BildWSO(_SelectedPosForNotice_check_bem.bemWSO.guid)
-                    {
-                        bytes = photoResponse.imageBytes,
-                        name = bildName.ToString(),
-                        stack = BildWSO.GetAttachmentForNoticeElement(
-                            photoResponse.GetImageSourceAsThumb(),
-                            new DateTime(bildName).ToString("dd.MM.yyyy-HH:mm:ss"),
-                            new Command<BildWSO>(RemoveBildInWork_check_bem))
-                    };
-
-                    var frame = (Border)((StackLayout)(b.stack.Children[0])).Children[2];
-                    frame.GestureRecognizers.Clear();
-                    frame.GestureRecognizers.Add(new TapGestureRecognizer()
-                    {
-                        Command = new Command<BildWSO>(RemoveBildInWork_check_bem),
-                        CommandParameter = b
-                    });
-
-                    // BildWSO.Save(AppModel.Instance, b); // auskommentiert wie im Original
-                    _SelectedPosForNotice_check_bem.bemWSO.photos.Add(b);
-                    noticePhotoStack_check_bem.Children.Add(b.stack);
-
-                    // ✅ UI Update
-                    UpdatePhotoButtonsVisibility_check_bem();
-                }
-            }
-            catch (FeatureNotSupportedException)
-            {
-                await DisplayAlertAsync("Fehler", "Kamera wird nicht unterstützt", "OK");
-            }
-            catch (PermissionException exp)
-            {
-                await DisplayAlertAsync("Fehler", "Keine Kamera-Berechtigung (0)", "OK");
-                AppModel.Logger.Error("Keine Kamera-Berechtigung (0): " + exp.Message + " :: " + exp.StackTrace);
-            }
-            catch (OperationCanceledException)
-            {
-                // Benutzer hat abgebrochen - normal
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Fehler beim Foto aufnehmen: {ex.Message}");
-                await DisplayAlertAsync("Fehler", "Foto konnte nicht aufgenommen werden", "OK");
-            }
-            finally
-            {
-                AppModel.Instance.UseExternHardware = false;
-                overlay.IsVisible = false;
-            }
-        }
-
-        // ✅ UI Update in separate Methode (wiederverwendbar)
-
-        public async Task btn_pickPhotos_check_bem_old(object sender, EventArgs e)
-        {
-            if (_SelectedPosForNotice_check_bem.bemWSO?.photos?.Count >= 3)
-            {
-                await DisplayAlertAsync("Limit erreicht", "Maximal 3 Fotos erlaubt", "OK");
-                return;
-            }
-
-            AppModel.Instance.UseExternHardware = true;
-            overlay.IsVisible = true;
-
-            try
-            {
-                await PhotoPickerHelper.PickAndProcessPhotosAsync(
-                    maxPhotos: 3,
-                    photoList: _SelectedPosForNotice_check_bem.bemWSO.photos,
-                    targetStack: noticePhotoStack_check_bem,
-                    parentGuid: _SelectedPosForNotice_check_bem.bemWSO.guid,
-                    removeCommand: new Command<BildWSO>(RemoveBildInWork_check_bem),
-                    building: AppModel.Instance.LastBuilding,
-                    onComplete: () =>
-                    {
-                        // UI Update
-                        if (_SelectedPosForNotice_check_bem.bemWSO?.photos != null)
-                        {
-                            bool hasSpace = _SelectedPosForNotice_check_bem.bemWSO.photos.Count < 3;
-                            btn_takePhoto_frame_check_bem.IsVisible = hasSpace;
-                            btn_takePhotoAttachment_frame_check_bem.IsVisible = hasSpace;
-                        }
-                    }
-                );
-            }
-            finally
-            {
-                AppModel.Instance.UseExternHardware = false;
-                overlay.IsVisible = false;
-            }
-        }
 
         public async void RemoveBildInWork_check_bem(BildWSO b)
         {
@@ -1589,78 +1451,78 @@ namespace iPMCloud.Mobile
 
 
 
-        private async void ShowBuildingScanPage(bool isCheck)
-        {
-            try
-            {
-                var result = await ScanObjModalPage.ScanAsync(this);
-                if (!string.IsNullOrWhiteSpace(result))
-                {
-                    var sp = result.Replace("http://www.ipm-cloud.de/?objektid=", "")
-                                   .Split(new[] { "_" }, StringSplitOptions.RemoveEmptyEntries);
+        //private async void ShowBuildingScanPage(bool isCheck)
+        //{
+        //    try
+        //    {
+        //        var result = await ScanObjModalPage.ScanAsync(this);
+        //        if (!string.IsNullOrWhiteSpace(result))
+        //        {
+        //            var sp = result.Replace("http://www.ipm-cloud.de/?objektid=", "")
+        //                           .Split(new[] { "_" }, StringSplitOptions.RemoveEmptyEntries);
 
-                    if (sp != null && sp.Length > 0)
-                    {
-                        var CustomerNumber = sp.Length == 1 ? "1" : "" + sp[1];
-                        Int32 buildingid = Int32.Parse(sp[0]);
+        //            if (sp != null && sp.Length > 0)
+        //            {
+        //                var CustomerNumber = sp.Length == 1 ? "1" : "" + sp[1];
+        //                Int32 buildingid = Int32.Parse(sp[0]);
 
-                        if (CustomerNumber == AppModel.Instance.SettingModel.SettingDTO.CustomerNumber)
-                        {
-                            AppModel.Instance.SettingModel.SettingDTO.LastBuildingIdScanned = buildingid;
+        //                if (CustomerNumber == AppModel.Instance.SettingModel.SettingDTO.CustomerNumber)
+        //                {
+        //                    AppModel.Instance.SettingModel.SettingDTO.LastBuildingIdScanned = buildingid;
 
-                            if (buildingid > 0 && AppModel.Instance.AllBuildings != null && AppModel.Instance.AllBuildings.Count > 0)
-                            {
-                                AppModel.Instance.SetAllObjectAndValuesToNoSelectedBuilding();
-                                AppModel.Instance.SettingModel.SettingDTO.LastBuildingIdScanned = buildingid;
-                                AppModel.Instance.LastBuilding = AppModel.Instance.AllBuildings.Find(bu => bu.id == buildingid);
+        //                    if (buildingid > 0 && AppModel.Instance.AllBuildings != null && AppModel.Instance.AllBuildings.Count > 0)
+        //                    {
+        //                        AppModel.Instance.SetAllObjectAndValuesToNoSelectedBuilding();
+        //                        AppModel.Instance.SettingModel.SettingDTO.LastBuildingIdScanned = buildingid;
+        //                        AppModel.Instance.LastBuilding = AppModel.Instance.AllBuildings.Find(bu => bu.id == buildingid);
 
-                                AppModel.Logger.Info("CHECK-IN: " + AppModel.Instance.LastBuilding.strasse + " " +
-                                                         AppModel.Instance.LastBuilding.hsnr + " " +
-                                                         AppModel.Instance.LastBuilding.plz + " " +
-                                                         AppModel.Instance.LastBuilding.ort);
+        //                        AppModel.Logger.Info("CHECK-IN: " + AppModel.Instance.LastBuilding.strasse + " " +
+        //                                                 AppModel.Instance.LastBuilding.hsnr + " " +
+        //                                                 AppModel.Instance.LastBuilding.plz + " " +
+        //                                                 AppModel.Instance.LastBuilding.ort);
 
-                            }
+        //                    }
 
-                            AppModel.Instance.SettingModel.SaveSettings();
+        //                    AppModel.Instance.SettingModel.SaveSettings();
 
-                            AppModel.Instance.UseExternHardware = false;
-                            if (isCheck)
-                            {
-                                MethodAfterScan_check();
-                            }
-                            else
-                            {
-                                ShowMainPage();
-                            }
-                        }
-                        else
-                        {
-                            await DisplayAlertAsync("QR-Code nicht erkannt!",
-                                "Dieser QR-Code ist zwar ein iPM-Cloud Code jedoch gehört er nicht zum Registrieten Unternehmen! Bitte Probieren Sie es noch einmal oder melden Sie sich in Ihrer Zentrale.",
-                                "OK");
-                            AppModel.Instance.UseExternHardware = false;
-                        }
-                    }
-                    else
-                    {
-                        await DisplayAlertAsync("QR-Code nicht erkannt!",
-                            "Dieser QR-Code kann nicht verwendet werden. Bitte Probieren Sie es noch einmal.",
-                            "OK");
-                        AppModel.Instance.UseExternHardware = false;
-                    }
+        //                    AppModel.Instance.UseExternHardware = false;
+        //                    if (isCheck)
+        //                    {
+        //                        MethodAfterScan_check();
+        //                    }
+        //                    else
+        //                    {
+        //                        ShowMainPage();
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    await DisplayAlertAsync("QR-Code nicht erkannt!",
+        //                        "Dieser QR-Code ist zwar ein iPM-Cloud Code jedoch gehört er nicht zum Registrieten Unternehmen! Bitte Probieren Sie es noch einmal oder melden Sie sich in Ihrer Zentrale.",
+        //                        "OK");
+        //                    AppModel.Instance.UseExternHardware = false;
+        //                }
+        //            }
+        //            else
+        //            {
+        //                await DisplayAlertAsync("QR-Code nicht erkannt!",
+        //                    "Dieser QR-Code kann nicht verwendet werden. Bitte Probieren Sie es noch einmal.",
+        //                    "OK");
+        //                AppModel.Instance.UseExternHardware = false;
+        //            }
 
-                }
-                else
-                {
-                    AppModel.Instance.UseExternHardware = false;
-                }
-            }
-            catch (Exception ex)
-            {
-                await DisplayAlertAsync("Fehler beim Scannen!", "QR-Code konnte nicht gelesen werden.", "OK");
-                AppModel.Instance.UseExternHardware = false;
-            }
-        }
+        //        }
+        //        else
+        //        {
+        //            AppModel.Instance.UseExternHardware = false;
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        await DisplayAlertAsync("Fehler beim Scannen!", "QR-Code konnte nicht gelesen werden.", "OK");
+        //        AppModel.Instance.UseExternHardware = false;
+        //    }
+        //}
 
 
 
@@ -1749,52 +1611,153 @@ namespace iPMCloud.Mobile
             }
         }
 
-        private async void ShowBuildingOutScanPage()
+
+        private async void ShowBuildingScanPage(bool isCheck)
         {
-            var result = await ScanObjModalPage.ScanAsync(this);
-            if (!string.IsNullOrWhiteSpace(result))
+            try
             {
-
-                var sp = result.Replace("http://www.ipm-cloud.de/?objektid=", "")
-                               .Split(new[] { "_" }, StringSplitOptions.RemoveEmptyEntries);
-
-                if (sp != null && sp.Length > 0)
+                var result = await ScanObjModalPage.ScanAsync(this);
+                if(string.IsNullOrWhiteSpace(result))
                 {
-                    AppModel.Instance.OutScanBuilding = null;
+                    AppModel.Instance.UseExternHardware = false;
+                    await DisplayAlertAsync("Fehler beim Scannen!", "QR-Code konnte nicht gelesen werden.", "OK");
+                    return;
+                }
+                const string marker = "objektid=";
+                var markerIndex = result?.IndexOf(marker) ?? -1;
 
-                    var CustomerNumber = sp.Length == 1 ? "1" : "" + sp[1];
-                    Int32 buildingid = Int32.Parse(sp[0]);
+                if (markerIndex >= 0)
+                {
+                    var sp = result.Substring(markerIndex + marker.Length)
+                                   .Split(new[] { "_" }, StringSplitOptions.RemoveEmptyEntries);
 
-                    if (CustomerNumber == AppModel.Instance.SettingModel.SettingDTO.CustomerNumber)
+                    if (sp != null && sp.Length > 0 && Int32.TryParse(sp[0], out Int32 buildingid))
                     {
-                        if (AppModel.Instance.AllBuildings != null && AppModel.Instance.AllBuildings.Count > 0)
+                        var CustomerNumber = sp.Length == 1 ? "1" : "" + sp[1];
+                        if (CustomerNumber == AppModel.Instance.SettingModel.SettingDTO.CustomerNumber)
                         {
-                            AppModel.Instance.OutScanBuilding = AppModel.Instance.AllBuildings.Find(bu => bu.id == buildingid);
-                            AppModel.Logger.Info("CHECK-OUT: " + AppModel.Instance.OutScanBuilding.strasse + " " +
-                                                     AppModel.Instance.OutScanBuilding.hsnr + " " +
-                                                     AppModel.Instance.OutScanBuilding.plz + " " +
-                                                     AppModel.Instance.OutScanBuilding.ort);
-                        }
+                            AppModel.Instance.SettingModel.SettingDTO.LastBuildingIdScanned = buildingid;
 
-                        AppModel.Instance.UseExternHardware = false;
-                        MethodAfterOutScan();
-                    }
-                    else
-                    {
+                            if (buildingid > 0 && AppModel.Instance.AllBuildings != null && AppModel.Instance.AllBuildings.Count > 0)
+                            {
+                                AppModel.Instance.SetAllObjectAndValuesToNoSelectedBuilding();
+                                AppModel.Instance.SettingModel.SettingDTO.LastBuildingIdScanned = buildingid;
+                                AppModel.Instance.LastBuilding = AppModel.Instance.AllBuildings.Find(bu => bu.id == buildingid);
+
+                                AppModel.Logger.Info("CHECK-IN: " + AppModel.Instance.LastBuilding.strasse + " " +
+                                                         AppModel.Instance.LastBuilding.hsnr + " " +
+                                                         AppModel.Instance.LastBuilding.plz + " " +
+                                                         AppModel.Instance.LastBuilding.ort);
+
+                            }
+
+                            AppModel.Instance.SettingModel.SaveSettings();
+
+                            AppModel.Instance.UseExternHardware = false;
+                            if (isCheck)
+                            {
+                                MethodAfterScan_check();
+                            }
+                            else
+                            {
+                                ShowMainPage();
+                            }
+                        }
+                        else
+                        {
                             await DisplayAlertAsync("QR-Code nicht erkannt!",
                                 "Dieser QR-Code ist zwar ein iPM-Cloud Code jedoch gehört er nicht zum Registrieten Unternehmen! Bitte Probieren Sie es noch einmal oder melden Sie sich in Ihrer Zentrale.",
                                 "OK");
+                            AppModel.Instance.UseExternHardware = false;
+                        }
+                    }
+                    else
+                    {
+                        await DisplayAlertAsync("QR-Code nicht erkannt!",
+                            "Dieser QR-Code kann nicht verwendet werden. Bitte Probieren Sie es noch einmal.",
+                            "OK");
+                        AppModel.Instance.UseExternHardware = false;
+                    }
+
+                }
+                else
+                {
+                    await DisplayAlertAsync("Fehler beim Scannen!", "QR-Code konnte nicht gelesen werden.", "OK");
+                    AppModel.Instance.UseExternHardware = false;
+                }
+            }
+            catch (Exception)
+            {
+                await DisplayAlertAsync("Fehler beim Scannen!", "QR-Code konnte nicht gelesen werden.", "OK");
+                AppModel.Instance.UseExternHardware = false;
+            }
+        }
+
+
+        private async void ShowBuildingOutScanPage()
+        {
+            try { 
+                var result = await ScanObjModalPage.ScanAsync(this);
+
+                if (string.IsNullOrWhiteSpace(result))
+                {
+                    AppModel.Instance.UseExternHardware = false;
+                    await DisplayAlertAsync("Fehler beim Scannen!", "QR-Code konnte nicht gelesen werden.", "OK");
+                    return;
+                }
+
+                const string marker = "objektid=";
+                var markerIndex = result?.IndexOf(marker) ?? -1;
+                if(markerIndex >= 0)
+                {
+
+                    var sp = result.Substring(markerIndex + marker.Length)
+                                   .Split(new[] { "_" }, StringSplitOptions.RemoveEmptyEntries);
+
+                    if (sp != null && sp.Length > 0 &&Int32.TryParse(sp[0], out Int32 buildingid))
+                    {
+                        AppModel.Instance.OutScanBuilding = null;
+                        var CustomerNumber = sp.Length == 1 ? "1" : "" + sp[1];
+                        if (CustomerNumber == AppModel.Instance.SettingModel.SettingDTO.CustomerNumber)
+                        {
+                            if (AppModel.Instance.AllBuildings != null && AppModel.Instance.AllBuildings.Count > 0)
+                            {
+                                AppModel.Instance.OutScanBuilding = AppModel.Instance.AllBuildings.Find(bu => bu.id == buildingid);
+                                AppModel.Logger.Info("CHECK-OUT: " + AppModel.Instance.OutScanBuilding.strasse + " " +
+                                                         AppModel.Instance.OutScanBuilding.hsnr + " " +
+                                                         AppModel.Instance.OutScanBuilding.plz + " " +
+                                                         AppModel.Instance.OutScanBuilding.ort);
+                            }
+
+                            AppModel.Instance.UseExternHardware = false;
+                            MethodAfterOutScan();
+                        }
+                        else
+                        {
+                            await DisplayAlertAsync("QR-Code nicht erkannt!",
+                                "Dieser QR-Code ist zwar ein iPM-Cloud Code jedoch gehört er nicht zum Registrieten Unternehmen! Bitte Probieren Sie es noch einmal oder melden Sie sich in Ihrer Zentrale.",
+                                "OK");
+                            AppModel.Instance.UseExternHardware = false;
+                        }
+                        
+                    }
+                    else
+                    {
+                        await DisplayAlertAsync("QR-Code nicht erkannt!",
+                            "Dieser QR-Code kann nicht verwendet werden. Bitte Probieren Sie es noch einmal.",
+                            "OK");
+                        AppModel.Instance.UseExternHardware = false;
                     }
                 }
                 else
                 {
-                        await DisplayAlertAsync("QR-Code nicht erkannt!",
-                            "Dieser QR-Code kann nicht verwendet werden. Bitte Probieren Sie es noch einmal.",
-                            "OK");
+                    await DisplayAlertAsync("Fehler beim Scannen!", "QR-Code konnte nicht gelesen werden.", "OK");
+                    AppModel.Instance.UseExternHardware = false;
                 }
             }
-            else
+            catch (Exception)
             {
+                await DisplayAlertAsync("Fehler beim Scannen!", "QR-Code konnte nicht gelesen werden.", "OK");
                 AppModel.Instance.UseExternHardware = false;
             }
         }

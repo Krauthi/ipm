@@ -31,7 +31,7 @@
 
             <BoxView
                 Margin="0,5,0,5"
-                BackgroundColor="Gray"
+                BackgroundColor="#666"
                 HeightRequest="1"
                 HorizontalOptions="Fill"
                 VerticalOptions="Start" />
@@ -88,7 +88,7 @@
             </Grid>
             <BoxView
                 Margin="0,5,0,5"
-                BackgroundColor="Gray"
+                BackgroundColor="#666"
                 HeightRequest="1"
                 HorizontalOptions="Fill"
                 VerticalOptions="Start" />

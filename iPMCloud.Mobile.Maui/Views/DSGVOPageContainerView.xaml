@@ -85,7 +85,7 @@
         <BoxView
             Grid.Row="1"
             Margin="0"
-            BackgroundColor="Gray"
+            BackgroundColor="#666"
             HeightRequest="1"
             HorizontalOptions="Fill"
             VerticalOptions="Start" />

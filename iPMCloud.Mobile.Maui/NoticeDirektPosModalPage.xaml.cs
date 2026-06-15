@@ -301,15 +301,19 @@ namespace iPMCloud.Mobile
                 overlay.IsVisible = true;
                 await Task.Delay(1);
 
-                var photos = await MediaPicker.PickPhotosAsync(new MediaPickerOptions
+                var options = new MediaPickerOptions
                 {
                     CompressionQuality = 75,
                     MaximumHeight = 1024,
                     MaximumWidth = 1024,
-                    RotateImage = true,
                     SelectionLimit = 5 - _selectedBemerkungForNotice.photos.Count,
                     PreserveMetaData = true,
-                });
+                };
+#if !IOS
+                options.RotateImage = true;
+#endif
+
+                var photos = await MediaPicker.PickPhotosAsync(options);
 
                 if (photos != null && photos.Count() > 0)
                 {

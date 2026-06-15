@@ -9,11 +9,11 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ApplicationTitle>iPM-Cloud</ApplicationTitle>
 		<ApplicationIdGuid>201CEFAB-590D-414F-9660-9EFF31FE2078</ApplicationIdGuid>
-		<ApplicationDisplayVersion>3.0.54</ApplicationDisplayVersion>
+		<ApplicationDisplayVersion>3.0.56</ApplicationDisplayVersion>
 		<ApplicationVersion>1</ApplicationVersion>
-		<Version>3000054</Version>
-		<AssemblyVersion>3.0.54.0</AssemblyVersion>
-		<FileVersion>3.0.54.0</FileVersion>
+		<Version>3000056</Version>
+		<AssemblyVersion>3.0.56.0</AssemblyVersion>
+		<FileVersion>3.0.56.0</FileVersion>
 		<NeutralLanguage>de-DE</NeutralLanguage>
 		<Copyright>iPM-Cloud</Copyright>
 		<Nullable>disable</Nullable>
@@ -35,12 +35,12 @@
 		<CodesignKey>Apple Development: Markus Krauthausen (8W3QR96FUF)</CodesignKey>
 		<CodesignProvision>DevVersion3Profile</CodesignProvision>
 	</PropertyGroup>
-	
+	-->
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Release|net10.0-ios'">
 		<ApplicationId>com.ipmcloud.ipm.mobile.app</ApplicationId>
 		<CodesignKey>Apple Distribution: Markus Krauthausen (8W3QR96FUF)</CodesignKey>
 		<CodesignProvision>DistVersion3Profile</CodesignProvision>
-	</PropertyGroup>-->
+	</PropertyGroup>
 	
 	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
 	  <WindowsPackageType>None</WindowsPackageType>

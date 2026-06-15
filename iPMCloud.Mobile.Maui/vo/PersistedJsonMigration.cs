@@ -84,6 +84,9 @@ namespace iPMCloud.Mobile.vo
 
                 if (!NrbfDecoder.StartsWithPayloadHeader(stream))
                 {
+                    failure = new InvalidDataException(
+                        "File is not a recognized legacy binary (NRBF) format. " +
+                        "The file may be corrupted or written by an unknown serializer.");
                     return false;
                 }
 
@@ -93,7 +96,10 @@ namespace iPMCloud.Mobile.vo
                 if (record is not PrimitiveTypeRecord<string> stringRecord ||
                     string.IsNullOrWhiteSpace(stringRecord.Value))
                 {
-                    failure = new InvalidDataException("Legacy payload did not contain a serialized JSON string.");
+                    failure = new InvalidDataException(
+                        $"Legacy NRBF payload does not contain a serialized JSON string " +
+                        $"(actual record type: {record?.GetType().Name ?? "null"}). " +
+                        "The payload format is not supported by the current migration path.");
                     return false;
                 }
 

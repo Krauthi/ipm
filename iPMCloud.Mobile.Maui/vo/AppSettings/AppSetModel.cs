@@ -178,13 +178,27 @@ namespace iPMCloud.Mobile.vo
                 {
                     AppModel.Instance.AppSetModel = appSetModel;
                 }
-                else if (new FileInfo(FilePath).Length == 0)
-                {
-                    AppModel.Instance.AppSetModel = new AppSetModel();
-                }
                 else
                 {
+                    // Both JSON load and legacy migration failed.
+                    // Determine whether the file is empty or contains unrecognized/corrupted data.
+                    long fileSize = new FileInfo(FilePath).Length;
+                    if (fileSize == 0)
+                    {
+                        AppModel.Logger?.Warn($"Load AppSet: File is empty, resetting to defaults - {FilePath}");
+                    }
+                    else
+                    {
+                        // File has content but cannot be read - back it up and start fresh.
+                        AppModel.Logger?.Warn(
+                            $"Load AppSet: File is corrupted or uses an unsupported format " +
+                            $"(size={fileSize} bytes). Backing up and resetting to defaults - {FilePath}");
+                        TryBackupCorruptedFile();
+                    }
+
                     AppModel.Instance.AppSetModel = new AppSetModel();
+                    Save(); // Persist a clean default so next launch succeeds without warnings.
+                    AppModel.Logger?.Info($"Load AppSet: Recovered with default AppSet, clean file written - {FilePath}");
                 }
             }
             catch (Exception ex)
@@ -296,6 +310,24 @@ namespace iPMCloud.Mobile.vo
         public static string GetFilePath()
         {
             return FilePath;
+        }
+
+        private static void TryBackupCorruptedFile()
+        {
+            try
+            {
+                if (!File.Exists(FilePath))
+                    return;
+
+                string backupPath = FilePath + $".corrupted_{DateTime.UtcNow:yyyyMMdd_HHmmss_fff}";
+                File.Copy(FilePath, backupPath, overwrite: true);
+                File.Delete(FilePath);
+                AppModel.Logger?.Info($"Load AppSet: Corrupted file backed up to {backupPath}");
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Warn(ex, $"Load AppSet: Failed to back up corrupted file - {FilePath}");
+            }
         }
     }
 }

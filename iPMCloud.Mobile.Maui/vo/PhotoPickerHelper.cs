@@ -66,8 +66,7 @@ namespace iPMCloud.Mobile.Helpers
             if (photo == null)
                 throw new ArgumentNullException(nameof(photo));
 
-            Stream sourceStream = null;
-            MemoryStream materializedStream = null;
+            Stream sourceStream;
             try
             {
                 LogInfo($"{operationName}: Öffne Stream für '{photo.FileName}'.");
@@ -86,75 +85,80 @@ namespace iPMCloud.Mobile.Helpers
 
             try
             {
-                try
+                using (sourceStream)
                 {
-                    LogInfo($"{operationName}: Starte Kopieren in MemoryStream.");
-                    materializedStream = new MemoryStream();
-                    await sourceStream.CopyToAsync(materializedStream);
-                    materializedStream.Position = 0;
-                    LogInfo($"{operationName}: Kopieren in MemoryStream abgeschlossen ({materializedStream.Length} Bytes).");
-                }
-                catch (Exception ex)
-                {
-                    LogError($"{operationName}: Kopieren in MemoryStream fehlgeschlagen.", ex);
-                    throw new PhotoPickerException(
-                        PhotoPickerFailureKind.ProcessingFailed,
-                        "Das Foto konnte nicht zuverlässig gelesen werden.",
-                        "CopyToMemoryStream",
-                        ex);
-                }
-
-                return await Task.Run(() =>
-                {
-                    PhotoResponse photoResponse;
-
+                    using var materializedStream = new MemoryStream();
                     try
                     {
-                        LogInfo($"{operationName}: Starte PhotoUtils.GetImages.");
-                        photoResponse = PhotoUtils.GetImages(materializedStream);
-                        LogInfo($"{operationName}: PhotoUtils.GetImages abgeschlossen.");
+                        LogInfo($"{operationName}: Starte Kopieren in MemoryStream.");
+                        await sourceStream.CopyToAsync(materializedStream);
+                        materializedStream.Position = 0;
+                        LogInfo($"{operationName}: Kopieren in MemoryStream abgeschlossen ({materializedStream.Length} Bytes).");
                     }
                     catch (Exception ex)
                     {
-                        LogError($"{operationName}: PhotoUtils.GetImages fehlgeschlagen.", ex);
+                        LogError($"{operationName}: Kopieren in MemoryStream fehlgeschlagen.", ex);
                         throw new PhotoPickerException(
                             PhotoPickerFailureKind.ProcessingFailed,
-                            "Das Foto konnte nicht verarbeitet werden.",
-                            "PhotoUtils.GetImages",
+                            "Das Foto konnte nicht zuverlässig gelesen werden.",
+                            "CopyToMemoryStream",
                             ex);
                     }
 
-                    //try
-                    //{
-                    //    LogInfo($"{operationName}: Starte PhotoUtils.AddInfoToImage.");
-                    //    photoResponse = PhotoUtils.AddInfoToImage(photoResponse, building, customBuildingText);
-                    //    LogInfo($"{operationName}: PhotoUtils.AddInfoToImage abgeschlossen.");
-                    //}
-                    //catch (Exception ex)
-                    //{
-                    //    LogError($"{operationName}: PhotoUtils.AddInfoToImage fehlgeschlagen.", ex);
-                    //    throw new PhotoPickerException(
-                    //        PhotoPickerFailureKind.ProcessingFailed,
-                    //        "Das Foto konnte nicht nachbearbeitet werden.",
-                    //        "PhotoUtils.AddInfoToImage",
-                    //        ex);
-                    //}
-
-                    if (photoResponse == null || photoResponse.imageBytes == null || photoResponse.imageBytes.Length == 0)
+                    return await Task.Run(() =>
                     {
-                        throw new PhotoPickerException(
-                            PhotoPickerFailureKind.ProcessingFailed,
-                            "Das Foto konnte nicht verarbeitet werden.",
-                            "ProcessedPhotoValidation");
-                    }
+                        PhotoResponse photoResponse;
 
-                    return photoResponse;
-                });
+                        try
+                        {
+                            LogInfo($"{operationName}: Starte PhotoUtils.GetImages.");
+                            photoResponse = PhotoUtils.GetImages(materializedStream);
+                            LogInfo($"{operationName}: PhotoUtils.GetImages abgeschlossen.");
+                        }
+                        catch (Exception ex)
+                        {
+                            LogError($"{operationName}: PhotoUtils.GetImages fehlgeschlagen.", ex);
+                            throw new PhotoPickerException(
+                                PhotoPickerFailureKind.ProcessingFailed,
+                                "Das Foto konnte nicht verarbeitet werden.",
+                                "PhotoUtils.GetImages",
+                                ex);
+                        }
+
+                        //try
+                        //{
+                        //    LogInfo($"{operationName}: Starte PhotoUtils.AddInfoToImage.");
+                        //    photoResponse = PhotoUtils.AddInfoToImage(photoResponse, building, customBuildingText);
+                        //    LogInfo($"{operationName}: PhotoUtils.AddInfoToImage abgeschlossen.");
+                        //}
+                        //catch (Exception ex)
+                        //{
+                        //    LogError($"{operationName}: PhotoUtils.AddInfoToImage fehlgeschlagen.", ex);
+                        //    throw new PhotoPickerException(
+                        //        PhotoPickerFailureKind.ProcessingFailed,
+                        //        "Das Foto konnte nicht nachbearbeitet werden.",
+                        //        "PhotoUtils.AddInfoToImage",
+                        //        ex);
+                        //}
+
+                        if (photoResponse == null || photoResponse.imageBytes == null || photoResponse.imageBytes.Length == 0)
+                        {
+                            throw new PhotoPickerException(
+                                PhotoPickerFailureKind.ProcessingFailed,
+                                "Das Foto konnte nicht verarbeitet werden.",
+                                "ProcessedPhotoValidation");
+                        }
+
+                        return photoResponse;
+                    });
+                }
+            }
+            catch (PhotoPickerException)
+            {
+                throw;
             }
             finally
             {
-                materializedStream?.Dispose();
-                sourceStream?.Dispose();
                 LogInfo($"{operationName}: Streams geschlossen.");
             }
         }
@@ -196,8 +200,9 @@ namespace iPMCloud.Mobile.Helpers
                     return null;
 
                 // Limit anwenden
-                var selectedPhotos = results.Take(maxCount).ToList();
-                LogInfo($"PickMultiplePhotosAsync: Picker lieferte {results.Count()} Bild(er), nach Limit verbleiben {selectedPhotos.Count}.");
+                var pickerResults = results.ToList();
+                var selectedPhotos = pickerResults.Take(maxCount).ToList();
+                LogInfo($"PickMultiplePhotosAsync: Picker lieferte {pickerResults.Count} Bild(er), nach Limit verbleiben {selectedPhotos.Count}.");
                 return selectedPhotos;
             }
             catch (Exception ex)

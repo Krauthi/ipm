@@ -294,6 +294,9 @@ namespace iPMCloud.Mobile.vo
                 if (HasInitAppmodel) { return true; }
                 AppOnStart = DateTime.Now;
 
+                Version = AppInfo.Current.VersionString;
+                Build = AppInfo.Current.BuildString;
+
                 AppSet.Load();
                 SettingModel.model = this;
                 SettingModel.InitializeSettings();

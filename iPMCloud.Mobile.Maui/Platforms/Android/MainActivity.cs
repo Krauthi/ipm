@@ -71,7 +71,6 @@ namespace iPMCloud.Mobile
                 model.HasInitAppmodel = model.InitAppModel();
 
                 //InitFontScale();
-                SetAppVersion();
                 ConfigureUI();
                 LogDeferredPermissionStrategy();
                 CreateNotificationChannel();
@@ -493,70 +492,6 @@ namespace iPMCloud.Mobile
             catch (Exception ex)
             {
                 Log.Error(TAG, $"CreateNotificationChannel Error: {ex}");
-            }
-        }
-
-        #endregion
-
-        #region Version Info
-
-        private void SetAppVersion()
-        {
-            try
-            {
-                model.Version = GetVersion();
-                model.Build = GetBuild().ToString();
-                
-                Log.Info(TAG, $"App Version: {model.Version}, Build: {model.Build}");
-            }
-            catch (Exception ex)
-            {
-                Log.Error(TAG, $"SetAppVersion Error: {ex}");
-            }
-        }
-
-        public static string GetVersion()
-        {
-            try
-            {
-                var context = Android.App.Application.Context;
-                var manager = context.PackageManager;
-                var info = manager?.GetPackageInfo(context.PackageName, 0);
-                return info?.VersionName ?? "Unknown";
-            }
-            catch (Exception ex)
-            {
-                Log.Error(TAG, $"GetVersion Error: {ex}");
-                return "Unknown";
-            }
-        }
-
-        public static int GetBuild()
-        {
-            try
-            {
-                var context = Android.App.Application.Context;
-                var manager = context.PackageManager;
-                var info = manager?.GetPackageInfo(context.PackageName, 0);
-#if ANDROID
-long versionCode;
-if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.P)
-{
-    versionCode = info.LongVersionCode;
-}
-else
-{
-#pragma warning disable CA1422
-    versionCode = info.VersionCode;
-#pragma warning restore CA1422
-}
-#endif
-                return (int)versionCode;
-            }
-            catch (Exception ex)
-            {
-                Log.Error(TAG, $"GetBuild Error: {ex}");
-                return 0;
             }
         }
 

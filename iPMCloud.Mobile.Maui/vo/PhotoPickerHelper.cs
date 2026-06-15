@@ -66,11 +66,12 @@ namespace iPMCloud.Mobile.Helpers
             if (photo == null)
                 throw new ArgumentNullException(nameof(photo));
 
-            Stream stream = null;
+            Stream sourceStream = null;
+            MemoryStream materializedStream = null;
             try
             {
                 LogInfo($"{operationName}: Öffne Stream für '{photo.FileName}'.");
-                stream = await photo.OpenReadAsync();
+                sourceStream = await photo.OpenReadAsync();
                 LogInfo($"{operationName}: Stream geöffnet.");
             }
             catch (Exception ex)
@@ -85,6 +86,24 @@ namespace iPMCloud.Mobile.Helpers
 
             try
             {
+                try
+                {
+                    LogInfo($"{operationName}: Starte Kopieren in MemoryStream.");
+                    materializedStream = new MemoryStream();
+                    await sourceStream.CopyToAsync(materializedStream);
+                    materializedStream.Position = 0;
+                    LogInfo($"{operationName}: Kopieren in MemoryStream abgeschlossen ({materializedStream.Length} Bytes).");
+                }
+                catch (Exception ex)
+                {
+                    LogError($"{operationName}: Kopieren in MemoryStream fehlgeschlagen.", ex);
+                    throw new PhotoPickerException(
+                        PhotoPickerFailureKind.ProcessingFailed,
+                        "Das Foto konnte nicht zuverlässig gelesen werden.",
+                        "CopyToMemoryStream",
+                        ex);
+                }
+
                 return await Task.Run(() =>
                 {
                     PhotoResponse photoResponse;
@@ -92,7 +111,7 @@ namespace iPMCloud.Mobile.Helpers
                     try
                     {
                         LogInfo($"{operationName}: Starte PhotoUtils.GetImages.");
-                        photoResponse = PhotoUtils.GetImages(stream);
+                        photoResponse = PhotoUtils.GetImages(materializedStream);
                         LogInfo($"{operationName}: PhotoUtils.GetImages abgeschlossen.");
                     }
                     catch (Exception ex)
@@ -134,8 +153,9 @@ namespace iPMCloud.Mobile.Helpers
             }
             finally
             {
-                stream?.Dispose();
-                LogInfo($"{operationName}: Stream geschlossen.");
+                materializedStream?.Dispose();
+                sourceStream?.Dispose();
+                LogInfo($"{operationName}: Streams geschlossen.");
             }
         }
 
@@ -176,7 +196,9 @@ namespace iPMCloud.Mobile.Helpers
                     return null;
 
                 // Limit anwenden
-                return results.Take(maxCount).ToList();
+                var selectedPhotos = results.Take(maxCount).ToList();
+                LogInfo($"PickMultiplePhotosAsync: Picker lieferte {results.Count()} Bild(er), nach Limit verbleiben {selectedPhotos.Count}.");
+                return selectedPhotos;
             }
             catch (Exception ex)
             {
@@ -219,16 +241,29 @@ namespace iPMCloud.Mobile.Helpers
                 if (selectedPhotos == null || !selectedPhotos.Any())
                     return false;
 
+                int selectedCount = selectedPhotos.Count;
+                int processedCount = 0;
+                int failedCount = 0;
+                LogInfo($"PickAndProcessPhotosAsync: Starte Verarbeitung von {selectedCount} ausgewählten Bild(ern).");
+
                 // Fotos verarbeiten
+                int photoIndex = 0;
                 foreach (var photo in selectedPhotos)
                 {
+                    photoIndex++;
+                    var fileName = photo?.FileName ?? "unknown";
+                    var fullPath = string.IsNullOrWhiteSpace(photo?.FullPath) ? "<no-fullpath>" : photo.FullPath;
+                    var fileExtension = Path.GetExtension(fileName) ?? string.Empty;
+                    var operationName = $"PickAndProcessPhotosAsync[{photoIndex}/{selectedCount}]";
+                    LogInfo($"{operationName}: Datei='{fileName}', FullPath='{fullPath}', Extension='{fileExtension}'.");
+
                     try
                     {
                         var photoResponse = await ProcessPhotoResponseAsync(
                             photo,
                             building,
                             customBuildingText,
-                            $"PickAndProcessPhotosAsync[{photo?.FileName ?? "unknown"}]");
+                            operationName);
 
                         long bildName = DateTime.Now.Ticks;
                         var bildWSO = new BildWSO(parentGuid)
@@ -249,16 +284,21 @@ namespace iPMCloud.Mobile.Helpers
                             CommandParameter = bildWSO
                         });
 
+                        LogInfo($"{operationName}: Starte Übernahme in App-Liste.");
                         BildWSO.Save(AppModel.Instance, bildWSO);
                         photoList.Add(bildWSO);
                         targetStack.Children.Add(bildWSO.stack);
+                        processedCount++;
+                        LogInfo($"{operationName}: Übernahme in App-Liste erfolgreich.");
                     }
                     catch (Exception photoEx)
                     {
-                        LogError($"Fehler beim Verarbeiten von '{photo?.FileName ?? "unknown"}'.", photoEx);
+                        failedCount++;
+                        LogError($"{operationName}: Fehler beim Verarbeiten von '{photo?.FileName ?? "unknown"}'.", photoEx);
                     }
                 }
 
+                LogInfo($"PickAndProcessPhotosAsync: Zusammenfassung Mehrfachauswahl selected={selectedCount}, processed={processedCount}, failed={failedCount}.");
                 onComplete?.Invoke();
                 return true;
             }

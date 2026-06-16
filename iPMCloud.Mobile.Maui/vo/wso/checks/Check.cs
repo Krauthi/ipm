@@ -149,7 +149,7 @@ namespace iPMCloud.Mobile
                         }
                         break;
                     case "7":// Unterschrift
-                        item.a1 = "" + item.bemWSO.text;
+                        item.a1 = "" + (item.bemWSO?.text ?? "");
                         break;
                 }
 

@@ -7311,8 +7311,6 @@ namespace iPMCloud.Mobile
                 var dt = String.IsNullOrEmpty(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks) ?
                     DateTime.Now.AddDays(-2) : new DateTime(long.Parse(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks));
 
-                box_buildingInformation.Children.Clear();
-                box_buildingInformation.Children.Add(BuildingWSO.GetBuildingInformation(AppModel.Instance, dt));
 
                 if (dt.AddHours(AppModel.Instance.SettingModel.SettingDTO.SyncTimeHours) < DateTime.Now || manuellSync)
                 {
@@ -7360,6 +7358,8 @@ namespace iPMCloud.Mobile
                 else
                 {
                     Load_PlanTabs(((int)DateTime.Now.DayOfWeek));
+                    box_buildingInformation.Children.Clear();
+                    box_buildingInformation.Children.Add(BuildingWSO.GetBuildingInformation(AppModel.Instance, dt));
                 }
             }
             catch (Exception ex)
@@ -7413,6 +7413,11 @@ namespace iPMCloud.Mobile
                         {
                             CheckForNewBuildingFailed(e.Response);
                             Load_PlanTabs(((int)DateTime.Now.DayOfWeek));
+
+                            var dt = String.IsNullOrEmpty(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks) ?
+                                DateTime.Now.AddDays(-2) : new DateTime(long.Parse(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks));
+                            box_buildingInformation.Children.Clear();
+                            box_buildingInformation.Children.Add(BuildingWSO.GetBuildingInformation(AppModel.Instance, dt));
                         }
                     }
                 }

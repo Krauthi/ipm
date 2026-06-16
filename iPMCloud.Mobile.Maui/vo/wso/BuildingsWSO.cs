@@ -312,7 +312,7 @@ namespace iPMCloud.Mobile
                     {
                         FontSize = 14,
                         Text = "Objekte: ",
-                        HorizontalOptions = LayoutOptions.Start, HorizontalTextAlignment = TextAlignment.Start,
+                        HorizontalOptions = LayoutOptions.Start, 
                         TextColor = Color.FromArgb("#999999"),
                         Margin = new Thickness(0, 0, 0, 0),
                         Padding = new Thickness(0, 0, 0, 0),
@@ -321,7 +321,7 @@ namespace iPMCloud.Mobile
                     {
                         FontSize = 14,
                         Text = ""+model.AllBuildings.Count,
-                        HorizontalOptions = LayoutOptions.Start, HorizontalTextAlignment = TextAlignment.Start,
+                        HorizontalOptions = LayoutOptions.Start, 
                         TextColor = Color.FromArgb("#cccccc"),
                         Margin = new Thickness(0, 0, 0, 0),
                         Padding = new Thickness(0, 0, 0, 0),
@@ -330,7 +330,7 @@ namespace iPMCloud.Mobile
                     {
                         FontSize = 14,
                         Text = " - Stand vom: ",
-                        HorizontalOptions = LayoutOptions.Start, HorizontalTextAlignment = TextAlignment.Start,
+                        HorizontalOptions = LayoutOptions.Start, 
                         TextColor = Color.FromArgb("#999999"),
                         Margin = new Thickness(0, 0, 0, 0),
                         Padding = new Thickness(0, 0, 0, 0),
@@ -339,7 +339,7 @@ namespace iPMCloud.Mobile
                     {
                         FontSize = 14,
                         Text = lastsyncdate.ToString("dd.MM.yyyy - HH:mm"),
-                        HorizontalOptions = LayoutOptions.StartAndExpand, HorizontalTextAlignment = TextAlignment.Start,
+                        HorizontalOptions = LayoutOptions.Start, 
                         TextColor = Color.FromArgb("#cccccc"),
                         Margin = new Thickness(0, 0, 0, 0),
                         Padding = new Thickness(0, 0, 0, 0),

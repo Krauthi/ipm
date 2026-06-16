@@ -136,15 +136,15 @@ namespace iPMCloud.Mobile
             _previewCts?.Cancel();
             _previewCts = new CancellationTokenSource();
             var token = _previewCts.Token;
-            System.Diagnostics.Debug.WriteLine(
-                $"[ScanObjModalPage] OnAppearing – scheduling IsDetecting=true after 300 ms " +
-                $"(Width={Width:F0}, Height={Height:F0})");
+            //System.Diagnostics.Debug.WriteLine(
+            //    $"[ScanObjModalPage] OnAppearing – scheduling IsDetecting=true after 300 ms " +
+            //    $"(Width={Width:F0}, Height={Height:F0})");
             MainThread.BeginInvokeOnMainThread(async () =>
             {
                 try
                 {
                     await Task.Delay(300, token);
-                    System.Diagnostics.Debug.WriteLine("[ScanObjModalPage] IsDetecting = true");
+                    //System.Diagnostics.Debug.WriteLine("[ScanObjModalPage] IsDetecting = true");
                     ReaderView.IsDetecting = true;
                 }
                 catch (OperationCanceledException)

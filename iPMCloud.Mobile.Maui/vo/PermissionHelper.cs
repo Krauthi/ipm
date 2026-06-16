@@ -31,12 +31,12 @@ namespace iPMCloud.Mobile.Helpers
             where TPermission : Permissions.BasePermission, new()
         {
             var status = await Permissions.CheckStatusAsync<TPermission>();
-            LogInfo($"{flowName}: {permissionName} status before request = {status}.");
+            //LogInfo($"{flowName}: {permissionName} status before request = {status}.");
 
             if (!IsGranted(status))
             {
                 status = await Permissions.RequestAsync<TPermission>();
-                LogInfo($"{flowName}: {permissionName} status after request = {status}.");
+                //LogInfo($"{flowName}: {permissionName} status after request = {status}.");
             }
 
             return status;

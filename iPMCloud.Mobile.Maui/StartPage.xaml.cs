@@ -125,7 +125,8 @@ namespace iPMCloud.Mobile
         private async void ShowRegScan()
         {
 
-
+            overlay.IsVisible = true;
+            await Task.Delay(1);
             //Reg/Scan_Container.IsVisible = true;
             Login_Container.IsVisible = false;
             //AddReg/Scan_Container.IsVisible = false;
@@ -142,6 +143,8 @@ namespace iPMCloud.Mobile
 
                 if (sp.Length < 3)
                 {
+                    await Task.Delay(1);
+                    overlay.IsVisible = false;
                     await DisplayAlertAsync("QR-Code nicht gültig!",
                                             "Dieser QR-Code kann für die Registrierung des Unternehmens mit der iPM-Cloud-App nicht verwendet werden.",
                                             "OK");
@@ -186,9 +189,13 @@ namespace iPMCloud.Mobile
                         BeforeLogin_Container.IsVisible = false;
                         //StartGPS();
                         popupContainer_gpsinfo.IsVisible = true;
+                        await Task.Delay(1);
+                        overlay.IsVisible = false;
                     }
                     else
                     {
+                        await Task.Delay(1);
+                        overlay.IsVisible = false;
                         AppModel.Logger.Error("QR-Code nicht erkannt!" + " Dieser QR-Code kann für die Registrierung des Unternehmens mit der iPM-Cloud-App nicht verwendet werden!");
                         await DisplayAlertAsync("QR-Code nicht erkannt!",
                                                 "Dieser QR-Code kann für die Registrierung des Unternehmens mit der iPM-Cloud-App nicht verwendet werden.",
@@ -203,6 +210,9 @@ namespace iPMCloud.Mobile
                 //await DisplayAlertAsync("Keine Kamera!",
                 //                        "Vermutlich ist die Berechtigung der Kamera nicht gesetzt!",
                 //                        "OK");
+
+                await Task.Delay(1);
+                overlay.IsVisible = false;
                 AppModel.Instance.UseExternHardware = false;
             }
         }
@@ -323,6 +333,9 @@ namespace iPMCloud.Mobile
 
         private async void ShowAddRegScan()
         {
+            overlay.IsVisible = true;
+            await Task.Delay(1);
+
             var result = await ScanModalPage.ScanAsync(this);
             if (!string.IsNullOrWhiteSpace(result))
             {
@@ -333,6 +346,8 @@ namespace iPMCloud.Mobile
 
                 if (sp.Length < 3)
                 {
+                    await Task.Delay(1);
+                    overlay.IsVisible = false;
                     await DisplayAlertAsync("QR-Code nicht gültig!",
                                             "Dieser QR-Code kann für die Registrierung eines weiteren Unternehmens mit der iPM-Cloud-App nicht verwendet werden.",
                                             "OK");
@@ -378,12 +393,16 @@ namespace iPMCloud.Mobile
                     AppModel.Instance.Connections.InitPNConnections();
 
                     AppModel.Instance.SettingModel.SaveSettings();
+                    await Task.Delay(1);
+                    overlay.IsVisible = false;
                     ShowLoginPage();
                 }
                 else
                 {
-                    AppModel.Logger.Error("QR-Code nicht erkannt!" + " Dieser QR-Code kann für die Registrierung eines weiteren Unternehmens mit der iPM-Cloud-App nicht verwendet werden!");
-                    await DisplayAlertAsync("QR-Code nicht erkannt!",
+                    await Task.Delay(1);
+                    overlay.IsVisible = false;
+                    AppModel.Logger.Error("QR-Code nicht erkannt oder existiert schon!" + " Dieser QR-Code kann für die Registrierung eines weiteren Unternehmens mit der iPM-Cloud-App nicht verwendet werden!");
+                    await DisplayAlertAsync("QR-Code nicht erkannt oder existiert schon!",
                                             "Dieser QR-Code kann für die Registrierung eines weiteren Unternehmens mit der iPM-Cloud-App nicht verwendet werden.",
                                             "OK");
                     AppModel.Instance.UseExternHardware = false;
@@ -391,6 +410,8 @@ namespace iPMCloud.Mobile
             }
             else
             {
+                await Task.Delay(1);
+                overlay.IsVisible = false;
                 //AppModel.Logger.Error("Keine Kamera!" + " Vermutlich ist die Berechtigung der Kamera nicht gesetzt!");
                 //await DisplayAlertAsync("Keine Kamera!",
                 //                        "Vermutlich ist die Berechtigung der Kamera nicht gesetzt!",

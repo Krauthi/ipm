@@ -90,6 +90,7 @@ namespace iPMCloud.Mobile
             if (!await _scanSemaphore.WaitAsync(0))
                 return null;
 
+
             try
             {
                 var hasCameraPermission = await PermissionHelper.EnsureCameraPermissionAsync(

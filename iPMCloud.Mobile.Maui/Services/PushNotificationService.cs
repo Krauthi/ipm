@@ -20,6 +20,7 @@ namespace iPMCloud.Mobile.Services
         public const string AndroidChannelId = "ipmcloud_message_channel";
         private static readonly long[] AndroidVibrationPattern = new long[] { 0, 500, 250, 500 };
         private static bool _initialized;
+        private static bool _androidNotificationPermissionRequestStarted;
         private static readonly object _initLock = new();
         private static int _nextAndroidNotificationId = 1000;
 
@@ -37,7 +38,6 @@ namespace iPMCloud.Mobile.Services
 
 #if ANDROID
             EnsureAndroidNotificationChannel();
-            RequestAndroidNotificationPermissionIfRequired();
             FirebaseMessaging.Instance.AutoInitEnabled = true;
             FirebaseMessaging.Instance.GetToken().AddOnCompleteListener(new FirebaseTokenCompleteListener());
 #elif IOS
@@ -147,6 +147,11 @@ namespace iPMCloud.Mobile.Services
                 .Notify(Interlocked.Increment(ref _nextAndroidNotificationId), builder.Build());
         }
 
+        public static void EnsureAndroidNotificationPermissionRequest()
+        {
+            RequestAndroidNotificationPermissionIfRequired();
+        }
+
         private static void RequestAndroidNotificationPermissionIfRequired()
         {
             if (Build.VERSION.SdkInt < BuildVersionCodes.Tiramisu)
@@ -154,12 +159,40 @@ namespace iPMCloud.Mobile.Services
                 return;
             }
 
+            if (_androidNotificationPermissionRequestStarted)
+            {
+                return;
+            }
+
+            var activity = Platform.CurrentActivity ?? MainActivity.Instance;
+            if (activity == null || activity.IsFinishing || activity.IsDestroyed)
+            {
+                return;
+            }
+
+            _androidNotificationPermissionRequestStarted = true;
+
             MainThread.BeginInvokeOnMainThread(async () =>
             {
-                var currentStatus = await Permissions.CheckStatusAsync<Permissions.PostNotifications>();
-                if (currentStatus != PermissionStatus.Granted)
+                try
                 {
-                    await Permissions.RequestAsync<Permissions.PostNotifications>();
+                    var currentActivity = Platform.CurrentActivity ?? MainActivity.Instance;
+                    if (currentActivity == null || currentActivity.IsFinishing || currentActivity.IsDestroyed)
+                    {
+                        _androidNotificationPermissionRequestStarted = false;
+                        return;
+                    }
+
+                    var currentStatus = await Permissions.CheckStatusAsync<Permissions.PostNotifications>();
+                    if (currentStatus != PermissionStatus.Granted)
+                    {
+                        await Permissions.RequestAsync<Permissions.PostNotifications>();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _androidNotificationPermissionRequestStarted = false;
+                    AppModel.Logger?.Error(ex, "ERROR: RequestAndroidNotificationPermissionIfRequired");
                 }
             });
         }

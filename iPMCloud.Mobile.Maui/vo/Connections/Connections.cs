@@ -937,6 +937,10 @@ namespace iPMCloud.Mobile.vo
 
         public async Task<bool> LogSync(string log)
         {
+            if (AppModel.Instance.Person == null ||
+            AppModel.Instance.SettingModel.SettingDTO == null || 
+            String.IsNullOrEmpty(AppModel.Instance.SettingModel.SettingDTO.CustomerName)) { return false; }
+
             if (uri_Log == null) { InitConnections(); }
             HttpResponseMessage resMsg = null;
 

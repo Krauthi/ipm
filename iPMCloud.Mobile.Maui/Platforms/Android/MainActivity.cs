@@ -9,6 +9,7 @@ using Android.Util;
 using Android.Views;
 using iPMCloud.Mobile.vo;
 using iPMCloud.Mobile.Platforms.Android.Services;
+using iPMCloud.Mobile.Services;
 using System;
 using System.Linq;
 using System.Reflection;
@@ -175,6 +176,7 @@ namespace iPMCloud.Mobile
         protected override void OnResume()
         {
             base.OnResume();
+            PushNotificationService.EnsureAndroidNotificationPermissionRequest();
             ApplySystemBarColors();
             ScheduleSystemUiUpdate("OnResume");
             //Log.Debug(TAG, "OnResume");

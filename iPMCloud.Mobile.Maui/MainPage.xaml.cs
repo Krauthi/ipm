@@ -1616,11 +1616,16 @@ namespace iPMCloud.Mobile
         {
             try
             {
+                overlay.IsVisible = true;
+                await Task.Delay(1);
+
                 var result = await ScanObjModalPage.ScanAsync(this);
                 if(string.IsNullOrWhiteSpace(result))
                 {
+                    await Task.Delay(1);
+                    overlay.IsVisible = false;
                     AppModel.Instance.UseExternHardware = false;
-                    await DisplayAlertAsync("Fehler beim Scannen!", "QR-Code konnte nicht gelesen werden.", "OK");
+                    //await DisplayAlertAsync("Fehler beim Scannen!", "QR-Code konnte nicht gelesen werden.", "OK");
                     return;
                 }
                 const string marker = "objektid=";
@@ -1654,6 +1659,8 @@ namespace iPMCloud.Mobile
                             AppModel.Instance.SettingModel.SaveSettings();
 
                             AppModel.Instance.UseExternHardware = false;
+                            await Task.Delay(1);
+                            overlay.IsVisible = false;
                             if (isCheck)
                             {
                                 MethodAfterScan_check();
@@ -1665,6 +1672,8 @@ namespace iPMCloud.Mobile
                         }
                         else
                         {
+                            await Task.Delay(1);
+                            overlay.IsVisible = false;
                             await DisplayAlertAsync("QR-Code nicht erkannt!",
                                 "Dieser QR-Code ist zwar ein iPM-Cloud Code jedoch gehört er nicht zum Registrieten Unternehmen! Bitte Probieren Sie es noch einmal oder melden Sie sich in Ihrer Zentrale.",
                                 "OK");
@@ -1673,6 +1682,8 @@ namespace iPMCloud.Mobile
                     }
                     else
                     {
+                        await Task.Delay(1);
+                        overlay.IsVisible = false;
                         await DisplayAlertAsync("QR-Code nicht erkannt!",
                             "Dieser QR-Code kann nicht verwendet werden. Bitte Probieren Sie es noch einmal.",
                             "OK");
@@ -1682,12 +1693,16 @@ namespace iPMCloud.Mobile
                 }
                 else
                 {
+                    await Task.Delay(1);
+                    overlay.IsVisible = false;
                     await DisplayAlertAsync("Fehler beim Scannen!", "QR-Code konnte nicht gelesen werden.", "OK");
                     AppModel.Instance.UseExternHardware = false;
                 }
             }
             catch (Exception)
             {
+                await Task.Delay(1);
+                overlay.IsVisible = false;
                 await DisplayAlertAsync("Fehler beim Scannen!", "QR-Code konnte nicht gelesen werden.", "OK");
                 AppModel.Instance.UseExternHardware = false;
             }
@@ -1696,13 +1711,18 @@ namespace iPMCloud.Mobile
 
         private async void ShowBuildingOutScanPage()
         {
-            try { 
+            try {
+
+                overlay.IsVisible = true;
+                await Task.Delay(1);
                 var result = await ScanObjModalPage.ScanAsync(this);
 
                 if (string.IsNullOrWhiteSpace(result))
                 {
+                    await Task.Delay(1);
+                    overlay.IsVisible = false;
                     AppModel.Instance.UseExternHardware = false;
-                    await DisplayAlertAsync("Fehler beim Scannen!", "QR-Code konnte nicht gelesen werden.", "OK");
+                   // await DisplayAlertAsync("Fehler beim Scannen!", "QR-Code konnte nicht gelesen werden.", "OK");
                     return;
                 }
 
@@ -1729,11 +1749,15 @@ namespace iPMCloud.Mobile
                                                          AppModel.Instance.OutScanBuilding.ort);
                             }
 
+                            await Task.Delay(1);
+                            overlay.IsVisible = false;
                             AppModel.Instance.UseExternHardware = false;
                             MethodAfterOutScan();
                         }
                         else
                         {
+                            await Task.Delay(1);
+                            overlay.IsVisible = false;
                             await DisplayAlertAsync("QR-Code nicht erkannt!",
                                 "Dieser QR-Code ist zwar ein iPM-Cloud Code jedoch gehört er nicht zum Registrieten Unternehmen! Bitte Probieren Sie es noch einmal oder melden Sie sich in Ihrer Zentrale.",
                                 "OK");
@@ -1743,6 +1767,8 @@ namespace iPMCloud.Mobile
                     }
                     else
                     {
+                        await Task.Delay(1);
+                        overlay.IsVisible = false;
                         await DisplayAlertAsync("QR-Code nicht erkannt!",
                             "Dieser QR-Code kann nicht verwendet werden. Bitte Probieren Sie es noch einmal.",
                             "OK");
@@ -1751,12 +1777,16 @@ namespace iPMCloud.Mobile
                 }
                 else
                 {
+                    await Task.Delay(1);
+                    overlay.IsVisible = false;
                     await DisplayAlertAsync("Fehler beim Scannen!", "QR-Code konnte nicht gelesen werden.", "OK");
                     AppModel.Instance.UseExternHardware = false;
                 }
             }
             catch (Exception)
             {
+                await Task.Delay(1);
+                overlay.IsVisible = false;
                 await DisplayAlertAsync("Fehler beim Scannen!", "QR-Code konnte nicht gelesen werden.", "OK");
                 AppModel.Instance.UseExternHardware = false;
             }

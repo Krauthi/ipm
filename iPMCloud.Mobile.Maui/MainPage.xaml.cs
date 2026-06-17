@@ -7427,6 +7427,10 @@ namespace iPMCloud.Mobile
                         // AppControll UI refresh (data was already saved by SyncCoordinator)
                         SetAppControll();
                         UpdateSyncCounter(100d);
+                        var dt = String.IsNullOrEmpty(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks) ?
+                            DateTime.Now.AddDays(-2) : new DateTime(long.Parse(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks));
+                        box_buildingInformation.Children.Clear();
+                        box_buildingInformation.Children.Add(BuildingWSO.GetBuildingInformation(AppModel.Instance, dt));
                         SyncNewBuildingManuell_next(e.Response);
                     }
                     else
@@ -7628,14 +7632,20 @@ namespace iPMCloud.Mobile
 
                     //********* Update Plandaten 
                     Load_PlanTabs(((int)DateTime.Now.DayOfWeek));
+                    var dts = String.IsNullOrEmpty(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks) ?
+                        DateTime.Now.AddDays(-2) : new DateTime(long.Parse(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks));
+                    box_buildingInformation.Children.Clear();
+                    box_buildingInformation.Children.Add(BuildingWSO.GetBuildingInformation(AppModel.Instance, dts));
                 }
             }
             else
             {
                 Load_PlanTabs(((int)DateTime.Now.DayOfWeek));
+                var dtss = String.IsNullOrEmpty(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks) ?
+                    DateTime.Now.AddDays(-2) : new DateTime(long.Parse(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks));
+                box_buildingInformation.Children.Clear();
+                box_buildingInformation.Children.Add(BuildingWSO.GetBuildingInformation(AppModel.Instance, dtss));
             }
-            box_buildingInformation.Children.Clear();
-            box_buildingInformation.Children.Add(BuildingWSO.GetBuildingInformation(AppModel.Instance, dt));
         }
         private void FastSyncUpdate(IpmBuildingResponse fastSyncResponse, bool saveBuilding)
         {

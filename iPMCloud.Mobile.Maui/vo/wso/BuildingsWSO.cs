@@ -290,24 +290,32 @@ namespace iPMCloud.Mobile
 
 
 
-        public static StackLayout GetBuildingInformation(AppModel model, DateTime lastsyncdate)
+        public static Grid GetBuildingInformation(AppModel model, DateTime lastsyncdate)
         {
-            return new StackLayout
+            var g = new Grid
             {
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
                 Margin = new Thickness(0, 0, 0, 0),
                 Padding = new Thickness(0, 0, 0, 0),
-                Spacing = 0,
-                Orientation = StackOrientation.Horizontal,
-                Children =
+                ColumnSpacing = 0,
+                ColumnDefinitions =
                 {
-                    new Image {
-                        Source="ic_info.png",
-                        Margin = new Thickness(0, 0, 5, 0),
-                        HeightRequest = 18,
-                        WidthRequest = 18,
-                        VerticalOptions = LayoutOptions.Center,
-                    },
+                    new ColumnDefinition { Width = GridLength.Auto },
+                    new ColumnDefinition { Width = GridLength.Auto },
+                    new ColumnDefinition { Width = GridLength.Auto },
+                    new ColumnDefinition { Width = GridLength.Auto },
+                    new ColumnDefinition { Width = GridLength.Star }
+                }
+            };
+            g.Add(
+                new Image {
+                    Source = "ic_info.png",
+                    Margin = new Thickness(0, 0, 5, 0),
+                    HeightRequest = 18,
+                    WidthRequest = 18,
+                    VerticalOptions = LayoutOptions.Center,
+                },0);
+                    g.Add(
                     new Label
                     {
                         FontSize = 14,
@@ -316,7 +324,8 @@ namespace iPMCloud.Mobile
                         TextColor = Color.FromArgb("#999999"),
                         Margin = new Thickness(0, 0, 0, 0),
                         Padding = new Thickness(0, 0, 0, 0),
-                    },
+                    }, 1, 0);
+                    g.Add(
                     new Label
                     {
                         FontSize = 14,
@@ -325,7 +334,8 @@ namespace iPMCloud.Mobile
                         TextColor = Color.FromArgb("#cccccc"),
                         Margin = new Thickness(0, 0, 0, 0),
                         Padding = new Thickness(0, 0, 0, 0),
-                    },
+                    }, 2, 0);
+                    g.Add(
                     new Label
                     {
                         FontSize = 14,
@@ -334,7 +344,8 @@ namespace iPMCloud.Mobile
                         TextColor = Color.FromArgb("#999999"),
                         Margin = new Thickness(0, 0, 0, 0),
                         Padding = new Thickness(0, 0, 0, 0),
-                    },
+                    }, 3, 0);
+            g.Add(
                     new Label
                     {
                         FontSize = 14,
@@ -343,9 +354,8 @@ namespace iPMCloud.Mobile
                         TextColor = Color.FromArgb("#cccccc"),
                         Margin = new Thickness(0, 0, 0, 0),
                         Padding = new Thickness(0, 0, 0, 0),
-                    }
-                }
-            };
+                    }, 4, 0);
+            return g;
         }
 
         public static StackLayout GetBuildingInfoElement(BuildingWSO obj, AppModel model, double prio = 100000000)

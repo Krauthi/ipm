@@ -7,7 +7,6 @@
     Title="Objekt QR-Code scannen">
 
 
-    <AbsoluteLayout AbsoluteLayout.LayoutBounds="0,0,1,1" AbsoluteLayout.LayoutFlags="All">
 
         <Grid
             Margin="0,0,0,0"
@@ -135,38 +134,6 @@
             </Grid>
 
         </Grid>
-
-
-
-        <AbsoluteLayout
-            x:Name="overlay"
-            AbsoluteLayout.LayoutBounds="0,0,1,1"
-            AbsoluteLayout.LayoutFlags="All"
-            BackgroundColor="#66000000"
-            IsVisible="False">
-            <AbsoluteLayout.GestureRecognizers>
-                <TapGestureRecognizer Tapped="OnOverlayTapped" />
-            </AbsoluteLayout.GestureRecognizers>
-            <ActivityIndicator
-                x:Name="overlayb"
-                AbsoluteLayout.LayoutBounds="0,0,1,1"
-                AbsoluteLayout.LayoutFlags="All"
-                BackgroundColor="Transparent"
-                BindingContext="{x:Reference overlay}"
-                HeightRequest="150"
-                HorizontalOptions="Center"
-                IsEnabled="{Binding Path=IsVisible}"
-                IsRunning="True"
-                IsVisible="True"
-                Scale="{OnPlatform iOS=7,
-                                   Default=1}"
-                VerticalOptions="Center"
-                WidthRequest="150"
-                Color="#0078d7" />
-        </AbsoluteLayout>
-
-
-    </AbsoluteLayout>
 
 
 

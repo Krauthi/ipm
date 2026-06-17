@@ -1218,6 +1218,7 @@
             </AbsoluteLayout.GestureRecognizers>
             <ActivityIndicator
                 x:Name="overlayb"
+                Scale="{OnPlatform iOS=7, Default=1}"
                 AbsoluteLayout.LayoutBounds="0,0,1,1"
                 AbsoluteLayout.LayoutFlags="All"
                 BackgroundColor="Transparent"

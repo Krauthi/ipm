@@ -29,28 +29,24 @@ namespace iPMCloud.Mobile.Platforms.Android.Services
         private CancellationTokenSource _cts;
         private PowerManager.WakeLock _wakeLock;
         private readonly object _wakeLockLock = new object();
+        private readonly object _foregroundLock = new object();
+        private bool _isForegroundStarted;
 
         public override IBinder OnBind(Intent intent) => null;
 
+        public override void OnCreate()
+        {
+            base.OnCreate();
+            EnsureForegroundStarted();
+        }
+
         public override StartCommandResult OnStartCommand(Intent intent, StartCommandFlags flags, int startId)
         {
-            // CRITICAL: StartForeground() must be called within 5 seconds of startForegroundService()
-            // Do this IMMEDIATELY before any other operations
-            CreateNotificationChannel();
-            var notification = BuildNotification("Uploads laufen…", 0);
-
-            if (Build.VERSION.SdkInt >= BuildVersionCodes.Q)
+            if (!EnsureForegroundStarted())
             {
-#pragma warning disable CA1416 // Plattformkompatibilität überprüfen
-                StartForeground(
-                    NOTIFICATION_ID,
-                    notification,
-                    ForegroundService.TypeDataSync);
-#pragma warning restore CA1416 // Plattformkompatibilität überprüfen
-            }
-            else
-            {
-                StartForeground(NOTIFICATION_ID, notification);
+                Log.Error(TAG, "OnStartCommand aborted because StartForeground could not be established.");
+                StopSelf();
+                return StartCommandResult.NotSticky;
             }
 
             // Now handle stop action after we're in foreground
@@ -99,6 +95,64 @@ namespace iPMCloud.Mobile.Platforms.Android.Services
         {
             Cleanup();
             base.OnDestroy();
+        }
+
+        private bool EnsureForegroundStarted()
+        {
+            lock (_foregroundLock)
+            {
+                if (_isForegroundStarted)
+                    return true;
+
+                try
+                {
+                    CreateNotificationChannel();
+                    var notification = TryBuildStartupNotification();
+
+                    if (Build.VERSION.SdkInt >= BuildVersionCodes.Q)
+                    {
+#pragma warning disable CA1416 // Plattformkompatibilität überprüfen
+                        StartForeground(
+                            NOTIFICATION_ID,
+                            notification,
+                            ForegroundService.TypeDataSync);
+#pragma warning restore CA1416 // Plattformkompatibilität überprüfen
+                    }
+                    else
+                    {
+                        StartForeground(NOTIFICATION_ID, notification);
+                    }
+
+                    _isForegroundStarted = true;
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(TAG, $"EnsureForegroundStarted error: {ex}");
+                    return false;
+                }
+            }
+        }
+
+        private Notification TryBuildStartupNotification()
+        {
+            try
+            {
+                return BuildNotification("Uploads laufen…", 0);
+            }
+            catch (Exception ex)
+            {
+                Log.Warn(TAG, $"BuildNotification fallback used: {ex.Message}");
+
+                return new NotificationCompat.Builder(this, CHANNEL_ID)
+                    .SetContentTitle("iPM-Cloud Upload")
+                    .SetContentText("Uploads laufen…")
+                    .SetSmallIcon(global::Android.Resource.Drawable.StatSysUpload)
+                    .SetOngoing(true)
+                    .SetOnlyAlertOnce(true)
+                    .SetCategory(NotificationCompat.CategoryService)
+                    .Build();
+            }
         }
 
         private void OnUploadProgress(object sender, UploadProgressEventArgs e)

@@ -9,11 +9,11 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ApplicationTitle>iPM-Cloud</ApplicationTitle>
 		<ApplicationIdGuid>201CEFAB-590D-414F-9660-9EFF31FE2078</ApplicationIdGuid>
-		<ApplicationDisplayVersion>3.0.61</ApplicationDisplayVersion>
+		<ApplicationDisplayVersion>3.0.62</ApplicationDisplayVersion>
 		<ApplicationVersion>1</ApplicationVersion>
-		<Version>3000061</Version>
-		<AssemblyVersion>3.0.61.0</AssemblyVersion>
-		<FileVersion>3.0.61.0</FileVersion>
+		<Version>3000062</Version>
+		<AssemblyVersion>3.0.62.0</AssemblyVersion>
+		<FileVersion>3.0.62.0</FileVersion>
 		<NeutralLanguage>de-DE</NeutralLanguage>
 		<Copyright>iPM-Cloud</Copyright> 
 		<Nullable>disable</Nullable>
@@ -26,7 +26,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<ApplicationId>com.ipmcloud.ipm.mobile.app</ApplicationId>
+		<ApplicationId>com.ipmcloud.ipm.mobile</ApplicationId>
 	</PropertyGroup>
 
 	

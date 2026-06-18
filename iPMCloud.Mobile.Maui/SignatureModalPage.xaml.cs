@@ -113,10 +113,15 @@ namespace iPMCloud.Mobile
                     strokeWidth: (float)Pad.LineWidth,
                     padding: 16f);
 
-                var totalPoints = Pad.Lines.Sum(l => l.Points?.Count ?? 0);
-                var first = Pad.Lines.FirstOrDefault()?.Points?.FirstOrDefault();
-                System.Diagnostics.Debug.WriteLine($"Lines={Pad.Lines.Count}, Points={totalPoints}, First={first}");
-
+                //var totalPoints = Pad.Lines.Sum(l => l.Points?.Count ?? 0);
+                //var first = Pad.Lines.FirstOrDefault()?.Points?.FirstOrDefault();
+                //System.Diagnostics.Debug.WriteLine($"Lines={Pad.Lines.Count}, Points={totalPoints}, First={first}");
+                if(pngBytes == null || pngBytes.Length == 0)
+                {
+                    _tcs.TrySetResult(null);
+                    await Navigation.PopModalAsync(animated: false);
+                    return;
+                }
                 var img = ImageSource.FromStream(() => new MemoryStream(pngBytes));
                 _tcs.TrySetResult(new SignatureResult(pngBytes, img));
                 await Navigation.PopModalAsync(animated: false);

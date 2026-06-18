@@ -2215,12 +2215,19 @@ namespace iPMCloud.Mobile
                 WidthRequest = 20,
                 HorizontalOptions = LayoutOptions.End
             };
+            string defaultImage = null;
+            ImageSource imgSource = null;
+            try
+            {
+                imgSource = String.IsNullOrWhiteSpace(quest.a7) ?
+                    "sign_pad.png" : ImageSource.FromStream(() => new MemoryStream(Convert.FromBase64String(quest.a7)));
+            } catch {
+                defaultImage = "sign_pad.png";
+            }
             quest.img_sig = new Image
             {
                 Margin = new Thickness(0),
-                Source = String.IsNullOrWhiteSpace(quest.a7) ?
-                    "sign_pad.png" :
-                    ImageSource.FromStream(() => new MemoryStream(Convert.FromBase64String(quest.a7))),
+                Source = defaultImage != null ? defaultImage : imgSource,
                 HorizontalOptions = LayoutOptions.Fill,
                 VerticalOptions = LayoutOptions.Start,
             };

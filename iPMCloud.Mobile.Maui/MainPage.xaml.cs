@@ -931,15 +931,17 @@ namespace iPMCloud.Mobile
             {
                 foreach (var ph in quest.bemWSO.photos)
                 {
-                    ph.stack = BildWSO.GetAttachmentForNoticeElement(
-                            ImageSource.FromStream(() => new MemoryStream(ph.bytes)),
-                             new DateTime(long.Parse(ph.name)).ToString("dd.MM.yyyy-HH:mm:ss"),
-                             null);
+                    if (ph.bytes != null && ph.bytes.Length > 0) { 
+                        ph.stack = BildWSO.GetAttachmentForNoticeElement(
+                                ImageSource.FromStream(() => new MemoryStream(ph.bytes)),
+                                 new DateTime(long.Parse(ph.name)).ToString("dd.MM.yyyy-HH:mm:ss"),
+                                 null);
 
-                    var frame = (Border)((StackLayout)(ph.stack.Children[0])).Children[2];
-                    frame.GestureRecognizers.Clear();
-                    frame.GestureRecognizers.Add(new TapGestureRecognizer() { Command = new Command<BildWSO>(RemoveBildInWork_check_bem), CommandParameter = ph });
-                    noticePhotoStack_check_bem.Children.Add(ph.stack);
+                        var frame = (Border)((StackLayout)(ph.stack.Children[0])).Children[2];
+                        frame.GestureRecognizers.Clear();
+                        frame.GestureRecognizers.Add(new TapGestureRecognizer() { Command = new Command<BildWSO>(RemoveBildInWork_check_bem), CommandParameter = ph });
+                        noticePhotoStack_check_bem.Children.Add(ph.stack);
+                    }
                 }
                 btn_takePhoto_frame_check_bem.IsVisible = (_SelectedPosForNotice_check_bem.bemWSO.photos.Count < 3);
                 btn_takePhotoAttachment_frame_check_bem.IsVisible = (_SelectedPosForNotice_check_bem.bemWSO.photos.Count < 3);
@@ -6605,9 +6607,12 @@ namespace iPMCloud.Mobile
                 frm_img_LoginUser.IsVisible = false;
                 if (AppModel.Instance.Person.userIcon != null)
                 {
-                    ImageSource userIconImageSource = ImageSource.FromStream(() => new MemoryStream(AppModel.Instance.Person.userIcon));
-                    img_LoginUser.Source = userIconImageSource;
-                    frm_img_LoginUser.IsVisible = true;
+                    if (AppModel.Instance.Person !=null && AppModel.Instance.Person.userIcon != null && AppModel.Instance.Person.userIcon.Length > 0)
+                    {
+                        ImageSource userIconImageSource = ImageSource.FromStream(() => new MemoryStream(AppModel.Instance.Person.userIcon));
+                        img_LoginUser.Source = userIconImageSource;
+                        frm_img_LoginUser.IsVisible = true;
+                    }
                 }
 
                 SetAppControll();

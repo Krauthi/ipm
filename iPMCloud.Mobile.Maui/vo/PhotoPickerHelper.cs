@@ -66,11 +66,11 @@ namespace iPMCloud.Mobile.Helpers
             if (photo == null)
                 throw new ArgumentNullException(nameof(photo));
 
-            Stream stream = null;
+            Stream sourceStream;
             try
             {
                 LogInfo($"{operationName}: Öffne Stream für '{photo.FileName}'.");
-                stream = await photo.OpenReadAsync();
+                sourceStream = await photo.OpenReadAsync();
                 LogInfo($"{operationName}: Stream geöffnet.");
             }
             catch (Exception ex)
@@ -85,57 +85,81 @@ namespace iPMCloud.Mobile.Helpers
 
             try
             {
-                return await Task.Run(() =>
+                using (sourceStream)
                 {
-                    PhotoResponse photoResponse;
-
+                    using var materializedStream = new MemoryStream();
                     try
                     {
-                        LogInfo($"{operationName}: Starte PhotoUtils.GetImages.");
-                        photoResponse = PhotoUtils.GetImages(stream);
-                        LogInfo($"{operationName}: PhotoUtils.GetImages abgeschlossen.");
+                        LogInfo($"{operationName}: Starte Kopieren in MemoryStream.");
+                        await sourceStream.CopyToAsync(materializedStream);
+                        materializedStream.Position = 0;
+                        LogInfo($"{operationName}: Kopieren in MemoryStream abgeschlossen ({materializedStream.Length} Bytes).");
                     }
                     catch (Exception ex)
                     {
-                        LogError($"{operationName}: PhotoUtils.GetImages fehlgeschlagen.", ex);
+                        LogError($"{operationName}: Kopieren in MemoryStream fehlgeschlagen.", ex);
                         throw new PhotoPickerException(
                             PhotoPickerFailureKind.ProcessingFailed,
-                            "Das Foto konnte nicht verarbeitet werden.",
-                            "PhotoUtils.GetImages",
+                            "Das Foto konnte nicht zuverlässig gelesen werden.",
+                            "CopyToMemoryStream",
                             ex);
                     }
 
-                    //try
-                    //{
-                    //    LogInfo($"{operationName}: Starte PhotoUtils.AddInfoToImage.");
-                    //    photoResponse = PhotoUtils.AddInfoToImage(photoResponse, building, customBuildingText);
-                    //    LogInfo($"{operationName}: PhotoUtils.AddInfoToImage abgeschlossen.");
-                    //}
-                    //catch (Exception ex)
-                    //{
-                    //    LogError($"{operationName}: PhotoUtils.AddInfoToImage fehlgeschlagen.", ex);
-                    //    throw new PhotoPickerException(
-                    //        PhotoPickerFailureKind.ProcessingFailed,
-                    //        "Das Foto konnte nicht nachbearbeitet werden.",
-                    //        "PhotoUtils.AddInfoToImage",
-                    //        ex);
-                    //}
-
-                    if (photoResponse == null || photoResponse.imageBytes == null || photoResponse.imageBytes.Length == 0)
+                    return await Task.Run(() =>
                     {
-                        throw new PhotoPickerException(
-                            PhotoPickerFailureKind.ProcessingFailed,
-                            "Das Foto konnte nicht verarbeitet werden.",
-                            "ProcessedPhotoValidation");
-                    }
+                        PhotoResponse photoResponse;
 
-                    return photoResponse;
-                });
+                        try
+                        {
+                            LogInfo($"{operationName}: Starte PhotoUtils.GetImages.");
+                            photoResponse = PhotoUtils.GetImages(materializedStream);
+                            LogInfo($"{operationName}: PhotoUtils.GetImages abgeschlossen.");
+                        }
+                        catch (Exception ex)
+                        {
+                            LogError($"{operationName}: PhotoUtils.GetImages fehlgeschlagen.", ex);
+                            throw new PhotoPickerException(
+                                PhotoPickerFailureKind.ProcessingFailed,
+                                "Das Foto konnte nicht verarbeitet werden.",
+                                "PhotoUtils.GetImages",
+                                ex);
+                        }
+
+                        //try
+                        //{
+                        //    LogInfo($"{operationName}: Starte PhotoUtils.AddInfoToImage.");
+                        //    photoResponse = PhotoUtils.AddInfoToImage(photoResponse, building, customBuildingText);
+                        //    LogInfo($"{operationName}: PhotoUtils.AddInfoToImage abgeschlossen.");
+                        //}
+                        //catch (Exception ex)
+                        //{
+                        //    LogError($"{operationName}: PhotoUtils.AddInfoToImage fehlgeschlagen.", ex);
+                        //    throw new PhotoPickerException(
+                        //        PhotoPickerFailureKind.ProcessingFailed,
+                        //        "Das Foto konnte nicht nachbearbeitet werden.",
+                        //        "PhotoUtils.AddInfoToImage",
+                        //        ex);
+                        //}
+
+                        if (photoResponse == null || photoResponse.imageBytes == null || photoResponse.imageBytes.Length == 0)
+                        {
+                            throw new PhotoPickerException(
+                                PhotoPickerFailureKind.ProcessingFailed,
+                                "Das Foto konnte nicht verarbeitet werden.",
+                                "ProcessedPhotoValidation");
+                        }
+
+                        return photoResponse;
+                    });
+                }
+            }
+            catch (PhotoPickerException)
+            {
+                throw;
             }
             finally
             {
-                stream?.Dispose();
-                LogInfo($"{operationName}: Stream geschlossen.");
+                LogInfo($"{operationName}: Streams geschlossen.");
             }
         }
 
@@ -176,7 +200,10 @@ namespace iPMCloud.Mobile.Helpers
                     return null;
 
                 // Limit anwenden
-                return results.Take(maxCount).ToList();
+                var pickerResults = results.ToList();
+                var selectedPhotos = pickerResults.Take(maxCount).ToList();
+                LogInfo($"PickMultiplePhotosAsync: Picker lieferte {pickerResults.Count} Bild(er), nach Limit verbleiben {selectedPhotos.Count}.");
+                return selectedPhotos;
             }
             catch (Exception ex)
             {
@@ -219,16 +246,29 @@ namespace iPMCloud.Mobile.Helpers
                 if (selectedPhotos == null || !selectedPhotos.Any())
                     return false;
 
+                int selectedCount = selectedPhotos.Count;
+                int processedCount = 0;
+                int failedCount = 0;
+                LogInfo($"PickAndProcessPhotosAsync: Starte Verarbeitung von {selectedCount} ausgewählten Bild(ern).");
+
                 // Fotos verarbeiten
+                int photoIndex = 0;
                 foreach (var photo in selectedPhotos)
                 {
+                    photoIndex++;
+                    var fileName = photo?.FileName ?? "unknown";
+                    var fullPath = string.IsNullOrWhiteSpace(photo?.FullPath) ? "<no-fullpath>" : photo.FullPath;
+                    var fileExtension = Path.GetExtension(fileName) ?? string.Empty;
+                    var operationName = $"PickAndProcessPhotosAsync[{photoIndex}/{selectedCount}]";
+                    LogInfo($"{operationName}: Datei='{fileName}', FullPath='{fullPath}', Extension='{fileExtension}'.");
+
                     try
                     {
                         var photoResponse = await ProcessPhotoResponseAsync(
                             photo,
                             building,
                             customBuildingText,
-                            $"PickAndProcessPhotosAsync[{photo?.FileName ?? "unknown"}]");
+                            operationName);
 
                         long bildName = DateTime.Now.Ticks;
                         var bildWSO = new BildWSO(parentGuid)
@@ -249,16 +289,21 @@ namespace iPMCloud.Mobile.Helpers
                             CommandParameter = bildWSO
                         });
 
+                        LogInfo($"{operationName}: Starte Übernahme in App-Liste.");
                         BildWSO.Save(AppModel.Instance, bildWSO);
                         photoList.Add(bildWSO);
                         targetStack.Children.Add(bildWSO.stack);
+                        processedCount++;
+                        LogInfo($"{operationName}: Übernahme in App-Liste erfolgreich.");
                     }
                     catch (Exception photoEx)
                     {
-                        LogError($"Fehler beim Verarbeiten von '{photo?.FileName ?? "unknown"}'.", photoEx);
+                        failedCount++;
+                        LogError($"{operationName}: Fehler beim Verarbeiten von '{photo?.FileName ?? "unknown"}'.", photoEx);
                     }
                 }
 
+                LogInfo($"PickAndProcessPhotosAsync: Zusammenfassung Mehrfachauswahl selected={selectedCount}, processed={processedCount}, failed={failedCount}.");
                 onComplete?.Invoke();
                 return true;
             }

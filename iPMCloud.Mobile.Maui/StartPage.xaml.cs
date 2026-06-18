@@ -850,7 +850,7 @@ namespace iPMCloud.Mobile
             {
                 AppModel.Logger.Error("ERROR: InitStartPageHandlers failed: " + ex.Message + " - " + ex.StackTrace);
             }
-            hasInitializedHandlers = true;
+            hasInitializedHandlers = false;
         }
 
 

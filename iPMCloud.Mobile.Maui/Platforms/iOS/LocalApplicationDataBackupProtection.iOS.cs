@@ -16,8 +16,8 @@ public static partial class LocalApplicationDataBackupProtection
         var url = NSUrl.FromFilename(path);
         NSError error;
         var success = url.SetResource(
-            NSNumber.FromBoolean(true),
             NSUrl.IsExcludedFromBackupKey,
+            NSNumber.FromBoolean(true),
             out error);
 
         if (!success && error != null)

@@ -238,7 +238,7 @@ namespace iPMCloud.Mobile.vo
                     }
                     catch (JsonException jsonEx)
                     {
-                        AppModel.Logger?.Warn(jsonEx, "LoadSettings: Failed to deserialize JSON");
+                        AppModel.Logger?.Warn(jsonEx, $"LoadSettings: Failed to deserialize JSON - {filePath}");
                     }
                 }
 

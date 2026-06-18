@@ -50,7 +50,7 @@ namespace iPMCloud.Mobile
             }
             catch (Exception ex)
             {
-                AppModel.Logger?.Warn($"WARN: LocalApplicationData konnte nicht vom Backup ausgeschlossen werden: {ex.Message}");
+                AppModel.Logger?.Warn($"LocalApplicationData konnte nicht vom Backup ausgeschlossen werden: {ex.Message}");
             }
 
             try

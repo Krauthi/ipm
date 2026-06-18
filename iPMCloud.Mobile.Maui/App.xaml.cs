@@ -60,6 +60,15 @@ namespace iPMCloud.Mobile
                 AppModel.Logger.Warn("WARN: AppCache konnte nicht eglöscht werden!");
             }
 
+            try
+            {
+                LocalApplicationDataBackupProtection.EnsureExcludedFromBackup();
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Warn($"WARN: LocalApplicationData konnte nicht vom Backup ausgeschlossen werden: {ex.Message}");
+            }
+
             InitApp();
         }
 

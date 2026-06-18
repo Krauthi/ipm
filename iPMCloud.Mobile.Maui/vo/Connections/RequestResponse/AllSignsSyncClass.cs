@@ -207,22 +207,13 @@ namespace iPMCloud.Mobile
                     MissingMemberHandling = MissingMemberHandling.Ignore
                 };
 
-                if (PersistedJsonMigration.TryLoadWithLegacyMigration(
-                    filename,
-                    jsonSettings,
-                    "LoadFromUploadStack AllTransSignRequest",
-                    ToUploadStack,
-                    out AllTransSignRequest request))
-                {
-                    return request;
-                }
-
-                if (new FileInfo(filename).Length == 0)
+                string jsonString = File.ReadAllText(filename);
+                if (string.IsNullOrWhiteSpace(jsonString))
                 {
                     AppModel.Logger?.Warn($"LoadFromUploadStack: File is empty - {filename}");
+                    return null;
                 }
-
-                return null;
+                return JsonConvert.DeserializeObject<AllTransSignRequest>(jsonString, jsonSettings);
             }
             catch (Exception ex)
             {

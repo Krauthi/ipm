@@ -272,21 +272,14 @@ namespace iPMCloud.Mobile
                     MissingMemberHandling = MissingMemberHandling.Ignore
                 };
 
-                if (!PersistedJsonMigration.TryLoadWithLegacyMigration(
-                    filename,
-                    jsonSettings,
-                    "Load BildWSO",
-                    migratedBild => Save(model, migratedBild),
-                    out BildWSO bildwso))
-                {
+                string jsonString = File.ReadAllText(filename);
+                if (string.IsNullOrWhiteSpace(jsonString))
                     return null;
-                }
-
+                BildWSO bildwso = JsonConvert.DeserializeObject<BildWSO>(jsonString, jsonSettings);
                 if (bildwso != null)
                 {
                     bildwso.filename = filename;
                 }
-
                 return bildwso;
             }
             catch (Exception ex)

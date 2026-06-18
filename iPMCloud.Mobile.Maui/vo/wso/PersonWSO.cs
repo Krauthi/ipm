@@ -376,22 +376,13 @@ namespace iPMCloud.Mobile
                     MissingMemberHandling = MissingMemberHandling.Ignore
                 };
 
-                if (PersistedJsonMigration.TryLoadWithLegacyMigration(
-                    filePath,
-                    jsonSettings,
-                    "LoadPerson",
-                    migratedPerson => SavePerson(model, migratedPerson),
-                    out PersonWSO person))
-                {
-                    return person;
-                }
-
-                if (new FileInfo(filePath).Length == 0)
+                string jsonString = File.ReadAllText(filePath);
+                if (string.IsNullOrWhiteSpace(jsonString))
                 {
                     AppModel.Logger?.Warn("LoadPerson: File is empty");
+                    return null;
                 }
-
-                return null;
+                return JsonConvert.DeserializeObject<PersonWSO>(jsonString, jsonSettings);
             }
             catch (Exception ex)
             {

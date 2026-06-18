@@ -243,14 +243,10 @@ namespace iPMCloud.Mobile
                         DateFormatHandling = DateFormatHandling.IsoDateFormat
                     };
 
-                    return PersistedJsonMigration.TryLoadWithLegacyMigration(
-                        filePath,
-                        jsonSettings,
-                        "Load Ticket",
-                        Save,
-                        out Ticket ticket)
-                        ? ticket
-                        : null;
+                    string jsonString = File.ReadAllText(filePath);
+                    if (string.IsNullOrWhiteSpace(jsonString))
+                        return null;
+                    return JsonConvert.DeserializeObject<Ticket>(jsonString, jsonSettings);
                 }
 
                 return null;

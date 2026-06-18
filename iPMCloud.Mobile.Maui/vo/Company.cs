@@ -132,22 +132,14 @@ namespace iPMCloud.Mobile.vo
                     MissingMemberHandling = MissingMemberHandling.Ignore
                 };
 
-                if (PersistedJsonMigration.TryLoadWithLegacyMigration(
-                    filePath,
-                    jsonSettings,
-                    "LoadCompanies",
-                    SaveCompanies,
-                    out List<Company> companies))
-                {
-                    return companies ?? new List<Company>();
-                }
-
-                if (new FileInfo(filePath).Length == 0)
+                string jsonString = File.ReadAllText(filePath);
+                if (string.IsNullOrWhiteSpace(jsonString))
                 {
                     AppModel.Logger?.Warn("LoadCompanies: File is empty");
+                    return new List<Company>();
                 }
-
-                return new List<Company>();
+                List<Company> companies = JsonConvert.DeserializeObject<List<Company>>(jsonString, jsonSettings);
+                return companies ?? new List<Company>();
             }
             catch (Exception ex)
             {

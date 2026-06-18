@@ -165,22 +165,27 @@ namespace iPMCloud.Mobile.vo
                     MissingMemberHandling = MissingMemberHandling.Ignore
                 };
 
-                if (PersistedJsonMigration.TryLoadWithLegacyMigration(
-                    FilePath,
-                    jsonSettings,
-                    "Load AppSet",
-                    migratedAppSet =>
+                string fileContent = File.ReadAllText(FilePath);
+                AppSetModel appSetModel = null;
+                if (!string.IsNullOrWhiteSpace(fileContent))
+                {
+                    try
                     {
-                        AppModel.Instance.AppSetModel = migratedAppSet;
-                        return Save();
-                    },
-                    out AppSetModel appSetModel))
+                        appSetModel = JsonConvert.DeserializeObject<AppSetModel>(fileContent, jsonSettings);
+                    }
+                    catch (JsonException jsonEx)
+                    {
+                        AppModel.Logger?.Warn(jsonEx, $"Load AppSet: Failed to deserialize JSON - {FilePath}");
+                    }
+                }
+
+                if (appSetModel != null)
                 {
                     AppModel.Instance.AppSetModel = appSetModel;
                 }
                 else
                 {
-                    // Both JSON load and legacy migration failed.
+                    // JSON load failed.
                     // Determine whether the file is empty or contains unrecognized/corrupted data.
                     long fileSize = new FileInfo(FilePath).Length;
                     if (fileSize == 0)

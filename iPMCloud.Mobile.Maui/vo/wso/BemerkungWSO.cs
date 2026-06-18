@@ -168,14 +168,10 @@ namespace iPMCloud.Mobile
                     MissingMemberHandling = MissingMemberHandling.Ignore
                 };
 
-                return PersistedJsonMigration.TryLoadWithLegacyMigration(
-                    filename,
-                    jsonSettings,
-                    "Load BemerkungWSO",
-                    migratedNotice => Save(model, migratedNotice),
-                    out BemerkungWSO notice)
-                    ? notice
-                    : null;
+                string jsonString = File.ReadAllText(filename);
+                if (string.IsNullOrWhiteSpace(jsonString))
+                    return null;
+                return JsonConvert.DeserializeObject<BemerkungWSO>(jsonString, jsonSettings);
             }
             catch (Exception ex)
             {
@@ -428,14 +424,10 @@ namespace iPMCloud.Mobile
                     MissingMemberHandling = MissingMemberHandling.Ignore
                 };
 
-                return PersistedJsonMigration.TryLoadWithLegacyMigration(
-                    filename,
-                    jsonSettings,
-                    "LoadFromUploadStack BemerkungWSO",
-                    migratedNotice => ToUploadStack(AppModel.Instance, migratedNotice),
-                    out BemerkungWSO notice)
-                    ? notice
-                    : null;
+                string jsonString = File.ReadAllText(filename);
+                if (string.IsNullOrWhiteSpace(jsonString))
+                    return null;
+                return JsonConvert.DeserializeObject<BemerkungWSO>(jsonString, jsonSettings);
             }
             catch (Exception ex)
             {

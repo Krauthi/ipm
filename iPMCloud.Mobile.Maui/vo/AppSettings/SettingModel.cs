@@ -228,16 +228,21 @@ namespace iPMCloud.Mobile.vo
                     MissingMemberHandling = MissingMemberHandling.Ignore
                 };
 
-                if (PersistedJsonMigration.TryLoadWithLegacyMigration(
-                    filePath,
-                    jsonSettings,
-                    "LoadSettings",
-                    migratedSettings =>
+                string fileContent = File.ReadAllText(filePath);
+                SettingDTO loadedSettings = null;
+                if (!string.IsNullOrWhiteSpace(fileContent))
+                {
+                    try
                     {
-                        SettingDTO = migratedSettings;
-                        return SaveSettings();
-                    },
-                    out SettingDTO loadedSettings))
+                        loadedSettings = JsonConvert.DeserializeObject<SettingDTO>(fileContent, jsonSettings);
+                    }
+                    catch (JsonException jsonEx)
+                    {
+                        AppModel.Logger?.Warn(jsonEx, "LoadSettings: Failed to deserialize JSON");
+                    }
+                }
+
+                if (loadedSettings != null)
                 {
                     SettingDTO = loadedSettings;
                     loadAttempts = 0;

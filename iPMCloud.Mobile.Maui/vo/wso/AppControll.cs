@@ -132,14 +132,12 @@ namespace iPMCloud.Mobile
                     MissingMemberHandling = MissingMemberHandling.Ignore
                 };
 
-                if (PersistedJsonMigration.TryLoadWithLegacyMigration(
-                    filePath,
-                    jsonSettings,
-                    "Load AppControll",
-                    migratedAc => Save(model, migratedAc),
-                    out AppControll appControll))
+                string jsonString = File.ReadAllText(filePath);
+                if (!string.IsNullOrWhiteSpace(jsonString))
                 {
-                    return appControll ?? new AppControll();
+                    AppControll appControll = JsonConvert.DeserializeObject<AppControll>(jsonString, jsonSettings);
+                    if (appControll != null)
+                        return appControll;
                 }
 
                 return new AppControll();

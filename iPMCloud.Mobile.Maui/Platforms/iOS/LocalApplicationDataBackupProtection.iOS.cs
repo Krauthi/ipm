@@ -1,4 +1,6 @@
+using Foundation;
 using System;
+using System.IO;
 
 namespace iPMCloud.Mobile;
 

@@ -353,7 +353,7 @@ namespace iPMCloud.Mobile.vo
                 {
                     // Tokenzeit neu setzen
                     AppModel.Instance.SettingModel.SettingDTO.LastTokenDateTimeTicks = DateTime.Now.Ticks.ToString();
-                    AppModel.Instance.SettingModel.SaveSettings();
+                    //AppModel.Instance.SettingModel.SaveSettings();
 
                     var json = await resMsg.Content.ReadAsStringAsync().ConfigureAwait(false);
                     return JsonConvert.DeserializeObject<IpmNewSyncResponse>(json);

@@ -7839,21 +7839,23 @@
                                 <HorizontalStackLayout
                                     Margin="10,7,5,7"
                                     Padding="0"
+                                    MinimumHeightRequest="40"
                                     Spacing="0">
                                     <Label
                                         Margin="15,0,0,0"
                                         FontSize="18"
+                                        VerticalOptions="Center"
                                         LineBreakMode="NoWrap"
                                         Text="{Binding name}"
                                         TextColor="White" />
                                     <Label
                                         Margin="10,0,0,0"
                                         FontSize="18"
+                                        VerticalOptions="Center"
                                         LineBreakMode="NoWrap"
                                         Text="{Binding vorname}"
                                         TextColor="White" />
                                 </HorizontalStackLayout>
-                                <!--<Label Text="{Binding mobile}" FontSize="16" LineBreakMode="NoWrap" Margin="20,0,0,0"/>-->
                                 <Border
                                     Margin="0,3,0,3"
                                     BackgroundColor="#cccccc"

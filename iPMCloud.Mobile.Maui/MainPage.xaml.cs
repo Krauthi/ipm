@@ -2856,9 +2856,9 @@ namespace iPMCloud.Mobile
             double w = screenWidthDp;
             double h = screenHeightDp;
 
-            empListView.SelectedItem = null;
-            popupContainer_quest_personpicker_inner.HeightRequest = h - 100;
-            popupContainer_quest_personpicker_inner.WidthRequest = w - 40;
+            empListView.SelectedItem = null;  
+            //popupContainer_quest_personpicker_inner.HeightRequest = h - 100;
+            //popupContainer_quest_personpicker_inner.WidthRequest = w - 40;
             popupContainer_quest_personpicker.IsVisible = true;
 
             var empList = AppModel.Instance.PlanResponse.persons;

@@ -16,8 +16,8 @@ namespace iPMCloud.Mobile.vo
         public SettingDTO SettingDTO { get => _settingDTO; set => _settingDTO = value; }
 
         // Counter gegen Endlosschleife
-        private int loadAttempts = 0;
-        private const int MaxLoadAttempts = 3;
+        //private int loadAttempts = 0;
+        //private const int MaxLoadAttempts = 3;
 
         public bool IoSaveError { get; set; } = false;
         public bool IoLoadError { get; set; } = false;
@@ -189,14 +189,14 @@ namespace iPMCloud.Mobile.vo
             try
             {
                 // WICHTIG: Counter gegen Endlosschleife
-                if (loadAttempts >= MaxLoadAttempts)
-                {
-                    AppModel.Logger?.Error("ERROR: LoadSettings() - Max attempts reached");
-                    IoLoadError = true;
-                    loadAttempts = 0; // Reset für nächsten Versuch
-                    return false;
-                }
-                loadAttempts++;
+                //if (loadAttempts >= MaxLoadAttempts)
+                //{
+                //    AppModel.Logger?.Error("ERROR: LoadSettings() - Max attempts reached");
+                //    IoLoadError = true;
+                //    //loadAttempts = 0; // Reset für nächsten Versuch
+                //    return false;
+                //}
+                //loadAttempts++;
 
                 IoLoadError = false;
 
@@ -217,7 +217,7 @@ namespace iPMCloud.Mobile.vo
                     // Datei existiert nicht - neue Settings erstellen (OHNE rekursiven Aufruf!)
                     SettingDTO = new SettingDTO();
                     SaveSettings();
-                    loadAttempts = 0;
+                    //loadAttempts = 0;
                     return true;
                 }
 
@@ -228,19 +228,24 @@ namespace iPMCloud.Mobile.vo
                     MissingMemberHandling = MissingMemberHandling.Ignore
                 };
 
-                if (PersistedJsonMigration.TryLoadWithLegacyMigration(
-                    filePath,
-                    jsonSettings,
-                    "LoadSettings",
-                    migratedSettings =>
+                string fileContent = File.ReadAllText(filePath);
+                SettingDTO loadedSettings = null;
+                if (!string.IsNullOrWhiteSpace(fileContent))
+                {
+                    try
                     {
-                        SettingDTO = migratedSettings;
-                        return SaveSettings();
-                    },
-                    out SettingDTO loadedSettings))
+                        loadedSettings = JsonConvert.DeserializeObject<SettingDTO>(fileContent, jsonSettings);
+                    }
+                    catch (JsonException jsonEx)
+                    {
+                        AppModel.Logger?.Warn(jsonEx, $"LoadSettings: Failed to deserialize JSON - {filePath}");
+                    }
+                }
+
+                if (loadedSettings != null)
                 {
                     SettingDTO = loadedSettings;
-                    loadAttempts = 0;
+                    //loadAttempts = 0;
                     return true;
                 }
 
@@ -251,7 +256,7 @@ namespace iPMCloud.Mobile.vo
 
                 SettingDTO = new SettingDTO();
                 SaveSettings();
-                loadAttempts = 0;
+                //loadAttempts = 0;
                 return true;
             }
             catch (Exception ex)
@@ -259,7 +264,7 @@ namespace iPMCloud.Mobile.vo
                 Console.WriteLine(ex.Message);
                 AppModel.Logger?.Error(ex, "ERROR: LoadSettings()");
                 IoLoadError = true;
-                loadAttempts = 0; // Reset counter
+                //loadAttempts = 0; // Reset counter
                 return false;
             }
         }

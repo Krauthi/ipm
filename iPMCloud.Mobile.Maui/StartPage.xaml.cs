@@ -29,8 +29,8 @@ namespace iPMCloud.Mobile
             InitializeComponent();
             //if(StorageMigration.HasMigrateIpmFolder())
             //{
-                InitStartPage();
-                ShowDisconnected();
+                //InitStartPage();
+                //ShowDisconnected();
             //}
             //else
             //{
@@ -525,7 +525,7 @@ namespace iPMCloud.Mobile
                     InitStartPageHandlers();
                     lb_login_mandant.Text = AppModel.Instance.SettingModel.SettingDTO.CustomerName;
 
-                    if (switchCustomer)
+                    if (switchCustomer && AppModel.Instance.SettingModel.SettingDTO.Autologin)
                     {
                         AppModel.Instance.InitBuildings();
                         AppModel.Instance.SetAllKategorieNames();
@@ -568,7 +568,7 @@ namespace iPMCloud.Mobile
                     AppModel.Instance.SettingModel.SettingDTO.LastTokenDateTimeTicks = "";
                     entry_login_name.Text = AppModel.Instance.SettingModel.SettingDTO.LoginName;
                     entry_login_password.Text = AppModel.Instance.SettingModel.SettingDTO.LoginPassword;
-                    sw_autologin.IsToggled = false;                //
+                    sw_autologin.IsToggled = AppModel.Instance.SettingModel.SettingDTO.Autologin;                //
                     AppModel.Instance.SettingModel.SaveSettings();
 
                     AppModel.Instance.Connections.InitConnections();

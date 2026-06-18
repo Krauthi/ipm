@@ -132,14 +132,12 @@ namespace iPMCloud.Mobile
                     MissingMemberHandling = MissingMemberHandling.Ignore
                 };
 
-                if (PersistedJsonMigration.TryLoadWithLegacyMigration(
-                    filePath,
-                    jsonSettings,
-                    "Load Lang",
-                    Save,
-                    out Lang lang))
+                string jsonString = File.ReadAllText(filePath);
+                if (!string.IsNullOrWhiteSpace(jsonString))
                 {
-                    return lang ?? new Lang();
+                    Lang lang = JsonConvert.DeserializeObject<Lang>(jsonString, jsonSettings);
+                    if (lang != null)
+                        return lang;
                 }
 
                 return new Lang();

@@ -155,21 +155,14 @@ namespace iPMCloud.Mobile
                     MissingMemberHandling = MissingMemberHandling.Ignore
                 };
 
-                if (!PersistedJsonMigration.TryLoadWithLegacyMigration(
-                    filename,
-                    jsonSettings,
-                    "Load CheckLeistungAntwortBemImg",
-                    Save,
-                    out CheckLeistungAntwortBemImg imgWso))
-                {
+                string jsonString = File.ReadAllText(filename);
+                if (string.IsNullOrWhiteSpace(jsonString))
                     return null;
-                }
-
+                CheckLeistungAntwortBemImg imgWso = JsonConvert.DeserializeObject<CheckLeistungAntwortBemImg>(jsonString, jsonSettings);
                 if (imgWso != null)
                 {
                     imgWso.filename = filename;
                 }
-
                 return imgWso;
             }
             catch (Exception ex)

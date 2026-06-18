@@ -163,14 +163,11 @@ namespace iPMCloud.Mobile
                         MissingMemberHandling = MissingMemberHandling.Ignore
                     };
 
-                    return PersistedJsonMigration.TryLoadWithLegacyMigration(
-                        filePath,
-                        jsonSettings,
-                        "LoadChecksInfo",
-                        SaveChecksInfo,
-                        out ChecksResponse checksResponse)
-                        ? checksResponse ?? new ChecksResponse()
-                        : new ChecksResponse();
+                    string jsonString = File.ReadAllText(filePath);
+                    if (string.IsNullOrWhiteSpace(jsonString))
+                        return new ChecksResponse();
+                    ChecksResponse checksResponse = JsonConvert.DeserializeObject<ChecksResponse>(jsonString, jsonSettings);
+                    return checksResponse ?? new ChecksResponse();
                 }
 
                 return new ChecksResponse();
@@ -291,14 +288,10 @@ namespace iPMCloud.Mobile
                         MissingMemberHandling = MissingMemberHandling.Ignore
                     };
 
-                    return PersistedJsonMigration.TryLoadWithLegacyMigration(
-                        filePath,
-                        jsonSettings,
-                        "LoadCheck",
-                        SaveCheck,
-                        out Check check)
-                        ? check
-                        : null;
+                    string jsonString = File.ReadAllText(filePath);
+                    if (string.IsNullOrWhiteSpace(jsonString))
+                        return null;
+                    return JsonConvert.DeserializeObject<Check>(jsonString, jsonSettings);
                 }
 
                 return null;
@@ -419,14 +412,10 @@ namespace iPMCloud.Mobile
                         MissingMemberHandling = MissingMemberHandling.Ignore
                     };
 
-                    return PersistedJsonMigration.TryLoadWithLegacyMigration(
-                        filePath,
-                        jsonSettings,
-                        "LoadCheckA",
-                        SaveCheckA,
-                        out Check check)
-                        ? check
-                        : null;
+                    string jsonString = File.ReadAllText(filePath);
+                    if (string.IsNullOrWhiteSpace(jsonString))
+                        return null;
+                    return JsonConvert.DeserializeObject<Check>(jsonString, jsonSettings);
                 }
 
                 return null;
@@ -703,14 +692,10 @@ namespace iPMCloud.Mobile
                     MissingMemberHandling = MissingMemberHandling.Ignore
                 };
 
-                return PersistedJsonMigration.TryLoadWithLegacyMigration(
-                    filename,
-                    jsonSettings,
-                    "LoadFromUploadStack Check",
-                    ToUploadStack,
-                    out Check check)
-                    ? check
-                    : null;
+                string jsonString = File.ReadAllText(filename);
+                if (string.IsNullOrWhiteSpace(jsonString))
+                    return null;
+                return JsonConvert.DeserializeObject<Check>(jsonString, jsonSettings);
             }
             catch (Exception ex)
             {

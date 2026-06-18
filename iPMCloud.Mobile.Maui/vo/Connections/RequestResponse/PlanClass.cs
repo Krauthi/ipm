@@ -2322,14 +2322,12 @@ namespace iPMCloud.Mobile
                     MissingMemberHandling = MissingMemberHandling.Ignore
                 };
 
-                if (PersistedJsonMigration.TryLoadWithLegacyMigration(
-                    filePath,
-                    jsonSettings,
-                    "Load PlanResponse",
-                    migratedResponse => Save(model, migratedResponse),
-                    out PlanResponse response))
+                string jsonString = File.ReadAllText(filePath);
+                if (!string.IsNullOrWhiteSpace(jsonString))
                 {
-                    return response ?? new PlanResponse();
+                    PlanResponse response = JsonConvert.DeserializeObject<PlanResponse>(jsonString, jsonSettings);
+                    if (response != null)
+                        return response;
                 }
 
                 return new PlanResponse();

@@ -46,6 +46,15 @@ namespace iPMCloud.Mobile
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             try
             {
+                LocalApplicationDataBackupProtection.EnsureExcludedFromBackup();
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Warn($"LocalApplicationData konnte nicht vom Backup ausgeschlossen werden: {ex.Message}");
+            }
+
+            try
+            {
 
                 var cachePath = System.IO.Path.GetTempPath();
                 // If exist, delete the cache directory and everything in it recursivly

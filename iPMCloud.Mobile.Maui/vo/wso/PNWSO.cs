@@ -154,14 +154,10 @@ namespace iPMCloud.Mobile
                     MissingMemberHandling = MissingMemberHandling.Ignore
                 };
 
-                return PersistedJsonMigration.TryLoadWithLegacyMigration(
-                    filename,
-                    jsonSettings,
-                    "LoadFromFile PNWSO",
-                    ToUploadStack,
-                    out PNWSO pnwso)
-                    ? pnwso
-                    : null;
+                string jsonString = File.ReadAllText(filename);
+                if (string.IsNullOrWhiteSpace(jsonString))
+                    return null;
+                return JsonConvert.DeserializeObject<PNWSO>(jsonString, jsonSettings);
             }
             catch (Exception ex)
             {

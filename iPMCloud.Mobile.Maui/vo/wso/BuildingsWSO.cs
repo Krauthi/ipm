@@ -771,14 +771,10 @@ namespace iPMCloud.Mobile
                         MissingMemberHandling = MissingMemberHandling.Ignore
                     };
 
-                    return PersistedJsonMigration.TryLoadWithLegacyMigration(
-                        filePath,
-                        jsonSettings,
-                        "LoadBuilding",
-                        migratedBuilding => Save(model, migratedBuilding),
-                        out BuildingWSO building)
-                        ? building
-                        : null;
+                    string jsonString = File.ReadAllText(filePath);
+                    if (string.IsNullOrWhiteSpace(jsonString))
+                        return null;
+                    return JsonConvert.DeserializeObject<BuildingWSO>(jsonString, jsonSettings);
                 }
 
                 return null;

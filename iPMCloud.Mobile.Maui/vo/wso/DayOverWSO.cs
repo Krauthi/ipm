@@ -178,14 +178,10 @@ namespace iPMCloud.Mobile
                     MissingMemberHandling = MissingMemberHandling.Ignore
                 };
 
-                return PersistedJsonMigration.TryLoadWithLegacyMigration(
-                    filename,
-                    jsonSettings,
-                    "Load DayOverWSO",
-                    migratedDay => Save(model, migratedDay),
-                    out DayOverWSO day)
-                    ? day
-                    : null;
+                string jsonString = File.ReadAllText(filename);
+                if (string.IsNullOrWhiteSpace(jsonString))
+                    return null;
+                return JsonConvert.DeserializeObject<DayOverWSO>(jsonString, jsonSettings);
             }
             catch (Exception ex)
             {
@@ -427,14 +423,10 @@ namespace iPMCloud.Mobile
                     MissingMemberHandling = MissingMemberHandling.Ignore
                 };
 
-                return PersistedJsonMigration.TryLoadWithLegacyMigration(
-                    filename,
-                    jsonSettings,
-                    "LoadFromUploadStack DayOverWSO",
-                    migratedDay => ToUploadStack(model, migratedDay),
-                    out DayOverWSO day)
-                    ? day
-                    : null;
+                string jsonString = File.ReadAllText(filename);
+                if (string.IsNullOrWhiteSpace(jsonString))
+                    return null;
+                return JsonConvert.DeserializeObject<DayOverWSO>(jsonString, jsonSettings);
             }
             catch (Exception ex)
             {

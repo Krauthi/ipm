@@ -73,67 +73,27 @@ namespace iPMCloud.Mobile.vo
                     {
                         if(AppModel.Instance.StartPage != null)
                         {
-                            AppModel.Logger.Info("Reusing existing StartPage instance.");
                             StartPageObj = AppModel.Instance.StartPage;
                         }
                         else
                         {
                             AppModel.Logger.Info("Creating new StartPage instance.");
-#if DEBUG
-                            var swStartCtor = Stopwatch.StartNew();
-#endif
+
                             StartPageObj = new StartPage();
-#if DEBUG
-                            swStartCtor.Stop();
-                            AppModel.Logger.Info($"PERF: new StartPage() took {swStartCtor.ElapsedMilliseconds} ms");
-#endif
+
                             AppModel.Instance.StartPage = StartPageObj;
                         }
-#if DEBUG
-                        var swStartGetPage = Stopwatch.StartNew();
-#endif
+
                         var startPage = StartPageObj.GetPage();
-#if DEBUG
-                        swStartGetPage.Stop();
-                        AppModel.Logger.Info($"PERF: StartPageObj.GetPage took {swStartGetPage.ElapsedMilliseconds} ms");
-                        var swStartSetPage = Stopwatch.StartNew();
-#endif
                         await SetPageAsync(startPage);
-#if DEBUG
-                        swStartSetPage.Stop();
-                        AppModel.Logger.Info($"PERF: SetPageAsync(startPage) took {swStartSetPage.ElapsedMilliseconds} ms");
-                        var swStartPageAgain = Stopwatch.StartNew();
-#endif
+
                         AppModel.Instance.StartPage.StartPageAgain();
-#if DEBUG
-                        swStartPageAgain.Stop();
-                        AppModel.Logger.Info($"PERF: StartPage.StartPageAgain took {swStartPageAgain.ElapsedMilliseconds} ms");
-#endif
+
                     }
-                    //else
-                    //{
-                    //    StartPageObj.GetPage(subPage);
-                    //}
                     break;
 
 
                 case PAGE_MAINPAGE:
-                    //if (LastMainPage == PAGE_STARTPAGE &&
-                    //    Interlocked.CompareExchange(ref _skipStartToMainTransitionOnce, 0, 0) == 0)
-                    //{
-                    //    AppModel.Logger.Info("Showing StartPage -> MainPage transition splash.");
-                    //    await SetPageAsync(new StartToMainTransitionSplashPage());
-                    //    return;
-                    //}
-
-                    //bool continueFromTransitionSplash = Interlocked.Exchange(ref _skipStartToMainTransitionOnce, 0) == 1;
-
-                    //if (continueFromTransitionSplash)
-                    //{
-                    //    AppModel.Logger.Info("StartPage -> MainPage transition splash finished; continuing to MainPage.");
-                    //}
-
-                    //if (LastMainPage != CurrentMainPage || continueFromTransitionSplash)
                     if (LastMainPage != CurrentMainPage)
                     {
                         if(AppModel.Instance.MainPage != null)
@@ -144,67 +104,22 @@ namespace iPMCloud.Mobile.vo
                         else
                         {
                             AppModel.Logger.Info("Creating new MainPage instance.");
-#if DEBUG
-                            var swMainCtor = Stopwatch.StartNew();
-#endif
+
                             MainPageObj = new MainPage();
-#if DEBUG
-                            swMainCtor.Stop();
-                            AppModel.Logger.Info($"PERF: new MainPage() took {swMainCtor.ElapsedMilliseconds} ms");
-#endif
+
                             AppModel.Instance.MainPage = MainPageObj;
                         }
-#if DEBUG
-                        var swMainGetPage = Stopwatch.StartNew();
-#endif
+
                         var mainPageContent = MainPageObj.GetPage();
-#if DEBUG
-                        swMainGetPage.Stop();
-                        AppModel.Logger.Info($"PERF: MainPageObj.GetPage took {swMainGetPage.ElapsedMilliseconds} ms");
-                        var swMainSetPage = Stopwatch.StartNew();
-#endif
+
                         await SetPageAsync(mainPageContent);
-#if DEBUG
-                        swMainSetPage.Stop();
-                        AppModel.Logger.Info($"PERF: SetPageAsync(mainPageContent) took {swMainSetPage.ElapsedMilliseconds} ms");
-                        var swMainPageAgain = Stopwatch.StartNew();
-#endif
+
                         AppModel.Instance.MainPage.MainPageAgain();
-#if DEBUG
-                        swMainPageAgain.Stop();
-                        AppModel.Logger.Info($"PERF: MainPage.MainPageAgain took {swMainPageAgain.ElapsedMilliseconds} ms");
-#endif
+
                     }
-                    //else
-                    //{
-                    //    MainPageObj.GetPage(subPage);
-                    //}
                     break;
 
 
-                //case PAGE_CLOSEAPP:
-
-                //    if (LastMainPage != CurrentMainPage)
-                //    {
-                //        StartPageObj = new StartPage(model);
-                //        model.App.MainPage = StartPageObj.GetPage(subPage);
-                //    }
-                //    else
-                //    {
-                //        StartPageObj.GetPage(subPage);
-                //    }
-                //    //App.StartBackgroundService();
-                //    // DisplayAlertSheet ... Yes/No
-                //    if ( model.DeviceSystem == "ios")
-                //    {
-                //        Thread.CurrentThread.Abort();
-                //    }
-                //    else if ( model.DeviceSystem == "android")
-                //    {
-                //        System.Diagnostics.Process.GetCurrentProcess().CloseMainWindow();// Close to Background
-                //        System.Diagnostics.Process.GetCurrentProcess().Kill();// Complete Close App
-                //    }
-                //    break;
             }
         }
 

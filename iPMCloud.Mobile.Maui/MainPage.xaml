@@ -248,8 +248,8 @@
 
 
             <VerticalStackLayout
+                x:Name="lastBuilding_Container"
                 Grid.Row="2"
-                    x:Name="lastBuilding_Container"
                 Margin="0"
                 Padding="0"
                 HorizontalOptions="Fill"
@@ -723,8 +723,8 @@
                 Margin="0,0,0,10"
                 BackgroundColor="#666"
                 HeightRequest="2"
-                IsVisible="False"
                 HorizontalOptions="Fill"
+                IsVisible="False"
                 VerticalOptions="Start" />
 
             <Grid
@@ -971,10 +971,10 @@
                         HorizontalOptions="Start">
                         <Border.Shadow>
                             <Shadow
-                        Brush="Black"
-                        Opacity="0.73"
-                        Radius="5"
-                        Offset="2,2" />
+                                Brush="Black"
+                                Opacity="0.73"
+                                Radius="5"
+                                Offset="2,2" />
                         </Border.Shadow>
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Tapped="btn_PlanTabATapped" />
@@ -1051,10 +1051,10 @@
                         HorizontalOptions="Start">
                         <Border.Shadow>
                             <Shadow
-                        Brush="Black"
-                        Opacity="0.73"
-                        Radius="5"
-                        Offset="2,2" ></Shadow>
+                                Brush="Black"
+                                Opacity="0.73"
+                                Radius="5"
+                                Offset="2,2" />
                         </Border.Shadow>
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Tapped="btn_PlanTabBTapped" />
@@ -1103,10 +1103,10 @@
                         IsVisible="True">
                         <Border.Shadow>
                             <Shadow
-                        Brush="Black"
-                        Opacity="0.73"
-                        Radius="5"
-                        Offset="2,2" ></Shadow>
+                                Brush="Black"
+                                Opacity="0.73"
+                                Radius="5"
+                                Offset="2,2" />
                         </Border.Shadow>
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Tapped="btn_PlanTabCeTapped" />
@@ -1209,82 +1209,82 @@
                         x:Name="frame_plantabC"
                         Margin="0,0,0,0"
                         Padding="1"
-                            BackgroundColor="#04532d"
+                        BackgroundColor="#04532d"
                         HorizontalOptions="Start"
                         IsVisible="False">
                         <Border.Shadow>
                             <Shadow
-                        Brush="Black"
-                        Opacity="0.73"
-                        Radius="5"
-                        Offset="2,2" ></Shadow>
+                                Brush="Black"
+                                Opacity="0.73"
+                                Radius="5"
+                                Offset="2,2" />
                         </Border.Shadow>
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Tapped="btn_PlanTabCTapped" />
                         </Border.GestureRecognizers>
-                            <Grid
-                                Margin="0"
-                                Padding="5,2,5,2"
-                                ColumnSpacing="0"
-                                HeightRequest="40"
+                        <Grid
+                            Margin="0"
+                            Padding="5,2,5,2"
+                            ColumnSpacing="0"
+                            HeightRequest="40"
+                            HorizontalOptions="Fill"
+                            VerticalOptions="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <VerticalStackLayout
+                                Grid.Column="0"
+                                Margin="0,-4,0,0"
+                                Padding="0"
                                 HorizontalOptions="Fill"
+                                Spacing="0"
                                 VerticalOptions="Center">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <VerticalStackLayout
-                                    Grid.Column="0"
-                                    Margin="0,-4,0,0"
+                                <Label
+                                    Margin="0"
                                     Padding="0"
-                                    HorizontalOptions="Fill"
-                                    Spacing="0"
-                                    VerticalOptions="Center">
+                                    FontSize="14"
+                                    HorizontalTextAlignment="Start"
+                                    Text="Tickets"
+                                    TextColor="#ffffff" />
+                                <Label
+                                    Margin="0,-2,0,0"
+                                    Padding="0"
+                                    FontSize="9"
+                                    HorizontalTextAlignment="Start"
+                                    Text="Zu Erledigen"
+                                    TextColor="#ffffff" />
+                            </VerticalStackLayout>
+                            <AbsoluteLayout
+                                x:Name="frame_plantabC_badge"
+                                Grid.Column="1"
+                                Margin="-7,-1,-4,0"
+                                AbsoluteLayout.LayoutBounds="0,0,1,1"
+                                AbsoluteLayout.LayoutFlags="None"
+                                BackgroundColor="Transparent"
+                                IsVisible="False">
+                                <Border
+                                    x:Name="frame_plantabC_badge_col"
+                                    Margin="0"
+                                    Padding="2"
+                                    BackgroundColor="#ff0000"
+                                    HeightRequest="15"
+                                    HorizontalOptions="Start"
+                                    StrokeShape="RoundRectangle 10"
+                                    VerticalOptions="Start">
                                     <Label
-                                        Margin="0"
-                                        Padding="0"
-                                        FontSize="14"
-                                        HorizontalTextAlignment="Start"
-                                        Text="Tickets"
-                                        TextColor="#ffffff" />
-                                    <Label
+                                        x:Name="frame_plantabC_badge_count"
                                         Margin="0,-2,0,0"
                                         Padding="0"
                                         FontSize="9"
-                                        HorizontalTextAlignment="Start"
-                                        Text="Zu Erledigen"
-                                        TextColor="#ffffff" />
-                                </VerticalStackLayout>
-                                <AbsoluteLayout
-                                    x:Name="frame_plantabC_badge"
-                                    Grid.Column="1"
-                                    Margin="-7,-1,-4,0"
-                                    AbsoluteLayout.LayoutBounds="0,0,1,1"
-                                    AbsoluteLayout.LayoutFlags="None"
-                                    BackgroundColor="Transparent"
-                                    IsVisible="False">
-                                    <Border
-                                        x:Name="frame_plantabC_badge_col"
-                                        Margin="0"
-                                        Padding="2"
-                                        BackgroundColor="#ff0000"
-                                        HeightRequest="15"
-                                        HorizontalOptions="Start"
-                                        StrokeShape="RoundRectangle 10"
-                                        VerticalOptions="Start">
-                                        <Label
-                                            x:Name="frame_plantabC_badge_count"
-                                            Margin="0,-2,0,0"
-                                            Padding="0"
-                                            FontSize="9"
-                                            HorizontalOptions="Center"
-                                            HorizontalTextAlignment="Center"
-                                            Text="1"
-                                            TextColor="#ffffff"
-                                            VerticalOptions="Center" />
-                                    </Border>
-                                </AbsoluteLayout>
-                            </Grid>
+                                        HorizontalOptions="Center"
+                                        HorizontalTextAlignment="Center"
+                                        Text="1"
+                                        TextColor="#ffffff"
+                                        VerticalOptions="Center" />
+                                </Border>
+                            </AbsoluteLayout>
+                        </Grid>
                     </Border>
                 </HorizontalStackLayout>
 
@@ -2531,174 +2531,174 @@
                                 </Grid.RowDefinitions>
                                 <Grid
                                     x:Name="tourScrollerCaa"
+                                    Grid.Row="0"
+                                    Margin="0"
+                                    Padding="0"
+                                    HorizontalOptions="Fill"
+                                    RowSpacing="0"
+                                    VerticalOptions="Fill">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <HorizontalStackLayout
+                                        x:Name="frame_planConC_offenhead"
                                         Grid.Row="0"
+                                        Margin="0"
+                                        Padding="3"
+                                        BackgroundColor="#33ff0000"
+                                        HorizontalOptions="Fill"
+                                        Spacing="0"
+                                        VerticalOptions="Start">
+                                        <Label
+                                            x:Name="frame_planConC_offenheadtxt"
+                                            Margin="3,0,0,1"
+                                            Padding="0"
+                                            FontSize="18"
+                                            HorizontalOptions="Start"
+                                            Text="Offen"
+                                            TextColor="#ffffff"
+                                            VerticalOptions="Start" />
+                                    </HorizontalStackLayout>
+                                    <ScrollView
+                                        Grid.Row="1"
                                         Margin="0"
                                         Padding="0"
                                         HorizontalOptions="Fill"
-                                        RowSpacing="0"
                                         VerticalOptions="Fill">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="*" />
-                                        </Grid.RowDefinitions>
-                                        <HorizontalStackLayout
-                                            x:Name="frame_planConC_offenhead"
-                                            Grid.Row="0"
-                                            Margin="0"
-                                            Padding="3"
-                                            BackgroundColor="#33ff0000"
-                                            HorizontalOptions="Fill"
-                                            Spacing="0"
-                                            VerticalOptions="Start">
-                                            <Label
-                                                x:Name="frame_planConC_offenheadtxt"
-                                                Margin="3,0,0,1"
-                                                Padding="0"
-                                                FontSize="18"
-                                                HorizontalOptions="Start"
-                                                Text="Offen"
-                                                TextColor="#ffffff"
-                                                VerticalOptions="Start" />
-                                        </HorizontalStackLayout>
-                                        <ScrollView
-                                            Grid.Row="1"
+                                        <VerticalStackLayout
+                                            x:Name="frame_planListCoffen"
                                             Margin="0"
                                             Padding="0"
                                             HorizontalOptions="Fill"
+                                            IsVisible="True"
+                                            Spacing="0"
                                             VerticalOptions="Fill">
-                                            <VerticalStackLayout
-                                                x:Name="frame_planListCoffen"
-                                                Margin="0"
+                                            <Label
+                                                Margin="3,0,0,1"
                                                 Padding="0"
+                                                FontSize="12"
                                                 HorizontalOptions="Fill"
-                                                IsVisible="True"
-                                                Spacing="0"
-                                                VerticalOptions="Fill">
-                                                <Label
-                                                    Margin="3,0,0,1"
-                                                    Padding="0"
-                                                    FontSize="12"
-                                                    HorizontalOptions="Fill"
-                                                    Text="Offen"
-                                                    TextColor="#ff0000"
-                                                    VerticalOptions="Start" />
-                                            </VerticalStackLayout>
-                                        </ScrollView>
-                                    </Grid>
+                                                Text="Offen"
+                                                TextColor="#ff0000"
+                                                VerticalOptions="Start" />
+                                        </VerticalStackLayout>
+                                    </ScrollView>
+                                </Grid>
                                 <Grid
                                     x:Name="tourScrollerCbb"
                                     Grid.Row="0"
+                                    Margin="0"
+                                    Padding="0"
+                                    HorizontalOptions="Fill"
                                     IsVisible="False"
-                                        Margin="0"
-                                        Padding="0"
-                                        HorizontalOptions="Fill"
-                                        RowSpacing="0"
-                                        VerticalOptions="Fill">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="*" />
-                                        </Grid.RowDefinitions>
-                                        <HorizontalStackLayout
-                                            x:Name="frame_planConC_workhead"
-                                            Grid.Row="0"
-                                            Margin="0"
-                                            Padding="3"
-                                            BackgroundColor="#33ffcc00"
-                                            HorizontalOptions="Fill"
-                                            Spacing="0"
-                                            VerticalOptions="Start">
-                                            <Label
-                                                x:Name="frame_planConC_workheadtxt"
-                                                Margin="3,0,0,1"
-                                                Padding="0"
-                                                FontSize="18"
-                                                HorizontalOptions="Start"
-                                                Text="In Arbeit"
-                                                TextColor="#ffffff"
-                                                VerticalOptions="Start" />
-                                        </HorizontalStackLayout>
-                                        <ScrollView
-                                            Grid.Row="1"
-                                            Margin="0"
-                                            Padding="0"
-                                            HorizontalOptions="Fill"
-                                            VerticalOptions="Fill">
-                                            <VerticalStackLayout
-                                                x:Name="frame_planListCwork"
-                                                Margin="0"
-                                                Padding="0"
-                                                HorizontalOptions="Fill"
-                                                IsVisible="True"
-                                                Spacing="0"
-                                                VerticalOptions="Fill">
-                                                <Label
-                                                    Margin="3,0,0,1"
-                                                    Padding="0"
-                                                    FontSize="12"
-                                                    HorizontalOptions="Fill"
-                                                    Text="In Arbeit"
-                                                    TextColor="#ffcc00"
-                                                    VerticalOptions="Start" />
-                                            </VerticalStackLayout>
-                                        </ScrollView>
-                                    </Grid>
-                                <Grid
-                                    x:Name="tourScrollerCcc"
-                                    IsVisible="False"
+                                    RowSpacing="0"
+                                    VerticalOptions="Fill">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <HorizontalStackLayout
+                                        x:Name="frame_planConC_workhead"
                                         Grid.Row="0"
                                         Margin="0"
+                                        Padding="3"
+                                        BackgroundColor="#33ffcc00"
+                                        HorizontalOptions="Fill"
+                                        Spacing="0"
+                                        VerticalOptions="Start">
+                                        <Label
+                                            x:Name="frame_planConC_workheadtxt"
+                                            Margin="3,0,0,1"
+                                            Padding="0"
+                                            FontSize="18"
+                                            HorizontalOptions="Start"
+                                            Text="In Arbeit"
+                                            TextColor="#ffffff"
+                                            VerticalOptions="Start" />
+                                    </HorizontalStackLayout>
+                                    <ScrollView
+                                        Grid.Row="1"
+                                        Margin="0"
                                         Padding="0"
                                         HorizontalOptions="Fill"
-                                        RowSpacing="0"
                                         VerticalOptions="Fill">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto" />
-                                            <RowDefinition Height="*" />
-                                        </Grid.RowDefinitions>
-                                        <HorizontalStackLayout
-                                            x:Name="frame_planConC_erlhead"
-                                            Grid.Row="0"
-                                            Margin="0"
-                                            Padding="3"
-                                            BackgroundColor="#3300ff00"
-                                            HorizontalOptions="Fill"
-                                            Spacing="0"
-                                            VerticalOptions="Start">
-                                            <Label
-                                                x:Name="frame_planConC_erlheadtxt"
-                                                Margin="3,0,0,1"
-                                                Padding="0"
-                                                FontSize="18"
-                                                HorizontalOptions="Start"
-                                                Text="Erledigte"
-                                                TextColor="#ffffff"
-                                                VerticalOptions="Start" />
-                                        </HorizontalStackLayout>
-                                        <ScrollView
-                                            Grid.Row="1"
+                                        <VerticalStackLayout
+                                            x:Name="frame_planListCwork"
                                             Margin="0"
                                             Padding="0"
                                             HorizontalOptions="Fill"
+                                            IsVisible="True"
+                                            Spacing="0"
                                             VerticalOptions="Fill">
-                                            <VerticalStackLayout
-                                                x:Name="frame_planListCerl"
-                                                Margin="0"
+                                            <Label
+                                                Margin="3,0,0,1"
                                                 Padding="0"
+                                                FontSize="12"
                                                 HorizontalOptions="Fill"
-                                                IsVisible="True"
-                                                Spacing="0"
-                                                VerticalOptions="Fill">
-                                                <Label
-                                                    Margin="3,0,0,1"
-                                                    Padding="0"
-                                                    FontSize="12"
-                                                    HorizontalOptions="Fill"
-                                                    Text="Erledigte"
-                                                    TextColor="#00ff00"
-                                                    VerticalOptions="Start" />
-                                            </VerticalStackLayout>
-                                        </ScrollView>
-                                    </Grid>
+                                                Text="In Arbeit"
+                                                TextColor="#ffcc00"
+                                                VerticalOptions="Start" />
+                                        </VerticalStackLayout>
+                                    </ScrollView>
+                                </Grid>
+                                <Grid
+                                    x:Name="tourScrollerCcc"
+                                    Grid.Row="0"
+                                    Margin="0"
+                                    Padding="0"
+                                    HorizontalOptions="Fill"
+                                    IsVisible="False"
+                                    RowSpacing="0"
+                                    VerticalOptions="Fill">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="*" />
+                                    </Grid.RowDefinitions>
+                                    <HorizontalStackLayout
+                                        x:Name="frame_planConC_erlhead"
+                                        Grid.Row="0"
+                                        Margin="0"
+                                        Padding="3"
+                                        BackgroundColor="#3300ff00"
+                                        HorizontalOptions="Fill"
+                                        Spacing="0"
+                                        VerticalOptions="Start">
+                                        <Label
+                                            x:Name="frame_planConC_erlheadtxt"
+                                            Margin="3,0,0,1"
+                                            Padding="0"
+                                            FontSize="18"
+                                            HorizontalOptions="Start"
+                                            Text="Erledigte"
+                                            TextColor="#ffffff"
+                                            VerticalOptions="Start" />
+                                    </HorizontalStackLayout>
+                                    <ScrollView
+                                        Grid.Row="1"
+                                        Margin="0"
+                                        Padding="0"
+                                        HorizontalOptions="Fill"
+                                        VerticalOptions="Fill">
+                                        <VerticalStackLayout
+                                            x:Name="frame_planListCerl"
+                                            Margin="0"
+                                            Padding="0"
+                                            HorizontalOptions="Fill"
+                                            IsVisible="True"
+                                            Spacing="0"
+                                            VerticalOptions="Fill">
+                                            <Label
+                                                Margin="3,0,0,1"
+                                                Padding="0"
+                                                FontSize="12"
+                                                HorizontalOptions="Fill"
+                                                Text="Erledigte"
+                                                TextColor="#00ff00"
+                                                VerticalOptions="Start" />
+                                        </VerticalStackLayout>
+                                    </ScrollView>
+                                </Grid>
                             </Grid>
 
                             <Border
@@ -2708,7 +2708,7 @@
                                 HeightRequest="2"
                                 HorizontalOptions="Fill"
                                 VerticalOptions="Start" />
-                            <!-- Ticket Buttons untere Reihe -->
+                            <!--  Ticket Buttons untere Reihe  -->
                             <Grid
                                 Grid.Row="3"
                                 Margin="0"
@@ -4465,9 +4465,9 @@
                 Grid.Row="1"
                 Margin="0,0,0,12"
                 Padding="0,4"
+                BackgroundColor="#33000000"
                 HeightRequest="54"
                 HorizontalOptions="Fill"
-                BackgroundColor="#33000000"
                 Spacing="0"
                 VerticalOptions="End">
                 <Border
@@ -4735,7 +4735,7 @@
                 Grid.Row="1"
                 Margin="0"
                 Padding="0"
-                    BackgroundColor="Transparent"
+                BackgroundColor="Transparent"
                 HorizontalOptions="Fill"
                 IsVisible="False"
                 Spacing="0"
@@ -5055,56 +5055,46 @@
                 <VerticalStackLayout
                     x:Name="img_info_check_typ_container"
                     Grid.Row="5"
-                    Margin="0,-15,0,0"
+                    Margin="{OnPlatform iOS='0,-72,0,0',
+                                        Default='0,-45,0,0'}"
                     Padding="0"
-                    BackgroundColor="#99042d53"
+                    BackgroundColor="#042d53"
                     HorizontalOptions="Fill"
                     Spacing="0">
                     <Border
                         Margin="0,0,0,0"
-                        BackgroundColor="#666"
+                        BackgroundColor="#ccc"
                         HeightRequest="2"
                         HorizontalOptions="Fill"
                         VerticalOptions="Start" />
                     <HorizontalStackLayout
                         Margin="0,0,0,0"
-                        Padding="10,5"
+                        Padding="10,6,10,5"
                         HorizontalOptions="Fill"
                         Spacing="0"
                         VerticalOptions="End">
-                        <Border
+                        <VerticalStackLayout
                             x:Name="btn_notice_save_check_ready"
-                            Margin="0,5,0,20"
-                            Padding="1"
-                            BackgroundColor="#04432d"
+                            Margin="0"
+                            Padding="12,3,12,5"
+                            BackgroundColor="#04532d"
                             HorizontalOptions="Start"
-                            VerticalOptions="Start">
-                            <StackLayout
-                                Margin="0"
-                                Padding="10,-2,10,5"
-                                BackgroundColor="#04532d"
-                                HorizontalOptions="Fill">
-                                <VerticalStackLayout
-                                    Margin="0,0,0,0"
-                                    Padding="0"
-                                    Spacing="0"
-                                    VerticalOptions="Center">
-                                    <Label
-                                        Margin="0,5,0,0"
-                                        Padding="0"
-                                        FontSize="18"
-                                        Text="FERTIG"
-                                        TextColor="#ffffff" />
-                                    <Label
-                                        Margin="0,-3,0,0"
-                                        Padding="0"
-                                        FontSize="12"
-                                        LineBreakMode="TailTruncation"
-                                        Text="Checkliste abgeben"
-                                        TextColor="#ffffff" />
-                                </VerticalStackLayout>
-                            </StackLayout>
-                        </Border>
+                            Spacing="0"
+                            VerticalOptions="Center">
+                            <Label
+                                Margin="0,5,0,0"
+                                Padding="0"
+                                FontSize="20"
+                                Text="FERTIG"
+                                TextColor="#ffffff" />
+                            <Label
+                                Margin="0,-3,0,0"
+                                Padding="0"
+                                FontSize="12"
+                                LineBreakMode="TailTruncation"
+                                Text="Checkliste abgeben"
+                                TextColor="#ffffff" />
+                        </VerticalStackLayout>
                         <VerticalStackLayout
                             Margin="0"
                             Padding="10,0,10,20"
@@ -5744,7 +5734,7 @@
                         Margin="0"
                         Padding="10,10,10,60"
                         AbsoluteLayout.LayoutBounds="0,0,1,1"
-                        AbsoluteLayout.LayoutFlags="All"                        
+                        AbsoluteLayout.LayoutFlags="All"
                         HorizontalOptions="Fill"
                         RowSpacing="0"
                         VerticalOptions="Fill">
@@ -5853,7 +5843,7 @@
                                             Text="Fällige Aufagben"
                                             TextColor="#aaaaaa" />
                                     </VerticalStackLayout>
-                                    
+
                                 </Grid>
                             </StackLayout>
                         </Border>
@@ -6362,7 +6352,6 @@
             <ActivityIndicator
                 x:Name="overlaySync"
                 Margin="0,0,30,0"
-                Scale="{OnPlatform iOS=3, Default=1}"
                 AbsoluteLayout.LayoutBounds="0,0,1,1"
                 AbsoluteLayout.LayoutFlags="All"
                 BackgroundColor="Transparent"
@@ -6372,6 +6361,8 @@
                 IsEnabled="{Binding Path=IsVisible}"
                 IsRunning="True"
                 IsVisible="True"
+                Scale="{OnPlatform iOS=3,
+                                   Default=1}"
                 VerticalOptions="Center"
                 WidthRequest="70"
                 Color="#0078d7" />
@@ -6393,8 +6384,8 @@
                 AbsoluteLayout.LayoutFlags="All"
                 BackgroundColor="#73042d"
                 HorizontalOptions="Fill"
-                RowSpacing="0"
                 RowDefinitions="Auto,Auto,Auto,Auto,*"
+                RowSpacing="0"
                 VerticalOptions="Start">
                 <Label
                     Grid.Row="0"
@@ -6414,37 +6405,37 @@
                     VerticalOptions="Start" />
                 <Label
                     Grid.Row="2"
-                        Margin="0,5"
-                        FontSize="18"
-                        HorizontalOptions="Fill"
-                        HorizontalTextAlignment="Start"
-                        Text="Bitte bleiben Sie im empfangbereich eines Netzes oder im WLAN!"
-                        TextColor="#ffffff"
-                        VerticalOptions="Center" />
+                    Margin="0,5"
+                    FontSize="18"
+                    HorizontalOptions="Fill"
+                    HorizontalTextAlignment="Start"
+                    Text="Bitte bleiben Sie im empfangbereich eines Netzes oder im WLAN!"
+                    TextColor="#ffffff"
+                    VerticalOptions="Center" />
                 <Label
                     Grid.Row="3"
-                        Margin="0,10"
-                        FontSize="18"
-                        HorizontalOptions="Fill"
-                        HorizontalTextAlignment="Start"
-                        Text="Beenden Sie nicht die App oder legen Sie diese nicht in den Hintergrund! Diese Download muss einwandfrei durchlaufen!"
-                        TextColor="#ffffff"
-                        VerticalOptions="Center" />
+                    Margin="0,10"
+                    FontSize="18"
+                    HorizontalOptions="Fill"
+                    HorizontalTextAlignment="Start"
+                    Text="Beenden Sie nicht die App oder legen Sie diese nicht in den Hintergrund! Diese Download muss einwandfrei durchlaufen!"
+                    TextColor="#ffffff"
+                    VerticalOptions="Center" />
 
                 <VerticalStackLayout
-                    Grid.Row="4"
                     x:Name="popupContainerSyncFaild_btn"
+                    Grid.Row="4"
                     Margin="0,10"
                     Padding="10,6"
                     BackgroundColor="#1f74ad">
-                            <Label
-                                Margin="0"
-                                Padding="0"
-                                FontSize="18"
-                                HorizontalOptions="Center"
-                                HorizontalTextAlignment="Center"
-                                Text="JETZT NOCHMAL STARTEN"
-                                TextColor="#ffffff" />
+                    <Label
+                        Margin="0"
+                        Padding="0"
+                        FontSize="18"
+                        HorizontalOptions="Center"
+                        HorizontalTextAlignment="Center"
+                        Text="JETZT NOCHMAL STARTEN"
+                        TextColor="#ffffff" />
                 </VerticalStackLayout>
             </Grid>
         </AbsoluteLayout>
@@ -6545,16 +6536,16 @@
                 Padding="10"
                 AbsoluteLayout.LayoutBounds="0,0,1,1"
                 AbsoluteLayout.LayoutFlags="All"
-                RowDefinitions="Auto,Auto,Auto,Auto,Auto"
-                VerticalOptions="Start"
                 BackgroundColor="#144d73"
-                RowSpacing="0">
+                RowDefinitions="Auto,Auto,Auto,Auto,Auto"
+                RowSpacing="0"
+                VerticalOptions="Start">
                 <Label
                     Grid.Row="0"
                     Margin="0,5"
+                    FontAttributes="Bold"
                     FontSize="24"
                     HorizontalOptions="Fill"
-                    FontAttributes="Bold"
                     Text="Nachbuchen?"
                     TextColor="#ffffff"
                     VerticalOptions="Center" />
@@ -6566,8 +6557,8 @@
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Label
-                    Grid.Row="2"
                     x:Name="btn_startselectedwork_text"
+                    Grid.Row="2"
                     Margin="0,0,0,20"
                     FontSize="18"
                     HorizontalOptions="Fill"
@@ -6586,8 +6577,8 @@
                     Margin="0"
                     Padding="0"
                     ColumnSpacing="0"
-                    VerticalOptions="End"
-                    HorizontalOptions="Fill">
+                    HorizontalOptions="Fill"
+                    VerticalOptions="End">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
@@ -6639,11 +6630,11 @@
                 Padding="10"
                 AbsoluteLayout.LayoutBounds="0,0,1,1"
                 AbsoluteLayout.LayoutFlags="All"
-                VerticalOptions="Start"
                 BackgroundColor="#144d73"
                 HorizontalOptions="Fill"
                 RowDefinitions="Auto,Auto,Auto,Auto,Auto,*"
-                RowSpacing="0">
+                RowSpacing="0"
+                VerticalOptions="Start">
                 <Label
                     Grid.Row="0"
                     Margin="0"
@@ -6742,17 +6733,17 @@
                 Padding="10"
                 AbsoluteLayout.LayoutBounds="0,0,1,1"
                 AbsoluteLayout.LayoutFlags="All"
-                VerticalOptions="Start"
                 BackgroundColor="#144d73"
                 HorizontalOptions="Fill"
                 RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto"
-                RowSpacing="0">
+                RowSpacing="0"
+                VerticalOptions="Start">
                 <Label
                     Grid.Row="0"
                     Margin="0"
+                    FontAttributes="Bold"
                     FontSize="26"
                     HorizontalOptions="Fill"
-                    FontAttributes="Bold"
                     Text="Checkliste löschen?"
                     TextColor="#ffcc00"
                     VerticalOptions="Center" />
@@ -6845,13 +6836,13 @@
                 Padding="10"
                 AbsoluteLayout.LayoutBounds="0,0,1,1"
                 AbsoluteLayout.LayoutFlags="All"
-                VerticalOptions="Start"
                 BackgroundColor="#144d73"
                 RowDefinitions="Auto,Auto,Auto,Auto,*"
-                RowSpacing="0">
+                RowSpacing="0"
+                VerticalOptions="Start">
                 <Label
-                    Grid.Row="0"
                     x:Name="popupContainer_info_notscan_titel"
+                    Grid.Row="0"
                     Margin="0"
                     FontSize="24"
                     HorizontalOptions="Fill"
@@ -6859,15 +6850,15 @@
                     TextColor="#ffffff"
                     VerticalOptions="Center" />
                 <Border
-                    Margin="0,3,0,3"
                     Grid.Row="1"
+                    Margin="0,3,0,3"
                     BackgroundColor="#fff"
                     HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Label
-                    Grid.Row="2"
                     x:Name="popupContainer_info_notscan_text"
+                    Grid.Row="2"
                     Margin="0,0,0,20"
                     FontSize="16"
                     HorizontalOptions="Fill"
@@ -6924,17 +6915,17 @@
                 Padding="10"
                 AbsoluteLayout.LayoutBounds="0,0,1,1"
                 AbsoluteLayout.LayoutFlags="All"
-                VerticalOptions="Start"
                 BackgroundColor="#144d73"
                 HorizontalOptions="Fill"
                 RowDefinitions="Auto,Auto,Auto,Auto,Auto"
-                RowSpacing="0">
+                RowSpacing="0"
+                VerticalOptions="Start">
                 <Label
                     Grid.Row="0"
                     Margin="0,5"
+                    FontAttributes="Bold"
                     FontSize="26"
                     HorizontalOptions="Fill"
-                    FontAttributes="Bold"
                     Text="Jetzt beenden?"
                     TextColor="#ffffff"
                     VerticalOptions="Center" />
@@ -7020,11 +7011,11 @@
                 Padding="10"
                 AbsoluteLayout.LayoutBounds="0,0,1,1"
                 AbsoluteLayout.LayoutFlags="All"
-                VerticalOptions="Start"
                 BackgroundColor="#144d73"
-                HorizontalOptions="Fill"                
+                HorizontalOptions="Fill"
                 RowDefinitions="Auto,Auto,Auto,Auto,Auto"
-                RowSpacing="0">
+                RowSpacing="0"
+                VerticalOptions="Start">
                 <Label
                     Grid.Row="0"
                     Margin="0"
@@ -7112,11 +7103,11 @@
                 Padding="10"
                 AbsoluteLayout.LayoutBounds="0,0,1,1"
                 AbsoluteLayout.LayoutFlags="All"
-                VerticalOptions="Start"
-                RowDefinitions="Auto,Auto,Auto,Auto,Auto"
                 BackgroundColor="#144d73"
                 HorizontalOptions="Fill"
-                RowSpacing="0">
+                RowDefinitions="Auto,Auto,Auto,Auto,Auto"
+                RowSpacing="0"
+                VerticalOptions="Start">
                 <Grid
                     Grid.Row="0"
                     Margin="0"
@@ -7138,9 +7129,9 @@
                     <Label
                         Grid.Column="1"
                         Margin="0"
+                        FontAttributes="Bold"
                         FontSize="18"
                         HorizontalOptions="Fill"
-                        FontAttributes="Bold"
                         Text="Das Senden an den Support der iPM-Cloud war nicht erfolgreich!"
                         TextColor="#ffdd00"
                         VerticalOptions="Center" />
@@ -7209,11 +7200,11 @@
                 Padding="10"
                 AbsoluteLayout.LayoutBounds="0,0,1,1"
                 AbsoluteLayout.LayoutFlags="All"
-                VerticalOptions="Start"
-                RowDefinitions="Auto,Auto,Auto,Auto,Auto"
                 BackgroundColor="#144d73"
                 HorizontalOptions="Fill"
-                RowSpacing="0">
+                RowDefinitions="Auto,Auto,Auto,Auto,Auto"
+                RowSpacing="0"
+                VerticalOptions="Start">
                 <Label
                     Grid.Row="0"
                     Margin="0"
@@ -7252,8 +7243,8 @@
                     Margin="0"
                     Padding="0"
                     ColumnDefinitions="*"
-                    HorizontalOptions="Fill"
-                    ColumnSpacing="0">
+                    ColumnSpacing="0"
+                    HorizontalOptions="Fill">
                     <Border
                         x:Name="btn_overtootherBuildingSave"
                         Margin="0"
@@ -7286,11 +7277,11 @@
                 Padding="10"
                 AbsoluteLayout.LayoutBounds="0,0,1,1"
                 AbsoluteLayout.LayoutFlags="All"
-                VerticalOptions="Start"
                 BackgroundColor="#144d73"
                 HorizontalOptions="Fill"
+                RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto"
                 RowSpacing="0"
-                RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
+                VerticalOptions="Start">
                 <Label
                     Grid.Row="0"
                     Margin="0"
@@ -7309,7 +7300,6 @@
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <Label
-                    
                     Grid.Row="2"
                     Margin="0,10,0,20"
                     FontSize="18"
@@ -7328,7 +7318,6 @@
                     TextColor="#ffcc00"
                     VerticalOptions="Center" />
                 <Border
-                    
                     Grid.Row="4"
                     Margin="0,10,0,10"
                     BackgroundColor="#fff"
@@ -7378,7 +7367,7 @@
 
         </AbsoluteLayout>
 
-  
+
         <AbsoluteLayout
             x:Name="popupContainer_quest_changemuellpos"
             AbsoluteLayout.LayoutBounds="0,0,1,1"
@@ -7393,11 +7382,11 @@
                 Padding="10"
                 AbsoluteLayout.LayoutBounds="0,0,1,1"
                 AbsoluteLayout.LayoutFlags="All"
-                VerticalOptions="Start"
                 BackgroundColor="#144d73"
                 HorizontalOptions="Fill"
                 RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto"
-                RowSpacing="0">
+                RowSpacing="0"
+                VerticalOptions="Start">
                 <Label
                     Grid.Row="0"
                     Margin="0"
@@ -7411,7 +7400,7 @@
                     Margin="0,10"
                     BackgroundColor="#fff"
                     HeightRequest="2"
-                    HorizontalOptions="Fill"/>
+                    HorizontalOptions="Fill" />
                 <Label
                     Grid.Row="2"
                     Margin="0,0,0,10"
@@ -7493,13 +7482,13 @@
                 x:Name="popupContainer_quest_direktbuchen_st"
                 Margin="10"
                 Padding="0"
-                BackgroundColor="#144d73"
                 AbsoluteLayout.LayoutBounds="0,0,1,1"
                 AbsoluteLayout.LayoutFlags="All"
-                VerticalOptions="Start"
+                BackgroundColor="#144d73"
                 HorizontalOptions="Fill"
                 RowDefinitions="Auto,Auto,Auto,Auto,*,Auto,Auto"
-                RowSpacing="0">
+                RowSpacing="0"
+                VerticalOptions="Start">
                 <Label
                     Grid.Row="0"
                     Margin="10"
@@ -7641,7 +7630,7 @@
 
         </AbsoluteLayout>
 
-        
+
 
         <AbsoluteLayout
             x:Name="popupContainer_infodialog"
@@ -7656,12 +7645,12 @@
             <Grid
                 Margin="20"
                 Padding="10"
-                BackgroundColor="#144d73"
                 AbsoluteLayout.LayoutBounds="0,0,1,1"
                 AbsoluteLayout.LayoutFlags="All"
-                VerticalOptions="Start"
+                BackgroundColor="#144d73"
                 RowDefinitions="44,Auto,*,Auto,Auto"
-                RowSpacing="0">
+                RowSpacing="0"
+                VerticalOptions="Start">
                 <Grid
                     Grid.Row="0"
                     Margin="0"
@@ -7758,9 +7747,13 @@
                 Padding="0"
                 AbsoluteLayout.LayoutBounds="0,0,1,1"
                 AbsoluteLayout.LayoutFlags="All"
-                VerticalOptions="Start"
                 BackgroundColor="#144d73"
-                RowSpacing="0">
+                InputTransparent="False"
+                RowSpacing="0"
+                VerticalOptions="Start">
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer />
+                </Grid.GestureRecognizers>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
@@ -7790,7 +7783,8 @@
                     <Label
                         Grid.Column="1"
                         Margin="10"
-                        FontSize="24" FontAttributes="Bold"
+                        FontAttributes="Bold"
+                        FontSize="24"
                         HorizontalOptions="Fill"
                         Text="Person auswählen"
                         TextColor="#ffffff"
@@ -7803,15 +7797,15 @@
                     HeightRequest="2"
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
-                    <Label
-                    BackgroundColor="#99042d53"
+                <Label
                     Grid.Row="2"
-                        Margin="0"
+                    Margin="0"
                     Padding="16,10"
-                        FontSize="18"
-                        LineBreakMode="WordWrap"
-                        Text="Wählen sie die Person von dem Sie die geplanten Arbeiten einsehen möchten:"
-                        TextColor="#eee" />
+                    BackgroundColor="#99042d53"
+                    FontSize="18"
+                    LineBreakMode="WordWrap"
+                    Text="Wählen sie die Person von dem Sie die geplanten Arbeiten einsehen möchten:"
+                    TextColor="#eee" />
                 <Border
                     Grid.Row="3"
                     Margin="0,0,0,0"
@@ -7824,50 +7818,58 @@
                     Grid.Row="4"
                     BackgroundColor="#144d73"
                     HorizontalOptions="Fill"
+                    InputTransparent="False"
                     IsGrouped="True"
-                    ItemsSource="{Binding}"
-                    SelectionChanged="empListView_SelectionChanged"
-                    SelectionMode="Single"
-                    VerticalOptions="Fill">
+                    SelectionMode="None">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <VerticalStackLayout
+                            <Grid
                                 Margin="0"
                                 Padding="0"
+                                    MinimumHeightRequest="40"
                                 BackgroundColor="#144d73"
-                                Spacing="0">
-                                <HorizontalStackLayout
+                                RowSpacing="0"
+                                RowDefinitions="Auto,Auto">
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="empListViewItem_Tapped" />
+                                </Grid.GestureRecognizers>
+                                <Grid
+                                    Grid.Row="0"
                                     Margin="10,7,5,7"
                                     Padding="0"
                                     MinimumHeightRequest="40"
-                                    Spacing="0">
+                                    ColumnSpacing="0"
+                                    ColumnDefinitions="Auto,Auto">
                                     <Label
+                                        Grid.Column="0"
                                         Margin="15,0,0,0"
                                         FontSize="18"
-                                        VerticalOptions="Center"
                                         LineBreakMode="NoWrap"
                                         Text="{Binding name}"
-                                        TextColor="White" />
+                                        TextColor="White"
+                                        VerticalOptions="Center" />
                                     <Label
+                                        Grid.Column="1"
                                         Margin="10,0,0,0"
                                         FontSize="18"
-                                        VerticalOptions="Center"
                                         LineBreakMode="NoWrap"
                                         Text="{Binding vorname}"
-                                        TextColor="White" />
-                                </HorizontalStackLayout>
+                                        TextColor="White"
+                                        VerticalOptions="Center" />
+                                </Grid>
                                 <Border
+                                    Grid.Row="1"
                                     Margin="0,3,0,3"
                                     BackgroundColor="#cccccc"
                                     HeightRequest="2"
                                     HorizontalOptions="Fill"
                                     VerticalOptions="Start" />
-                            </VerticalStackLayout>
+                            </Grid>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                     <CollectionView.GroupHeaderTemplate>
                         <DataTemplate>
-                            <StackLayout
+                            <VerticalStackLayout
                                 Margin="0"
                                 Padding="0"
                                 BackgroundColor="#55808080"
@@ -7880,7 +7882,7 @@
                                     Text="{Binding Key}"
                                     TextColor="Yellow"
                                     VerticalOptions="Center" />
-                            </StackLayout>
+                            </VerticalStackLayout>
                         </DataTemplate>
                     </CollectionView.GroupHeaderTemplate>
                 </CollectionView>
@@ -7933,10 +7935,10 @@
                 Padding="10"
                 AbsoluteLayout.LayoutBounds="0,0,1,1"
                 AbsoluteLayout.LayoutFlags="All"
-                VerticalOptions="Center"
                 BackgroundColor="#144d73"
                 RowDefinitions="Auto,Auto,*,Auto,Auto"
-                RowSpacing="0">
+                RowSpacing="0"
+                VerticalOptions="Center">
                 <Label
                     Grid.Row="0"
                     Margin="10"
@@ -7954,8 +7956,8 @@
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
                 <VerticalStackLayout
-                    Grid.Row="2"
                     x:Name="daypicker_items"
+                    Grid.Row="2"
                     Margin="0"
                     Padding="15,10,15,10"
                     BackgroundColor="Transparent"
@@ -8006,8 +8008,7 @@
                 <TapGestureRecognizer Tapped="OnOverlayTapped" />
             </AbsoluteLayout.GestureRecognizers>
             <ActivityIndicator
-                x:Name="overlayb" 
-                Scale="{OnPlatform iOS=7, Default=1}"
+                x:Name="overlayb"
                 AbsoluteLayout.LayoutBounds="0,0,1,1"
                 AbsoluteLayout.LayoutFlags="All"
                 BackgroundColor="Transparent"
@@ -8017,6 +8018,8 @@
                 IsEnabled="{Binding Path=IsVisible}"
                 IsRunning="True"
                 IsVisible="True"
+                Scale="{OnPlatform iOS=7,
+                                   Default=1}"
                 VerticalOptions="Center"
                 WidthRequest="150"
                 Color="#0078d7" />

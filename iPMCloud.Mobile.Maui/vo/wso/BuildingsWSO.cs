@@ -66,7 +66,7 @@ namespace iPMCloud.Mobile
 
 
 
-        public static List<BuildingWSO> GetAllBuildings(AppModel model, bool sorted = false)
+        public static async Task<List<BuildingWSO>> GetAllBuildings(AppModel model, bool sorted = false)
         {
             List<BuildingWSO> list = new List<BuildingWSO>();
             try
@@ -82,7 +82,7 @@ namespace iPMCloud.Mobile
                             string idString = Path.GetFileNameWithoutExtension(file).Substring(2);
                             if (int.TryParse(idString, out int buildingId))
                             {
-                                var b = BuildingWSO.LoadBuilding(model, buildingId);
+                                var b = await BuildingWSO.LoadBuildingAsync(model, buildingId);
                                 if (b != null && b.del == 0)
                                 {
                                     list.Add(b);
@@ -101,7 +101,7 @@ namespace iPMCloud.Mobile
 
         }
 
-        public static string GetAllBuildings_ASJSON()
+        public static async Task<string> GetAllBuildings_ASJSON()
         {
             List<BuildingWSO> list = new List<BuildingWSO>();
             try
@@ -117,7 +117,7 @@ namespace iPMCloud.Mobile
                             string idString = Path.GetFileNameWithoutExtension(file).Substring(2);
                             if (int.TryParse(idString, out int buildingId))
                             {
-                                var b = BuildingWSO.LoadBuilding(AppModel.Instance, buildingId);
+                                var b = await BuildingWSO.LoadBuildingAsync(AppModel.Instance, buildingId);
                                 if (b != null && b.del == 0)
                                 {
                                     list.Add(b);
@@ -772,6 +772,42 @@ namespace iPMCloud.Mobile
                     };
 
                     string jsonString = File.ReadAllText(filePath);
+                    if (string.IsNullOrWhiteSpace(jsonString))
+                        return null;
+                    return JsonConvert.DeserializeObject<BuildingWSO>(jsonString, jsonSettings);
+                }
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, $"ERROR: LoadBuilding - {id}");
+                return null;
+            }
+        }
+        public static async Task<BuildingWSO> LoadBuildingAsync(AppModel model, int id)
+        {
+            try
+            {
+                if (model == null || string.IsNullOrWhiteSpace(model.SettingModel?.SettingDTO?.CustomerNumber))
+                {
+                    return null;
+                }
+
+                string filePath = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                    "ipm/" + model.SettingModel.SettingDTO.CustomerNumber + "/buildings/b_" + id + ".ipm"
+                );
+
+                if (File.Exists(filePath))
+                {
+                    var jsonSettings = new JsonSerializerSettings
+                    {
+                        NullValueHandling = NullValueHandling.Include,
+                        MissingMemberHandling = MissingMemberHandling.Ignore
+                    };
+
+                    string jsonString = await File.ReadAllTextAsync(filePath);
                     if (string.IsNullOrWhiteSpace(jsonString))
                         return null;
                     return JsonConvert.DeserializeObject<BuildingWSO>(jsonString, jsonSettings);

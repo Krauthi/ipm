@@ -89,16 +89,9 @@ namespace iPMCloud.Mobile
         public MainPage()
         {
             isInitialize = true;
-#if DEBUG
-            var swCtor = Stopwatch.StartNew();
-            AppModel.Logger.Info("PERF: MainPage ctor – before InitializeComponent");
-#endif
+
             InitializeComponent();
-#if DEBUG
-            swCtor.Stop();
-            AppModel.Logger.Info($"PERF: MainPage InitializeComponent took {swCtor.ElapsedMilliseconds} ms");
-            swCtor.Restart();
-#endif
+
             density = di.Density;
             screenWidthDp = di.Width / di.Density;
             screenHeightDp = di.Height / di.Density;
@@ -109,10 +102,7 @@ namespace iPMCloud.Mobile
         {
             try
             {
-#if DEBUG
-                var sw = Stopwatch.StartNew();
-                AppModel.Logger.Info("PERF: MainPageAgain start");
-#endif
+
                 isInitialize = true;
                 //AppModel.Instance.anImage = backgroundIMG;
 
@@ -126,10 +116,7 @@ namespace iPMCloud.Mobile
                 overlay.IsVisible = true;
                 await Task.Yield();
 
-#if DEBUG
-                AppModel.Logger.Info($"PERF: MainPageAgain – before Lang.Load at {sw.ElapsedMilliseconds} ms total");
-                sw.Restart();
-#endif
+
                 AppModel.Instance.Lang = Lang.Load();
 
                 ShowDisconnected();
@@ -139,10 +126,7 @@ namespace iPMCloud.Mobile
                 {
                     CheckAllSyncFromUpload();
                     InitStartPageHandlers();
-#if DEBUG
-                    AppModel.Logger.Info($"PERF: MainPageAgain InitStartPageHandlers took {sw.ElapsedMilliseconds} ms");
-                    sw.Restart();
-#endif
+
                     //ObjektPlanWeekMobile.Delete(AppModel.Instance);
                     // Objekte sycnen erforderlich nach 4 Stunden
                     SyncBuilding();
@@ -157,24 +141,13 @@ namespace iPMCloud.Mobile
                         Fill_DayPicker();
                     }
 
-#if DEBUG
-                    AppModel.Logger.Info($"[Timing] 9 done in {sw.ElapsedMilliseconds}ms");
-                    sw.Restart();
-#endif
                     GetChecksInfo(checkInfoLastView);
 
-#if DEBUG
-                    AppModel.Logger.Info($"[Timing] 10 done in {sw.ElapsedMilliseconds}ms");
-                    sw.Restart();
-#endif
                     // Load position data on a background thread to avoid blocking the UI thread.
                     // LeistungPackWSO.Load only reads AppModel data and performs I/O; the result
                     // is assigned back on the UI thread after the await completes.
                     AppModel.Instance.allPositionInWork = await Task.Run(() => LeistungPackWSO.Load(AppModel.Instance));
-#if DEBUG
-                    AppModel.Logger.Info($"PERF: MainPageAgain LeistungPackWSO.Load took {sw.ElapsedMilliseconds} ms");
-                    sw.Restart();
-#endif
+
                     ShowMainPage();
 
 
@@ -1365,6 +1338,11 @@ namespace iPMCloud.Mobile
             overlay.IsVisible = false;
             isInitialize = false;
 
+
+            var dt = String.IsNullOrEmpty(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks) ?
+                DateTime.Now.AddDays(-2) : new DateTime(long.Parse(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks));
+            box_buildingInformation.Children.Clear();
+            box_buildingInformation.Children.Add(BuildingWSO.GetBuildingInformation(AppModel.Instance, dt));
 
             await Task.Delay(1);
             SetChecksCount();
@@ -2857,8 +2835,8 @@ namespace iPMCloud.Mobile
             double h = screenHeightDp;
 
             empListView.SelectedItem = null;  
-            //popupContainer_quest_personpicker_inner.HeightRequest = h - 100;
-            //popupContainer_quest_personpicker_inner.WidthRequest = w - 40;
+            popupContainer_quest_personpicker_inner.HeightRequest = h - 100;
+            popupContainer_quest_personpicker_inner.WidthRequest = w - 40;
             popupContainer_quest_personpicker.IsVisible = true;
 
             var empList = AppModel.Instance.PlanResponse.persons;
@@ -2872,6 +2850,17 @@ namespace iPMCloud.Mobile
             empListView.ItemsSource = new ObservableCollection<ObservablePersonSmallWSOCollection<string, PersonSmallWSO>>(groupedData);
 
         }
+
+        private void empListViewItem_Tapped(object sender, TappedEventArgs e)
+        {
+            if (sender is Grid grid && grid.BindingContext is PersonSmallWSO person)
+            {
+                AppModel.Instance.PlanResponse.selectedPerson = person;
+                CloseOtherPerson();
+                LoadOtherPersonPlanData(person);
+            }
+        }
+
         private void empListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.CurrentSelection != null && e.CurrentSelection.Count > 0)
@@ -6250,13 +6239,44 @@ namespace iPMCloud.Mobile
                 {
                     pts.times.ForEach(pt =>
                     {
-                        bool isMinus = false;
-                        if (pt.dauer.Contains("--:--")) { pt.dauer = "00:00"; }
-                        if (pt.dauer.Contains("-")) { isMinus = true; }
-                        var da = pt.dauer.Split(':');
-                        var damin = (int.Parse(da[0].Replace("-", "")) * 60) + (int.Parse(da[1]));
-                        if (isMinus) { damin = damin * -1; }
-                        allMin += damin;
+                        try
+                        {
+                            bool isMinus = false;
+                            if (pt.dauer.Contains("--:--")) { pt.dauer = "00:00"; }
+                            if (pt.dauer.Contains("-")) { isMinus = true; }
+
+                            var da = pt.dauer.Split(':');
+
+                            // Validierung: Prüfen ob die gesplitteten Werte gültig sind
+                            if (da.Length == 2 && 
+                                !string.IsNullOrWhiteSpace(da[0]) && 
+                                !string.IsNullOrWhiteSpace(da[1]))
+                            {
+                                var hoursStr = da[0].Replace("-", "").Trim();
+                                var minsStr = da[1].Trim();
+
+                                // Prüfen ob nur Zahlen enthalten sind
+                                if (int.TryParse(hoursStr, out int hours) && 
+                                    int.TryParse(minsStr, out int mins))
+                                {
+                                    var damin = (hours * 60) + mins;
+                                    if (isMinus) { damin = damin * -1; }
+                                    allMin += damin;
+                                }
+                                else
+                                {
+                                    AppModel.Logger.Warn($"WARN: Ungültiges Zeitformat in pt.dauer: '{pt.dauer}' - Stunden: '{hoursStr}', Minuten: '{minsStr}'");
+                                }
+                            }
+                            else
+                            {
+                                AppModel.Logger.Warn($"WARN: Ungültiges Zeitformat in pt.dauer: '{pt.dauer}' - Format entspricht nicht HH:MM");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            AppModel.Logger.Error($"ERROR: Fehler beim Parsen von pt.dauer: '{pt.dauer}' - {ex.Message}");
+                        }
                     });
                 }
                 // list_persontimes.Children.Add(PersonWSO.GetPersonTimesView(pts.times)); // moved into PersonTimesPageView
@@ -7221,7 +7241,12 @@ namespace iPMCloud.Mobile
             {
                 if (long.Parse(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks) < DateTime.Now.AddDays(-7).Ticks)
                 {
-                    SyncBuildingManuell(true);
+                    var dt = new DateTime(long.Parse(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks));
+                    var dtn = DateTime.Now.AddDays(-7);
+                    if (dt < dtn)
+                    {
+                        SyncBuildingManuell(true);
+                    }
                 }
                 else
                 {
@@ -7234,88 +7259,6 @@ namespace iPMCloud.Mobile
         private async void SyncBuildingManuell(bool manuellSync = false)
         {
             SyncNewBuildingManuell(manuellSync);
-            /*return;
-            try
-            {
-                var dt = String.IsNullOrEmpty(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks) ? DateTime.Now.AddDays(-2) : new DateTime(long.Parse(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks));
-                if (dt.AddHours(AppModel.Instance.SettingModel.SettingDTO.SyncTimeHours) < DateTime.Now || manuellSync) //(dt.AddHours(4) < DateTime.Now || manuellSync)
-                {
-                    //AppModel.Logger.Info("Info: STARTE Sync Objekte/Auftraege/Leistungen => SyncBuilding");
-                    // Objekte sycnen erforderlich nach 12 Stunden
-                    popupContainer.IsVisible = true;
-                    await Task.Delay(1);
-
-
-                    IpmBuildingResponse ipmBuildingResponse = await Task.Run(() => { return AppModel.Instance.Connections.IpmBuildingSync(); });
-                    if (ipmBuildingResponse == null || !ipmBuildingResponse.success)
-                    {
-                        // Synchronisierung FAILED
-                        AppModel.Logger.Warn("WARN: iPM.Mobile Error (0): Sync FEHLGESCHLAGEN  => SyncBuilding");
-                        popupContainer.IsVisible = false;
-                        await Task.Delay(1);
-                        CheckForBuildingFailed(ipmBuildingResponse);
-                        //********* Update Plandaten 
-                        Load_PlanTabs(((int)DateTime.Now.DayOfWeek));
-                    }
-                    else
-                    {
-                        if (ipmBuildingResponse.AppControll != null)
-                        {
-                            AppModel.Instance.AppControll = ipmBuildingResponse.AppControll;
-                            if (AppModel.Instance.AppControll == null) { AppModel.Instance.AppControll = new AppControll(); }
-                            AppControll.Save(AppModel.Instance, AppModel.Instance.AppControll);
-                            SetAppControll();
-                        }
-                        // Erfolgreich synchronisiert
-                        //AppModel.Logger.Info("Info: Sync war erfolgreich => SyncBuilding");
-                        AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks = DateTime.Now.Ticks.ToString();
-                        dt = new DateTime(long.Parse(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks));
-                        AppModel.Instance.SettingModel.SaveSettings();
-
-                        BuildingWSO.DeleteBuildings(ipmBuildingResponse.deletedBuidlings);
-
-                        if (AppModel.Instance.AppControll.lang == "de" || !AppModel.Instance.AppControll.translation)
-                        {
-                            SyncBuildingDone(ipmBuildingResponse);
-                            AppModel.Instance.SetAllKategorieNames();
-                        }
-                        else
-                        {
-                            //Sync und Übersetzen
-                            var _ = await translateAfterSyncedBuildings(AppModel.Instance.AppControll.lang, ipmBuildingResponse.builgings, AppModel.Instance.Lang.lang != AppModel.Instance.AppControll.lang);
-                            AppModel.Instance.AllBuildings = ipmBuildingResponse.builgings.OrderBy(o => o.id).ToList();
-                            AppModel.Instance.InitBuildingsAgain();
-                            SetLastBuilding();
-                            AppModel.Instance.SetAllKategorieNames();
-                        }
-
-                        if (AppModel.Instance.Lang.lang != AppModel.Instance.AppControll.lang)
-                        {
-                            AppModel.Instance.Lang.lang = AppModel.Instance.AppControll.lang;
-                            Lang.Save(AppModel.Instance.Lang);
-                        }
-
-
-                        popupContainer.IsVisible = false;
-                        await Task.Delay(1);
-                        //********* Update Plandaten 
-                        Load_PlanTabs(((int)DateTime.Now.DayOfWeek));
-                    }
-                }
-                else
-                {
-                    Load_PlanTabs(((int)DateTime.Now.DayOfWeek));
-                }
-                box_buildingInformation.Children.Clear();
-                box_buildingInformation.Children.Add(BuildingWSO.GetBuildingInformation(AppModel.Instance, dt));
-            }
-            catch (Exception ex)
-            {
-                AppModel.Logger.Error("Method => MainPage-SyncBuildingManuell(catch): " + ex.Message);
-                AppModel.Instance.InclFilesAsJson = true;
-                var ok = AppModel.Instance.SendLogZipFile();
-                await Task.Delay(2000);
-            }*/
         }
         private async void CheckForBuildingFailed(IpmBuildingResponse ipmBuildingResponse)
         {
@@ -7478,7 +7421,7 @@ namespace iPMCloud.Mobile
                 // Erfolgreich synchronisiert
                 // AppModel.Logger.Info("Info: Sync war erfolgreich => SyncBuilding");
                 AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks = DateTime.Now.Ticks.ToString();
-                var dt = new DateTime(long.Parse(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks));
+                //var dt = new DateTime(long.Parse(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks));
                 AppModel.Instance.SettingModel.SaveSettings();
 
                 BuildingWSO.DeleteBuildings(ipmNewBuildingResponse.deletedBuidlings);
@@ -7566,7 +7509,8 @@ namespace iPMCloud.Mobile
         */
         private async void FastSync(bool run = false)
         {
-            var dt = String.IsNullOrEmpty(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks) ? DateTime.Now.AddDays(-2) : new DateTime(long.Parse(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks));
+            var dt = String.IsNullOrEmpty(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks) ? 
+                DateTime.Now.AddDays(-2) : new DateTime(long.Parse(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks));
             if (run || dt.AddHours(AppModel.Instance.SettingModel.SettingDTO.SyncTimeHours) < DateTime.Now) //(dt.AddHours(4) < DateTime.Now || manuellSync)
             {
                 //AppModel.Logger.Info("Info: STARTE FastSync Objekte/Auftraege/Leistungen/weitere... => FastSync");
@@ -7598,10 +7542,10 @@ namespace iPMCloud.Mobile
                     // Erfolgreich synchronisiert
                     //AppModel.Logger.Info("Info: FastSync war erfolgreich => FastSync");
                     AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks = DateTime.Now.Ticks.ToString();
-                    dt = new DateTime(long.Parse(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks));
+                    //dt = new DateTime(long.Parse(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks));
                     AppModel.Instance.SettingModel.SaveSettings();
 
-                    BuildingWSO.DeleteBuildings(fastSyncResponse.deletedBuidlings);
+                    //BuildingWSO.DeleteBuildings(fastSyncResponse.deletedBuidlings);
 
                     // Sprache hat sich geändert 
                     if (AppModel.Instance.Lang.lang != AppModel.Instance.AppControll.lang && AppModel.Instance.AppControll.translation)

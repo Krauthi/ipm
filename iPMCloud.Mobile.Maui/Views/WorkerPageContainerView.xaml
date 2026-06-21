@@ -9,6 +9,7 @@
         x:Name="WorkerPage_Container"
         Margin="0,0,0,14"
         Padding="0"
+        BackgroundColor="Black"
         HorizontalOptions="Fill"
         IsVisible="False"
         RowSpacing="0"

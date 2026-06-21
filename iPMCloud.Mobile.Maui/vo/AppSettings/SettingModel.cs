@@ -132,7 +132,7 @@ namespace iPMCloud.Mobile.vo
                 SettingDTO.LoginPassword = "111111111";
                 SettingDTO.ServerUrl = "https://hms-muminovic.ipmcloud.de";
                 SettingDTO.CustomerNumber = "10013";
-                SaveSettings();
+                SaveSettings(); 
             }
         }
 

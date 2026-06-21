@@ -53,30 +53,30 @@ namespace iPMCloud.Mobile
                 AppModel.Logger?.Warn($"LocalApplicationData konnte nicht vom Backup ausgeschlossen werden: {ex.Message}");
             }
 
-            try
-            {
+            //try
+            //{
 
-                var cachePath = System.IO.Path.GetTempPath();
-                // If exist, delete the cache directory and everything in it recursivly
-                if (System.IO.Directory.Exists(cachePath))
-                    System.IO.Directory.Delete(cachePath, true);
-                // If not exist, restore just the directory that was deleted
-                if (!System.IO.Directory.Exists(cachePath))
-                    System.IO.Directory.CreateDirectory(cachePath);
-            }
-            catch (Exception)
-            {
-                AppModel.Logger.Warn("WARN: AppCache konnte nicht eglöscht werden!");
-            }
+            //    var cachePath = System.IO.Path.GetTempPath();
+            //    // If exist, delete the cache directory and everything in it recursivly
+            //    if (System.IO.Directory.Exists(cachePath))
+            //        System.IO.Directory.Delete(cachePath, true);
+            //    // If not exist, restore just the directory that was deleted
+            //    if (!System.IO.Directory.Exists(cachePath))
+            //        System.IO.Directory.CreateDirectory(cachePath);
+            //}
+            //catch (Exception)
+            //{
+            //    AppModel.Logger.Warn("WARN: AppCache konnte nicht eglöscht werden!");
+            //}
 
-            try
-            {
-                LocalApplicationDataBackupProtection.EnsureExcludedFromBackup();
-            }
-            catch (Exception ex)
-            {
-                AppModel.Logger?.Warn($"WARN: LocalApplicationData konnte nicht vom Backup ausgeschlossen werden: {ex.Message}");
-            }
+            //try
+            //{
+            //    LocalApplicationDataBackupProtection.EnsureExcludedFromBackup();
+            //}
+            //catch (Exception ex)
+            //{
+            //    AppModel.Logger?.Warn($"WARN: LocalApplicationData konnte nicht vom Backup ausgeschlossen werden: {ex.Message}");
+            //}
 
             InitApp();
         }

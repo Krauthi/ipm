@@ -555,7 +555,7 @@ namespace iPMCloud.Mobile.vo
 
 
 
-        public static Border GetCompanySelectionItem(Company c, bool isSelected)
+        public static Grid GetCompanySelectionItem(Company c, bool isSelected)
         {
             var imageL = new Image
             {
@@ -572,7 +572,7 @@ namespace iPMCloud.Mobile.vo
                 TextColor = Color.FromArgb("#cccccc"),
                 Margin = new Thickness(5, 0, 5, 1),
                 FontSize = 18,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
+                HorizontalOptions = LayoutOptions.Fill,
                 LineBreakMode = LineBreakMode.WordWrap,
             };
             var more = new Label
@@ -584,37 +584,40 @@ namespace iPMCloud.Mobile.vo
                 LineBreakMode = LineBreakMode.TailTruncation,
                 HorizontalOptions = LayoutOptions.Start,
             };
-            var headerStackHorizontal = new HorizontalStackLayout()
-            {
-                Padding = new Thickness(8, 6, 8, 6),
-                Margin = new Thickness(0, 0, 0, 0),
-                Spacing = 0,
-                HorizontalOptions = LayoutOptions.Fill,
-                ClassId = c.CustomerNumber,
-                BackgroundColor = Color.FromArgb("#042d53"),
-            };
-            var headerStackVertical = new VerticalStackLayout()
+
+            var headerStackVertical = new Grid()
             {
                 Padding = new Thickness(0, 0, 0, 0),
                 Margin = new Thickness(0, 0, 0, 0),
-                Spacing = 0,
+                RowSpacing = 0,
                 HorizontalOptions = LayoutOptions.Fill,
-                ClassId = c.CustomerNumber
+                ClassId = c.CustomerNumber,
+                RowDefinitions = new RowDefinitionCollection() {
+                    new RowDefinition(){ Height = GridLength.Auto },
+                    new RowDefinition(){ Height = GridLength.Auto }
+                }
             };
-            headerStackVertical.Children.Add(lb);
-            headerStackVertical.Children.Add(more);
-            headerStackHorizontal.Children.Add(imageL);
-            headerStackHorizontal.Children.Add(headerStackVertical);
+            headerStackVertical.Add(lb, 0, 0);
+            headerStackVertical.Add(more, 0, 1);
 
-            var mainFrame = new Border()
+            var headerStackHorizontal = new Grid()
             {
-                Padding = new Thickness(1,1,1,1),
+                Padding = new Thickness(9, 7, 9, 7),
                 Margin = new Thickness(0, 10, 0, 10),
+                ColumnSpacing = 0,
                 HorizontalOptions = LayoutOptions.Fill,
-                BackgroundColor = Color.FromArgb("#041d43"),
-                Content = headerStackHorizontal,
+                ClassId = c.CustomerNumber,
+                Opacity = isSelected ? 0.5 : 1,
+                BackgroundColor = Color.FromArgb(isSelected ? "#555555" : "#042d53"),
+                ColumnDefinitions = new ColumnDefinitionCollection() {
+                    new ColumnDefinition(){ Width = new GridLength(40) },
+                    new ColumnDefinition(){ Width = GridLength.Star }
+                }
             };
-            return mainFrame;
+            headerStackHorizontal.Add(imageL, 0, 0);
+            headerStackHorizontal.Add(headerStackVertical, 1, 0);
+
+            return headerStackHorizontal;
         }
 
         public static Border GetXButton(Company c, ImageSource xImage, bool isSelected)

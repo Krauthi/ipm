@@ -9,11 +9,11 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ApplicationTitle>iPM-Cloud</ApplicationTitle>
 		<ApplicationIdGuid>201CEFAB-590D-414F-9660-9EFF31FE2078</ApplicationIdGuid>
-		<ApplicationDisplayVersion>3.0.62</ApplicationDisplayVersion>
+		<ApplicationDisplayVersion>3.0.65</ApplicationDisplayVersion>
 		<ApplicationVersion>1</ApplicationVersion>
-		<Version>3000062</Version>
-		<AssemblyVersion>3.0.62.0</AssemblyVersion>
-		<FileVersion>3.0.62.0</FileVersion>
+		<Version>3000065</Version>
+		<AssemblyVersion>3.0.65.0</AssemblyVersion>
+		<FileVersion>3.0.65.0</FileVersion>
 		<NeutralLanguage>de-DE</NeutralLanguage>
 		<Copyright>iPM-Cloud</Copyright> 
 		<Nullable>disable</Nullable>
@@ -28,6 +28,12 @@
 	<PropertyGroup>
 		<ApplicationId>com.ipmcloud.ipm.mobile.app</ApplicationId>
 	</PropertyGroup>
+
+	<!--
+	<PropertyGroup Condition="'$(TargetFramework)'=='net10.0-ios'">
+		<CodesignKey>Apple Development: Created via API (4RDNR6C66G)</CodesignKey>
+		<CodesignProvision>VS: com.ipmcloud.ipm.mobile.app Development</CodesignProvision>
+	</PropertyGroup>-->
 
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Debug|net10.0-ios'">
@@ -126,7 +132,7 @@
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
 		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#000000" />
 	
-	</ItemGroup>
+	</ItemGroup> 
 
 
 
@@ -178,11 +184,6 @@
 
 <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
   <WindowsPackageType>None</WindowsPackageType>
-</PropertyGroup>
-
-<PropertyGroup Condition="'$(TargetFramework)'=='net10.0-ios'">
-  <CodesignKey>Apple Development: Created via API (4RDNR6C66G)</CodesignKey>
-  <CodesignProvision>VS: com.ipmcloud.ipm.mobile.app Development</CodesignProvision>
 </PropertyGroup>
 
 

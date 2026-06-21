@@ -274,7 +274,7 @@ namespace iPMCloud.Mobile
         public override void OnBackPressed()
         {
             // Nichts tun - Back Button während Splash deaktiviert
-            Log.Debug(TAG, "Back Button während Splash ignoriert");
+            //Log.Debug(TAG, "Back Button während Splash ignoriert");
         }
 
         #endregion

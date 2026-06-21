@@ -6,6 +6,7 @@ using Microsoft.Maui.Devices;
 //using Microsoft.Maui.Storage;
 using Microsoft.Maui.Devices;
 using Microsoft.Maui.Storage;
+using NLog;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -429,7 +430,7 @@ namespace iPMCloud.Mobile
 
             BeforeLogin_Container.IsVisible = false;
             //Reg/Scan_Container.IsVisible = false;
-            Login_Container.IsVisible = false;
+            //Login_Container.IsVisible = false;
             //AddReg/Scan_Container.IsVisible = false;
             RegManagement_Container.IsVisible = true;
 
@@ -438,16 +439,15 @@ namespace iPMCloud.Mobile
             AppModel.Instance.Companies.ForEach(c =>
             {
                 var isSelected = c.CustomerNumber == AppModel.Instance.SettingModel.SettingDTO.CustomerNumber;
+                
+                    Grid companyView = Elements.GetCompanySelectionItem(c, isSelected);
                 if (!isSelected)
                 {
-                    var tgr = new TapGestureRecognizer();
-                    if (!isSelected)
-                    {
-                        tgr.Tapped += (s, e) => { CompanySelected(s, e); };
-                    }
-                    Border companyView = Elements.GetCompanySelectionItem(c, isSelected);
                     companyView.GestureRecognizers.Clear();
+                    var tgr = new TapGestureRecognizer();
+                    tgr.Tapped += async (s, e) => { await CompanySelected(s, e); };
                     companyView.GestureRecognizers.Add(tgr);
+                }
                     companyView.ClassId = c.CustomerNumber;
 
                     // Löschbutton erstmal raus !!!
@@ -460,23 +460,23 @@ namespace iPMCloud.Mobile
                     //xBtn.GestureRecognizers.Clear();
                     //xBtn.GestureRecognizers.Add(tgrDelete);
                     //xBtn.ClassId = c.CustomerNumber;
-                    var stack = new Grid
+                var stack = new Grid
+                {
+                    Margin = new Thickness(0, 0, 0, 0),
+                    HorizontalOptions = LayoutOptions.Fill,
+                    Children = { companyView },
+                    RowDefinitions =
                     {
-                        Margin = new Thickness(0, 0, 0, 0),
-                        HorizontalOptions = LayoutOptions.Fill,
-                        Children = { companyView },
-                        RowDefinitions =
-                        {
-                            new RowDefinition { Height = GridLength.Auto }
-                        },
-                        ColumnDefinitions =
-                        {
-                            new ColumnDefinition { Width = GridLength.Star }
-                        },
-                        //Children = { companyView, xBtn }  - Löschen entfernt 
-                    };
-                    lay_selectcompany_container.Children.Add(stack);
-                }
+                        new RowDefinition { Height = GridLength.Auto }
+                    },
+                    ColumnDefinitions =
+                    {
+                        new ColumnDefinition { Width = GridLength.Star }
+                    },
+                    //Children = { companyView, xBtn }  - Löschen entfernt 
+                };
+                lay_selectcompany_container.Children.Add(stack);
+                
             });
 
             await Task.Delay(1);
@@ -490,6 +490,7 @@ namespace iPMCloud.Mobile
         {
             try
             {
+                RegManagement_Container.IsVisible = false;
                 await AppModel.Instance.InitGPSTimer();
                 if (AppModel.Instance.Companies != null && AppModel.Instance.Companies.Count > 1)
                 {
@@ -517,17 +518,14 @@ namespace iPMCloud.Mobile
 
                     AppModel.Instance.State.IsBackTappedToLogin = false;
 
-                    //Reg/Scan_Container.IsVisible = false;
                     Login_Container.IsVisible = true;
-                    //AddReg/Scan_Container.IsVisible = false;
-                    RegManagement_Container.IsVisible = false;
 
                     InitStartPageHandlers();
                     lb_login_mandant.Text = AppModel.Instance.SettingModel.SettingDTO.CustomerName;
 
                     if (switchCustomer && AppModel.Instance.SettingModel.SettingDTO.Autologin)
                     {
-                        AppModel.Instance.InitBuildings();
+                        await AppModel.Instance.InitBuildings();
                         AppModel.Instance.SetAllKategorieNames();
                         Btn_LoginTapped(null, null);
                     }
@@ -547,38 +545,75 @@ namespace iPMCloud.Mobile
             }
         }
 
-        private void CompanySelected(object s, EventArgs e)
+        private async Task CompanySelected(object s, EventArgs e)
         {
             try
             {
-                // Vorherige aktive Company/SettingDTO speichern
-                Company.AddUpdateCompany(AppModel.Instance, AppModel.Instance.SettingModel.SettingDTO);
-
-                var child = ((HorizontalStackLayout)((Border)s).Content);
-                var customerNumber = child.ClassId;
-                var company = AppModel.Instance.Companies.Find(c => c.CustomerNumber == customerNumber);
-                if (company != null)
+                await MainThread.InvokeOnMainThreadAsync(async () =>
                 {
-                    AppModel.Instance.SettingModel.SettingDTO = Company.ToSettingDTO(company);
-                    string directoryPath = Path.Combine(Environment.GetFolderPath(
-                        Environment.SpecialFolder.LocalApplicationData), "ipm/" + AppModel.Instance.SettingModel.SettingDTO.CustomerNumber + "");
-                    if (!Directory.Exists(directoryPath)) { Directory.CreateDirectory(directoryPath); }
+                    try
+                    {
+                        overlay.IsVisible = true;
+                        await Task.Delay(1);
 
-                    AppModel.Instance.SettingModel.SettingDTO.LoginToken = "";
-                    AppModel.Instance.SettingModel.SettingDTO.LastTokenDateTimeTicks = "";
-                    entry_login_name.Text = AppModel.Instance.SettingModel.SettingDTO.LoginName;
-                    entry_login_password.Text = AppModel.Instance.SettingModel.SettingDTO.LoginPassword;
-                    sw_autologin.IsToggled = AppModel.Instance.SettingModel.SettingDTO.Autologin;                //
-                    AppModel.Instance.SettingModel.SaveSettings();
+                        var toCstomerNumber = ((Grid)s).ClassId;
+                        var company = AppModel.Instance.Companies.Find(c => c.CustomerNumber == toCstomerNumber);
+                        if (company != null)
+                        {
+                            AppModel.Logger.Info("INFO: Company wechsel von " + AppModel.Instance.SettingModel.SettingDTO.CustomerName
+                                + " zu " + company.CustomerName);
+                            // Vorherige aktive Company/SettingDTO speichern
+                            Company.AddUpdateCompany(AppModel.Instance, AppModel.Instance.SettingModel.SettingDTO);
 
-                    AppModel.Instance.Connections.InitConnections();
-                    AppModel.Instance.Connections.InitPNConnections();
-                    InitStartPage(true);
-                }
+                            AppModel.Instance.SettingModel.SettingDTO = Company.ToSettingDTO(company);
+                            AppModel.Instance.SettingModel.SaveSettings();
+
+                            string directoryPath = Path.Combine(Environment.GetFolderPath(
+                                Environment.SpecialFolder.LocalApplicationData), "ipm/" + AppModel.Instance.SettingModel.SettingDTO.CustomerNumber + "");
+                            if (!Directory.Exists(directoryPath)) { Directory.CreateDirectory(directoryPath); }
+
+                            //AppModel.Instance.SettingModel.SettingDTO.LoginToken = "";
+                            //AppModel.Instance.SettingModel.SettingDTO.LastTokenDateTimeTicks = "";
+                            entry_login_name.Text = AppModel.Instance.SettingModel.SettingDTO.LoginName;
+                            entry_login_password.Text = AppModel.Instance.SettingModel.SettingDTO.LoginPassword;
+                            sw_autologin.IsToggled = AppModel.Instance.SettingModel.SettingDTO.Autologin;
+                            AppModel.Instance.SelectedBuilding = null;
+                            AppModel.Instance.SetAllObjectAndValuesToNoSelectedBuilding(); // incl. SaveSettings
+                            AppModel.Instance.Lang = Lang.Load();
+                            await AppModel.Instance.InitBuildings();
+                            AppModel.Logger.Info("INFO: Wechsel starte mit -- " + company.CustomerName);
+                        }
+
+                        AppModel.Instance.Connections.InitConnections();
+                        //AppModel.Instance.Connections.InitPNConnections();
+
+                        // UI-Operationen im MainThread ausführen
+                        RegManagement_Container.IsVisible = false;
+                        await Task.Delay(100); // Kurze Verzögerung für UI-Update
+                        overlay.IsVisible = false;
+                        isInitialize = false;
+                        InitStartPage(true);
+                    }
+                    catch (Exception innerEx)
+                    {
+                        AppModel.Logger.Error("ERROR: CompanySelected inner failed: " + innerEx.Message + " - " + (innerEx.StackTrace ?? ""));
+                        // Sicherstellen, dass UI nicht eingefroren bleibt
+                        RegManagement_Container.IsVisible = false;
+                        overlay.IsVisible = false;
+                        isInitialize = false;
+                    }
+                });
             }
             catch (Exception ex)
             {
                 AppModel.Logger.Error("ERROR: CompanySelected failed: " + ex.Message + " - " + (ex.StackTrace ?? ""));
+                // Sicherstellen, dass UI nicht eingefroren bleibt
+                await MainThread.InvokeOnMainThreadAsync(() =>
+                {
+                    RegManagement_Container.IsVisible = false;
+                    overlay.IsVisible = false;
+                    isInitialize = false;
+                });
             }
         }
 
@@ -705,10 +740,10 @@ namespace iPMCloud.Mobile
         }
         private void Switch_Toggled(object sender, ToggledEventArgs e)
         {
-            if (isInitialize) { return; }
-            AppModel.Instance.SettingModel.SettingDTO.Autologin = !AppModel.Instance.SettingModel.SettingDTO.Autologin;
-            sw_autologin.IsToggled = AppModel.Instance.SettingModel.IsLoginSettingsReady && AppModel.Instance.SettingModel.SettingDTO.Autologin;
-            AppModel.Instance.SettingModel.SaveSettings();
+            //if (isInitialize) { return; }
+            //AppModel.Instance.SettingModel.SettingDTO.Autologin = !AppModel.Instance.SettingModel.SettingDTO.Autologin;
+            //sw_autologin.IsToggled = AppModel.Instance.SettingModel.IsLoginSettingsReady && AppModel.Instance.SettingModel.SettingDTO.Autologin;
+            //AppModel.Instance.SettingModel.SaveSettings();
         }
 
 
@@ -766,10 +801,10 @@ namespace iPMCloud.Mobile
             }
         }
 
-        public bool hasInitializedHandlers { get; set; } = false;
+       // public bool hasInitializedHandlers { get; set; } = false;
         public async void InitStartPageHandlers()
         {
-            if (hasInitializedHandlers) { return; }
+            //if (hasInitializedHandlers) { return; }
 
             try
             {
@@ -850,7 +885,7 @@ namespace iPMCloud.Mobile
             {
                 AppModel.Logger.Error("ERROR: InitStartPageHandlers failed: " + ex.Message + " - " + ex.StackTrace);
             }
-            hasInitializedHandlers = false;
+            //hasInitializedHandlers = false;
         }
 
 

@@ -309,7 +309,7 @@ namespace iPMCloud.Mobile.vo
                 Person = PersonWSO.LoadPerson(this);// Wenn keine Person dann "null" !!
 
                 var swBuildings = System.Diagnostics.Stopwatch.StartNew();
-                InitBuildings();
+                InitBuildingsAsync();
                 swBuildings.Stop();
                 Logger.Info($"PERF: InitBuildings took {swBuildings.ElapsedMilliseconds} ms");
 
@@ -393,9 +393,13 @@ namespace iPMCloud.Mobile.vo
             }
         }
 
-        public void InitBuildings()
+        public async void InitBuildingsAsync()
         {
-            AllBuildings = BuildingWSO.GetAllBuildings(this, true);
+            _ = InitBuildings();
+        }
+        public async Task InitBuildings()
+        {
+            AllBuildings = await BuildingWSO.GetAllBuildings(this, true);
             AllWorkers = BuildingWSO.GetAllWorkers(AllBuildings);
             // letztes Objekt selektieren
             InitLastBuilding();

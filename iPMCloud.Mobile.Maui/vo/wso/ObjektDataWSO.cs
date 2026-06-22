@@ -521,6 +521,7 @@ namespace iPMCloud.Mobile
             };
 
 
+            var parsedStand = ParseStand(od.stand);
             entryanzahl = new CustomEntry()
             {
                 Margin = new Thickness(10, 0, 0, 0),
@@ -531,12 +532,12 @@ namespace iPMCloud.Mobile
                 Keyboard = Keyboard.Numeric,
                 HeightRequest = 60,
                 MinimumWidthRequest = 100,
-                Text = Utils.formatDEStr3(ParseStand(od.stand) > 0 ? ParseStand(od.stand) : 0),
+                Text = Utils.formatDEStr3(parsedStand > 0 ? parsedStand : 0),
                 HorizontalTextAlignment = TextAlignment.End,
                 BackgroundColor = Color.FromArgb("#333333")
             };
 
-            od.firstStand = Utils.formatDEStr3(ParseStand(od.stand) > 0 ? ParseStand(od.stand) : 0);
+            od.firstStand = Utils.formatDEStr3(parsedStand > 0 ? parsedStand : 0);
             entryanzahl.ReturnCommandParameter = od;
             entryanzahl.Unfocused -= ValueChange;
             entryanzahl.Unfocused += ValueChange;
@@ -591,8 +592,9 @@ namespace iPMCloud.Mobile
             {
                 Command = new Command(() =>
                 {
-                    entryanzahl.Text = Utils.formatDEStr3(ParseStand(od.stand) > 0 ? ParseStand(od.stand) : 0);
-                    od.firstStand = Utils.formatDEStr3(ParseStand(od.stand) > 0 ? ParseStand(od.stand) : 0);
+                    var refreshedStand = ParseStand(od.stand);
+                    entryanzahl.Text = Utils.formatDEStr3(refreshedStand > 0 ? refreshedStand : 0);
+                    od.firstStand = Utils.formatDEStr3(refreshedStand > 0 ? refreshedStand : 0);
                 })
             });
 

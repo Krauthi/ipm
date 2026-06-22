@@ -1,23 +1,95 @@
 using Foundation;
-using Microsoft.Maui;
-using Microsoft.Maui.Hosting;
+using iPMCloud.Mobile.Services;
+using iPMCloud.Mobile.vo;
+using System;
+using UIKit;
+using UserNotifications;
 
-namespace iPMCloud.Mobile.Maui;
+namespace iPMCloud.Mobile;
 
 [Register("AppDelegate")]
-public class AppDelegate : MauiUIApplicationDelegate
+public class AppDelegate : MauiUIApplicationDelegate, IUNUserNotificationCenterDelegate
 {
     protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();
-    
-    // TODO: Implement MAUI-compatible Firebase push notification support
-    // The original iOS project used Plugin.FirebasePushNotification which is not MAUI-compatible
-    // Consider using:
-    // - Firebase.iOS NuGet package directly
-    // - Community MAUI Firebase plugins when available
-    
-    // TODO: Implement MAUI-compatible background service
-    // The original iOS project used Matcha.BackgroundService.iOS which is not MAUI-compatible
-    // Consider using:
-    // - Native iOS background tasks
-    // - WorkManager alternatives for MAUI
+
+    public override bool FinishedLaunching(UIApplication application, NSDictionary launchOptions)
+    {
+        try
+        {
+            UNUserNotificationCenter.Current.Delegate = this;
+            UNUserNotificationCenter.Current.RequestAuthorization(
+                UNAuthorizationOptions.Alert | UNAuthorizationOptions.Badge | UNAuthorizationOptions.Sound,
+                (granted, error) =>
+                {
+                    if (error != null)
+                    {
+                        AppModel.Logger?.Error($"Push authorization error: {error.LocalizedDescription}");
+                    }
+                    else if (!granted)
+                    {
+                        AppModel.Logger?.Warn("Push authorization not granted by user.");
+                    }
+                });
+
+            PushNotificationService.Initialize();
+        }
+        catch (Exception ex)
+        {
+            AppModel.Logger?.Error(ex, "ERROR: iOS push initialization failed");
+        }
+
+        return base.FinishedLaunching(application, launchOptions);
+    }
+
+    [Export("application:didRegisterForRemoteNotificationsWithDeviceToken:")]
+    public void RegisteredForRemoteNotifications(UIApplication application, NSData deviceToken)
+    {
+        try
+        {
+            if (deviceToken == null || deviceToken.Length == 0)
+            {
+                AppModel.Logger?.Warn("Push registration succeeded but APNs token is empty.");
+                return;
+            }
+
+
+            var tokenBytes = deviceToken.ToArray();
+            var apnsToken = BitConverter.ToString(tokenBytes).Replace("-", string.Empty).ToLowerInvariant();
+            // Use the iOS-specific handler: APNs token must NOT be forwarded into the
+            // Firebase/FCM upload path that is used for Android tokens.
+            PushNotificationService.HandleApnsTokenReceived(apnsToken);
+        }
+        catch (Exception ex)
+        {
+            AppModel.Logger?.Error(ex, "ERROR: Failed to process APNs device token");
+        }
+    }
+
+    [Export("application:didFailToRegisterForRemoteNotificationsWithError:")]
+    public void FailedToRegisterForRemoteNotifications(UIApplication application, NSError error)
+    {
+        AppModel.Logger?.Error($"FailedToRegisterForRemoteNotifications: {error?.LocalizedDescription}");
+    }
+
+    [Export("userNotificationCenter:willPresentNotification:withCompletionHandler:")]
+    public void WillPresentNotification(
+        UNUserNotificationCenter center,
+        UNNotification notification,
+        Action<UNNotificationPresentationOptions> completionHandler)
+    {
+        completionHandler(
+            UNNotificationPresentationOptions.Banner |
+            UNNotificationPresentationOptions.List |
+            UNNotificationPresentationOptions.Sound |
+            UNNotificationPresentationOptions.Badge);
+    }
+
+    [Export("userNotificationCenter:didReceiveNotificationResponse:withCompletionHandler:")]
+    public void DidReceiveNotificationResponse(
+        UNUserNotificationCenter center,
+        UNNotificationResponse response,
+        Action completionHandler)
+    {
+        completionHandler();
+    }
 }

@@ -81,8 +81,6 @@ namespace iPMCloud.Mobile
         private bool _isOpeningWorkerModal = false;
         private bool _isOpeningPersonTimesModal = false;
 
-        // Platform-specific sync service resolved lazily from DI (Android → ForegroundService, iOS → inline)
-        private iPMCloud.Mobile.Services.ISyncService _syncService;
         private iPMCloud.Mobile.Services.IUploadService _uploadService;
 
 
@@ -124,6 +122,11 @@ namespace iPMCloud.Mobile
                 var checkPerm = await CheckLocationPermissionsAndInitGps();
                 if (checkPerm)
                 {
+                    //if(AppModel.Instance.AllBuildings == null || AppModel.Instance.AllBuildings.Count == 0)
+                    //{
+                    //   AppModel.Instance.InitBuildingsAsync();
+                    //}
+
                     CheckAllSyncFromUpload();
                     InitStartPageHandlers();
 
@@ -319,8 +322,8 @@ namespace iPMCloud.Mobile
         {
             AppModel.Instance.selectedCheckA = null;
             AppModel.Instance.selectedCheckInfo = null;
-            await Task.Delay(1);
             overlay.IsVisible = true;
+            await Task.Delay(50);
 
 
             foreach (var check in AppModel.Instance.ChecksInfoResponse.checks)
@@ -7277,9 +7280,8 @@ namespace iPMCloud.Mobile
         }
 
         /// <summary>
-        /// Starts the building sync. On Android the heavy network work runs inside a
-        /// ForegroundService (with a PARTIAL_WAKE_LOCK) so the sync continues when the
-        /// screen goes off or the app is backgrounded. On iOS the work runs inline.
+        /// Starts the building sync (Gebäude + Aufträge) directly on the UI thread's
+        /// backing task – no ForegroundService is involved on either Android or iOS.
         /// Progress and completion are communicated back via SyncCoordinator events.
         /// </summary>
         private async void SyncNewBuildingManuell(bool manuellSync = false)
@@ -7303,35 +7305,14 @@ namespace iPMCloud.Mobile
                     iPMCloud.Mobile.Services.SyncCoordinator.ProgressChanged += OnSyncProgress;
                     iPMCloud.Mobile.Services.SyncCoordinator.SyncCompleted   += OnSyncCompleted;
 
-                    // Resolve ISyncService from DI (lazy, once); fall back to direct instantiation
-                    if (_syncService == null)
-                    {
-                        try
+                    // Run SyncCoordinator directly – no ForegroundService.
+                    // Fire-and-forget: completion and errors are reported via SyncCompleted / ProgressChanged events.
+                    Task.Run(() => iPMCloud.Mobile.Services.SyncCoordinator.Instance.RunAsync())
+                        .ContinueWith(t =>
                         {
-                            _syncService = IPlatformApplication.Current?.Services
-                                ?.GetService<iPMCloud.Mobile.Services.ISyncService>();
-                        }
-                        catch (Exception ex) { AppModel.Logger.Warn("ISyncService DI lookup: " + ex.Message); }
-
-                        if (_syncService == null)
-                        {
-#if ANDROID
-                            _syncService = new iPMCloud.Mobile.Platforms.Android.AndroidSyncService();
-#elif IOS
-                            _syncService = new iPMCloud.Mobile.Platforms.iOS.iOSSyncService();
-#endif
-                        }
-                    }
-
-                    // Start: on Android this launches a ForegroundService with WakeLock;
-                    // on iOS it runs SyncCoordinator.RunAsync() inline.
-                    if (!await EnsureNotificationPermissionForForegroundWorkAsync())
-                    {
-                        popupContainer.IsVisible = false;
-                        return;
-                    }
-
-                    _syncService?.StartSync(manuellSync);
+                            if (t.IsFaulted)
+                                AppModel.Logger.Error("SyncNewBuildingManuell Task faulted: " + t.Exception?.GetBaseException()?.Message);
+                        }, TaskContinuationOptions.OnlyOnFaulted);
                 }
                 else
                 {

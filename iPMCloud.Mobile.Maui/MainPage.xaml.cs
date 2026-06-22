@@ -14,6 +14,8 @@ using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Devices;
+using Microsoft.Maui.Devices;
+using Microsoft.Maui.Devices;
 // TODO: Xamarin.RangeSlider not MAUI-compatible - needs replacement
 // using Xamarin.RangeSlider.Forms;
 
@@ -30,6 +32,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.ConstrainedExecution;
@@ -4576,6 +4579,7 @@ namespace iPMCloud.Mobile
                 endticks = DateTime.Now.Ticks,
                 personid = AppModel.Instance.Person.id,
             };
+
             AppModel.Instance.allPositionDirectWork = new LeistungPackWSO
             {
                 latin = latin,
@@ -4590,10 +4594,26 @@ namespace iPMCloud.Mobile
                 endticks = DateTime.Now.Ticks,
                 personid = AppModel.Instance.Person.id,
             };
+
             AppModel.Instance.allPositionDirectWork.endticks = AppModel.Instance.allPositionDirectWork.startticks;
 
             AppModel.Instance.allSelectedPositionToWork.ForEach(l =>
             {
+                decimal anzahlValue = 1m;
+                var rawProduktAnzahl = l.produktAnzahl?.Trim();
+
+                if (!string.IsNullOrWhiteSpace(rawProduktAnzahl))
+                {
+                    if (decimal.TryParse(rawProduktAnzahl, NumberStyles.Number, CultureInfo.GetCultureInfo("de-DE"), out var deValue) && deValue > 0)
+                    {
+                        anzahlValue = deValue;
+                    }
+                    else if (decimal.TryParse(rawProduktAnzahl, NumberStyles.Number, CultureInfo.InvariantCulture, out var invariantValue) && invariantValue > 0)
+                    {
+                        anzahlValue = invariantValue;
+                    }
+                }
+
                 var work = new LeistungInWorkWSO
                 {
                     id = l.id,
@@ -4601,10 +4621,11 @@ namespace iPMCloud.Mobile
                     objektid = l.objektid,
                     auftragid = l.auftragid,
                     kategorieid = l.kategorieid,
-                    anzahl = Utils.formatDEStr(decimal.Parse(l.produktAnzahl) > 0 ? decimal.Parse(l.produktAnzahl) : 1),
+                    anzahl = Utils.formatDEStr(anzahlValue),
                     bemerkungen = null,
                     inout = l.inout,
                 };
+
                 if ((l.type == "1" && l.art == "Leistung") || onlyProdukte)
                 {
                     AppModel.Instance.allPositionDirectWork.leistungen.Add(work);
@@ -4702,7 +4723,7 @@ namespace iPMCloud.Mobile
             popupContainer_quest_startwork.IsVisible = false;
             StartSelectedPosAgainTapped_Done();
         }
-        public async void StartSelectedPosAgainTapped_Done(object sender = null, EventArgs e = null)
+        public async void StartSelectedPosAgainTapped_Done_old(object sender = null, EventArgs e = null)
         {
             AuswahlAnzeigenTapped_Done(false);
 
@@ -4768,11 +4789,91 @@ namespace iPMCloud.Mobile
         }
 
 
+    public async void StartSelectedPosAgainTapped_Done(object sender = null, EventArgs e = null)
+    {
+        AuswahlAnzeigenTapped_Done(false);
+
+        AppModel.Instance.allSelectedPositionAgainToWork.ForEach(l =>
+        {
+            decimal anzahlValue = 1m;
+            var rawProduktAnzahl = l.produktAnzahl?.Trim();
+
+            if (!string.IsNullOrWhiteSpace(rawProduktAnzahl))
+            {
+                if (decimal.TryParse(rawProduktAnzahl, NumberStyles.Number, CultureInfo.GetCultureInfo("de-DE"), out var deValue) && deValue > 0)
+                {
+                    anzahlValue = deValue;
+                }
+                else if (decimal.TryParse(rawProduktAnzahl, NumberStyles.Number, CultureInfo.InvariantCulture, out var invariantValue) && invariantValue > 0)
+                {
+                    anzahlValue = invariantValue;
+                }
+            }
+
+            var work = new LeistungInWorkWSO
+            {
+                id = l.id,
+                gruppeid = l.gruppeid,
+                objektid = l.objektid,
+                auftragid = l.auftragid,
+                kategorieid = l.kategorieid,
+                anzahl = Utils.formatDEStr(anzahlValue),
+                bemerkungen = null,
+                inout = l.inout,
+                again = 1,
+            };
+
+            AppModel.Instance.allPositionInWork.leistungen.Add(work);
+        });
+
+        var dummyLeistungInWork = new List<LeistungInWorkWSO>();
+
+        if (AppModel.Instance.allPositionInWork.leistungen.Count > 0)
+        {
+            LeistungPackWSO.Save(AppModel.Instance, AppModel.Instance.allPositionInWork);
+            CheckAllSyncFromUpload(); //SyncPositionAgain();
+        }
+        else
+        {
+            AppModel.Instance.allPositionInWork = null;
+        }
+
+        // Zurücksetzten aller States für die Auswahl der Ausführungen
+        AppModel.Instance.LastSelectedOrder = null;
+        AppModel.Instance.LastSelectedCategory = null;
+        AppModel.Instance.LastSelectedPosition = null;
+        AppModel.Instance.LastSelectedOrderAgain = null;
+        AppModel.Instance.LastSelectedCategoryAgain = null;
+        AppModel.Instance.LastSelectedPositionAgain = null;
+        AppModel.Instance.allPositionInShowingListView = new Dictionary<int, Border>();
+        AppModel.Instance.allPositionInShowingSmallListView = new Dictionary<int, SwipeView>();
+        AppModel.Instance.allSelectedPositionToWork = new List<LeistungWSO>();
+
+        AppModel.Instance.allPositionAgainInShowingListView = new Dictionary<int, Border>();
+        AppModel.Instance.allPositionAgainInShowingSmallListView = new Dictionary<int, SwipeView>();
+        AppModel.Instance.allSelectedPositionAgainToWork = new List<LeistungWSO>();
+
+        // alle selektionen und disabled zurücksetzen 
+        AppModel.Instance.LastBuilding.ArrayOfAuftrag.ForEach(o =>
+        {
+            o.kategorien.ForEach(c =>
+            {
+                c.leistungen.ForEach(l =>
+                {
+                    l.selected = false;
+                    l.disabled = false;
+                    l.objekt = null;
+                });
+            });
+        });
+
+        ShowMainPage();
+    }
 
 
 
-        // ClearLastBuilding
-        public void btn_ClearLastBuildingTapped(object sender, EventArgs e)
+    // ClearLastBuilding
+    public void btn_ClearLastBuildingTapped(object sender, EventArgs e)
         {
             if (AppModel.Instance.allPositionInWork != null && AppModel.Instance.allPositionInWork.leistungen.Count > 0)
             {

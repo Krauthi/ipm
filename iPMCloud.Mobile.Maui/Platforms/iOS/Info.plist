@@ -27,13 +27,13 @@
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/appicon.appiconset</string>
 	<key>CFBundleVersion</key>
-	<string>3000067</string>
+	<string>3000068</string>
 	<key>UILaunchStoryboardName</key>
 	<string>MauiSplash</string>
 	<key>CFBundleName</key>
 	<string>iPMCloud.Mobile</string>
 	<key>CFBundleShortVersionString</key>
-	<string>3.0.67</string>
+	<string>3.0.68</string>
 	<key>UIStatusBarHidden</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>

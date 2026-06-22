@@ -6347,6 +6347,14 @@
                         Text="Einen Moment bitte"
                         TextColor="#ffffff"
                         VerticalOptions="Center" />
+                    <Label
+                        Margin="0"
+                        FontSize="16"
+                        HorizontalOptions="Fill"
+                        HorizontalTextAlignment="Start"
+                        Text="Nicht schliessen, warten Sie bis der Synchronisationsvorgang abgeschlossen ist."
+                        TextColor="#ffcc00"
+                        VerticalOptions="Center" />
                 </VerticalStackLayout>
             </VerticalStackLayout>
             <ActivityIndicator

@@ -7449,7 +7449,7 @@ namespace iPMCloud.Mobile
 
 
                 popupContainer.IsVisible = false;
-                await Task.Delay(1);
+                await Task.Delay(1000);
                 //********* Update Plandaten 
                 Load_PlanTabs(((int)DateTime.Now.DayOfWeek));
 

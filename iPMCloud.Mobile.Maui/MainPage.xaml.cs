@@ -31,6 +31,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using ZXing.Net.Maui;
 //using static System.Net.Mime.MediaTypeNames;
 //using static Android.Graphics.ColorSpace;
 //https://docs.microsoft.com/de-de/xamarin/essentials/preferences?tabs=android
@@ -245,6 +246,8 @@ namespace iPMCloud.Mobile
 
         public bool isInitialize = false;
         public bool _isShowing = false;
+        private TaskCompletionSource<string> _embeddedScanTcs;
+        private int _embeddedScanCompletedFlag;
 
 
         public MainPage()
@@ -1407,6 +1410,10 @@ namespace iPMCloud.Mobile
         {            
             if (AppModel.Instance._cts != null && !AppModel.Instance._cts.IsCancellationRequested)
                 AppModel.Instance._cts.Cancel();
+            if (EmbeddedScanContainer.IsVisible)
+            {
+                CompleteEmbeddedScan(null);
+            }
             base.OnDisappearing();
         }
 
@@ -1562,9 +1569,131 @@ namespace iPMCloud.Mobile
         public string ScanAddRegText { get; set; } = "Richten Sie die Kamera auf den QR-Code.";
         public string ScanAddRegTextSec { get; set; } = "Das Scannen erfolgt automatisch";
 
+        public static async Task<string> ScanWithPlatformFlowAsync(Page callerPage, bool isObjectScan)
+        {
+            if (DeviceInfo.Current.Platform == DevicePlatform.Android)
+            {
+                return isObjectScan
+                    ? await ScanObjModalPage.ScanAsync(callerPage)
+                    : await ScanModalPage.ScanAsync(callerPage);
+            }
+
+            var mainPage = AppModel.Instance.MainPage;
+            if (mainPage == null)
+            {
+                var status = await Permissions.CheckStatusAsync<Permissions.Camera>();
+                if (status != PermissionStatus.Granted)
+                {
+                    status = await Permissions.RequestAsync<Permissions.Camera>();
+                }
+
+                if (status != PermissionStatus.Granted)
+                {
+                    await callerPage.DisplayAlertAsync(
+                        "Kamerazugriff verweigert",
+                        "Bitte erlauben Sie den Kamerazugriff in den Einstellungen.",
+                        "OK");
+                }
+
+                return null;
+            }
+
+            return await mainPage.StartEmbeddedScanAsync(callerPage, isObjectScan);
+        }
+
+        private async Task<string> StartEmbeddedScanAsync(Page callerPage, bool isObjectScan)
+        {
+            var status = await Permissions.CheckStatusAsync<Permissions.Camera>();
+            if (status != PermissionStatus.Granted)
+            {
+                status = await Permissions.RequestAsync<Permissions.Camera>();
+            }
+
+            if (status != PermissionStatus.Granted)
+            {
+                await callerPage.DisplayAlertAsync(
+                    "Kamerazugriff verweigert",
+                    "Bitte erlauben Sie den Kamerazugriff in den Einstellungen.",
+                    "OK");
+                return null;
+            }
+
+            return await MainThread.InvokeOnMainThreadAsync(async () =>
+            {
+                if (_embeddedScanTcs != null)
+                {
+                    CompleteEmbeddedScan(null);
+                }
+
+                _embeddedScanCompletedFlag = 0;
+                _embeddedScanTcs = new TaskCompletionSource<string>();
+
+                EmbeddedScanIntroText.Text = isObjectScan
+                    ? "Scannen Sie den QR-Code des Objekts, um es Ihrer App hinzuzufügen. "
+                    : "Scannen Sie den QR-Code des Unternehmens, um es Ihrer App hinzuzufügen. ";
+
+                EmbeddedScanTopText.Text = ScanAddRegText;
+                EmbeddedScanBottomText.Text = ScanAddRegTextSec;
+                EmbeddedScanReaderView.CameraLocation = CameraLocation.Rear;
+                EmbeddedScanReaderView.IsTorchOn = false;
+                EmbeddedScanContainer.IsVisible = true;
+                EmbeddedScanReaderView.IsDetecting = true;
+
+                var result = await _embeddedScanTcs.Task;
+                return result;
+            });
+        }
+
+        private void CompleteEmbeddedScan(string value)
+        {
+            if (Interlocked.Exchange(ref _embeddedScanCompletedFlag, 1) == 1)
+            {
+                return;
+            }
+
+            EmbeddedScanReaderView.IsTorchOn = false;
+            EmbeddedScanReaderView.IsDetecting = false;
+            EmbeddedScanContainer.IsVisible = false;
+            _embeddedScanTcs?.TrySetResult(value);
+        }
+
+        private void OnEmbeddedScanSwitchCameraClicked(object sender, EventArgs e)
+        {
+            EmbeddedScanReaderView.CameraLocation =
+                EmbeddedScanReaderView.CameraLocation == CameraLocation.Rear
+                    ? CameraLocation.Front
+                    : CameraLocation.Rear;
+        }
+
+        private void OnEmbeddedScanFlashClicked(object sender, EventArgs e)
+        {
+            EmbeddedScanReaderView.IsTorchOn = !EmbeddedScanReaderView.IsTorchOn;
+        }
+
+        private void OnEmbeddedScanCancelTapped(object sender, TappedEventArgs e)
+        {
+            CompleteEmbeddedScan(null);
+        }
+
+        private async void EmbeddedScanReaderView_BarcodesDetected(object sender, BarcodeDetectionEventArgs e)
+        {
+            if (!EmbeddedScanContainer.IsVisible)
+            {
+                return;
+            }
+
+            var value = e.Results?.FirstOrDefault()?.Value;
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return;
+            }
+
+            await MainThread.InvokeOnMainThreadAsync(() => CompleteEmbeddedScan(value));
+        }
+
         private async void ShowBuildingScanPage(bool isCheck)
         {
-            var result = await ScanObjModalPage.ScanAsync(this);
+            var result = await ScanWithPlatformFlowAsync(this, isObjectScan: true);
             if (!string.IsNullOrWhiteSpace(result))
             {
                 var sp = result.Replace("http://www.ipm-cloud.de/?objektid=", "")
@@ -1771,7 +1900,7 @@ namespace iPMCloud.Mobile
 
         private async void ShowBuildingOutScanPage()
         {
-            var result = await ScanObjModalPage.ScanAsync(this);
+            var result = await ScanWithPlatformFlowAsync(this, isObjectScan: true);
             if (!string.IsNullOrWhiteSpace(result))
             {
 

@@ -102,7 +102,7 @@ namespace iPMCloud.Mobile
             RegManagement_Container.IsVisible = false;
 
 
-            var result = await ScanModalPage.ScanAsync(this);
+            var result = await MainPage.ScanWithPlatformFlowAsync(this, isObjectScan: false);
             if (!string.IsNullOrWhiteSpace(result))
             {
                 var sp = result
@@ -293,7 +293,7 @@ namespace iPMCloud.Mobile
 
         private async void ShowAddRegScan()
         {
-            var result = await ScanModalPage.ScanAsync(this);
+            var result = await MainPage.ScanWithPlatformFlowAsync(this, isObjectScan: false);
             if (!string.IsNullOrWhiteSpace(result))
             {
                 var sp = result

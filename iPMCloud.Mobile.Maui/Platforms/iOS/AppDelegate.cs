@@ -54,7 +54,9 @@ public class AppDelegate : MauiUIApplicationDelegate, IUNUserNotificationCenterD
 
             var tokenBytes = deviceToken.ToArray();
             var apnsToken = BitConverter.ToString(tokenBytes).Replace("-", string.Empty).ToLowerInvariant();
-            PushNotificationService.HandleTokenRefresh(apnsToken);
+            // Use the iOS-specific handler: APNs token must NOT be forwarded into the
+            // Firebase/FCM upload path that is used for Android tokens.
+            PushNotificationService.HandleApnsTokenReceived(apnsToken);
         }
         catch (Exception ex)
         {

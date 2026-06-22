@@ -47,7 +47,9 @@ namespace iPMCloud.Mobile.Services
                 AppModel.Logger?.Info("INFO: Firebase Messaging erfolgreich initialisiert.");
 #elif IOS
                 UIApplication.SharedApplication.RegisterForRemoteNotifications();
-                AppModel.Logger?.Info("INFO: iOS Remote Notifications registriert.");
+                AppModel.Logger?.Info("INFO: iOS APNs-Registrierung angestoßen. " +
+                    "Hinweis: Firebase iOS Messaging ist noch nicht implementiert – " +
+                    "es wird ausschließlich der APNs-Kanal genutzt.");
 #endif
             }
             catch (Exception ex)
@@ -281,7 +283,7 @@ namespace iPMCloud.Mobile.Services
                     var token = task.Result?.ToString();
                     if (!string.IsNullOrWhiteSpace(token))
                     {
-                        AppModel.Logger?.Info("INFO: Firebase Token erfolgreich empfangen.");
+                        AppModel.Logger?.Info("INFO: Firebase/FCM Token (Android) erfolgreich empfangen.");
                         HandleTokenRefresh(token);
                     }
                     else
@@ -293,6 +295,37 @@ namespace iPMCloud.Mobile.Services
                 {
                     AppModel.Logger?.Error(ex, "ERROR: Fehler in FirebaseTokenCompleteListener.OnComplete");
                 }
+            }
+        }
+#endif
+
+#if IOS
+        /// <summary>
+        /// Wird aufgerufen, wenn iOS einen APNs Device Token bereitstellt.
+        /// Dieser Token ist KEIN Firebase/FCM-Registrierungstoken und darf nicht
+        /// in denselben Upload-Pfad wie Android-Firebase-Tokens eingespeist werden.
+        /// iOS Firebase Messaging ist noch nicht vollständig implementiert;
+        /// der APNs-Token wird geloggt, aber bewusst NICHT in den FCM-Upload-Stack
+        /// eingestellt, bis eine korrekte Firebase-iOS-Anbindung vorliegt.
+        /// </summary>
+        public static void HandleApnsTokenReceived(string apnsToken)
+        {
+            if (string.IsNullOrWhiteSpace(apnsToken))
+            {
+                AppModel.Logger?.Warn("WARN: HandleApnsTokenReceived - APNs-Token ist leer.");
+                return;
+            }
+
+            try
+            {
+                AppModel.Logger?.Info($"INFO: APNs Device Token empfangen (iOS, Länge: {apnsToken.Length}). " +
+                    "Dieser Token ist kein Firebase/FCM-Token. " +
+                    "iOS Firebase Messaging ist noch nicht implementiert – " +
+                    "Token wird nicht in den FCM-Upload-Stack gelegt.");
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: HandleApnsTokenReceived - Fehler beim Verarbeiten des APNs-Tokens");
             }
         }
 #endif

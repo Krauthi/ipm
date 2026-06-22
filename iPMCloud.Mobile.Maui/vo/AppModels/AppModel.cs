@@ -309,7 +309,8 @@ namespace iPMCloud.Mobile.vo
                 Person = PersonWSO.LoadPerson(this);// Wenn keine Person dann "null" !!
 
                 var swBuildings = System.Diagnostics.Stopwatch.StartNew();
-                InitBuildingsAsync();
+                
+                Task.WaitAll(Task.Run(async () => await InitBuildingsAsync()));
                 swBuildings.Stop();
                 Logger.Info($"PERF: InitBuildings took {swBuildings.ElapsedMilliseconds} ms");
 
@@ -393,9 +394,9 @@ namespace iPMCloud.Mobile.vo
             }
         }
 
-        public async void InitBuildingsAsync()
+        public async Task InitBuildingsAsync()
         {
-            _ = InitBuildings();
+            await InitBuildings();
         }
         public async Task InitBuildings()
         {

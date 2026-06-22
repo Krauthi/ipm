@@ -7826,10 +7826,10 @@
                             <Grid
                                 Margin="0"
                                 Padding="0"
-                                    MinimumHeightRequest="40"
                                 BackgroundColor="#144d73"
-                                RowSpacing="0"
-                                RowDefinitions="Auto,Auto">
+                                MinimumHeightRequest="40"
+                                RowDefinitions="Auto,Auto"
+                                RowSpacing="0">
                                 <Grid.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="empListViewItem_Tapped" />
                                 </Grid.GestureRecognizers>
@@ -7837,9 +7837,9 @@
                                     Grid.Row="0"
                                     Margin="10,7,5,7"
                                     Padding="0"
-                                    MinimumHeightRequest="40"
+                                    ColumnDefinitions="Auto,Auto"
                                     ColumnSpacing="0"
-                                    ColumnDefinitions="Auto,Auto">
+                                    MinimumHeightRequest="40">
                                     <Label
                                         Grid.Column="0"
                                         Margin="15,0,0,0"

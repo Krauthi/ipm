@@ -122,6 +122,11 @@ namespace iPMCloud.Mobile
                 var checkPerm = await CheckLocationPermissionsAndInitGps();
                 if (checkPerm)
                 {
+                    //if(AppModel.Instance.AllBuildings == null || AppModel.Instance.AllBuildings.Count == 0)
+                    //{
+                    //   AppModel.Instance.InitBuildingsAsync();
+                    //}
+
                     CheckAllSyncFromUpload();
                     InitStartPageHandlers();
 
@@ -317,8 +322,8 @@ namespace iPMCloud.Mobile
         {
             AppModel.Instance.selectedCheckA = null;
             AppModel.Instance.selectedCheckInfo = null;
-            await Task.Delay(1);
             overlay.IsVisible = true;
+            await Task.Delay(50);
 
 
             foreach (var check in AppModel.Instance.ChecksInfoResponse.checks)

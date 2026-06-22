@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows.Input;
@@ -49,6 +50,26 @@ namespace iPMCloud.Mobile
         {
             this.guid = Guid.NewGuid().ToString();
             this.ticks = DateTime.Now.Ticks;
+        }
+
+        private static readonly CultureInfo _deCulture = CultureInfo.GetCultureInfo("de-DE");
+
+        /// <summary>
+        /// Robust parsing of stand strings that may be in German format (e.g. "3.345,000").
+        /// Returns 0 when the value cannot be parsed.
+        /// </summary>
+        private static decimal ParseStand(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return 0m;
+
+            if (decimal.TryParse(value, NumberStyles.Number, _deCulture, out var result))
+                return result;
+
+            if (decimal.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out result))
+                return result;
+
+            return 0m;
         }
 
         public static VerticalStackLayout GetObjektDataListView(AppModel model, ICommand func, AbsoluteLayout overlay, bool isChangedToday = false)
@@ -348,9 +369,10 @@ namespace iPMCloud.Mobile
                 HorizontalOptions = LayoutOptions.Start,
                 LineBreakMode = LineBreakMode.WordWrap,
             };
+            var standParts = (od.stand ?? "").Split(',');
             var zaehlerGanzzahl = new Label
             {
-                Text = od.stand.Split(',')[0],
+                Text = standParts[0],
                 TextColor = Color.FromArgb("#ffffff"),
                 Margin = new Thickness(0, 0, 0, 0),
                 Padding = new Thickness(5, 5, 5, 5),
@@ -373,7 +395,7 @@ namespace iPMCloud.Mobile
             };
             var zaehlerKommazahl = new Label
             {
-                Text = od.stand.Split(',')[1],
+                Text = standParts.Length > 1 ? standParts[1] : "",
                 TextColor = Color.FromArgb("#ffffff"),
                 Margin = new Thickness(0),
                 Padding = new Thickness(0, 5, 0, 5),
@@ -499,6 +521,7 @@ namespace iPMCloud.Mobile
             };
 
 
+            var parsedStand = ParseStand(od.stand);
             entryanzahl = new CustomEntry()
             {
                 Margin = new Thickness(10, 0, 0, 0),
@@ -509,12 +532,12 @@ namespace iPMCloud.Mobile
                 Keyboard = Keyboard.Numeric,
                 HeightRequest = 60,
                 MinimumWidthRequest = 100,
-                Text = Utils.formatDEStr3(decimal.Parse(od.stand) > 0 ? decimal.Parse(od.stand) : 0),
+                Text = Utils.formatDEStr3(parsedStand > 0 ? parsedStand : 0),
                 HorizontalTextAlignment = TextAlignment.End,
                 BackgroundColor = Color.FromArgb("#333333")
             };
 
-            od.firstStand = Utils.formatDEStr3(decimal.Parse(od.stand) > 0 ? decimal.Parse(od.stand) : 0);
+            od.firstStand = Utils.formatDEStr3(parsedStand > 0 ? parsedStand : 0);
             entryanzahl.ReturnCommandParameter = od;
             entryanzahl.Unfocused -= ValueChange;
             entryanzahl.Unfocused += ValueChange;
@@ -569,8 +592,9 @@ namespace iPMCloud.Mobile
             {
                 Command = new Command(() =>
                 {
-                    entryanzahl.Text = Utils.formatDEStr3(decimal.Parse(od.stand) > 0 ? decimal.Parse(od.stand) : 0);
-                    od.firstStand = Utils.formatDEStr3(decimal.Parse(od.stand) > 0 ? decimal.Parse(od.stand) : 0);
+                    var refreshedStand = ParseStand(od.stand);
+                    entryanzahl.Text = Utils.formatDEStr3(refreshedStand > 0 ? refreshedStand : 0);
+                    od.firstStand = Utils.formatDEStr3(refreshedStand > 0 ? refreshedStand : 0);
                 })
             });
 

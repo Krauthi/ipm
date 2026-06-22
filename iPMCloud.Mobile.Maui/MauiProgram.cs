@@ -52,12 +52,10 @@ namespace iPMCloud.Mobile
             // Configure services for dependency injection
             // Migrate DependencyService registrations here
 
-            // Platform-specific sync service (Android: ForegroundService; iOS: inline)
+            // Platform-specific upload service
 #if ANDROID
-            builder.Services.AddSingleton<ISyncService, AndroidSyncService>();
             builder.Services.AddSingleton<IUploadService, AndroidUploadService>();
 #elif IOS
-            builder.Services.AddSingleton<ISyncService, iOSSyncService>();
             builder.Services.AddSingleton<IUploadService, iOSUploadService>();
 #endif
 

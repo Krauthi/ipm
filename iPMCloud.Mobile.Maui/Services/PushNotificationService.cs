@@ -316,17 +316,10 @@ namespace iPMCloud.Mobile.Services
                 return;
             }
 
-            try
-            {
-                AppModel.Logger?.Info($"INFO: APNs Device Token empfangen (iOS, Länge: {apnsToken.Length}). " +
-                    "Dieser Token ist kein Firebase/FCM-Token. " +
-                    "iOS Firebase Messaging ist noch nicht implementiert – " +
-                    "Token wird nicht in den FCM-Upload-Stack gelegt.");
-            }
-            catch (Exception ex)
-            {
-                AppModel.Logger?.Error(ex, "ERROR: HandleApnsTokenReceived - Fehler beim Verarbeiten des APNs-Tokens");
-            }
+            AppModel.Logger?.Info($"INFO: APNs Device Token empfangen (iOS, Länge: {apnsToken.Length}). " +
+                "Dieser Token ist kein Firebase/FCM-Token. " +
+                "iOS Firebase Messaging ist noch nicht implementiert – " +
+                "Token wird nicht in den FCM-Upload-Stack gelegt.");
         }
 #endif
     }

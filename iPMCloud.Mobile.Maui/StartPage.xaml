@@ -622,7 +622,6 @@
                             FontSize="17"
                             HorizontalOptions="Fill"
                             HorizontalTextAlignment="Start"
-                            TextChanged="LoginNameChangedHandeler"
                             TextColor="White"
                             VerticalOptions="Start" />
                     </VerticalStackLayout>
@@ -639,13 +638,15 @@
                             Radius="5"
                             Offset="2,2" />
                     </Border.Shadow>
-                    <VerticalStackLayout
+                    <Grid
                         Margin="0"
                         Padding="5"
                         BackgroundColor="#ff144d73"
                         HorizontalOptions="Fill"
-                        Spacing="0">
+                        RowSpacing="0"
+                        RowDefinitions="Auto,Auto">
                         <Label
+                            Grid.Row="0"
                             Margin="0"
                             Padding="0"
                             FontSize="12"
@@ -655,18 +656,40 @@
                             TextColor="#aaaaaa"
                             VerticalOptions="Start" />
 
-                        <Entry
-                            x:Name="entry_login_password"
+                        <Grid
+                            Grid.Row="1"
                             Margin="0"
-                            BackgroundColor="Transparent"
-                            FontSize="17"
-                            HorizontalOptions="Fill"
-                            HorizontalTextAlignment="Start"
-                            IsPassword="True"
-                            TextChanged="LoginPasswordChangedHandeler"
-                            TextColor="White"
-                            VerticalOptions="Start" />
-                    </VerticalStackLayout>
+                            Padding="0"
+                            ColumnSpacing="0"
+                            ColumnDefinitions="*,Auto"
+                            HorizontalOptions="Fill">
+                            <Entry
+                                Grid.Column="0"
+                                x:Name="entry_login_password"
+                                Margin="0"
+                                BackgroundColor="Transparent"
+                                FontSize="17"
+                                HorizontalOptions="Fill"
+                                IsPassword="True"
+                                TextColor="White"
+                                VerticalOptions="Start" />
+
+                                <Button
+                                    Grid.Column="1"
+                                    x:Name="btn_loginshowpass"
+                                    Margin="10,-14,5,0"
+                                    Padding="10"
+                                    HeightRequest="50"
+                                    WidthRequest="50"
+                                    Opacity="0.8"
+                                    BackgroundColor="Transparent"
+                                    Clicked="btn_loginshowpass_Clicked"
+                                    HorizontalOptions="End" ImageSource="permission_eye.png"
+                                    VerticalOptions="Center">
+                                    
+                                </Button>
+                        </Grid>
+                    </Grid>
                 </Border>
 
                 <Grid
@@ -1218,7 +1241,6 @@
             </AbsoluteLayout.GestureRecognizers>
             <ActivityIndicator
                 x:Name="overlayb"
-                Scale="{OnPlatform iOS=7, Default=1}"
                 AbsoluteLayout.LayoutBounds="0,0,1,1"
                 AbsoluteLayout.LayoutFlags="All"
                 BackgroundColor="Transparent"
@@ -1228,6 +1250,8 @@
                 IsEnabled="{Binding Path=IsVisible}"
                 IsRunning="True"
                 IsVisible="True"
+                Scale="{OnPlatform iOS=7,
+                                   Default=1}"
                 VerticalOptions="Center"
                 WidthRequest="150"
                 Color="#0078d7" />

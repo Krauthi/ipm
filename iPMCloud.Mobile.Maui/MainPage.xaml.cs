@@ -23,6 +23,7 @@ using Microsoft.Maui.Devices;
 using Microsoft.Maui.Devices;
 using Microsoft.Maui.Devices;
 using Microsoft.Maui.Devices;
+using Microsoft.Maui.Devices;
 using Microsoft.Maui.Layouts;
 using Microsoft.Maui.Storage;
 // TODO: NativeMedia not MAUI-compatible - needs replacement with Microsoft.Maui.Media
@@ -39,6 +40,7 @@ using System.Runtime.ConstrainedExecution;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using ZXing.Net.Maui;
 //using static System.Net.Mime.MediaTypeNames;
 //using static Android.Graphics.ColorSpace;
 //https://docs.microsoft.com/de-de/xamarin/essentials/preferences?tabs=android
@@ -1598,7 +1600,7 @@ namespace iPMCloud.Mobile
         }
 
 
-        private async void ShowBuildingScanPage(bool isCheck)
+        private void ShowBuildingScanPage(bool isCheck)
         {
 #if ANDROID
             ShowBuildingScanPageAndroid(isCheck);
@@ -1703,38 +1705,77 @@ namespace iPMCloud.Mobile
             }
         }
 
+        private bool __isCheck = false;
+        private bool __isOutScan = false;
+
         private async void ShowBuildingScanPageIOS(bool isCheck)
         {
             try
             {
+                __isCheck = isCheck;
+                __isOutScan = false;
+                var hasCameraPermission = await PermissionHelper.EnsureCameraPermissionAsync(
+                    "ScanObjModalPage.ScanAsync",
+                    async () => await DisplayAlertAsync(
+                        "Kamerazugriff verweigert",
+                        "Bitte erlauben Sie den Kamerazugriff in den Einstellungen.",
+                        "OK"));
+                if (!hasCameraPermission)
+                {
+                    AppModel.Logger.Error("ShowBuildingScanPageIOS: Kamerazugriff verweigert");
+                    return;
+                }
+
                 overlay.IsVisible = true;
                 await Task.Delay(1);
 
-                view_ScanObjModalPage.IsVisible = true;
                 view_ScanObjModalPage.IsEnabled = true;
 
+                btn_back_inAddRegScan.GestureRecognizers.Clear();
+                var tgr7 = new TapGestureRecognizer();
+                tgr7.Tapped -= OnCancelScanObjClicked;
+                tgr7.Tapped += OnCancelScanObjClicked;
+                btn_back_inAddRegScan.GestureRecognizers.Add(tgr7);
+                btn_back_inAddRegScan.InputTransparent = false;
 
+                view_ScanObjModalPage.IsVisible = true;
 
-                var result = await ScanObjModalPage.ScanAsync(this);
-                if(string.IsNullOrWhiteSpace(result))
+                ReaderView.IsDetecting = true;
+
+                await Task.Delay(1);
+                overlay.IsVisible = false;
+            }
+            catch (Exception)
+            {
+                OnCancelScanObjClicked(null, null);
+                await DisplayAlertAsync("Fehler beim Scannen!", "QR-Code konnte nicht gelesen werden.", "OK");
+            }
+        }
+        private async void ReaderView_BarcodesDetected(object sender, BarcodeDetectionEventArgs e)
+        {
+            overlay.IsVisible = true;
+            await Task.Delay(1);
+
+            var result = e.Results?.FirstOrDefault()?.Value;
+            if (string.IsNullOrWhiteSpace(result))
+            {
+                OnCancelScanObjClicked(null, null);
+                return;
+            }
+
+            const string marker = "objektid=";
+            var markerIndex = result?.IndexOf(marker) ?? -1;
+
+            if (markerIndex >= 0)
+            {
+                var sp = result.Substring(markerIndex + marker.Length)
+                               .Split(new[] { "_" }, StringSplitOptions.RemoveEmptyEntries);
+
+                if (sp != null && sp.Length > 0 && Int32.TryParse(sp[0], out Int32 buildingid))
                 {
-                    await Task.Delay(1);
-                    overlay.IsVisible = false;
-                    AppModel.Instance.UseExternHardware = false;
-                    //await DisplayAlertAsync("Fehler beim Scannen!", "QR-Code konnte nicht gelesen werden.", "OK");
-                    return;
-                }
-                const string marker = "objektid=";
-                var markerIndex = result?.IndexOf(marker) ?? -1;
-
-                if (markerIndex >= 0)
-                {
-                    var sp = result.Substring(markerIndex + marker.Length)
-                                   .Split(new[] { "_" }, StringSplitOptions.RemoveEmptyEntries);
-
-                    if (sp != null && sp.Length > 0 && Int32.TryParse(sp[0], out Int32 buildingid))
+                    var CustomerNumber = sp.Length == 1 ? "1" : "" + sp[1];
+                    if (!__isOutScan)
                     {
-                        var CustomerNumber = sp.Length == 1 ? "1" : "" + sp[1];
                         if (CustomerNumber == AppModel.Instance.SettingModel.SettingDTO.CustomerNumber)
                         {
                             AppModel.Instance.SettingModel.SettingDTO.LastBuildingIdScanned = buildingid;
@@ -1754,10 +1795,9 @@ namespace iPMCloud.Mobile
 
                             AppModel.Instance.SettingModel.SaveSettings();
 
-                            AppModel.Instance.UseExternHardware = false;
-                            await Task.Delay(1);
-                            overlay.IsVisible = false;
-                            if (isCheck)
+                            OnCancelScanObjClicked(null, null);
+
+                            if (__isCheck)
                             {
                                 MethodAfterScan_check();
                             }
@@ -1768,44 +1808,80 @@ namespace iPMCloud.Mobile
                         }
                         else
                         {
-                            await Task.Delay(1);
-                            overlay.IsVisible = false;
+
+                            OnCancelScanObjClicked(null, null);
                             await DisplayAlertAsync("QR-Code nicht erkannt!",
                                 "Dieser QR-Code ist zwar ein iPM-Cloud Code jedoch gehört er nicht zum Registrieten Unternehmen! Bitte Probieren Sie es noch einmal oder melden Sie sich in Ihrer Zentrale.",
                                 "OK");
-                            AppModel.Instance.UseExternHardware = false;
                         }
                     }
                     else
                     {
-                        await Task.Delay(1);
-                        overlay.IsVisible = false;
-                        await DisplayAlertAsync("QR-Code nicht erkannt!",
-                            "Dieser QR-Code kann nicht verwendet werden. Bitte Probieren Sie es noch einmal.",
-                            "OK");
-                        AppModel.Instance.UseExternHardware = false;
+                        AppModel.Instance.OutScanBuilding = null;
+                        if (CustomerNumber == AppModel.Instance.SettingModel.SettingDTO.CustomerNumber)
+                        {
+                            if (AppModel.Instance.AllBuildings != null && AppModel.Instance.AllBuildings.Count > 0)
+                            {
+                                AppModel.Instance.OutScanBuilding = AppModel.Instance.AllBuildings.Find(bu => bu.id == buildingid);
+                                AppModel.Logger.Info("CHECK-OUT: " + AppModel.Instance.OutScanBuilding.strasse + " " +
+                                                         AppModel.Instance.OutScanBuilding.hsnr + " " +
+                                                         AppModel.Instance.OutScanBuilding.plz + " " +
+                                                         AppModel.Instance.OutScanBuilding.ort);
+                            }
+
+                            OnCancelScanObjClicked(null, null);
+                            MethodAfterOutScan();
+                        }
+                        else
+                        {
+                            OnCancelScanObjClicked(null, null);
+                            await DisplayAlertAsync("QR-Code nicht erkannt!",
+                                "Dieser QR-Code ist zwar ein iPM-Cloud Code jedoch gehört er nicht zum Registrieten Unternehmen! Bitte Probieren Sie es noch einmal oder melden Sie sich in Ihrer Zentrale.",
+                                "OK");
+                        }
                     }
+
 
                 }
                 else
                 {
-                    await Task.Delay(1);
-                    overlay.IsVisible = false;
-                    await DisplayAlertAsync("Fehler beim Scannen!", "QR-Code konnte nicht gelesen werden.", "OK");
-                    AppModel.Instance.UseExternHardware = false;
+                    OnCancelScanObjClicked(null, null);
+                    await DisplayAlertAsync("QR-Code nicht erkannt!",
+                        "Dieser QR-Code kann nicht verwendet werden. Bitte Probieren Sie es noch einmal.",
+                        "OK");                    
                 }
+
             }
-            catch (Exception)
+            else
             {
-                await Task.Delay(1);
-                overlay.IsVisible = false;
+                OnCancelScanObjClicked(null, null);
                 await DisplayAlertAsync("Fehler beim Scannen!", "QR-Code konnte nicht gelesen werden.", "OK");
-                AppModel.Instance.UseExternHardware = false;
             }
+
+
+        }
+
+        private async void OnCancelScanObjClicked(object sender, TappedEventArgs e)
+        {
+            await Task.Delay(1);
+            __isCheck = false;
+            __isOutScan = false;
+            overlay.IsVisible = false;
+            ReaderView.IsTorchOn = false;
+            ReaderView.IsDetecting = false;
+            view_ScanObjModalPage.IsEnabled = false;
+            view_ScanObjModalPage.IsVisible = false;
+            await Task.Delay(100);
+            AppModel.Instance.UseExternHardware = false;
         }
 
 
-        private async void ShowBuildingOutScanPage()
+        private void FlashCameraClicked(object sender, EventArgs e)
+        {
+            ReaderView.IsTorchOn = !ReaderView.IsTorchOn;
+        }
+
+        private void ShowBuildingOutScanPage()
         {
 #if ANDROID
             ShowBuildingOutScanPageAndroid();
@@ -1900,85 +1976,35 @@ namespace iPMCloud.Mobile
 
         private async void ShowBuildingOutScanPageIOS()
         {
-            try {
+            try
+            {
+                __isOutScan = true;
 
                 overlay.IsVisible = true;
                 await Task.Delay(1);
-                var result = await ScanObjModalPage.ScanAsync(this);
 
-                if (string.IsNullOrWhiteSpace(result))
-                {
-                    await Task.Delay(1);
-                    overlay.IsVisible = false;
-                    AppModel.Instance.UseExternHardware = false;
-                   // await DisplayAlertAsync("Fehler beim Scannen!", "QR-Code konnte nicht gelesen werden.", "OK");
-                    return;
-                }
+                view_ScanObjModalPage.IsEnabled = true;
 
-                const string marker = "objektid=";
-                var markerIndex = result?.IndexOf(marker) ?? -1;
-                if(markerIndex >= 0)
-                {
+                btn_back_inAddRegScan.GestureRecognizers.Clear();
+                var tgr7 = new TapGestureRecognizer();
+                tgr7.Tapped -= OnCancelScanObjClicked;
+                tgr7.Tapped += OnCancelScanObjClicked;
+                btn_back_inAddRegScan.GestureRecognizers.Add(tgr7);
+                btn_back_inAddRegScan.InputTransparent = false;
 
-                    var sp = result.Substring(markerIndex + marker.Length)
-                                   .Split(new[] { "_" }, StringSplitOptions.RemoveEmptyEntries);
+                view_ScanObjModalPage.IsVisible = true;
 
-                    if (sp != null && sp.Length > 0 &&Int32.TryParse(sp[0], out Int32 buildingid))
-                    {
-                        AppModel.Instance.OutScanBuilding = null;
-                        var CustomerNumber = sp.Length == 1 ? "1" : "" + sp[1];
-                        if (CustomerNumber == AppModel.Instance.SettingModel.SettingDTO.CustomerNumber)
-                        {
-                            if (AppModel.Instance.AllBuildings != null && AppModel.Instance.AllBuildings.Count > 0)
-                            {
-                                AppModel.Instance.OutScanBuilding = AppModel.Instance.AllBuildings.Find(bu => bu.id == buildingid);
-                                AppModel.Logger.Info("CHECK-OUT: " + AppModel.Instance.OutScanBuilding.strasse + " " +
-                                                         AppModel.Instance.OutScanBuilding.hsnr + " " +
-                                                         AppModel.Instance.OutScanBuilding.plz + " " +
-                                                         AppModel.Instance.OutScanBuilding.ort);
-                            }
+                ReaderView.IsDetecting = true;
 
-                            await Task.Delay(1);
-                            overlay.IsVisible = false;
-                            AppModel.Instance.UseExternHardware = false;
-                            MethodAfterOutScan();
-                        }
-                        else
-                        {
-                            await Task.Delay(1);
-                            overlay.IsVisible = false;
-                            await DisplayAlertAsync("QR-Code nicht erkannt!",
-                                "Dieser QR-Code ist zwar ein iPM-Cloud Code jedoch gehört er nicht zum Registrieten Unternehmen! Bitte Probieren Sie es noch einmal oder melden Sie sich in Ihrer Zentrale.",
-                                "OK");
-                            AppModel.Instance.UseExternHardware = false;
-                        }
-                        
-                    }
-                    else
-                    {
-                        await Task.Delay(1);
-                        overlay.IsVisible = false;
-                        await DisplayAlertAsync("QR-Code nicht erkannt!",
-                            "Dieser QR-Code kann nicht verwendet werden. Bitte Probieren Sie es noch einmal.",
-                            "OK");
-                        AppModel.Instance.UseExternHardware = false;
-                    }
-                }
-                else
-                {
-                    await Task.Delay(1);
-                    overlay.IsVisible = false;
-                    await DisplayAlertAsync("Fehler beim Scannen!", "QR-Code konnte nicht gelesen werden.", "OK");
-                    AppModel.Instance.UseExternHardware = false;
-                }
+                await Task.Delay(1);
+                overlay.IsVisible = false;
             }
             catch (Exception)
             {
-                await Task.Delay(1);
-                overlay.IsVisible = false;
+                OnCancelScanObjClicked(null, null);
                 await DisplayAlertAsync("Fehler beim Scannen!", "QR-Code konnte nicht gelesen werden.", "OK");
-                AppModel.Instance.UseExternHardware = false;
             }
+
         }
 
         public bool MethodAfterOutScan()

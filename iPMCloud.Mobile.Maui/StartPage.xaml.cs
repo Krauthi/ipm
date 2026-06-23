@@ -747,59 +747,47 @@ namespace iPMCloud.Mobile
         }
 
 
-        public void LoginNameChangedHandeler(object sender, TextChangedEventArgs e)
-        {
-            if (_isUpdatingLoginName) { return; }
-            try
-            {
-                var original = e.NewTextValue ?? string.Empty;
-                var sanitized = original.Replace(" ", string.Empty);
-                if (sanitized != original)
-                {
-                    _isUpdatingLoginName = true;
-                    try
-                    {
-                        entry_login_name.Text = sanitized;
-                    }
-                    finally
-                    {
-                        _isUpdatingLoginName = false;
-                    }
-                }
-                AppModel.Instance.SettingModel.SettingDTO.LoginName = sanitized;
-            }
-            catch (Exception ex)
-            {
-                AppModel.Logger.Error("ERROR: LoginNameChangedHandeler failed: " + ex.Message + " - " + (ex.StackTrace ?? ""));
-            }
-        }
+        //public void LoginNameChangedHandeler(object sender, TextChangedEventArgs e)
+        //{
+        //    if (_isUpdatingLoginName) { return; }
+        //    try
+        //    {
+        //        var wordWithoutSpaces = (e.NewTextValue ?? string.Empty).Replace(" ", string.Empty);
+        //        AppModel.Instance.SettingModel.SettingDTO.LoginName = wordWithoutSpaces;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        AppModel.Logger.Error("ERROR: LoginNameChangedHandeler failed: " + ex.Message + " - " + (ex.StackTrace ?? ""));
+        //    }
+        //}
 
-        public void LoginPasswordChangedHandeler(object sender, TextChangedEventArgs e)
-        {
-            if (_isUpdatingLoginPassword) { return; }
-            try
-            {
-                var original = e.NewTextValue ?? string.Empty;
-                var sanitized = original.Replace(" ", string.Empty);
-                if (sanitized != original)
-                {
-                    _isUpdatingLoginPassword = true;
-                    try
-                    {
-                        entry_login_password.Text = sanitized;
-                    }
-                    finally
-                    {
-                        _isUpdatingLoginPassword = false;
-                    }
-                }
-                AppModel.Instance.SettingModel.SettingDTO.LoginPassword = sanitized;
-            }
-            catch (Exception ex)
-            {
-                AppModel.Logger.Error("ERROR: LoginPasswordChangedHandeler failed: " + ex.Message + " - " + (ex.StackTrace ?? ""));
-            }
-        }
+        //public void LoginPasswordChangedHandeler(object sender, TextChangedEventArgs e)
+        //{
+        //    try
+        //    {
+        //        var passwordWithoutSpaces = (e.NewTextValue ?? string.Empty).Replace(" ", string.Empty);
+        //        AppModel.Instance.SettingModel.SettingDTO.LoginPassword = passwordWithoutSpaces;
+        //        //var original = e.NewTextValue ?? string.Empty;
+        //        //var sanitized = original.Replace(" ", string.Empty);
+        //        //if (sanitized != original)
+        //        //{
+        //        //    _isUpdatingLoginPassword = true;
+        //        //    try
+        //        //    {
+        //        //        entry_login_password.Text = sanitized;
+        //        //    }
+        //        //    finally
+        //        //    {
+        //        //        _isUpdatingLoginPassword = false;
+        //        //    }
+        //        //}
+        //        //AppModel.Instance.SettingModel.SettingDTO.LoginPassword = sanitized;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        AppModel.Logger.Error("ERROR: LoginPasswordChangedHandeler failed: " + ex.Message + " - " + (ex.StackTrace ?? ""));
+        //    }
+        //}
 
        // public bool hasInitializedHandlers { get; set; } = false;
         public async void InitStartPageHandlers()
@@ -876,10 +864,10 @@ namespace iPMCloud.Mobile
                 entry_login_password.Text = AppModel.Instance.SettingModel.SettingDTO.LoginPassword;
 
                 await Task.Delay(1);
-                entry_login_name.TextChanged -= LoginNameChangedHandeler;
-                entry_login_name.TextChanged += LoginNameChangedHandeler;
-                entry_login_password.TextChanged -= LoginPasswordChangedHandeler;
-                entry_login_password.TextChanged += LoginPasswordChangedHandeler;
+                //entry_login_name.TextChanged -= LoginNameChangedHandeler;
+                //entry_login_name.TextChanged += LoginNameChangedHandeler;
+                //entry_login_password.TextChanged -= LoginPasswordChangedHandeler;
+                //entry_login_password.TextChanged += LoginPasswordChangedHandeler;
             }
             catch (Exception ex)
             {
@@ -1042,6 +1030,13 @@ namespace iPMCloud.Mobile
             //{
             //    popupContainer_infodialog.IsVisible = false;
             //}
+        }
+
+        private void btn_loginshowpass_Clicked(object sender, EventArgs e)
+        {
+            entry_login_password.IsPassword = !entry_login_password.IsPassword;
+            btn_loginshowpass.ImageSource = entry_login_password.IsPassword ?
+                "permission_eye.png" : "permission_eye_not.png";
         }
     }
 }

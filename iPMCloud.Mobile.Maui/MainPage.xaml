@@ -4584,7 +4584,7 @@
                     FontSize="18"
                     HorizontalOptions="Fill"
                     HorizontalTextAlignment="Start"
-                    Text="Scannen Sie den QR-Code des Objekts, um es zu Ihrer App hinzuzufügen. "
+                    Text="Richten Sie die Kamera auf den QR-Code."
                     TextColor="#ffffff"
                     VerticalOptions="Start" />
             </VerticalStackLayout>
@@ -4624,15 +4624,15 @@
                     <Label
                         FontSize="18"
                         HorizontalOptions="Center"
-                        Text="{Binding BottomText}"
+                        Text="Das Scannen erfolgt automatisch"
                         TextColor="White" />
-
+        
                     <!--  Flash Button  -->
                     <Button
                         Margin="0,20,0,0"
                         Padding="8"
                         BackgroundColor="#144D93"
-                        Command="{Binding FlashButtonCommand}"
+                        Clicked="FlashCameraClicked"
                         CornerRadius="0"
                         HeightRequest="60"
                         HorizontalOptions="Center"

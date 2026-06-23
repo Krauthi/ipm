@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
     xmlns:vo="clr-namespace:iPMCloud.Mobile.vo"
+    xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.Maui.Controls"
     BackgroundColor="Black"
     ClassId="MainPage">
 
@@ -4515,6 +4516,135 @@
         </Grid>
 
 
+        <Grid
+            x:Name="view_ScanObjModalPage"
+            Margin="0,0,0,0"
+            Padding="0"
+            AbsoluteLayout.LayoutBounds="0,0,1,1"
+            AbsoluteLayout.LayoutFlags="All"
+            BackgroundColor="Black"
+            HorizontalOptions="Fill"
+            RowSpacing="0"
+            IsVisible="False"
+            IsEnabled="False"
+            VerticalOptions="Fill">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="54" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <StackLayout
+                Grid.Row="0"
+                Margin="0"
+                Padding="0"
+                HeightRequest="54"
+                HorizontalOptions="Fill"
+                Spacing="0"
+                VerticalOptions="Fill">
+                <HorizontalStackLayout
+                    x:Name="btn_back_inAddRegScan"
+                    Margin="0,12,0,5"
+                    Padding="0"
+                    BackgroundColor="Transparent"
+                    HorizontalOptions="Start"
+                    Spacing="0"
+                    VerticalOptions="Center">
+                    <Image
+                        Margin="0,0,10,0"
+                        HeightRequest="26"
+                        HorizontalOptions="Start"
+                        Source="drop_left_blue_double_image.png"
+                        VerticalOptions="Center"
+                        WidthRequest="26" />
+                    <Label
+                        Margin="0"
+                        FontSize="20"
+                        HorizontalOptions="Fill"
+                        HorizontalTextAlignment="Start"
+                        LineBreakMode="TailTruncation"
+                        Text="Scann abbrechen"
+                        TextColor="#4fa4ed"
+                        VerticalOptions="Center" />
+                </HorizontalStackLayout>
+            </StackLayout>
+
+            <VerticalStackLayout
+                Grid.Row="1"
+                Margin="0,0,0,0"
+                Padding="15,15,15,20"
+                BackgroundColor="#90144d93"
+                HeightRequest="130"
+                HorizontalOptions="Fill"
+                Spacing="0">
+                <Label
+                    Margin="0"
+                    Padding="0"
+                    FontSize="18"
+                    HorizontalOptions="Fill"
+                    HorizontalTextAlignment="Start"
+                    Text="Scannen Sie den QR-Code des Objekts, um es zu Ihrer App hinzuzufügen. "
+                    TextColor="#ffffff"
+                    VerticalOptions="Start" />
+            </VerticalStackLayout>
+
+            <Grid
+                Grid.Row="2"
+                BackgroundColor="Transparent"
+                HorizontalOptions="Fill"
+                VerticalOptions="Fill">
+
+                <Grid.RowDefinitions>
+                    <!--<RowDefinition Height="30" />-->
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+
+
+                <zxing:CameraBarcodeReaderView
+                    x:Name="ReaderView"
+                    Grid.Row="0"
+                    BarcodesDetected="ReaderView_BarcodesDetected"
+                    CameraLocation="Rear"
+                    HorizontalOptions="Fill"
+                    IsDetecting="True"
+                    VerticalOptions="Fill" />
+
+                <!--  Bottom Stack  -->
+                <StackLayout
+                    Grid.Row="1"
+                    Margin="0,20,0,40"
+                    BackgroundColor="Black"
+                    HorizontalOptions="Fill"
+                    Spacing="0"
+                    VerticalOptions="Start">
+
+                    <Label
+                        FontSize="18"
+                        HorizontalOptions="Center"
+                        Text="{Binding BottomText}"
+                        TextColor="White" />
+
+                    <!--  Flash Button  -->
+                    <Button
+                        Margin="0,20,0,0"
+                        Padding="8"
+                        BackgroundColor="#144D93"
+                        Command="{Binding FlashButtonCommand}"
+                        CornerRadius="0"
+                        HeightRequest="60"
+                        HorizontalOptions="Center"
+                        ImageSource="flashlight.png"
+                        WidthRequest="60" />
+                </StackLayout>
+
+            </Grid>
+
+        </Grid>
+
+        
 
         <Grid
             x:Name="ObjectValuesPage_Container"

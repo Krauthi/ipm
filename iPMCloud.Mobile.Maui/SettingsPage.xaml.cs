@@ -50,8 +50,8 @@ namespace iPMCloud.Mobile
 
         public void LoginPasswordChangedHandeler(object sender, TextChangedEventArgs e)
         {
-            var sanitized = (e.NewTextValue ?? string.Empty).Replace(" ", string.Empty);
-            model.SettingModel.SettingDTO.LoginPassword = sanitized;
+            var passwordWithoutSpaces = (e.NewTextValue ?? string.Empty).Replace(" ", string.Empty);
+            model.SettingModel.SettingDTO.LoginPassword = passwordWithoutSpaces;
         }
 
         public void HostChangedHandeler(object sender, TextChangedEventArgs e)

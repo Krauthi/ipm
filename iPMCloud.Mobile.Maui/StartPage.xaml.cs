@@ -679,8 +679,8 @@ namespace iPMCloud.Mobile
         {
             try
             {
-                var sanitized = (e.NewTextValue ?? string.Empty).Replace(" ", string.Empty);
-                AppModel.Instance.SettingModel.SettingDTO.LoginPassword = sanitized;
+                var passwordWithoutSpaces = (e.NewTextValue ?? string.Empty).Replace(" ", string.Empty);
+                AppModel.Instance.SettingModel.SettingDTO.LoginPassword = passwordWithoutSpaces;
             }
             catch (Exception ex)
             {

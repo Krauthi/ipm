@@ -186,11 +186,12 @@
   <WindowsPackageType>None</WindowsPackageType>
 </PropertyGroup>
 
-	
+
+	<!--
 <PropertyGroup Condition="'$(TargetFramework)'=='net10.0-ios'">
   <CodesignKey>Apple Development: Created via API (4RDNR6C66G)</CodesignKey>
   <CodesignProvision>VS: com.ipmcloud.ipm.mobile.app Development</CodesignProvision>
-</PropertyGroup>
+</PropertyGroup>-->
 
 
 

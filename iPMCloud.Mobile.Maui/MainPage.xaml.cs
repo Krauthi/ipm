@@ -241,9 +241,9 @@ namespace iPMCloud.Mobile
             var ob = checks.Where(_ => _.lastStateOfCheck_a != "Offen"
                     && _.naeststeFaelligkeitDate < 8
                     && _.berechnunginterval > 0).ToList();
-            var oc = checks.Where(_ => (_.lastStateOfCheck_a != "Offen" 
-                && _.naeststeFaelligkeitDate >= 8) 
-                || (_.lastStateOfCheck_a != "Offen" 
+            var oc = checks.Where(_ => (_.lastStateOfCheck_a != "Offen"
+                && _.naeststeFaelligkeitDate >= 8)
+                || (_.lastStateOfCheck_a != "Offen"
                 && _.berechnunginterval == 0)).ToList();
 
             foreach (var oaI in oa)
@@ -397,7 +397,7 @@ namespace iPMCloud.Mobile
                 {
                     if (AppModel.Instance.allPositionInWork != null && AppModel.Instance.allPositionInWork.leistungen.Count > 0)
                     {
-                        await DisplayAlertAsync("OFFENE ARBEITEN", 
+                        await DisplayAlertAsync("OFFENE ARBEITEN",
                             "Die Checkliste kann nicht bearbeitet werden! Es sind noch offene Arbeiten in einem anderen Objekt aktiv. Diese müssen Sie zuerst beenden.",
                             "OK");
                     }
@@ -591,7 +591,7 @@ namespace iPMCloud.Mobile
                 btn_info_check_text1.Text = AppModel.Instance.selectedCheckA.bezeichnung;
                 btn_info_check_text2.Text = "Datum: " + JavaScriptDateConverter.Convert(long.Parse(AppModel.Instance.selectedCheckA.datum)).ToString("dd.MM.yyyy");
                 frame_info_check_badge.Children.Clear();
-                frame_info_check_badge.Children.Add(Check.GetBadgeFrame(AppModel.Instance.selectedCheckInfo.naeststeFaelligkeitDate,30));
+                frame_info_check_badge.Children.Add(Check.GetBadgeFrame(AppModel.Instance.selectedCheckInfo.naeststeFaelligkeitDate, 30));
 
                 BuildCheckQuestStack();
             }
@@ -849,7 +849,7 @@ namespace iPMCloud.Mobile
             }
 
             byte[] pngBytes = result.PngBytes;
-                ImageSource signatureImage = result.Image;
+            ImageSource signatureImage = result.Image;
 
             await quest.Tap_a7_ReturnSig(pngBytes, signatureImage);
             quest.img_sig.Source = signatureImage;
@@ -912,7 +912,8 @@ namespace iPMCloud.Mobile
             {
                 foreach (var ph in quest.bemWSO.photos)
                 {
-                    if (ph.bytes != null && ph.bytes.Length > 0) { 
+                    if (ph.bytes != null && ph.bytes.Length > 0)
+                    {
                         ph.stack = BildWSO.GetAttachmentForNoticeElement(
                                 ImageSource.FromStream(() => new MemoryStream(ph.bytes)),
                                  new DateTime(long.Parse(ph.name)).ToString("dd.MM.yyyy-HH:mm:ss"),
@@ -1114,7 +1115,7 @@ namespace iPMCloud.Mobile
                 await DisplayAlertAsync("Limit erreicht", "Maximal 3 Fotos erlaubt", "OK");
                 return;
             }
-            if(_SelectedPosForNotice_check_bem.bemWSO?.photos != null)
+            if (_SelectedPosForNotice_check_bem.bemWSO?.photos != null)
             {
                 zp = _SelectedPosForNotice_check_bem.bemWSO.photos.Count;
             }
@@ -1280,7 +1281,7 @@ namespace iPMCloud.Mobile
 
 
         protected override void OnDisappearing()
-        {            
+        {
             if (AppModel.Instance._cts != null && !AppModel.Instance._cts.IsCancellationRequested)
                 AppModel.Instance._cts.Cancel();
             base.OnDisappearing();
@@ -1707,6 +1708,7 @@ namespace iPMCloud.Mobile
 
         private bool __isCheck = false;
         private bool __isOutScan = false;
+        private int __scanHandled = 0; // 0 = idle, 1 = processing; use Interlocked for thread-safe access
 
         private async void ShowBuildingScanPageIOS(bool isCheck)
         {
@@ -1714,6 +1716,7 @@ namespace iPMCloud.Mobile
             {
                 __isCheck = isCheck;
                 __isOutScan = false;
+                Interlocked.Exchange(ref __scanHandled, 0);
                 var hasCameraPermission = await PermissionHelper.EnsureCameraPermissionAsync(
                     "ScanObjModalPage.ScanAsync",
                     async () => await DisplayAlertAsync(
@@ -1753,112 +1756,118 @@ namespace iPMCloud.Mobile
         }
         private async void ReaderView_BarcodesDetected(object sender, BarcodeDetectionEventArgs e)
         {
-            overlay.IsVisible = true;
-            await Task.Delay(1);
+            // Atomically claim the event; discard duplicates / rapid repeated fires.
+            if (Interlocked.CompareExchange(ref __scanHandled, 1, 0) != 0) return;
 
             var result = e.Results?.FirstOrDefault()?.Value;
-            if (string.IsNullOrWhiteSpace(result))
+
+            // BarcodesDetected may fire on a background thread – marshal all UI work to the main thread.
+            await MainThread.InvokeOnMainThreadAsync(async () =>
             {
-                OnCancelScanObjClicked(null, null);
-                return;
-            }
+                overlay.IsVisible = true;
+                await Task.Delay(1);
 
-            const string marker = "objektid=";
-            var markerIndex = result?.IndexOf(marker) ?? -1;
-
-            if (markerIndex >= 0)
-            {
-                var sp = result.Substring(markerIndex + marker.Length)
-                               .Split(new[] { "_" }, StringSplitOptions.RemoveEmptyEntries);
-
-                if (sp != null && sp.Length > 0 && Int32.TryParse(sp[0], out Int32 buildingid))
+                if (string.IsNullOrWhiteSpace(result))
                 {
-                    var CustomerNumber = sp.Length == 1 ? "1" : "" + sp[1];
-                    if (!__isOutScan)
+                    OnCancelScanObjClicked(null, null);
+                    return;
+                }
+
+                const string marker = "objektid=";
+                var markerIndex = result?.IndexOf(marker) ?? -1;
+
+                if (markerIndex >= 0)
+                {
+                    var sp = result.Substring(markerIndex + marker.Length)
+                                   .Split(new[] { "_" }, StringSplitOptions.RemoveEmptyEntries);
+
+                    if (sp != null && sp.Length > 0 && Int32.TryParse(sp[0], out Int32 buildingid))
                     {
-                        if (CustomerNumber == AppModel.Instance.SettingModel.SettingDTO.CustomerNumber)
+                        var CustomerNumber = sp.Length == 1 ? "1" : "" + sp[1];
+                        if (!__isOutScan)
                         {
-                            AppModel.Instance.SettingModel.SettingDTO.LastBuildingIdScanned = buildingid;
-
-                            if (buildingid > 0 && AppModel.Instance.AllBuildings != null && AppModel.Instance.AllBuildings.Count > 0)
+                            if (CustomerNumber == AppModel.Instance.SettingModel.SettingDTO.CustomerNumber)
                             {
-                                AppModel.Instance.SetAllObjectAndValuesToNoSelectedBuilding();
                                 AppModel.Instance.SettingModel.SettingDTO.LastBuildingIdScanned = buildingid;
-                                AppModel.Instance.LastBuilding = AppModel.Instance.AllBuildings.Find(bu => bu.id == buildingid);
 
-                                AppModel.Logger.Info("CHECK-IN: " + AppModel.Instance.LastBuilding.strasse + " " +
-                                                         AppModel.Instance.LastBuilding.hsnr + " " +
-                                                         AppModel.Instance.LastBuilding.plz + " " +
-                                                         AppModel.Instance.LastBuilding.ort);
+                                if (buildingid > 0 && AppModel.Instance.AllBuildings != null && AppModel.Instance.AllBuildings.Count > 0)
+                                {
+                                    AppModel.Instance.SetAllObjectAndValuesToNoSelectedBuilding();
+                                    AppModel.Instance.SettingModel.SettingDTO.LastBuildingIdScanned = buildingid;
+                                    AppModel.Instance.LastBuilding = AppModel.Instance.AllBuildings.Find(bu => bu.id == buildingid);
 
-                            }
+                                    AppModel.Logger.Info("CHECK-IN: " + AppModel.Instance.LastBuilding.strasse + " " +
+                                                             AppModel.Instance.LastBuilding.hsnr + " " +
+                                                             AppModel.Instance.LastBuilding.plz + " " +
+                                                             AppModel.Instance.LastBuilding.ort);
 
-                            AppModel.Instance.SettingModel.SaveSettings();
+                                }
 
-                            OnCancelScanObjClicked(null, null);
+                                AppModel.Instance.SettingModel.SaveSettings();
 
-                            if (__isCheck)
-                            {
-                                MethodAfterScan_check();
+                                OnCancelScanObjClicked(null, null);
+
+                                if (__isCheck)
+                                {
+                                    MethodAfterScan_check();
+                                }
+                                else
+                                {
+                                    ShowMainPage();
+                                }
                             }
                             else
                             {
-                                ShowMainPage();
+
+                                OnCancelScanObjClicked(null, null);
+                                await DisplayAlertAsync("QR-Code nicht erkannt!",
+                                    "Dieser QR-Code ist zwar ein iPM-Cloud Code jedoch gehört er nicht zum Registrieten Unternehmen! Bitte Probieren Sie es noch einmal oder melden Sie sich in Ihrer Zentrale.",
+                                    "OK");
                             }
                         }
                         else
                         {
+                            AppModel.Instance.OutScanBuilding = null;
+                            if (CustomerNumber == AppModel.Instance.SettingModel.SettingDTO.CustomerNumber)
+                            {
+                                if (AppModel.Instance.AllBuildings != null && AppModel.Instance.AllBuildings.Count > 0)
+                                {
+                                    AppModel.Instance.OutScanBuilding = AppModel.Instance.AllBuildings.Find(bu => bu.id == buildingid);
+                                    AppModel.Logger.Info("CHECK-OUT: " + AppModel.Instance.OutScanBuilding.strasse + " " +
+                                                             AppModel.Instance.OutScanBuilding.hsnr + " " +
+                                                             AppModel.Instance.OutScanBuilding.plz + " " +
+                                                             AppModel.Instance.OutScanBuilding.ort);
+                                }
 
-                            OnCancelScanObjClicked(null, null);
-                            await DisplayAlertAsync("QR-Code nicht erkannt!",
-                                "Dieser QR-Code ist zwar ein iPM-Cloud Code jedoch gehört er nicht zum Registrieten Unternehmen! Bitte Probieren Sie es noch einmal oder melden Sie sich in Ihrer Zentrale.",
-                                "OK");
+                                OnCancelScanObjClicked(null, null);
+                                MethodAfterOutScan();
+                            }
+                            else
+                            {
+                                OnCancelScanObjClicked(null, null);
+                                await DisplayAlertAsync("QR-Code nicht erkannt!",
+                                    "Dieser QR-Code ist zwar ein iPM-Cloud Code jedoch gehört er nicht zum Registrieten Unternehmen! Bitte Probieren Sie es noch einmal oder melden Sie sich in Ihrer Zentrale.",
+                                    "OK");
+                            }
                         }
+
+
                     }
                     else
                     {
-                        AppModel.Instance.OutScanBuilding = null;
-                        if (CustomerNumber == AppModel.Instance.SettingModel.SettingDTO.CustomerNumber)
-                        {
-                            if (AppModel.Instance.AllBuildings != null && AppModel.Instance.AllBuildings.Count > 0)
-                            {
-                                AppModel.Instance.OutScanBuilding = AppModel.Instance.AllBuildings.Find(bu => bu.id == buildingid);
-                                AppModel.Logger.Info("CHECK-OUT: " + AppModel.Instance.OutScanBuilding.strasse + " " +
-                                                         AppModel.Instance.OutScanBuilding.hsnr + " " +
-                                                         AppModel.Instance.OutScanBuilding.plz + " " +
-                                                         AppModel.Instance.OutScanBuilding.ort);
-                            }
-
-                            OnCancelScanObjClicked(null, null);
-                            MethodAfterOutScan();
-                        }
-                        else
-                        {
-                            OnCancelScanObjClicked(null, null);
-                            await DisplayAlertAsync("QR-Code nicht erkannt!",
-                                "Dieser QR-Code ist zwar ein iPM-Cloud Code jedoch gehört er nicht zum Registrieten Unternehmen! Bitte Probieren Sie es noch einmal oder melden Sie sich in Ihrer Zentrale.",
-                                "OK");
-                        }
+                        OnCancelScanObjClicked(null, null);
+                        await DisplayAlertAsync("QR-Code nicht erkannt!",
+                            "Dieser QR-Code kann nicht verwendet werden. Bitte Probieren Sie es noch einmal.",
+                            "OK");
                     }
-
 
                 }
                 else
                 {
                     OnCancelScanObjClicked(null, null);
-                    await DisplayAlertAsync("QR-Code nicht erkannt!",
-                        "Dieser QR-Code kann nicht verwendet werden. Bitte Probieren Sie es noch einmal.",
-                        "OK");                    
+                    await DisplayAlertAsync("Fehler beim Scannen!", "QR-Code konnte nicht gelesen werden.", "OK");
                 }
-
-            }
-            else
-            {
-                OnCancelScanObjClicked(null, null);
-                await DisplayAlertAsync("Fehler beim Scannen!", "QR-Code konnte nicht gelesen werden.", "OK");
-            }
-
-
+            });
         }
 
         private async void OnCancelScanObjClicked(object sender, TappedEventArgs e)
@@ -1979,6 +1988,7 @@ namespace iPMCloud.Mobile
             try
             {
                 __isOutScan = true;
+                Interlocked.Exchange(ref __scanHandled, 0);
 
                 overlay.IsVisible = true;
                 await Task.Delay(1);
@@ -2242,19 +2252,19 @@ namespace iPMCloud.Mobile
                             l.disabled = false;
                             //if (l.selected)
                             //{
-                                Border framePos;
-                                if (AppModel.Instance.allPositionInShowingListView.TryGetValue(l.id, out framePos))
+                            Border framePos;
+                            if (AppModel.Instance.allPositionInShowingListView.TryGetValue(l.id, out framePos))
+                            {
+                                var func = ((TapGestureRecognizer)framePos.Content.GestureRecognizers[0]).Command;
+                                bool inWork = false;
+                                if (AppModel.Instance.allPositionInWork != null)
                                 {
-                                    var func = ((TapGestureRecognizer)framePos.Content.GestureRecognizers[0]).Command;
-                                    bool inWork = false;
-                                    if (AppModel.Instance.allPositionInWork != null)
-                                    {
-                                        var foundInWork = AppModel.Instance.allPositionInWork.leistungen.Find(le => le.id == l.id);
-                                        inWork = foundInWork != null;
-                                    }
-                                    framePos.Content = inWork ? LeistungWSO.GetInWorkPositionCardView(l, AppModel.Instance, func).Content
-                                    : LeistungWSO.GetPositionCardView(l, AppModel.Instance, func).Content;
+                                    var foundInWork = AppModel.Instance.allPositionInWork.leistungen.Find(le => le.id == l.id);
+                                    inWork = foundInWork != null;
                                 }
+                                framePos.Content = inWork ? LeistungWSO.GetInWorkPositionCardView(l, AppModel.Instance, func).Content
+                                : LeistungWSO.GetPositionCardView(l, AppModel.Instance, func).Content;
+                            }
                             //}
                         });
                     });
@@ -2310,9 +2320,9 @@ namespace iPMCloud.Mobile
                                         l.disabled = false;
                                         if (AppModel.Instance.allPositionInShowingListView.TryGetValue(l.id, out framePos))
                                         {
-                                            var stackPos = inWork ? LeistungWSO.GetInWorkPositionCardView(l, AppModel.Instance, func) 
-                                            : (l.disabled ? LeistungWSO.GetDisabledPositionCardView(l, AppModel.Instance, func) 
-                                            : (l.selected ? LeistungWSO.GetSelectedPositionCardView(l, AppModel.Instance, func) 
+                                            var stackPos = inWork ? LeistungWSO.GetInWorkPositionCardView(l, AppModel.Instance, func)
+                                            : (l.disabled ? LeistungWSO.GetDisabledPositionCardView(l, AppModel.Instance, func)
+                                            : (l.selected ? LeistungWSO.GetSelectedPositionCardView(l, AppModel.Instance, func)
                                             : LeistungWSO.GetPositionCardView(l, AppModel.Instance, func)));
                                             framePos.Content = stackPos.Content;
                                         }
@@ -2322,19 +2332,19 @@ namespace iPMCloud.Mobile
                                         l.disabled = true;
                                         if (AppModel.Instance.allPositionInShowingListView.TryGetValue(l.id, out framePos))
                                         {
-                                            framePos.Content = inWork ? LeistungWSO.GetInWorkPositionCardView(l, AppModel.Instance, func).Content 
+                                            framePos.Content = inWork ? LeistungWSO.GetInWorkPositionCardView(l, AppModel.Instance, func).Content
                                             : LeistungWSO.GetDisabledPositionCardView(l, AppModel.Instance, func).Content;
                                         }
                                     }
                                 }
                                 else
-                                {                                   
+                                {
                                     if (l.art == "Leistung" && l.nichtpauschal == 1)
                                     {
                                         l.disabled = true;
                                         if (AppModel.Instance.allPositionInShowingListView.TryGetValue(l.id, out framePos))
                                         {
-                                            framePos.Content = inWork ? LeistungWSO.GetInWorkPositionCardView(l, AppModel.Instance, func).Content 
+                                            framePos.Content = inWork ? LeistungWSO.GetInWorkPositionCardView(l, AppModel.Instance, func).Content
                                             : LeistungWSO.GetDisabledPositionCardView(l, AppModel.Instance, func).Content;
                                         }
                                     }
@@ -2343,8 +2353,8 @@ namespace iPMCloud.Mobile
                                         l.disabled = false;
                                         if (AppModel.Instance.allPositionInShowingListView.TryGetValue(l.id, out framePos))
                                         {
-                                            var stackPos = inWork ? LeistungWSO.GetInWorkPositionCardView(l, AppModel.Instance, func)                                              
-                                            : (l.selected ? LeistungWSO.GetSelectedPositionCardView(l, AppModel.Instance, func) 
+                                            var stackPos = inWork ? LeistungWSO.GetInWorkPositionCardView(l, AppModel.Instance, func)
+                                            : (l.selected ? LeistungWSO.GetSelectedPositionCardView(l, AppModel.Instance, func)
                                             : LeistungWSO.GetPositionCardView(l, AppModel.Instance, func));
                                             framePos.Content = stackPos.Content;
                                         }
@@ -2365,23 +2375,23 @@ namespace iPMCloud.Mobile
                             {
                                 //if(!l.selected)
                                 //{
-                                    l.disabled = false;
-                                    Border framePos;
-                                    if (AppModel.Instance.allPositionInShowingListView.TryGetValue(l.id, out framePos))
+                                l.disabled = false;
+                                Border framePos;
+                                if (AppModel.Instance.allPositionInShowingListView.TryGetValue(l.id, out framePos))
+                                {
+                                    var func = ((TapGestureRecognizer)framePos.Content.GestureRecognizers[0]).Command;
+                                    bool inWork = false;
+                                    if (AppModel.Instance.allPositionInWork != null)
                                     {
-                                        var func = ((TapGestureRecognizer)framePos.Content.GestureRecognizers[0]).Command;
-                                        bool inWork = false;
-                                        if (AppModel.Instance.allPositionInWork != null)
-                                        {
-                                            var foundInWork = AppModel.Instance.allPositionInWork.leistungen.Find(le => le.id == l.id);
-                                            inWork = foundInWork != null;
-                                        }
-
-                                        var stackPos = inWork ? LeistungWSO.GetInWorkPositionCardView(l, AppModel.Instance, func) 
-                                        : (l.selected ? LeistungWSO.GetSelectedPositionCardView(l, AppModel.Instance, func) 
-                                        : LeistungWSO.GetPositionCardView(l, AppModel.Instance, func));
-                                        framePos.Content = stackPos.Content;
+                                        var foundInWork = AppModel.Instance.allPositionInWork.leistungen.Find(le => le.id == l.id);
+                                        inWork = foundInWork != null;
                                     }
+
+                                    var stackPos = inWork ? LeistungWSO.GetInWorkPositionCardView(l, AppModel.Instance, func)
+                                    : (l.selected ? LeistungWSO.GetSelectedPositionCardView(l, AppModel.Instance, func)
+                                    : LeistungWSO.GetPositionCardView(l, AppModel.Instance, func));
+                                    framePos.Content = stackPos.Content;
+                                }
 
                                 //}
                             });
@@ -2436,7 +2446,7 @@ namespace iPMCloud.Mobile
                     WidthRequest = 30,
                     VerticalOptions = LayoutOptions.Center,
                     Source = "time.png"
-                },0,0);
+                }, 0, 0);
                 timespan_inwork.Add(new Label
                 {
                     Text = startDT.ToString("dd.MM.yy") + "\n" + startDT.ToString("HH:mm"),
@@ -2447,7 +2457,7 @@ namespace iPMCloud.Mobile
                     HorizontalTextAlignment = TextAlignment.Center,
                     Margin = new Thickness(0, 0, 0, 0),
                     Padding = new Thickness(0, 0, 0, 0)
-                },1,0);
+                }, 1, 0);
                 timespan_inwork.Add(new Label
                 {
                     Text = " - ",
@@ -2458,7 +2468,7 @@ namespace iPMCloud.Mobile
                     HorizontalTextAlignment = TextAlignment.Center,
                     Margin = new Thickness(0, 0, 0, 0),
                     Padding = new Thickness(0, 0, 0, 0)
-                },2,0);
+                }, 2, 0);
                 timespan_inwork.Add(new Label
                 {
                     Text = endDT.ToString("dd.MM.yy") + "\n" + endDT.ToString("HH:mm"),
@@ -2469,7 +2479,7 @@ namespace iPMCloud.Mobile
                     HorizontalTextAlignment = TextAlignment.Center,
                     Margin = new Thickness(0, 0, 0, 0),
                     Padding = new Thickness(0, 0, 0, 0)
-                },3, 0);
+                }, 3, 0);
                 timespan_inwork.Add(new Label
                 {
                     Text = " = ",
@@ -2480,7 +2490,7 @@ namespace iPMCloud.Mobile
                     HorizontalTextAlignment = TextAlignment.Center,
                     Margin = new Thickness(0, 0, 0, 0),
                     Padding = new Thickness(0, 0, 0, 0)
-                },4, 0);
+                }, 4, 0);
                 timespan_inwork.Add(new Label
                 {
                     Text = (ts.TotalDays > 1 ? ts.ToString("%d") + "T " : "") + ts.ToString(@"hh\:mm"),
@@ -2491,7 +2501,7 @@ namespace iPMCloud.Mobile
                     HorizontalTextAlignment = TextAlignment.Center,
                     Margin = new Thickness(0, 0, 0, 0),
                     Padding = new Thickness(0, 0, 0, 0)
-                },5, 0);
+                }, 5, 0);
                 runningworks_list.Children.Clear();
                 runningworks_list.Children.Add(LeistungWSO.GetInWorkPositionListView(AppModel.Instance, new Command<LeistungWSO>(TapNoticeFromPosInWork)));
 
@@ -2962,7 +2972,7 @@ namespace iPMCloud.Mobile
                 frame_planConA_offenhead.IsVisible = false;
                 frame_planConA_veroffenhead.IsVisible = false;
                 frame_planConA_erlhead.IsVisible = true;
-                frame_planConA_veroffenGrid.IsVisible = false; 
+                frame_planConA_veroffenGrid.IsVisible = false;
             };
             frame_planConA_erlbtn.GestureRecognizers.Add(t_frame_planConA_erltxt);
             frame_planConA_veroffenbtn.GestureRecognizers.Clear();
@@ -2989,9 +2999,9 @@ namespace iPMCloud.Mobile
             frame_planConB_erlbtn.GestureRecognizers.Clear();
             var t_frame_planConB_erltxt = new TapGestureRecognizer();
             t_frame_planConB_erltxt.Tapped += async (object o, TappedEventArgs ev) => {
-                tourScrollerB_containerA.IsVisible = false; 
+                tourScrollerB_containerA.IsVisible = false;
                 tourScrollerB_containerB.IsVisible = true;
-                frame_planConB_offenhead.IsVisible = false; 
+                frame_planConB_offenhead.IsVisible = false;
                 frame_planConB_erlhead.IsVisible = true;
             };
             frame_planConB_erlbtn.GestureRecognizers.Add(t_frame_planConB_erltxt);
@@ -3069,7 +3079,7 @@ namespace iPMCloud.Mobile
             double w = screenWidthDp;
             double h = screenHeightDp;
 
-            empListView.SelectedItem = null;  
+            empListView.SelectedItem = null;
             popupContainer_quest_personpicker_inner.HeightRequest = h - 100;
             popupContainer_quest_personpicker_inner.WidthRequest = w - 40;
             popupContainer_quest_personpicker.IsVisible = true;
@@ -3110,7 +3120,7 @@ namespace iPMCloud.Mobile
         {
             popupContainer_quest_personpicker.IsVisible = false;
         }
-          
+
 
         public void OpenLeistungInfoDialog(LeistungWSO o)
         {
@@ -3504,7 +3514,7 @@ namespace iPMCloud.Mobile
                                 Spacing = 0,
                                 HorizontalOptions = LayoutOptions.Fill,
                                 Children = { stack },
-                                ClassId = p.muelltoid > 0 ? "Muell" : "",                                
+                                ClassId = p.muelltoid > 0 ? "Muell" : "",
                                 IsVisible = AppModel.Instance.AppSetModel.ViewOnlyMuell == 0 || AppModel.Instance.AppSetModel.ViewOnlyMuell == 1 && p.muelltoid == 0 || AppModel.Instance.AppSetModel.ViewOnlyMuell == 2 && p.muelltoid > 0
                             };
                             var containerB = new VerticalStackLayout
@@ -3555,8 +3565,8 @@ namespace iPMCloud.Mobile
                             }
                             catch (Exception ex)
                             {
-                                containerReady.Children.Add( new Label() { Text = "Fehler beim Laden der erledigten Leistung: ",TextColor = Colors.Red });
-                                AppModel.Logger.Warn("ERROR: Fehler beim Laden der erledigten Leistung: " + (p == null ? "(p = null) :: ":" ") 
+                                containerReady.Children.Add(new Label() { Text = "Fehler beim Laden der erledigten Leistung: ", TextColor = Colors.Red });
+                                AppModel.Logger.Warn("ERROR: Fehler beim Laden der erledigten Leistung: " + (p == null ? "(p = null) :: " : " ")
                                         + ex.Message + "-- - " + ex.StackTrace != null ? ex.StackTrace : "");
                             }
                             //containerReady.IsVisible = true;
@@ -4732,14 +4742,14 @@ namespace iPMCloud.Mobile
             {
                 panelShowSelectedPos_Container.IsVisible = visible;
                 selectedPosList_container.Children.Add(LeistungWSO.GetSelectedPositionAgainListView(
-                    new Command<LeistungWSO>(RemoveSelectPositionAgainFromToWork), 
+                    new Command<LeistungWSO>(RemoveSelectPositionAgainFromToWork),
                     new Command<ChangeSelectedMuellPos>(ChangeSelectedMuellPos)));
-            } 
+            }
             else
             {
                 panelShowSelectedPos_Container.IsVisible = visible;
                 selectedPosList_container.Children.Clear();
-            }            
+            }
         }
 
 
@@ -5018,91 +5028,91 @@ namespace iPMCloud.Mobile
         }
 
 
-    public async void StartSelectedPosAgainTapped_Done(object sender = null, EventArgs e = null)
-    {
-        AuswahlAnzeigenTapped_Done(false);
-
-        AppModel.Instance.allSelectedPositionAgainToWork.ForEach(l =>
+        public async void StartSelectedPosAgainTapped_Done(object sender = null, EventArgs e = null)
         {
-            decimal anzahlValue = 1m;
-            var rawProduktAnzahl = l.produktAnzahl?.Trim();
+            AuswahlAnzeigenTapped_Done(false);
 
-            if (!string.IsNullOrWhiteSpace(rawProduktAnzahl))
+            AppModel.Instance.allSelectedPositionAgainToWork.ForEach(l =>
             {
-                if (decimal.TryParse(rawProduktAnzahl, NumberStyles.Number, CultureInfo.GetCultureInfo("de-DE"), out var deValue) && deValue > 0)
+                decimal anzahlValue = 1m;
+                var rawProduktAnzahl = l.produktAnzahl?.Trim();
+
+                if (!string.IsNullOrWhiteSpace(rawProduktAnzahl))
                 {
-                    anzahlValue = deValue;
+                    if (decimal.TryParse(rawProduktAnzahl, NumberStyles.Number, CultureInfo.GetCultureInfo("de-DE"), out var deValue) && deValue > 0)
+                    {
+                        anzahlValue = deValue;
+                    }
+                    else if (decimal.TryParse(rawProduktAnzahl, NumberStyles.Number, CultureInfo.InvariantCulture, out var invariantValue) && invariantValue > 0)
+                    {
+                        anzahlValue = invariantValue;
+                    }
                 }
-                else if (decimal.TryParse(rawProduktAnzahl, NumberStyles.Number, CultureInfo.InvariantCulture, out var invariantValue) && invariantValue > 0)
+
+                var work = new LeistungInWorkWSO
                 {
-                    anzahlValue = invariantValue;
-                }
+                    id = l.id,
+                    gruppeid = l.gruppeid,
+                    objektid = l.objektid,
+                    auftragid = l.auftragid,
+                    kategorieid = l.kategorieid,
+                    anzahl = Utils.formatDEStr(anzahlValue),
+                    bemerkungen = null,
+                    inout = l.inout,
+                    again = 1,
+                };
+
+                AppModel.Instance.allPositionInWork.leistungen.Add(work);
+            });
+
+            var dummyLeistungInWork = new List<LeistungInWorkWSO>();
+
+            if (AppModel.Instance.allPositionInWork.leistungen.Count > 0)
+            {
+                LeistungPackWSO.Save(AppModel.Instance, AppModel.Instance.allPositionInWork);
+                CheckAllSyncFromUpload(); //SyncPositionAgain();
+            }
+            else
+            {
+                AppModel.Instance.allPositionInWork = null;
             }
 
-            var work = new LeistungInWorkWSO
+            // Zurücksetzten aller States für die Auswahl der Ausführungen
+            AppModel.Instance.LastSelectedOrder = null;
+            AppModel.Instance.LastSelectedCategory = null;
+            AppModel.Instance.LastSelectedPosition = null;
+            AppModel.Instance.LastSelectedOrderAgain = null;
+            AppModel.Instance.LastSelectedCategoryAgain = null;
+            AppModel.Instance.LastSelectedPositionAgain = null;
+            AppModel.Instance.allPositionInShowingListView = new Dictionary<int, Border>();
+            AppModel.Instance.allPositionInShowingSmallListView = new Dictionary<int, SwipeView>();
+            AppModel.Instance.allSelectedPositionToWork = new List<LeistungWSO>();
+
+            AppModel.Instance.allPositionAgainInShowingListView = new Dictionary<int, Border>();
+            AppModel.Instance.allPositionAgainInShowingSmallListView = new Dictionary<int, SwipeView>();
+            AppModel.Instance.allSelectedPositionAgainToWork = new List<LeistungWSO>();
+
+            // alle selektionen und disabled zurücksetzen 
+            AppModel.Instance.LastBuilding.ArrayOfAuftrag.ForEach(o =>
             {
-                id = l.id,
-                gruppeid = l.gruppeid,
-                objektid = l.objektid,
-                auftragid = l.auftragid,
-                kategorieid = l.kategorieid,
-                anzahl = Utils.formatDEStr(anzahlValue),
-                bemerkungen = null,
-                inout = l.inout,
-                again = 1,
-            };
-
-            AppModel.Instance.allPositionInWork.leistungen.Add(work);
-        });
-
-        var dummyLeistungInWork = new List<LeistungInWorkWSO>();
-
-        if (AppModel.Instance.allPositionInWork.leistungen.Count > 0)
-        {
-            LeistungPackWSO.Save(AppModel.Instance, AppModel.Instance.allPositionInWork);
-            CheckAllSyncFromUpload(); //SyncPositionAgain();
-        }
-        else
-        {
-            AppModel.Instance.allPositionInWork = null;
-        }
-
-        // Zurücksetzten aller States für die Auswahl der Ausführungen
-        AppModel.Instance.LastSelectedOrder = null;
-        AppModel.Instance.LastSelectedCategory = null;
-        AppModel.Instance.LastSelectedPosition = null;
-        AppModel.Instance.LastSelectedOrderAgain = null;
-        AppModel.Instance.LastSelectedCategoryAgain = null;
-        AppModel.Instance.LastSelectedPositionAgain = null;
-        AppModel.Instance.allPositionInShowingListView = new Dictionary<int, Border>();
-        AppModel.Instance.allPositionInShowingSmallListView = new Dictionary<int, SwipeView>();
-        AppModel.Instance.allSelectedPositionToWork = new List<LeistungWSO>();
-
-        AppModel.Instance.allPositionAgainInShowingListView = new Dictionary<int, Border>();
-        AppModel.Instance.allPositionAgainInShowingSmallListView = new Dictionary<int, SwipeView>();
-        AppModel.Instance.allSelectedPositionAgainToWork = new List<LeistungWSO>();
-
-        // alle selektionen und disabled zurücksetzen 
-        AppModel.Instance.LastBuilding.ArrayOfAuftrag.ForEach(o =>
-        {
-            o.kategorien.ForEach(c =>
-            {
-                c.leistungen.ForEach(l =>
+                o.kategorien.ForEach(c =>
                 {
-                    l.selected = false;
-                    l.disabled = false;
-                    l.objekt = null;
+                    c.leistungen.ForEach(l =>
+                    {
+                        l.selected = false;
+                        l.disabled = false;
+                        l.objekt = null;
+                    });
                 });
             });
-        });
 
-        ShowMainPage();
-    }
-
+            ShowMainPage();
+        }
 
 
-    // ClearLastBuilding
-    public void btn_ClearLastBuildingTapped(object sender, EventArgs e)
+
+        // ClearLastBuilding
+        public void btn_ClearLastBuildingTapped(object sender, EventArgs e)
         {
             if (AppModel.Instance.allPositionInWork != null && AppModel.Instance.allPositionInWork.leistungen.Count > 0)
             {
@@ -6028,7 +6038,7 @@ namespace iPMCloud.Mobile
                             }
                         });
                         BuildingWSO.Save(AppModel.Instance, b);
-                       // popupContainer_container_changelang_status.Text = "" + countReady + " von " + countFrom;
+                        // popupContainer_container_changelang_status.Text = "" + countReady + " von " + countFrom;
                     }
                 });
 
@@ -6079,7 +6089,8 @@ namespace iPMCloud.Mobile
             ShowMainPage();
         }
 
-        public void SetDayOverLastDate(string s) {
+        public void SetDayOverLastDate(string s)
+        {
             dayOverLastDate.Text = s;
         }
 
@@ -6581,15 +6592,15 @@ namespace iPMCloud.Mobile
                             var da = pt.dauer.Split(':');
 
                             // Validierung: Prüfen ob die gesplitteten Werte gültig sind
-                            if (da.Length == 2 && 
-                                !string.IsNullOrWhiteSpace(da[0]) && 
+                            if (da.Length == 2 &&
+                                !string.IsNullOrWhiteSpace(da[0]) &&
                                 !string.IsNullOrWhiteSpace(da[1]))
                             {
                                 var hoursStr = da[0].Replace("-", "").Trim();
                                 var minsStr = da[1].Trim();
 
                                 // Prüfen ob nur Zahlen enthalten sind
-                                if (int.TryParse(hoursStr, out int hours) && 
+                                if (int.TryParse(hoursStr, out int hours) &&
                                     int.TryParse(minsStr, out int mins))
                                 {
                                     var damin = (hours * 60) + mins;
@@ -6943,7 +6954,7 @@ namespace iPMCloud.Mobile
                 //btn_regScanWarn_img.Source = imagesBase.AlertMessage;
 
                 frame_planConA_img_reloadx.Source = GetMuellInOutXImageName(AppModel.Instance.AppSetModel.ViewOnlyMuell);
-                                
+
                 // LoginPerson and Version 
                 lb_LoginUser.Text = AppModel.Instance.Person.anrede + " " + (String.IsNullOrWhiteSpace(AppModel.Instance.Person.vorname) ? "" : (AppModel.Instance.Person.vorname.Length > 0 ? AppModel.Instance.Person.vorname.Substring(0, 1) + ". " : "")) + AppModel.Instance.Person.name;
                 lb_version.Text = "V" + AppModel.Instance.Version; //+ " (" + AppModel.Instance.Build + ")";
@@ -6960,7 +6971,7 @@ namespace iPMCloud.Mobile
                 frm_img_LoginUser.IsVisible = false;
                 if (AppModel.Instance.Person.userIcon != null)
                 {
-                    if (AppModel.Instance.Person !=null && AppModel.Instance.Person.userIcon != null && AppModel.Instance.Person.userIcon.Length > 0)
+                    if (AppModel.Instance.Person != null && AppModel.Instance.Person.userIcon != null && AppModel.Instance.Person.userIcon.Length > 0)
                     {
                         ImageSource userIconImageSource = ImageSource.FromStream(() => new MemoryStream(AppModel.Instance.Person.userIcon));
                         img_LoginUser.Source = userIconImageSource;
@@ -7074,7 +7085,7 @@ namespace iPMCloud.Mobile
                 //var t_frame_plantabCe = new TapGestureRecognizer();
                 //t_frame_plantabCe.Tapped += btn_PlanTabCeTapped;
                 //frame_plantabCe.GestureRecognizers.Add(t_frame_plantabCe);
-                
+
                 //frame_plantabC.GestureRecognizers.Clear();
                 //var t_frame_plantabC = new TapGestureRecognizer();
                 //t_frame_plantabC.Tapped += btn_PlanTabCTapped;
@@ -7631,9 +7642,9 @@ namespace iPMCloud.Mobile
                     // Always unsubscribe before subscribing to prevent duplicate registrations
                     // if SyncNewBuildingManuell is called again before the previous sync completes.
                     iPMCloud.Mobile.Services.SyncCoordinator.ProgressChanged -= OnSyncProgress;
-                    iPMCloud.Mobile.Services.SyncCoordinator.SyncCompleted   -= OnSyncCompleted;
+                    iPMCloud.Mobile.Services.SyncCoordinator.SyncCompleted -= OnSyncCompleted;
                     iPMCloud.Mobile.Services.SyncCoordinator.ProgressChanged += OnSyncProgress;
-                    iPMCloud.Mobile.Services.SyncCoordinator.SyncCompleted   += OnSyncCompleted;
+                    iPMCloud.Mobile.Services.SyncCoordinator.SyncCompleted += OnSyncCompleted;
 
                     // Run SyncCoordinator directly – no ForegroundService.
                     // Fire-and-forget: completion and errors are reported via SyncCompleted / ProgressChanged events.
@@ -7675,7 +7686,7 @@ namespace iPMCloud.Mobile
         {
             // Always unsubscribe first
             iPMCloud.Mobile.Services.SyncCoordinator.ProgressChanged -= OnSyncProgress;
-            iPMCloud.Mobile.Services.SyncCoordinator.SyncCompleted   -= OnSyncCompleted;
+            iPMCloud.Mobile.Services.SyncCoordinator.SyncCompleted -= OnSyncCompleted;
 
             MainThread.BeginInvokeOnMainThread(async () =>
             {
@@ -7820,7 +7831,7 @@ namespace iPMCloud.Mobile
         */
         private async void FastSync(bool run = false)
         {
-            var dt = String.IsNullOrEmpty(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks) ? 
+            var dt = String.IsNullOrEmpty(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks) ?
                 DateTime.Now.AddDays(-2) : new DateTime(long.Parse(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks));
             if (run || dt.AddHours(AppModel.Instance.SettingModel.SettingDTO.SyncTimeHours) < DateTime.Now) //(dt.AddHours(4) < DateTime.Now || manuellSync)
             {

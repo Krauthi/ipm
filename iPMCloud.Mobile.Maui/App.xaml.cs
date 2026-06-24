@@ -26,7 +26,7 @@ namespace iPMCloud.Mobile
                 System.Diagnostics.Debug.WriteLine(e.Message + " - " + (e.StackTrace ?? ""));
                 AppModel.Logger.Error("ERROR: Global(APP.cs): " + e.Message + " - " + (e.StackTrace ?? ""));
 
-                AppModel.Instance.SendLogZipFile();
+                AppModel.Instance.SendLogZipFile(true);
             }
             catch (Exception ex)
             {

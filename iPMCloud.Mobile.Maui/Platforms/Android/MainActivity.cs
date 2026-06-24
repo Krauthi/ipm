@@ -213,10 +213,10 @@ namespace iPMCloud.Mobile
         {
             base.OnWindowFocusChanged(hasFocus);
             //Log.Debug(TAG, $"OnWindowFocusChanged: hasFocus={hasFocus}");
-            if(AppModel.Logger != null && AppModel.Instance != null)
-            {
-                AppModel.Logger.Info(TAG, $"OnWindowFocusChanged: hasFocus={hasFocus}");
-            }
+            //if(AppModel.Logger != null && AppModel.Instance != null)
+            //{
+            //    AppModel.Logger.Info(TAG, $"OnWindowFocusChanged: hasFocus={hasFocus}");
+            //}
 
             if (hasFocus)
             {

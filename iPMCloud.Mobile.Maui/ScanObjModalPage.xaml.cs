@@ -29,6 +29,20 @@ namespace iPMCloud.Mobile
                 BottomText = AppModel.Instance.ScanAddRegTextSec,
             };
 
+            ReaderView.Options = new BarcodeReaderOptions
+            {
+                Formats = BarcodeFormats.TwoDimensional,
+                AutoRotate = true,
+                Multiple = false,
+                DelayBetweenAnalyzingFrames = 30,
+                InitialDelayBeforeAnalyzingFrames = 0,
+                DelayBetweenContinuousScans = 0,
+                CameraResolutionSelector = availableResolutions =>
+                    availableResolutions
+                        .OrderBy(r => Math.Abs((r.Width * r.Height) - (1280 * 720)))
+                        .ThenBy(r => Math.Abs(r.Width - 1280) + Math.Abs(r.Height - 720))
+                        .First()
+            };
 
             btn_back_inAddRegScan.GestureRecognizers.Clear();
             var tgr7 = new TapGestureRecognizer();
@@ -144,6 +158,20 @@ namespace iPMCloud.Mobile
             {
                 try
                 {
+                    ReaderView.Options = new BarcodeReaderOptions
+                    {
+                        Formats = BarcodeFormats.TwoDimensional,
+                        AutoRotate = true,
+                        Multiple = false,
+                        DelayBetweenAnalyzingFrames = 30,
+                        InitialDelayBeforeAnalyzingFrames = 0,
+                        DelayBetweenContinuousScans = 0,
+                        CameraResolutionSelector = availableResolutions =>
+                            availableResolutions
+                                .OrderBy(r => Math.Abs((r.Width * r.Height) - (1280 * 720)))
+                                .ThenBy(r => Math.Abs(r.Width - 1280) + Math.Abs(r.Height - 720))
+                                .First()
+                    };
                     await Task.Delay(300, token);
                     //System.Diagnostics.Debug.WriteLine("[ScanObjModalPage] IsDetecting = true");
                     ReaderView.IsDetecting = true;

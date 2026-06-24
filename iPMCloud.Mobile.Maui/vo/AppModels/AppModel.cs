@@ -1258,7 +1258,7 @@ namespace iPMCloud.Mobile.vo
             Logger = NLog.LogManager.CreateNullLogger();
         }
 
-        public bool SendLogZipFile()
+        public bool SendLogZipFile(bool isGlobal = false)
         {
             string headstr = "";
             // Device Model (SMG-950U, iPhone10,6)
@@ -1288,7 +1288,9 @@ namespace iPMCloud.Mobile.vo
                 AppModel.Logger.Info("INFO: V" + AppModel.Instance.Version + " (" + AppModel.Instance.Person.name + " " + AppModel.Instance.Person.vorname + ")");
             }
 
-            headstr += "<p style=\"margin:2px 5px;\">Von:" +
+            headstr += "<p style=\"margin:2px 5px;\">SEND LOG: " + (isGlobal ? "AUTO" : "Manuel von Person") + "</p>";
+
+            headstr += "<p style=\"margin:2px 5px;\">Von: (" + AppModel.Instance.SettingModel.SettingDTO.CustomerNumber + ") " +
                 AppModel.Instance.SettingModel.SettingDTO.CustomerName + ": " +
                 (AppModel.Instance.Person != null ? (AppModel.Instance.Person.name + " " + AppModel.Instance.Person.vorname) : "Person noch nicht angemeldet!") + "</p>";
             headstr += "<p style=\"margin:2px 5px;\">Last GPS: " + AppModel.Instance.LocationStr + "</p>";

@@ -1849,8 +1849,78 @@ namespace iPMCloud.Mobile
             leistung.produktAnzahl = entry.Text;
         }
 
-
         public static VerticalStackLayout GetInWorkPositionListView(AppModel model, ICommand func)
+        {
+            var stack = new VerticalStackLayout
+            {
+                Padding = new Thickness(0, 0, 0, 0),
+                Margin = new Thickness(0, 0, 0, 3),
+                Spacing = 0,
+                HorizontalOptions = LayoutOptions.Fill,
+            };
+
+            try
+            {
+                if (model?.allPositionInWork?.leistungen == null)
+                {
+                    AppModel.Logger?.Warn("WARN: GetInWorkPositionListView called without allPositionInWork.leistungen.");
+                    stack.Children.Add(new Label
+                    {
+                        Text = "GetInWorkPositionListView:(NULL) Keine Positionen in Arbeit.",
+                        TextColor = Color.FromArgb("#cccccc"),
+                        Margin = new Thickness(5, 5, 5, 5),
+                        FontSize = 14,
+                        LineBreakMode = LineBreakMode.WordWrap,
+                    });
+                    return stack;
+                }
+
+                foreach (var lei in model.allPositionInWork.leistungen)
+                {
+                    if (lei == null)
+                        continue;
+
+                    var building = model.LastBuilding ?? BuildingWSO.LoadBuilding(model, lei.objektid);
+                    if (building?.ArrayOfAuftrag == null)
+                    {
+                        AppModel.Logger?.Warn($"WARN: Building or ArrayOfAuftrag missing for InWork item {lei.id} (objektid={lei.objektid}).");
+                        continue;
+                    }
+
+                    var o = building.ArrayOfAuftrag.Find(auf => auf != null && auf.id == lei.auftragid);
+                    if (o?.kategorien == null)
+                    {
+                        AppModel.Logger?.Warn($"WARN: Auftrag missing for InWork item {lei.id} (auftragid={lei.auftragid}).");
+                        continue;
+                    }
+
+                    var c = o.kategorien.Find(kat => kat != null && kat.id == lei.kategorieid);
+                    if (c?.leistungen == null)
+                    {
+                        AppModel.Logger?.Warn($"WARN: Kategorie missing for InWork item {lei.id} (kategorieid={lei.kategorieid}).");
+                        continue;
+                    }
+
+                    var l = c.leistungen.Find(f => f != null && f.id == lei.id);
+                    if (l == null)
+                    {
+                        AppModel.Logger?.Warn($"WARN: Leistung missing for InWork item {lei.id}.");
+                        continue;
+                    }
+
+                    var stackPos = GetInWorkPositionSmallCardView(o, c, l, lei, model, func);
+                    stack.Children.Add(stackPos);
+                }
+
+                return stack;
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger.Error(ex, "ERROR: LeistungWSO - GetInWorkPositionListView(): ");
+                return stack;
+            }
+        }
+        public static VerticalStackLayout GetInWorkPositionListView_OLD(AppModel model, ICommand func)
         {
 
             var stack = new VerticalStackLayout

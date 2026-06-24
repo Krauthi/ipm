@@ -6,6 +6,7 @@
     xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
     xmlns:vo="clr-namespace:iPMCloud.Mobile.vo"
     xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.Maui.Controls"
+    xmlns:zxingOptions="clr-namespace:ZXing.Net.Maui;assembly=ZXing.Net.Maui"
     BackgroundColor="Black"
     ClassId="MainPage">
 
@@ -4611,6 +4612,16 @@
                     HorizontalOptions="Fill"
                     IsDetecting="True"
                     VerticalOptions="Fill" />
+                <!--<zxing:CameraBarcodeReaderView.Options>
+                        <zxingOptions:BarcodeReaderOptions
+        Formats="QrCode"
+        AutoRotate="True"
+        Multiple="False"
+        DelayBetweenAnalyzingFrames="50"
+        InitialDelayBeforeAnalyzingFrames="0"
+        DelayBetweenContinuousScans="300" />
+                    </zxing:CameraBarcodeReaderView.Options>-->
+
 
                 <!--  Bottom Stack  -->
                 <StackLayout
@@ -6557,7 +6568,7 @@
                     HorizontalOptions="Fill"
                     HorizontalTextAlignment="Start"
                     Text="Beenden Sie nicht die App oder legen Sie diese nicht in den Hintergrund! Diese Download muss einwandfrei durchlaufen!"
-                    TextColor="#ffffff"
+                    TextColor="#ffcc00"
                     VerticalOptions="Center" />
 
                 <VerticalStackLayout

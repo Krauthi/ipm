@@ -184,7 +184,7 @@ namespace iPMCloud.Mobile
             return _prio;
         }
 
-        public static VerticalStackLayout GetOrderListView(AppModel model, ICommand func)
+        public static VerticalStackLayout GetOrderListView_OLD(AppModel model, ICommand func)
         {
             var stack = new VerticalStackLayout
             {
@@ -212,6 +212,55 @@ namespace iPMCloud.Mobile
             });
             return stack;
         }
+        public static VerticalStackLayout GetOrderListView(AppModel model, ICommand func)
+        {
+            var stack = new VerticalStackLayout
+            {
+                Padding = new Thickness(5, 0, 5, 0),
+                Margin = new Thickness(0, 0, 0, 0),
+                Spacing = 0,
+                HorizontalOptions = LayoutOptions.Fill,
+            };
+
+            if (model == null || model.LastBuilding == null || model.LastBuilding.ArrayOfAuftrag == null)
+            {
+                AppModel.Logger?.Warn("WARN: GetOrderListView LastBuilding/ArrayOfAuftrag eins von beides ist NULL (SYNCHRONISIEREN).");
+                stack.Children.Add(new Label
+                {
+                    Text = model.LastBuilding != null ? "" + model.LastBuilding.plz + " " + model.LastBuilding.ort 
+                    + " " + model.LastBuilding.strasse + " " + model.LastBuilding.hsnr + " :: Keine Aufträge verfügbar. Bitte synchronisieren Sie die Daten." 
+                    : "Keine Objekt/Aufträge verfügbar. Bitte synchronisieren Sie die Daten.",
+                    TextColor = Color.FromArgb("#ff0000"),
+                    Margin = new Thickness(5, 5, 5, 5),
+                    FontSize = 16,
+                    HorizontalOptions = LayoutOptions.Center,
+                    LineBreakMode = LineBreakMode.WordWrap,
+                }); 
+                return stack;
+            }
+
+            var selOrderId = -1;
+            if (model.allSelectedPositionToWork != null && model.allSelectedPositionToWork.Count > 0)
+            {
+                var first = model.allSelectedPositionToWork.FirstOrDefault();
+                if (first != null)
+                    selOrderId = first.auftragid;
+            }
+
+            foreach (var o in model.LastBuilding.ArrayOfAuftrag)
+            {
+                if (o == null)
+                    continue;
+
+                if (o.id == selOrderId || selOrderId < 0)
+                    stack.Children.Add(GetOrderCardView(o, model, func));
+                else
+                    stack.Children.Add(GetDisableOrderCardView(o, model));
+            }
+
+            return stack;
+        }
+
         public static Grid GetOrderCardView(AuftragWSO order, AppModel model, ICommand func)
         {
             var _prio = CalcOverdue(order, model);

@@ -4,6 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.Maui.Controls"
+                    xmlns:zxingOptions="clr-namespace:ZXing.Net.Maui;assembly=ZXing.Net.Maui"
     Title="QR-Code scannen">
 
 
@@ -88,16 +89,26 @@
 
 
 
-                <zxing:CameraBarcodeReaderView
+            <zxing:CameraBarcodeReaderView
                     x:Name="ReaderView"
                     Grid.Row="0"
                     BarcodesDetected="ReaderView_BarcodesDetected"
                     CameraLocation="Rear"
                     HorizontalOptions="Fill"
                     IsDetecting="True"
-                    VerticalOptions="Fill" />
+                    VerticalOptions="Fill" >
+                <zxing:CameraBarcodeReaderView.Options>
+                <zxingOptions:BarcodeReaderOptions
+        Formats="QrCode"
+        AutoRotate="True"
+        Multiple="False"
+        DelayBetweenAnalyzingFrames="50"
+        InitialDelayBeforeAnalyzingFrames="0"
+        DelayBetweenContinuousScans="300" />
+                </zxing:CameraBarcodeReaderView.Options>
+            </zxing:CameraBarcodeReaderView>
 
-                <!--  Bottom Stack  -->
+            <!--  Bottom Stack  -->
                 <StackLayout
                     Grid.Row="1"
                     Margin="0,20,0,40"

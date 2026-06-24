@@ -8259,7 +8259,6 @@ namespace iPMCloud.Mobile
                                         var aufs = resp.auftraege.FindAll(a => a.objektid == blist[zz][z].id);
                                         blist[zz][z].ArrayOfAuftrag = aufs;
                                     }
-                                    ;
                                 }
 
                                 bs.AddRange(blist[zz]);

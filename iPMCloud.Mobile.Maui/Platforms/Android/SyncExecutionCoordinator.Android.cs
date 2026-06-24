@@ -118,9 +118,7 @@ public sealed class SyncExecutionService : Service
             }
 
             ReleaseWakeLock();
-#pragma warning disable CS0618
-            StopForeground(true);
-#pragma warning restore CS0618
+            StopForegroundCompat();
         }
 
         base.OnDestroy();
@@ -135,9 +133,7 @@ public sealed class SyncExecutionService : Service
             return;
         }
 
-#pragma warning disable CS0618
-        StopForeground(true);
-#pragma warning restore CS0618
+        StopForegroundCompat();
     }
 
     private Notification BuildNotification()
@@ -216,5 +212,18 @@ public sealed class SyncExecutionService : Service
         }
 
         _wakeLock = null;
+    }
+
+    private void StopForegroundCompat()
+    {
+        if (Build.VERSION.SdkInt >= BuildVersionCodes.N)
+        {
+            StopForeground(StopForegroundFlags.Remove);
+            return;
+        }
+
+#pragma warning disable CS0618
+        StopForeground(true);
+#pragma warning restore CS0618
     }
 }

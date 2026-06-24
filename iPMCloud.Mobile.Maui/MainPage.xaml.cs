@@ -8158,93 +8158,11 @@ namespace iPMCloud.Mobile
             // Checlisten Count setzen
             SetChecksCount();
         }
-        private async void SyncBuildingManuell(bool manuellSync = false)
+        private void SyncBuildingManuell(bool manuellSync = false)
         {
-            SyncNewBuildingManuell(manuellSync);
-            /*return;
-            try
-            {
-                var dt = String.IsNullOrEmpty(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks) ? DateTime.Now.AddDays(-2) : new DateTime(long.Parse(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks));
-                if (dt.AddHours(AppModel.Instance.SettingModel.SettingDTO.SyncTimeHours) < DateTime.Now || manuellSync) //(dt.AddHours(4) < DateTime.Now || manuellSync)
-                {
-                    //AppModel.Logger.Info("Info: STARTE Sync Objekte/Auftraege/Leistungen => SyncBuilding");
-                    // Objekte sycnen erforderlich nach 12 Stunden
-                    popupContainer.IsVisible = true;
-                    await Task.Delay(1);
-
-
-                    IpmBuildingResponse ipmBuildingResponse = await Task.Run(() => { return AppModel.Instance.Connections.IpmBuildingSync(); });
-                    if (ipmBuildingResponse == null || !ipmBuildingResponse.success)
-                    {
-                        // Synchronisierung FAILED
-                        AppModel.Logger.Warn("WARN: iPM.Mobile Error (0): Sync FEHLGESCHLAGEN  => SyncBuilding");
-                        popupContainer.IsVisible = false;
-                        await Task.Delay(1);
-                        CheckForBuildingFailed(ipmBuildingResponse);
-                        //********* Update Plandaten 
-                        Load_PlanTabs(((int)DateTime.Now.DayOfWeek));
-                    }
-                    else
-                    {
-                        if (ipmBuildingResponse.AppControll != null)
-                        {
-                            AppModel.Instance.AppControll = ipmBuildingResponse.AppControll;
-                            if (AppModel.Instance.AppControll == null) { AppModel.Instance.AppControll = new AppControll(); }
-                            AppControll.Save(AppModel.Instance, AppModel.Instance.AppControll);
-                            SetAppControll();
-                        }
-                        // Erfolgreich synchronisiert
-                        //AppModel.Logger.Info("Info: Sync war erfolgreich => SyncBuilding");
-                        AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks = DateTime.Now.Ticks.ToString();
-                        dt = new DateTime(long.Parse(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks));
-                        AppModel.Instance.SettingModel.SaveSettings();
-
-                        BuildingWSO.DeleteBuildings(ipmBuildingResponse.deletedBuidlings);
-
-                        if (AppModel.Instance.AppControll.lang == "de" || !AppModel.Instance.AppControll.translation)
-                        {
-                            SyncBuildingDone(ipmBuildingResponse);
-                            AppModel.Instance.SetAllKategorieNames();
-                        }
-                        else
-                        {
-                            //Sync und Übersetzen
-                            var _ = await translateAfterSyncedBuildings(AppModel.Instance.AppControll.lang, ipmBuildingResponse.builgings, AppModel.Instance.Lang.lang != AppModel.Instance.AppControll.lang);
-                            AppModel.Instance.AllBuildings = ipmBuildingResponse.builgings.OrderBy(o => o.id).ToList();
-                            AppModel.Instance.InitBuildingsAgain();
-                            SetLastBuilding();
-                            AppModel.Instance.SetAllKategorieNames();
-                        }
-
-                        if (AppModel.Instance.Lang.lang != AppModel.Instance.AppControll.lang)
-                        {
-                            AppModel.Instance.Lang.lang = AppModel.Instance.AppControll.lang;
-                            Lang.Save(AppModel.Instance.Lang);
-                        }
-
-
-                        popupContainer.IsVisible = false;
-                        await Task.Delay(1);
-                        //********* Update Plandaten 
-                        Load_PlanTabs(((int)DateTime.Now.DayOfWeek));
-                    }
-                }
-                else
-                {
-                    Load_PlanTabs(((int)DateTime.Now.DayOfWeek));
-                }
-                box_buildingInformation.Children.Clear();
-                box_buildingInformation.Children.Add(BuildingWSO.GetBuildingInformation(AppModel.Instance, dt));
-            }
-            catch (Exception ex)
-            {
-                AppModel.Logger.Error("Method => MainPage-SyncBuildingManuell(catch): " + ex.Message);
-                AppModel.Instance.InclFilesAsJson = true;
-                var ok = AppModel.Instance.SendLogZipFile();
-                await Task.Delay(2000);
-            }*/
+            SyncNewBuildingManuell(manuellSync, false);
         }
-        private async void CheckForBuildingFailed(IpmBuildingResponse ipmBuildingResponse)
+        private async Task CheckForBuildingFailed(IpmBuildingResponse ipmBuildingResponse)
         {
             if (AppModel.Instance.AllBuildings == null || AppModel.Instance.AllBuildings.Count == 0)
             {
@@ -8260,7 +8178,7 @@ namespace iPMCloud.Mobile
             SetLastBuilding();
         }
 
-        private async void SyncNewBuildingManuell(bool manuellSync = false)
+        private async void SyncNewBuildingManuell(bool manuellSync = false, bool useForegroundService = true)
         {
             try
             {
@@ -8273,14 +8191,24 @@ namespace iPMCloud.Mobile
                     popupContainer.IsVisible = true;
                     await Task.Delay(1);
 
-                    IpmNewSyncResponse ipmNewBuildingResponse = await Task.Run(() => { return AppModel.Instance.Connections.IpmNewBuildingSync(); });
+                    IpmNewSyncResponse ipmNewBuildingResponse;
+                    using ((useForegroundService ? SyncExecutionCoordinator.BeginForeground(
+                            "Objekt-Synchronisierung",
+                            "Die Objekt-Synchronisierung läuft im Vordergrund.")
+                        : SyncExecutionCoordinator.BeginBackground(
+                            "Objekt-Synchronisierung",
+                            "Die Objekt-Synchronisierung läuft weiter, auch wenn die App in den Hintergrund wechselt.")))
+                    {
+                        ipmNewBuildingResponse = await Task.Run(() => { return AppModel.Instance.Connections.IpmNewBuildingSync(); });
+                    }
+
                     if (ipmNewBuildingResponse == null || !ipmNewBuildingResponse.success)
                     {
                         // Synchronisierung FAILED
                         AppModel.Logger.Warn("WARN: iPM.Mobile Error (0): Sync FEHLGESCHLAGEN  => NewSyncBuilding");
                         popupContainer.IsVisible = false;
                         await Task.Delay(1);
-                        CheckForNewBuildingFailed(ipmNewBuildingResponse);
+                        await CheckForNewBuildingFailed(ipmNewBuildingResponse);
                         //********* Update Plandaten 
                         Load_PlanTabs(((int)DateTime.Now.DayOfWeek));
                     }
@@ -8297,52 +8225,63 @@ namespace iPMCloud.Mobile
                         int ii = 0;
                         var bs = new List<BuildingWSO>();
                         var blist = ListExtensions.ChunkBy(ipmNewBuildingResponse.builgings.Distinct().ToList(), 10);
+                        if (blist.Count == 0)
+                        {
+                            await SyncNewBuildingManuell_next(ipmNewBuildingResponse);
+                            return;
+                        }
+
                         double pr = 0;
                         popupContainer_count.Text = "SYNCHRONISATION (0%)";
                         await Task.Delay(1);
-                        for (int zz = 0; zz < blist.Count; zz++)
+                        using (SyncExecutionCoordinator.BeginBackground(
+                            "Aufträge-Synchronisierung",
+                            "Die Aufträge-Synchronisierung läuft weiter, auch wenn die App in den Hintergrund wechselt."))
                         {
-                            pr = Convert.ToDouble(i) / (Convert.ToDouble(blist.Count) / 100);
-                            pr = pr == 0 ? 1d : pr;
-                            popupContainer_count.Text = "SYNCHRONISATION (" + pr.ToString("###") + "%)";
-                            await Task.Delay(10);
-                            //UpdateSyncCounter(pr);
+                            for (int zz = 0; zz < blist.Count; zz++)
+                            {
+                                pr = Convert.ToDouble(i) / (Convert.ToDouble(blist.Count) / 100);
+                                pr = pr == 0 ? 1d : pr;
+                                popupContainer_count.Text = "SYNCHRONISATION (" + pr.ToString("###") + "%)";
+                                await Task.Delay(10);
+                                //UpdateSyncCounter(pr);
 
-                            i++;
-                            string objids = "";
-                            //var objidsInt = Utils.ConvertStringToListInt(objids);
-                            blist[zz].ForEach(b => { objids = objids + (objids.Length > 0 ? "," : "") + b.id; });
-                            IpmNewSyncResponse resp = await AppModel.Instance.Connections.IpmNewAuftragSyncAsync(objids);
-                            if (resp != null && resp.auftraege != null)
-                            {
-                                ii++;
-                                for (int z = 0; z < blist[zz].Count; z++)
+                                i++;
+                                string objids = "";
+                                //var objidsInt = Utils.ConvertStringToListInt(objids);
+                                blist[zz].ForEach(b => { objids = objids + (objids.Length > 0 ? "," : "") + b.id; });
+                                IpmNewSyncResponse resp = await AppModel.Instance.Connections.IpmNewAuftragSyncAsync(objids);
+                                if (resp != null && resp.auftraege != null)
                                 {
-                                    var aufs = resp.auftraege.FindAll(a => a.objektid == blist[zz][z].id);
-                                    blist[zz][z].ArrayOfAuftrag = aufs;
+                                    ii++;
+                                    for (int z = 0; z < blist[zz].Count; z++)
+                                    {
+                                        var aufs = resp.auftraege.FindAll(a => a.objektid == blist[zz][z].id);
+                                        blist[zz][z].ArrayOfAuftrag = aufs;
+                                    }
+                                    ;
                                 }
-                                ;
-                            }
-                            bs.AddRange(blist[zz]);
-                            if (blist.Count == i)
-                            {
-                                UpdateSyncCounter(100d);
-                                if (i == ii)
+
+                                bs.AddRange(blist[zz]);
+                                if (blist.Count == i)
                                 {
-                                    // Erfolgreich synchronisiert
-                                    ipmNewBuildingResponse.builgings = bs;
-                                    SyncNewBuildingManuell_next(ipmNewBuildingResponse);
-                                }
-                                else
-                                {
-                                    // Nicht vollständig syncronisiert!!!
-                                    popupContainer.IsVisible = false;
-                                    popupContainerSyncFaild.IsVisible = true;
-                                    await Task.Delay(1);
+                                    UpdateSyncCounter(100d);
+                                    if (i == ii)
+                                    {
+                                        // Erfolgreich synchronisiert
+                                        ipmNewBuildingResponse.builgings = bs;
+                                        await SyncNewBuildingManuell_next(ipmNewBuildingResponse);
+                                    }
+                                    else
+                                    {
+                                        // Nicht vollständig syncronisiert!!!
+                                        popupContainer.IsVisible = false;
+                                        popupContainerSyncFaild.IsVisible = true;
+                                        await Task.Delay(1);
+                                    }
                                 }
                             }
                         }
-                        ;
                     }
                 }
                 else
@@ -8365,7 +8304,7 @@ namespace iPMCloud.Mobile
             popupContainer_count.Text = "SYNCHRONISATION (" + pr.ToString("###,##") + "%)";
             await Task.Delay(1);
         }
-        private async void SyncNewBuildingManuell_next(IpmNewSyncResponse ipmNewBuildingResponse)
+        private async Task SyncNewBuildingManuell_next(IpmNewSyncResponse ipmNewBuildingResponse)
         {
             try
             {
@@ -8415,7 +8354,7 @@ namespace iPMCloud.Mobile
         }
 
 
-        private async void CheckForNewBuildingFailed(IpmNewSyncResponse ipmNewBuildingResponse)
+        private async Task CheckForNewBuildingFailed(IpmNewSyncResponse ipmNewBuildingResponse)
         {
             if (AppModel.Instance.AllBuildings == null || AppModel.Instance.AllBuildings.Count == 0)
             {

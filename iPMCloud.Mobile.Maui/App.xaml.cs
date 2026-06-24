@@ -137,6 +137,7 @@ namespace iPMCloud.Mobile
 
             //StartBackgroundService();
             AppModel.Instance.isInBackground = false;
+            SyncExecutionCoordinator.OnAppBackgroundChanged(false);
             AppModel.Instance.AppOnStart = DateTime.Now;
             base.OnStart();
 
@@ -166,6 +167,7 @@ namespace iPMCloud.Mobile
         protected async override void OnSleep()
         {
             AppModel.Instance.isInBackground = true;
+            SyncExecutionCoordinator.OnAppBackgroundChanged(true);
             //AppModel.Logger.Info("(OnSleep) App in den Hintergrund gelegt");
             AppModel.Instance.AppOnSleep = DateTime.Now;
             AppModel.Instance.AppOnResume = AppModel.Instance.AppOnSleep;
@@ -218,6 +220,7 @@ namespace iPMCloud.Mobile
                 }
 
                 AppModel.Instance.AppOnResume = DateTime.Now;
+                SyncExecutionCoordinator.OnAppBackgroundChanged(false);
                 AppModel.Instance.isInBackground = false;
 
                 //if (AppModel.Instance.AppOnResume > AppModel.Instance.AppOnSleep.AddSeconds(10) || AppModel.Instance.UseExternHardware)

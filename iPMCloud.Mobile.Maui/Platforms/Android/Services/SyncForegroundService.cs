@@ -214,7 +214,23 @@ namespace iPMCloud.Mobile.Platforms.Android.Services
                 .SetOngoing(true)
                 .SetOnlyAlertOnce(true)
                 .SetContentIntent(pi)
+                .SetPriority(NotificationCompat.PriorityLow)
                 .SetCategory(NotificationCompat.CategoryProgress);
+
+            // Try to load and set large icon (the iPM logo shown prominently)
+            try
+            {
+                var bitmap = global::Android.Graphics.BitmapFactory.DecodeResource(
+                    Resources, Resource.Drawable.ipmlogo_m);
+                if (bitmap != null)
+                {
+                    builder.SetLargeIcon(bitmap);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Warn(TAG, $"Could not set large icon: {ex.Message}");
+            }
 
             if (progressPercent > 0 && progressPercent < 100)
                 builder.SetProgress(100, progressPercent, false);

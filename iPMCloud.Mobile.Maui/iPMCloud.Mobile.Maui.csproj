@@ -9,11 +9,11 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ApplicationTitle>iPM-Cloud</ApplicationTitle>
 		<ApplicationIdGuid>201CEFAB-590D-414F-9660-9EFF31FE2078</ApplicationIdGuid>
-		<ApplicationDisplayVersion>3.0.70</ApplicationDisplayVersion>
+		<ApplicationDisplayVersion>3.0.73</ApplicationDisplayVersion>
 		<ApplicationVersion>1</ApplicationVersion>
-		<Version>3000070</Version>
-		<AssemblyVersion>3.0.70.0</AssemblyVersion>
-		<FileVersion>3.0.70.0</FileVersion>
+		<Version>3000073</Version>
+		<AssemblyVersion>3.0.73.0</AssemblyVersion>
+		<FileVersion>3.0.73.0</FileVersion>
 		<NeutralLanguage>de-DE</NeutralLanguage>
 		<Copyright>iPM-Cloud</Copyright> 
 		<Nullable>disable</Nullable>
@@ -187,11 +187,12 @@
 </PropertyGroup>
 
 
-	<!--
+
+	
 <PropertyGroup Condition="'$(TargetFramework)'=='net10.0-ios'">
   <CodesignKey>Apple Development: Created via API (4RDNR6C66G)</CodesignKey>
   <CodesignProvision>VS: com.ipmcloud.ipm.mobile.app Development</CodesignProvision>
-</PropertyGroup>-->
+</PropertyGroup>
 
 
 

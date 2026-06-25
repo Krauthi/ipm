@@ -69,8 +69,8 @@ namespace iPMCloud.Mobile.vo
             switch (mainPage)
             {
                 case PAGE_STARTPAGE:
-                    if (LastMainPage != CurrentMainPage)
-                    {
+                    //if (LastMainPage != CurrentMainPage)
+                    //{
                         if(AppModel.Instance.StartPage != null)
                         {
                             StartPageObj = AppModel.Instance.StartPage;
@@ -89,16 +89,15 @@ namespace iPMCloud.Mobile.vo
 
                         AppModel.Instance.StartPage.StartPageAgain();
 
-                    }
+                    //}
                     break;
 
 
                 case PAGE_MAINPAGE:
-                    if (LastMainPage != CurrentMainPage)
-                    {
+                    //if (LastMainPage != CurrentMainPage)
+                    //{
                         if(AppModel.Instance.MainPage != null)
                         {
-                            AppModel.Logger.Info("Reusing existing MainPage instance.");
                             MainPageObj = AppModel.Instance.MainPage;
                         }
                         else
@@ -116,7 +115,7 @@ namespace iPMCloud.Mobile.vo
 
                         AppModel.Instance.MainPage.MainPageAgain();
 
-                    }
+                    //}
                     break;
 
 
@@ -160,33 +159,6 @@ namespace iPMCloud.Mobile.vo
             });
         }
 
-        //public bool NavigateBackToPreviousPage()
-        //{
-        //    switch (CurrentMainPage)
-        //    {
-        //        case PAGE_STARTPAGE:
-        //            //switch (CurrentSubPage)
-        //            //{
-        //            //    case SUBPAGE_STARTPAGE_MENU:
-        //            //        // APP ENDE
-        //            //        return true;
-        //            //        //case SUBPAGE_STARTPAGE_SETTINGS:
-        //            //        //    NavigateTo(PAGE_STARTPAGE, SUBPAGE_STARTPAGE_MENU);
-        //            //        //    break;
-        //            //}
-        //            return true;
-        //            //break;
-
-
-        //        case PAGE_MAINPAGE:
-        //            NavigateTo(PAGE_STARTPAGE);
-        //            break;
-
-        //        default:
-        //            return true;// close app (only Android)
-        //    }
-        //    return false;
-        //}
 
     }
 }

@@ -4525,9 +4525,9 @@
             AbsoluteLayout.LayoutFlags="All"
             BackgroundColor="Black"
             HorizontalOptions="Fill"
-            RowSpacing="0"
-            IsVisible="False"
             IsEnabled="False"
+            IsVisible="False"
+            RowSpacing="0"
             VerticalOptions="Fill">
 
             <Grid.RowDefinitions>
@@ -4637,7 +4637,7 @@
                         HorizontalOptions="Center"
                         Text="Das Scannen erfolgt automatisch"
                         TextColor="White" />
-        
+
                     <!--  Flash Button  -->
                     <Button
                         Margin="0,20,0,0"
@@ -4655,7 +4655,7 @@
 
         </Grid>
 
-        
+
 
         <Grid
             x:Name="ObjectValuesPage_Container"

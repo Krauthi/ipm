@@ -87,6 +87,7 @@ namespace iPMCloud.Mobile
         private bool _isOpeningPersonTimesModal = false;
 
         private iPMCloud.Mobile.Services.IUploadService _uploadService;
+        private iPMCloud.Mobile.Services.IBackgroundSyncService _backgroundSyncService;
 
 
         public MainPage()
@@ -132,7 +133,7 @@ namespace iPMCloud.Mobile
                     //   AppModel.Instance.InitBuildingsAsync();
                     //}
 
-                    CheckAllSyncFromUpload();
+                    CheckAllSyncFromUpload(true);
                     InitStartPageHandlers();
 
                     //ObjektPlanWeekMobile.Delete(AppModel.Instance);
@@ -1317,6 +1318,7 @@ namespace iPMCloud.Mobile
             AppModel.Instance.State.IsBackTappedToLogin = true;
 
             ClearPageViews();
+            ClearPlanDataView();
             StartPage_Container.IsVisible = true;
 
 
@@ -3263,11 +3265,24 @@ namespace iPMCloud.Mobile
 
         public async void ReloadPlanData(int tab)
         {
+            ClearPlanDataView();
+
+            bool reloadOr = frame_planConA_reload_text.Text == "Mein Plan";
+            if (reloadOr)
+            {
+                Update_PlanTabs((int)DateTime.Now.DayOfWeek);
+            }
+            else
+            {
+                Load_PlanTabs((int)DateTime.Now.DayOfWeek);
+            }
+        }
+        public async void ClearPlanDataView()
+        {
             btn_PlanTabATapped(null, null);
             //if (tab == 0) { btn_PlanTabATapped(null, null); }
             //if (tab == 1) { btn_PlanTabBTapped(null, null); }
 
-            bool reloadOr = frame_planConA_reload_text.Text == "Mein Plan";
             if (!AppModel.Instance.AppControll.showObjektPlans) { return; }
             frame_planConA_img_reloadx.Source = GetMuellInOutXImageName(AppModel.Instance.AppSetModel.ViewOnlyMuell);
             frame_planConA_reload_text.Text = "Neu laden";
@@ -3291,14 +3306,6 @@ namespace iPMCloud.Mobile
 
             await Task.Delay(10);
 
-            if (reloadOr)
-            {
-                Update_PlanTabs((int)DateTime.Now.DayOfWeek);
-            }
-            else
-            {
-                Load_PlanTabs((int)DateTime.Now.DayOfWeek);
-            }
         }
         public async void Load_PlanTabs(int today)
         {
@@ -3347,6 +3354,10 @@ namespace iPMCloud.Mobile
                 buildFilterFromPlanKategories();
             }
             Update_PlanTabs(today);
+            var dt = String.IsNullOrEmpty(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks) ?
+                DateTime.Now.AddDays(-2) : new DateTime(long.Parse(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks));
+            box_buildingInformation.Children.Clear();
+            box_buildingInformation.Children.Add(BuildingWSO.GetBuildingInformation(AppModel.Instance, dt));
         }
 
         private void buildFilterFromPlanKategories()
@@ -7594,16 +7605,13 @@ namespace iPMCloud.Mobile
                 }
                 else
                 {
-                    FastSync();
+                    FastSync(); 
                 }
             }
             // Checlisten Count setzen
             SetChecksCount();
         }
-        private async void SyncBuildingManuell(bool manuellSync = false)
-        {
-            SyncNewBuildingManuell(manuellSync);
-        }
+
         private async void CheckForBuildingFailed(IpmBuildingResponse ipmBuildingResponse)
         {
             if (AppModel.Instance.AllBuildings == null || AppModel.Instance.AllBuildings.Count == 0)
@@ -7621,11 +7629,12 @@ namespace iPMCloud.Mobile
         }
 
         /// <summary>
-        /// Starts the building sync (Gebäude + Aufträge) directly on the UI thread's
-        /// backing task – no ForegroundService is involved on either Android or iOS.
+        /// Starts the building sync (Gebäude + Aufträge) with background protection.
+        /// On Android: Starts ForegroundService which handles the sync
+        /// On iOS: Disables IdleTimer and runs sync on UI thread
         /// Progress and completion are communicated back via SyncCoordinator events.
         /// </summary>
-        private async void SyncNewBuildingManuell(bool manuellSync = false)
+        private async void SyncBuildingManuell(bool manuellSync = false)
         {
             try
             {
@@ -7639,21 +7648,48 @@ namespace iPMCloud.Mobile
                     popupContainer_count.Text = "SYNCHRONISATION (0%)";
                     await Task.Delay(1);
 
+                    // Get or initialize the background sync service
+                    if (_backgroundSyncService == null)
+                    {
+                        try
+                        {
+                            _backgroundSyncService = IPlatformApplication.Current?.Services?.GetService<iPMCloud.Mobile.Services.IBackgroundSyncService>();
+                        }
+                        catch (Exception ex)
+                        {
+                            AppModel.Logger?.Warn($"Could not resolve IBackgroundSyncService: {ex.Message}");
+                        }
+                    }
+
                     // Always unsubscribe before subscribing to prevent duplicate registrations
-                    // if SyncNewBuildingManuell is called again before the previous sync completes.
                     iPMCloud.Mobile.Services.SyncCoordinator.ProgressChanged -= OnSyncProgress;
                     iPMCloud.Mobile.Services.SyncCoordinator.SyncCompleted -= OnSyncCompleted;
                     iPMCloud.Mobile.Services.SyncCoordinator.ProgressChanged += OnSyncProgress;
                     iPMCloud.Mobile.Services.SyncCoordinator.SyncCompleted += OnSyncCompleted;
 
-                    // Run SyncCoordinator directly – no ForegroundService.
-                    // Fire-and-forget: completion and errors are reported via SyncCompleted / ProgressChanged events.
+                    // Start background protection and sync
+                    bool protectionStarted = false;
+                    if (_backgroundSyncService != null)
+                    {
+                        protectionStarted = await _backgroundSyncService.StartSyncProtectionAsync();
+                        AppModel.Logger?.Info($"Background sync protection started: {protectionStarted}");
+                    }
+
+                    // On Android, the ForegroundService handles the sync.
+                    // On iOS/other platforms, we run it here with IdleTimer disabled.
+#if !ANDROID
+                    // iOS and other platforms: run sync here with background protection (IdleTimer disabled)
                     Task.Run(() => iPMCloud.Mobile.Services.SyncCoordinator.Instance.RunAsync())
                         .ContinueWith(t =>
                         {
                             if (t.IsFaulted)
-                                AppModel.Logger.Error("SyncNewBuildingManuell Task faulted: " + t.Exception?.GetBaseException()?.Message);
+                                AppModel.Logger.Error("SyncBuildingManuell Task faulted: " + t.Exception?.GetBaseException()?.Message);
                         }, TaskContinuationOptions.OnlyOnFaulted);
+#else
+                    // Android: Sync is handled by SyncForegroundService (already started above)
+                    // Do not start sync here to avoid duplicate execution
+                    AppModel.Logger?.Info("Android: Sync delegated to SyncForegroundService");
+#endif
                 }
                 else
                 {
@@ -7687,6 +7723,19 @@ namespace iPMCloud.Mobile
             // Always unsubscribe first
             iPMCloud.Mobile.Services.SyncCoordinator.ProgressChanged -= OnSyncProgress;
             iPMCloud.Mobile.Services.SyncCoordinator.SyncCompleted -= OnSyncCompleted;
+
+#if !ANDROID
+            // On iOS and other non-Android platforms, stop the background protection
+            // (On Android, the ForegroundService stops itself)
+            if (_backgroundSyncService != null && _backgroundSyncService.IsActive)
+            {
+                Task.Run(async () =>
+                {
+                    await _backgroundSyncService.StopSyncProtectionAsync();
+                    AppModel.Logger?.Info("Background sync protection stopped (iOS)");
+                });
+            }
+#endif
 
             MainThread.BeginInvokeOnMainThread(async () =>
             {
@@ -7729,6 +7778,7 @@ namespace iPMCloud.Mobile
                 {
                     AppModel.Logger.Error("Method => MainPage-OnSyncCompleted(catch): " + ex.Message);
                 }
+                finally{ __isFirstInit = false; }
             });
         }
         private async void UpdateSyncCounter(double pr)
@@ -7780,7 +7830,7 @@ namespace iPMCloud.Mobile
             {
                 AppModel.Logger.Error("Method => MainPage-SyncBuildingManuell(catch): " + ex.Message);
                 AppModel.Instance.InclFilesAsJson = false;
-                var ok = AppModel.Instance.SendLogZipFile();
+                var ok = AppModel.Instance.SendLogZipFile(true);
                 await Task.Delay(2000);
             }
         }
@@ -7849,6 +7899,7 @@ namespace iPMCloud.Mobile
                     popupContainer.IsVisible = false;
                     await Task.Delay(1);
                     //********* Update Plandaten 
+                    __isFirstInit = false;
                     Load_PlanTabs(((int)DateTime.Now.DayOfWeek));
                 }
                 else
@@ -7901,7 +7952,8 @@ namespace iPMCloud.Mobile
                     popupContainer.IsVisible = false;
                     await Task.Delay(1);
 
-                    //********* Update Plandaten 
+                    //********* Update Plandaten
+                    __isFirstInit = false;
                     Load_PlanTabs(((int)DateTime.Now.DayOfWeek));
                     var dts = String.IsNullOrEmpty(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks) ?
                         DateTime.Now.AddDays(-2) : new DateTime(long.Parse(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks));
@@ -7911,6 +7963,7 @@ namespace iPMCloud.Mobile
             }
             else
             {
+                __isFirstInit = false;
                 Load_PlanTabs(((int)DateTime.Now.DayOfWeek));
                 var dtss = String.IsNullOrEmpty(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks) ?
                     DateTime.Now.AddDays(-2) : new DateTime(long.Parse(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks));
@@ -7997,57 +8050,58 @@ namespace iPMCloud.Mobile
             return allCountFromUpload;
         }
 
-        public async void CheckAllSyncFromUpload()
+        private bool __isFirstInit = false;
+        public async void CheckAllSyncFromUpload(bool isFirstInit = false)
         {
             //popupContainer_quest_countfromupload.IsVisible = false;
-
+            __isFirstInit = isFirstInit;
             var pendingUploads = iPMCloud.Mobile.Services.UploadCoordinator.Instance.GetPendingUploadCount();
-            if (pendingUploads <= 0)
+            if (pendingUploads <= 0 && !__isFirstInit)
             {
                 ReloadPlanData(0);
                 return;
             }
 
-            //overlay.IsVisible = true;
-            //await Task.Delay(1);
-
-            iPMCloud.Mobile.Services.UploadCoordinator.ProgressChanged -= OnUploadProgress;
-            iPMCloud.Mobile.Services.UploadCoordinator.UploadCompleted -= OnUploadCompleted;
-            iPMCloud.Mobile.Services.UploadCoordinator.ProgressChanged += OnUploadProgress;
-            iPMCloud.Mobile.Services.UploadCoordinator.UploadCompleted += OnUploadCompleted;
-
-            if (_uploadService == null)
+            if (pendingUploads > 0)
             {
-                try
-                {
-                    _uploadService = IPlatformApplication.Current?.Services
-                        ?.GetService<iPMCloud.Mobile.Services.IUploadService>();
-                }
-                catch (Exception ex)
-                {
-                    AppModel.Logger.Warn("IUploadService DI lookup: " + ex.Message);
-                }
+                iPMCloud.Mobile.Services.UploadCoordinator.ProgressChanged -= OnUploadProgress;
+                iPMCloud.Mobile.Services.UploadCoordinator.UploadCompleted -= OnUploadCompleted;
+                iPMCloud.Mobile.Services.UploadCoordinator.ProgressChanged += OnUploadProgress;
+                iPMCloud.Mobile.Services.UploadCoordinator.UploadCompleted += OnUploadCompleted;
 
                 if (_uploadService == null)
                 {
+                    try
+                    {
+                        _uploadService = IPlatformApplication.Current?.Services
+                            ?.GetService<iPMCloud.Mobile.Services.IUploadService>();
+                    }
+                    catch (Exception ex)
+                    {
+                        AppModel.Logger.Warn("IUploadService DI lookup: " + ex.Message);
+                    }
+
+                    if (_uploadService == null)
+                    {
 #if ANDROID
-                    _uploadService = new iPMCloud.Mobile.Platforms.Android.AndroidUploadService();
+                        _uploadService = new iPMCloud.Mobile.Platforms.Android.AndroidUploadService();
 #elif IOS
                     _uploadService = new iPMCloud.Mobile.Platforms.iOS.iOSUploadService();
 #endif
+                    }
                 }
-            }
 
 #if IOS
             DeviceDisplay.Current.KeepScreenOn = true;
 #endif
-            if (!await EnsureNotificationPermissionForForegroundWorkAsync())
-            {
-                //overlay.IsVisible = false;
-                return;
-            }
+                if (!await EnsureNotificationPermissionForForegroundWorkAsync())
+                {
+                    //overlay.IsVisible = false;
+                    return;
+                }
 
-            _uploadService?.StartUploads();
+                _uploadService?.StartUploads();
+            }
         }
 
         private async Task<bool> EnsureNotificationPermissionForForegroundWorkAsync()
@@ -8108,8 +8162,8 @@ namespace iPMCloud.Mobile
                     {
                         AppModel.Logger.Warn("Uploads fehlgeschlagen: " + e.ErrorMessage);
                     }
-                    await Task.Delay(1);
-                    CheckAllSyncFromUpload();
+                    await Task.Delay(1);                    
+                    CheckAllSyncFromUpload(__isFirstInit);
                 }
                 catch (Exception ex)
                 {
@@ -8117,6 +8171,7 @@ namespace iPMCloud.Mobile
                 }
                 finally
                 {
+                    //__isFirstInit = false;
                     overlay.IsVisible = false;
 #if IOS
                     DeviceDisplay.Current.KeepScreenOn = false;

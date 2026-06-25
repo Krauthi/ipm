@@ -59,6 +59,13 @@ namespace iPMCloud.Mobile
             builder.Services.AddSingleton<IUploadService, iOSUploadService>();
 #endif
 
+            // Platform-specific background sync service
+#if ANDROID
+            builder.Services.AddSingleton<IBackgroundSyncService, iPMCloud.Mobile.Platforms.Android.BackgroundSyncService>();
+#elif IOS
+            builder.Services.AddSingleton<IBackgroundSyncService, iPMCloud.Mobile.Platforms.iOS.BackgroundSyncService>();
+#endif
+
             // Example: builder.Services.AddSingleton<IImageResizer, ImageResizer>();
             // TODO: Register all services that were previously using DependencyService
 

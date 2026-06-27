@@ -7,6 +7,7 @@
 // using Plugin.LocalNotification;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Controls.Xaml;
 using Microsoft.Maui.ApplicationModel;
@@ -37,7 +38,40 @@ namespace iPMCloud.Mobile
         public App()
         {
             InitializeComponent();
+
+            // Register handler for unobserved async Task exceptions (critical for iOS stability)
+            TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
+
             AppStart(); 
+        }
+
+        /// <summary>
+        /// Handler for unobserved Task exceptions. Critical for iOS where these can cause silent crashes.
+        /// </summary>
+        private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
+        {
+            try
+            {
+                e.SetObserved(); // Prevent app crash
+
+                var exception = e.Exception?.GetBaseException() ?? e.Exception;
+                var message = exception?.Message ?? "Unknown error";
+                var stackTrace = exception?.StackTrace ?? "";
+
+                System.Diagnostics.Debug.WriteLine($"UNOBSERVED TASK EXCEPTION: {message} - {stackTrace}");
+                AppModel.Logger?.Error($"UNOBSERVED TASK EXCEPTION: {message} | StackTrace: {stackTrace}");
+
+                // Log to file for debugging TestFlight crashes
+                try
+                {
+                    AppModel.Instance?.SendLogZipFile(true);
+                }
+                catch { }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error in UnobservedTaskException handler: {ex.Message}");
+            }
         }
 
         public void AppStart()

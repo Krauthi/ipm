@@ -3202,7 +3202,8 @@ namespace iPMCloud.Mobile
 
             frame_planConA_erlbtn.GestureRecognizers.Clear();
             var t_frame_planConA_erltxt = new TapGestureRecognizer();
-            t_frame_planConA_erltxt.Tapped += async (object o, TappedEventArgs ev) => {
+            t_frame_planConA_erltxt.Tapped += async (object o, TappedEventArgs ev) =>
+            {
                 frame_planConA_offenGrid.IsVisible = false;
                 frame_planConA_erlGrid.IsVisible = true;
                 frame_planConA_offenhead.IsVisible = false;
@@ -3213,7 +3214,8 @@ namespace iPMCloud.Mobile
             frame_planConA_erlbtn.GestureRecognizers.Add(t_frame_planConA_erltxt);
             frame_planConA_veroffenbtn.GestureRecognizers.Clear();
             var t_frame_planConA_veroffentxt = new TapGestureRecognizer();
-            t_frame_planConA_veroffentxt.Tapped += async (object o, TappedEventArgs ev) => {
+            t_frame_planConA_veroffentxt.Tapped += async (object o, TappedEventArgs ev) =>
+            {
                 frame_planConA_offenGrid.IsVisible = false;
                 frame_planConA_erlGrid.IsVisible = false;
                 frame_planConA_veroffenGrid.IsVisible = true;
@@ -3225,7 +3227,8 @@ namespace iPMCloud.Mobile
 
             frame_planConB_offenbtn.GestureRecognizers.Clear();
             var t_frame_planConB_offentxt = new TapGestureRecognizer();
-            t_frame_planConB_offentxt.Tapped += async (object o, TappedEventArgs ev) => {
+            t_frame_planConB_offentxt.Tapped += async (object o, TappedEventArgs ev) =>
+            {
                 tourScrollerB_containerA.IsVisible = true;
                 tourScrollerB_containerB.IsVisible = false;
                 frame_planConB_erlhead.IsVisible = false;
@@ -3234,7 +3237,8 @@ namespace iPMCloud.Mobile
             frame_planConB_offenbtn.GestureRecognizers.Add(t_frame_planConB_offentxt);
             frame_planConB_erlbtn.GestureRecognizers.Clear();
             var t_frame_planConB_erltxt = new TapGestureRecognizer();
-            t_frame_planConB_erltxt.Tapped += async (object o, TappedEventArgs ev) => {
+            t_frame_planConB_erltxt.Tapped += async (object o, TappedEventArgs ev) =>
+            {
                 tourScrollerB_containerA.IsVisible = false;
                 tourScrollerB_containerB.IsVisible = true;
                 frame_planConB_offenhead.IsVisible = false;
@@ -3541,57 +3545,81 @@ namespace iPMCloud.Mobile
             await Task.Delay(10);
 
         }
+        /// <summary>
+        /// Async Task version of Load_PlanTabs to properly handle async/await chain
+        /// </summary>
+        public async Task Load_PlanTabsAsync(int today)
+        {
+            try
+            {
+                SetAppControll();
+                if (!AppModel.Instance.AppControll.showObjektPlans) { return; }
+                overlay.IsVisible = true;
+                await Task.Delay(1);
+
+                var result = await Task.Run(() => { return AppModel.Instance.Connections.GetPlanPersons(AppModel.Instance.Person.id); });
+                if (result)
+                {
+                    if (AppModel.Instance.PlanResponse.lastCall != null)
+                    {
+                        ObjektPlanWeekMobil_Stack_ABC_text.TextColor = Color.FromArgb("#aaaaaa");
+                        ObjektPlanWeekMobil_Stack_ABC_text.Text =
+                            "Meine Planliste: " + AppModel.Instance.PlanResponse.lastCall.Value.ToString("dd.MM.yyyy - HH:mm");
+                    }
+                    else
+                    {
+                        ObjektPlanWeekMobil_Stack_ABC_text.TextColor = Colors.Yellow;
+                        ObjektPlanWeekMobil_Stack_ABC_text.Text = "Meine Planliste: - Konnte noch nicht neu geladen werden!";
+                    }
+                    //ObjektPlanWeekMobile.Save(AppModel.Instance, AppModel.Instance.PlanResponse);
+                    buildFilterFromPlanKategories();
+                }
+                else
+                {
+                    var resp = ObjektPlanWeekMobile.Load(AppModel.Instance);
+                    if (resp == null)
+                    {
+                        AppModel.Instance.PlanResponse = new PlanResponse();
+                    }
+                    else
+                    {
+                        AppModel.Instance.PlanResponse = resp;
+                    }
+                    ObjektPlanWeekMobil_Stack_ABC_text.TextColor = Colors.Yellow;
+                    if (AppModel.Instance.PlanResponse.lastCall != null)
+                    {
+                        ObjektPlanWeekMobil_Stack_ABC_text.Text = "Meine Planliste: (" + AppModel.Instance.PlanResponse.lastCall.Value.ToString("dd.MM. - HH:mm") + ") - vom Cache geholt!";
+                    }
+                    else
+                    {
+                        ObjektPlanWeekMobil_Stack_ABC_text.Text = "Meine Planliste: KEINE DATEN!";
+                    }
+                    buildFilterFromPlanKategories();
+                }
+                Update_PlanTabs(today);
+                var dt = String.IsNullOrEmpty(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks) ?
+                    DateTime.Now.AddDays(-2) : new DateTime(long.Parse(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks));
+                box_buildingInformation.Children.Clear();
+                box_buildingInformation.Children.Add(BuildingWSO.GetBuildingInformation(AppModel.Instance, dt));
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger.Error($"Method => MainPage-Load_PlanTabsAsync(catch): {ex.Message} | StackTrace: {ex.StackTrace}");
+                throw; // Re-throw to be caught by caller
+            }
+        }
+
         public async void Load_PlanTabs(int today)
         {
-            SetAppControll();
-            if (!AppModel.Instance.AppControll.showObjektPlans) { return; }
-            overlay.IsVisible = true;
-            await Task.Delay(1);
-
-            var result = await Task.Run(() => { return AppModel.Instance.Connections.GetPlanPersons(AppModel.Instance.Person.id); });
-            if (result)
+            // Keep the old async void method for backward compatibility, but call the async Task version
+            try
             {
-                if (AppModel.Instance.PlanResponse.lastCall != null)
-                {
-                    ObjektPlanWeekMobil_Stack_ABC_text.TextColor = Color.FromArgb("#aaaaaa");
-                    ObjektPlanWeekMobil_Stack_ABC_text.Text =
-                        "Meine Planliste: " + AppModel.Instance.PlanResponse.lastCall.Value.ToString("dd.MM.yyyy - HH:mm");
-                }
-                else
-                {
-                    ObjektPlanWeekMobil_Stack_ABC_text.TextColor = Colors.Yellow;
-                    ObjektPlanWeekMobil_Stack_ABC_text.Text = "Meine Planliste: - Konnte noch nicht neu geladen werden!";
-                }
-                //ObjektPlanWeekMobile.Save(AppModel.Instance, AppModel.Instance.PlanResponse);
-                buildFilterFromPlanKategories();
+                await Load_PlanTabsAsync(today);
             }
-            else
+            catch (Exception ex)
             {
-                var resp = ObjektPlanWeekMobile.Load(AppModel.Instance);
-                if (resp == null)
-                {
-                    AppModel.Instance.PlanResponse = new PlanResponse();
-                }
-                else
-                {
-                    AppModel.Instance.PlanResponse = resp;
-                }
-                ObjektPlanWeekMobil_Stack_ABC_text.TextColor = Colors.Yellow;
-                if (AppModel.Instance.PlanResponse.lastCall != null)
-                {
-                    ObjektPlanWeekMobil_Stack_ABC_text.Text = "Meine Planliste: (" + AppModel.Instance.PlanResponse.lastCall.Value.ToString("dd.MM. - HH:mm") + ") - vom Cache geholt!";
-                }
-                else
-                {
-                    ObjektPlanWeekMobil_Stack_ABC_text.Text = "Meine Planliste: KEINE DATEN!";
-                }
-                buildFilterFromPlanKategories();
+                AppModel.Logger.Error($"Method => MainPage-Load_PlanTabs wrapper(catch): {ex.Message}");
             }
-            Update_PlanTabs(today);
-            var dt = String.IsNullOrEmpty(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks) ?
-                DateTime.Now.AddDays(-2) : new DateTime(long.Parse(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks));
-            box_buildingInformation.Children.Clear();
-            box_buildingInformation.Children.Add(BuildingWSO.GetBuildingInformation(AppModel.Instance, dt));
         }
 
         private void buildFilterFromPlanKategories()
@@ -7839,7 +7867,7 @@ namespace iPMCloud.Mobile
                 }
                 else
                 {
-                    FastSync(); 
+                    FastSync();
                 }
             }
             // Checlisten Count setzen
@@ -7934,10 +7962,17 @@ namespace iPMCloud.Mobile
             }
             catch (Exception ex)
             {
-                AppModel.Logger.Error("Method => MainPage-SyncBuildingManuell(catch): " + ex.Message);
+                AppModel.Logger.Error($"Method => MainPage-SyncBuildingManuell(catch): {ex.Message} | StackTrace: {ex.StackTrace}");
                 AppModel.Instance.InclFilesAsJson = true;
                 var ok = AppModel.Instance.SendLogZipFile();
                 await Task.Delay(2000);
+
+                // Ensure UI is reset in case of error
+                try
+                {
+                    popupContainer.IsVisible = false;
+                }
+                catch { }
             }
         }
 
@@ -7954,27 +7989,31 @@ namespace iPMCloud.Mobile
         /// <summary>Called when SyncCoordinator finishes (success or failure).</summary>
         private void OnSyncCompleted(object sender, iPMCloud.Mobile.Services.SyncCompletedEventArgs e)
         {
-            // Always unsubscribe first
-            iPMCloud.Mobile.Services.SyncCoordinator.ProgressChanged -= OnSyncProgress;
-            iPMCloud.Mobile.Services.SyncCoordinator.SyncCompleted -= OnSyncCompleted;
-
-#if !ANDROID
-            // On iOS and other non-Android platforms, stop the background protection
-            // (On Android, the ForegroundService stops itself)
-            if (_backgroundSyncService != null && _backgroundSyncService.IsActive)
-            {
-                Task.Run(async () =>
-                {
-                    await _backgroundSyncService.StopSyncProtectionAsync();
-                    AppModel.Logger?.Info("Background sync protection stopped (iOS)");
-                });
-            }
-#endif
-
             MainThread.BeginInvokeOnMainThread(async () =>
             {
                 try
                 {
+                    // Always unsubscribe first
+                    iPMCloud.Mobile.Services.SyncCoordinator.ProgressChanged -= OnSyncProgress;
+                    iPMCloud.Mobile.Services.SyncCoordinator.SyncCompleted -= OnSyncCompleted;
+
+#if !ANDROID
+                    // On iOS and other non-Android platforms, stop the background protection
+                    // (On Android, the ForegroundService stops itself)
+                    if (_backgroundSyncService != null && _backgroundSyncService.IsActive)
+                    {
+                        try
+                        {
+                            await _backgroundSyncService.StopSyncProtectionAsync();
+                            AppModel.Logger?.Info("Background sync protection stopped (iOS)");
+                        }
+                        catch (Exception ex)
+                        {
+                            AppModel.Logger?.Error($"Error stopping background sync protection: {ex.Message}");
+                        }
+                    }
+#endif
+
                     if (e.Success && e.Response != null)
                     {
                         // AppControll UI refresh (data was already saved by SyncCoordinator)
@@ -7984,7 +8023,7 @@ namespace iPMCloud.Mobile
                             DateTime.Now.AddDays(-2) : new DateTime(long.Parse(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks));
                         box_buildingInformation.Children.Clear();
                         box_buildingInformation.Children.Add(BuildingWSO.GetBuildingInformation(AppModel.Instance, dt));
-                        SyncNewBuildingManuell_next(e.Response);
+                        await SyncNewBuildingManuell_nextAsync(e.Response);
                     }
                     else
                     {
@@ -7999,7 +8038,7 @@ namespace iPMCloud.Mobile
                         else
                         {
                             CheckForNewBuildingFailed(e.Response);
-                            Load_PlanTabs(((int)DateTime.Now.DayOfWeek));
+                            await Load_PlanTabsAsync(((int)DateTime.Now.DayOfWeek));
 
                             var dt = String.IsNullOrEmpty(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks) ?
                                 DateTime.Now.AddDays(-2) : new DateTime(long.Parse(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks));
@@ -8010,9 +8049,19 @@ namespace iPMCloud.Mobile
                 }
                 catch (Exception ex)
                 {
-                    AppModel.Logger.Error("Method => MainPage-OnSyncCompleted(catch): " + ex.Message);
+                    AppModel.Logger.Error($"Method => MainPage-OnSyncCompleted(catch): {ex.Message} | StackTrace: {ex.StackTrace}");
+
+                    // Ensure UI is in a consistent state even if an error occurs
+                    try
+                    {
+                        popupContainer.IsVisible = false;
+                    }
+                    catch { }
                 }
-                finally{ __isFirstInit = false; }
+                finally 
+                { 
+                    __isFirstInit = false; 
+                }
             });
         }
         private async void UpdateSyncCounter(double pr)
@@ -8020,7 +8069,11 @@ namespace iPMCloud.Mobile
             popupContainer_count.Text = "SYNCHRONISATION (" + pr.ToString("###,##") + "%)";
             await Task.Delay(1);
         }
-        private async void SyncNewBuildingManuell_next(IpmNewSyncResponse ipmNewBuildingResponse)
+
+        /// <summary>
+        /// Async version of SyncNewBuildingManuell_next to properly handle async/await chain
+        /// </summary>
+        private async Task SyncNewBuildingManuell_nextAsync(IpmNewSyncResponse ipmNewBuildingResponse)
         {
             try
             {
@@ -8057,15 +8110,29 @@ namespace iPMCloud.Mobile
                 popupContainer.IsVisible = false;
                 await Task.Delay(1000);
                 //********* Update Plandaten 
-                Load_PlanTabs(((int)DateTime.Now.DayOfWeek));
+                await Load_PlanTabsAsync(((int)DateTime.Now.DayOfWeek));
 
             }
             catch (Exception ex)
             {
-                AppModel.Logger.Error("Method => MainPage-SyncBuildingManuell(catch): " + ex.Message);
+                AppModel.Logger.Error($"Method => MainPage-SyncNewBuildingManuell_nextAsync(catch): {ex.Message} | StackTrace: {ex.StackTrace}");
                 AppModel.Instance.InclFilesAsJson = false;
-                var ok = AppModel.Instance.SendLogZipFile(true);
-                await Task.Delay(2000);
+                throw; // Re-throw to be caught by OnSyncCompleted's catch block
+            }
+        }
+
+        private async void SyncNewBuildingManuell_next(IpmNewSyncResponse ipmNewBuildingResponse)
+        {
+            // Keep the old async void method for backward compatibility, but call the async Task version
+            try
+            {
+                await SyncNewBuildingManuell_nextAsync(ipmNewBuildingResponse);
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger.Error($"Method => MainPage-SyncNewBuildingManuell_next wrapper(catch): {ex.Message}");
+                //var ok = AppModel.Instance.SendLogZipFile(true);
+                //await Task.Delay(2000);
             }
         }
 
@@ -8396,7 +8463,7 @@ namespace iPMCloud.Mobile
                     {
                         AppModel.Logger.Warn("Uploads fehlgeschlagen: " + e.ErrorMessage);
                     }
-                    await Task.Delay(1);                    
+                    await Task.Delay(1);
                     CheckAllSyncFromUpload(__isFirstInit);
                 }
                 catch (Exception ex)

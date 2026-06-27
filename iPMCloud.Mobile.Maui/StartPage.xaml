@@ -413,6 +413,7 @@
                 </Grid.ColumnDefinitions>
 
                 <Label
+                    x:Name="logostartpagename"
                     Grid.Row="0"
                     Grid.Column="0"
                     Margin="0"
@@ -423,6 +424,7 @@
                     VerticalOptions="Center" />
 
                 <Image
+                    x:Name="logostartpage"
                     Grid.Row="0"
                     Grid.Column="1"
                     Margin="0,2,0,1"

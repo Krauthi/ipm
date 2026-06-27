@@ -3,22 +3,23 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.ipmcloud.ipm.mobile"
-    android:versionName="3.0.73"
-    android:versionCode="3000073">
+    android:versionName="3.0.75"
+    android:versionCode="3000075">
 	<uses-sdk android:minSdkVersion="28" android:targetSdkVersion="36" 
         tools:overrideLibrary="androidx.lifecycle.runtime,com.google.android.play.core,com.google.android.gms.base,com.google.android.gms.common,com.google.android.gms.tasks" />
 
 	<application
-        android:allowBackup="false"
-        android:fullBackupContent="@xml/backup_rules"
-        android:dataExtractionRules="@xml/data_extraction_rules"
-        android:supportsRtl="true"
-        android:label="iPM-Cloud"
+		android:allowBackup="false"
+		android:fullBackupContent="@xml/backup_rules"
+		android:dataExtractionRules="@xml/data_extraction_rules"
+		android:supportsRtl="true"
+		android:label="iPM-Cloud"
 		android:enableOnBackInvokedCallback="false"
-        android:theme="@style/Maui.SplashTheme"
-        android:networkSecurityConfig="@xml/network_security_config"
-        android:icon="@drawable/icon"
-        tools:replace="android:allowBackup,android:label,android:fullBackupContent,android:dataExtractionRules">
+		android:theme="@style/Maui.SplashTheme"
+		android:networkSecurityConfig="@xml/network_security_config"
+		android:icon="@drawable/icon"
+		android:hardwareAccelerated="true"
+		tools:replace="android:allowBackup,android:label,android:fullBackupContent,android:dataExtractionRules">
 
 		<meta-data
 			android:name="com.google.firebase.messaging.default_notification_channel_id"

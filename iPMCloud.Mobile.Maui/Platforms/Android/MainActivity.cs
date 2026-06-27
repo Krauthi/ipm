@@ -31,7 +31,8 @@ namespace iPMCloud.Mobile
                                ConfigChanges.ScreenLayout | 
                                ConfigChanges.SmallestScreenSize | 
                                ConfigChanges.Density,
-        ScreenOrientation = ScreenOrientation.Portrait)]
+        ScreenOrientation = ScreenOrientation.Portrait,
+        HardwareAccelerated = true)]
     public class MainActivity : MauiAppCompatActivity
     {
         #region Fields & Properties
@@ -64,6 +65,11 @@ namespace iPMCloud.Mobile
                 base.OnCreate(savedInstanceState);
 
                 Instance = this;
+
+                // Enable hardware acceleration for camera views (fixes black camera preview on some devices)
+                // Removed Fullscreen flag as it can interfere with camera preview
+                Window?.AddFlags(WindowManagerFlags.KeepScreenOn);
+                Window?.SetFlags(WindowManagerFlags.HardwareAccelerated, WindowManagerFlags.HardwareAccelerated);
 
                 Platform.Init(this, savedInstanceState);
                 InitializeNLog();

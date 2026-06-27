@@ -308,16 +308,27 @@ namespace iPMCloud.Mobile.vo
                 //Scan = new Scanner();
                 Person = PersonWSO.LoadPerson(this);// Wenn keine Person dann "null" !!
 
-                var swBuildings = System.Diagnostics.Stopwatch.StartNew();
-                
-                Task.WaitAll(Task.Run(async () => await InitBuildingsAsync()));
-                swBuildings.Stop();
-                Logger.Info($"PERF: InitBuildings took {swBuildings.ElapsedMilliseconds} ms");
+                // CRITICAL ANR FIX: Don't block UI thread with Task.WaitAll
+                // Initialize buildings asynchronously in background to prevent ANR on startup
+                _ = Task.Run(async () =>
+                {
+                    try
+                    {
+                        var swBuildings = System.Diagnostics.Stopwatch.StartNew();
+                        await InitBuildingsAsync();
+                        swBuildings.Stop();
+                        Logger.Info($"PERF: InitBuildings took {swBuildings.ElapsedMilliseconds} ms");
 
-                var swKategorien = System.Diagnostics.Stopwatch.StartNew();
-                SetAllKategorieNames();
-                swKategorien.Stop();
-                Logger.Info($"PERF: SetAllKategorieNames took {swKategorien.ElapsedMilliseconds} ms");
+                        var swKategorien = System.Diagnostics.Stopwatch.StartNew();
+                        SetAllKategorieNames();
+                        swKategorien.Stop();
+                        Logger.Info($"PERF: SetAllKategorieNames took {swKategorien.ElapsedMilliseconds} ms");
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Error($"ERROR: Background InitBuildings failed: {ex.Message}");
+                    }
+                });
 
                 AppControll = AppControll.Load(this);
                 InitLangs();

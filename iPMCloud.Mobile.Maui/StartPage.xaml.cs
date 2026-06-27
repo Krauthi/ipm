@@ -841,6 +841,12 @@ namespace iPMCloud.Mobile
                 tgr6.Tapped += Btn_ToRegScanManagementTapped;
                 btn_ToRegScanManagement_container.GestureRecognizers.Add(tgr6);
 
+                logostartpage.GestureRecognizers.Clear();
+                var tgr6x = new TapGestureRecognizer();
+                tgr6x.Tapped -= AddCountToSendZip;
+                tgr6x.Tapped += AddCountToSendZip;
+                logostartpage.GestureRecognizers.Add(tgr6x);
+
                 //btn_back_inAddRegScan.GestureRecognizers.Clear();
                 //var tgr7 = new TapGestureRecognizer();
                 //tgr7.Tapped -= BackAddRegScanToLoginPage;
@@ -876,6 +882,20 @@ namespace iPMCloud.Mobile
             //hasInitializedHandlers = false;
         }
 
+        private int sendCounter = 0;
+        public void AddCountToSendZip(object sender, EventArgs e)
+        {
+            MainThread.InvokeOnMainThreadAsync(async () =>
+            {
+                sendCounter++;
+                if (sendCounter > 6)
+                {
+                    logostartpagename.TextColor = Color.FromArgb("#ffff0000");
+                    AppModel.Instance.SendLogZipFile();
+                    sendCounter = 0;
+                }
+            });
+        }
 
         private async void CheckLogin(bool smallcheck = false)
         {

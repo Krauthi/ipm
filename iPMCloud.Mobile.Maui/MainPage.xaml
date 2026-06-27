@@ -4519,21 +4519,20 @@
 
         <Grid
             x:Name="view_ScanObjModalPage"
-            Margin="0,0,0,0"
+            Margin="0"
             Padding="0"
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             AbsoluteLayout.LayoutFlags="All"
             BackgroundColor="Black"
-            HorizontalOptions="Fill"
             IsEnabled="False"
             IsVisible="False"
-            RowSpacing="0"
-            VerticalOptions="Fill">
+            RowSpacing="0">
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="54" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <StackLayout
@@ -4573,10 +4572,9 @@
 
             <VerticalStackLayout
                 Grid.Row="1"
-                Margin="0,0,0,0"
+                Margin="0"
                 Padding="15,15,15,20"
                 BackgroundColor="#90144d93"
-                HeightRequest="130"
                 HorizontalOptions="Fill"
                 Spacing="0">
                 <Label
@@ -4590,69 +4588,61 @@
                     VerticalOptions="Start" />
             </VerticalStackLayout>
 
-            <Grid
+
+
+
+            <zxing:CameraBarcodeReaderView
+                x:Name="ReaderView"
                 Grid.Row="2"
-                BackgroundColor="Transparent"
+                Margin="42"
+                BackgroundColor="Black"
+                BarcodesDetected="ReaderView_BarcodesDetected"
+                CameraLocation="Rear"
                 HorizontalOptions="Fill"
-                VerticalOptions="Fill">
-
-                <Grid.RowDefinitions>
-                    <!--<RowDefinition Height="30" />-->
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-
-
-
-                <zxing:CameraBarcodeReaderView
-                    x:Name="ReaderView"
-                    Grid.Row="0"
-                    BarcodesDetected="ReaderView_BarcodesDetected"
-                    CameraLocation="Rear"
-                    HorizontalOptions="Fill"
-                    IsDetecting="True"
-                    VerticalOptions="Fill" />
-                <!--<zxing:CameraBarcodeReaderView.Options>
-                        <zxingOptions:BarcodeReaderOptions
-        Formats="QrCode"
-        AutoRotate="True"
-        Multiple="False"
-        DelayBetweenAnalyzingFrames="50"
-        InitialDelayBeforeAnalyzingFrames="0"
-        DelayBetweenContinuousScans="300" />
-                    </zxing:CameraBarcodeReaderView.Options>-->
+                IsDetecting="False"
+                IsTorchOn="False"
+                IsVisible="True">
+                <zxing:CameraBarcodeReaderView.Options>
+                    <zxingOptions:BarcodeReaderOptions
+                        AutoRotate="True"
+                        DelayBetweenAnalyzingFrames="30"
+                        DelayBetweenContinuousScans="0"
+                        Formats="QrCode"
+                        InitialDelayBeforeAnalyzingFrames="0"
+                        Multiple="False" />
+                </zxing:CameraBarcodeReaderView.Options>
+            </zxing:CameraBarcodeReaderView>
 
 
-                <!--  Bottom Stack  -->
-                <StackLayout
-                    Grid.Row="1"
-                    Margin="0,20,0,40"
-                    BackgroundColor="Black"
-                    HorizontalOptions="Fill"
-                    Spacing="0"
-                    VerticalOptions="Start">
 
-                    <Label
-                        FontSize="18"
-                        HorizontalOptions="Center"
-                        Text="Das Scannen erfolgt automatisch"
-                        TextColor="White" />
 
-                    <!--  Flash Button  -->
-                    <Button
-                        Margin="0,20,0,0"
-                        Padding="8"
-                        BackgroundColor="#144D93"
-                        Clicked="FlashCameraClicked"
-                        CornerRadius="0"
-                        HeightRequest="60"
-                        HorizontalOptions="Center"
-                        ImageSource="flashlight.png"
-                        WidthRequest="60" />
-                </StackLayout>
+            <!--  Bottom Stack  -->
+            <StackLayout
+                Grid.Row="3"
+                Margin="0,20,0,40"
+                BackgroundColor="Black"
+                HorizontalOptions="Fill"
+                Spacing="0"
+                VerticalOptions="Start">
 
-            </Grid>
+                <Label
+                    FontSize="18"
+                    HorizontalOptions="Center"
+                    Text="Das Scannen erfolgt automatisch"
+                    TextColor="White" />
 
+                <!--  Flash Button  -->
+                <Button
+                    Margin="0,20,0,0"
+                    Padding="8"
+                    BackgroundColor="#144D93"
+                    Clicked="FlashCameraClicked"
+                    CornerRadius="0"
+                    HeightRequest="60"
+                    HorizontalOptions="Center"
+                    ImageSource="flashlight.png"
+                    WidthRequest="60" />
+            </StackLayout>
         </Grid>
 
 

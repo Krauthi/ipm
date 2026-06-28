@@ -9,6 +9,7 @@ using Microsoft.Maui.Storage;
 using NLog;
 using System;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using ZXing.Net.Maui;
 using ZXing.Net.Maui.Controls;
@@ -24,40 +25,11 @@ namespace iPMCloud.Mobile
         private bool _isUpdatingLoginName = false;
         private bool _isUpdatingLoginPassword = false;
 
+
         public StartPage()
         {
             isInitialize = true;
             InitializeComponent();
-            //if(StorageMigration.HasMigrateIpmFolder())
-            //{
-                //InitStartPage();
-                //ShowDisconnected();
-            //}
-            //else
-            //{
-            //    popupContainer_migration.IsVisible = true;
-            //    Task.Run(async () =>
-            //    {
-            //        var migrated = await StorageMigration.MigrateIpmFolderAsync();
-            //        if (migrated)
-            //        {
-            //            MainThread.BeginInvokeOnMainThread(() =>
-            //            {
-            //                popupContainer_migration.IsVisible = false;
-            //                InitStartPage();
-            //                ShowDisconnected();
-            //            });
-            //        }
-            //        else
-            //        {
-            //            MainThread.BeginInvokeOnMainThread(async () =>
-            //            {
-            //                popupContainer_migration.IsVisible = false;
-            //                await DisplayAlertAsync("Fehler", "Die Migration der Daten ist fehlgeschlagen. Bitte kontaktieren Sie den Support.", "OK");
-            //            });
-            //        }
-            //    });
-            //}
         }
 
 
@@ -137,6 +109,9 @@ namespace iPMCloud.Mobile
             var result = await ScanModalPage.ScanAsync(this);
             if (!string.IsNullOrWhiteSpace(result))
             {
+                // Korrigiere Encoding-Probleme aus dem QR-Code
+                result = AppModel.Instance.SettingModel.SettingDTO.FixQrCodeEncoding(result);
+
                 var sp = result
                     .Replace("https://", "http://")
                     .Replace("httpss://", "https://")
@@ -340,6 +315,9 @@ namespace iPMCloud.Mobile
             var result = await ScanModalPage.ScanAsync(this);
             if (!string.IsNullOrWhiteSpace(result))
             {
+                // Korrigiere Encoding-Probleme aus dem QR-Code
+                result = AppModel.Instance.SettingModel.SettingDTO.FixQrCodeEncoding(result);
+
                 var sp = result
                     .Replace("https://", "http://")
                     .Replace("httpss://", "https://")

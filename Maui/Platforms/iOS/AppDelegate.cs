@@ -1,14 +1,15 @@
+using Firebase.CloudMessaging;
+using Firebase.Core;
 using Foundation;
 using iPMCloud.Mobile.Services;
 using iPMCloud.Mobile.vo;
-using System;
 using UIKit;
 using UserNotifications;
 
 namespace iPMCloud.Mobile;
 
 [Register("AppDelegate")]
-public class AppDelegate : MauiUIApplicationDelegate, IUNUserNotificationCenterDelegate
+public class AppDelegate : MauiUIApplicationDelegate, IUNUserNotificationCenterDelegate, IMessagingDelegate
 {
     protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();
 
@@ -16,19 +17,39 @@ public class AppDelegate : MauiUIApplicationDelegate, IUNUserNotificationCenterD
     {
         try
         {
+            Firebase.Core.App.Configure(new Firebase.Core.Options(
+                "1:276903433310:ios:4a9e1ebd6fd90e0defd0cf",
+                "276903433310")
+            {
+                ApiKey = "AIzaSyAkGw-be-PCBXuczQvRcXef7mETWMOKF0A",
+                ProjectId = "ipm-cloud-firebase"
+            });
+
             UNUserNotificationCenter.Current.Delegate = this;
+            Messaging.SharedInstance.Delegate = this;
+
             UNUserNotificationCenter.Current.RequestAuthorization(
-                UNAuthorizationOptions.Alert | UNAuthorizationOptions.Badge | UNAuthorizationOptions.Sound,
+                UNAuthorizationOptions.Alert |
+                UNAuthorizationOptions.Badge |
+                UNAuthorizationOptions.Sound,
                 (granted, error) =>
                 {
                     if (error != null)
                     {
                         AppModel.Logger?.Error($"Push authorization error: {error.LocalizedDescription}");
+                        return;
                     }
-                    else if (!granted)
+
+                    if (!granted)
                     {
                         AppModel.Logger?.Warn("Push authorization not granted by user.");
+                        return;
                     }
+
+                    MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        UIApplication.SharedApplication.RegisterForRemoteNotifications();
+                    });
                 });
 
             PushNotificationService.Initialize();
@@ -41,8 +62,7 @@ public class AppDelegate : MauiUIApplicationDelegate, IUNUserNotificationCenterD
         return base.FinishedLaunching(application, launchOptions);
     }
 
-    [Export("application:didRegisterForRemoteNotificationsWithDeviceToken:")]
-    public void RegisteredForRemoteNotifications(UIApplication application, NSData deviceToken)
+    public override void RegisteredForRemoteNotifications(UIApplication application, NSData deviceToken)
     {
         try
         {
@@ -52,10 +72,15 @@ public class AppDelegate : MauiUIApplicationDelegate, IUNUserNotificationCenterD
                 return;
             }
 
+            // APNs Token an Firebase übergeben
+            Messaging.SharedInstance.ApnsToken = deviceToken;
+
             var tokenBytes = deviceToken.ToArray();
             var apnsToken = BitConverter.ToString(tokenBytes).Replace("-", string.Empty).ToLowerInvariant();
-            // Use the iOS-specific handler: APNs token must NOT be forwarded into the
-            // Firebase/FCM upload path that is used for Android tokens.
+
+            AppModel.Logger?.Info($"APNs Token: {apnsToken}");
+
+            // Optional speichern, aber NICHT an deinen Firebase-Server als FCM Token senden
             PushNotificationService.HandleApnsTokenReceived(apnsToken);
         }
         catch (Exception ex)
@@ -64,10 +89,31 @@ public class AppDelegate : MauiUIApplicationDelegate, IUNUserNotificationCenterD
         }
     }
 
-    [Export("application:didFailToRegisterForRemoteNotificationsWithError:")]
-    public void FailedToRegisterForRemoteNotifications(UIApplication application, NSError error)
+    public override void FailedToRegisterForRemoteNotifications(UIApplication application, NSError error)
     {
         AppModel.Logger?.Error($"FailedToRegisterForRemoteNotifications: {error?.LocalizedDescription}");
+    }
+
+    [Export("messaging:didReceiveRegistrationToken:")]
+    public void DidReceiveRegistrationToken(Messaging messaging, string fcmToken)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(fcmToken))
+            {
+                AppModel.Logger?.Warn("FCM token is empty.");
+                return;
+            }
+
+            AppModel.Logger?.Info($"FCM Token iOS: {fcmToken}");
+
+            // DAS ist der Token, den dein Server braucht
+            PushNotificationService.HandleFcmTokenReceived(fcmToken);
+        }
+        catch (Exception ex)
+        {
+            AppModel.Logger?.Error(ex, "ERROR: Failed to process FCM token");
+        }
     }
 
     [Export("userNotificationCenter:willPresentNotification:withCompletionHandler:")]

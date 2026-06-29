@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<linker>
+  <!-- Firebase Core -->
+  <assembly fullname="Firebase.Core">
+	<type fullname="*" preserve="all"/>
+  </assembly>
+
+  <!-- Firebase Cloud Messaging -->
+  <assembly fullname="Firebase.CloudMessaging">
+	<type fullname="*" preserve="all"/>
+  </assembly>
+
+  <!-- Firebase Installations -->
+  <assembly fullname="Firebase.Installations">
+	<type fullname="*" preserve="all"/>
+  </assembly>
+</linker>

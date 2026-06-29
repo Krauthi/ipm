@@ -9,11 +9,11 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ApplicationTitle>iPM-Cloud</ApplicationTitle>
 		<ApplicationIdGuid>201CEFAB-590D-414F-9660-9EFF31FE2078</ApplicationIdGuid>
-		<ApplicationDisplayVersion>3.0.76</ApplicationDisplayVersion>
+		<ApplicationDisplayVersion>3.0.78</ApplicationDisplayVersion>
 		<ApplicationVersion>1</ApplicationVersion>
-		<Version>3000076</Version>
-		<AssemblyVersion>3.0.76.0</AssemblyVersion>
-		<FileVersion>3.0.76.0</FileVersion>
+		<Version>3000078</Version>
+		<AssemblyVersion>3.0.78.0</AssemblyVersion>
+		<FileVersion>3.0.78.0</FileVersion>
 		<NeutralLanguage>de-DE</NeutralLanguage>
 		<Copyright>iPM-Cloud</Copyright> 
 		<Nullable>disable</Nullable>
@@ -141,9 +141,6 @@
 	<ItemGroup>
 		<MauiXaml Remove="vo\wso\TicketPage.xaml" />
 	</ItemGroup>
-	<ItemGroup>
-	  <None Remove="Platforms\iOS\GoogleService-Info.plist" />
-	</ItemGroup>
 
 	
 	
@@ -192,7 +189,7 @@
 
 
 
-	<!--
+<!--
 <PropertyGroup Condition="'$(TargetFramework)'=='net10.0-ios'">
   <CodesignKey>Apple Development: Created via API (4RDNR6C66G)</CodesignKey>
   <CodesignProvision>VS: com.ipmcloud.ipm.mobile.app Development</CodesignProvision>
@@ -224,9 +221,11 @@
 
 	<!-- iOS spezifische Ressourcen -->
 	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
-		<BundleResource Include="Platforms\iOS\GoogleService-Info.plist">
+		<BundleResource Include="GoogleService-Info.plist">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<!--<Link>GoogleService-Info.plist</Link>-->
 		</BundleResource>
+		<!--<LinkDescription Include="Platforms\iOS\LinkerPreserve.xml" />-->
 		<None Include="Platforms\iOS\Info.plist" />
 		<None Include="Platforms\iOS\Entitlements.plist" />
 	</ItemGroup>
@@ -287,29 +286,5 @@
 	    <Version>12.10.0</Version>
 	  </PackageReference>
 	</ItemGroup>
-
-	<!-- <ItemGroup>
-	  <None Update="Assets\backgroundgray0.jpg">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Assets\backgroundgray1.jpg">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Assets\backgroundgray1b.jpg">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Resources\Images\backgroundgray0.jpg">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Resources\Images\backgroundgray1.jpg">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Resources\Images\backgroundgray2.jpg">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	  <None Update="Resources\Images\mockup4b.jpg">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	</ItemGroup> -->
 
 </Project>

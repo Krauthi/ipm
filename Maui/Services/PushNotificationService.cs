@@ -59,6 +59,28 @@ namespace iPMCloud.Mobile.Services
             }
         }
 
+        public static void HandleTokenRefreshIOS(string token)
+        {
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                AppModel.Logger?.Warn("WARN: HandleTokenRefresh mit leerem Token aufgerufen.");
+                return;
+            }
+
+            try
+            {
+                AppModel.Logger?.Info($"INFO: HandleTokenRefresh - Token empfangen (Länge: {token.Length})");
+                var fullToken = $"{token};;{DeviceInfo.Platform};;{DeviceInfo.Manufacturer} - {DeviceInfo.Name} ({DeviceInfo.Model})";
+                PNWSO.ToUploadStack(new PNWSO { token = fullToken });
+                AppModel.Logger?.Info("INFO: Token erfolgreich zum Upload-Stack hinzugefügt.");
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, $"ERROR: HandleTokenRefresh - Token: {token?.Substring(0, Math.Min(20, token?.Length ?? 0))}...");
+
+                AppModel.Instance.SendLogZipFile(true);
+            }
+        }
         public static void HandleTokenRefresh(string token)
         {
             if (string.IsNullOrWhiteSpace(token))
@@ -77,6 +99,7 @@ namespace iPMCloud.Mobile.Services
             catch (Exception ex)
             {
                 AppModel.Logger?.Error(ex, $"ERROR: HandleTokenRefresh - Token: {token?.Substring(0, Math.Min(20, token?.Length ?? 0))}...");
+
             }
         }
 

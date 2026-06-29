@@ -17,16 +17,21 @@ public class AppDelegate : MauiUIApplicationDelegate, IUNUserNotificationCenterD
     {
         try
         {
-            Firebase.Core.App.Configure(new Firebase.Core.Options(
-                "1:276903433310:ios:4a9e1ebd6fd90e0defd0cf",
-                "276903433310")
-            {
-                ApiKey = "AIzaSyAkGw-be-PCBXuczQvRcXef7mETWMOKF0A",
-                ProjectId = "ipm-cloud-firebase"
-            });
+            Firebase.Core.App.Configure();
 
             UNUserNotificationCenter.Current.Delegate = this;
-            Messaging.SharedInstance.Delegate = this;
+
+            // Messaging.SharedInstance kann zu diesem Zeitpunkt null sein
+            // Der Delegate wird stattdessen in RegisteredForRemoteNotifications gesetzt
+            if (Messaging.SharedInstance != null)
+            {
+                Messaging.SharedInstance.Delegate = this;
+                AppModel.Logger?.Info("Firebase Messaging Delegate erfolgreich gesetzt in FinishedLaunching");
+            }
+            else
+            {
+                AppModel.Logger?.Warn("Firebase Messaging.SharedInstance ist null in FinishedLaunching - wird später initialisiert");
+            }
 
             UNUserNotificationCenter.Current.RequestAuthorization(
                 UNAuthorizationOptions.Alert |
@@ -34,85 +39,77 @@ public class AppDelegate : MauiUIApplicationDelegate, IUNUserNotificationCenterD
                 UNAuthorizationOptions.Sound,
                 (granted, error) =>
                 {
-                    if (error != null)
+                    if (granted)
                     {
-                        AppModel.Logger?.Error($"Push authorization error: {error.LocalizedDescription}");
-                        return;
+                        MainThread.BeginInvokeOnMainThread(() =>
+                        {
+                            UIApplication.SharedApplication.RegisterForRemoteNotifications();
+                        });
                     }
-
-                    if (!granted)
+                    else
                     {
-                        AppModel.Logger?.Warn("Push authorization not granted by user.");
-                        return;
+                        AppModel.Logger?.Warn($"Push-Berechtigung verweigert: {error?.LocalizedDescription}");
                     }
-
-                    MainThread.BeginInvokeOnMainThread(() =>
-                    {
-                        UIApplication.SharedApplication.RegisterForRemoteNotifications();
-                    });
                 });
-
-            PushNotificationService.Initialize();
         }
         catch (Exception ex)
         {
             AppModel.Logger?.Error(ex, "ERROR: iOS push initialization failed");
+            AppModel.Instance.SendLogZipFile(true);
         }
 
         return base.FinishedLaunching(application, launchOptions);
     }
 
-    public override void RegisteredForRemoteNotifications(UIApplication application, NSData deviceToken)
+    [Export("application:didRegisterForRemoteNotificationsWithDeviceToken:")]
+    public void RegisteredForRemoteNotifications(UIApplication application, NSData deviceToken)
     {
         try
         {
-            if (deviceToken == null || deviceToken.Length == 0)
+            if (Messaging.SharedInstance == null)
             {
-                AppModel.Logger?.Warn("Push registration succeeded but APNs token is empty.");
+                AppModel.Logger?.Error("Firebase Messaging ist nicht initialisiert. APNS-Token kann nicht gesetzt werden.");
+                
                 return;
             }
 
-            // APNs Token an Firebase übergeben
+            // Stelle sicher, dass der Delegate gesetzt ist
+            if (Messaging.SharedInstance.Delegate == null)
+            {
+                Messaging.SharedInstance.Delegate = this;
+            }
+
             Messaging.SharedInstance.ApnsToken = deviceToken;
-
-            var tokenBytes = deviceToken.ToArray();
-            var apnsToken = BitConverter.ToString(tokenBytes).Replace("-", string.Empty).ToLowerInvariant();
-
-            AppModel.Logger?.Info($"APNs Token: {apnsToken}");
-
-            // Optional speichern, aber NICHT an deinen Firebase-Server als FCM Token senden
-            PushNotificationService.HandleApnsTokenReceived(apnsToken);
+            AppModel.Logger?.Info("APNS Token erfolgreich an Firebase Messaging übergeben.");
         }
         catch (Exception ex)
         {
-            AppModel.Logger?.Error(ex, "ERROR: Failed to process APNs device token");
+            AppModel.Logger?.Error(ex, "Fehler beim Setzen des APNS-Tokens");
+            AppModel.Instance.SendLogZipFile(true);
         }
     }
 
-    public override void FailedToRegisterForRemoteNotifications(UIApplication application, NSError error)
+    [Export("application:didFailToRegisterForRemoteNotificationsWithError:")]
+    public void FailedToRegisterForRemoteNotifications(UIApplication application, NSError error)
     {
         AppModel.Logger?.Error($"FailedToRegisterForRemoteNotifications: {error?.LocalizedDescription}");
+        AppModel.Instance.SendLogZipFile(true);
     }
 
     [Export("messaging:didReceiveRegistrationToken:")]
     public void DidReceiveRegistrationToken(Messaging messaging, string fcmToken)
     {
+        AppModel.Logger?.Info($"FCM Token iOS: {fcmToken}");
+
+        // Token an Server senden
         try
         {
-            if (string.IsNullOrWhiteSpace(fcmToken))
-            {
-                AppModel.Logger?.Warn("FCM token is empty.");
-                return;
-            }
-
-            AppModel.Logger?.Info($"FCM Token iOS: {fcmToken}");
-
-            // DAS ist der Token, den dein Server braucht
-            PushNotificationService.HandleFcmTokenReceived(fcmToken);
+            PushNotificationService.HandleTokenRefresh(fcmToken);
         }
         catch (Exception ex)
         {
-            AppModel.Logger?.Error(ex, "ERROR: Failed to process FCM token");
+            AppModel.Logger?.Error(ex, "Fehler beim Senden des FCM-Tokens an den Server");
+            AppModel.Instance.SendLogZipFile(true);
         }
     }
 
@@ -127,14 +124,5 @@ public class AppDelegate : MauiUIApplicationDelegate, IUNUserNotificationCenterD
             UNNotificationPresentationOptions.List |
             UNNotificationPresentationOptions.Sound |
             UNNotificationPresentationOptions.Badge);
-    }
-
-    [Export("userNotificationCenter:didReceiveNotificationResponse:withCompletionHandler:")]
-    public void DidReceiveNotificationResponse(
-        UNUserNotificationCenter center,
-        UNNotificationResponse response,
-        Action completionHandler)
-    {
-        completionHandler();
     }
 }

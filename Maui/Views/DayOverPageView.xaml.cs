@@ -12,7 +12,13 @@ namespace iPMCloud.Mobile.Views
             InitializeComponent();
             btn_back_dayover.GestureRecognizers.Clear();
             var tgr_back_dayover = new TapGestureRecognizer();
-            tgr_back_dayover.Tapped += async (s, e) => await Navigation.PopModalAsync(animated: false);
+            tgr_back_dayover.Tapped += async (s, e) =>
+            {
+                if (Navigation.ModalStack.Contains(this))
+                {
+                    await Navigation.PopModalAsync(animated: false);
+                }
+            };
             btn_back_dayover.GestureRecognizers.Add(tgr_back_dayover);
 
             btn_dayover_yes.GestureRecognizers.Clear();
@@ -128,7 +134,11 @@ namespace iPMCloud.Mobile.Views
                 // Zurücksetzten aller States für die Auswahl der Ausführungen
                 //AppModel.Instance.SetAllObjectAndValuesToNoSelectedBuilding();
             }
-            await Navigation.PopModalAsync(animated: false);
+
+            if (Navigation.ModalStack.Contains(this))
+            {
+                await Navigation.PopModalAsync(animated: false);
+            }
         }
     }
 }

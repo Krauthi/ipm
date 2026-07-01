@@ -1,6 +1,7 @@
 ﻿using iPMCloud.Mobile.vo;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Windows.Input;
 using Microsoft.Maui.Controls;
@@ -47,7 +48,7 @@ namespace iPMCloud.Mobile
                 objektid = l.objektid,
                 auftragid = l.auftragid,
                 kategorieid = l.kategorieid,
-                anzahl = Utils.formatDEStr(decimal.Parse(l.produktAnzahl) > 0 ? decimal.Parse(l.produktAnzahl) : 1),
+                anzahl = Utils.formatDEStr(decimal.Parse(l.produktAnzahl, CultureInfo.GetCultureInfo("de-DE")) > 0 ? decimal.Parse(l.produktAnzahl, CultureInfo.GetCultureInfo("de-DE")) : 1),
                 bemerkungen = null,
                 inout = l.inout,
             };

@@ -421,18 +421,24 @@ namespace iPMCloud.Mobile.vo
             AllKategorieNames = new List<KategorieNames>();
             AllBuildings.ForEach(b =>
             {
-                b.ArrayOfAuftrag.ForEach(o =>
+                if (b.ArrayOfAuftrag != null)
                 {
-                    o.kategorien.ForEach(c =>
+                    b.ArrayOfAuftrag.ForEach(o =>
                     {
-                        AllKategorieNames.Add(new KategorieNames
+                        if (o.kategorien != null)
                         {
-                            id = c.id,
-                            titel = c.titel,
-                            titelLang = c.titelLang
-                        });
+                            o.kategorien.ForEach(c =>
+                            {
+                                AllKategorieNames.Add(new KategorieNames
+                                {
+                                    id = c.id,
+                                    titel = c.titel,
+                                    titelLang = c.titelLang
+                                });
+                            });
+                        }
                     });
-                });
+                }
             });
         }
         public void AddKategorieNames(KategorieWSO c)
@@ -477,17 +483,26 @@ namespace iPMCloud.Mobile.vo
             // alle selektionen und disabled zurücksetzen 
             if (LastBuilding != null)
             {
-                LastBuilding.ArrayOfAuftrag.ForEach(o =>
+                if (LastBuilding.ArrayOfAuftrag != null)
                 {
-                    o.kategorien.ForEach(c =>
+                    LastBuilding.ArrayOfAuftrag.ForEach(o =>
                     {
-                        c.leistungen.ForEach(l =>
+                        if (o.kategorien != null)
                         {
-                            l.selected = false;
-                            l.disabled = false;
-                        });
+                            o.kategorien.ForEach(c =>
+                            {
+                                if (c != null && c.leistungen != null)
+                                {
+                                    c.leistungen.ForEach(l =>
+                                    {
+                                        l.selected = false;
+                                        l.disabled = false;
+                                    });
+                                }
+                            });
+                        }
                     });
-                });
+                }
             }
             SettingModel.SettingDTO.LastBuildingIdScanned = -1;
             LastBuilding = null;
@@ -1294,11 +1309,10 @@ namespace iPMCloud.Mobile.vo
             var deviceType = DeviceInfo.DeviceType;
             headstr += "<p style=\"margin:2px 5px;\">DEVICE.INFO - GeräteTyp: " + deviceType + "</p>";
 
-            if (AppModel.Instance.Person != null)
+            if (!String.IsNullOrWhiteSpace(AppModel.Instance.Version))
             {
-                AppModel.Logger.Info("INFO: V" + AppModel.Instance.Version + " (" + AppModel.Instance.Person.name + " " + AppModel.Instance.Person.vorname + ")");
+                headstr += "<p style=\"margin:2px 5px;\">iPM-Version: " + AppModel.Instance.Version + "</p>";
             }
-
             headstr += "<p style=\"margin:2px 5px;\">SEND LOG: " + (isGlobal ? "AUTO" : "Manuel von Person") + "</p>";
 
             headstr += "<p style=\"margin:2px 5px;\">Von: (" + AppModel.Instance.SettingModel.SettingDTO.CustomerNumber + ") " +

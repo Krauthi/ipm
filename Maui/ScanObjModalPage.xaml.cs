@@ -34,6 +34,7 @@ namespace iPMCloud.Mobile
                 Formats = BarcodeFormats.TwoDimensional,
                 AutoRotate = true,
                 Multiple = false,
+                CharacterSet = "ISO-8859-1",
                 DelayBetweenAnalyzingFrames = 30,
                 InitialDelayBeforeAnalyzingFrames = 0,
                 DelayBetweenContinuousScans = 0,
@@ -163,6 +164,7 @@ namespace iPMCloud.Mobile
                         Formats = BarcodeFormats.TwoDimensional,
                         AutoRotate = true,
                         Multiple = false,
+                        CharacterSet = "ISO-8859-1",
                         DelayBetweenAnalyzingFrames = 30,
                         InitialDelayBeforeAnalyzingFrames = 0,
                         DelayBetweenContinuousScans = 0,
@@ -244,7 +246,11 @@ namespace iPMCloud.Mobile
                 ReaderView.IsTorchOn = false;
                 ReaderView.IsDetecting = false;
                 _tcs?.TrySetResult(value);
-                await Navigation.PopModalAsync(animated: false);
+
+                if (IsThisPageTopModal())
+                {
+                    await Navigation.PopModalAsync(animated: false);
+                }
             });
         }
     }

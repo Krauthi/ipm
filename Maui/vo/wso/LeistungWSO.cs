@@ -1056,13 +1056,13 @@ namespace iPMCloud.Mobile
                     FontSize = 16,
                     Keyboard = Keyboard.Numeric,
                     HeightRequest = 40,
-                    Text = Utils.formatDEStr(decimal.Parse(leistung.anzahl) > 0 ? decimal.Parse(leistung.anzahl) : 1),
+                    Text = Utils.formatDEStr(decimal.Parse(leistung.anzahl, CultureInfo.GetCultureInfo("de-DE")) > 0 ? decimal.Parse(leistung.anzahl, CultureInfo.GetCultureInfo("de-DE")) : 1),
                     MinimumWidthRequest = 100,
                     HorizontalTextAlignment = TextAlignment.End,
                     BackgroundColor = Colors.Transparent
                 };
 
-                leistung.produktAnzahl = Utils.formatDEStr(decimal.Parse(leistung.anzahl) > 0 ? decimal.Parse(leistung.anzahl) : 1);
+                leistung.produktAnzahl = Utils.formatDEStr(decimal.Parse(leistung.anzahl, CultureInfo.GetCultureInfo("de-DE")) > 0 ? decimal.Parse(leistung.anzahl, CultureInfo.GetCultureInfo("de-DE")) : 1);
                 SelectedPositionSmallCardViewEntry.ReturnCommandParameter = leistung;
                 SelectedPositionSmallCardViewEntry.Unfocused -= UnfocusedAnzahlChange;
                 SelectedPositionSmallCardViewEntry.Unfocused += UnfocusedAnzahlChange;
@@ -1370,7 +1370,7 @@ namespace iPMCloud.Mobile
 
         public static void AddSubAnzahlChange(LeistungWSO l, CustomEntry entry, int add)
         {
-            var dec = decimal.Parse(entry.Text) + add;
+            var dec = decimal.Parse(entry.Text, CultureInfo.GetCultureInfo("de-DE")) + add;
             if (dec < 0) { dec = 0; }
             entry.Text = Utils.formatDEStr(dec);
             l.produktAnzahl = entry.Text;
@@ -1569,13 +1569,13 @@ namespace iPMCloud.Mobile
                     FontSize = 16,
                     Keyboard = Keyboard.Numeric,
                     HeightRequest = 40,
-                    Text = Utils.formatDEStr(decimal.Parse(leistung.anzahl) > 0 ? decimal.Parse(leistung.anzahl) : 1),
+                    Text = Utils.formatDEStr(decimal.Parse(leistung.anzahl, CultureInfo.GetCultureInfo("de-DE")) > 0 ? decimal.Parse(leistung.anzahl, CultureInfo.GetCultureInfo("de-DE")) : 1),
                     MinimumWidthRequest = 100,
                     HorizontalTextAlignment = TextAlignment.End,
                     BackgroundColor = Colors.Transparent
                 };
 
-                leistung.produktAnzahl = Utils.formatDEStr(decimal.Parse(leistung.anzahl) > 0 ? decimal.Parse(leistung.anzahl) : 1);
+                leistung.produktAnzahl = Utils.formatDEStr(decimal.Parse(leistung.anzahl, CultureInfo.GetCultureInfo("de-DE")) > 0 ? decimal.Parse(leistung.anzahl, CultureInfo.GetCultureInfo("de-DE")) : 1);
                 SelectedPositionAgainSmallCardViewEntry.ReturnCommandParameter = leistung;
                 SelectedPositionAgainSmallCardViewEntry.Unfocused -= UnfocusedAnzahlChange;
                 SelectedPositionAgainSmallCardViewEntry.Unfocused += UnfocusedAnzahlChange;
@@ -1844,7 +1844,7 @@ namespace iPMCloud.Mobile
         public static void AnzahlAgainChange(object sender, FocusEventArgs e)
         {
             var entry = (CustomEntry)sender;
-            entry.Text = Utils.formatDEStr(decimal.Parse(entry.Text));
+            entry.Text = Utils.formatDEStr(decimal.Parse(entry.Text, CultureInfo.GetCultureInfo("de-DE")));
             var leistung = (LeistungWSO)entry.ReturnCommandParameter;
             leistung.produktAnzahl = entry.Text;
         }
@@ -2114,7 +2114,7 @@ namespace iPMCloud.Mobile
                     FontSize = 16,
                     Keyboard = Keyboard.Numeric,
                     HeightRequest = 40,
-                    Text = Utils.formatDEStr(decimal.Parse(leiInWork.anzahl) > 0 ? decimal.Parse(leiInWork.anzahl) : 1),
+                    Text = Utils.formatDEStr(decimal.Parse(leiInWork.anzahl, CultureInfo.GetCultureInfo("de-DE")) > 0 ? decimal.Parse(leiInWork.anzahl, CultureInfo.GetCultureInfo("de-DE")) : 1),
                     MinimumWidthRequest = 100,
                     HorizontalTextAlignment = TextAlignment.End,
                     BackgroundColor = Colors.Transparent
@@ -2437,7 +2437,7 @@ namespace iPMCloud.Mobile
 
         public static void InWorkAddSubAnzahlChange(LeistungInWorkWSO l, CustomEntry entry, int add)
             {
-                var dec = (decimal.Parse(entry.Text) + add);
+                var dec = (decimal.Parse(entry.Text, CultureInfo.GetCultureInfo("de-DE")) + add);
                 if (dec < 0) { dec = 0; }
                 entry.Text = Utils.formatDEStr(dec);
                 l.anzahl = entry.Text;

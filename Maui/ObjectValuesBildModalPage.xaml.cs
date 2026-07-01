@@ -78,7 +78,11 @@ namespace iPMCloud.Mobile
         {
             AppModel.Instance.selectedObjectValueBild = null;
             _tcs.TrySetResult(false);
-            await Navigation.PopModalAsync(animated: false);
+
+            if (Navigation.ModalStack.Contains(this))
+            {
+                await Navigation.PopModalAsync(animated: false);
+            }
         }
 
         private async Task TakePhotoAsync(object sender, EventArgs e)
@@ -185,7 +189,11 @@ namespace iPMCloud.Mobile
             overlay_bild.IsVisible = false;
 
             _tcs.TrySetResult(true);
-            await Navigation.PopModalAsync(animated: false);
+
+            if (Navigation.ModalStack.Contains(this))
+            {
+                await Navigation.PopModalAsync(animated: false);
+            }
         }
     }
 }

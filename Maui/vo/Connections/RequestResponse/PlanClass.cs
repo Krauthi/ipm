@@ -3,6 +3,7 @@ using iPMCloud.Mobile.vo.wso;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -1177,7 +1178,7 @@ namespace iPMCloud.Mobile
                     FontSize = 16,
                     Keyboard = Keyboard.Numeric,
                     HeightRequest = 40,
-                    Text = Utils.formatDEStr(decimal.Parse(lei.leiInWork.anzahl) > 0 ? decimal.Parse(lei.leiInWork.anzahl) : 1),
+                    Text = Utils.formatDEStr(decimal.Parse(lei.leiInWork.anzahl, CultureInfo.GetCultureInfo("de-DE")) > 0 ? decimal.Parse(lei.leiInWork.anzahl, CultureInfo.GetCultureInfo("de-DE")) : 1),
                     MinimumWidthRequest = 100,
                     HorizontalTextAlignment = TextAlignment.End,
                     BackgroundColor = Colors.Transparent

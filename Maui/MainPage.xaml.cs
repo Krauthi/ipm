@@ -1836,6 +1836,7 @@ namespace iPMCloud.Mobile
                     DelayBetweenAnalyzingFrames = 30,
                     InitialDelayBeforeAnalyzingFrames = 0,
                     DelayBetweenContinuousScans = 0,
+                    CharacterSet = "ISO-8859-1",
                     CameraResolutionSelector = availableResolutions =>
                     {
                         var resolutions = availableResolutions.ToList();
@@ -1888,108 +1889,147 @@ namespace iPMCloud.Mobile
             // BarcodesDetected may fire on a background thread – marshal all UI work to the main thread.
             await MainThread.InvokeOnMainThreadAsync(async () =>
             {
-                overlay.IsVisible = true;
-                await Task.Delay(1);
-
-                if (string.IsNullOrWhiteSpace(result))
+                try
                 {
-                    OnCancelScanObjClicked(null, null);
-                    return;
-                }
-
-                const string marker = "objektid=";
-                var markerIndex = result?.IndexOf(marker) ?? -1;
-
-                if (markerIndex >= 0)
-                {
-                    var sp = result.Substring(markerIndex + marker.Length)
-                                   .Split(new[] { "_" }, StringSplitOptions.RemoveEmptyEntries);
-
-                    if (sp != null && sp.Length > 0 && Int32.TryParse(sp[0], out Int32 buildingid))
+                    if (overlay == null)
                     {
-                        var CustomerNumber = sp.Length == 1 ? "1" : "" + sp[1];
-                        if (!__isOutScan)
+                        AppModel.Logger?.Error("ERROR: overlay is null in ReaderView_BarcodesDetected");
+                        return;
+                    }
+
+                    overlay.IsVisible = true;
+                    await Task.Delay(1);
+
+                    if (string.IsNullOrWhiteSpace(result))
+                    {
+                        OnCancelScanObjClicked(null, null);
+                        return;
+                    }
+
+                    const string marker = "objektid=";
+                    var markerIndex = result?.IndexOf(marker) ?? -1;
+
+                    if (markerIndex >= 0)
+                    {
+                        var sp = result.Substring(markerIndex + marker.Length)
+                                       .Split(new[] { "_" }, StringSplitOptions.RemoveEmptyEntries);
+
+                        if (sp != null && sp.Length > 0 && Int32.TryParse(sp[0], out Int32 buildingid))
                         {
-                            if (CustomerNumber == AppModel.Instance.SettingModel.SettingDTO.CustomerNumber)
+                            var CustomerNumber = sp.Length == 1 ? "1" : "" + sp[1];
+
+                            // Null-Check für SettingModel und SettingDTO
+                            if (AppModel.Instance?.SettingModel?.SettingDTO == null)
                             {
-                                AppModel.Instance.SettingModel.SettingDTO.LastBuildingIdScanned = buildingid;
-
-                                if (buildingid > 0 && AppModel.Instance.AllBuildings != null && AppModel.Instance.AllBuildings.Count > 0)
-                                {
-                                    AppModel.Instance.SetAllObjectAndValuesToNoSelectedBuilding();
-                                    AppModel.Instance.SettingModel.SettingDTO.LastBuildingIdScanned = buildingid;
-                                    AppModel.Instance.LastBuilding = AppModel.Instance.AllBuildings.Find(bu => bu.id == buildingid);
-
-                                    AppModel.Logger.Info("CHECK-IN: " + AppModel.Instance.LastBuilding.strasse + " " +
-                                                             AppModel.Instance.LastBuilding.hsnr + " " +
-                                                             AppModel.Instance.LastBuilding.plz + " " +
-                                                             AppModel.Instance.LastBuilding.ort);
-
-                                }
-
-                                AppModel.Instance.SettingModel.SaveSettings();
-
+                                AppModel.Logger?.Error("ERROR: SettingModel or SettingDTO is null in ReaderView_BarcodesDetected");
                                 OnCancelScanObjClicked(null, null);
+                                await DisplayAlertAsync("Fehler!", "Einstellungen konnten nicht geladen werden.", "OK");
+                                return;
+                            }
 
-                                if (__isCheck)
+                            if (!__isOutScan)
+                            {
+                                if (CustomerNumber == AppModel.Instance.SettingModel.SettingDTO.CustomerNumber)
                                 {
-                                    MethodAfterScan_check();
+                                    AppModel.Instance.SettingModel.SettingDTO.LastBuildingIdScanned = buildingid;
+
+                                    if (buildingid > 0 && AppModel.Instance.AllBuildings != null && AppModel.Instance.AllBuildings.Count > 0)
+                                    {
+                                        AppModel.Instance.SetAllObjectAndValuesToNoSelectedBuilding();
+                                        AppModel.Instance.SettingModel.SettingDTO.LastBuildingIdScanned = buildingid;
+                                        AppModel.Instance.LastBuilding = AppModel.Instance.AllBuildings.Find(bu => bu.id == buildingid);
+
+                                        if (AppModel.Instance.LastBuilding != null)
+                                        {
+                                            AppModel.Logger.Info("CHECK-IN: " + AppModel.Instance.LastBuilding.strasse + " " +
+                                                                 AppModel.Instance.LastBuilding.hsnr + " " +
+                                                                 AppModel.Instance.LastBuilding.plz + " " +
+                                                                 AppModel.Instance.LastBuilding.ort);
+                                        }
+                                        else
+                                        {
+                                            AppModel.Logger.Warn("WARN: CHECK-IN Objekt mit ID " + buildingid + " nicht gefunden in AllBuildings (List).");
+                                        }
+
+                                    }
+
+                                    AppModel.Instance.SettingModel.SaveSettings();
+
+                                    OnCancelScanObjClicked(null, null);
+
+                                    if (__isCheck)
+                                    {
+                                        MethodAfterScan_check();
+                                    }
+                                    else
+                                    {
+                                        ShowMainPage();
+                                    }
                                 }
                                 else
                                 {
-                                    ShowMainPage();
+
+                                    OnCancelScanObjClicked(null, null);
+                                    await DisplayAlertAsync("QR-Code nicht erkannt!",
+                                        "Dieser QR-Code ist zwar ein iPM-Cloud Code jedoch gehört er nicht zum Registrieten Unternehmen! Bitte Probieren Sie es noch einmal oder melden Sie sich in Ihrer Zentrale.",
+                                        "OK");
                                 }
                             }
                             else
                             {
+                                AppModel.Instance.OutScanBuilding = null;
+                                if (CustomerNumber == AppModel.Instance.SettingModel.SettingDTO.CustomerNumber)
+                                {
+                                    if (AppModel.Instance.AllBuildings != null && AppModel.Instance.AllBuildings.Count > 0)
+                                    {
+                                        AppModel.Instance.OutScanBuilding = AppModel.Instance.AllBuildings.Find(bu => bu.id == buildingid);
+                                        if (AppModel.Instance.OutScanBuilding != null)
+                                        {
+                                            AppModel.Logger.Info("CHECK-OUT: " + AppModel.Instance.OutScanBuilding.strasse + " " +
+                                                                 AppModel.Instance.OutScanBuilding.hsnr + " " +
+                                                                 AppModel.Instance.OutScanBuilding.plz + " " +
+                                                                 AppModel.Instance.OutScanBuilding.ort);
+                                        }
+                                        else
+                                        {
+                                            AppModel.Logger.Warn("WARN: CHECK-OUT Objekt mit ID " + buildingid + " nicht gefunden in AllBuildings (List).");
+                                        }
+                                    }
 
-                                OnCancelScanObjClicked(null, null);
-                                await DisplayAlertAsync("QR-Code nicht erkannt!",
-                                    "Dieser QR-Code ist zwar ein iPM-Cloud Code jedoch gehört er nicht zum Registrieten Unternehmen! Bitte Probieren Sie es noch einmal oder melden Sie sich in Ihrer Zentrale.",
-                                    "OK");
+                                    OnCancelScanObjClicked(null, null);
+                                    MethodAfterOutScan();
+                                }
+                                else
+                                {
+                                    OnCancelScanObjClicked(null, null);
+                                    await DisplayAlertAsync("QR-Code nicht erkannt!",
+                                        "Dieser QR-Code ist zwar ein iPM-Cloud Code jedoch gehört er nicht zum Registrieten Unternehmen! Bitte Probieren Sie es noch einmal oder melden Sie sich in Ihrer Zentrale.",
+                                        "OK");
+                                }
                             }
+
+
                         }
                         else
                         {
-                            AppModel.Instance.OutScanBuilding = null;
-                            if (CustomerNumber == AppModel.Instance.SettingModel.SettingDTO.CustomerNumber)
-                            {
-                                if (AppModel.Instance.AllBuildings != null && AppModel.Instance.AllBuildings.Count > 0)
-                                {
-                                    AppModel.Instance.OutScanBuilding = AppModel.Instance.AllBuildings.Find(bu => bu.id == buildingid);
-                                    AppModel.Logger.Info("CHECK-OUT: " + AppModel.Instance.OutScanBuilding.strasse + " " +
-                                                             AppModel.Instance.OutScanBuilding.hsnr + " " +
-                                                             AppModel.Instance.OutScanBuilding.plz + " " +
-                                                             AppModel.Instance.OutScanBuilding.ort);
-                                }
-
-                                OnCancelScanObjClicked(null, null);
-                                MethodAfterOutScan();
-                            }
-                            else
-                            {
-                                OnCancelScanObjClicked(null, null);
-                                await DisplayAlertAsync("QR-Code nicht erkannt!",
-                                    "Dieser QR-Code ist zwar ein iPM-Cloud Code jedoch gehört er nicht zum Registrieten Unternehmen! Bitte Probieren Sie es noch einmal oder melden Sie sich in Ihrer Zentrale.",
-                                    "OK");
-                            }
+                            OnCancelScanObjClicked(null, null);
+                            await DisplayAlertAsync("QR-Code nicht erkannt!",
+                                "Dieser QR-Code kann nicht verwendet werden. Bitte Probieren Sie es noch einmal.",
+                                "OK");
                         }
-
 
                     }
                     else
                     {
                         OnCancelScanObjClicked(null, null);
-                        await DisplayAlertAsync("QR-Code nicht erkannt!",
-                            "Dieser QR-Code kann nicht verwendet werden. Bitte Probieren Sie es noch einmal.",
-                            "OK");
+                        await DisplayAlertAsync("Fehler beim Scannen!", "QR-Code konnte nicht gelesen werden.", "OK");
                     }
-
                 }
-                else
+                catch (Exception ex)
                 {
+                    AppModel.Logger?.Error($"ERROR in ReaderView_BarcodesDetected: {ex.Message}\n{ex.StackTrace}");
                     OnCancelScanObjClicked(null, null);
-                    await DisplayAlertAsync("Fehler beim Scannen!", "QR-Code konnte nicht gelesen werden.", "OK");
+                    await DisplayAlertAsync("Fehler!", "Ein unerwarteter Fehler ist aufgetreten.", "OK");
                 }
             });
         }
@@ -2182,6 +2222,7 @@ namespace iPMCloud.Mobile
                     DelayBetweenAnalyzingFrames = 30,
                     InitialDelayBeforeAnalyzingFrames = 0,
                     DelayBetweenContinuousScans = 0,
+                    CharacterSet = "ISO-8859-1",
                     CameraResolutionSelector = availableResolutions =>
                     {
                         var resolutions = availableResolutions.ToList();
@@ -3050,8 +3091,8 @@ namespace iPMCloud.Mobile
             {
                 if (od.id == newod.id)
                 {
-                    od.lastStand = Utils.formatDEStr3(decimal.Parse(od.stand));
-                    od.stand = Utils.formatDEStr3(decimal.Parse(newod.firstStand));
+                    od.lastStand = Utils.formatDEStr3(decimal.Parse(od.stand, CultureInfo.GetCultureInfo("de-DE")));
+                    od.stand = Utils.formatDEStr3(decimal.Parse(newod.firstStand, CultureInfo.GetCultureInfo("de-DE")));
                     od.standdatum = "" + datum;
                     od.standGeaendertAm = "" + datum;
                     od.lastchange = "" + datum;
@@ -3062,8 +3103,8 @@ namespace iPMCloud.Mobile
 
             newod.guid = Guid.NewGuid().ToString();
             newod.ticks = DateTime.Now.Ticks;
-            newod.lastStand = Utils.formatDEStr3(decimal.Parse(newod.stand));
-            newod.stand = Utils.formatDEStr3(decimal.Parse(newod.firstStand));
+            newod.lastStand = Utils.formatDEStr3(decimal.Parse(newod.stand, CultureInfo.GetCultureInfo("de-DE")));
+            newod.stand = Utils.formatDEStr3(decimal.Parse(newod.firstStand, CultureInfo.GetCultureInfo("de-DE")));
             ObjektDataWSO.ToUploadStack(AppModel.Instance, newod);
             await Task.Delay(1);
             CheckAllSyncFromUpload(); //SyncObjectValues();
@@ -5249,7 +5290,7 @@ namespace iPMCloud.Mobile
                     objektid = l.objektid,
                     auftragid = l.auftragid,
                     kategorieid = l.kategorieid,
-                    anzahl = Utils.formatDEStr(decimal.Parse(l.produktAnzahl) > 0 ? decimal.Parse(l.produktAnzahl) : 1),
+                    anzahl = Utils.formatDEStr(decimal.Parse(l.produktAnzahl, CultureInfo.GetCultureInfo("de-DE")) > 0 ? decimal.Parse(l.produktAnzahl, CultureInfo.GetCultureInfo("de-DE")) : 1),
                     bemerkungen = null,
                     inout = l.inout,
                     again = 1,
@@ -6117,121 +6158,130 @@ namespace iPMCloud.Mobile
                     //Vergleiche firsches Objekt vom Backend mit gespeichertem Objekt wenn vorhanden
                     if (b.del == 0)
                     {
-                        b.ArrayOfAuftrag.ForEach(a =>
+                        if (b.ArrayOfAuftrag != null && b.ArrayOfAuftrag.Count > 0)
                         {
-                            AuftragWSO lba = null;
-                            KategorieWSO lbk = null;
-                            LeistungWSO lbl = null;
-                            if (lb != null) { lba = lb.ArrayOfAuftrag.Find(f => f.id == a.id); }
-                            if (a.del == 0)
+                            b.ArrayOfAuftrag.ForEach(a =>
                             {
-                                // übersetzen wenn Sprache sich ändert oder Objekt nicht existiert oder der Auftrag noch garnicht existiert
-                                if (isChangeLang || lb == null || lba == null)
+                                AuftragWSO lba = null;
+                                KategorieWSO lbk = null;
+                                LeistungWSO lbl = null;
+                                if (lb != null) { lba = lb.ArrayOfAuftrag.Find(f => f.id == a.id); }
+                                if (a.del == 0)
                                 {
-                                    countFrom++;
-                                    als.Add(a.bezeichnung);
-                                }
-                                // übersetzen wenn Auf.Bez. noch gar nicht übersetzt
-                                else if (!isChangeLang && String.IsNullOrWhiteSpace(lba.bezeichnungLang))
-                                {
-                                    countFrom++;
-                                    als.Add(a.bezeichnung);
-                                }
-                                // übersetzen wenn AufBez sich geändert hat
-                                else if (!isChangeLang && !String.IsNullOrWhiteSpace(lba.bezeichnungLang) && a.bezeichnung != lba.bezeichnung)
-                                {
-                                    countFrom++;
-                                    als.Add(a.bezeichnung);
-                                }
-                                // Einfach übernehmen aus voeherigen Datensatz , so das die vorherige Übersetzung übernommen wird
-                                else if (!isChangeLang && !String.IsNullOrWhiteSpace(lba.bezeichnungLang) && a.bezeichnung == lba.bezeichnung)
-                                {
-                                    a.bezeichnung = lba.bezeichnung;
-                                }
-                                a.kategorien.ForEach(k =>
-                                {
-                                    if (lb != null && lba != null) { lbk = lba.kategorien.Find(f => f.id == k.id); }
-                                    if (k.del == 0 && (k.art == "Leistung" || k.art == "Produkt"))
+                                    // übersetzen wenn Sprache sich ändert oder Objekt nicht existiert oder der Auftrag noch garnicht existiert
+                                    if (isChangeLang || lb == null || lba == null)
                                     {
-                                        // übersetzen wenn Sprache sich ändert oder Objekt nicht existiert oder der Auftrag noch garnicht existiert
-                                        // oder die Kategorie nicht existiert
-                                        if (isChangeLang || lb == null || lba == null || lbk == null)
+                                        countFrom++;
+                                        als.Add(a.bezeichnung);
+                                    }
+                                    // übersetzen wenn Auf.Bez. noch gar nicht übersetzt
+                                    else if (!isChangeLang && String.IsNullOrWhiteSpace(lba.bezeichnungLang))
+                                    {
+                                        countFrom++;
+                                        als.Add(a.bezeichnung);
+                                    }
+                                    // übersetzen wenn AufBez sich geändert hat
+                                    else if (!isChangeLang && !String.IsNullOrWhiteSpace(lba.bezeichnungLang) && a.bezeichnung != lba.bezeichnung)
+                                    {
+                                        countFrom++;
+                                        als.Add(a.bezeichnung);
+                                    }
+                                    // Einfach übernehmen aus voeherigen Datensatz , so das die vorherige Übersetzung übernommen wird
+                                    else if (!isChangeLang && !String.IsNullOrWhiteSpace(lba.bezeichnungLang) && a.bezeichnung == lba.bezeichnung)
+                                    {
+                                        a.bezeichnung = lba.bezeichnung;
+                                    }
+                                    if (a.kategorien != null && a.kategorien.Count > 0)
+                                    {
+                                        a.kategorien.ForEach(k =>
                                         {
-                                            countFrom++;
-                                            kls.Add(k.titel);
-                                        }
-                                        // übersetzen wenn Auf.Bez. noch gar nicht übersetzt
-                                        else if (!isChangeLang && String.IsNullOrWhiteSpace(lbk.titelLang))
-                                        {
-                                            countFrom++;
-                                            kls.Add(k.titel);
-                                        }
-                                        // übersetzen wenn KatTit sich geändert hat
-                                        else if (!isChangeLang && !String.IsNullOrWhiteSpace(lbk.titelLang) && k.titel != lbk.titel)
-                                        {
-                                            countFrom++;
-                                            kls.Add(k.titel);
-                                        }
-                                        // Einfach übernehmen aus voeherigen Datensatz , so das die vorherige Übersetzung übernommen wird
-                                        else if (!isChangeLang && !String.IsNullOrWhiteSpace(lbk.titelLang) && k.titel == lbk.titel)
-                                        {
-                                            k.titelLang = lbk.titelLang;
-                                        }
-                                        k.leistungen.ForEach(l =>
-                                        {
-                                            if (lb != null && lba != null && lbk != null) { lbl = lbk.leistungen.Find(f => f.id == l.id); }
-                                            if (l.del == 0 && (l.art == "Leistung" || l.art == "Produkt"))
+                                            if (lb != null && lba != null) { lbk = lba.kategorien.Find(f => f.id == k.id); }
+                                            if (k.del == 0 && (k.art == "Leistung" || k.art == "Produkt"))
                                             {
-                                                if (l.ext == null) { l.ext = new LeistungExtWSO(); }
                                                 // übersetzen wenn Sprache sich ändert oder Objekt nicht existiert oder der Auftrag noch garnicht existiert
-                                                // oder die Kategorie nicht existiert oder die Leistung noch nicht existiert
-                                                if (isChangeLang || lb == null || lba == null || lbk == null || lbl == null)
+                                                // oder die Kategorie nicht existiert
+                                                if (isChangeLang || lb == null || lba == null || lbk == null)
                                                 {
                                                     countFrom++;
-                                                    lls.Add(l.GetMobileOriginalText());
+                                                    kls.Add(k.titel);
                                                 }
-                                                // übersetzen wenn Leistungstext noch gar nicht übersetzt
-                                                else if (!isChangeLang && String.IsNullOrWhiteSpace(lbl.GetMobileLangText()))
+                                                // übersetzen wenn Auf.Bez. noch gar nicht übersetzt
+                                                else if (!isChangeLang && String.IsNullOrWhiteSpace(lbk.titelLang))
                                                 {
                                                     countFrom++;
-                                                    lls.Add(l.GetMobileOriginalText());
+                                                    kls.Add(k.titel);
                                                 }
-                                                //AnweisungsText ist Leer
-                                                else if (!isChangeLang && !String.IsNullOrWhiteSpace(lbl.GetMobileLangText()) && String.IsNullOrWhiteSpace(l.ext.anweisung))
+                                                // übersetzen wenn KatTit sich geändert hat
+                                                else if (!isChangeLang && !String.IsNullOrWhiteSpace(lbk.titelLang) && k.titel != lbk.titel)
                                                 {
-                                                    // BESCHREIBUNG verwenden -  übersetzen wenn Leistungstext sich geändert hat
-                                                    if (l.beschreibung != lbl.beschreibung)
-                                                    {
-                                                        countFrom++;
-                                                        lls.Add(l.beschreibung);
-                                                    }
-                                                    // BESCHREIBUNG verwenden - Einfach übernehmen aus voeherigen Datensatz , so das die vorherige Übersetzung übernommen wird.
-                                                    else
-                                                    {
-                                                        l.ext.anweisungLang = lbl.ext.anweisungLang;
-                                                    }
+                                                    countFrom++;
+                                                    kls.Add(k.titel);
                                                 }
-                                                //AnweisungsText ist gefüllt
-                                                else if (!isChangeLang && !String.IsNullOrWhiteSpace(lbl.GetMobileLangText()) && !String.IsNullOrWhiteSpace(l.ext.anweisung))
+                                                // Einfach übernehmen aus voeherigen Datensatz , so das die vorherige Übersetzung übernommen wird
+                                                else if (!isChangeLang && !String.IsNullOrWhiteSpace(lbk.titelLang) && k.titel == lbk.titel)
                                                 {
-                                                    // BESCHREIBUNG verwenden -  übersetzen wenn Leistungstext sich geändert hat
-                                                    if (l.ext.anweisung != lbl.ext.anweisung)
+                                                    k.titelLang = lbk.titelLang;
+                                                }
+                                                if (k.leistungen != null && k.leistungen.Count > 0)
+                                                {
+                                                    k.leistungen.ForEach(l =>
                                                     {
-                                                        countFrom++;
-                                                        lls.Add(l.ext.anweisung);
-                                                    }
-                                                    // BESCHREIBUNG verwenden - Einfach übernehmen aus voeherigen Datensatz , so das die vorherige Übersetzung übernommen wird.
-                                                    else
-                                                    {
-                                                        l.ext.anweisungLang = lbl.ext.anweisungLang;
-                                                    }
+                                                        if (lb != null && lba != null && lbk != null) { lbl = lbk.leistungen.Find(f => f.id == l.id); }
+                                                        if (l.del == 0 && (l.art == "Leistung" || l.art == "Produkt"))
+                                                        {
+                                                            if (l.ext == null) { l.ext = new LeistungExtWSO(); }
+                                                            // übersetzen wenn Sprache sich ändert oder Objekt nicht existiert oder der Auftrag noch garnicht existiert
+                                                            // oder die Kategorie nicht existiert oder die Leistung noch nicht existiert
+                                                            if (isChangeLang || lb == null || lba == null || lbk == null || lbl == null)
+                                                            {
+                                                                countFrom++;
+                                                                lls.Add(l.GetMobileOriginalText());
+                                                            }
+                                                            // übersetzen wenn Leistungstext noch gar nicht übersetzt
+                                                            else if (!isChangeLang && String.IsNullOrWhiteSpace(lbl.GetMobileLangText()))
+                                                            {
+                                                                countFrom++;
+                                                                lls.Add(l.GetMobileOriginalText());
+                                                            }
+                                                            //AnweisungsText ist Leer
+                                                            else if (!isChangeLang && !String.IsNullOrWhiteSpace(lbl.GetMobileLangText()) && String.IsNullOrWhiteSpace(l.ext.anweisung))
+                                                            {
+                                                                // BESCHREIBUNG verwenden -  übersetzen wenn Leistungstext sich geändert hat
+                                                                if (l.beschreibung != lbl.beschreibung)
+                                                                {
+                                                                    countFrom++;
+                                                                    lls.Add(l.beschreibung);
+                                                                }
+                                                                // BESCHREIBUNG verwenden - Einfach übernehmen aus voeherigen Datensatz , so das die vorherige Übersetzung übernommen wird.
+                                                                else
+                                                                {
+                                                                    l.ext.anweisungLang = lbl.ext.anweisungLang;
+                                                                }
+                                                            }
+                                                            //AnweisungsText ist gefüllt
+                                                            else if (!isChangeLang && !String.IsNullOrWhiteSpace(lbl.GetMobileLangText()) && !String.IsNullOrWhiteSpace(l.ext.anweisung))
+                                                            {
+                                                                // BESCHREIBUNG verwenden -  übersetzen wenn Leistungstext sich geändert hat
+                                                                if (l.ext.anweisung != lbl.ext.anweisung)
+                                                                {
+                                                                    countFrom++;
+                                                                    lls.Add(l.ext.anweisung);
+                                                                }
+                                                                // BESCHREIBUNG verwenden - Einfach übernehmen aus voeherigen Datensatz , so das die vorherige Übersetzung übernommen wird.
+                                                                else
+                                                                {
+                                                                    l.ext.anweisungLang = lbl.ext.anweisungLang;
+                                                                }
+                                                            }
+                                                        }
+                                                    });
                                                 }
                                             }
                                         });
                                     }
-                                });
-                            }
-                        });
+                                }
+                            });
+                        }
                     }
                 });
 
@@ -6273,45 +6323,54 @@ namespace iPMCloud.Mobile
                 {
                     if (b.del == 0)
                     {
-                        b.ArrayOfAuftrag.ForEach(a =>
+                        if (b.ArrayOfAuftrag != null && b.ArrayOfAuftrag.Count > 0)
                         {
-                            if (a.del == 0)
+                            b.ArrayOfAuftrag.ForEach(a =>
                             {
-                                var fa = atr.Find(f => f.OriginalText == a.bezeichnung);
-                                if (fa != null)
+                                if (a.del == 0)
                                 {
-                                    countReady++;
-                                    a.bezeichnungLang = fa.TranslatedText;
-                                }
-                                a.kategorien.ForEach(k =>
-                                {
-                                    if (k.del == 0 && (k.art == "Leistung" || k.art == "Produkt"))
+                                    var fa = atr.Find(f => f.OriginalText == a.bezeichnung);
+                                    if (fa != null)
                                     {
-                                        var fk = ktr.Find(f => f.OriginalText == k.titel);
-                                        if (fk != null)
+                                        countReady++;
+                                        a.bezeichnungLang = fa.TranslatedText;
+                                    }
+                                    if (a.kategorien != null && a.kategorien.Count > 0)
+                                    {
+                                        a.kategorien.ForEach(k =>
                                         {
-                                            countReady++;
-                                            k.titelLang = fk.TranslatedText;
-                                            AppModel.Instance.AddKategorieNames(k);
-                                        }
-                                        k.leistungen.ForEach(l =>
-                                        {
-                                            if (l.del == 0 && (l.art == "Leistung" || l.art == "Produkt") && l.ext != null)
+                                            if (k.del == 0 && (k.art == "Leistung" || k.art == "Produkt"))
                                             {
-                                                var fl = ltr.Find(f => f.OriginalText == l.GetMobileOriginalText());
-                                                if (fl != null)
+                                                var fk = ktr.Find(f => f.OriginalText == k.titel);
+                                                if (fk != null)
                                                 {
                                                     countReady++;
-                                                    l.ext.anweisungLang = fl.TranslatedText;
+                                                    k.titelLang = fk.TranslatedText;
+                                                    AppModel.Instance.AddKategorieNames(k);
+                                                }
+                                                if (k.leistungen != null && k.leistungen.Count > 0)
+                                                {
+                                                    k.leistungen.ForEach(l =>
+                                                    {
+                                                        if (l.del == 0 && (l.art == "Leistung" || l.art == "Produkt") && l.ext != null)
+                                                        {
+                                                            var fl = ltr.Find(f => f.OriginalText == l.GetMobileOriginalText());
+                                                            if (fl != null)
+                                                            {
+                                                                countReady++;
+                                                                l.ext.anweisungLang = fl.TranslatedText;
+                                                            }
+                                                        }
+                                                    });
                                                 }
                                             }
                                         });
                                     }
-                                });
-                            }
-                        });
-                        BuildingWSO.Save(AppModel.Instance, b);
-                        // popupContainer_container_changelang_status.Text = "" + countReady + " von " + countFrom;
+                                }
+                            });
+                            BuildingWSO.Save(AppModel.Instance, b);
+                            // popupContainer_container_changelang_status.Text = "" + countReady + " von " + countFrom;
+                        }
                     }
                 });
 
@@ -7856,14 +7915,9 @@ namespace iPMCloud.Mobile
             }
             else
             {
-                if (long.Parse(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks) < DateTime.Now.AddDays(-7).Ticks)
+                if (long.Parse(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks) < DateTime.Now.AddDays(-4).Ticks)
                 {
-                    var dt = new DateTime(long.Parse(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks));
-                    var dtn = DateTime.Now.AddDays(-7);
-                    if (dt < dtn)
-                    {
-                        SyncBuildingManuell(true);
-                    }
+                    SyncBuildingManuell(true);
                 }
                 else
                 {
@@ -7900,12 +7954,6 @@ namespace iPMCloud.Mobile
         {
             try
             {
-                var dt = String.IsNullOrEmpty(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks) ?
-                    DateTime.Now.AddDays(-2) : new DateTime(long.Parse(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks));
-
-
-                if (dt.AddHours(AppModel.Instance.SettingModel.SettingDTO.SyncTimeHours) < DateTime.Now || manuellSync)
-                {
                     popupContainer.IsVisible = true;
                     popupContainer_count.Text = "SYNCHRONISATION (0%)";
                     await Task.Delay(1);
@@ -7952,13 +8000,7 @@ namespace iPMCloud.Mobile
                     // Do not start sync here to avoid duplicate execution
                     AppModel.Logger?.Info("Android: Sync delegated to SyncForegroundService");
 #endif
-                }
-                else
-                {
-                    Load_PlanTabs(((int)DateTime.Now.DayOfWeek));
-                    box_buildingInformation.Children.Clear();
-                    box_buildingInformation.Children.Add(BuildingWSO.GetBuildingInformation(AppModel.Instance, dt));
-                }
+                
             }
             catch (Exception ex)
             {
@@ -8019,10 +8061,8 @@ namespace iPMCloud.Mobile
                         // AppControll UI refresh (data was already saved by SyncCoordinator)
                         SetAppControll();
                         UpdateSyncCounter(100d);
-                        var dt = String.IsNullOrEmpty(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks) ?
-                            DateTime.Now.AddDays(-2) : new DateTime(long.Parse(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks));
                         box_buildingInformation.Children.Clear();
-                        box_buildingInformation.Children.Add(BuildingWSO.GetBuildingInformation(AppModel.Instance, dt));
+                        box_buildingInformation.Children.Add(BuildingWSO.GetBuildingInformation(AppModel.Instance, DateTime.Now));
                         await SyncNewBuildingManuell_nextAsync(e.Response);
                     }
                     else
@@ -8121,21 +8161,6 @@ namespace iPMCloud.Mobile
             }
         }
 
-        private async void SyncNewBuildingManuell_next(IpmNewSyncResponse ipmNewBuildingResponse)
-        {
-            // Keep the old async void method for backward compatibility, but call the async Task version
-            try
-            {
-                await SyncNewBuildingManuell_nextAsync(ipmNewBuildingResponse);
-            }
-            catch (Exception ex)
-            {
-                AppModel.Logger.Error($"Method => MainPage-SyncNewBuildingManuell_next wrapper(catch): {ex.Message}");
-                //var ok = AppModel.Instance.SendLogZipFile(true);
-                //await Task.Delay(2000);
-            }
-        }
-
 
         private async void CheckForNewBuildingFailed(IpmNewSyncResponse ipmNewBuildingResponse)
         {
@@ -8153,33 +8178,6 @@ namespace iPMCloud.Mobile
             SetLastBuilding();
         }
 
-        /*
-        private async void FastSyncCount()
-        {
-            IpmBuildingResponse fastSyncResponse = await Task.Run(() => { return AppModel.Instance.Connections.IpmFastSyncCount(); });
-            if (fastSyncResponse != null && fastSyncResponse.success)
-            {
-                AppModel.Instance.FastSyncCount = Int32.Parse(fastSyncResponse.message);
-
-                if (fastSyncResponse.AppControll != null)
-                {
-                    AppModel.Instance.AppControll = fastSyncResponse.AppControll;
-                    AppControll.Save(AppModel.Instance, AppModel.Instance.AppControll);
-                }
-
-                if (AppModel.Instance.FastSyncCount > 0) { FastSync(true); }
-
-                if (AppModel.Instance.FastSyncCount == 0)
-                {
-                    Load_PlanTabs(((int)DateTime.Now.DayOfWeek));
-                }
-            }
-            else
-            {
-                Load_PlanTabs(((int)DateTime.Now.DayOfWeek));
-            }
-        }
-        */
         private async void FastSync(bool run = false)
         {
             var dt = String.IsNullOrEmpty(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks) ?
@@ -8272,31 +8270,73 @@ namespace iPMCloud.Mobile
                 box_buildingInformation.Children.Add(BuildingWSO.GetBuildingInformation(AppModel.Instance, dtss));
             }
         }
-        private void FastSyncUpdate(IpmBuildingResponse fastSyncResponse, bool saveBuilding)
+        private void FastSyncUpdate(IpmBuildingResponse fastSyncResponse, bool saveBuildingByNotTranslation)
         {
             if (fastSyncResponse.builgings != null)
             {
                 fastSyncResponse.builgings.ForEach(b =>
                 {
-                    if (saveBuilding) { BuildingWSO.Save(AppModel.Instance, b); }
-                    var i = AppModel.Instance.AllBuildings.FindIndex(f => f.id == b.id);
-                    if (i > -1)
+                    if (b.del == 0 && b.ArrayOfAuftrag != null && b.ArrayOfAuftrag.Count > 0)
                     {
-                        AppModel.Instance.AllBuildings[i] = b;
+                        bool isKategories = false;
+                        bool isLeistungen = false;
+                        foreach (var auf in b.ArrayOfAuftrag)
+                        {
+                            if(auf.kategorien != null && auf.kategorien.Count > 0)
+                            {
+                                isKategories = true;
+                                auf.kategorien.ForEach(k =>
+                                {
+                                    if (k.leistungen != null && k.leistungen.Count > 0)
+                                    {
+                                        isLeistungen = true;
+                                    }
+                                });
+                            }
+                        }
+                        if (isLeistungen)
+                        {
+                            if (saveBuildingByNotTranslation) { BuildingWSO.Save(AppModel.Instance, b); }
+                            var i = AppModel.Instance.AllBuildings.FindIndex(f => f.id == b.id);
+                            if (i > -1)
+                            {
+                                AppModel.Instance.AllBuildings[i] = b;
+                            }
+                            else
+                            {
+                                AppModel.Instance.AllBuildings.Add(b);
+                            }
+                        }
+                        else
+                        {
+                            if(isKategories)
+                            {
+                                AppModel.Logger.Warn("WARN: FastSync - Aufträge ohne Leistungen: Objekt:" + b.id + " " +
+                                    b.plz + " " + b.ort + " - " + b.strasse + " " + b.hsnr);
+                            }
+                            else
+                            {
+                                AppModel.Logger.Warn("WARN: FastSync - Aufträge ohne Kategorien: Objekt: " + b.id + " " +
+                                    b.plz + " " + b.ort + " - " + b.strasse + " " + b.hsnr);
+                            }
+                        }
                     }
                     else
                     {
-                        AppModel.Instance.AllBuildings.Add(b);
-                    }
-                });
-                AppModel.Instance.AllBuildings.ForEach(b =>
-                {
-                    if (b.del > 0 || b.ArrayOfAuftrag.Count == 0)
-                    {
+                        AppModel.Logger.Warn("WARN: FastSync - Objekt gelöscht oder keine Aufträge vorhanden: " + b.id + " " + 
+                            b.plz + " " + b.ort + " - " + b.strasse + " " + b.hsnr);
                         BuildingWSO.DeleteBuilding(b.id);
+                        AppModel.Instance.AllBuildings.Remove(b);
                     }
                 });
-                AppModel.Instance.AllBuildings.RemoveAll(b => b.del > 0 && b.ArrayOfAuftrag.Count == 0);
+                //AppModel.Instance.AllBuildings.ForEach(b =>
+                //{
+                //    if (b.del > 0 || b.ArrayOfAuftrag.Count == 0)
+                //    {
+                //        BuildingWSO.DeleteBuilding(b.id);
+                //    }
+                //});
+                //AppModel.Instance.AllBuildings.Remove All(b => b.del > 0 || b.ArrayOfAuftrag.Count == 0);
                 AppModel.Instance.AllBuildings = AppModel.Instance.AllBuildings.OrderBy(o => o.id).ToList();
                 AppModel.Instance.InitBuildingsAgain();
                 SetLastBuilding();

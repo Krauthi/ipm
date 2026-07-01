@@ -57,7 +57,11 @@ namespace iPMCloud.Mobile
         {
             TodoPageView.ClearTodoList();
             this.Focus();
-            await Navigation.PopModalAsync(animated: false);
+
+            if (Navigation.ModalStack.Contains(this))
+            {
+                await Navigation.PopModalAsync(animated: false);
+            }
         }
     }
 }

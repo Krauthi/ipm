@@ -95,7 +95,7 @@ namespace iPMCloud.Mobile.Services
                 // ── Step 2: Fetch Aufträge in chunks ─────────────────────────────────────
                 var buildings = buildingResponse.builgings ?? new List<BuildingWSO>();
                 var blist = ListExtensions.ChunkBy(buildings.Distinct().ToList(), 10);
-                var bs = new List<BuildingWSO>();
+                //var bs = new List<BuildingWSO>();
                 int processed = 0;
                 int successful = 0;
 
@@ -145,15 +145,16 @@ namespace iPMCloud.Mobile.Services
                         for (int z = 0; z < blist[zz].Count; z++)
                         {
                             var aufs = resp.auftraege.FindAll(a => a.objektid == blist[zz][z].id);
-                            blist[zz][z].ArrayOfAuftrag = aufs;
+                            //blist[zz][z].ArrayOfAuftrag = aufs;
+                            buildingResponse.builgings.Find(b => b.id == blist[zz][z].id).ArrayOfAuftrag = aufs;
                         }
                     }
 
-                    bs.AddRange(blist[zz]);
+                    //bs.AddRange(blist[zz]);
                     processed++;
                 }
 
-                buildingResponse.builgings = bs;
+                //buildingResponse.builgings = bs;
 
                 OnProgressChanged(new SyncProgressEventArgs { ProgressPercent = 100d, StatusText = "SYNCHRONISATION (100%)" });
 

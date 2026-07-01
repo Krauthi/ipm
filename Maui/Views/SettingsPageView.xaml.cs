@@ -33,7 +33,13 @@ namespace iPMCloud.Mobile.Views
             btn_settings_synctimeadd.GestureRecognizers.Add(tgr_synctimeadd);
             btn_back_settings.GestureRecognizers.Clear();
             var tgr_back_settings = new TapGestureRecognizer();
-            tgr_back_settings.Tapped += async (s, e) => await Navigation.PopModalAsync(animated: false);
+            tgr_back_settings.Tapped += async (s, e) =>
+            {
+                if (Navigation.ModalStack.Contains(this))
+                {
+                    await Navigation.PopModalAsync(animated: false);
+                }
+            };
             btn_back_settings.GestureRecognizers.Add(tgr_back_settings);
 
             btn_settings_sendlog.GestureRecognizers.Clear();

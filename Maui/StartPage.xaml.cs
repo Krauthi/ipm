@@ -109,9 +109,6 @@ namespace iPMCloud.Mobile
             var result = await ScanModalPage.ScanAsync(this);
             if (!string.IsNullOrWhiteSpace(result))
             {
-                // Korrigiere Encoding-Probleme aus dem QR-Code
-                result = AppModel.Instance.SettingModel.SettingDTO.FixQrCodeEncoding(result);
-
                 var sp = result
                     .Replace("https://", "http://")
                     .Replace("httpss://", "https://")
@@ -315,9 +312,6 @@ namespace iPMCloud.Mobile
             var result = await ScanModalPage.ScanAsync(this);
             if (!string.IsNullOrWhiteSpace(result))
             {
-                // Korrigiere Encoding-Probleme aus dem QR-Code
-                result = AppModel.Instance.SettingModel.SettingDTO.FixQrCodeEncoding(result);
-
                 var sp = result
                     .Replace("https://", "http://")
                     .Replace("httpss://", "https://")

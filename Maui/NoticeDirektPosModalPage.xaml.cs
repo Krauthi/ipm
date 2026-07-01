@@ -114,7 +114,11 @@ namespace iPMCloud.Mobile
             entry_notice.Text = "";
             noticePhotoStack.Children.Clear();
             Complete(null);
-            await Navigation.PopModalAsync(animated: false);
+
+            if (Navigation.ModalStack.Contains(this))
+            {
+                await Navigation.PopModalAsync(animated: false);
+            }
         }
 
         private async void OnDeleteTapped(object sender, EventArgs e)
@@ -125,7 +129,11 @@ namespace iPMCloud.Mobile
                 _selectedPosForNotice,
                 _backToFromNotice,
                 true));
-            await Navigation.PopModalAsync(animated: false);
+
+            if (Navigation.ModalStack.Contains(this))
+            {
+                await Navigation.PopModalAsync(animated: false);
+            }
         }
 
         private async void OnSaveTapped(object sender, EventArgs e)
@@ -147,7 +155,11 @@ namespace iPMCloud.Mobile
 
                 entry_notice.Text = "";
                 noticePhotoStack.Children.Clear();
-                await Navigation.PopModalAsync(animated: false);
+
+                if (Navigation.ModalStack.Contains(this))
+                {
+                    await Navigation.PopModalAsync(animated: false);
+                }
             }
         }
 

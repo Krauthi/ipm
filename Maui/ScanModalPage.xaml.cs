@@ -1,5 +1,7 @@
 using iPMCloud.Mobile.vo;
 using iPMCloud.Mobile.Helpers;
+using System.Linq;
+using System.Text;
 using System.Windows.Input;
 using ZXing.Net.Maui;
 
@@ -144,9 +146,29 @@ namespace iPMCloud.Mobile
             {
                 try
                 {
+                    ReaderView.Options = new ZXing.Net.Maui.BarcodeReaderOptions
+                    {
+                        Formats = ZXing.Net.Maui.BarcodeFormats.TwoDimensional,
+                        AutoRotate = true,
+                        Multiple = false,
+                        DelayBetweenAnalyzingFrames = 30,
+                        InitialDelayBeforeAnalyzingFrames = 0,
+                        DelayBetweenContinuousScans = 0,
+                        CharacterSet = "ISO-8859-1",
+                        CameraResolutionSelector = availableResolutions =>
+                        {
+                            var resolutions = availableResolutions.ToList();
+                            var selected = resolutions
+                                .OrderBy(r => Math.Abs((r.Width * r.Height) - (1280 * 720)))
+                                .ThenBy(r => Math.Abs(r.Width - 1280) + Math.Abs(r.Height - 720))
+                                .First();                            
+                            return selected;
+                        }
+                    };
                     await Task.Delay(300, token);
                     AppModel.Logger.Info("[ScanModalPage] IsDetecting = true");
                     ReaderView.IsDetecting = true;
+                    
                 }
                 catch (OperationCanceledException ex)
                 {
@@ -192,32 +214,15 @@ namespace iPMCloud.Mobile
             if (_completed || _isClosing)
                 return;
 
-            var value = e.Results?.FirstOrDefault()?.Value;
+            var barcodeResult = e.Results?.FirstOrDefault();
+            var value = barcodeResult?.Value;
+
             if (string.IsNullOrWhiteSpace(value))
                 return;
 
             await CloseModalSafeAsync(value);
         }
 
-        private async void ReaderView_BarcodesDetected_old(object sender, BarcodeDetectionEventArgs e)
-        {
-            if (_completed) return;
-
-            var value = e.Results?.FirstOrDefault()?.Value;
-            if (string.IsNullOrWhiteSpace(value))
-                return;
-
-            _completed = true;
-
-            // BarcodesDetected may fire on a background thread – marshal to UI thread.
-            await MainThread.InvokeOnMainThreadAsync(async () =>
-            {
-                ReaderView.IsTorchOn = false;
-                ReaderView.IsDetecting = false;
-                _tcs?.TrySetResult(value);
-                await Navigation.PopModalAsync(animated: false);
-            });
-        }
     }
     public class OverlayViewModel
     {

@@ -12,19 +12,19 @@ namespace iPMCloud.Mobile.vo
 
         public string ServerUrl 
         { 
-            get => FixQrCodeEncoding(_serverUrl); 
+            get => _serverUrl; 
             set => _serverUrl = value; 
         }
 
         public string CustomerNumber 
         { 
-            get => FixQrCodeEncoding(_customerNumber); 
+            get => _customerNumber; 
             set => _customerNumber = value; 
         }
 
         public string CustomerName 
         { 
-            get => FixQrCodeEncoding(_customerName); 
+            get => _customerName; 
             set => _customerName = value; 
         }
 
@@ -61,30 +61,69 @@ namespace iPMCloud.Mobile.vo
         }
 
 
-        public string FixQrCodeEncoding(string text)
-        {
-            if (string.IsNullOrWhiteSpace(text))
-                return text;
+        //public string FixQrCodeEncoding(string text)
+        //{
+        //    if (string.IsNullOrWhiteSpace(text))
+        //        return text;
 
-            try
-            {
-                // Versuche UTF-8 Korrektur: Konvertiere falsches Latin1 zurück zu Bytes und dann zu UTF-8
-                byte[] bytes = Encoding.GetEncoding("ISO-8859-1").GetBytes(text);
-                string corrected = Encoding.UTF8.GetString(bytes);
+        //    // Wenn bereits "?" enthalten ist und der Text sonst ASCII ist, 
+        //    // dann sind die Daten bereits beim Scannen verloren gegangen
+        //    if (text.Contains('?'))
+        //    {
+        //        // Versuche verschiedene Encoding-Strategien
+        //        try
+        //        {
+        //            // Strategie 1: UTF-8 Bytes die als Latin1 interpretiert wurden
+        //            byte[] latin1Bytes = Encoding.GetEncoding("ISO-8859-1").GetBytes(text);
+        //            string utf8Test = Encoding.UTF8.GetString(latin1Bytes);
+        //            if (!utf8Test.Contains('\uFFFD') && utf8Test.Any(c => c > 127))
+        //            {
+        //                return utf8Test;
+        //            }
 
-                // Prüfe ob die Korrektur sinnvoll ist (keine Replacement-Characters)
-                if (!corrected.Contains('\uFFFD'))
-                {
-                    return corrected;
-                }
-            }
-            catch
-            {
-                // Bei Fehler, original zurückgeben
-            }
+        //            // Strategie 2: Windows-1252 (erweiterte Latin1)
+        //            byte[] win1252Bytes = Encoding.GetEncoding("windows-1252").GetBytes(text);
+        //            string utf8Test2 = Encoding.UTF8.GetString(win1252Bytes);
+        //            if (!utf8Test2.Contains('\uFFFD') && utf8Test2.Any(c => c > 127))
+        //            {
+        //                return utf8Test2;
+        //            }
+        //        }
+        //        catch
+        //        {
+        //            // Fehler ignorieren
+        //        }
 
-            return text;
-        }
+        //        // Wenn nichts funktioniert hat, gib Original zurück
+        //        return text;
+        //    }
+
+        //    // Normaler Fall: Versuche UTF-8 Korrektur wenn nicht-ASCII Zeichen vorhanden
+        //    try
+        //    {
+        //        // Prüfe ob überhaupt nicht-ASCII Zeichen vorhanden sind
+        //        if (!text.Any(c => c > 127))
+        //        {
+        //            return text; // Reiner ASCII, keine Korrektur nötig
+        //        }
+
+        //        // Versuche UTF-8 Korrektur: Konvertiere falsches Latin1 zurück zu Bytes und dann zu UTF-8
+        //        byte[] bytes = Encoding.GetEncoding("ISO-8859-1").GetBytes(text);
+        //        string corrected = Encoding.UTF8.GetString(bytes);
+
+        //        // Prüfe ob die Korrektur sinnvoll ist (keine Replacement-Characters)
+        //        if (!corrected.Contains('\uFFFD'))
+        //        {
+        //            return corrected;
+        //        }
+        //    }
+        //    catch
+        //    {
+        //        // Bei Fehler, original zurückgeben
+        //    }
+
+        //    return text;
+        //}
 
 
     }

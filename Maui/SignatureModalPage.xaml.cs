@@ -82,7 +82,11 @@ namespace iPMCloud.Mobile
         private async void OnCancelClicked(object sender, EventArgs e)
         {
             _tcs.TrySetResult(null);
-            await Navigation.PopModalAsync(animated: false);
+
+            if (Navigation.ModalStack.Contains(this))
+            {
+                await Navigation.PopModalAsync(animated: false);
+            }
         }
 
         private void OnClearClicked(object sender, EventArgs e)
@@ -98,7 +102,11 @@ namespace iPMCloud.Mobile
                 if (Pad.Lines is null || Pad.Lines.Count == 0)
                 {
                     _tcs.TrySetResult(null);
-                    await Navigation.PopModalAsync(animated: false);
+
+                    if (Navigation.ModalStack.Contains(this))
+                    {
+                        await Navigation.PopModalAsync(animated: false);
+                    }
                     return;
                 }
                 const int width = 900;
@@ -119,17 +127,29 @@ namespace iPMCloud.Mobile
                 if(pngBytes == null || pngBytes.Length == 0)
                 {
                     _tcs.TrySetResult(null);
-                    await Navigation.PopModalAsync(animated: false);
+
+                    if (Navigation.ModalStack.Contains(this))
+                    {
+                        await Navigation.PopModalAsync(animated: false);
+                    }
                     return;
                 }
                 var img = ImageSource.FromStream(() => new MemoryStream(pngBytes));
                 _tcs.TrySetResult(new SignatureResult(pngBytes, img));
-                await Navigation.PopModalAsync(animated: false);
+
+                if (Navigation.ModalStack.Contains(this))
+                {
+                    await Navigation.PopModalAsync(animated: false);
+                }
             }
             catch
             {
                 _tcs.TrySetResult(null);
-                await Navigation.PopModalAsync(animated: false);
+
+                if (Navigation.ModalStack.Contains(this))
+                {
+                    await Navigation.PopModalAsync(animated: false);
+                }
             }
         }
 

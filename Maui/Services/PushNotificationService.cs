@@ -216,6 +216,20 @@ namespace iPMCloud.Mobile.Services
         {
             try
             {
+                // Frühe Prüfung ob bereits gestartet - verhindert unnötige Logs
+#if ANDROID
+                if (Build.VERSION.SdkInt < BuildVersionCodes.Tiramisu)
+                {
+                    // Android SDK < Tiramisu - Notification Permission nicht erforderlich
+                    return;
+                }
+
+                if (_androidNotificationPermissionRequestStarted)
+                {
+                    // Bereits gestartet - keine weiteren Logs
+                    return;
+                }
+#endif
                 AppModel.Logger?.Info("INFO: EnsureAndroidNotificationPermissionRequest aufgerufen.");
                 RequestAndroidNotificationPermissionIfRequired();
             }
@@ -229,18 +243,7 @@ namespace iPMCloud.Mobile.Services
         {
             try
             {
-                if (Build.VERSION.SdkInt < BuildVersionCodes.Tiramisu)
-                {
-                    AppModel.Logger?.Info("INFO: Android SDK < Tiramisu - Notification Permission nicht erforderlich.");
-                    return;
-                }
-
-                if (_androidNotificationPermissionRequestStarted)
-                {
-                    AppModel.Logger?.Info("INFO: Notification Permission Request bereits gestartet.");
-                    return;
-                }
-
+                // Diese Checks wurden bereits in EnsureAndroidNotificationPermissionRequest gemacht
                 var activity = Platform.CurrentActivity ?? MainActivity.Instance;
                 if (activity == null || activity.IsFinishing || activity.IsDestroyed)
                 {

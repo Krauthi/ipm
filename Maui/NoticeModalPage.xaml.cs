@@ -96,7 +96,12 @@ namespace iPMCloud.Mobile
             entry_notice.Text = "";
             noticePhotoStack.Children.Clear();
             _tcs.TrySetResult(null);
-            await Navigation.PopModalAsync(animated: false);
+
+            // Prüfen ob die Page noch im Modal-Stack ist
+            if (Navigation.ModalStack.Contains(this))
+            {
+                await Navigation.PopModalAsync(animated: false);
+            }
         }
 
         private async void OnSaveTapped(object sender, EventArgs e)
@@ -119,7 +124,12 @@ namespace iPMCloud.Mobile
 
                 entry_notice.Text = "";
                 noticePhotoStack.Children.Clear();
-                await Navigation.PopModalAsync(animated: false);
+
+                // Prüfen ob die Page noch im Modal-Stack ist
+                if (Navigation.ModalStack.Contains(this))
+                {
+                    await Navigation.PopModalAsync(animated: false);
+                }
             }
         }
 

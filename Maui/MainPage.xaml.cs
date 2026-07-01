@@ -2036,7 +2036,6 @@ namespace iPMCloud.Mobile
 
         private async void OnCancelScanObjClicked(object sender, TappedEventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine("[MainPage] OnCancelScanObjClicked - Stopping camera and resetting state");
 
             await Task.Delay(1);
             __isCheck = false;
@@ -2054,12 +2053,11 @@ namespace iPMCloud.Mobile
                 ReaderView.IsVisible = false;
                 ReaderView.Opacity = 0.0;
                 ReaderView.Options = null;
-                System.Diagnostics.Debug.WriteLine("[MainPage] OnCancelScanObjClicked - Android camera fully reset");
 #endif
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[MainPage] OnCancelScanObjClicked - Error stopping camera: {ex.Message}");
+                AppModel.Logger?.Error($"OnCancelScanObjClicked camera error: {ex.Message}");
             }
 
             view_ScanObjModalPage.IsEnabled = false;
@@ -6554,8 +6552,8 @@ namespace iPMCloud.Mobile
         }
         private void _CategoryCommand(object s, EventArgs e)
         {
-            var childs = ((StackLayout)((Border)s).Content).Children;
-            var category = ((Label)((StackLayout)childs[0]).Children[1]).Text;
+            var childs = ((VerticalStackLayout)((Border)s).Content).Children;
+            var category = ((Label)((VerticalStackLayout)childs[0]).Children[1]).Text;
             //var container = (StackLayout)childs[1];
             var parentChilds = ((StackLayout)((Border)s).Parent).Children;
             var container = (StackLayout)parentChilds[1];

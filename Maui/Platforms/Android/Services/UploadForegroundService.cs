@@ -106,8 +106,11 @@ namespace iPMCloud.Mobile.Platforms.Android.Services
 
                 try
                 {
+                    // Notification Channel muss VOR StartForeground existieren
                     CreateNotificationChannel();
-                    var notification = TryBuildStartupNotification();
+
+                    // Verwende eine minimal-simple Notification für schnellsten Start
+                    var notification = BuildFallbackNotification();
 
                     if (Build.VERSION.SdkInt >= BuildVersionCodes.Q)
                     {
@@ -124,6 +127,19 @@ namespace iPMCloud.Mobile.Platforms.Android.Services
                     }
 
                     _isForegroundStarted = true;
+
+                    // Nach dem StartForeground: Versuche eine bessere Notification zu bauen
+                    try
+                    {
+                        var betterNotification = BuildNotification("Uploads laufen…", 0);
+                        var nm = GetSystemService(NotificationService) as NotificationManager;
+                        nm?.Notify(NOTIFICATION_ID, betterNotification);
+                    }
+                    catch (Exception nex)
+                    {
+                        Log.Warn(TAG, $"Could not update to better notification: {nex.Message}");
+                    }
+
                     return true;
                 }
                 catch (Exception ex)
@@ -134,25 +150,21 @@ namespace iPMCloud.Mobile.Platforms.Android.Services
             }
         }
 
-        private Notification TryBuildStartupNotification()
+        /// <summary>
+        /// Erstellt eine minimal-einfache Notification die garantiert schnell ist.
+        /// Verwendet nur Android System-Icons, keine benutzerdefinierten Ressourcen.
+        /// </summary>
+        private Notification BuildFallbackNotification()
         {
-            try
-            {
-                return BuildNotification("Uploads laufen…", 0);
-            }
-            catch (Exception ex)
-            {
-                Log.Warn(TAG, $"BuildNotification fallback used: {ex.Message}");
-
-                return new NotificationCompat.Builder(this, CHANNEL_ID)
-                    .SetContentTitle("iPM-Cloud Upload")
-                    .SetContentText("Uploads laufen…")
-                    .SetSmallIcon(global::Android.Resource.Drawable.StatSysUpload)
-                    .SetOngoing(true)
-                    .SetOnlyAlertOnce(true)
-                    .SetCategory(NotificationCompat.CategoryService)
-                    .Build();
-            }
+            return new NotificationCompat.Builder(this, CHANNEL_ID)
+                .SetContentTitle("iPM-Cloud Upload")
+                .SetContentText("Uploads laufen…")
+                .SetSmallIcon(global::Android.Resource.Drawable.StatSysUpload)
+                .SetOngoing(true)
+                .SetOnlyAlertOnce(true)
+                .SetCategory(NotificationCompat.CategoryService)
+                .SetPriority(NotificationCompat.PriorityLow)
+                .Build();
         }
 
         private void OnUploadProgress(object sender, UploadProgressEventArgs e)
@@ -242,44 +254,71 @@ namespace iPMCloud.Mobile.Platforms.Android.Services
             if (Build.VERSION.SdkInt < BuildVersionCodes.O)
                 return;
 
-            var nm = GetSystemService(NotificationService) as NotificationManager;
-            if (nm?.GetNotificationChannel(CHANNEL_ID) != null)
-                return;
-
-            var channel = new NotificationChannel(CHANNEL_ID, "iPM Uploads", NotificationImportance.Low)
+            try
             {
-                Description = "Zeigt den Fortschritt von Uploads an."
-            };
+                var nm = GetSystemService(NotificationService) as NotificationManager;
+                if (nm?.GetNotificationChannel(CHANNEL_ID) != null)
+                    return;
 
-            nm?.CreateNotificationChannel(channel);
+                var channel = new NotificationChannel(CHANNEL_ID, "iPM Uploads", NotificationImportance.Low)
+                {
+                    Description = "Zeigt den Fortschritt von Uploads an."
+                };
+
+                nm?.CreateNotificationChannel(channel);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(TAG, $"CreateNotificationChannel error (non-fatal): {ex.Message}");
+                // Non-fatal: Wenn Channel nicht erstellt werden kann, verwenden wir trotzdem 
+                // die Notification - Android wird dann den Default-Channel verwenden
+            }
         }
 
         private Notification BuildNotification(string text, int progressPercent)
         {
-            var intent = new Intent(this, typeof(MainActivity));
-            intent.SetFlags(ActivityFlags.SingleTop);
+            try
+            {
+                var intent = new Intent(this, typeof(MainActivity));
+                intent.SetFlags(ActivityFlags.SingleTop);
 
-            var pi = PendingIntent.GetActivity(
-                this,
-                0,
-                intent,
-                PendingIntentFlags.UpdateCurrent | PendingIntentFlags.Immutable);
+                var pi = PendingIntent.GetActivity(
+                    this,
+                    0,
+                    intent,
+                    PendingIntentFlags.UpdateCurrent | PendingIntentFlags.Immutable);
 
-            var builder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .SetContentTitle("iPM-Cloud Upload")
-                .SetContentText(text)
-                .SetSmallIcon(Resource.Drawable.ipmlogo_m)
-                .SetOngoing(true)
-                .SetOnlyAlertOnce(true)
-                .SetContentIntent(pi)
-                .SetCategory(NotificationCompat.CategoryProgress);
+                var builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                    .SetContentTitle("iPM-Cloud Upload")
+                    .SetContentText(text)
+                    .SetOngoing(true)
+                    .SetOnlyAlertOnce(true)
+                    .SetContentIntent(pi)
+                    .SetCategory(NotificationCompat.CategoryProgress)
+                    .SetPriority(NotificationCompat.PriorityLow);
 
-            if (progressPercent > 0 && progressPercent < 100)
-                builder.SetProgress(100, progressPercent, false);
-            else if (progressPercent == 0)
-                builder.SetProgress(100, 0, true);
+                // Versuche custom Icon, fallback auf System-Icon
+                try
+                {
+                    builder.SetSmallIcon(Resource.Drawable.ipmlogo_m);
+                }
+                catch
+                {
+                    builder.SetSmallIcon(global::Android.Resource.Drawable.StatSysUpload);
+                }
 
-            return builder.Build();
+                if (progressPercent > 0 && progressPercent < 100)
+                    builder.SetProgress(100, progressPercent, false);
+                else if (progressPercent == 0)
+                    builder.SetProgress(100, 0, true);
+
+                return builder.Build();
+            }
+            catch (Exception ex)
+            {
+                Log.Warn(TAG, $"BuildNotification error, using fallback: {ex.Message}");
+                return BuildFallbackNotification();
+            }
         }
     }
 }

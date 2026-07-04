@@ -5281,16 +5281,6 @@
             HorizontalOptions="Fill"
             IsVisible="False">
 
-            <!--<Image
-                Margin="0,0,0,0"
-                AbsoluteLayout.LayoutBounds="0,0,1,1"
-                AbsoluteLayout.LayoutFlags="All"
-                Aspect="Fill"
-                HorizontalOptions="Center"
-                Opacity="1"
-                Source="backgroundgray2_img.jpg"
-                VerticalOptions="End" />-->
-
             <Grid
                 x:Name="CheckPage_position_Container2"
                 Margin="0,0,0,0"
@@ -5694,6 +5684,100 @@
                 </VerticalStackLayout>
             </StackLayout>
         </AbsoluteLayout>
+
+
+
+
+
+        <AbsoluteLayout
+            x:Name="editticket_container"
+            AbsoluteLayout.LayoutBounds="0,0,1,1"
+            AbsoluteLayout.LayoutFlags="All"
+            BackgroundColor="Black"
+            IsVisible="false">
+            <Grid
+                Margin="0"
+                Padding="0"
+                AbsoluteLayout.LayoutBounds="0,0,1,1"
+                AbsoluteLayout.LayoutFlags="All"
+                BackgroundColor="#225279"
+                HorizontalOptions="Fill"
+                RowSpacing="0"
+                VerticalOptions="Fill">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="54" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid
+                    x:Name="editticket_close_container"
+                    Grid.Row="0"
+                    Margin="0"
+                    Padding="10"
+                    ColumnSpacing="0"
+                    HeightRequest="54"
+                    HorizontalOptions="Fill">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Image
+                        Grid.Column="0"
+                        Margin="0,0,0,0"
+                        HeightRequest="30"
+                        HorizontalOptions="Start"
+                        Source="drop_left_blue_double_image.png"
+                        VerticalOptions="Center"
+                        WidthRequest="30" />
+                    <Label
+                        Grid.Column="1"
+                        Margin="0"
+                        FontSize="18"
+                        HorizontalOptions="Start"
+                        HorizontalTextAlignment="Start"
+                        LineBreakMode="TailTruncation"
+                        Text="ZURÜCK"
+                        TextColor="#2f84bd"
+                        VerticalOptions="Center" />
+                </Grid>
+                
+                <Border
+                    Grid.Row="1"
+                    Margin="0,0,0,0"
+                    BackgroundColor="White"
+                    HeightRequest="2"
+                    HorizontalOptions="Fill"
+                    VerticalOptions="Start" />
+
+                <ScrollView
+                    Grid.Row="2"
+                    Margin="0"
+                    Padding="0"
+                    HorizontalOptions="Fill"
+                    VerticalOptions="Fill">
+                    
+                    <VerticalStackLayout
+                        x:Name="editticket_vscroll"
+                        Margin="0"
+                        Padding="0"
+                        HorizontalOptions="Fill"
+                        Spacing="0"
+                        VerticalOptions="Fill" />
+                    
+                </ScrollView>
+
+
+
+            </Grid>
+
+        </AbsoluteLayout>
+
+
+
+
+
+
+
 
 
 
@@ -7605,6 +7689,9 @@
             </Grid>
 
         </AbsoluteLayout>
+
+
+
 
         <AbsoluteLayout
             x:Name="popupContainer_quest_direktbuchen"

@@ -142,8 +142,8 @@ namespace iPMCloud.Mobile
                     // Drop stale page references so the navigator always creates fresh pages
                     // bound to the new MAUI window instead of reusing pages from the previous
                     // window that was destroyed by ClearTask.
-                    model.MainPage = null;
-                    model.StartPage = null;
+                    //model.MainPage = null;
+                    //model.StartPage = null;
                 }
             }
             catch (Exception ex)
@@ -175,14 +175,6 @@ namespace iPMCloud.Mobile
 
         protected override void OnStart()
         {
-            if (AppModel.Instance.DeviceSystem == "ios")
-            {
-                // TODO: Replace DependencyService with DI
-                // DependencyService.Get<IImageResizer>().ClearBadge();
-            }
-
-            //OnStartIntiFirebase();
-
             AppModel.Instance.AppOnStart = DateTime.Now;
             base.OnStart();
         }
@@ -200,12 +192,6 @@ namespace iPMCloud.Mobile
         {
             try
             {
-                if (AppModel.Instance.DeviceSystem == "ios")
-                {
-                    // TODO: Replace DependencyService with DI
-                    // DependencyService.Get<IImageResizer>().ClearBadge();
-                }
-
                 AppModel.Instance.AppOnResume = DateTime.Now;
 
                 //if (AppModel.Instance.AppOnResume > AppModel.Instance.AppOnSleep.AddSeconds(10) || AppModel.Instance.UseExternHardware)
@@ -232,7 +218,8 @@ namespace iPMCloud.Mobile
                 //    return;
                 //}
 
-                var dt = String.IsNullOrEmpty(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks) ? DateTime.Now.AddDays(-2) : new DateTime(long.Parse(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks));
+                var dt = String.IsNullOrEmpty(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks) ? DateTime.Now.AddDays(-2) 
+                    : new DateTime(long.Parse(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks));
                 if (dt.AddHours(AppModel.Instance.SettingModel.SettingDTO.SyncTimeHours) < DateTime.Now && !AppModel.Instance.UseExternHardware) //(dt.AddHours(4) < DateTime.Now || manuellSync)
                 {
                     InitApp();

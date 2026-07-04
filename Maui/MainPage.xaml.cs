@@ -1287,10 +1287,8 @@ namespace iPMCloud.Mobile
 
             // Reset camera state when returning to MainPage (e.g., after company change)
             // This ensures the camera is properly reinitialized
-            if (ReaderView != null)
+            if (ReaderView != null && ReaderView.IsDetecting)
             {
-                System.Diagnostics.Debug.WriteLine("[MainPage] OnAppearing - Resetting ReaderView state");
-
                 try
                 {
                     // Stop any active camera session
@@ -1303,14 +1301,13 @@ namespace iPMCloud.Mobile
                     ReaderView.Opacity = 0.0;
 
                     // Reset options to ensure clean state
-                    ReaderView.Options = null;
+                    //ReaderView.Options = null;
 #endif
 
-                    System.Diagnostics.Debug.WriteLine("[MainPage] OnAppearing - ReaderView reset complete");
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine($"[MainPage] OnAppearing - Error resetting ReaderView: {ex.Message}");
+                    AppModel.Logger.Error($"[MainPage] OnAppearing - Error resetting ReaderView: {ex.Message}" , ex);
                 }
             }
         }
@@ -1762,7 +1759,6 @@ namespace iPMCloud.Mobile
         {
             try
             {
-                System.Diagnostics.Debug.WriteLine("[MainPage] ShowBuildingScanPageALL - Starting...");
 
                 __isCheck = isCheck;
                 __isOutScan = false;
@@ -1796,7 +1792,6 @@ namespace iPMCloud.Mobile
 
 #if ANDROID
                 // Android-spezifische Initialisierung für Kamera
-                System.Diagnostics.Debug.WriteLine("[MainPage] Android - Resetting ReaderView to clean state...");
 
                 // Reset to clean state first (wichtig nach Firmenwechsel!)
                 try
@@ -1813,7 +1808,6 @@ namespace iPMCloud.Mobile
                     System.Diagnostics.Debug.WriteLine($"[MainPage] Reset error (non-critical): {ex.Message}");
                 }
 
-                System.Diagnostics.Debug.WriteLine("[MainPage] Android - Starting camera initialization...");
 
                 // Warten auf View-Layout
                 await Task.Delay(100);
@@ -1822,7 +1816,6 @@ namespace iPMCloud.Mobile
                 ReaderView.IsVisible = true;
                 ReaderView.Opacity = 1.0;
 
-                System.Diagnostics.Debug.WriteLine("[MainPage] ReaderView visible, forcing layout update...");
 
                 // Layout-Update erzwingen
                 ReaderView.InvalidateMeasure();
@@ -1844,17 +1837,14 @@ namespace iPMCloud.Mobile
                             .OrderBy(r => Math.Abs((r.Width * r.Height) - (1280 * 720)))
                             .ThenBy(r => Math.Abs(r.Width - 1280) + Math.Abs(r.Height - 720))
                             .First();
-                        System.Diagnostics.Debug.WriteLine($"[MainPage] Selected resolution: {selected.Width}x{selected.Height}");
+                        AppModel.Logger.Info($"[MainPage] Selected resolution: {selected.Width}x{selected.Height}");
                         return selected;
                     }
                 };
 
-                System.Diagnostics.Debug.WriteLine("[MainPage] Options set, waiting 700ms before enabling detection...");
-
                 // Erhöhtes Delay für Android
                 await Task.Delay(100);
 
-                System.Diagnostics.Debug.WriteLine($"[MainPage] Before IsDetecting - ReaderView size: {ReaderView.Width}x{ReaderView.Height}");
 #endif
 
                 ReaderView.IsTorchOn = false;
@@ -2169,7 +2159,7 @@ namespace iPMCloud.Mobile
         {
             try
             {
-                System.Diagnostics.Debug.WriteLine("[MainPage:OutScanAndroid] Starting...");
+                //System.Diagnostics.Debug.WriteLine("[MainPage:OutScanAndroid] Starting...");
 
                 __isOutScan = true;
                 Interlocked.Exchange(ref __scanHandled, 0);
@@ -2189,7 +2179,7 @@ namespace iPMCloud.Mobile
                 view_ScanObjModalPage.IsVisible = true;
 
                 // Android-spezifische Initialisierung für Kamera (gleich wie in ShowBuildingScanPageALL)
-                System.Diagnostics.Debug.WriteLine("[MainPage:OutScanAndroid] Resetting ReaderView to clean state...");
+                //System.Diagnostics.Debug.WriteLine("[MainPage:OutScanAndroid] Resetting ReaderView to clean state...");
 
                 // Reset to clean state first (wichtig nach Firmenwechsel!)
                 try
@@ -2206,7 +2196,7 @@ namespace iPMCloud.Mobile
                     System.Diagnostics.Debug.WriteLine($"[MainPage:OutScanAndroid] Reset error (non-critical): {ex.Message}");
                 }
 
-                System.Diagnostics.Debug.WriteLine("[MainPage:OutScanAndroid] Starting camera initialization...");
+                //System.Diagnostics.Debug.WriteLine("[MainPage:OutScanAndroid] Starting camera initialization...");
                 await Task.Delay(100);
                 ReaderView.IsVisible = true;
                 ReaderView.Opacity = 1.0;
@@ -2228,19 +2218,19 @@ namespace iPMCloud.Mobile
                             .OrderBy(r => Math.Abs((r.Width * r.Height) - (1280 * 720)))
                             .ThenBy(r => Math.Abs(r.Width - 1280) + Math.Abs(r.Height - 720))
                             .First();
-                        System.Diagnostics.Debug.WriteLine($"[MainPage:OutScanAndroid] Selected resolution: {selected.Width}x{selected.Height}");
+                        //System.Diagnostics.Debug.WriteLine($"[MainPage:OutScanAndroid] Selected resolution: {selected.Width}x{selected.Height}");
                         return selected;
                     }
                 };
 
                 await Task.Delay(700);
-                System.Diagnostics.Debug.WriteLine("[MainPage:OutScanAndroid] Enabling camera detection...");
+                //System.Diagnostics.Debug.WriteLine("[MainPage:OutScanAndroid] Enabling camera detection...");
 
                 ReaderView.IsDetecting = true;
 
 
                 await Task.Delay(500);
-                System.Diagnostics.Debug.WriteLine($"[MainPage:OutScanAndroid] Camera active - IsDetecting={ReaderView.IsDetecting}");
+                //System.Diagnostics.Debug.WriteLine($"[MainPage:OutScanAndroid] Camera active - IsDetecting={ReaderView.IsDetecting}");
 
 
                 await Task.Delay(1);
@@ -2248,7 +2238,6 @@ namespace iPMCloud.Mobile
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[MainPage:OutScanAndroid] ERROR: {ex.Message}");
                 AppModel.Logger?.Error($"ShowBuildingOutScanPageAndroid error: {ex}");
                 OnCancelScanObjClicked(null, null);
                 await DisplayAlertAsync("Fehler beim Scannen!", "QR-Code konnte nicht gelesen werden.", "OK");
@@ -2285,7 +2274,7 @@ namespace iPMCloud.Mobile
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[MainPage:OutScan] ERROR: {ex.Message}");
+                AppModel.Logger?.Error($"[MainPage:OutScan] ERROR: {ex.Message}", ex);
                 OnCancelScanObjClicked(null, null);
                 await DisplayAlertAsync("Fehler beim Scannen!", "QR-Code konnte nicht gelesen werden.", "OK");
             }

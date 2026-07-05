@@ -4909,61 +4909,63 @@ namespace iPMCloud.Mobile
             {
                 // Zeige Ladeindikator
                 overlay.IsVisible = true;
-
-                // Versuche Tickets zu laden (Implementierung kann später erfolgen)
-                await Ticket.LoadTicketsFromBackendAsync();
-
-                // Falls keine Tickets vorhanden, zeige leere Listen und Badge = 0
-                if (AppModel.Instance.TicketResponse.tickets == null || AppModel.Instance.TicketResponse.tickets.Count == 0)
+                if (AppModel.Instance.TicketResponse != null)
                 {
+                    // Versuche Tickets zu laden (Implementierung kann später erfolgen)
+                    //await Ticket.LoadTicketsFromBackendAsync();
+
+                    // Falls keine Tickets vorhanden, zeige leere Listen und Badge = 0
+                    if (AppModel.Instance.TicketResponse.tickets == null || AppModel.Instance.TicketResponse.tickets.Count == 0)
+                    {
+                        await MainThread.InvokeOnMainThreadAsync(() =>
+                        {
+                            RenderTicketsInFrame(frame_planListCoffen, new List<Ticket>());
+                            RenderTicketsInFrame(frame_planListCwork, new List<Ticket>());
+                            RenderTicketsInFrame(frame_planListCerl, new List<Ticket>());
+                        });
+                        return;
+                    }
+
+                    // Nach Status gruppieren
+                    var offeneTickets = AppModel.Instance.TicketResponse.tickets.Where(t =>
+                        t.status == (int)Ticket.TicketStatus.Neu ||
+                        t.status == (int)Ticket.TicketStatus.Offen ||
+                        t.status == (int)Ticket.TicketStatus.Wartend
+                    ).ToList();
+
+                    var inArbeitTickets = AppModel.Instance.TicketResponse.tickets.Where(t =>
+                        t.status == (int)Ticket.TicketStatus.InArbeit ||
+                        (t.status == (int)Ticket.TicketStatus.Rueckfrage &&
+                         t.besitzerstatus == (int)Ticket.BesitzerStatus.Gestartet)
+                    ).ToList();
+
+                    // Erledigte der letzten Woche
+                    var oneWeekAgo = DateTime.Now.AddDays(-7);
+                    var erledigteTickets = AppModel.Instance.TicketResponse.tickets.Where(t =>
+                    {
+                        if (t.status != (int)Ticket.TicketStatus.Erledigt)
+                            return false;
+
+                        // updateat ist string im Format "yyyy-MM-dd HH:mm:ss"
+                        if (DateTime.TryParse(t.updateat, out DateTime updateDate))
+                        {
+                            return updateDate >= oneWeekAgo;
+                        }
+                        return false;
+                    }).ToList();
+
+                    // UI aktualisieren
                     await MainThread.InvokeOnMainThreadAsync(() =>
                     {
-                        RenderTicketsInFrame(frame_planListCoffen, new List<Ticket>(), "#ff0000");
-                        RenderTicketsInFrame(frame_planListCwork, new List<Ticket>(), "#ffcc00");
-                        RenderTicketsInFrame(frame_planListCerl, new List<Ticket>(), "#00ff00");
+                        RenderTicketsInFrame(frame_planListCoffen, offeneTickets);
+                        RenderTicketsInFrame(frame_planListCwork, inArbeitTickets);
+                        RenderTicketsInFrame(frame_planListCerl, erledigteTickets);
+
+                        // Badge-Count als Fallback nur aktualisieren, wenn er noch nicht vom Backend gesetzt wurde
+                        // (z.B. wenn response.counts null war)
+                        // In der Regel wird der Badge-Count bereits in LoadTicketsFromBackendAsync gesetzt
                     });
-                    return;
                 }
-
-                // Nach Status gruppieren
-                var offeneTickets = AppModel.Instance.TicketResponse.tickets.Where(t =>
-                    t.status == (int)Ticket.TicketStatus.Neu ||
-                    t.status == (int)Ticket.TicketStatus.Offen ||
-                    t.status == (int)Ticket.TicketStatus.Wartend
-                ).ToList();
-
-                var inArbeitTickets = AppModel.Instance.TicketResponse.tickets.Where(t =>
-                    t.status == (int)Ticket.TicketStatus.InArbeit ||
-                    (t.status == (int)Ticket.TicketStatus.Rueckfrage &&
-                     t.besitzerstatus == (int)Ticket.BesitzerStatus.Gestartet)
-                ).ToList();
-
-                // Erledigte der letzten Woche
-                var oneWeekAgo = DateTime.Now.AddDays(-7);
-                var erledigteTickets = AppModel.Instance.TicketResponse.tickets.Where(t =>
-                {
-                    if (t.status != (int)Ticket.TicketStatus.Erledigt)
-                        return false;
-
-                    // updateat ist string im Format "yyyy-MM-dd HH:mm:ss"
-                    if (DateTime.TryParse(t.updateat, out DateTime updateDate))
-                    {
-                        return updateDate >= oneWeekAgo;
-                    }
-                    return false;
-                }).ToList();
-
-                // UI aktualisieren
-                await MainThread.InvokeOnMainThreadAsync(() =>
-                {
-                    RenderTicketsInFrame(frame_planListCoffen, offeneTickets, "#ff0000");
-                    RenderTicketsInFrame(frame_planListCwork, inArbeitTickets, "#ffcc00");
-                    RenderTicketsInFrame(frame_planListCerl, erledigteTickets, "#00ff00");
-
-                    // Badge-Count als Fallback nur aktualisieren, wenn er noch nicht vom Backend gesetzt wurde
-                    // (z.B. wenn response.counts null war)
-                    // In der Regel wird der Badge-Count bereits in LoadTicketsFromBackendAsync gesetzt
-                });
             }
             catch (Exception ex)
             {
@@ -5014,7 +5016,7 @@ namespace iPMCloud.Mobile
             }
         }
 
-        private void RenderTicketsInFrame(VerticalStackLayout container, List<Ticket> tickets, string statusColor)
+        private void RenderTicketsInFrame(VerticalStackLayout container, List<Ticket> tickets)
         {
             container.Children.Clear();
 
@@ -5032,30 +5034,40 @@ namespace iPMCloud.Mobile
                 return;
             }
 
-            // Tickets sortieren (neueste zuerst)
-            var sortedTickets = tickets.OrderByDescending(t =>
-            {
-                DateTime.TryParse(t.updateat, out DateTime updateDate);
-                return updateDate;
-            }).ToList();
+            // Tickets sortieren (höchste Priorität zuerst, dann Fälligkeitsdatum)
+            var sortedTickets = tickets
+                .OrderByDescending(t => t.prio) // Höchste Priorität zuerst
+                .ThenBy(t =>
+                {
+                    // Fälligkeitsdatum parsen (end) - JavaScript Timestamps sind in Millisekunden
+                    if (long.TryParse(t.end, out long endTimestamp) && endTimestamp > 0)
+                    {
+                        return DateTimeOffset.FromUnixTimeMilliseconds(endTimestamp).DateTime;
+                    }
+                    return DateTime.MaxValue; // Tickets ohne Fälligkeitsdatum ans Ende
+                })
+                .ToList();
 
             // Ticket-Cards erstellen
             foreach (var ticket in sortedTickets)
             {
-                var ticketCard = CreateTicketCard(ticket, statusColor);
+                var ticketCard = CreateTicketCard(ticket);
                 container.Children.Add(ticketCard);
             }
         }
 
-        private Border CreateTicketCard(Ticket ticket, string statusColor)
+        private Border CreateTicketCard(Ticket ticket)
         {
+            // Statusfarbe aus ticket.status ermitteln
+            string statusColor = GetStatusColor(ticket.status);
+
             var border = new Border
             {
                 Margin = new Thickness(3, 2, 3, 2),
-                Padding = new Thickness(8),
-                BackgroundColor = Color.FromArgb("#1a1a1a"),
+                Padding = new Thickness(0),
+                BackgroundColor = Color.FromArgb("#2a2a2a"),
                 StrokeThickness = 1,
-                Stroke = Color.FromArgb("#333333"),
+                Stroke = Color.FromArgb("#444444"),
                 StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(5) }
             };
 
@@ -5063,27 +5075,61 @@ namespace iPMCloud.Mobile
             {
                 ColumnDefinitions = new ColumnDefinitionCollection
                 {
-                    new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
-                    new ColumnDefinition { Width = GridLength.Auto }
+                    new ColumnDefinition { Width = GridLength.Auto }, // Status-Indikator
+                    new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }, // Content
+                    new ColumnDefinition { Width = GridLength.Auto } // ID Badge
                 },
                 RowDefinitions = new RowDefinitionCollection
                 {
-                    new RowDefinition { Height = GridLength.Auto },
-                    new RowDefinition { Height = GridLength.Auto },
-                    new RowDefinition { Height = GridLength.Auto }
+                    new RowDefinition { Height = GridLength.Auto }, // Titel
+                    new RowDefinition { Height = GridLength.Auto }, // Beschreibung (optional)
+                    new RowDefinition { Height = GridLength.Auto }, // Info (Zeit, Prio, Chat)
+                    new RowDefinition { Height = GridLength.Auto }  // Start/End
                 }
             };
 
-            // Status-Indikator
-            var statusIndicator = new BoxView
+            // Status-Indikator (genau am linken Rand, 6px breit, volle Höhe, abgerundete Ecken)
+            var statusIndicator = new Border
             {
-                Color = Color.FromArgb(statusColor),
-                WidthRequest = 4,
-                HeightRequest = 40,
-                VerticalOptions = LayoutOptions.Center
+                BackgroundColor = Color.FromArgb(statusColor),
+                WidthRequest = 6,
+                VerticalOptions = LayoutOptions.Fill,
+                HorizontalOptions = LayoutOptions.Start,
+                Margin = new Thickness(0),
+                StrokeThickness = 0,
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle 
+                { 
+                    CornerRadius = new CornerRadius(5, 0, 0, 5) // Nur linke Ecken abgerundet
+                }
             };
             grid.Add(statusIndicator, 0, 0);
-            Grid.SetRowSpan(statusIndicator, 3);
+            Grid.SetRowSpan(statusIndicator, 4);
+
+            // Titel-Zeile mit ID vorne
+            var titleStack = new HorizontalStackLayout
+            {
+                Margin = new Thickness(12, 8, 8, 2),
+                Spacing = 8,
+                VerticalOptions = LayoutOptions.Center
+            };
+
+            // Ticket-ID Badge (blauer abgerundeter Hintergrund vor dem Titel)
+            var idBadge = new Border
+            {
+                BackgroundColor = Color.FromArgb("#0078d7"),
+                Padding = new Thickness(6, 3),
+                StrokeThickness = 0,
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(10) },
+                VerticalOptions = LayoutOptions.Center,
+                Content = new Label
+                {
+                    Text = $"#{ticket.id}",
+                    FontSize = 11,
+                    TextColor = Color.FromArgb("#ffffff"),
+                    FontAttributes = FontAttributes.Bold
+                }
+            };
+            titleStack.Children.Add(idBadge);
 
             // Titel
             var titleLabel = new Label
@@ -5092,104 +5138,63 @@ namespace iPMCloud.Mobile
                 FontSize = 14,
                 FontAttributes = FontAttributes.Bold,
                 TextColor = Color.FromArgb("#ffffff"),
-                Margin = new Thickness(10, 0, 0, 2),
                 LineBreakMode = LineBreakMode.TailTruncation,
-                MaxLines = 1
-            };
-            grid.Add(titleLabel, 0, 0);
-
-            // Ticket-ID Badge
-            var idBadge = new Border
-            {
-                BackgroundColor = Color.FromArgb("#0078d7"),
-                Padding = new Thickness(6, 2),
-                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(10) },
-                Margin = new Thickness(5, 0, 0, 0),
+                MaxLines = 1,
                 VerticalOptions = LayoutOptions.Center,
-                Content = new Label
-                {
-                    Text = $"#{ticket.id}",
-                    FontSize = 10,
-                    TextColor = Color.FromArgb("#ffffff"),
-                    FontAttributes = FontAttributes.Bold
-                }
+                HorizontalOptions = LayoutOptions.FillAndExpand
             };
-            grid.Add(idBadge, 1, 0);
+            titleStack.Children.Add(titleLabel);
 
-            // Beschreibung
-            if (!string.IsNullOrEmpty(ticket.text))
-            {
-                var descLabel = new Label
-                {
-                    Text = ticket.text,
-                    FontSize = 12,
-                    TextColor = Color.FromArgb("#cccccc"),
-                    Margin = new Thickness(10, 0, 0, 2),
-                    LineBreakMode = LineBreakMode.TailTruncation,
-                    MaxLines = 2
-                };
-                grid.Add(descLabel, 0, 1);
-                Grid.SetColumnSpan(descLabel, 2);
-            }
+            grid.Add(titleStack, 1, 0);
 
-            // Zeitstempel und Prio
-            var infoStack = new HorizontalStackLayout
+            // Rechte Spalte: Prio oben, Zeit darunter
+            var rightStack = new VerticalStackLayout
             {
-                Margin = new Thickness(10, 2, 0, 0),
-                Spacing = 10
+                Margin = new Thickness(0, 8, 8, 0),
+                Spacing = 5,
+                HorizontalOptions = LayoutOptions.End,
+                VerticalOptions = LayoutOptions.Start
             };
 
-            // updateat parsen
-            DateTime.TryParse(ticket.updateat, out DateTime updateDate);
-            var timeLabel = new Label
+            // Priorität als Chip darstellen
+            if (ticket.prio >= 0)
             {
-                Text = FormatTicketTime(updateDate),
-                FontSize = 10,
-                TextColor = Color.FromArgb("#888888")
-            };
-            infoStack.Children.Add(timeLabel);
-
-            if (ticket.prio > 0)
-            {
-                // Priorität als Chip darstellen
                 string prioText;
                 string prioBackgroundColor;
                 string prioTextColor;
 
-                // Prioritätswerte und Farben entsprechend dem Screenshot
-                // Hintergrund ist farbig, Text ist kontrastierend
                 if (ticket.prio == 0)
                 {
                     prioText = "Gering";
-                    prioBackgroundColor = "#4472C4"; // Blau
-                    prioTextColor = "#FFFFFF"; // Weiß
+                    prioBackgroundColor = "#4472C4";
+                    prioTextColor = "#FFFFFF";
                 }
                 else if (ticket.prio == 1)
                 {
                     prioText = "Normal";
-                    prioBackgroundColor = "#FFC000"; // Gold/Gelb
-                    prioTextColor = "#000000"; // Schwarz
+                    prioBackgroundColor = "#009900";
+                    prioTextColor = "#ffffff";
                 }
                 else if (ticket.prio == 2)
                 {
                     prioText = "Hoch";
-                    prioBackgroundColor = "#FF8C00"; // Orange
-                    prioTextColor = "#FFFFFF"; // Weiß
+                    prioBackgroundColor = "#aa5500";
+                    prioTextColor = "#FFFFFF";
                 }
                 else
                 {
                     prioText = "NOTFALL";
-                    prioBackgroundColor = "#FF0000"; // Rot
-                    prioTextColor = "#FFFFFF"; // Weiß
+                    prioBackgroundColor = "#990000";
+                    prioTextColor = "#FFFFFF";
                 }
 
                 var prioChip = new Border
                 {
                     BackgroundColor = Color.FromArgb(prioBackgroundColor),
                     Padding = new Thickness(8, 4),
-                    Margin = new Thickness(0, 2, 0, 0),
                     StrokeThickness = 0,
                     StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(4) },
+                    HorizontalOptions = LayoutOptions.End,
                     Content = new Label
                     {
                         Text = prioText,
@@ -5200,31 +5205,140 @@ namespace iPMCloud.Mobile
                         VerticalOptions = LayoutOptions.Center
                     }
                 };
-                infoStack.Children.Add(prioChip);
+                rightStack.Children.Add(prioChip);
             }
 
-            // newchat ist TicketChat-Objekt, zähle chats mit newchat-Flag
+            // Zeitstempel unter der Prio
+            DateTime.TryParse(ticket.updateat, out DateTime updateDate);
+            var timeLabel = new Label
+            {
+                Text = FormatTicketTime(updateDate),
+                FontSize = 10,
+                TextColor = Color.FromArgb("#888888"),
+                HorizontalOptions = LayoutOptions.End
+            };
+            rightStack.Children.Add(timeLabel);
+
+            grid.Add(rightStack, 2, 0);
+            Grid.SetRowSpan(rightStack, 2); // Über 2 Zeilen
+
+            // Beschreibung
+            //if (!string.IsNullOrEmpty(ticket.text))
+            //{
+            //    var descLabel = new Label
+            //    {
+            //        Text = ticket.text,
+            //        FontSize = 12,
+            //        TextColor = Color.FromArgb("#cccccc"),
+            //        Margin = new Thickness(10, 0, 0, 2),
+            //        LineBreakMode = LineBreakMode.TailTruncation,
+            //        MaxLines = 2
+            //    };
+            //    grid.Add(descLabel, 0, 1);
+            //    Grid.SetColumnSpan(descLabel, 2);
+            //}
+
+            // Chat-Badge (wenn neue Nachrichten vorhanden)
             int newChatCount = ticket.chats?.Count(c => c.id == ticket.newchat?.id) ?? 0;
             if (newChatCount > 0)
             {
                 var chatBadge = new Border
                 {
                     BackgroundColor = Color.FromArgb("#ff0000"),
-                    Padding = new Thickness(4, 1),
-                    StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(8) },
+                    Padding = new Thickness(6, 2),
+                    Margin = new Thickness(12, 2, 8, 2),
+                    HorizontalOptions = LayoutOptions.Start,
+                    StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(10) },
                     Content = new Label
                     {
                         Text = $"{newChatCount} neu",
-                        FontSize = 9,
+                        FontSize = 10,
                         TextColor = Color.FromArgb("#ffffff"),
                         FontAttributes = FontAttributes.Bold
                     }
                 };
-                infoStack.Children.Add(chatBadge);
+                grid.Add(chatBadge, 1, 2);
             }
 
-            grid.Add(infoStack, 0, 2);
-            Grid.SetColumnSpan(infoStack, 2);
+            // Start/End-Zeile
+            var datesStack = new HorizontalStackLayout
+            {
+                Margin = new Thickness(12, 2, 8, 8),
+                Spacing = 15
+            };
+
+            // Start-Datum/Status
+            if (!string.IsNullOrEmpty(ticket.start))
+            {
+                string startText = "";
+                if (long.TryParse(ticket.start, out long startValue))
+                {
+                    if (startValue == 0)
+                    {
+                        startText = "Start: OHNE ANGABE";
+                    }
+                    else if (startValue == -1)
+                    {
+                        startText = "Start: SOFORT";
+                    }
+                    else if (startValue > 0)
+                    {
+                        DateTime startDate = DateTimeOffset.FromUnixTimeMilliseconds(startValue).DateTime;
+                        startText = $"Start: {startDate:dd.MM.yyyy HH:mm}";
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(startText))
+                {
+                    var startLabel = new Label
+                    {
+                        Text = startText,
+                        FontSize = 10,
+                        TextColor = Color.FromArgb("#aaaaaa")
+                    };
+                    datesStack.Children.Add(startLabel);
+                }
+            }
+
+            // End-Datum/Status
+            if (!string.IsNullOrEmpty(ticket.end))
+            {
+                string endText = "";
+                if (long.TryParse(ticket.end, out long endValue))
+                {
+                    if (endValue == 0)
+                    {
+                        endText = "Ende: OHNE ANGABE";
+                    }
+                    else if (endValue == -1)
+                    {
+                        endText = "Ende: SOFORT";
+                    }
+                    else if (endValue > 0)
+                    {
+                        DateTime endDate = DateTimeOffset.FromUnixTimeMilliseconds(endValue).DateTime;
+                        endText = $"Ende: {endDate:dd.MM.yyyy HH:mm}";
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(endText))
+                {
+                    var endLabel = new Label
+                    {
+                        Text = endText,
+                        FontSize = 10,
+                        TextColor = Color.FromArgb("#aaaaaa")
+                    };
+                    datesStack.Children.Add(endLabel);
+                }
+            }
+
+            // Nur hinzufügen, wenn mindestens ein Datum vorhanden ist
+            if (datesStack.Children.Count > 0)
+            {
+                grid.Add(datesStack, 1, 3);
+                Grid.SetColumnSpan(datesStack, 2);
+            }
 
             border.Content = grid;
 
@@ -5288,6 +5402,66 @@ namespace iPMCloud.Mobile
             }
         }
 
+        // Tab-Wechsel Event Handler
+        private void OnTabBeschreibung_Clicked(object sender, EventArgs e)
+        {
+            SwitchToTab("beschreibung");
+        }
+
+        private void OnTabObjekt_Clicked(object sender, EventArgs e)
+        {
+            SwitchToTab("objekt");
+        }
+
+        private void OnTabChat_Clicked(object sender, EventArgs e)
+        {
+            SwitchToTab("chat");
+        }
+
+        private void SwitchToTab(string tabName)
+        {
+            try
+            {
+                // Alle Tabs ausblenden
+                beschreibung_tab_content.IsVisible = false;
+                objekt_tab_content.IsVisible = false;
+                chat_tab_content.IsVisible = false;
+
+                // Button-Styles zurücksetzen
+                tab_beschreibung_btn.BackgroundColor = Color.FromArgb("#00000000");
+                tab_beschreibung_btn.TextColor = Color.FromArgb("#aaaaaa");
+                tab_objekt_btn.BackgroundColor = Color.FromArgb("#00000000");
+                tab_objekt_btn.TextColor = Color.FromArgb("#aaaaaa");
+                tab_chat_btn.BackgroundColor = Color.FromArgb("#00000000");
+                tab_chat_btn.TextColor = Color.FromArgb("#aaaaaa");
+
+                // Gewählten Tab anzeigen und stylen
+                switch (tabName.ToLower())
+                {
+                    case "beschreibung":
+                        beschreibung_tab_content.IsVisible = true;
+                        tab_beschreibung_btn.BackgroundColor = Color.FromArgb("#357");
+                        tab_beschreibung_btn.TextColor = Colors.White;
+                        break;
+                    case "objekt":
+                        objekt_tab_content.IsVisible = true;
+                        tab_objekt_btn.BackgroundColor = Color.FromArgb("#357");
+                        tab_objekt_btn.TextColor = Colors.White;
+                        break;
+                    case "chat":
+                        chat_tab_content.IsVisible = true;
+                        tab_chat_btn.BackgroundColor = Color.FromArgb("#357");
+                        tab_chat_btn.TextColor = Colors.White;
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Fehler beim Tab-Wechsel: {ex.Message}");
+                AppModel.Logger?.Error(ex, "ERROR: SwitchToTab");
+            }
+        }
+
 
         private Ticket currentTicket = null;
 
@@ -5302,35 +5476,712 @@ namespace iPMCloud.Mobile
                 currentTicket = ticket;
                 editticket_vscroll.Children.Clear();
 
-                if (ticket == null || ticket.chats == null)
+                if (ticket == null)
                 {
                     return;
                 }
 
-                // Sortiere Nachrichten nach Datum
-                var sortedMessages = ticket.chats
-                    .OrderBy(m => m.GetDateTime())
-                    .ToList();
+                // Titel mit Ticket-ID setzen
+                editticket_title_label.Text = $"TICKET #{ticket.id}";
+                editticket_subtitle_label.Text = ticket.titel ?? "";
 
-                foreach (var message in sortedMessages)
+                // Theme-abhängige Hintergrundfarben setzen
+                SetThemeColors();
+
+                // Tab 1: Beschreibung laden
+                LoadTicketBeschreibung(ticket);
+
+                // Tab 2: Objekt/Auftrag laden
+                LoadTicketObjektAuftrag(ticket);
+
+                // Tab 3: Chat-Verlauf laden
+                if (ticket.chats != null)
                 {
-                    AddChatMessageToUI(message);
+                    // Sortiere Nachrichten nach Datum
+                    var sortedMessages = ticket.chats
+                        .OrderBy(m => m.GetDateTime())
+                        .ToList();
+
+                    foreach (var message in sortedMessages)
+                    {
+                        AddChatMessageToUI(message);
+                    }
+
+                    // Scrolle zum Ende (neueste Nachricht)
+                    MainThread.BeginInvokeOnMainThread(async () =>
+                    {
+                        await Task.Delay(100);
+                        if (chatScrollView != null)
+                        {
+                            await chatScrollView.ScrollToAsync(0, chatScrollView.ContentSize.Height, false);
+                        }
+                    });
                 }
 
-                // Scrolle zum Ende (neueste Nachricht)
-                MainThread.BeginInvokeOnMainThread(async () =>
-                {
-                    await Task.Delay(100);
-                    if (chatScrollView != null)
-                    {
-                        await chatScrollView.ScrollToAsync(0, chatScrollView.ContentSize.Height, false);
-                    }
-                });
+                // Standardmäßig Beschreibung-Tab anzeigen
+                SwitchToTab("beschreibung");
             }
             catch (Exception ex)
             {
                 AppModel.Logger?.Error(ex, "ERROR: LoadTicketChat");
             }
+        }
+
+        /// <summary>
+        /// Setzt Theme-abhängige Farben für UI-Elemente
+        /// </summary>
+        private void SetThemeColors()
+        {
+            try
+            {
+                bool isDarkMode = Application.Current?.RequestedTheme == AppTheme.Dark;
+                Color backgroundColor = isDarkMode ? Color.FromArgb("#2a2a3a") : Colors.White;
+
+                // Setze Hintergrundfarben für Tabs
+                if (beschreibung_tab_content != null)
+                    beschreibung_tab_content.BackgroundColor = backgroundColor;
+
+                if (ticket_beschreibung_webview != null)
+                    ticket_beschreibung_webview.BackgroundColor = backgroundColor;
+
+                if (objekt_tab_content != null)
+                    objekt_tab_content.BackgroundColor = isDarkMode ? Color.FromArgb("#345") : Color.FromArgb("#f5f5f5");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Fehler beim Setzen der Theme-Farben: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Lädt die Ticket-Beschreibung in den ersten Tab
+        /// </summary>
+        private void LoadTicketBeschreibung(Ticket ticket)
+        {
+            try
+            {
+                if (ticket == null)
+                    return;
+
+                // Lade Beschreibung in WebView
+                string decodedText = Ticket.DecodeBase64RichText(ticket.text);
+
+                // Theme-Farben basierend auf Systemeinstellungen
+                bool isDarkMode = Application.Current?.RequestedTheme == AppTheme.Dark;
+                string backgroundColor = isDarkMode ? "#2a2a3a" : "#ffffff";
+                string textColor = isDarkMode ? "#ffffff" : "#000000";
+                string linkColor = "#2f94ed";
+
+                if (string.IsNullOrWhiteSpace(decodedText))
+                {
+                    decodedText = $"<p style='color: {textColor};'>Keine Beschreibung vorhanden.</p>";
+                }
+
+                // HTML mit dynamischem Theme für den WebView
+                string htmlContent = $@"
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+                    <meta name='color-scheme' content='light dark'>
+                    <style>
+                        body {{
+                            background-color: {backgroundColor};
+                            color: {textColor};
+                            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+                            font-size: 15px;
+                            padding: 10px;
+                            margin: 0;
+                            line-height: 1.6;
+                        }}
+                        p {{
+                            margin: 0 0 10px 0;
+                        }}
+                        strong, b {{
+                            font-weight: bold;
+                        }}
+                        em, i {{
+                            font-style: italic;
+                        }}
+                        ul, ol {{
+                            margin: 10px 0;
+                            padding-left: 20px;
+                        }}
+                        a {{
+                            color: {linkColor};
+                            pointer-events: none;
+                            cursor: default;
+                            text-decoration: none;
+                        }}
+                        @media (prefers-color-scheme: dark) {{
+                            body {{
+                                background-color: #2a2a3a;
+                                color: #ffffff;
+                            }}
+                        }}
+                        @media (prefers-color-scheme: light) {{
+                            body {{
+                                background-color: #ffffff;
+                                color: #000000;
+                            }}
+                        }}
+                    </style>
+                </head>
+                <body>
+                    {decodedText}
+                </body>
+                </html>";
+
+                var htmlSource = new HtmlWebViewSource
+                {
+                    Html = htmlContent
+                };
+
+                // Event-Handler für Link-Klicks hinzufügen (falls noch nicht registriert)
+                ticket_beschreibung_webview.Navigating -= OnWebViewNavigating;
+                ticket_beschreibung_webview.Navigating += OnWebViewNavigating;
+
+                ticket_beschreibung_webview.Source = htmlSource;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Fehler beim Laden der Beschreibung: {ex.Message}");
+                AppModel.Logger?.Error(ex, "ERROR: LoadTicketBeschreibung");
+
+                // Theme-Farben für Fehlermeldung
+                bool isDarkMode = Application.Current?.RequestedTheme == AppTheme.Dark;
+                string backgroundColor = isDarkMode ? "#2a2a3a" : "#ffffff";
+                string errorColor = "#ff6b6b";
+
+                // Fallback: Fehlermeldung anzeigen
+                var errorHtml = new HtmlWebViewSource
+                {
+                    Html = $@"
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <meta name='color-scheme' content='light dark'>
+                        <style>
+                            body {{ background-color: {backgroundColor}; color: {errorColor}; font-family: sans-serif; padding: 10px; }}
+                        </style>
+                    </head>
+                    <body>
+                        <p>Fehler beim Laden der Beschreibung: {ex.Message}</p>
+                    </body>
+                    </html>"
+                };
+                ticket_beschreibung_webview.Source = errorHtml;
+            }
+        }
+
+        /// <summary>
+        /// Erstellt die Ticket-Info-Karte (ähnlich wie TicketCard)
+        /// </summary>
+        private void CreateTicketInfoCard(Ticket ticket)
+        {
+            try
+            {
+                if (ticket_info_container == null || ticket == null)
+                    return;
+
+                ticket_info_container.Children.Clear();
+
+                // Status-Farbe bestimmen
+                string statusColor = GetStatusColor(ticket.status);
+
+                // Haupt-Border
+                var border = new Border
+                {
+                    Margin = new Thickness(0),
+                    Padding = new Thickness(0),
+                    BackgroundColor = Color.FromArgb("#2a2a2a"),
+                    StrokeThickness = 1,
+                    Stroke = Color.FromArgb("#444444"),
+                    StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(8) }
+                };
+
+                var mainGrid = new Grid
+                {
+                    ColumnDefinitions = new ColumnDefinitionCollection
+                    {
+                        new ColumnDefinition { Width = GridLength.Auto }, // Status-Indikator
+                        new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }, // Content
+                        new ColumnDefinition { Width = GridLength.Auto } // ID Badge
+                    },
+                    RowDefinitions = new RowDefinitionCollection
+                    {
+                        new RowDefinition { Height = GridLength.Auto },
+                        new RowDefinition { Height = GridLength.Auto },
+                        new RowDefinition { Height = GridLength.Auto }
+                    }
+                };
+
+                // Status-Indikator (genau am linken Rand, 6px breit, volle Höhe, abgerundete Ecken)
+                var statusIndicator = new Border
+                {
+                    BackgroundColor = Color.FromArgb(statusColor),
+                    WidthRequest = 6,
+                    VerticalOptions = LayoutOptions.Fill,
+                    HorizontalOptions = LayoutOptions.Start,
+                    Margin = new Thickness(0),
+                    StrokeThickness = 0,
+                    StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle 
+                    { 
+                        CornerRadius = new CornerRadius(8, 0, 0, 8) // Nur linke Ecken abgerundet (passend zu Border CornerRadius 8)
+                    }
+                };
+                mainGrid.Add(statusIndicator, 0, 0);
+                Grid.SetRowSpan(statusIndicator, 3);
+
+                // Titel + Ticket-ID
+                var titleStack = new HorizontalStackLayout
+                {
+                    Spacing = 8,
+                    Margin = new Thickness(12, 12, 12, 5)
+                };
+
+                var titleLabel = new Label
+                {
+                    Text = ticket.titel ?? "Ohne Titel",
+                    FontSize = 16,
+                    FontAttributes = FontAttributes.Bold,
+                    TextColor = Color.FromArgb("#ffffff"),
+                    LineBreakMode = LineBreakMode.WordWrap,
+                    VerticalOptions = LayoutOptions.Center
+                };
+                titleStack.Children.Add(titleLabel);
+
+                mainGrid.Add(titleStack, 1, 0);
+
+                // Ticket-ID Badge (oben rechts)
+                var idBadge = new Border
+                {
+                    BackgroundColor = Color.FromArgb("#0078d7"),
+                    Padding = new Thickness(8, 4),
+                    StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(12) },
+                    VerticalOptions = LayoutOptions.Center,
+                    Margin = new Thickness(0, 12, 12, 0),
+                    Content = new Label
+                    {
+                        Text = $"#{ticket.id}",
+                        FontSize = 12,
+                        TextColor = Color.FromArgb("#ffffff"),
+                        FontAttributes = FontAttributes.Bold
+                    }
+                };
+                mainGrid.Add(idBadge, 2, 0);
+
+                // Info-Zeile (Priorität + Zeit)
+                var infoStack = new HorizontalStackLayout
+                {
+                    Margin = new Thickness(12, 5, 12, 5),
+                    Spacing = 10
+                };
+
+                // Priorität
+                if (ticket.prio >= 0)
+                {
+                    string prioText;
+                    string prioBackgroundColor;
+                    string prioTextColor;
+
+                    if (ticket.prio == 0)
+                    {
+                        prioText = "Gering";
+                        prioBackgroundColor = "#4472C4";
+                        prioTextColor = "#FFFFFF";
+                    }
+                    else if (ticket.prio == 1)
+                    {
+                        prioText = "Normal";
+                        prioBackgroundColor = "#009900";
+                        prioTextColor = "#ffffff";
+                    }
+                    else if (ticket.prio == 2)
+                    {
+                        prioText = "Hoch";
+                        prioBackgroundColor = "#aa5500";
+                        prioTextColor = "#FFFFFF";
+                    }
+                    else
+                    {
+                        prioText = "NOTFALL";
+                        prioBackgroundColor = "#990000";
+                        prioTextColor = "#FFFFFF";
+                    }
+
+                    var prioChip = new Border
+                    {
+                        BackgroundColor = Color.FromArgb(prioBackgroundColor),
+                        Padding = new Thickness(10, 5),
+                        StrokeThickness = 0,
+                        StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(4) },
+                        Content = new Label
+                        {
+                            Text = prioText,
+                            FontSize = 12,
+                            TextColor = Color.FromArgb(prioTextColor),
+                            FontAttributes = FontAttributes.Bold,
+                            HorizontalOptions = LayoutOptions.Center,
+                            VerticalOptions = LayoutOptions.Center
+                        }
+                    };
+                    infoStack.Children.Add(prioChip);
+                }
+
+                // Zeitstempel
+                DateTime.TryParse(ticket.updateat, out DateTime updateDate);
+                var timeLabel = new Label
+                {
+                    Text = FormatTicketTime(updateDate),
+                    FontSize = 11,
+                    TextColor = Color.FromArgb("#888888"),
+                    VerticalOptions = LayoutOptions.Center
+                };
+                infoStack.Children.Add(timeLabel);
+
+                mainGrid.Add(infoStack, 1, 1);
+                Grid.SetColumnSpan(infoStack, 2);
+
+                // Status-Text
+                var statusLabel = new Label
+                {
+                    Text = $"Status: {GetStatusText(ticket.status)}",
+                    FontSize = 12,
+                    TextColor = Color.FromArgb("#aaaaaa"),
+                    Margin = new Thickness(12, 5, 12, 12)
+                };
+                mainGrid.Add(statusLabel, 1, 2);
+                Grid.SetColumnSpan(statusLabel, 2);
+
+                border.Content = mainGrid;
+                ticket_info_container.Children.Add(border);
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: CreateTicketInfoCard");
+            }
+        }
+
+        /// <summary>
+        /// Gibt die Farbe für einen Ticket-Status zurück
+        /// </summary>
+        private string GetStatusColor(int status)
+        {
+            return status switch
+            {
+                1 => "#6B7280", // Neue - Grau
+                2 => "#3B82F6", // Offene - Blau
+                4 => "#F59E0B", // In Arbeit - Gelb/Orange
+                5 => "#F97316", // Rückfrage - Orange
+                9 => "#DC2626", // Erledigte - Rot/Weinrot
+                10 => "#4B5563", // Archiv - Dunkelgrau
+                _ => "#ffffff"  // Unbekannt - Weiß
+            };
+        }
+
+        /// <summary>
+        /// Gibt den Text für einen Ticket-Status zurück
+        /// </summary>
+        private string GetStatusText(int status)
+        {
+            return status switch
+            {
+                1 => "Neue",
+                2 => "Offene",
+                4 => "In Arbeit",
+                5 => "Rückfrage",
+                9 => "Erledigte",
+                10 => "Archiv",
+                _ => "Unbekannt"
+            };
+        }
+
+        /// <summary>
+        /// Verhindert die Navigation zu Links im WebView
+        /// </summary>
+        private void OnWebViewNavigating(object sender, WebNavigatingEventArgs e)
+        {
+            try
+            {
+                // Erlaube nur das initiale Laden (about:blank oder data: URLs)
+                if (e.Url.StartsWith("about:") || e.Url.StartsWith("data:"))
+                {
+                    // Erlaube das Laden
+                    return;
+                }
+
+                // Blockiere alle anderen Navigationen (externe Links)
+                e.Cancel = true;
+
+                Console.WriteLine($"Link-Navigation blockiert: {e.Url}");
+
+                // Optional: Zeige eine Nachricht oder öffne den Link extern
+                // await DisplayAlert("Link blockiert", $"Link-Navigation ist deaktiviert: {e.Url}", "OK");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Fehler im WebView Navigating Handler: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Dekodiert Base64-kodierten RichText
+        /// </summary>
+
+        /// <summary>
+        /// Lädt Objekt/Auftrag-Informationen in den zweiten Tab
+        /// </summary>
+        private void LoadTicketObjektAuftrag(Ticket ticket)
+        {
+            try
+            {
+                objekt_auftrag_content.Children.Clear();
+
+                if (ticket == null)
+                    return;
+
+                // Erstelle Ticket-Info-Karte am Anfang des Details-Tabs
+                CreateTicketInfoCard(ticket);
+
+                // Kunde-Informationen
+                //if (ticket.kunde != null || !string.IsNullOrWhiteSpace(ticket.kundename))
+                //{
+                //    var kundeSection = CreateDetailSection("KUNDE", "#2f94ed");
+
+                //    if (!string.IsNullOrWhiteSpace(ticket.kundename))
+                //    {
+                //        kundeSection.Children.Add(CreateDetailLabel($"Firma: {ticket.kundename}"));
+                //    }
+
+                //    if (ticket.kunde != null)
+                //    {
+                //        if (!string.IsNullOrWhiteSpace(ticket.kunde.name))
+                //        {
+                //            kundeSection.Children.Add(CreateDetailLabel($"Kontakt: {ticket.kunde.name}"));
+                //        }
+                //        if (!string.IsNullOrWhiteSpace(ticket.kunde.mail))
+                //        {
+                //            kundeSection.Children.Add(CreateDetailLabel($"E-Mail: {ticket.kunde.mail}"));
+                //        }
+                //    }
+
+                //    objekt_auftrag_content.Children.Add(kundeSection);
+                //}
+
+                // Ansprechpartner (ASP)
+                //if (ticket.asp != null)
+                //{
+                //    var aspSection = CreateDetailSection("ANSPRECHPARTNER", "#2f94ed");
+
+                //    if (!string.IsNullOrWhiteSpace(ticket.asp.firma))
+                //    {
+                //        aspSection.Children.Add(CreateDetailLabel($"Firma: {ticket.asp.firma}"));
+                //    }
+
+                //    string aspName = ticket.asp.GetFullName();
+                //    if (!string.IsNullOrWhiteSpace(aspName))
+                //    {
+                //        aspSection.Children.Add(CreateDetailLabel($"Name: {aspName}"));
+                //    }
+
+                //    if (!string.IsNullOrWhiteSpace(ticket.asp.mail))
+                //    {
+                //        aspSection.Children.Add(CreateDetailLabel($"E-Mail: {ticket.asp.mail}"));
+                //    }
+
+                //    if (!string.IsNullOrWhiteSpace(ticket.asp.telefon))
+                //    {
+                //        aspSection.Children.Add(CreateDetailLabel($"Telefon: {ticket.asp.telefon}"));
+                //    }
+
+                //    if (!string.IsNullOrWhiteSpace(ticket.asp.mobile))
+                //    {
+                //        aspSection.Children.Add(CreateDetailLabel($"Mobil: {ticket.asp.mobile}"));
+                //    }
+
+                //    objekt_auftrag_content.Children.Add(aspSection);
+                //}
+
+                // Objekt-Informationen
+                if (ticket.objektid > 0)
+                {
+                    var objektSection = CreateDetailSection("OBJEKT", "#2f94ed");
+
+                    objektSection.Children.Add(CreateDetailLabel($"Objekt-ID: {ticket.objektid}"));
+
+                    //if (!string.IsNullOrWhiteSpace(ticket.objektname))
+                    //{
+                    //    objektSection.Children.Add(CreateDetailLabel($"{ticket.objektname}"));
+                    //}
+
+                    if (ticket.objekt != null)
+                    {
+                        if (!string.IsNullOrWhiteSpace(ticket.objekt.objektnr))
+                        {
+                            objektSection.Children.Add(CreateDetailLabel($"Objekt-Nr: {ticket.objekt.objektnr}"));
+                        }
+                        if (!string.IsNullOrWhiteSpace(ticket.objekt.objektname))
+                        {
+                            objektSection.Children.Add(CreateDetailLabel($"Objektname: {ticket.objekt.objektname}"));
+                        }
+
+
+                        if (!string.IsNullOrWhiteSpace(ticket.objekt.adresse))
+                        {
+                            objektSection.Children.Add(CreateDetailLabel($"{ticket.objekt.adresse}"));
+                        }
+
+                        if (!string.IsNullOrWhiteSpace(ticket.objekt.plz) || !string.IsNullOrWhiteSpace(ticket.objekt.ort))
+                        {
+                            objektSection.Children.Add(CreateDetailLabel($"{ticket.objekt.plz} {ticket.objekt.ort}"));
+                        }
+                    }
+
+                    objekt_auftrag_content.Children.Add(objektSection);
+                }
+
+                // Auftrag-Informationen
+                if (ticket.auftragid > 0)
+                {
+                    var auftragSection = CreateDetailSection("AUFTRAG", "#2f94ed");
+                    auftragSection.Children.Add(CreateDetailLabel($"Auftrags-ID: {ticket.auftragid}"));
+                    objekt_auftrag_content.Children.Add(auftragSection);
+                }
+
+                // Ticket-Details (Start, Ende, Priorität, Status, etc.)
+                var detailsSection = CreateDetailSection("TICKET-DETAILS", "#2f94ed");
+
+                // Starten ab
+                if (long.TryParse(ticket.start, out long startTimestamp) && startTimestamp > 0)
+                {
+                    // JavaScript Timestamps sind in Millisekunden
+                    var startDate = DateTimeOffset.FromUnixTimeMilliseconds(startTimestamp).DateTime;
+                    detailsSection.Children.Add(CreateDetailLabel($"📅 Starten ab: {startDate:dd.MM.yyyy HH:mm}"));
+                }
+                else
+                {
+                    detailsSection.Children.Add(CreateDetailLabel($"📅 Starten ab: Ohne Zeitvorgabe", "#ff6b6b"));
+                }
+
+                // Fertig bis
+                if (long.TryParse(ticket.end, out long endTimestamp) && endTimestamp > 0)
+                {
+                    // JavaScript Timestamps sind in Millisekunden
+                    var endDate = DateTimeOffset.FromUnixTimeMilliseconds(endTimestamp).DateTime;
+                    detailsSection.Children.Add(CreateDetailLabel($"🏁 Fertig bis: {endDate:dd.MM.yyyy HH:mm}"));
+                }
+                else
+                {
+                    detailsSection.Children.Add(CreateDetailLabel($"🏁 Fertig bis: Ohne Zeitvorgabe", "#ff6b6b"));
+                }
+
+                // Priorität
+                string prioText = ticket.prio switch
+                {
+                    3 => "🔴 NOTFALL",
+                    2 => "🟠 HOCH",
+                    1 => "🟡 NORMAL",
+                    0 => "🟢 GERING",
+                    _ => "UNBEKANNT"
+                };
+                detailsSection.Children.Add(CreateDetailLabel($"Wichtigkeit/Priorität: {prioText}"));
+
+                // Status
+                string statusText = ticket.status switch
+                {
+                    1 => "Neu",
+                    2 => "Offen",
+                    3 => "In Arbeit",
+                    4 => "Rückfrage",
+                    5 => "Erledigt",
+                    6 => "Archiviert",
+                    _ => "Unbekannt"
+                };
+                detailsSection.Children.Add(CreateDetailLabel($"Status: {statusText}"));
+
+                // Zugewiesener (Besitzer)
+                if (ticket.besitzer != null || !string.IsNullOrWhiteSpace(ticket.besitzername))
+                {
+                    string besitzerName = ticket.besitzername ?? ticket.besitzer?.name ?? "Nicht zugewiesen";
+                    detailsSection.Children.Add(CreateDetailLabel($"👤 Zugewiesener: {besitzerName}"));
+
+                    // Besitzerstatus
+                    if (ticket.besitzerstatus == -1)
+                    {
+                        detailsSection.Children.Add(CreateDetailLabel($"⚠️ Noch nicht geöffnet/gesehen", "#ff9800"));
+                    }
+                }
+                else
+                {
+                    detailsSection.Children.Add(CreateDetailLabel($"👤 Zugewiesener: Nicht zugewiesen"));
+                }
+
+                // Ersteller
+                if (ticket.ersteller != null || !string.IsNullOrWhiteSpace(ticket.erstellername))
+                {
+                    string erstellerName = ticket.erstellername ?? ticket.ersteller?.name ?? "Unbekannt";
+                    DateTime? createDate = null;
+                    if (long.TryParse(ticket.start, out long createTimestamp) && createTimestamp > 0)
+                    {
+                        // JavaScript Timestamps sind in Millisekunden
+                        createDate = DateTimeOffset.FromUnixTimeMilliseconds(createTimestamp).DateTime;
+                    }
+
+                    string dateStr = createDate.HasValue ? $" ({createDate.Value:dd.MM.yyyy})" : "";
+                    detailsSection.Children.Add(CreateDetailLabel($"👨‍💼 Ersteller: {erstellerName}{dateStr}"));
+                }
+
+                // Intern/Extern
+                detailsSection.Children.Add(CreateDetailLabel($"Typ: {(ticket.intern ? "Intern" : "Extern")}"));
+
+                objekt_auftrag_content.Children.Add(detailsSection);
+
+                // Wenn gar keine Informationen vorhanden
+                if (objekt_auftrag_content.Children.Count == 0)
+                {
+                    var noDataSection = CreateDetailSection("KEINE DATEN", "#999999");
+                    noDataSection.Children.Add(CreateDetailLabel("Keine zusätzlichen Informationen vorhanden."));
+                    objekt_auftrag_content.Children.Add(noDataSection);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Fehler beim Laden von Ticket-Details: {ex.Message}");
+                AppModel.Logger?.Error(ex, "ERROR: LoadTicketObjektAuftrag");
+            }
+        }
+
+        private StackLayout CreateDetailSection(string title, string titleColor)
+        {
+            var section = new StackLayout
+            {
+                Margin = new Thickness(0, 0, 0, 0),
+                Padding = new Thickness(15),
+                BackgroundColor = Color.FromArgb("#2a2a3a"),
+                Spacing = 5
+            };
+
+            section.Children.Add(new Label
+            {
+                Text = title,
+                FontAttributes = FontAttributes.Bold,
+                FontSize = 16,
+                TextColor = Color.FromArgb(titleColor)
+            });
+
+            return section;
+        }
+
+        private Label CreateDetailLabel(string text, string color = "#ffffff")
+        {
+            return new Label
+            {
+                Text = text,
+                FontSize = 14,
+                TextColor = Color.FromArgb(color),
+                Margin = new Thickness(0, 2, 0, 2)
+            };
         }
 
         /// <summary>
@@ -5344,6 +6195,10 @@ namespace iPMCloud.Mobile
                 int currentUserId = AppModel.Instance?.Person?.id ?? 0;
                 bool isOwnMessage = message.personid == currentUserId;
 
+                // Prüfe ob die Nachricht HTML/Bild enthält
+                bool containsHtml = !string.IsNullOrEmpty(message.t) && 
+                    (message.t.Contains("<img") || message.t.Contains("<html") || message.t.Contains("data:image"));
+
                 // Chat-Bubble Container
                 var messageContainer = new Grid
                 {
@@ -5352,10 +6207,17 @@ namespace iPMCloud.Mobile
                     WidthRequest = screenWidthDp * 0.75
                 };
 
+                // Wenn es eine eigene Nachricht mit Bild ist, füge Spalte für Delete-Button hinzu
+                if (isOwnMessage && containsHtml)
+                {
+                    messageContainer.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Star });
+                    messageContainer.ColumnDefinitions.Add(new ColumnDefinition { Width = 40 });
+                }
+
                 // Chat-Bubble
                 var messageBubble = new Border
                 {
-                    Padding = new Thickness(12, 8),
+                    Padding = containsHtml ? new Thickness(4) : new Thickness(12, 8),
                     BackgroundColor = isOwnMessage ? Color.FromArgb("#DCF8C6") : Color.FromArgb("#FFFFFF"),
                     StrokeThickness = 0,
                     StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle
@@ -5393,14 +6255,75 @@ namespace iPMCloud.Mobile
                     });
                 }
 
-                // Nachrichtentext
-                messageContent.Children.Add(new Label
+                // Nachrichteninhalt - WebView für HTML/Bilder, Label für Text
+                if (containsHtml)
                 {
-                    Text = message.t,
-                    FontSize = 15,
-                    TextColor = Color.FromArgb("#000000"),
-                    LineBreakMode = LineBreakMode.WordWrap
-                });
+                    var bgColor = isOwnMessage ? "#DCF8C6" : "#FFFFFF";
+                    var htmlContent = $@"
+                        <!DOCTYPE html>
+                        <html>
+                        <head>
+                            <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'>
+                            <style>
+                                body {{
+                                    margin: 0;
+                                    padding: 8px;
+                                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                                    font-size: 15px;
+                                    color: #000000;
+                                    background-color: {bgColor};
+                                    overflow-x: hidden;
+                                }}
+                                img {{
+                                    max-width: 100%;
+                                    height: auto;
+                                    display: block;
+                                    border-radius: 8px;
+                                    margin: 4px 0;
+                                    cursor: pointer;
+                                }}
+                                p {{
+                                    margin: 0;
+                                    padding: 0;
+                                    word-wrap: break-word;
+                                }}
+                            </style>
+                        </head>
+                        <body>
+                            {message.t}
+                        </body>
+                        </html>";
+
+                    var webView = new WebView
+                    {
+                        HorizontalOptions = LayoutOptions.Fill,
+                        VerticalOptions = LayoutOptions.Fill,
+                        BackgroundColor = Colors.Transparent
+                    };
+
+                    webView.Source = new HtmlWebViewSource { Html = htmlContent };
+
+                    // Dynamische Höhe basierend auf Inhalt
+                    webView.HeightRequest = 200; // Minimale Höhe für Bilder
+
+                    // Tap-Handler für Bildvorschau
+                    var tapGesture = new TapGestureRecognizer();
+                    tapGesture.Tapped += (s, e) => OnChatImageTapped(message);
+                    webView.GestureRecognizers.Add(tapGesture);
+
+                    messageContent.Children.Add(webView);
+                }
+                else
+                {
+                    // Normaler Text als Label
+                    messageContent.Children.Add(new Label
+                    {
+                        Text = message.t,
+                        FontSize = 15,
+                        TextColor = Color.FromArgb("#000000"),
+                        LineBreakMode = LineBreakMode.WordWrap
+                    });
+                }
 
                 // Zeit
                 var timeLabel = new Label
@@ -5415,7 +6338,45 @@ namespace iPMCloud.Mobile
                 messageContent.Children.Add(timeLabel);
 
                 messageBubble.Content = messageContent;
-                messageContainer.Children.Add(messageBubble);
+
+                // Füge Bubble zum Container hinzu
+                if (isOwnMessage && containsHtml)
+                {
+                    Grid.SetColumn(messageBubble, 0);
+                    messageContainer.Children.Add(messageBubble);
+
+                    // Delete-Button für eigene Bilder
+                    var deleteButton = new Border
+                    {
+                        BackgroundColor = Color.FromArgb("#FF3B30"),
+                        StrokeThickness = 0,
+                        Padding = new Thickness(8),
+                        Margin = new Thickness(4, 0, 0, 0),
+                        VerticalOptions = LayoutOptions.Center,
+                        StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle
+                        {
+                            CornerRadius = 20
+                        },
+                        Content = new Label
+                        {
+                            Text = "🗑️",
+                            FontSize = 18,
+                            HorizontalOptions = LayoutOptions.Center,
+                            VerticalOptions = LayoutOptions.Center
+                        }
+                    };
+
+                    var deleteTap = new TapGestureRecognizer();
+                    deleteTap.Tapped += async (s, e) => await OnDeleteChatMessage(message);
+                    deleteButton.GestureRecognizers.Add(deleteTap);
+
+                    Grid.SetColumn(deleteButton, 1);
+                    messageContainer.Children.Add(deleteButton);
+                }
+                else
+                {
+                    messageContainer.Children.Add(messageBubble);
+                }
 
                 editticket_vscroll.Children.Add(messageContainer);
             }
@@ -5484,6 +6445,450 @@ namespace iPMCloud.Mobile
             {
                 AppModel.Logger?.Error(ex, "ERROR: OnSendTicketMessage_Clicked");
                 await DisplayAlertAsync("Fehler", "Nachricht konnte nicht gesendet werden", "OK");
+            }
+        }
+
+        private async void OnCameraButton_Tapped(object sender, EventArgs e)
+        {
+            try
+            {
+                if (currentTicket == null)
+                {
+                    await DisplayAlertAsync("Fehler", "Kein Ticket ausgewählt", "OK");
+                    return;
+                }
+
+                // Prüfe Kamera-Berechtigung
+                var status = await Permissions.CheckStatusAsync<Permissions.Camera>();
+                if (status != PermissionStatus.Granted)
+                {
+                    status = await Permissions.RequestAsync<Permissions.Camera>();
+                    if (status != PermissionStatus.Granted)
+                    {
+                        await DisplayAlertAsync("Berechtigung erforderlich", "Kamera-Zugriff wurde verweigert. Bitte aktivieren Sie die Kamera-Berechtigung in den App-Einstellungen.", "OK");
+                        return;
+                    }
+                }
+
+                // Prüfe ob Kamera verfügbar ist
+                if (!MediaPicker.Default.IsCaptureSupported)
+                {
+                    await DisplayAlertAsync("Nicht verfügbar", "Kamera ist auf diesem Gerät nicht verfügbar", "OK");
+                    return;
+                }
+
+
+                var options = new MediaPickerOptions
+                {
+                    CompressionQuality = 75,
+                    MaximumHeight = 1024,
+                    MaximumWidth = 1024,
+                    SelectionLimit = 1,
+                    PreserveMetaData = true,
+                };
+#if !IOS
+                options.RotateImage = true;
+#endif
+
+                var photo = await MediaPicker.CapturePhotoAsync(options);
+
+                if (photo != null)
+                {
+                    await ProcessAndAddImageToChat(photo);
+                }
+            }
+            catch (FeatureNotSupportedException fnsEx)
+            {
+                AppModel.Logger?.Error(fnsEx, "ERROR: OnCameraButton_Tapped - Feature not supported");
+                await DisplayAlertAsync("Nicht unterstützt", "Kamera wird auf diesem Gerät nicht unterstützt", "OK");
+            }
+            catch (PermissionException pEx)
+            {
+                AppModel.Logger?.Error(pEx, "ERROR: OnCameraButton_Tapped - Permission error");
+                await DisplayAlertAsync("Berechtigung erforderlich", "Kamera-Berechtigung wird benötigt", "OK");
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: OnCameraButton_Tapped");
+                await DisplayAlertAsync("Fehler", $"Foto konnte nicht aufgenommen werden: {ex.Message}", "OK");
+            }
+        }
+
+        private async void OnGalleryButton_Tapped(object sender, EventArgs e)
+        {
+            try
+            {
+                if (currentTicket == null)
+                {
+                    await DisplayAlertAsync("Fehler", "Kein Ticket ausgewählt", "OK");
+                    return;
+                }
+
+                // Prüfe Foto-Berechtigung
+                var status = await Permissions.CheckStatusAsync<Permissions.Photos>();
+                if (status != PermissionStatus.Granted)
+                {
+                    status = await Permissions.RequestAsync<Permissions.Photos>();
+                    if (status != PermissionStatus.Granted)
+                    {
+                        await DisplayAlertAsync("Berechtigung erforderlich", "Foto-Zugriff wurde verweigert. Bitte aktivieren Sie die Foto-Berechtigung in den App-Einstellungen.", "OK");
+                        return;
+                    }
+                }
+
+                var options = new MediaPickerOptions
+                {
+                    CompressionQuality = 75,
+                    MaximumHeight = 1024,
+                    MaximumWidth = 1024,
+                    SelectionLimit = 1,
+                    PreserveMetaData = true,
+                };
+#if !IOS
+                options.RotateImage = true;
+#endif
+                // Foto aus Galerie auswählen
+                var photos = await MediaPicker.Default.PickPhotosAsync(options);
+
+                if (photos != null && photos.Any())
+                {
+                    await ProcessAndAddImageToChat(photos.First());
+                }
+            }
+            catch (FeatureNotSupportedException fnsEx)
+            {
+                AppModel.Logger?.Error(fnsEx, "ERROR: OnGalleryButton_Tapped - Feature not supported");
+                await DisplayAlertAsync("Nicht unterstützt", "Galerie wird auf diesem Gerät nicht unterstützt", "OK");
+            }
+            catch (PermissionException pEx)
+            {
+                AppModel.Logger?.Error(pEx, "ERROR: OnGalleryButton_Tapped - Permission error");
+                await DisplayAlertAsync("Berechtigung erforderlich", "Foto-Berechtigung wird benötigt", "OK");
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: OnGalleryButton_Tapped");
+                await DisplayAlertAsync("Fehler", $"Foto konnte nicht ausgewählt werden: {ex.Message}", "OK");
+            }
+        }
+
+        private async Task ProcessAndAddImageToChat(FileResult photo)
+        {
+            try
+            {
+                if (photo == null)
+                {
+                    AppModel.Logger?.Warn("ProcessAndAddImageToChat called with null photo");
+                    return;
+                }
+
+                // Zeige Loader
+                ShowChatLoader();
+
+                //AppModel.Logger?.Info($"ProcessAndAddImageToChat - Processing file: {photo.FileName}");
+
+                // Hole aktuelle Benutzer-ID und Name
+                int currentUserId = AppModel.Instance?.Person?.id ?? 0;
+                string currentUserName = !string.IsNullOrEmpty(AppModel.Instance?.Person?.name)
+                    ? $"{AppModel.Instance.Person.vorname} {AppModel.Instance.Person.name}".Trim()
+                    : AppModel.Instance?.SettingModel?.SettingDTO?.LoginName ?? "Unbekannt";
+
+                // Lade Bild in Byte-Array
+                using var stream = await photo.OpenReadAsync();
+                using var memoryStream = new MemoryStream();
+                await stream.CopyToAsync(memoryStream);
+                byte[] imageBytes = memoryStream.ToArray();
+
+                //AppModel.Logger?.Info($"ProcessAndAddImageToChat - Image loaded, size: {imageBytes.Length} bytes");
+
+                // Konvertiere zu Base64
+                string base64Image = Convert.ToBase64String(imageBytes);
+                string imageDataUrl = $"data:image/jpeg;base64,{base64Image}";
+
+                // Erstelle Chat-Nachricht mit Bild
+                string messageText = $"<img src=\"{imageDataUrl}\" style=\"max-width: 100%; border-radius: 8px;\" />";
+
+                // Füge Nachricht zum Ticket hinzu
+                currentTicket.AddChatMessage(currentUserId, currentUserName, messageText, "info", true);
+
+                // Speichere Ticket
+                Ticket.Save(currentTicket);
+
+                // Füge Nachricht zur UI hinzu
+                var newMessage = currentTicket.chats.Last();
+                AddChatMessageToUI(newMessage);
+
+                // Scrolle zum Ende
+                await Task.Delay(100);
+                if (chatScrollView != null)
+                {
+                    await chatScrollView.ScrollToAsync(0, chatScrollView.ContentSize.Height, false);
+                }
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: ProcessAndAddImageToChat");
+                await DisplayAlertAsync("Fehler", $"Bild konnte nicht verarbeitet werden: {ex.Message}", "OK");
+            }
+            finally
+            {
+                // Verstecke Loader
+                HideChatLoader();
+            }
+        }
+
+        /// <summary>
+        /// Zeigt den Loader-Overlay an
+        /// </summary>
+        private void ShowChatLoader()
+        {
+            try
+            {
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    if (loader_overlay != null)
+                    {
+                        loader_overlay.IsVisible = true;
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: ShowChatLoader");
+            }
+        }
+
+        /// <summary>
+        /// Versteckt den Loader-Overlay
+        /// </summary>
+        private void HideChatLoader()
+        {
+            try
+            {
+                MainThread.BeginInvokeOnMainThread(() =>
+                {
+                    if (loader_overlay != null)
+                    {
+                        loader_overlay.IsVisible = false;
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: HideChatLoader");
+            }
+        }
+
+        /// <summary>
+        /// Zeigt Bildvorschau in einem skalierbaren Overlay
+        /// </summary>
+        private async void OnChatImageTapped(TicketChat message)
+        {
+            try
+            {
+                // Extrahiere Base64-Bild aus der Nachricht
+                if (string.IsNullOrEmpty(message.t) || !message.t.Contains("data:image"))
+                {
+                    return;
+                }
+
+                // Zeige Bildvorschau-Overlay
+                await ShowImagePreview(message.t);
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: OnChatImageTapped");
+            }
+        }
+
+        /// <summary>
+        /// Löscht eine Chat-Nachricht (nur eigene)
+        /// </summary>
+        private async Task OnDeleteChatMessage(TicketChat message)
+        {
+            try
+            {
+                int currentUserId = AppModel.Instance?.Person?.id ?? 0;
+                if (message.personid != currentUserId)
+                {
+                    await DisplayAlertAsync("Nicht erlaubt", "Sie können nur eigene Nachrichten löschen", "OK");
+                    return;
+                }
+
+                bool confirm = await DisplayAlert("Löschen bestätigen", "Möchten Sie diese Nachricht wirklich löschen?", "Ja", "Nein");
+                if (!confirm)
+                {
+                    return;
+                }
+
+                // Entferne Nachricht aus dem Ticket
+                if (currentTicket?.chats != null && currentTicket.chats.Contains(message))
+                {
+                    currentTicket.chats.Remove(message);
+                    Ticket.Save(currentTicket);
+
+                    // Aktualisiere Chat-UI
+                    ReloadChatMessages();
+
+                    AppModel.Logger?.Info($"Chat message deleted: {message.id}");
+                }
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: OnDeleteChatMessage");
+                await DisplayAlertAsync("Fehler", "Nachricht konnte nicht gelöscht werden", "OK");
+            }
+        }
+
+        /// <summary>
+        /// Lädt Chat-Nachrichten neu
+        /// </summary>
+        private void ReloadChatMessages()
+        {
+            try
+            {
+                if (currentTicket == null || editticket_vscroll == null)
+                {
+                    return;
+                }
+
+                // Lösche alte Nachrichten
+                editticket_vscroll.Children.Clear();
+
+                // Lade Nachrichten neu
+                if (currentTicket.chats != null)
+                {
+                    var sortedMessages = currentTicket.chats
+                        .OrderBy(m => m.GetDateTime())
+                        .ToList();
+
+                    foreach (var message in sortedMessages)
+                    {
+                        AddChatMessageToUI(message);
+                    }
+
+                    // Scrolle zum Ende
+                    MainThread.BeginInvokeOnMainThread(async () =>
+                    {
+                        await Task.Delay(100);
+                        if (chatScrollView != null)
+                        {
+                            await chatScrollView.ScrollToAsync(0, chatScrollView.ContentSize.Height, false);
+                        }
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: ReloadChatMessages");
+            }
+        }
+
+        /// <summary>
+        /// Zeigt Bild in einem skalierbaren Overlay
+        /// </summary>
+        private async Task ShowImagePreview(string htmlContent)
+        {
+            try
+            {
+                // Erstelle Overlay
+                var imagePreviewOverlay = new AbsoluteLayout
+                {
+                    BackgroundColor = Color.FromArgb("#E6000000") // 90% Transparenz
+                };
+
+                // Close Button
+                var closeButton = new Border
+                {
+                    BackgroundColor = Color.FromArgb("#FFFFFF"),
+                    StrokeThickness = 0,
+                    Padding = new Thickness(12),
+                    StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle
+                    {
+                        CornerRadius = 25
+                    },
+                    Content = new Label
+                    {
+                        Text = "✕",
+                        FontSize = 24,
+                        TextColor = Color.FromArgb("#000000"),
+                        HorizontalOptions = LayoutOptions.Center,
+                        VerticalOptions = LayoutOptions.Center
+                    }
+                };
+
+                AbsoluteLayout.SetLayoutBounds(closeButton, new Rect(0.9, 0.05, 50, 50));
+                AbsoluteLayout.SetLayoutFlags(closeButton, AbsoluteLayoutFlags.PositionProportional);
+
+                // Bild WebView mit Zoom-Support
+                var imageWebView = new WebView
+                {
+                    BackgroundColor = Colors.Transparent
+                };
+
+                var zoomableHtml = $@"
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes'>
+                        <style>
+                            body {{
+                                margin: 0;
+                                padding: 0;
+                                display: flex;
+                                justify-content: center;
+                                align-items: center;
+                                min-height: 100vh;
+                                background: transparent;
+                                overflow: auto;
+                            }}
+                            img {{
+                                max-width: 100%;
+                                height: auto;
+                                display: block;
+                                border-radius: 8px;
+                                box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+                            }}
+                        </style>
+                    </head>
+                    <body>
+                        {htmlContent}
+                    </body>
+                    </html>";
+
+                imageWebView.Source = new HtmlWebViewSource { Html = zoomableHtml };
+
+                AbsoluteLayout.SetLayoutBounds(imageWebView, new Rect(0, 0, 1, 1));
+                AbsoluteLayout.SetLayoutFlags(imageWebView, AbsoluteLayoutFlags.All);
+
+                imagePreviewOverlay.Children.Add(imageWebView);
+                imagePreviewOverlay.Children.Add(closeButton);
+
+                // Tap zum Schließen
+                var tapGesture = new TapGestureRecognizer();
+                tapGesture.Tapped += (s, e) =>
+                {
+                    if (this.Content is AbsoluteLayout mainLayout && mainLayout.Children.Contains(imagePreviewOverlay))
+                    {
+                        mainLayout.Children.Remove(imagePreviewOverlay);
+                    }
+                };
+                closeButton.GestureRecognizers.Add(tapGesture);
+
+                // Füge Overlay zu MainLayout hinzu
+                if (this.Content is AbsoluteLayout layout)
+                {
+                    AbsoluteLayout.SetLayoutBounds(imagePreviewOverlay, new Rect(0, 0, 1, 1));
+                    AbsoluteLayout.SetLayoutFlags(imagePreviewOverlay, AbsoluteLayoutFlags.All);
+                    layout.Children.Add(imagePreviewOverlay);
+                }
+
+                await Task.CompletedTask;
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: ShowImagePreview");
+                await DisplayAlertAsync("Fehler", "Bildvorschau konnte nicht angezeigt werden", "OK");
             }
         }
 

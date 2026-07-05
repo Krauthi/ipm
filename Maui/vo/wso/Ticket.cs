@@ -260,6 +260,44 @@ namespace iPMCloud.Mobile
 
 
 
+        public static string DecodeBase64RichText(string base64Text)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(base64Text))
+                    return string.Empty;
+
+                // Versuche Base64-Dekodierung
+                byte[] data = Convert.FromBase64String(base64Text);
+                string decodedText = System.Text.Encoding.UTF8.GetString(data);
+
+                // Prüfe, ob es bereits HTML ist
+                if (decodedText.TrimStart().StartsWith("<"))
+                {
+                    return decodedText;
+                }
+
+                // Wenn es Plain Text ist, konvertiere zu HTML
+                decodedText = System.Security.SecurityElement.Escape(decodedText);
+                decodedText = decodedText.Replace("\r\n", "<br>").Replace("\n", "<br>");
+                return $"<p>{decodedText}</p>";
+            }
+            catch (FormatException)
+            {
+                // Kein Base64, behandle als normalen Text
+                if (string.IsNullOrWhiteSpace(base64Text))
+                    return string.Empty;
+
+                string escapedText = System.Security.SecurityElement.Escape(base64Text);
+                escapedText = escapedText.Replace("\r\n", "<br>").Replace("\n", "<br>");
+                return $"<p>{escapedText}</p>";
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Fehler beim Dekodieren: {ex.Message}");
+                return $"<p style='color: #ff6b6b;'>Fehler beim Dekodieren der Beschreibung.</p>";
+            }
+        }
 
 
         public static async Task<TicketResponse> LoadTicketsFromBackendAsync()

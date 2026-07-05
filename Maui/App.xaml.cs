@@ -39,6 +39,9 @@ namespace iPMCloud.Mobile
         {
             InitializeComponent();
 
+            // Erzwinge Dark Mode
+            Application.Current.UserAppTheme = AppTheme.Dark;
+
             // Register handler for unobserved async Task exceptions (critical for iOS stability)
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
 

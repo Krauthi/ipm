@@ -5664,6 +5664,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="54" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <Grid
@@ -5694,7 +5695,6 @@
                             VerticalOptions="Center"
                             WidthRequest="30" />
                         <Label
-                            x:Name=""
                             Grid.Column="1"
                             Margin="0"
                             FontSize="18"
@@ -5704,15 +5704,30 @@
                             TextColor="#2f94ed"
                             VerticalOptions="Center" />
                     </HorizontalStackLayout>
-                    <Label
+                    <VerticalStackLayout
                         Grid.Column="2"
-                        Margin="0"
-                        FontSize="22"
+                        Margin="0,0,12,0"
                         HorizontalOptions="End"
-                        LineBreakMode="TailTruncation"
-                        Text="TICKET CHATS"
-                        TextColor="#2f94ed"
-                        VerticalOptions="Center" />
+                        Spacing="0"
+                        VerticalOptions="Center">
+                        <Label
+                            x:Name="editticket_title_label"
+                            FontSize="22"
+                            HorizontalOptions="End"
+                            LineBreakMode="TailTruncation"
+                            Text="TICKET"
+                            TextColor="#2f94ed"
+                            VerticalOptions="Center" />
+                        <Label
+                            x:Name="editticket_subtitle_label"
+                            FontSize="12" 
+                            HorizontalOptions="End"
+                            LineBreakMode="TailTruncation"
+                            Text=""
+                            MaximumWidthRequest="200"
+                            TextColor="#999"
+                            VerticalOptions="Center" />
+                    </VerticalStackLayout>
                 </Grid>
 
                 <Border
@@ -5723,91 +5738,263 @@
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
 
-
+                <!--  Tab Navigation  -->
                 <Grid
                     Grid.Row="2"
                     Margin="0"
                     Padding="0"
+                    BackgroundColor="#1a1a1a"
+                    ColumnSpacing="0"
+                    HeightRequest="50"
+                    HorizontalOptions="Fill">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="140" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Button
+                        x:Name="tab_beschreibung_btn"
+                        Grid.Column="0"
+                        BackgroundColor="#357"
+                        BorderColor="Transparent"
+                        BorderWidth="0"
+                        Clicked="OnTabBeschreibung_Clicked"
+                        CornerRadius="0"
+                        FontAttributes="Bold"
+                        FontSize="14"
+                        Text="BESCHREIBUNG"
+                        TextColor="White" />
+
+                    <Button
+                        x:Name="tab_objekt_btn"
+                        Grid.Column="1"
+                        BackgroundColor="Transparent"
+                        BorderColor="Transparent"
+                        BorderWidth="0"
+                        Clicked="OnTabObjekt_Clicked"
+                        CornerRadius="0"
+                        FontAttributes="Bold"
+                        FontSize="14"
+                        Text="DETAILS"
+                        TextColor="#aaa" />
+
+                    <Button
+                        x:Name="tab_chat_btn"
+                        Grid.Column="2"
+                        BackgroundColor="Transparent"
+                        BorderColor="Transparent"
+                        BorderWidth="0"
+                        Clicked="OnTabChat_Clicked"
+                        CornerRadius="0"
+                        FontAttributes="Bold"
+                        FontSize="14"
+                        Text="CHAT VERLAUF"
+                        TextColor="#aaa" />
+                </Grid>
+
+
+                <!--  Tab Content Area  -->
+                <Grid
+                    Grid.Row="3"
+                    Margin="0"
+                    Padding="0"
+                    BackgroundColor="#ccc"
                     HorizontalOptions="Fill"
+                    RowDefinitions="*"
                     VerticalOptions="Fill">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
 
-                    <!--  Chat-Verlauf  -->
-                    <ScrollView
-                        x:Name="chatScrollView"
+                    <!--  Beschreibung Tab  -->
+                    <Grid
+                        x:Name="beschreibung_tab_content"
                         Grid.Row="0"
-                        Margin="0"
-                        Padding="15"
-                        BackgroundColor="#345"
-                        HorizontalOptions="Fill"
+                        IsVisible="True"
                         VerticalOptions="Fill">
+                        <ScrollView VerticalOptions="Fill">
+                            <!--  Beschreibung WebView  -->
+                            <WebView
+                                x:Name="ticket_beschreibung_webview"                                
+                                VerticalOptions="Start" />
+                        </ScrollView>
+                    </Grid>
 
-                        <VerticalStackLayout
-                            x:Name="editticket_vscroll"
-                            Margin="0"
+                    <!--  Objekt/Auftrag Tab  -->
+                    <ScrollView
+                        x:Name="objekt_tab_content"
+                        BackgroundColor="#345"
+                        IsVisible="False">
+                        <StackLayout
+                            Margin="0,5,0,0"
                             Padding="0"
-                            HorizontalOptions="Fill"
-                            Spacing="12"
-                            VerticalOptions="Start" />
+                            BackgroundColor="#345"
+                            Spacing="0">
+                            <!--  Ticket Info Karte (dynamisch gefüllt)  -->
+                            <StackLayout
+                                x:Name="ticket_info_container"
+                                Padding="5"
+                                Spacing="0" />
+                            <!--  Details Container (dynamisch gefüllt im Code)  -->
+                            <StackLayout
+                                x:Name="objekt_auftrag_content"
+                                Padding="5"
+                                Spacing="0">
+                                <!--  Dynamisch gefüllt im Code  -->
+                            </StackLayout>
+                        </StackLayout>
                     </ScrollView>
 
-                    <!--  Eingabebereich  -->
+                    <!--  Chat Verlauf Tab  -->
                     <Grid
-                        Grid.Row="1"
+                        x:Name="chat_tab_content"
                         Margin="0"
-                        Padding="10"
-                        BackgroundColor="#a0b0c0"
-                        ColumnSpacing="15"
-                        HorizontalOptions="Fill">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
+                        Padding="0"
+                        HorizontalOptions="Fill"
+                        IsVisible="False"
+                        VerticalOptions="Fill">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
 
-                        <!--  Editor für neue Nachricht  -->
-                        <Border
-                            Grid.Column="0"
-                            Padding="0"
-                            BackgroundColor="White"
-                            StrokeThickness="0">
-                            <Border.StrokeShape>
-                                <RoundRectangle CornerRadius="20" />
-                            </Border.StrokeShape>
-                            <Editor
-                                x:Name="ticketMessageEditor"
-                                Margin="15,5"
-                                AutoSize="TextChanges"
+                        <!--  Chat-Verlauf  -->
+                        <ScrollView
+                            x:Name="chatScrollView"
+                            Grid.Row="0"
+                            Margin="0"
+                            Padding="15"
+                            BackgroundColor="#345"
+                            HorizontalOptions="Fill"
+                            VerticalOptions="Fill">
+
+                            <VerticalStackLayout
+                                x:Name="editticket_vscroll"
+                                Margin="0"
+                                Padding="0"
+                                HorizontalOptions="Fill"
+                                Spacing="12"
+                                VerticalOptions="Start" />
+                        </ScrollView>
+
+                        <!--  Eingabebereich  -->
+                        <Grid
+                            Grid.Row="1"
+                            Margin="0"
+                            Padding="10"
+                            BackgroundColor="#a0b0c0"
+                            ColumnSpacing="10"
+                            HorizontalOptions="Fill"
+                            RowSpacing="0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <!--  Editor für neue Nachricht  -->
+                            <Border
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Padding="0"
                                 BackgroundColor="White"
-                                FontSize="16"
-                                MaximumHeightRequest="120"
-                                Placeholder="Nachricht eingeben..."
-                                PlaceholderColor="#999"
-                                TextColor="#000"
-                                VerticalOptions="Center" />
-                        </Border>
+                                StrokeThickness="0">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="20" />
+                                </Border.StrokeShape>
+                                <Editor
+                                    x:Name="ticketMessageEditor"
+                                    Margin="15,5"
+                                    AutoSize="TextChanges"
+                                    BackgroundColor="White"
+                                    FontSize="16"
+                                    MaximumHeightRequest="120"
+                                    Placeholder="Nachricht eingeben..."
+                                    PlaceholderColor="#999"
+                                    TextColor="#000"
+                                    VerticalOptions="Center" />
+                            </Border>
 
-                        <!--  Senden Button  -->
-                        <Border
-                            Grid.Column="1"
-                            Padding="0"
-                            BackgroundColor="#25b356"
-                            HeightRequest="45"
-                            StrokeThickness="0"
-                            WidthRequest="45">
-                            <Border.StrokeShape>
-                                <RoundRectangle CornerRadius="12.5" />
-                            </Border.StrokeShape>
-                            <ImageButton
-                                BackgroundColor="Transparent"
-                                Clicked="OnSendTicketMessage_Clicked"
-                                HeightRequest="40"
-                                Source="forward2_img.png"
-                                WidthRequest="40" />
-                        </Border>
+                            <!--  Senden Button  -->
+                            <Border
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                Padding="0"
+                                BackgroundColor="#25b356"
+                                HeightRequest="45"
+                                StrokeThickness="0"
+                                WidthRequest="45">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="12.5" />
+                                </Border.StrokeShape>
+                                <ImageButton
+                                    BackgroundColor="Transparent"
+                                    Clicked="OnSendTicketMessage_Clicked"
+                                    HeightRequest="40"
+                                    Source="forward2_img.png"
+                                    WidthRequest="40" />
+                            </Border>
+
+                            <!--  Bild-Buttons (Kamera und Galerie)  -->
+                            <HorizontalStackLayout
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="2"
+                                Margin="0,10,0,0"
+                                Spacing="10">
+
+                                <!--  Kamera Button  -->
+                                <Border
+                                    Padding="10,8"
+                                    BackgroundColor="#357"
+                                    StrokeThickness="0">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="8" />
+                                    </Border.StrokeShape>
+                                    <HorizontalStackLayout Spacing="8">
+                                        <HorizontalStackLayout.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="OnCameraButton_Tapped" />
+                                        </HorizontalStackLayout.GestureRecognizers>
+                                        <Label
+                                            FontSize="18"
+                                            Text="📷"
+                                            VerticalOptions="Center" />
+                                        <Label
+                                            FontSize="14"
+                                            Text="Kamera"
+                                            TextColor="White"
+                                            VerticalOptions="Center" />
+                                    </HorizontalStackLayout>
+                                </Border>
+
+                                <!--  Galerie Button  -->
+                                <Border
+                                    Padding="10,8"
+                                    BackgroundColor="#357"
+                                    StrokeThickness="0">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="8" />
+                                    </Border.StrokeShape>
+                                    <HorizontalStackLayout Spacing="8">
+                                        <HorizontalStackLayout.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="OnGalleryButton_Tapped" />
+                                        </HorizontalStackLayout.GestureRecognizers>
+                                        <Label
+                                            FontSize="18"
+                                            Text="🖼️"
+                                            VerticalOptions="Center" />
+                                        <Label
+                                            FontSize="14"
+                                            Text="Galerie"
+                                            TextColor="White"
+                                            VerticalOptions="Center" />
+                                    </HorizontalStackLayout>
+                                </Border>
+                            </HorizontalStackLayout>
+                        </Grid>
                     </Grid>
+
                 </Grid>
 
 
@@ -8706,6 +8893,22 @@
 
         </Grid>-->
 
+
+        <!--  Loader Overlay  -->
+        <AbsoluteLayout
+            x:Name="loader_overlay"
+            AbsoluteLayout.LayoutBounds="0,0,1,1"
+            AbsoluteLayout.LayoutFlags="All"
+            BackgroundColor="#80000000"
+            IsVisible="False">
+            <ActivityIndicator
+                AbsoluteLayout.LayoutBounds="0.5,0.5,60,60"
+                AbsoluteLayout.LayoutFlags="PositionProportional"
+                HeightRequest="60"
+                IsRunning="True"
+                WidthRequest="60"
+                Color="White" />
+        </AbsoluteLayout>
 
     </AbsoluteLayout>
 </ContentPage>

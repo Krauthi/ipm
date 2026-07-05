@@ -7,13 +7,14 @@ using NLog.Extensions.Logging;
 using ZXing.Net.Maui.Controls;
 using iPMCloud.Mobile.Services;
 using MintedTextEditor.Maui;
+using Microsoft.Maui.Handlers;
 
 #if ANDROID
 using iPMCloud.Mobile.Platforms.Android;
 #elif IOS
 using iPMCloud.Mobile.Platforms.iOS;
-using Microsoft.Maui.Handlers;
 using UIKit;
+using WebKit;
 #endif
 
 namespace iPMCloud.Mobile
@@ -106,6 +107,41 @@ namespace iPMCloud.Mobile
 
             PickerHandler.Mapper.AppendToMapping("NoDynamicType", (handler, _) =>
                 handler.PlatformView.AdjustsFontForContentSizeCategory = false);
+
+            // WebView theme support for iOS
+            WebViewHandler.Mapper.AppendToMapping("ThemeSupport", (handler, view) =>
+            {
+                if (handler.PlatformView is WKWebView wkWebView)
+                {
+                    wkWebView.Opaque = false;
+
+                    // Dynamische Farbe basierend auf Theme
+                    var isDarkMode = Application.Current?.RequestedTheme == AppTheme.Dark;
+                    var backgroundColor = isDarkMode 
+                        ? UIColor.FromRGB(42, 42, 58)  // Dark: #2a2a3a
+                        : UIColor.White;                // Light: #ffffff
+
+                    wkWebView.BackgroundColor = backgroundColor;
+                    wkWebView.ScrollView.BackgroundColor = backgroundColor;
+                }
+            });
+#endif
+
+#if ANDROID
+            // WebView theme support for Android
+            Microsoft.Maui.Handlers.WebViewHandler.Mapper.AppendToMapping("ThemeSupport", (handler, view) =>
+            {
+                if (handler.PlatformView is Android.Webkit.WebView androidWebView)
+                {
+                    // Dynamische Farbe basierend auf Theme
+                    var isDarkMode = Application.Current?.RequestedTheme == AppTheme.Dark;
+                    var backgroundColor = isDarkMode
+                        ? Android.Graphics.Color.Rgb(42, 42, 58)  // Dark: #2a2a3a
+                        : Android.Graphics.Color.White;            // Light: #ffffff
+
+                    androidWebView.SetBackgroundColor(backgroundColor);
+                }
+            });
 #endif
 
             return builder.Build();

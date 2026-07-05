@@ -2524,11 +2524,8 @@
                                 Margin="0"
                                 Padding="0"
                                 HorizontalOptions="Fill"
-                                RowSpacing="0"
-                                VerticalOptions="Fill">
+                                RowSpacing="0">
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="*" />
-                                    <RowDefinition Height="*" />
                                     <RowDefinition Height="*" />
                                 </Grid.RowDefinitions>
                                 <Grid
@@ -2537,8 +2534,7 @@
                                     Margin="0"
                                     Padding="0"
                                     HorizontalOptions="Fill"
-                                    RowSpacing="0"
-                                    VerticalOptions="Fill">
+                                    RowSpacing="0">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition Height="*" />
@@ -2566,8 +2562,7 @@
                                         Grid.Row="1"
                                         Margin="0"
                                         Padding="0"
-                                        HorizontalOptions="Fill"
-                                        VerticalOptions="Fill">
+                                        HorizontalOptions="Fill">
                                         <VerticalStackLayout
                                             x:Name="frame_planListCoffen"
                                             Margin="0"
@@ -2575,16 +2570,7 @@
                                             HorizontalOptions="Fill"
                                             IsVisible="True"
                                             Spacing="0"
-                                            VerticalOptions="Fill">
-                                            <Label
-                                                Margin="3,0,0,1"
-                                                Padding="0"
-                                                FontSize="12"
-                                                HorizontalOptions="Fill"
-                                                Text="Offen"
-                                                TextColor="#ff0000"
-                                                VerticalOptions="Start" />
-                                        </VerticalStackLayout>
+                                            VerticalOptions="Fill" />
                                     </ScrollView>
                                 </Grid>
                                 <Grid
@@ -2594,8 +2580,7 @@
                                     Padding="0"
                                     HorizontalOptions="Fill"
                                     IsVisible="False"
-                                    RowSpacing="0"
-                                    VerticalOptions="Fill">
+                                    RowSpacing="0">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition Height="*" />
@@ -2623,25 +2608,14 @@
                                         Grid.Row="1"
                                         Margin="0"
                                         Padding="0"
-                                        HorizontalOptions="Fill"
-                                        VerticalOptions="Fill">
+                                        HorizontalOptions="Fill">
                                         <VerticalStackLayout
                                             x:Name="frame_planListCwork"
                                             Margin="0"
                                             Padding="0"
                                             HorizontalOptions="Fill"
                                             IsVisible="True"
-                                            Spacing="0"
-                                            VerticalOptions="Fill">
-                                            <Label
-                                                Margin="3,0,0,1"
-                                                Padding="0"
-                                                FontSize="12"
-                                                HorizontalOptions="Fill"
-                                                Text="In Arbeit"
-                                                TextColor="#ffcc00"
-                                                VerticalOptions="Start" />
-                                        </VerticalStackLayout>
+                                            Spacing="0" />
                                     </ScrollView>
                                 </Grid>
                                 <Grid
@@ -2651,8 +2625,7 @@
                                     Padding="0"
                                     HorizontalOptions="Fill"
                                     IsVisible="False"
-                                    RowSpacing="0"
-                                    VerticalOptions="Fill">
+                                    RowSpacing="0">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto" />
                                         <RowDefinition Height="*" />
@@ -2680,25 +2653,14 @@
                                         Grid.Row="1"
                                         Margin="0"
                                         Padding="0"
-                                        HorizontalOptions="Fill"
-                                        VerticalOptions="Fill">
+                                        HorizontalOptions="Fill">
                                         <VerticalStackLayout
                                             x:Name="frame_planListCerl"
                                             Margin="0"
                                             Padding="0"
                                             HorizontalOptions="Fill"
                                             IsVisible="True"
-                                            Spacing="0"
-                                            VerticalOptions="Fill">
-                                            <Label
-                                                Margin="3,0,0,1"
-                                                Padding="0"
-                                                FontSize="12"
-                                                HorizontalOptions="Fill"
-                                                Text="Erledigte"
-                                                TextColor="#00ff00"
-                                                VerticalOptions="Start" />
-                                        </VerticalStackLayout>
+                                            Spacing="0" />
                                     </ScrollView>
                                 </Grid>
                             </Grid>
@@ -2716,6 +2678,7 @@
                                 Margin="0"
                                 Padding="0"
                                 ColumnSpacing="2"
+                                HeightRequest="38"
                                 HorizontalOptions="Fill">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*" />
@@ -2727,7 +2690,7 @@
                                     Grid.Column="0"
                                     Margin="0"
                                     Padding="3,7,3,7"
-                                    BackgroundColor="#33ff0000"
+                                    BackgroundColor="#44ff0000"
                                     ColumnSpacing="0"
                                     HorizontalOptions="Fill">
                                     <Grid.ColumnDefinitions>
@@ -2739,9 +2702,7 @@
                                         Grid.Column="0"
                                         Margin="5,0,0,0"
                                         Padding="5,0,5,0"
-                                        FontSize="13"
-                                        HorizontalOptions="Start"
-                                        LineHeight="0.9"
+                                        FontSize="14"
                                         Text="Offen"
                                         TextColor="#ffffff"
                                         VerticalOptions="Center" />
@@ -2774,7 +2735,7 @@
                                     Grid.Column="1"
                                     Margin="0"
                                     Padding="3,7,3,7"
-                                    BackgroundColor="#33ffcc00"
+                                    BackgroundColor="#66ffcc00"
                                     ColumnSpacing="0"
                                     HorizontalOptions="Fill">
                                     <Grid.ColumnDefinitions>
@@ -2786,9 +2747,7 @@
                                         Grid.Column="0"
                                         Margin="5,0,0,0"
                                         Padding="5,0,5,0"
-                                        FontSize="13"
-                                        HorizontalOptions="Start"
-                                        LineHeight="0.9"
+                                        FontSize="14"
                                         Text="In Arbeit"
                                         TextColor="#ffffff"
                                         VerticalOptions="Center" />
@@ -2821,7 +2780,7 @@
                                     Grid.Column="2"
                                     Margin="0"
                                     Padding="3,7,3,7"
-                                    BackgroundColor="#3300ff00"
+                                    BackgroundColor="#4400ff00"
                                     ColumnSpacing="0"
                                     HorizontalOptions="Fill">
                                     <Grid.ColumnDefinitions>
@@ -2833,9 +2792,7 @@
                                         Grid.Column="0"
                                         Margin="5,0,0,0"
                                         Padding="5,0,5,0"
-                                        FontSize="13"
-                                        HorizontalOptions="Start"
-                                        LineHeight="0.9"
+                                        FontSize="14"
                                         Text="Erledigte"
                                         TextColor="#ffffff"
                                         VerticalOptions="Center" />
@@ -5694,13 +5651,13 @@
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             AbsoluteLayout.LayoutFlags="All"
             BackgroundColor="Black"
-            IsVisible="false">
+            IsVisible="False">
             <Grid
                 Margin="0"
                 Padding="0"
                 AbsoluteLayout.LayoutBounds="0,0,1,1"
                 AbsoluteLayout.LayoutFlags="All"
-                BackgroundColor="#225279"
+                BackgroundColor="#000"
                 HorizontalOptions="Fill"
                 RowSpacing="0"
                 VerticalOptions="Fill">
@@ -5710,37 +5667,54 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <Grid
-                    x:Name="editticket_close_container"
                     Grid.Row="0"
-                    Margin="0"
-                    Padding="10"
                     ColumnSpacing="0"
                     HeightRequest="54"
                     HorizontalOptions="Fill">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <Image
-                        Grid.Column="0"
-                        Margin="0,0,0,0"
-                        HeightRequest="30"
-                        HorizontalOptions="Start"
-                        Source="drop_left_blue_double_image.png"
-                        VerticalOptions="Center"
-                        WidthRequest="30" />
-                    <Label
-                        Grid.Column="1"
+                    <HorizontalStackLayout
+                        x:Name="editticket_close_container"
                         Margin="0"
-                        FontSize="18"
-                        HorizontalOptions="Start"
-                        HorizontalTextAlignment="Start"
+                        Padding="10"
+                        HeightRequest="54"
+                        Spacing="0">
+                        <HorizontalStackLayout.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnEditTicketCloseContainer_Tapped" />
+                        </HorizontalStackLayout.GestureRecognizers>
+                        <Image
+                            Grid.Column="0"
+                            Margin="0,0,0,0"
+                            HeightRequest="30"
+                            HorizontalOptions="Start"
+                            Source="drop_left_blue_double_image.png"
+                            VerticalOptions="Center"
+                            WidthRequest="30" />
+                        <Label
+                            x:Name=""
+                            Grid.Column="1"
+                            Margin="0"
+                            FontSize="18"
+                            HorizontalOptions="Start"
+                            LineBreakMode="TailTruncation"
+                            Text="ZURÜCK"
+                            TextColor="#2f94ed"
+                            VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+                    <Label
+                        Grid.Column="2"
+                        Margin="0"
+                        FontSize="22"
+                        HorizontalOptions="End"
                         LineBreakMode="TailTruncation"
-                        Text="ZURÜCK"
-                        TextColor="#2f84bd"
+                        Text="TICKET CHATS"
+                        TextColor="#2f94ed"
                         VerticalOptions="Center" />
                 </Grid>
-                
+
                 <Border
                     Grid.Row="1"
                     Margin="0,0,0,0"
@@ -5749,22 +5723,92 @@
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
 
-                <ScrollView
+
+                <Grid
                     Grid.Row="2"
                     Margin="0"
                     Padding="0"
                     HorizontalOptions="Fill"
                     VerticalOptions="Fill">
-                    
-                    <VerticalStackLayout
-                        x:Name="editticket_vscroll"
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <!--  Chat-Verlauf  -->
+                    <ScrollView
+                        x:Name="chatScrollView"
+                        Grid.Row="0"
                         Margin="0"
-                        Padding="0"
+                        Padding="15"
+                        BackgroundColor="#345"
                         HorizontalOptions="Fill"
-                        Spacing="0"
-                        VerticalOptions="Fill" />
-                    
-                </ScrollView>
+                        VerticalOptions="Fill">
+
+                        <VerticalStackLayout
+                            x:Name="editticket_vscroll"
+                            Margin="0"
+                            Padding="0"
+                            HorizontalOptions="Fill"
+                            Spacing="12"
+                            VerticalOptions="Start" />
+                    </ScrollView>
+
+                    <!--  Eingabebereich  -->
+                    <Grid
+                        Grid.Row="1"
+                        Margin="0"
+                        Padding="10"
+                        BackgroundColor="#a0b0c0"
+                        ColumnSpacing="15"
+                        HorizontalOptions="Fill">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <!--  Editor für neue Nachricht  -->
+                        <Border
+                            Grid.Column="0"
+                            Padding="0"
+                            BackgroundColor="White"
+                            StrokeThickness="0">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="20" />
+                            </Border.StrokeShape>
+                            <Editor
+                                x:Name="ticketMessageEditor"
+                                Margin="15,5"
+                                AutoSize="TextChanges"
+                                BackgroundColor="White"
+                                FontSize="16"
+                                MaximumHeightRequest="120"
+                                Placeholder="Nachricht eingeben..."
+                                PlaceholderColor="#999"
+                                TextColor="#000"
+                                VerticalOptions="Center" />
+                        </Border>
+
+                        <!--  Senden Button  -->
+                        <Border
+                            Grid.Column="1"
+                            Padding="0"
+                            BackgroundColor="#25b356"
+                            HeightRequest="45"
+                            StrokeThickness="0"
+                            WidthRequest="45">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="12.5" />
+                            </Border.StrokeShape>
+                            <ImageButton
+                                BackgroundColor="Transparent"
+                                Clicked="OnSendTicketMessage_Clicked"
+                                HeightRequest="40"
+                                Source="forward2_img.png"
+                                WidthRequest="40" />
+                        </Border>
+                    </Grid>
+                </Grid>
 
 
 

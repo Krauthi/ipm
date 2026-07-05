@@ -8,102 +8,393 @@ using System.Linq;
 namespace iPMCloud.Mobile
 {
     /// <summary>
-    /// Repräsentiert eine Person im Ticket-Verlauf
+    /// Repräsentiert eine Person im Ticket-System (vereinfacht für Mobile)
     /// </summary>
     public class TicketPerson
     {
-        public enum PersonStatus
-        {
-            Abgelehnt,
-            Angenommen,
-            Erledigt,
-            Weitergeleitet,
-            InArbeit,
-            Gesehen,
-            Neu,
-            Kein
-        }
-
-        public int besitzerId { get; set; } = 0;
-        public string besitzerName { get; set; } = string.Empty;
-        public DateTime? aenderungsDatum { get; set; } = null;
-        public DateTime? zugewiesenDatum { get; set; } = null;
-        public PersonStatus status { get; set; } = PersonStatus.Kein;
+        public Int32 id { get; set; } = 0;
+        public int rolle { get; set; } = 0;
+        public string anrede { get; set; } = "";
+        public string firma { get; set; } = "";
+        public string vorname { get; set; } = "";
+        public string name { get; set; } = "";
+        public string mobile { get; set; } = "";
+        public string telefon { get; set; } = "";
+        public string mail { get; set; } = "";
+        public Int32 personid { get; set; } = 0;
+        public byte[] userIcon { get; set; } = null;
 
         public TicketPerson() { }
 
-        public TicketPerson(int besitzerId, string besitzerName, PersonStatus status)
+        /// <summary>
+        /// Gibt den vollständigen Namen zurück
+        /// </summary>
+        public string GetFullName()
         {
-            this.besitzerId = besitzerId;
-            this.besitzerName = besitzerName;
-            this.status = status;
-            this.zugewiesenDatum = DateTime.Now;
-            this.aenderungsDatum = DateTime.Now;
+            return anrede == "Firma" ? firma : $"{vorname} {name}".Trim();
         }
+    }
+
+    /// <summary>
+    /// Repräsentiert ein Objekt im Ticket-System
+    /// </summary>
+    public class TicketObjekt
+    {
+        public Int32 id { get; set; } = 0;
+        public Int32 personid { get; set; } = 0;
+        public string objektnr { get; set; } = "";
+        public string objektname { get; set; } = "";
+        public string type { get; set; } = "";
+        public string status { get; set; } = "";
+        public string adresse { get; set; } = "";
+        public string plz { get; set; } = "";
+        public string ort { get; set; } = "";
+        public int del { get; set; } = 0;
+
+        public TicketObjekt() { }
+
+        /// <summary>
+        /// Gibt die vollständige Adresse zurück
+        /// </summary>
+        public string GetFullAddress()
+        {
+            return $"{adresse} {plz} {ort}".Trim();
+        }
+    }
+
+    /// <summary>
+    /// Repräsentiert eine Chat-Nachricht im Ticket-Verlauf
+    /// </summary>
+    public class TicketChat
+    {
+        public Int32 id { get; set; } = 0;
+        public Int32 ticketid { get; set; } = 0;
+        public Int32 personid { get; set; } = 0;
+        public string typ { get; set; } = "info";
+        /*  
+            typ = 
+                'new' - Ticket erstellt
+                'info' - Info-Nachricht
+                'mailto' - Mail gesendet
+                'notificationto' - Benachrichtigung gesendet
+                'statuschange' - Status geändert
+                'besitzerchange' - Besitzer geändert
+                'rueckfrage' - Rückfrage
+                'erledigt' - Erledigt
+                'geschlossen' - Geschlossen
+         */
+        public string t { get; set; } = ""; // Text/Nachricht
+        public int del { get; set; } = 0;
+        public string personname { get; set; } = "";
+        public string info { get; set; } = "";
+        public string updateat { get; set; } = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+        public bool intern { get; set; } = true;
+
+        public TicketChat() { }
+
+        public TicketChat(int ticketid, int personid, string personname, string text)
+        {
+            this.ticketid = ticketid;
+            this.personid = personid;
+            this.personname = personname;
+            this.t = text;
+            this.updateat = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+        }
+
+        /// <summary>
+        /// Gibt formatierte Zeit zurück (z.B. "14:30" oder "Gestern 14:30")
+        /// </summary>
+        public string GetFormattedTime()
+        {
+            if (DateTime.TryParse(updateat, out DateTime datum))
+            {
+                var now = DateTime.Now;
+                var diff = now - datum;
+
+                if (diff.TotalDays < 1 && now.Date == datum.Date)
+                {
+                    return datum.ToString("HH:mm");
+                }
+                else if (diff.TotalDays < 2 && now.Date.AddDays(-1) == datum.Date)
+                {
+                    return $"Gestern {datum:HH:mm}";
+                }
+                else if (diff.TotalDays < 7)
+                {
+                    return datum.ToString("dddd HH:mm");
+                }
+                else
+                {
+                    return datum.ToString("dd.MM.yyyy HH:mm");
+                }
+            }
+            return updateat;
+        }
+
+        /// <summary>
+        /// Konvertiert zu DateTime
+        /// </summary>
+        public DateTime GetDateTime()
+        {
+            if (DateTime.TryParse(updateat, out DateTime result))
+            {
+                return result;
+            }
+            return DateTime.Now;
+        }
+    }
+
+    /// <summary>
+    /// Repräsentiert ein Ticket im System (angepasst an Backend-Struktur)
+    /// </summary>
+    public class Ticket
+    {
+        public enum TicketStatus
+        {
+            Neu = 1,            // Neu (noch nicht zugewiesen)
+            Offen = 2,          // Offen (zugewiesen)
+            Wartend = 3,        // Wartend
+            InArbeit = 4,       // In Arbeit
+            Rueckfrage = 5,     // Rückfrage
+            Erledigt = 9,       // Erledigt / Rechnung freigeben
+            Geschlossen = 10    // Geschlossen
+        }
+
+        public enum BesitzerStatus
+        {
+            NochNichtGesehen = -1,  // Noch nicht gesehen
+            Gesehen = 0,            // Gesehen/Geöffnet
+            Gestartet = 1,          // Gestartet/In Arbeit
+            Rueckfrage = 2,         // Rückfrage
+            Erledigt = 9            // Erledigt
+        }
+
+        // IDs
+        public Int32 id { get; set; } = 0;
+        public Int32 gruppeid { get; set; } = 0;
+        public Int32 personid { get; set; } = 0;
+        public Int32 besitzerid { get; set; } = 0;
+        public Int32 erstellerid { get; set; } = 0;
+        public Int32 aspid { get; set; } = 0;
+        public Int32 objektid { get; set; } = 0;
+        public Int32 auftragid { get; set; } = 0;
+
+        // Texte
+        public string text { get; set; } = "";          // Beschreibung (im Backend als BLOB)
+        public string titel { get; set; } = "";
+
+        // Datumsangaben (als Unix-Timestamp-Strings)
+        public string start { get; set; } = "0";        // Erstelldatum
+        public string end { get; set; } = "0";          // Enddatum
+        public string startab { get; set; } = "0";      // Start ab (Zeitfenster)
+        public string endbis { get; set; } = "0";       // Ende bis (Zeitfenster)
+        public string updateat { get; set; } = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+        public string lastbesitzerupdate { get; set; } = null;
+
+        // Status und Flags
+        public int status { get; set; } = 1;            // Ticket-Status (1=Neu, 2=Offen, etc.)
+        public int besitzerstatus { get; set; } = -1;   // Status beim Besitzer (-1=Noch nicht gesehen)
+        public int del { get; set; } = 0;               // Löschen-Flag (0=aktiv, 1=gelöscht, 5=vom Kunde gelöscht)
+        public bool intern { get; set; } = true;        // Intern/Extern
+        public int prio { get; set; } = 1;              // Priorität
+
+        // Objekt-Referenzen (werden vom Backend gefüllt)
+        public TicketPerson kunde { get; set; }
+        public string kundename { get; set; }
+        public TicketPerson besitzer { get; set; }
+        public string besitzername { get; set; }
+        public TicketPerson ersteller { get; set; }
+        public string erstellername { get; set; }
+        public TicketPerson asp { get; set; }
+        public TicketObjekt objekt { get; set; }
+        public string objektname { get; set; }
+
+        // Chat und Aufträge
+        public TicketChat newchat { get; set; } = new TicketChat();
+        public List<TicketChat> chats { get; set; } = new List<TicketChat>();
+
+        // Legacy-Properties (für Kompatibilität mit bestehendem Mobile-Code)
+        [JsonIgnore]
+        public DateTime? datum
+        {
+            get => ConvertStringToDateTime(start);
+            set => start = value.HasValue ? ConvertDateTimeToString(value.Value) : "0";
+        }
+
+        [JsonIgnore]
+        public DateTime? letztesAenderungsDatum
+        {
+            get
+            {
+                if (DateTime.TryParse(updateat, out DateTime result))
+                    return result;
+                return null;
+            }
+            set => updateat = value?.ToString("yyyy-MM-dd HH:mm:ss") ?? DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+        }
+
+        [JsonIgnore]
+        public string beschreibung
+        {
+            get => text;
+            set => text = value;
+        }
+
+        public Ticket()
+        {
+            updateat = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            start = ConvertDateTimeToString(DateTime.Now);
+        }
+
+        public Ticket(string titel, string beschreibung, int erstellerId, string erstellerName)
+        {
+            this.titel = titel;
+            this.text = beschreibung;
+            this.erstellerid = erstellerId;
+            this.erstellername = erstellerName;
+            this.start = ConvertDateTimeToString(DateTime.Now);
+            this.updateat = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+        }
+
+
+
+
+
+
+
+        public static async Task<TicketResponse> LoadTicketsFromBackendAsync()
+        {
+            try
+            {
+                AppModel.Instance.TicketResponse
+                    = await AppModel.Instance.Connections.GetTickets();
+
+                if (AppModel.Instance.TicketResponse.success && AppModel.Instance.TicketResponse.tickets != null)
+                {
+                    // Badge-Count vom Backend verwenden, falls verfügbar
+                    if (AppModel.Instance.TicketResponse.counts != null && AppModel.Instance.TicketResponse.counts.Count > 0)
+                    {
+                        int totalCount = AppModel.Instance.TicketResponse.counts.Sum();
+                        await MainThread.InvokeOnMainThreadAsync(() =>
+                        {
+                            AppModel.Instance.MainPage.UpdateTicketBadgeCount(totalCount);
+                        });
+                    }
+
+                    return AppModel.Instance.TicketResponse;
+                }
+                else
+                {
+                    AppModel.Logger.Warn($"LoadTicketsFromBackendAsync: {AppModel.Instance.TicketResponse.message}");
+                    return new TicketResponse();
+                }
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger.Error($"LoadTicketsFromBackendAsync: {ex.Message}");
+                return new TicketResponse();
+            }
+        }
+
+
+
+
+
+
+        #region DateTime Conversion Helper
+
+        /// <summary>
+        /// Konvertiert einen Timestamp-String in DateTime (Unix-Timestamp in Millisekunden)
+        /// </summary>
+        private DateTime? ConvertStringToDateTime(string timestamp)
+        {
+            if (string.IsNullOrWhiteSpace(timestamp) || timestamp == "0" || timestamp == "-1")
+                return null;
+
+            if (long.TryParse(timestamp, out long ticks))
+            {
+                try
+                {
+                    // Unix-Timestamp (Millisekunden seit 1.1.1970)
+                    DateTime epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+                    return epoch.AddMilliseconds(ticks).ToLocalTime();
+                }
+                catch
+                {
+                    return null;
+                }
+            }
+
+            // Fallback: Versuche direktes DateTime-Parsing
+            if (DateTime.TryParse(timestamp, out DateTime result))
+            {
+                return result;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Konvertiert ein DateTime in einen Timestamp-String (Unix-Timestamp in Millisekunden)
+        /// </summary>
+        private string ConvertDateTimeToString(DateTime dateTime)
+        {
+            DateTime epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            TimeSpan span = dateTime.ToUniversalTime() - epoch;
+            return ((long)span.TotalMilliseconds).ToString();
+        }
+
+        #endregion
+
+        #region Status Helper Methods
 
         /// <summary>
         /// Gibt den Status als lesbaren Text zurück
         /// </summary>
         public string GetStatusText()
         {
-            return status switch
+            return ((TicketStatus)status) switch
             {
-                PersonStatus.Abgelehnt => "Abgelehnt",
-                PersonStatus.Angenommen => "Angenommen",
-                PersonStatus.Erledigt => "Erledigt",
-                PersonStatus.Weitergeleitet => "Weitergeleitet",
-                PersonStatus.InArbeit => "In Arbeit",
-                PersonStatus.Gesehen => "Gesehen",
-                PersonStatus.Neu => "Neu",
-                PersonStatus.Kein => "Kein Status",
+                TicketStatus.Neu => "NEU",
+                TicketStatus.Offen => "OFFEN",
+                TicketStatus.Wartend => "WARTEND",
+                TicketStatus.InArbeit => "IN ARBEIT",
+                TicketStatus.Rueckfrage => "RÜCKFRAGE",
+                TicketStatus.Erledigt => "ERLEDIGT",
+                TicketStatus.Geschlossen => "GESCHLOSSEN",
+                _ => "*"
+            };
+        }
+
+        /// <summary>
+        /// Gibt den Besitzerstatus als lesbaren Text zurück
+        /// </summary>
+        public string GetBesitzerStatusText()
+        {
+            return ((BesitzerStatus)besitzerstatus) switch
+            {
+                BesitzerStatus.NochNichtGesehen => "Noch nicht gesehen",
+                BesitzerStatus.Gesehen => "Gesehen",
+                BesitzerStatus.Gestartet => "Gestartet",
+                BesitzerStatus.Rueckfrage => "Rückfrage",
+                BesitzerStatus.Erledigt => "Erledigt",
                 _ => "Unbekannt"
             };
         }
-    }
 
-    /// <summary>
-    /// Repräsentiert ein Ticket im System
-    /// </summary>
-    public class Ticket
-    {
-        public enum TicketStatus
+        /// <summary>
+        /// Gibt den aktuellen Status zurück
+        /// </summary>
+        public TicketStatus GetCurrentStatus()
         {
-            Abgelehnt,
-            Angenommen,
-            Erledigt,
-            Weitergeleitet,
-            InArbeit,
-            Gesehen,
-            Neu,
-            Kein
+            if (Enum.IsDefined(typeof(TicketStatus), status))
+            {
+                return (TicketStatus)status;
+            }
+            return TicketStatus.Neu;
         }
 
-        public int id { get; set; }
-        public DateTime? letztesAenderungsDatum { get; set; } = null;
-        public DateTime? datum { get; set; } = null; // Erstell Datum
-        public string titel { get; set; } = string.Empty;
-        public string beschreibung { get; set; } = string.Empty;
-        public int erstellerId { get; set; } = 0;
-        public string erstellerName { get; set; } = string.Empty;
-        public int besitzerId { get; set; } = 0;
-        public string besitzerName { get; set; } = string.Empty;
-        public List<TicketPerson> histPersons { get; set; } = new List<TicketPerson>();
-
-        public Ticket()
-        {
-            datum = DateTime.Now;
-            letztesAenderungsDatum = DateTime.Now;
-        }
-
-        public Ticket(string titel, string beschreibung, int erstellerId, string erstellerName)
-        {
-            this.titel = titel;
-            this.beschreibung = beschreibung;
-            this.erstellerId = erstellerId;
-            this.erstellerName = erstellerName;
-            this.datum = DateTime.Now;
-            this.letztesAenderungsDatum = DateTime.Now;
-        }
+        #endregion
 
         #region Save/Load/Delete Methods
 
@@ -336,6 +627,38 @@ namespace iPMCloud.Mobile
 
         #endregion
 
+        #region Chat Helper Methods
+
+        /// <summary>
+        /// Fügt eine neue Chat-Nachricht zum Ticket hinzu
+        /// </summary>
+        public void AddChatMessage(int personid, string personname, string nachricht, string typ = "info", bool intern = true)
+        {
+            var chat = new TicketChat
+            {
+                ticketid = this.id,
+                personid = personid,
+                personname = personname,
+                t = nachricht,
+                typ = typ,
+                intern = intern,
+                updateat = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
+            };
+
+            chats.Add(chat);
+            this.updateat = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+        }
+
+        /// <summary>
+        /// Legacy-Methode für Kompatibilität (verwendet AddChatMessage)
+        /// </summary>
+        public void AddMessage(int absenderId, string absenderName, string nachricht)
+        {
+            AddChatMessage(absenderId, absenderName, nachricht, "info", true);
+        }
+
+        #endregion
+
         #region Helper Methods
 
         /// <summary>
@@ -344,22 +667,6 @@ namespace iPMCloud.Mobile
         public bool IsValid()
         {
             return id > 0 && !string.IsNullOrWhiteSpace(titel);
-        }
-
-        /// <summary>
-        /// Gibt den aktuellen Status basierend auf dem Besitzer zurück
-        /// </summary>
-        public TicketStatus GetCurrentStatus()
-        {
-            if (histPersons != null && histPersons.Count > 0)
-            {
-                var lastPerson = histPersons.OrderByDescending(p => p.aenderungsDatum).FirstOrDefault();
-                if (lastPerson != null)
-                {
-                    return (TicketStatus)lastPerson.status;
-                }
-            }
-            return TicketStatus.Neu;
         }
 
         /// <summary>
@@ -387,34 +694,45 @@ namespace iPMCloud.Mobile
         }
 
         /// <summary>
-        /// Weist das Ticket einem neuen Besitzer zu
+        /// Weist das Ticket einem neuen Besitzer zu (Backend-kompatibel)
         /// </summary>
-        public void AssignTo(int besitzerId, string besitzerName, TicketPerson.PersonStatus status = TicketPerson.PersonStatus.Neu)
+        public void AssignTo(int newBesitzerId, string newBesitzerName)
         {
-            this.besitzerId = besitzerId;
-            this.besitzerName = besitzerName;
-            this.letztesAenderungsDatum = DateTime.Now;
+            this.besitzerid = newBesitzerId;
+            this.besitzername = newBesitzerName;
+            this.besitzerstatus = -1; // Noch nicht gesehen
+            this.updateat = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
-            var ticketPerson = new TicketPerson(besitzerId, besitzerName, status);
-            histPersons.Add(ticketPerson);
+            // Optional: Chat-Eintrag für die Zuweisung
+            AddChatMessage(
+                personid: newBesitzerId,
+                personname: newBesitzerName,
+                nachricht: $"Ticket wurde {newBesitzerName} zugewiesen",
+                typ: "besitzerchange",
+                intern: true
+            );
         }
 
         /// <summary>
-        /// Ändert den Status des Tickets
+        /// Ändert den Status des Tickets (Backend-kompatibel)
         /// </summary>
-        public void ChangeStatus(TicketPerson.PersonStatus newStatus)
+        public void ChangeStatus(TicketStatus newStatus, string changeReason = "")
         {
-            if (histPersons.Count > 0)
-            {
-                var lastPerson = histPersons.OrderByDescending(p => p.aenderungsDatum).FirstOrDefault();
-                if (lastPerson != null)
-                {
-                    lastPerson.status = newStatus;
-                    lastPerson.aenderungsDatum = DateTime.Now;
-                }
-            }
+            int oldStatus = this.status;
+            this.status = (int)newStatus;
+            this.updateat = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
-            this.letztesAenderungsDatum = DateTime.Now;
+            // Optional: Chat-Eintrag für die Statusänderung
+            if (!string.IsNullOrEmpty(changeReason))
+            {
+                AddChatMessage(
+                    personid: this.besitzerid,
+                    personname: this.besitzername ?? "System",
+                    nachricht: changeReason,
+                    typ: "statuschange",
+                    intern: true
+                );
+            }
         }
 
         /// <summary>
@@ -457,7 +775,7 @@ namespace iPMCloud.Mobile
         public override string ToString()
         {
             var status = GetCurrentStatus();
-            return $"Ticket #{id}: {titel} [{status}] ({GetFormattedAge()})";
+            return $"Ticket #{id}: {titel} [{status.ToString()}] ({GetFormattedAge()})";
         }
 
         #endregion
@@ -465,27 +783,27 @@ namespace iPMCloud.Mobile
         #region Filter/Query Methods
 
         /// <summary>
-        /// Lädt Tickets nach Status
+        /// Lädt Tickets nach Status (Backend-kompatibel)
         /// </summary>
         public static List<Ticket> LoadByStatus(TicketStatus status)
         {
-            return LoadAll().Where(t => t.GetCurrentStatus() == status).ToList();
+            return LoadAll().Where(t => t.status == (int)status).ToList();
         }
 
         /// <summary>
-        /// Lädt Tickets eines bestimmten Besitzers
+        /// Lädt Tickets eines bestimmten Besitzers (Backend-kompatibel)
         /// </summary>
         public static List<Ticket> LoadByOwner(int besitzerId)
         {
-            return LoadAll().Where(t => t.besitzerId == besitzerId).ToList();
+            return LoadAll().Where(t => t.besitzerid == besitzerId).ToList();
         }
 
         /// <summary>
-        /// Lädt Tickets eines bestimmten Erstellers
+        /// Lädt Tickets eines bestimmten Erstellers (Backend-kompatibel)
         /// </summary>
         public static List<Ticket> LoadByCreator(int erstellerId)
         {
-            return LoadAll().Where(t => t.erstellerId == erstellerId).ToList();
+            return LoadAll().Where(t => t.erstellerid == erstellerId).ToList();
         }
 
         /// <summary>

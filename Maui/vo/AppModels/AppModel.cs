@@ -70,6 +70,9 @@ namespace iPMCloud.Mobile.vo
         public Check selectedCheckA { get; set; }
         public ChecksResponse ChecksResponse { get; set; } = new ChecksResponse();
 
+        public TicketResponse TicketResponse { get; set; } = new TicketResponse();
+        public Ticket SelectedTicket { get; set; } = new Ticket();
+
         public PlanResponse PlanResponse { get; set; } = new PlanResponse();
         public PlanResponse PlanOthePersonResponse { get; set; } = new PlanResponse();
 

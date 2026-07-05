@@ -41,6 +41,7 @@ namespace iPMCloud.Mobile.vo
         internal static Uri uri_SetCheckABemImg = null;
         internal static Uri uri_GetCheckA = null;
         internal static Uri uri_UpdatePushToken = null;
+        internal static Uri uri_GetTickets = null;
 
         internal static HttpClient httpClientInstance;
         internal static HttpClient httpClientInstanceChecks;
@@ -152,6 +153,9 @@ namespace iPMCloud.Mobile.vo
                 // jeweils eine eigene httpClientInstanceSingleNotice
                 uri_SingleNotice = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/SingleNotice");
                 uri_NoticeBild = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/NoticeBild");
+
+                // Ticket-API
+                uri_GetTickets = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/GetMobileTickets");
 
                 InitPNConnections();
             }
@@ -563,6 +567,72 @@ namespace iPMCloud.Mobile.vo
                 return new IpmBuildingResponse { success = false, message = "Method(IpmLIpmBuildingSyncogin(catch)): " + ex.Message };
             }
         }
+
+        /// <summary>
+        /// Lädt alle Tickets vom Backend
+        /// </summary>
+        public async Task<TicketResponse> GetTickets()
+        {
+            if (uri_GetTickets == null) { InitConnections(); }
+            HttpResponseMessage resMsg = null;
+
+            if (!AppModel.Instance.IsInternet)
+            {
+                return new TicketResponse
+                {
+                    success = false,
+                    message = "Sie brauchen für diese Aktion eine Onlineverbindung!",
+                };
+            }
+
+            string args = JsonConvert.SerializeObject(new TicketRequest
+            {
+                token = AppModel.Instance.SettingModel.SettingDTO.LoginToken,
+                personid = AppModel.Instance.Person?.id ?? 0,
+                gruppeid = 0, // TODO: Gruppe-ID wenn verfügbar
+                inclChats = true
+            });
+
+            HttpRequestMessage msg = new HttpRequestMessage(HttpMethod.Post, uri_GetTickets);
+            msg.Content = new StringContent(args, Encoding.UTF8, "application/json");
+
+            try
+            {
+                resMsg = await httpClientInstance.SendAsync(msg);
+                if (resMsg != null && resMsg.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    // Tokenzeit neu setzen
+                    AppModel.Instance.SettingModel.SettingDTO.LastTokenDateTimeTicks = "" + DateTime.Now.Ticks;
+                    AppModel.Instance.SettingModel.SaveSettings();
+
+                    var json = await resMsg.Content.ReadAsStringAsync();
+                    resMsg.Dispose();
+                    var response = JsonConvert.DeserializeObject<TicketResponse>(json);
+                    response.success = true;
+                    return response;
+                }
+                else
+                {
+                    var m = "Method => GetTickets: httpResponseMessage.StatusCode = " + resMsg.StatusCode + " - " + resMsg.RequestMessage;
+                    AppModel.Logger.Warn(m);
+                    resMsg?.Dispose();
+                    return new TicketResponse { success = false, message = m };
+                }
+            }
+            catch (Exception ex)
+            {
+                resMsg?.Dispose();
+                if (ex.Message.ToLower().IndexOf("canceled") > -1)
+                {
+                    AppModel.Logger.Error("Method => GetTickets(canceled): Der Server ist nicht erreichbar oder die Verbindung wurde unterbrochen!\n\n" + ex.Message);
+                    return new TicketResponse { success = false, message = "GetTickets(canceled): Der Server ist nicht erreichbar oder die Verbindung wurde unterbrochen!\n\n" + ex.Message };
+                }
+                AppModel.Logger.Error("Method => GetTickets(catch): " + ex.Message);
+                return new TicketResponse { success = false, message = "GetTickets(catch): " + ex.Message };
+            }
+        }
+
+
 
         public async Task<string[]> GuidsCheck(string[] guidsList)
         {

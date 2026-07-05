@@ -10,9 +10,12 @@ using iPMCloud.Mobile.vo.wso;
 using MetadataExtractor.Formats.Photoshop;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui;
+using Microsoft.Maui.Animations;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls;
+using Microsoft.Maui.Devices;
+using Microsoft.Maui.Devices;
 using Microsoft.Maui.Devices;
 using Microsoft.Maui.Devices;
 using Microsoft.Maui.Devices;
@@ -20,6 +23,8 @@ using Microsoft.Maui.Devices;
 // using Xamarin.RangeSlider.Forms;
 
 //using Microsoft.Maui.Storage;
+using Microsoft.Maui.Devices;
+using Microsoft.Maui.Devices;
 using Microsoft.Maui.Devices;
 using Microsoft.Maui.Devices;
 using Microsoft.Maui.Devices;
@@ -1285,6 +1290,7 @@ namespace iPMCloud.Mobile
         {
             base.OnAppearing();
 
+            Task.Run(async () => await Ticket.LoadTicketsFromBackendAsync());
             // Reset camera state when returning to MainPage (e.g., after company change)
             // This ensures the camera is properly reinitialized
             if (ReaderView != null && ReaderView.IsDetecting)
@@ -1307,7 +1313,7 @@ namespace iPMCloud.Mobile
                 }
                 catch (Exception ex)
                 {
-                    AppModel.Logger.Error($"[MainPage] OnAppearing - Error resetting ReaderView: {ex.Message}" , ex);
+                    AppModel.Logger.Error($"[MainPage] OnAppearing - Error resetting ReaderView: {ex.Message}", ex);
                 }
             }
         }
@@ -4879,7 +4885,7 @@ namespace iPMCloud.Mobile
             frame_planConCe.IsVisible = false;
             frame_planConC.IsVisible = false;
         }
-        public void btn_PlanTabCTapped(object sender, EventArgs e)
+        public async void btn_PlanTabCTapped(object sender, EventArgs e)
         {
             frame_plantabC.Margin = new Thickness(0, -8, 2, 0);
             frame_plantabA.Margin = new Thickness(0, 0, 2, 0);
@@ -4889,7 +4895,606 @@ namespace iPMCloud.Mobile
             frame_planConB.IsVisible = false;
             frame_planConCe.IsVisible = false;
             frame_planConC.IsVisible = true;
+
+            // Tickets laden und anzeigen
+            await LoadAndDisplayTicketsAsync();
         }
+
+        #region Ticket Chat Methods
+
+
+        private async Task LoadAndDisplayTicketsAsync()
+        {
+            try
+            {
+                // Zeige Ladeindikator
+                overlay.IsVisible = true;
+
+                // Versuche Tickets zu laden (Implementierung kann später erfolgen)
+                await Ticket.LoadTicketsFromBackendAsync();
+
+                // Falls keine Tickets vorhanden, zeige leere Listen und Badge = 0
+                if (AppModel.Instance.TicketResponse.tickets == null || AppModel.Instance.TicketResponse.tickets.Count == 0)
+                {
+                    await MainThread.InvokeOnMainThreadAsync(() =>
+                    {
+                        RenderTicketsInFrame(frame_planListCoffen, new List<Ticket>(), "#ff0000");
+                        RenderTicketsInFrame(frame_planListCwork, new List<Ticket>(), "#ffcc00");
+                        RenderTicketsInFrame(frame_planListCerl, new List<Ticket>(), "#00ff00");
+                    });
+                    return;
+                }
+
+                // Nach Status gruppieren
+                var offeneTickets = AppModel.Instance.TicketResponse.tickets.Where(t =>
+                    t.status == (int)Ticket.TicketStatus.Neu ||
+                    t.status == (int)Ticket.TicketStatus.Offen ||
+                    t.status == (int)Ticket.TicketStatus.Wartend
+                ).ToList();
+
+                var inArbeitTickets = AppModel.Instance.TicketResponse.tickets.Where(t =>
+                    t.status == (int)Ticket.TicketStatus.InArbeit ||
+                    (t.status == (int)Ticket.TicketStatus.Rueckfrage &&
+                     t.besitzerstatus == (int)Ticket.BesitzerStatus.Gestartet)
+                ).ToList();
+
+                // Erledigte der letzten Woche
+                var oneWeekAgo = DateTime.Now.AddDays(-7);
+                var erledigteTickets = AppModel.Instance.TicketResponse.tickets.Where(t =>
+                {
+                    if (t.status != (int)Ticket.TicketStatus.Erledigt)
+                        return false;
+
+                    // updateat ist string im Format "yyyy-MM-dd HH:mm:ss"
+                    if (DateTime.TryParse(t.updateat, out DateTime updateDate))
+                    {
+                        return updateDate >= oneWeekAgo;
+                    }
+                    return false;
+                }).ToList();
+
+                // UI aktualisieren
+                await MainThread.InvokeOnMainThreadAsync(() =>
+                {
+                    RenderTicketsInFrame(frame_planListCoffen, offeneTickets, "#ff0000");
+                    RenderTicketsInFrame(frame_planListCwork, inArbeitTickets, "#ffcc00");
+                    RenderTicketsInFrame(frame_planListCerl, erledigteTickets, "#00ff00");
+
+                    // Badge-Count als Fallback nur aktualisieren, wenn er noch nicht vom Backend gesetzt wurde
+                    // (z.B. wenn response.counts null war)
+                    // In der Regel wird der Badge-Count bereits in LoadTicketsFromBackendAsync gesetzt
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Fehler beim Laden der Tickets: {ex.Message}");
+                AppModel.Logger.Error($"LoadAndDisplayTicketsAsync: {ex.Message}");
+
+                // Bei Fehler: Badge auf 0 setzen
+                await MainThread.InvokeOnMainThreadAsync(() =>
+                {
+                    UpdateTicketBadgeCount(0);
+                });
+            }
+            finally
+            {
+                overlay.IsVisible = false;
+            }
+        }
+
+        /// <summary>
+        /// Aktualisiert die Badge-Anzahl für den Ticket-Tab
+        /// </summary>
+        /// <param name="count">Anzahl der aktiven Tickets (offen + in Arbeit)</param>
+        public void UpdateTicketBadgeCount(int count)
+        {
+            try
+            {
+                if (count > 0)
+                {
+                    frame_plantabC_badge_count.Text = count > 99 ? "99+" : count.ToString();
+                    if (frame_plantabC_badge_count.Parent is VisualElement badgeContainer)
+                    {
+                        badgeContainer.IsVisible = true;
+                    }
+                }
+                else
+                {
+                    frame_plantabC_badge_count.Text = "0";
+                    if (frame_plantabC_badge_count.Parent is VisualElement badgeContainer)
+                    {
+                        badgeContainer.IsVisible = false;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Fehler beim Aktualisieren des Ticket-Badges: {ex.Message}");
+                AppModel.Logger.Error($"UpdateTicketBadgeCount: {ex.Message}");
+            }
+        }
+
+        private void RenderTicketsInFrame(VerticalStackLayout container, List<Ticket> tickets, string statusColor)
+        {
+            container.Children.Clear();
+
+            // Keine Tickets? Infomeldung hinzufügen
+            if (tickets == null || tickets.Count == 0)
+            {
+                container.Children.Add(new Label
+                {
+                    Text = "Keine Tickets",
+                    FontSize = 12,
+                    TextColor = Color.FromArgb("#999999"),
+                    Margin = new Thickness(3, 5, 0, 1),
+                    HorizontalOptions = LayoutOptions.Start
+                });
+                return;
+            }
+
+            // Tickets sortieren (neueste zuerst)
+            var sortedTickets = tickets.OrderByDescending(t =>
+            {
+                DateTime.TryParse(t.updateat, out DateTime updateDate);
+                return updateDate;
+            }).ToList();
+
+            // Ticket-Cards erstellen
+            foreach (var ticket in sortedTickets)
+            {
+                var ticketCard = CreateTicketCard(ticket, statusColor);
+                container.Children.Add(ticketCard);
+            }
+        }
+
+        private Border CreateTicketCard(Ticket ticket, string statusColor)
+        {
+            var border = new Border
+            {
+                Margin = new Thickness(3, 2, 3, 2),
+                Padding = new Thickness(8),
+                BackgroundColor = Color.FromArgb("#1a1a1a"),
+                StrokeThickness = 1,
+                Stroke = Color.FromArgb("#333333"),
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(5) }
+            };
+
+            var grid = new Grid
+            {
+                ColumnDefinitions = new ColumnDefinitionCollection
+                {
+                    new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) },
+                    new ColumnDefinition { Width = GridLength.Auto }
+                },
+                RowDefinitions = new RowDefinitionCollection
+                {
+                    new RowDefinition { Height = GridLength.Auto },
+                    new RowDefinition { Height = GridLength.Auto },
+                    new RowDefinition { Height = GridLength.Auto }
+                }
+            };
+
+            // Status-Indikator
+            var statusIndicator = new BoxView
+            {
+                Color = Color.FromArgb(statusColor),
+                WidthRequest = 4,
+                HeightRequest = 40,
+                VerticalOptions = LayoutOptions.Center
+            };
+            grid.Add(statusIndicator, 0, 0);
+            Grid.SetRowSpan(statusIndicator, 3);
+
+            // Titel
+            var titleLabel = new Label
+            {
+                Text = ticket.titel ?? "Ohne Titel",
+                FontSize = 14,
+                FontAttributes = FontAttributes.Bold,
+                TextColor = Color.FromArgb("#ffffff"),
+                Margin = new Thickness(10, 0, 0, 2),
+                LineBreakMode = LineBreakMode.TailTruncation,
+                MaxLines = 1
+            };
+            grid.Add(titleLabel, 0, 0);
+
+            // Ticket-ID Badge
+            var idBadge = new Border
+            {
+                BackgroundColor = Color.FromArgb("#0078d7"),
+                Padding = new Thickness(6, 2),
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(10) },
+                Margin = new Thickness(5, 0, 0, 0),
+                VerticalOptions = LayoutOptions.Center,
+                Content = new Label
+                {
+                    Text = $"#{ticket.id}",
+                    FontSize = 10,
+                    TextColor = Color.FromArgb("#ffffff"),
+                    FontAttributes = FontAttributes.Bold
+                }
+            };
+            grid.Add(idBadge, 1, 0);
+
+            // Beschreibung
+            if (!string.IsNullOrEmpty(ticket.text))
+            {
+                var descLabel = new Label
+                {
+                    Text = ticket.text,
+                    FontSize = 12,
+                    TextColor = Color.FromArgb("#cccccc"),
+                    Margin = new Thickness(10, 0, 0, 2),
+                    LineBreakMode = LineBreakMode.TailTruncation,
+                    MaxLines = 2
+                };
+                grid.Add(descLabel, 0, 1);
+                Grid.SetColumnSpan(descLabel, 2);
+            }
+
+            // Zeitstempel und Prio
+            var infoStack = new HorizontalStackLayout
+            {
+                Margin = new Thickness(10, 2, 0, 0),
+                Spacing = 10
+            };
+
+            // updateat parsen
+            DateTime.TryParse(ticket.updateat, out DateTime updateDate);
+            var timeLabel = new Label
+            {
+                Text = FormatTicketTime(updateDate),
+                FontSize = 10,
+                TextColor = Color.FromArgb("#888888")
+            };
+            infoStack.Children.Add(timeLabel);
+
+            if (ticket.prio > 0)
+            {
+                // Priorität als Chip darstellen
+                string prioText;
+                string prioBackgroundColor;
+                string prioTextColor;
+
+                // Prioritätswerte und Farben entsprechend dem Screenshot
+                // Hintergrund ist farbig, Text ist kontrastierend
+                if (ticket.prio == 0)
+                {
+                    prioText = "Gering";
+                    prioBackgroundColor = "#4472C4"; // Blau
+                    prioTextColor = "#FFFFFF"; // Weiß
+                }
+                else if (ticket.prio == 1)
+                {
+                    prioText = "Normal";
+                    prioBackgroundColor = "#FFC000"; // Gold/Gelb
+                    prioTextColor = "#000000"; // Schwarz
+                }
+                else if (ticket.prio == 2)
+                {
+                    prioText = "Hoch";
+                    prioBackgroundColor = "#FF8C00"; // Orange
+                    prioTextColor = "#FFFFFF"; // Weiß
+                }
+                else
+                {
+                    prioText = "NOTFALL";
+                    prioBackgroundColor = "#FF0000"; // Rot
+                    prioTextColor = "#FFFFFF"; // Weiß
+                }
+
+                var prioChip = new Border
+                {
+                    BackgroundColor = Color.FromArgb(prioBackgroundColor),
+                    Padding = new Thickness(8, 4),
+                    Margin = new Thickness(0, 2, 0, 0),
+                    StrokeThickness = 0,
+                    StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(4) },
+                    Content = new Label
+                    {
+                        Text = prioText,
+                        FontSize = 11,
+                        TextColor = Color.FromArgb(prioTextColor),
+                        FontAttributes = FontAttributes.Bold,
+                        HorizontalOptions = LayoutOptions.Center,
+                        VerticalOptions = LayoutOptions.Center
+                    }
+                };
+                infoStack.Children.Add(prioChip);
+            }
+
+            // newchat ist TicketChat-Objekt, zähle chats mit newchat-Flag
+            int newChatCount = ticket.chats?.Count(c => c.id == ticket.newchat?.id) ?? 0;
+            if (newChatCount > 0)
+            {
+                var chatBadge = new Border
+                {
+                    BackgroundColor = Color.FromArgb("#ff0000"),
+                    Padding = new Thickness(4, 1),
+                    StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(8) },
+                    Content = new Label
+                    {
+                        Text = $"{newChatCount} neu",
+                        FontSize = 9,
+                        TextColor = Color.FromArgb("#ffffff"),
+                        FontAttributes = FontAttributes.Bold
+                    }
+                };
+                infoStack.Children.Add(chatBadge);
+            }
+
+            grid.Add(infoStack, 0, 2);
+            Grid.SetColumnSpan(infoStack, 2);
+
+            border.Content = grid;
+
+            // Tap-Handler zum Öffnen des Tickets
+            var tapGesture = new TapGestureRecognizer();
+            tapGesture.Tapped += (s, e) => OnTicketCardTapped(ticket);
+            border.GestureRecognizers.Add(tapGesture);
+
+            return border;
+        }
+
+        private string FormatTicketTime(DateTime dateTime)
+        {
+            var now = DateTime.Now;
+            var diff = now - dateTime;
+
+            if (diff.TotalMinutes < 1)
+                return "Gerade eben";
+            if (diff.TotalMinutes < 60)
+                return $"vor {(int)diff.TotalMinutes} Min";
+            if (diff.TotalHours < 24)
+                return $"vor {(int)diff.TotalHours} Std";
+            if (diff.TotalDays < 7)
+                return $"vor {(int)diff.TotalDays} Tagen";
+
+            return dateTime.ToString("dd.MM.yyyy");
+        }
+
+        private void OnTicketCardTapped(Ticket ticket)
+        {
+            try
+            {
+                // Ticket öffnen und Chat-Ansicht anzeigen
+                Console.WriteLine($"Ticket #{ticket.id} wurde getippt: {ticket.titel}");
+
+                // Editticket_container öffnen und Ticket-Chat laden
+                if (ticket != null)
+                {
+                    editticket_container.IsVisible = true;
+                    LoadTicketChat(ticket);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Fehler beim Öffnen des Tickets: {ex.Message}");
+                AppModel.Logger?.Error(ex, "ERROR: OnTicketCardTapped");
+            }
+        }
+
+
+        private void OnEditTicketCloseContainer_Tapped(object sender, EventArgs e)
+        {
+            try
+            {
+                // Editticket_container schließen
+                editticket_container.IsVisible = false;
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: OnEditTicketCloseContainer_Tapped", ex);
+            }
+        }
+
+
+        private Ticket currentTicket = null;
+
+
+        /// <summary>
+        /// Lädt und zeigt den Ticket-Verlauf (Chat)
+        /// </summary>
+        public void LoadTicketChat(Ticket ticket)
+        {
+            try
+            {
+                currentTicket = ticket;
+                editticket_vscroll.Children.Clear();
+
+                if (ticket == null || ticket.chats == null)
+                {
+                    return;
+                }
+
+                // Sortiere Nachrichten nach Datum
+                var sortedMessages = ticket.chats
+                    .OrderBy(m => m.GetDateTime())
+                    .ToList();
+
+                foreach (var message in sortedMessages)
+                {
+                    AddChatMessageToUI(message);
+                }
+
+                // Scrolle zum Ende (neueste Nachricht)
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    await Task.Delay(100);
+                    if (chatScrollView != null)
+                    {
+                        await chatScrollView.ScrollToAsync(0, chatScrollView.ContentSize.Height, false);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: LoadTicketChat");
+            }
+        }
+
+        /// <summary>
+        /// Fügt eine Chat-Nachricht zur UI hinzu
+        /// </summary>
+        private void AddChatMessageToUI(TicketChat message)
+        {
+            try
+            {
+                // Bestimme ob die Nachricht vom aktuellen Benutzer ist
+                int currentUserId = AppModel.Instance?.Person?.id ?? 0;
+                bool isOwnMessage = message.personid == currentUserId;
+
+                // Chat-Bubble Container
+                var messageContainer = new Grid
+                {
+                    Margin = new Thickness(0, 0, 0, 8),
+                    HorizontalOptions = isOwnMessage ? LayoutOptions.End : LayoutOptions.Start,
+                    WidthRequest = screenWidthDp * 0.75
+                };
+
+                // Chat-Bubble
+                var messageBubble = new Border
+                {
+                    Padding = new Thickness(12, 8),
+                    BackgroundColor = isOwnMessage ? Color.FromArgb("#DCF8C6") : Color.FromArgb("#FFFFFF"),
+                    StrokeThickness = 0,
+                    StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle
+                    {
+                        CornerRadius = new CornerRadius(
+                            isOwnMessage ? 15 : 2,
+                            isOwnMessage ? 2 : 15,
+                            isOwnMessage ? 2 : 15,
+                            15
+                        )
+                    },
+                    Shadow = new Shadow
+                    {
+                        Brush = Colors.Black,
+                        Opacity = 0.1f,
+                        Radius = 4,
+                        Offset = new Point(0, 1)
+                    }
+                };
+
+                var messageContent = new VerticalStackLayout
+                {
+                    Spacing = 4
+                };
+
+                // Absender Name (nur bei fremden Nachrichten)
+                if (!isOwnMessage)
+                {
+                    messageContent.Children.Add(new Label
+                    {
+                        Text = message.personname,
+                        FontSize = 12,
+                        FontAttributes = FontAttributes.Bold,
+                        TextColor = Color.FromArgb("#075E54")
+                    });
+                }
+
+                // Nachrichtentext
+                messageContent.Children.Add(new Label
+                {
+                    Text = message.t,
+                    FontSize = 15,
+                    TextColor = Color.FromArgb("#000000"),
+                    LineBreakMode = LineBreakMode.WordWrap
+                });
+
+                // Zeit
+                var timeLabel = new Label
+                {
+                    Text = message.GetFormattedTime(),
+                    FontSize = 11,
+                    TextColor = Color.FromArgb("#667781"),
+                    HorizontalOptions = LayoutOptions.End,
+                    Margin = new Thickness(0, 2, 0, 0)
+                };
+
+                messageContent.Children.Add(timeLabel);
+
+                messageBubble.Content = messageContent;
+                messageContainer.Children.Add(messageBubble);
+
+                editticket_vscroll.Children.Add(messageContainer);
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: AddChatMessageToUI");
+            }
+        }
+
+        /// <summary>
+        /// Event Handler für das Senden einer neuen Nachricht
+        /// </summary>
+        private async void OnSendTicketMessage_Clicked(object sender, EventArgs e)
+        {
+            try
+            {
+                if (currentTicket == null)
+                {
+                    await DisplayAlertAsync("Fehler", "Kein Ticket ausgewählt", "OK");
+                    return;
+                }
+
+                string messageText = ticketMessageEditor?.Text?.Trim();
+
+                if (string.IsNullOrWhiteSpace(messageText))
+                {
+                    return;
+                }
+
+                // Hole aktuelle Benutzer-ID und Name
+                int currentUserId = AppModel.Instance?.Person?.id ?? 0;
+                string currentUserName = !string.IsNullOrEmpty(AppModel.Instance?.Person?.name)
+                    ? $"{AppModel.Instance.Person.vorname} {AppModel.Instance.Person.name}".Trim()
+                    : AppModel.Instance?.SettingModel?.SettingDTO?.LoginName ?? "Unbekannt";
+
+                // Füge Nachricht zum Ticket hinzu
+                currentTicket.AddChatMessage(currentUserId, currentUserName, messageText, "info", true);
+
+                // Speichere Ticket
+                Ticket.Save(currentTicket);
+
+                // Füge Nachricht zur UI hinzu
+                var newMessage = currentTicket.chats.Last();
+                AddChatMessageToUI(newMessage);
+
+                // Leere Editor
+                if (ticketMessageEditor != null)
+                {
+                    ticketMessageEditor.Text = string.Empty;
+                }
+
+                // Scrolle zum Ende
+                await Task.Delay(100);
+                if (chatScrollView != null)
+                {
+                    await chatScrollView.ScrollToAsync(0, chatScrollView.ContentSize.Height, false);
+                }
+
+                // Verstecke Tastatur
+                if (ticketMessageEditor != null)
+                {
+                    await ticketMessageEditor.HideKeyboardAsync(CancellationToken.None);
+                }
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: OnSendTicketMessage_Clicked");
+                await DisplayAlertAsync("Fehler", "Nachricht konnte nicht gesendet werden", "OK");
+            }
+        }
+
+        #endregion
+
+
+
+
+
+
+
         public void btn_PlanTabCeTapped(object sender, EventArgs e)
         {
             frame_plantabCe.Margin = new Thickness(0, -8, 2, 0);
@@ -7941,39 +8546,39 @@ namespace iPMCloud.Mobile
         {
             try
             {
-                    popupContainer.IsVisible = true;
-                    popupContainer_count.Text = "SYNCHRONISATION (0%)";
-                    await Task.Delay(1);
+                popupContainer.IsVisible = true;
+                popupContainer_count.Text = "SYNCHRONISATION (0%)";
+                await Task.Delay(1);
 
-                    // Get or initialize the background sync service
-                    if (_backgroundSyncService == null)
+                // Get or initialize the background sync service
+                if (_backgroundSyncService == null)
+                {
+                    try
                     {
-                        try
-                        {
-                            _backgroundSyncService = IPlatformApplication.Current?.Services?.GetService<iPMCloud.Mobile.Services.IBackgroundSyncService>();
-                        }
-                        catch (Exception ex)
-                        {
-                            AppModel.Logger?.Warn($"Could not resolve IBackgroundSyncService: {ex.Message}");
-                        }
+                        _backgroundSyncService = IPlatformApplication.Current?.Services?.GetService<iPMCloud.Mobile.Services.IBackgroundSyncService>();
                     }
-
-                    // Always unsubscribe before subscribing to prevent duplicate registrations
-                    iPMCloud.Mobile.Services.SyncCoordinator.ProgressChanged -= OnSyncProgress;
-                    iPMCloud.Mobile.Services.SyncCoordinator.SyncCompleted -= OnSyncCompleted;
-                    iPMCloud.Mobile.Services.SyncCoordinator.ProgressChanged += OnSyncProgress;
-                    iPMCloud.Mobile.Services.SyncCoordinator.SyncCompleted += OnSyncCompleted;
-
-                    // Start background protection and sync
-                    bool protectionStarted = false;
-                    if (_backgroundSyncService != null)
+                    catch (Exception ex)
                     {
-                        protectionStarted = await _backgroundSyncService.StartSyncProtectionAsync();
-                        AppModel.Logger?.Info($"Background sync protection started: {protectionStarted}");
+                        AppModel.Logger?.Warn($"Could not resolve IBackgroundSyncService: {ex.Message}");
                     }
+                }
 
-                    // On Android, the ForegroundService handles the sync.
-                    // On iOS/other platforms, we run it here with IdleTimer disabled.
+                // Always unsubscribe before subscribing to prevent duplicate registrations
+                iPMCloud.Mobile.Services.SyncCoordinator.ProgressChanged -= OnSyncProgress;
+                iPMCloud.Mobile.Services.SyncCoordinator.SyncCompleted -= OnSyncCompleted;
+                iPMCloud.Mobile.Services.SyncCoordinator.ProgressChanged += OnSyncProgress;
+                iPMCloud.Mobile.Services.SyncCoordinator.SyncCompleted += OnSyncCompleted;
+
+                // Start background protection and sync
+                bool protectionStarted = false;
+                if (_backgroundSyncService != null)
+                {
+                    protectionStarted = await _backgroundSyncService.StartSyncProtectionAsync();
+                    AppModel.Logger?.Info($"Background sync protection started: {protectionStarted}");
+                }
+
+                // On Android, the ForegroundService handles the sync.
+                // On iOS/other platforms, we run it here with IdleTimer disabled.
 #if !ANDROID
                     // iOS and other platforms: run sync here with background protection (IdleTimer disabled)
                     Task.Run(() => iPMCloud.Mobile.Services.SyncCoordinator.Instance.RunAsync())
@@ -7983,11 +8588,11 @@ namespace iPMCloud.Mobile
                                 AppModel.Logger.Error("SyncBuildingManuell Task faulted: " + t.Exception?.GetBaseException()?.Message);
                         }, TaskContinuationOptions.OnlyOnFaulted);
 #else
-                    // Android: Sync is handled by SyncForegroundService (already started above)
-                    // Do not start sync here to avoid duplicate execution
-                    AppModel.Logger?.Info("Android: Sync delegated to SyncForegroundService");
+                // Android: Sync is handled by SyncForegroundService (already started above)
+                // Do not start sync here to avoid duplicate execution
+                AppModel.Logger?.Info("Android: Sync delegated to SyncForegroundService");
 #endif
-                
+
             }
             catch (Exception ex)
             {
@@ -8085,9 +8690,9 @@ namespace iPMCloud.Mobile
                     }
                     catch { }
                 }
-                finally 
-                { 
-                    __isFirstInit = false; 
+                finally
+                {
+                    __isFirstInit = false;
                 }
             });
         }
@@ -8269,7 +8874,7 @@ namespace iPMCloud.Mobile
                         bool isLeistungen = false;
                         foreach (var auf in b.ArrayOfAuftrag)
                         {
-                            if(auf.kategorien != null && auf.kategorien.Count > 0)
+                            if (auf.kategorien != null && auf.kategorien.Count > 0)
                             {
                                 isKategories = true;
                                 auf.kategorien.ForEach(k =>
@@ -8296,7 +8901,7 @@ namespace iPMCloud.Mobile
                         }
                         else
                         {
-                            if(isKategories)
+                            if (isKategories)
                             {
                                 AppModel.Logger.Warn("WARN: FastSync - Aufträge ohne Leistungen: Objekt:" + b.id + " " +
                                     b.plz + " " + b.ort + " - " + b.strasse + " " + b.hsnr);
@@ -8310,7 +8915,7 @@ namespace iPMCloud.Mobile
                     }
                     else
                     {
-                        AppModel.Logger.Warn("WARN: FastSync - Objekt gelöscht oder keine Aufträge vorhanden: " + b.id + " " + 
+                        AppModel.Logger.Warn("WARN: FastSync - Objekt gelöscht oder keine Aufträge vorhanden: " + b.id + " " +
                             b.plz + " " + b.ort + " - " + b.strasse + " " + b.hsnr);
                         BuildingWSO.DeleteBuilding(b.id);
                         AppModel.Instance.AllBuildings.Remove(b);
@@ -9490,6 +10095,7 @@ namespace iPMCloud.Mobile
             2 => "muell_in_out_x2_img.png",
             _ => "muell_in_out_x.png"
         };
+
 
     }
 

@@ -1260,16 +1260,17 @@
                             <AbsoluteLayout
                                 x:Name="frame_plantabC_badge"
                                 Grid.Column="1"
-                                Margin="-7,-1,-4,0"
+                                Margin="-5,-1,-4,0"
                                 AbsoluteLayout.LayoutBounds="0,0,1,1"
                                 AbsoluteLayout.LayoutFlags="None"
-                                BackgroundColor="Transparent"
-                                IsVisible="False">
+                                BackgroundColor="Transparent"                                
+                                IsVisible="True">
+                                <VerticalStackLayout>
                                 <Border
                                     x:Name="frame_plantabC_badge_col"
                                     Margin="0"
                                     Padding="2"
-                                    BackgroundColor="#ff0000"
+                                    BackgroundColor="#009900"
                                     HeightRequest="15"
                                     HorizontalOptions="Start"
                                     StrokeShape="RoundRectangle 10"
@@ -1285,6 +1286,27 @@
                                         TextColor="#ffffff"
                                         VerticalOptions="Center" />
                                 </Border>
+                                <Border
+                                    x:Name="frame_plantabC_badge_col2"
+                                    Margin="0"
+                                    Padding="2"
+                                    BackgroundColor="#ff0000"
+                                    HeightRequest="15"
+                                    HorizontalOptions="Start"
+                                    StrokeShape="RoundRectangle 10"
+                                    VerticalOptions="Start">
+                                    <Label
+                                        x:Name="frame_plantabC_badge_count2"
+                                        Margin="0,-2,0,0"
+                                        Padding="0"
+                                        FontSize="9"
+                                        HorizontalOptions="Center"
+                                        HorizontalTextAlignment="Center"
+                                        Text="1"
+                                        TextColor="#ffffff"
+                                        VerticalOptions="Center" />
+                                    </Border>
+                                </VerticalStackLayout>
                             </AbsoluteLayout>
                         </Grid>
                     </Border>
@@ -2484,30 +2506,15 @@
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
 
-                                <HorizontalStackLayout
+                                <Button
                                     Grid.Row="0"
-                                    Margin="0,0,5,0"
-                                    Padding="5,0,5,5"
-                                    HorizontalOptions="Fill"
-                                    Spacing="0"
-                                    VerticalOptions="Fill">
-                                    <Image
-                                        Margin="5,5,0,0"
-                                        HeightRequest="18"
-                                        HorizontalOptions="Center"
-                                        Source="refresh2_img.png"
-                                        VerticalOptions="Center"
-                                        WidthRequest="18" />
-                                    <Label
-                                        x:Name="frame_planConC_reload_text"
-                                        Margin="3,3,5,0"
-                                        Padding="0,2,2,0"
-                                        FontSize="15"
-                                        HorizontalOptions="Center"
-                                        Text="Neu laden"
-                                        TextColor="#ffffff"
-                                        VerticalOptions="Center" />
-                                </HorizontalStackLayout>
+                                    Text="Neu laden" TextColor="#fff"
+                                    ImageSource="refresh2_img.png"
+                                    ContentLayout="Left,10"                                    
+                                    FontSize="15" 
+                                    Clicked="touch_ReloadTickets"
+                                    />
+                                
                             </Grid>
 
                             <Border
@@ -5738,6 +5745,12 @@
                     HorizontalOptions="Fill"
                     VerticalOptions="Start" />
 
+                <!--  Ticket Info Karte (dynamisch gefüllt)  -->
+                <StackLayout
+                            Grid.Row="1"
+                            x:Name="ticket_info_container"
+                            Padding="5"
+                            Spacing="0" />
                 <!--  Tab Navigation  -->
                 <Grid
                     Grid.Row="2"
@@ -5809,8 +5822,11 @@
                         x:Name="beschreibung_tab_content"
                         Grid.Row="0"
                         IsVisible="True"
-                        VerticalOptions="Fill">
-                        <ScrollView VerticalOptions="Fill">
+                        VerticalOptions="Fill"
+                        RowDefinitions="Auto,*">
+                        <ScrollView 
+                            Grid.Row="1" 
+                            VerticalOptions="Fill">
                             <!--  Beschreibung WebView  -->
                             <WebView
                                 x:Name="ticket_beschreibung_webview"                                
@@ -5828,11 +5844,6 @@
                             Padding="0"
                             BackgroundColor="#345"
                             Spacing="0">
-                            <!--  Ticket Info Karte (dynamisch gefüllt)  -->
-                            <StackLayout
-                                x:Name="ticket_info_container"
-                                Padding="5"
-                                Spacing="0" />
                             <!--  Details Container (dynamisch gefüllt im Code)  -->
                             <StackLayout
                                 x:Name="objekt_auftrag_content"

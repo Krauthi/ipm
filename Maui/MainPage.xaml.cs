@@ -4163,9 +4163,6 @@ namespace iPMCloud.Mobile
 
                     }
 
-                    frame_plantabC_badge_col.BackgroundColor = Color.FromArgb("#009900");
-                    frame_plantabC_badge_count.Text = "0";
-                    frame_plantabC_badge.IsVisible = true;
 
                     //await Task.Delay(1);
                     //frame_planListAb.WidthRequest = tabContentWidth;
@@ -4900,9 +4897,16 @@ namespace iPMCloud.Mobile
             await LoadAndDisplayTicketsAsync();
         }
 
-        #region Ticket Chat Methods
+        public async void touch_ReloadTickets(object o, EventArgs e)
+        {
+            overlay.IsVisible = true;
+            await Task.Delay(1);
+            await Ticket.LoadTicketsFromBackendAsync();
+            await LoadAndDisplayTicketsAsync();
 
-
+            await Task.Delay(1);
+            overlay.IsVisible = false;
+        }
         private async Task LoadAndDisplayTicketsAsync()
         {
             try
@@ -4992,9 +4996,20 @@ namespace iPMCloud.Mobile
         {
             try
             {
-                if (count > 0)
+                // Badge 1: Offene Tickets mit Prio Gering (0) und Normal (1)
+                int normalCount = AppModel.Instance.TicketResponse?.tickets?
+                    .Where(t => t.status == 2 && (t.prio == 0 || t.prio == 1))
+                    .Count() ?? 0;
+
+                // Badge 2: Offene mit Prio Hoch (2) und Notfall (3+) sowie In Arbeit (Status 4)
+                int urgentCount = AppModel.Instance.TicketResponse?.tickets?
+                    .Where(t => (t.status == 2 && (t.prio == 2 || t.prio >= 3)) || t.status == 4)
+                    .Count() ?? 0;
+
+                // Badge 1 (Normal-Prio) aktualisieren
+                if (normalCount > 0)
                 {
-                    frame_plantabC_badge_count.Text = count > 99 ? "99+" : count.ToString();
+                    frame_plantabC_badge_count.Text = normalCount > 99 ? "99+" : normalCount.ToString();
                     if (frame_plantabC_badge_count.Parent is VisualElement badgeContainer)
                     {
                         badgeContainer.IsVisible = true;
@@ -5006,6 +5021,27 @@ namespace iPMCloud.Mobile
                     if (frame_plantabC_badge_count.Parent is VisualElement badgeContainer)
                     {
                         badgeContainer.IsVisible = false;
+                    }
+                }
+
+                // Badge 2 (Dringend) aktualisieren
+                if (frame_plantabC_badge_count2 != null)
+                {
+                    if (urgentCount > 0)
+                    {
+                        frame_plantabC_badge_count2.Text = urgentCount > 99 ? "99+" : urgentCount.ToString();
+                        if (frame_plantabC_badge_count2.Parent is VisualElement badgeContainer2)
+                        {
+                            badgeContainer2.IsVisible = true;
+                        }
+                    }
+                    else
+                    {
+                        frame_plantabC_badge_count2.Text = "0";
+                        if (frame_plantabC_badge_count2.Parent is VisualElement badgeContainer2)
+                        {
+                            badgeContainer2.IsVisible = false;
+                        }
                     }
                 }
             }
@@ -5084,7 +5120,7 @@ namespace iPMCloud.Mobile
                     new RowDefinition { Height = GridLength.Auto }, // Titel
                     new RowDefinition { Height = GridLength.Auto }, // Beschreibung (optional)
                     new RowDefinition { Height = GridLength.Auto }, // Info (Zeit, Prio, Chat)
-                    new RowDefinition { Height = GridLength.Auto }  // Start/End
+                    new RowDefinition { Height = GridLength.Auto }  // Status + Start/End
                 }
             };
 
@@ -5103,14 +5139,15 @@ namespace iPMCloud.Mobile
                 }
             };
             grid.Add(statusIndicator, 0, 0);
-            Grid.SetRowSpan(statusIndicator, 4);
+            Grid.SetRowSpan(statusIndicator, 4); // Über alle 4 Zeilen
 
             // Titel-Zeile mit ID vorne
             var titleStack = new HorizontalStackLayout
             {
                 Margin = new Thickness(12, 8, 8, 2),
                 Spacing = 8,
-                VerticalOptions = LayoutOptions.Center
+                VerticalOptions = LayoutOptions.Center,
+                HorizontalOptions = LayoutOptions.FillAndExpand
             };
 
             // Ticket-ID Badge (blauer abgerundeter Hintergrund vor dem Titel)
@@ -5140,8 +5177,9 @@ namespace iPMCloud.Mobile
                 TextColor = Color.FromArgb("#ffffff"),
                 LineBreakMode = LineBreakMode.TailTruncation,
                 MaxLines = 1,
+                WidthRequest = screenWidthDp - 150,
                 VerticalOptions = LayoutOptions.Center,
-                HorizontalOptions = LayoutOptions.FillAndExpand
+                HorizontalOptions = LayoutOptions.Start
             };
             titleStack.Children.Add(titleLabel);
 
@@ -5260,74 +5298,155 @@ namespace iPMCloud.Mobile
                 grid.Add(chatBadge, 1, 2);
             }
 
-            // Start/End-Zeile
-            var datesStack = new HorizontalStackLayout
+            // Zeile 3: Status-Chip und Start/End-Zeiten
+            var statusAndDatesStack = new HorizontalStackLayout
             {
                 Margin = new Thickness(12, 2, 8, 8),
-                Spacing = 15
+                Spacing = 10
             };
 
-            // Start-Datum/Status
-            if (!string.IsNullOrEmpty(ticket.start))
+            // Status-Chip links
+            var statusChip = new Border
             {
-                string startText = "";
-                if (long.TryParse(ticket.start, out long startValue))
+                BackgroundColor = Color.FromArgb(statusColor),
+                Padding = new Thickness(8, 4),
+                HorizontalOptions = LayoutOptions.Start,
+                VerticalOptions = LayoutOptions.Start,
+                StrokeThickness = 0,
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(4) },
+                Content = new Label
                 {
-                    if (startValue == 0)
+                    Text = GetStatusText(ticket.status),
+                    FontSize = 10,
+                    TextColor = Color.FromArgb("#ffffff"),
+                    FontAttributes = FontAttributes.Bold
+                }
+            };
+            statusAndDatesStack.Children.Add(statusChip);
+
+            // Start/End-Zeiten vertikal
+            var datesStack = new VerticalStackLayout
+            {
+                Spacing = 5
+            };
+
+            // Start-Datum/Status (basierend auf ticket.startab)
+            if (!string.IsNullOrEmpty(ticket.startab))
+            {
+                string startValueText = "";
+                DateTime? startDateTime = null;
+
+                if (ticket.startab == "0")
+                {
+                    startValueText = "Ohne Angaben";
+                }
+                else if (ticket.startab == "-1")
+                {
+                    startValueText = "SOFORT";
+                }
+                else
+                {
+                    // Datum aus ticket.startab verwenden (UTC -> Lokalzeit)
+                    if (long.TryParse(ticket.startab, out long startValue) && startValue > 0)
                     {
-                        startText = "Start: OHNE ANGABE";
-                    }
-                    else if (startValue == -1)
-                    {
-                        startText = "Start: SOFORT";
-                    }
-                    else if (startValue > 0)
-                    {
-                        DateTime startDate = DateTimeOffset.FromUnixTimeMilliseconds(startValue).DateTime;
-                        startText = $"Start: {startDate:dd.MM.yyyy HH:mm}";
+                        startDateTime = DateTimeOffset.FromUnixTimeMilliseconds(startValue).ToLocalTime().DateTime;
+                        startValueText = $"{startDateTime.Value:dd.MM.yyyy HH:mm}";
                     }
                 }
 
-                if (!string.IsNullOrEmpty(startText))
+                if (!string.IsNullOrEmpty(startValueText))
                 {
+                    var startRowStack = new HorizontalStackLayout
+                    {
+                        Spacing = 8
+                    };
+
                     var startLabel = new Label
                     {
-                        Text = startText,
                         FontSize = 10,
-                        TextColor = Color.FromArgb("#aaaaaa")
+                        FormattedText = new FormattedString
+                        {
+                            Spans =
+                            {
+                                new Span { Text = "START: ", TextColor = Color.FromArgb("#ffffff"), FontAttributes = FontAttributes.Bold },
+                                new Span { Text = startValueText, TextColor = Color.FromArgb("#ffcc00") }
+                            }
+                        }
                     };
-                    datesStack.Children.Add(startLabel);
+                    startRowStack.Children.Add(startLabel);
+
+                    // Countdown bis zum Start (wenn in der Zukunft)
+                    if (startDateTime.HasValue && startDateTime.Value > DateTime.Now)
+                    {
+                        var timeSpan = startDateTime.Value - DateTime.Now;
+                        string countdownText = "";
+
+                        if (timeSpan.TotalDays >= 1)
+                        {
+                            countdownText = $"(in {(int)timeSpan.TotalDays} Tag{(timeSpan.TotalDays >= 2 ? "en" : "")})";
+                        }
+                        else if (timeSpan.TotalHours >= 1)
+                        {
+                            countdownText = $"(in {(int)timeSpan.TotalHours} Std.)";
+                        }
+                        else if (timeSpan.TotalMinutes >= 1)
+                        {
+                            countdownText = $"(in {(int)timeSpan.TotalMinutes} Min.)";
+                        }
+
+                        if (!string.IsNullOrEmpty(countdownText))
+                        {
+                            var countdownLabel = new Label
+                            {
+                                Text = countdownText,
+                                FontSize = 9,
+                                TextColor = Color.FromArgb("#88ff88"),
+                                VerticalOptions = LayoutOptions.Center
+                            };
+                            startRowStack.Children.Add(countdownLabel);
+                        }
+                    }
+
+                    datesStack.Children.Add(startRowStack);
                 }
             }
 
-            // End-Datum/Status
-            if (!string.IsNullOrEmpty(ticket.end))
+            // End-Datum/Status (basierend auf ticket.endbis)
+            if (!string.IsNullOrEmpty(ticket.endbis))
             {
-                string endText = "";
-                if (long.TryParse(ticket.end, out long endValue))
+                string endValueText = "";
+
+                if (ticket.endbis == "0")
                 {
-                    if (endValue == 0)
+                    endValueText = "Ohne Angaben";
+                }
+                else if (ticket.endbis == "-1")
+                {
+                    endValueText = "SOFORT";
+                }
+                else 
+                {
+                    // Datum aus ticket.endbis verwenden (UTC -> Lokalzeit)
+                    if (long.TryParse(ticket.endbis, out long endValue) && endValue > 0)
                     {
-                        endText = "Ende: OHNE ANGABE";
-                    }
-                    else if (endValue == -1)
-                    {
-                        endText = "Ende: SOFORT";
-                    }
-                    else if (endValue > 0)
-                    {
-                        DateTime endDate = DateTimeOffset.FromUnixTimeMilliseconds(endValue).DateTime;
-                        endText = $"Ende: {endDate:dd.MM.yyyy HH:mm}";
+                        DateTime endDate = DateTimeOffset.FromUnixTimeMilliseconds(endValue).ToLocalTime().DateTime;
+                        endValueText = $"{endDate:dd.MM.yyyy HH:mm}";
                     }
                 }
 
-                if (!string.IsNullOrEmpty(endText))
+                if (!string.IsNullOrEmpty(endValueText))
                 {
                     var endLabel = new Label
                     {
-                        Text = endText,
                         FontSize = 10,
-                        TextColor = Color.FromArgb("#aaaaaa")
+                        FormattedText = new FormattedString
+                        {
+                            Spans =
+                            {
+                                new Span { Text = "ENDE: ", TextColor = Color.FromArgb("#ffffff"), FontAttributes = FontAttributes.Bold },
+                                new Span { Text = endValueText, TextColor = Color.FromArgb("#ffcc00") }
+                            }
+                        }
                     };
                     datesStack.Children.Add(endLabel);
                 }
@@ -5336,8 +5455,14 @@ namespace iPMCloud.Mobile
             // Nur hinzufügen, wenn mindestens ein Datum vorhanden ist
             if (datesStack.Children.Count > 0)
             {
-                grid.Add(datesStack, 1, 3);
-                Grid.SetColumnSpan(datesStack, 2);
+                statusAndDatesStack.Children.Add(datesStack);
+            }
+
+            // Nur hinzufügen, wenn Status oder Daten vorhanden sind
+            if (statusAndDatesStack.Children.Count > 0)
+            {
+                grid.Add(statusAndDatesStack, 1, 3);
+                Grid.SetColumnSpan(statusAndDatesStack, 2);
             }
 
             border.Content = grid;
@@ -5697,22 +5822,23 @@ namespace iPMCloud.Mobile
                     BackgroundColor = Color.FromArgb("#2a2a2a"),
                     StrokeThickness = 1,
                     Stroke = Color.FromArgb("#444444"),
-                    StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(8) }
+                    StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(5) }
                 };
 
-                var mainGrid = new Grid
+                var grid = new Grid
                 {
                     ColumnDefinitions = new ColumnDefinitionCollection
                     {
-                        new ColumnDefinition { Width = GridLength.Auto }, // Status-Indikator
+                        new ColumnDefinition { Width = GridLength.Auto }, // Status-Indikator (6px)
                         new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }, // Content
-                        new ColumnDefinition { Width = GridLength.Auto } // ID Badge
+                        new ColumnDefinition { Width = GridLength.Auto } // Rechte Spalte (Prio/Zeit)
                     },
                     RowDefinitions = new RowDefinitionCollection
                     {
-                        new RowDefinition { Height = GridLength.Auto },
-                        new RowDefinition { Height = GridLength.Auto },
-                        new RowDefinition { Height = GridLength.Auto }
+                        new RowDefinition { Height = GridLength.Auto }, // Titel
+                        new RowDefinition { Height = GridLength.Auto }, // Info (Chat-Badge optional)
+                        new RowDefinition { Height = GridLength.Auto }, // Start/End
+                        new RowDefinition { Height = GridLength.Auto }  // Status
                     }
                 };
 
@@ -5727,58 +5853,65 @@ namespace iPMCloud.Mobile
                     StrokeThickness = 0,
                     StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle 
                     { 
-                        CornerRadius = new CornerRadius(8, 0, 0, 8) // Nur linke Ecken abgerundet (passend zu Border CornerRadius 8)
+                        CornerRadius = new CornerRadius(5, 0, 0, 5) // Nur linke Ecken abgerundet
                     }
                 };
-                mainGrid.Add(statusIndicator, 0, 0);
-                Grid.SetRowSpan(statusIndicator, 3);
+                grid.Add(statusIndicator, 0, 0);
+                Grid.SetRowSpan(statusIndicator, 4);
 
-                // Titel + Ticket-ID
+                // Titel-Zeile mit ID vorne
                 var titleStack = new HorizontalStackLayout
                 {
+                    Margin = new Thickness(12, 8, 8, 2),
                     Spacing = 8,
-                    Margin = new Thickness(12, 12, 12, 5)
-                };
-
-                var titleLabel = new Label
-                {
-                    Text = ticket.titel ?? "Ohne Titel",
-                    FontSize = 16,
-                    FontAttributes = FontAttributes.Bold,
-                    TextColor = Color.FromArgb("#ffffff"),
-                    LineBreakMode = LineBreakMode.WordWrap,
                     VerticalOptions = LayoutOptions.Center
                 };
-                titleStack.Children.Add(titleLabel);
 
-                mainGrid.Add(titleStack, 1, 0);
-
-                // Ticket-ID Badge (oben rechts)
+                // Ticket-ID Badge (blauer abgerundeter Hintergrund vor dem Titel)
                 var idBadge = new Border
                 {
                     BackgroundColor = Color.FromArgb("#0078d7"),
-                    Padding = new Thickness(8, 4),
-                    StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(12) },
+                    Padding = new Thickness(6, 3),
+                    StrokeThickness = 0,
+                    StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(10) },
                     VerticalOptions = LayoutOptions.Center,
-                    Margin = new Thickness(0, 12, 12, 0),
                     Content = new Label
                     {
                         Text = $"#{ticket.id}",
-                        FontSize = 12,
+                        FontSize = 11,
                         TextColor = Color.FromArgb("#ffffff"),
                         FontAttributes = FontAttributes.Bold
                     }
                 };
-                mainGrid.Add(idBadge, 2, 0);
+                titleStack.Children.Add(idBadge);
 
-                // Info-Zeile (Priorität + Zeit)
-                var infoStack = new HorizontalStackLayout
+                // Titel
+                var titleLabel = new Label
                 {
-                    Margin = new Thickness(12, 5, 12, 5),
-                    Spacing = 10
+                    Text = ticket.titel ?? "Ohne Titel",
+                    FontSize = 14,
+                    FontAttributes = FontAttributes.Bold,
+                    TextColor = Color.FromArgb("#ffffff"),
+                    LineBreakMode = LineBreakMode.TailTruncation,
+                    MaxLines = 2,
+                    WidthRequest = screenWidthDp - 150,
+                    VerticalOptions = LayoutOptions.Center,
+                    HorizontalOptions = LayoutOptions.Start
+                };
+                titleStack.Children.Add(titleLabel);
+
+                grid.Add(titleStack, 1, 0);
+
+                // Rechte Spalte: Prio oben, Zeit darunter
+                var rightStack = new VerticalStackLayout
+                {
+                    Margin = new Thickness(0, 8, 8, 0),
+                    Spacing = 5,
+                    HorizontalOptions = LayoutOptions.End,
+                    VerticalOptions = LayoutOptions.Start
                 };
 
-                // Priorität
+                // Priorität als Chip darstellen
                 if (ticket.prio >= 0)
                 {
                     string prioText;
@@ -5813,48 +5946,205 @@ namespace iPMCloud.Mobile
                     var prioChip = new Border
                     {
                         BackgroundColor = Color.FromArgb(prioBackgroundColor),
-                        Padding = new Thickness(10, 5),
+                        Padding = new Thickness(8, 4),
                         StrokeThickness = 0,
                         StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(4) },
+                        HorizontalOptions = LayoutOptions.End,
                         Content = new Label
                         {
                             Text = prioText,
-                            FontSize = 12,
+                            FontSize = 11,
                             TextColor = Color.FromArgb(prioTextColor),
                             FontAttributes = FontAttributes.Bold,
                             HorizontalOptions = LayoutOptions.Center,
                             VerticalOptions = LayoutOptions.Center
                         }
                     };
-                    infoStack.Children.Add(prioChip);
+                    rightStack.Children.Add(prioChip);
                 }
 
-                // Zeitstempel
+                // Zeitstempel unter der Prio
                 DateTime.TryParse(ticket.updateat, out DateTime updateDate);
                 var timeLabel = new Label
                 {
                     Text = FormatTicketTime(updateDate),
-                    FontSize = 11,
+                    FontSize = 10,
                     TextColor = Color.FromArgb("#888888"),
-                    VerticalOptions = LayoutOptions.Center
+                    HorizontalOptions = LayoutOptions.End
                 };
-                infoStack.Children.Add(timeLabel);
+                rightStack.Children.Add(timeLabel);
 
-                mainGrid.Add(infoStack, 1, 1);
-                Grid.SetColumnSpan(infoStack, 2);
+                grid.Add(rightStack, 2, 0);
+                Grid.SetRowSpan(rightStack, 2);
 
-                // Status-Text
-                var statusLabel = new Label
+                // Zeile 2: Status-Chip und Start/End-Zeiten
+                var statusAndDatesStack = new HorizontalStackLayout
                 {
-                    Text = $"Status: {GetStatusText(ticket.status)}",
-                    FontSize = 12,
-                    TextColor = Color.FromArgb("#aaaaaa"),
-                    Margin = new Thickness(12, 5, 12, 12)
+                    Margin = new Thickness(12, 0, 8, 8),
+                    Spacing = 10
                 };
-                mainGrid.Add(statusLabel, 1, 2);
-                Grid.SetColumnSpan(statusLabel, 2);
 
-                border.Content = mainGrid;
+                // Status-Chip links
+                var statusChip = new Border
+                {
+                    BackgroundColor = Color.FromArgb(statusColor),
+                    Padding = new Thickness(8, 4),
+                    HorizontalOptions = LayoutOptions.Start,
+                    VerticalOptions = LayoutOptions.Start,
+                    StrokeThickness = 0,
+                    StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(4) },
+                    Content = new Label
+                    {
+                        Text = GetStatusText(ticket.status),
+                        FontSize = 10,
+                        TextColor = Color.FromArgb("#ffffff"),
+                        FontAttributes = FontAttributes.Bold
+                    }
+                };
+                statusAndDatesStack.Children.Add(statusChip);
+
+                // Start/End-Zeiten vertikal
+                var datesStack = new VerticalStackLayout
+                {
+                    Spacing = 5
+                };
+
+                // Start-Datum/Status (basierend auf ticket.startab)
+                if (!string.IsNullOrEmpty(ticket.startab))
+                {
+                    string startValueText = "";
+                    DateTime? startDateTime = null;
+
+                    if (ticket.startab == "0")
+                    {
+                        startValueText = "Ohne Angaben";
+                    }
+                    else if (ticket.startab == "-1")
+                    {
+                        startValueText = "SOFORT";
+                    }
+                    else
+                    {
+                        // Datum aus ticket.startab verwenden (UTC -> Lokalzeit)
+                        if (long.TryParse(ticket.startab, out long startValue) && startValue > 0)
+                        {
+                            startDateTime = DateTimeOffset.FromUnixTimeMilliseconds(startValue).ToLocalTime().DateTime;
+                            startValueText = $"{startDateTime.Value:dd.MM.yyyy HH:mm}";
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(startValueText))
+                    {
+                        var startRowStack = new HorizontalStackLayout
+                        {
+                            Spacing = 8
+                        };
+
+                        var startLabel = new Label
+                        {
+                            FontSize = 10,
+                            FormattedText = new FormattedString
+                            {
+                                Spans =
+                                {
+                                    new Span { Text = "START: ", TextColor = Color.FromArgb("#ffffff"), FontAttributes = FontAttributes.Bold },
+                                    new Span { Text = startValueText, TextColor = Color.FromArgb("#ffcc00") }
+                                }
+                            }
+                        };
+                        startRowStack.Children.Add(startLabel);
+
+                        // Countdown bis zum Start (wenn in der Zukunft)
+                        if (startDateTime.HasValue && startDateTime.Value > DateTime.Now)
+                        {
+                            var timeSpan = startDateTime.Value - DateTime.Now;
+                            string countdownText = "";
+
+                            if (timeSpan.TotalDays >= 1)
+                            {
+                                countdownText = $"(in {(int)timeSpan.TotalDays} Tag{(timeSpan.TotalDays >= 2 ? "en" : "")})";
+                            }
+                            else if (timeSpan.TotalHours >= 1)
+                            {
+                                countdownText = $"(in {(int)timeSpan.TotalHours} Std.)";
+                            }
+                            else if (timeSpan.TotalMinutes >= 1)
+                            {
+                                countdownText = $"(in {(int)timeSpan.TotalMinutes} Min.)";
+                            }
+
+                            if (!string.IsNullOrEmpty(countdownText))
+                            {
+                                var countdownLabel = new Label
+                                {
+                                    Text = countdownText,
+                                    FontSize = 9,
+                                    TextColor = Color.FromArgb("#88ff88"),
+                                    VerticalOptions = LayoutOptions.Center
+                                };
+                                startRowStack.Children.Add(countdownLabel);
+                            }
+                        }
+
+                        datesStack.Children.Add(startRowStack);
+                    }
+                }
+
+                // End-Datum/Status (basierend auf ticket.endbis)
+                if (!string.IsNullOrEmpty(ticket.endbis))
+                {
+                    string endValueText = "";
+
+                    if (ticket.endbis == "0")
+                    {
+                        endValueText = "Ohne Angaben";
+                    }
+                    else if (ticket.endbis == "-1")
+                    {
+                        endValueText = "SOFORT";
+                    }
+                    else 
+                    {
+                        // Datum aus ticket.endbis verwenden (UTC -> Lokalzeit)
+                        if (long.TryParse(ticket.endbis, out long endValue) && endValue > 0)
+                        {
+                            DateTime endDate = DateTimeOffset.FromUnixTimeMilliseconds(endValue).ToLocalTime().DateTime;
+                            endValueText = $"{endDate:dd.MM.yyyy HH:mm}";
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(endValueText))
+                    {
+                        var endLabel = new Label
+                        {
+                            FontSize = 10,
+                            FormattedText = new FormattedString
+                            {
+                                Spans =
+                                {
+                                    new Span { Text = "ENDE: ", TextColor = Color.FromArgb("#ffffff"), FontAttributes = FontAttributes.Bold },
+                                    new Span { Text = endValueText, TextColor = Color.FromArgb("#ffcc00") }
+                                }
+                            }
+                        };
+                        datesStack.Children.Add(endLabel);
+                    }
+                }
+
+                // Nur hinzufügen, wenn mindestens ein Datum vorhanden ist
+                if (datesStack.Children.Count > 0)
+                {
+                    statusAndDatesStack.Children.Add(datesStack);
+                }
+
+                // Nur hinzufügen, wenn Status oder Daten vorhanden sind
+                if (statusAndDatesStack.Children.Count > 0)
+                {
+                    grid.Add(statusAndDatesStack, 1, 2);
+                    Grid.SetColumnSpan(statusAndDatesStack, 2);
+                }
+
+                border.Content = grid;
                 ticket_info_container.Children.Add(border);
             }
             catch (Exception ex)
@@ -6892,7 +7182,6 @@ namespace iPMCloud.Mobile
             }
         }
 
-        #endregion
 
 
 
@@ -9470,10 +9759,13 @@ namespace iPMCloud.Mobile
                 var t_popupContainer_ObjektPlanWeek_Reload = new TapGestureRecognizer();
                 t_popupContainer_ObjektPlanWeek_Reload.Tapped += (object o, TappedEventArgs ev) => { ReloadPlanData(0); };
                 popupContainer_ObjektPlanWeek_Reload.GestureRecognizers.Add(t_popupContainer_ObjektPlanWeek_Reload);
+
                 popupContainer_ObjektPlanWeek_Reload2.GestureRecognizers.Clear();
                 var t_popupContainer_ObjektPlanWeek_Reload2 = new TapGestureRecognizer();
                 t_popupContainer_ObjektPlanWeek_Reload2.Tapped += (object o, TappedEventArgs ev) => { ReloadPlanData(1); };
                 popupContainer_ObjektPlanWeek_Reload2.GestureRecognizers.Add(t_popupContainer_ObjektPlanWeek_Reload2);
+
+
 
 
                 frame_planConCe_LoadAll.GestureRecognizers.Clear();

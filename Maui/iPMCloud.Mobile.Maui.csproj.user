@@ -2,9 +2,9 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <IsFirstTimeProjectOpen>False</IsFirstTimeProjectOpen>
-    <ActiveDebugFramework>net10.0-android</ActiveDebugFramework>
-    <ActiveDebugProfile>Pixel 9 Pro XL - API 36.0 (Android 16.0 - API 36)</ActiveDebugProfile>
-    <SelectedPlatformGroup>Emulator</SelectedPlatformGroup>
+    <ActiveDebugFramework>net10.0-ios</ActiveDebugFramework>
+    <ActiveDebugProfile>iPhone 12 von Markus</ActiveDebugProfile>
+    <SelectedPlatformGroup>RemoteDevice</SelectedPlatformGroup>
     <DefaultDevice>pixel_9_pro_xl_-_api_36_0</DefaultDevice>
     <AndroidDesignerPreferredTheme>Maui.SplashTheme</AndroidDesignerPreferredTheme>
     <TargetiOSDevice>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
@@ -16,9 +16,9 @@
 		&lt;key&gt;architecture&lt;/key&gt;
 		&lt;string&gt;ARMv6, ARMv7, ARMv7s, ARM64&lt;/string&gt;
 		&lt;key&gt;model&lt;/key&gt;
-		&lt;string&gt;iPhone11,6&lt;/string&gt;
+		&lt;string&gt;iPhone13,1&lt;/string&gt;
 		&lt;key&gt;os-version&lt;/key&gt;
-		&lt;string&gt;18.7.9&lt;/string&gt;
+		&lt;string&gt;26.5&lt;/string&gt;
 		&lt;key&gt;os&lt;/key&gt;
 		&lt;string&gt;iOS&lt;/string&gt;
 	&lt;/dict&gt;

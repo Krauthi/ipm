@@ -3,6 +3,7 @@ using Google.Apis.Services;
 using Google.Apis.Translate.v2;
 using Google.Cloud.Translation.V2;
 using iPMCloud.Mobile.Helpers;
+using iPMCloud.Mobile.Interfaces;
 using iPMCloud.Mobile.Views;
 using iPMCloud.Mobile.vo;
 using iPMCloud.Mobile.vo.GlobalObjects;
@@ -1130,7 +1131,7 @@ namespace iPMCloud.Mobile
 
             try
             {
-                if (!MediaPicker.Default.IsCaptureSupported)
+                if (!MediaPicker.IsCaptureSupported)
                 {
                     await DisplayAlertAsync("Fehler", "Kamera nicht verfügbar", "OK");
                     return;
@@ -1147,6 +1148,7 @@ namespace iPMCloud.Mobile
                     MaximumWidth = 1024,
                     SelectionLimit = 3 - zp,
                     PreserveMetaData = true,
+                    RotateImage = true
                 };
 #if !IOS
                 options.RotateImage = true;
@@ -1162,22 +1164,6 @@ namespace iPMCloud.Mobile
                         var reCo = new Command<BildWSO>(RemoveBildInWork_check_bem);
 
                         var photoResponse = await PhotoResize.CreatePhotoResponseAsync(photo);
-
-                        // TODO: Später wieder aktivieren bzw. Testen - dauer zu lange!!
-                        // Building-Text vorbereiten
-                        //string buildingText = null;
-                        //if (AppModel.Instance.LastBuilding == null && _SelectedPosForNotice != null)
-                        //{
-                        //    var bui = BuildingWSO.LoadBuilding(AppModel.Instance, _SelectedPosForNotice.objektid);
-                        //    if (bui != null)
-                        //    {
-                        //        buildingText = $"{bui.plz} {bui.ort} - {bui.strasse} {bui.hsnr}";
-                        //    }
-                        //}
-                        //photoResponse = PhotoUtils.AddInfoToImage(
-                        //    photoResponse,
-                        //    building,
-                        //    customBuildingText);
 
                         long bildName = DateTime.Now.Ticks;
                         var bildWSO = new BildWSO(_SelectedPosForNotice_check_bem.guid)
@@ -1213,26 +1199,6 @@ namespace iPMCloud.Mobile
                             }
                         }
 
-                        /*
-                        await PhotoPickerHelper.PickAndProcessPhotosAsync(
-                            maxPhotos: 3,
-                            photoList: _SelectedPosForNotice_check_bem.bemWSO.photos,
-                            targetStack: noticePhotoStack_check_bem,
-                            parentGuid: _SelectedPosForNotice_check_bem.bemWSO.guid,
-                            removeCommand: new Command<BildWSO>(RemoveBildInWork_check_bem),
-                            building: AppModel.Instance.LastBuilding,
-                            onComplete: () =>
-                            {
-                                // UI Update
-                                if (_SelectedPosForNotice_check_bem.bemWSO?.photos != null)
-                                {
-                                    bool hasSpace = _SelectedPosForNotice_check_bem.bemWSO.photos.Count < 3;
-                                    btn_takePhoto_frame_check_bem.IsVisible = hasSpace;
-                                    btn_takePhotoAttachment_frame_check_bem.IsVisible = hasSpace;
-                                }
-                            }
-                        );
-                        */
                     }
                 }
             }
@@ -1761,6 +1727,10 @@ namespace iPMCloud.Mobile
         private bool __isOutScan = false;
         private int __scanHandled = 0; // 0 = idle, 1 = processing; use Interlocked for thread-safe access
 
+        // EXPERIMENTELL: Setzen Sie dies auf true, wenn Samsung-Geräte immer noch Probleme haben
+        // Dies deaktiviert alle Delays und verwendet minimale Einstellungen
+        private const bool USE_ULTRA_FAST_MODE = true;
+
         private async void ShowBuildingScanPageALL(bool isCheck)
         {
             try
@@ -1807,16 +1777,24 @@ namespace iPMCloud.Mobile
                     ReaderView.IsVisible = false;
                     ReaderView.Opacity = 0.0;
                     ReaderView.Options = null;
-                    await Task.Delay(150); // Give time for cleanup
+                    if (!USE_ULTRA_FAST_MODE)
+                    {
+                        await Task.Delay(100); // Kürzeres Cleanup-Delay
+                    }
+                    // Ultra-Fast-Mode: kein Delay
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine($"[MainPage] Reset error (non-critical): {ex.Message}");
+                    AppModel.Logger.Warn($"[MainPage] Reset error (non-critical): {ex.Message}");
                 }
 
 
-                // Warten auf View-Layout
-                await Task.Delay(100);
+                // Warten auf View-Layout - minimal  
+                if (!USE_ULTRA_FAST_MODE)
+                {
+                    await Task.Delay(50);
+                }
+                // Ultra-Fast-Mode: kein Delay
 
                 // Sichtbarkeit und Opazität sicherstellen
                 ReaderView.IsVisible = true;
@@ -1826,30 +1804,58 @@ namespace iPMCloud.Mobile
                 // Layout-Update erzwingen
                 ReaderView.InvalidateMeasure();
 
-                // Kamera-Optionen setzen
+                // Kamera-Optionen setzen - Aggressiv optimiert für schnelles Scannen auf Samsung
+                // Basierend auf funktionierende Xamarin-Einstellungen
                 ReaderView.Options = new ZXing.Net.Maui.BarcodeReaderOptions
                 {
-                    Formats = ZXing.Net.Maui.BarcodeFormats.TwoDimensional,
+                    Formats = ZXing.Net.Maui.BarcodeFormat.QrCode,
                     AutoRotate = true,
                     Multiple = false,
-                    DelayBetweenAnalyzingFrames = 30,
-                    InitialDelayBeforeAnalyzingFrames = 0,
-                    DelayBetweenContinuousScans = 0,
-                    CharacterSet = "ISO-8859-1",
+                    TryHarder = false, // False für schnelleres Scannen
+                    TryInverted = true, // Hilft bei invertierten QR-Codes
+                    DelayBetweenAnalyzingFrames = USE_ULTRA_FAST_MODE ? 30 : 50,
+                    InitialDelayBeforeAnalyzingFrames = USE_ULTRA_FAST_MODE ? 0 : 100,
+                    DelayBetweenContinuousScans = USE_ULTRA_FAST_MODE ? 0 : 100,
+                    CharacterSet = "UTF-8",
                     CameraResolutionSelector = availableResolutions =>
                     {
                         var resolutions = availableResolutions.ToList();
-                        var selected = resolutions
-                            .OrderBy(r => Math.Abs((r.Width * r.Height) - (1280 * 720)))
-                            .ThenBy(r => Math.Abs(r.Width - 1280) + Math.Abs(r.Height - 720))
-                            .First();
-                        AppModel.Logger.Info($"[MainPage] Selected resolution: {selected.Width}x{selected.Height}");
-                        return selected;
+
+                        // Log verfügbare Auflösungen für Debugging
+                        AppModel.Logger.Info($"[MainPage] Available resolutions: {string.Join(", ", resolutions.Select(r => $"{r.Width}x{r.Height}"))}");
+
+                        if (USE_ULTRA_FAST_MODE)
+                        {
+                            // Ultra-Fast-Mode: Niedrigste sinnvolle Auflösung für maximale Speed
+                            var selected = resolutions
+                                .Where(r => r.Width >= 640 && r.Height >= 480) // Minimum VGA
+                                .OrderBy(r => r.Width * r.Height) // Niedrigste zuerst
+                                .FirstOrDefault() ?? resolutions.First();
+
+                            AppModel.Logger.Info($"[MainPage] ULTRA FAST MODE - Selected resolution: {selected.Width}x{selected.Height}");
+                            return selected;
+                        }
+                        else
+                        {
+                            // Standard: Mittlere Auflösung (720p Bereich)
+                            var selected = resolutions
+                                .OrderBy(r => Math.Abs((r.Width * r.Height) - (1280 * 720)))
+                                .ThenByDescending(r => r.Width * r.Height)
+                                .First();
+
+                            AppModel.Logger.Info($"[MainPage] Selected resolution: {selected.Width}x{selected.Height}");
+                            return selected;
+                        }
                     }
                 };
 
-                // Erhöhtes Delay für Android
-                await Task.Delay(100);
+                // Kürzeres Delay für schnellere Kamera-Initialisierung
+                // Samsung braucht etwas Zeit, aber nicht zu viel
+                if (!USE_ULTRA_FAST_MODE)
+                {
+                    await Task.Delay(150);
+                }
+                // Ultra-Fast-Mode: kein Delay
 
 #endif
 
@@ -1859,9 +1865,9 @@ namespace iPMCloud.Mobile
 #if ANDROID
                 System.Diagnostics.Debug.WriteLine("[MainPage] IsDetecting = true - Camera should now be active");
 
-                // Zusätzliche Überprüfung nach 500ms
-                await Task.Delay(100);
-                System.Diagnostics.Debug.WriteLine($"[MainPage] 500ms after IsDetecting=true - IsDetecting={ReaderView.IsDetecting}");
+                // Minimales Check-Delay für Samsung-Geräte
+                await Task.Delay(50);
+                System.Diagnostics.Debug.WriteLine($"[MainPage] 50ms after IsDetecting=true - IsDetecting={ReaderView.IsDetecting}");
 #endif
 
                 await Task.Delay(1);
@@ -2076,90 +2082,6 @@ namespace iPMCloud.Mobile
             ShowBuildingOutScanPageIOS();
 #endif
         }
-
-        //private async void ShowBuildingOutScanPageAndroid()
-        //{
-        //    try
-        //    {
-
-        //        overlay.IsVisible = true;
-        //        await Task.Delay(1);
-        //        var result = await ScanObjModalPage.ScanAsync(this);
-
-        //        if (string.IsNullOrWhiteSpace(result))
-        //        {
-        //            await Task.Delay(1);
-        //            overlay.IsVisible = false;
-        //            AppModel.Instance.UseExternHardware = false;
-        //            // await DisplayAlertAsync("Fehler beim Scannen!", "QR-Code konnte nicht gelesen werden.", "OK");
-        //            return;
-        //        }
-
-        //        const string marker = "objektid=";
-        //        var markerIndex = result?.IndexOf(marker) ?? -1;
-        //        if (markerIndex >= 0)
-        //        {
-
-        //            var sp = result.Substring(markerIndex + marker.Length)
-        //                           .Split(new[] { "_" }, StringSplitOptions.RemoveEmptyEntries);
-
-        //            if (sp != null && sp.Length > 0 && Int32.TryParse(sp[0], out Int32 buildingid))
-        //            {
-        //                AppModel.Instance.OutScanBuilding = null;
-        //                var CustomerNumber = sp.Length == 1 ? "1" : "" + sp[1];
-        //                if (CustomerNumber == AppModel.Instance.SettingModel.SettingDTO.CustomerNumber)
-        //                {
-        //                    if (AppModel.Instance.AllBuildings != null && AppModel.Instance.AllBuildings.Count > 0)
-        //                    {
-        //                        AppModel.Instance.OutScanBuilding = AppModel.Instance.AllBuildings.Find(bu => bu.id == buildingid);
-        //                        AppModel.Logger.Info("CHECK-OUT: " + AppModel.Instance.OutScanBuilding.strasse + " " +
-        //                                                 AppModel.Instance.OutScanBuilding.hsnr + " " +
-        //                                                 AppModel.Instance.OutScanBuilding.plz + " " +
-        //                                                 AppModel.Instance.OutScanBuilding.ort);
-        //                    }
-
-        //                    await Task.Delay(1);
-        //                    overlay.IsVisible = false;
-        //                    AppModel.Instance.UseExternHardware = false;
-        //                    MethodAfterOutScan();
-        //                }
-        //                else
-        //                {
-        //                    await Task.Delay(1);
-        //                    overlay.IsVisible = false;
-        //                    await DisplayAlertAsync("QR-Code nicht erkannt!",
-        //                        "Dieser QR-Code ist zwar ein iPM-Cloud Code jedoch gehört er nicht zum Registrieten Unternehmen! Bitte Probieren Sie es noch einmal oder melden Sie sich in Ihrer Zentrale.",
-        //                        "OK");
-        //                    AppModel.Instance.UseExternHardware = false;
-        //                }
-
-        //            }
-        //            else
-        //            {
-        //                await Task.Delay(1);
-        //                overlay.IsVisible = false;
-        //                await DisplayAlertAsync("QR-Code nicht erkannt!",
-        //                    "Dieser QR-Code kann nicht verwendet werden. Bitte Probieren Sie es noch einmal.",
-        //                    "OK");
-        //                AppModel.Instance.UseExternHardware = false;
-        //            }
-        //        }
-        //        else
-        //        {
-        //            await Task.Delay(1);
-        //            overlay.IsVisible = false;
-        //            await DisplayAlertAsync("Fehler beim Scannen!", "QR-Code konnte nicht gelesen werden.", "OK");
-        //            AppModel.Instance.UseExternHardware = false;
-        //        }
-        //    }
-        //    catch (Exception)
-        //    {
-        //        await Task.Delay(1);
-        //        overlay.IsVisible = false;
-        //        await DisplayAlertAsync("Fehler beim Scannen!", "QR-Code konnte nicht gelesen werden.", "OK");
-        //        AppModel.Instance.UseExternHardware = false;
-        //    }
-        //}
 
         private async void ShowBuildingOutScanPageAndroid()
         {
@@ -4611,149 +4533,234 @@ namespace iPMCloud.Mobile
         //public async void SaveDirektbuchenAusPlanlisteNow(List<LeistungInWorkWSO> leis)
         public async void SaveDirektbuchenAusPlanlisteNow(List<LeistungWSO> leiss, List<LeistungInWorkWSO> leisIW)
         {
-            var geo = AppModel.Instance.LocationStr;
-            string geoMessage = "";
-            if (geo != null && geo.Length > 0)
-            {
-                geoMessage = geo.Substring(0, 1) == "#" ? geo.Substring(1) : "GPS OK";
-                geo = geoMessage == "GPS OK" ? geo : null;
-            }
-            else
-            {
-                geo = null;
-                geoMessage = "geo = null";
-            }
-            //AppModel.Logger.Info("Info: --------------- STARTE ARBEITEN => DirektbuchenAusPlanlisteNow");
-            //AppModel.Logger.Info("Info: Verwendete GPS (" + geoMessage + " - " + AppModel.Instance.LocationStr + ")");
-
-            var latin = geo != null ? geo.Split(';')[0] : "";
-            var lonin = geo != null ? (geo.Split(';').Length > 0 ? geo.Split(';')[1] : "") : "";
-
-
-
-
-            long maxEndMin = 0;
-            List<LeistungInWorkWSO> leisInWork = new List<LeistungInWorkWSO>();
-            leiss.ForEach(lei =>
-            {
-                var leiIW = leisIW.FindAll(_ => _.ppm.leiid == lei.id).FirstOrDefault();
-                lei.leiInWork = leiIW;
-                //lei.leiInWork.ppm = selectedDirektbuchenObj;//PPM
-
-                maxEndMin = Math.Max(maxEndMin, ((lei.dstd * 60) + lei.dmin));
-
-                if (_SelectedBemerkungForNoticeList_DirektPos != null)
-                {
-                    foreach (var item in _SelectedBemerkungForNoticeList_DirektPos)
-                    {
-                        if (item.id == lei.id && item.bem != null)
-                        {
-                            if (lei.leiInWork.bemerkungen == null) { lei.leiInWork.bemerkungen = new List<BemerkungWSO>(); }
-                            lei.leiInWork.bemerkungen.Add(item.bem);
-                        }
-                    }
-                }
-                leisInWork.Add(lei.leiInWork);
-            });
-            var start = DateTime.Now.AddTicks(addTicksWinter);
-            var end = start.AddMinutes(maxEndMin);
-
             try
             {
-                if (_SelectedBemerkungForNoticeList_DirektPos != null)
+                // Validate inputs
+                if (leiss == null || leiss.Count == 0)
                 {
-                    foreach (var item in _SelectedBemerkungForNoticeList_DirektPos)
+                    AppModel.Logger?.Warn("SaveDirektbuchenAusPlanlisteNow: leiss is null or empty");
+                    return;
+                }
+
+                if (leisIW == null || leisIW.Count == 0)
+                {
+                    AppModel.Logger?.Warn("SaveDirektbuchenAusPlanlisteNow: leisIW is null or empty");
+                    return;
+                }
+
+                if (AppModel.Instance == null)
+                {
+                    AppModel.Logger?.Error("SaveDirektbuchenAusPlanlisteNow: AppModel.Instance is null");
+                    return;
+                }
+
+                var geo = AppModel.Instance.LocationStr;
+                string geoMessage = "";
+                if (geo != null && geo.Length > 0)
+                {
+                    geoMessage = geo.Substring(0, 1) == "#" ? geo.Substring(1) : "GPS OK";
+                    geo = geoMessage == "GPS OK" ? geo : null;
+                }
+                else
+                {
+                    geo = null;
+                    geoMessage = "geo = null";
+                }
+                //AppModel.Logger.Info("Info: --------------- STARTE ARBEITEN => DirektbuchenAusPlanlisteNow");
+                //AppModel.Logger.Info("Info: Verwendete GPS (" + geoMessage + " - " + AppModel.Instance.LocationStr + ")");
+
+                var latin = geo != null ? geo.Split(';')[0] : "";
+                var lonin = geo != null ? (geo.Split(';').Length > 0 ? geo.Split(';')[1] : "") : "";
+
+
+
+                long maxEndMin = 0;
+                List<LeistungInWorkWSO> leisInWork = new List<LeistungInWorkWSO>();
+                leiss.ForEach(lei =>
+                {
+                    if (lei == null)
                     {
-                        var found = leiss.Find(_ => _.id == item.id);
-                        var ppm = selectedDirektbuchenObj.more.FindAll(pp => item.id.ToString() == pp.info.Split('#')[3]).FirstOrDefault();
-                        if (ppm != null && item.bem != null && found == null)
+                        AppModel.Logger?.Warn("SaveDirektbuchenAusPlanlisteNow: Skipping null lei in leiss");
+                        return;
+                    }
+
+                    var leiIW = leisIW.FindAll(_ => _ != null && _.ppm != null && _.ppm.leiid == lei.id).FirstOrDefault();
+
+                    if (leiIW == null)
+                    {
+                        AppModel.Logger?.Warn($"SaveDirektbuchenAusPlanlisteNow: No matching leisIW found for lei.id={lei.id}");
+                        return;
+                    }
+
+                    lei.leiInWork = leiIW;
+                    //lei.leiInWork.ppm = selectedDirektbuchenObj;//PPM
+
+                    maxEndMin = Math.Max(maxEndMin, ((lei.dstd * 60) + lei.dmin));
+
+                    if (_SelectedBemerkungForNoticeList_DirektPos != null)
+                    {
+                        foreach (var item in _SelectedBemerkungForNoticeList_DirektPos)
                         {
-                            // Bemrkung zur Müllpos - JEDOCh nicht selektiert !!!!
-                            /* Nur Bemerkung zum Objekt erstellen*/
-                            item.bem.auftragid = 0;
-                            item.bem.leistungid = 0;
-                            item.bem.text = "LEISTUNG: " + item.lei.beschreibung + " \r\nBEMERKUNG: " + item.bem.text;
-                            BemerkungWSO.ToUploadStack(AppModel.Instance, item.bem);
-                            //btn_NoticeSaveForOnlyObjektOnlyMuellPosThatNotSelected(ppm, item);
+                            if (item != null && item.id == lei.id && item.bem != null)
+                            {
+                                if (lei.leiInWork.bemerkungen == null) 
+                                { 
+                                    lei.leiInWork.bemerkungen = new List<BemerkungWSO>(); 
+                                }
+                                lei.leiInWork.bemerkungen.Add(item.bem);
+                            }
+                        }
+                    }
+                    leisInWork.Add(lei.leiInWork);
+                });
+
+                if (leisInWork.Count == 0)
+                {
+                    AppModel.Logger?.Warn("SaveDirektbuchenAusPlanlisteNow: No valid leisInWork items created");
+                    return;
+                }
+
+                var start = DateTime.Now.AddTicks(addTicksWinter);
+                var end = start.AddMinutes(maxEndMin);
+
+                try
+                {
+                    if (_SelectedBemerkungForNoticeList_DirektPos != null && selectedDirektbuchenObj?.more != null)
+                    {
+                        foreach (var item in _SelectedBemerkungForNoticeList_DirektPos)
+                        {
+                            if (item == null || item.bem == null)
+                                continue;
+
+                            var found = leiss.Find(_ => _ != null && _.id == item.id);
+                            var ppm = selectedDirektbuchenObj.more.FindAll(pp => pp != null && pp.info != null && item.id.ToString() == pp.info.Split('#')[3]).FirstOrDefault();
+
+                            if (ppm != null && item.bem != null && found == null && item.lei != null)
+                            {
+                                // Bemrkung zur Müllpos - JEDOCh nicht selektiert !!!!
+                                /* Nur Bemerkung zum Objekt erstellen*/
+                                item.bem.auftragid = 0;
+                                item.bem.leistungid = 0;
+                                item.bem.text = "LEISTUNG: " + item.lei.beschreibung + " \r\nBEMERKUNG: " + item.bem.text;
+                                BemerkungWSO.ToUploadStack(AppModel.Instance, item.bem);
+                                //btn_NoticeSaveForOnlyObjektOnlyMuellPosThatNotSelected(ppm, item);
+                            }
                         }
                     }
                 }
-            }
-            catch (Exception) { }
+                catch (Exception ex) 
+                { 
+                    AppModel.Logger?.Warn($"SaveDirektbuchenAusPlanlisteNow: Error processing bemerkungen: {ex.Message}");
+                }
 
 
-            AppModel.Instance.allPositionDirectWork = new LeistungPackWSO
-            {
-                latin = latin,
-                lonin = lonin,
-                messagein = geoMessage,
-                latout = "",
-                lonout = "",
-                messageout = "",
-                preview = false,
-                status = 2,   // 0 = in Arbeit , 1 = Ausgesetzt , 2 = Fertig
-                startticks = DateTime.Now.Ticks + addTicks,
-                endticks = DateTime.Now.Ticks + addTicks,
-                personid = AppModel.Instance.Person.id,
-                diffObjekt = 2,// Direktbuchung
-                leistungen = leisInWork // leisIW
-            };
+                AppModel.Instance.allPositionDirectWork = new LeistungPackWSO
+                {
+                    latin = latin,
+                    lonin = lonin,
+                    messagein = geoMessage,
+                    latout = "",
+                    lonout = "",
+                    messageout = "",
+                    preview = false,
+                    status = 2,   // 0 = in Arbeit , 1 = Ausgesetzt , 2 = Fertig
+                    startticks = DateTime.Now.Ticks + addTicks,
+                    endticks = DateTime.Now.Ticks + addTicks,
+                    personid = AppModel.Instance.Person.id,
+                    diffObjekt = 2,// Direktbuchung
+                    leistungen = leisInWork // leisIW
+                };
             AppModel.Instance.allPositionDirectWork.endticks = AppModel.Instance.allPositionDirectWork.startticks;
             addTicks++;
 
             var lastWorkTicks = "" + JavaScriptDateConverter.Convert(new DateTime(AppModel.Instance.allPositionDirectWork.startticks), -2);
             var building = BuildingWSO.LoadBuilding(AppModel.Instance, leisIW[0].objektid);
-            building.ArrayOfAuftrag.ForEach(o =>
+
+            if (building == null)
             {
-                o.kategorien.ForEach(c =>
+                AppModel.Logger?.Error($"SaveDirektbuchenAusPlanlisteNow: Failed to load building for objektid={leisIW[0].objektid}");
+                // Still upload the work package even if building load failed
+                LeistungPackWSO.ToUploadStack(AppModel.Instance, AppModel.Instance.allPositionDirectWork);
+            }
+            else
+            {
+                building.ArrayOfAuftrag?.ForEach(o =>
                 {
-                    c.leistungen.ForEach(le =>
+                    o?.kategorien?.ForEach(c =>
                     {
-                        var foundPos = AppModel.Instance.allPositionDirectWork.leistungen.Find(lei => lei.id == le.id);
-                        if (foundPos != null)
+                        c?.leistungen?.ForEach(le =>
                         {
-                            foundPos.lastwork = lastWorkTicks;
-                            foundPos.workat = "";
-                            le.lastwork = lastWorkTicks;
-                            le.workat = "";
-                            le.selected = false;
-                            if (le.muell == 1 && le.inout != null)
+                            if (le == null) return;
+
+                            var foundPos = AppModel.Instance.allPositionDirectWork.leistungen.Find(lei => lei != null && lei.id == le.id);
+                            if (foundPos != null)
                             {
-                                le.inout.inout = le.inout.inout == 1 ? 0 : 1;   // 1 = rausgestellt / 0 = drinne
+                                foundPos.lastwork = lastWorkTicks;
+                                foundPos.workat = "";
+                                le.lastwork = lastWorkTicks;
+                                le.workat = "";
+                                le.selected = false;
+                                if (le.muell == 1 && le.inout != null)
+                                {
+                                    le.inout.inout = le.inout.inout == 1 ? 0 : 1;   // 1 = rausgestellt / 0 = drinne
+                                }
                             }
-                        }
+                        });
                     });
                 });
-            });
-            BuildingWSO.Save(AppModel.Instance, building);
-            //AppModel.Instance.allPositionDirectWork.leistungen = null;
-            LeistungPackWSO.ToUploadStack(AppModel.Instance, AppModel.Instance.allPositionDirectWork);
+                BuildingWSO.Save(AppModel.Instance, building);
+                //AppModel.Instance.allPositionDirectWork.leistungen = null;
+                LeistungPackWSO.ToUploadStack(AppModel.Instance, AppModel.Instance.allPositionDirectWork);
+            }
 
             leisIW.ForEach(l =>
             {
+                if (l == null) return;
+
                 int haswork = 1;
                 if (l.ppm != null && !String.IsNullOrWhiteSpace(l.ppm.info))
                 {
                     string[] all = l.ppm.info.Split('#');
-                    string name = all[0];
-                    string col = all[1];
-                    string statem = all[2];
-                    string leiid = all[3];
-                    if (statem == "3")
+                    if (all.Length >= 4)
                     {
-                        statem = "2";
-                        haswork = 0;
-                        l.ppm.info = name + "#" + col + "#2#" + leiid;
+                        string name = all[0];
+                        string col = all[1];
+                        string statem = all[2];
+                        string leiid = all[3];
+                        if (statem == "3")
+                        {
+                            statem = "2";
+                            haswork = 0;
+                            l.ppm.info = name + "#" + col + "#2#" + leiid;
+                        }
                     }
                 }
-                var lastworker = AppModel.Instance.Person.name + " " + (AppModel.Instance.Person.vorname.Length > 1 ? (AppModel.Instance.Person.vorname.Substring(0, 1) + ".") : AppModel.Instance.Person.vorname);
-                l.ppm.haswork = haswork;
-                l.ppm.lastwork = new DateTime(AppModel.Instance.allPositionDirectWork.endticks).ToString("dd.MM.yyyy - HH:mm");
-                l.ppm.lastworker = lastworker;
+
+                if (AppModel.Instance?.Person != null)
+                {
+                    var lastworker = AppModel.Instance.Person.name + " " + (AppModel.Instance.Person.vorname.Length > 1 ? (AppModel.Instance.Person.vorname.Substring(0, 1) + ".") : AppModel.Instance.Person.vorname);
+                    if (l.ppm != null)
+                    {
+                        l.ppm.haswork = haswork;
+                        l.ppm.lastwork = new DateTime(AppModel.Instance.allPositionDirectWork.endticks).ToString("dd.MM.yyyy - HH:mm");
+                        l.ppm.lastworker = lastworker;
+                    }
+                }
             });
             AppModel.Instance.allPositionDirectWork = null;
             await Task.Delay(1);
         }
+        catch (Exception ex)
+        {
+            AppModel.Logger?.Error(ex, "ERROR: SaveDirektbuchenAusPlanlisteNow - Unexpected error");
+
+            // Clean up in case of error
+            if (AppModel.Instance != null)
+            {
+                AppModel.Instance.allPositionDirectWork = null;
+            }
+        }
+    }
 
         public async void btn_NoticeSaveForOnlyObjektOnlyMuellPosThatNotSelected(PlanPersonMobile ppm, IntBemerkungWSOPair ibwp)
         {
@@ -5099,7 +5106,7 @@ namespace iPMCloud.Mobile
 
             var border = new Border
             {
-                Margin = new Thickness(3, 2, 3, 2),
+                Margin = new Thickness(0, 2, 0, 2),
                 Padding = new Thickness(0),
                 BackgroundColor = Color.FromArgb("#2a2a2a"),
                 StrokeThickness = 1,
@@ -5277,26 +5284,26 @@ namespace iPMCloud.Mobile
             //}
 
             // Chat-Badge (wenn neue Nachrichten vorhanden)
-            int newChatCount = ticket.chats?.Count(c => c.id == ticket.newchat?.id) ?? 0;
-            if (newChatCount > 0)
-            {
-                var chatBadge = new Border
-                {
-                    BackgroundColor = Color.FromArgb("#ff0000"),
-                    Padding = new Thickness(6, 2),
-                    Margin = new Thickness(12, 2, 8, 2),
-                    HorizontalOptions = LayoutOptions.Start,
-                    StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(10) },
-                    Content = new Label
-                    {
-                        Text = $"{newChatCount} neu",
-                        FontSize = 10,
-                        TextColor = Color.FromArgb("#ffffff"),
-                        FontAttributes = FontAttributes.Bold
-                    }
-                };
-                grid.Add(chatBadge, 1, 2);
-            }
+            //int newChatCount = ticket.chats?.Count(c => c.id == ticket.newchat?.id) ?? 0;
+            //if (newChatCount > 0)
+            //{
+            //    var chatBadge = new Border
+            //    {
+            //        BackgroundColor = Color.FromArgb("#ff0000"),
+            //        Padding = new Thickness(6, 2),
+            //        Margin = new Thickness(12, 2, 8, 2),
+            //        HorizontalOptions = LayoutOptions.Start,
+            //        StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(10) },
+            //        Content = new Label
+            //        {
+            //            Text = $"{newChatCount} neu",
+            //            FontSize = 10,
+            //            TextColor = Color.FromArgb("#ffffff"),
+            //            FontAttributes = FontAttributes.Bold
+            //        }
+            //    };
+            //    grid.Add(chatBadge, 1, 2);
+            //}
 
             // Zeile 3: Status-Chip und Start/End-Zeiten
             var statusAndDatesStack = new HorizontalStackLayout
@@ -5553,11 +5560,11 @@ namespace iPMCloud.Mobile
                 chat_tab_content.IsVisible = false;
 
                 // Button-Styles zurücksetzen
-                tab_beschreibung_btn.BackgroundColor = Color.FromArgb("#00000000");
+                tab_beschreibung_btn.BackgroundColor = Color.FromArgb("#122446");
                 tab_beschreibung_btn.TextColor = Color.FromArgb("#aaaaaa");
-                tab_objekt_btn.BackgroundColor = Color.FromArgb("#00000000");
+                tab_objekt_btn.BackgroundColor = Color.FromArgb("#122446");
                 tab_objekt_btn.TextColor = Color.FromArgb("#aaaaaa");
-                tab_chat_btn.BackgroundColor = Color.FromArgb("#00000000");
+                tab_chat_btn.BackgroundColor = Color.FromArgb("#122446");
                 tab_chat_btn.TextColor = Color.FromArgb("#aaaaaa");
 
                 // Gewählten Tab anzeigen und stylen
@@ -5565,17 +5572,17 @@ namespace iPMCloud.Mobile
                 {
                     case "beschreibung":
                         beschreibung_tab_content.IsVisible = true;
-                        tab_beschreibung_btn.BackgroundColor = Color.FromArgb("#357");
+                        tab_beschreibung_btn.BackgroundColor = Color.FromArgb("#234567");
                         tab_beschreibung_btn.TextColor = Colors.White;
                         break;
                     case "objekt":
                         objekt_tab_content.IsVisible = true;
-                        tab_objekt_btn.BackgroundColor = Color.FromArgb("#357");
+                        tab_objekt_btn.BackgroundColor = Color.FromArgb("#234567");
                         tab_objekt_btn.TextColor = Colors.White;
                         break;
                     case "chat":
                         chat_tab_content.IsVisible = true;
-                        tab_chat_btn.BackgroundColor = Color.FromArgb("#357");
+                        tab_chat_btn.BackgroundColor = Color.FromArgb("#234567");
                         tab_chat_btn.TextColor = Colors.White;
                         break;
                 }
@@ -5660,7 +5667,7 @@ namespace iPMCloud.Mobile
             try
             {
                 bool isDarkMode = Application.Current?.RequestedTheme == AppTheme.Dark;
-                Color backgroundColor = isDarkMode ? Color.FromArgb("#2a2a3a") : Colors.White;
+                Color backgroundColor = isDarkMode ? Color.FromArgb("#234567") : Colors.White;
 
                 // Setze Hintergrundfarben für Tabs
                 if (beschreibung_tab_content != null)
@@ -5670,7 +5677,7 @@ namespace iPMCloud.Mobile
                     ticket_beschreibung_webview.BackgroundColor = backgroundColor;
 
                 if (objekt_tab_content != null)
-                    objekt_tab_content.BackgroundColor = isDarkMode ? Color.FromArgb("#345") : Color.FromArgb("#f5f5f5");
+                    objekt_tab_content.BackgroundColor = isDarkMode ? Color.FromArgb("#234567") : Color.FromArgb("#f5f5f5");
             }
             catch (Exception ex)
             {
@@ -5681,121 +5688,128 @@ namespace iPMCloud.Mobile
         /// <summary>
         /// Lädt die Ticket-Beschreibung in den ersten Tab
         /// </summary>
-        private void LoadTicketBeschreibung(Ticket ticket)
+        private async void LoadTicketBeschreibung(Ticket ticket)
         {
             try
             {
                 if (ticket == null)
+                {
+                    AppModel.Logger?.Warn("LoadTicketBeschreibung: ticket is null");
                     return;
+                }
 
-                // Lade Beschreibung in WebView
+
+                // WICHTIG: Prüfe ob WebView überhaupt existiert
+                if (ticket_beschreibung_webview == null)
+                {
+                    AppModel.Logger?.Error("LoadTicketBeschreibung: ticket_beschreibung_webview is NULL!");
+                    return;
+                }
+
+
+                // Lade Beschreibung (Base64 -> HTML/Text)
                 string decodedText = Ticket.DecodeBase64RichText(ticket.text);
 
-                // Theme-Farben basierend auf Systemeinstellungen
-                bool isDarkMode = Application.Current?.RequestedTheme == AppTheme.Dark;
-                string backgroundColor = isDarkMode ? "#2a2a3a" : "#ffffff";
-                string textColor = isDarkMode ? "#ffffff" : "#000000";
-                string linkColor = "#2f94ed";
 
                 if (string.IsNullOrWhiteSpace(decodedText))
                 {
-                    decodedText = $"<p style='color: {textColor};'>Keine Beschreibung vorhanden.</p>";
+                    decodedText = "<p>Keine Beschreibung vorhanden.</p>";
                 }
 
-                // HTML mit dynamischem Theme für den WebView
-                string htmlContent = $@"
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-                    <meta name='color-scheme' content='light dark'>
-                    <style>
-                        body {{
-                            background-color: {backgroundColor};
-                            color: {textColor};
-                            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-                            font-size: 15px;
-                            padding: 10px;
-                            margin: 0;
-                            line-height: 1.6;
-                        }}
-                        p {{
-                            margin: 0 0 10px 0;
-                        }}
-                        strong, b {{
-                            font-weight: bold;
-                        }}
-                        em, i {{
-                            font-style: italic;
-                        }}
-                        ul, ol {{
-                            margin: 10px 0;
-                            padding-left: 20px;
-                        }}
-                        a {{
-                            color: {linkColor};
-                            pointer-events: none;
-                            cursor: default;
-                            text-decoration: none;
-                        }}
-                        @media (prefers-color-scheme: dark) {{
-                            body {{
-                                background-color: #2a2a3a;
-                                color: #ffffff;
-                            }}
-                        }}
-                        @media (prefers-color-scheme: light) {{
-                            body {{
-                                background-color: #ffffff;
-                                color: #000000;
-                            }}
-                        }}
-                    </style>
-                </head>
-                <body>
-                    {decodedText}
-                </body>
-                </html>";
+                // Prüfe ob es vollständiges HTML ist
+                bool isFullHtml = decodedText.TrimStart().StartsWith("<!DOCTYPE", StringComparison.OrdinalIgnoreCase) ||
+                                  decodedText.TrimStart().StartsWith("<html", StringComparison.OrdinalIgnoreCase);
 
-                var htmlSource = new HtmlWebViewSource
+                string finalHtml;
+                if (isFullHtml)
                 {
-                    Html = htmlContent
-                };
+                    // Bereits vollständiges HTML - verwende es direkt
+                    finalHtml = decodedText;
+                }
+                else
+                {
+                    // Falls es HTML-Tags enthält, behalte sie; sonst wrap in <p>
+                    string bodyContent = decodedText.Contains("<") ? decodedText : $"<p>{System.Net.WebUtility.HtmlEncode(decodedText)}</p>";
+                    finalHtml = $@"<!DOCTYPE html>
+<html>
+<head>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <meta charset='UTF-8'>
+    <style>
+        * {{
+            -webkit-text-size-adjust: 100%;
+        }}
+        body {{ 
+            background-color: #234567 !important; 
+            color: #ffffff !important; 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; 
+            padding: 15px;
+            font-size: 15px;
+            line-height: 1.6;
+            margin: 0;
+        }}
+        p {{ 
+            margin: 8px 0; 
+        }}
+        strong, b {{ 
+            font-weight: bold; 
+            color: #ffffff;
+        }}
+        em, i {{ 
+            font-style: italic; 
+        }}
+        ul, ol {{ 
+            margin: 10px 0; 
+            padding-left: 25px; 
+        }}
+        li {{ 
+            margin: 5px 0; 
+        }}
+        a {{ 
+            color: #4da6ff; 
+            pointer-events: none;
+            text-decoration: none; 
+        }}
+        img {{ 
+            max-width: 100%; 
+            height: auto; 
+        }}
+    </style>
+</head>
+<body>
+    {bodyContent}
+</body>
+</html>";
+                }
 
-                // Event-Handler für Link-Klicks hinzufügen (falls noch nicht registriert)
-                ticket_beschreibung_webview.Navigating -= OnWebViewNavigating;
-                ticket_beschreibung_webview.Navigating += OnWebViewNavigating;
 
-                ticket_beschreibung_webview.Source = htmlSource;
+                // Setze HTML direkt (OHNE BaseUrl - das war das iOS-Problem!)
+                ticket_beschreibung_webview.Source = new HtmlWebViewSource { Html = finalHtml };
+
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Fehler beim Laden der Beschreibung: {ex.Message}");
                 AppModel.Logger?.Error(ex, "ERROR: LoadTicketBeschreibung");
+                Console.WriteLine($"Fehler: {ex.Message}");
 
-                // Theme-Farben für Fehlermeldung
-                bool isDarkMode = Application.Current?.RequestedTheme == AppTheme.Dark;
-                string backgroundColor = isDarkMode ? "#2a2a3a" : "#ffffff";
-                string errorColor = "#ff6b6b";
-
-                // Fallback: Fehlermeldung anzeigen
-                var errorHtml = new HtmlWebViewSource
+                // Fallback bei Fehler
+                if (ticket_beschreibung_webview != null)
                 {
-                    Html = $@"
-                    <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <meta name='color-scheme' content='light dark'>
-                        <style>
-                            body {{ background-color: {backgroundColor}; color: {errorColor}; font-family: sans-serif; padding: 10px; }}
-                        </style>
-                    </head>
-                    <body>
-                        <p>Fehler beim Laden der Beschreibung: {ex.Message}</p>
-                    </body>
-                    </html>"
-                };
-                ticket_beschreibung_webview.Source = errorHtml;
+                    string errorHtml = $@"<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <style>
+        body {{ background-color: #2a2a3a; color: #ff6b6b; padding: 15px; font-family: sans-serif; }}
+    </style>
+</head>
+<body>
+    <p><strong>Fehler beim Laden:</strong></p>
+    <p>{System.Net.WebUtility.HtmlEncode(ex.Message)}</p>
+</body>
+</html>";
+                    ticket_beschreibung_webview.Source = new HtmlWebViewSource { Html = errorHtml };
+                }
             }
         }
 
@@ -5988,7 +6002,7 @@ namespace iPMCloud.Mobile
                 var statusChip = new Border
                 {
                     BackgroundColor = Color.FromArgb(statusColor),
-                    Padding = new Thickness(8, 4),
+                    Padding = new Thickness(8, 6,8,3),
                     HorizontalOptions = LayoutOptions.Start,
                     VerticalOptions = LayoutOptions.Start,
                     StrokeThickness = 0,
@@ -6042,7 +6056,7 @@ namespace iPMCloud.Mobile
 
                         var startLabel = new Label
                         {
-                            FontSize = 10,
+                            FontSize = 11,
                             FormattedText = new FormattedString
                             {
                                 Spans =
@@ -6078,7 +6092,7 @@ namespace iPMCloud.Mobile
                                 var countdownLabel = new Label
                                 {
                                     Text = countdownText,
-                                    FontSize = 9,
+                                    FontSize = 10,
                                     TextColor = Color.FromArgb("#88ff88"),
                                     VerticalOptions = LayoutOptions.Center
                                 };
@@ -6117,7 +6131,7 @@ namespace iPMCloud.Mobile
                     {
                         var endLabel = new Label
                         {
-                            FontSize = 10,
+                            FontSize = 11,
                             FormattedText = new FormattedString
                             {
                                 Spans =
@@ -6178,7 +6192,7 @@ namespace iPMCloud.Mobile
             return status switch
             {
                 1 => "Neue",
-                2 => "Offene",
+                2 => "Offen",
                 4 => "In Arbeit",
                 5 => "Rückfrage",
                 9 => "Erledigte",
@@ -6187,41 +6201,6 @@ namespace iPMCloud.Mobile
             };
         }
 
-        /// <summary>
-        /// Verhindert die Navigation zu Links im WebView
-        /// </summary>
-        private void OnWebViewNavigating(object sender, WebNavigatingEventArgs e)
-        {
-            try
-            {
-                // Erlaube nur das initiale Laden (about:blank oder data: URLs)
-                if (e.Url.StartsWith("about:") || e.Url.StartsWith("data:"))
-                {
-                    // Erlaube das Laden
-                    return;
-                }
-
-                // Blockiere alle anderen Navigationen (externe Links)
-                e.Cancel = true;
-
-                Console.WriteLine($"Link-Navigation blockiert: {e.Url}");
-
-                // Optional: Zeige eine Nachricht oder öffne den Link extern
-                // await DisplayAlert("Link blockiert", $"Link-Navigation ist deaktiviert: {e.Url}", "OK");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Fehler im WebView Navigating Handler: {ex.Message}");
-            }
-        }
-
-        /// <summary>
-        /// Dekodiert Base64-kodierten RichText
-        /// </summary>
-
-        /// <summary>
-        /// Lädt Objekt/Auftrag-Informationen in den zweiten Tab
-        /// </summary>
         private void LoadTicketObjektAuftrag(Ticket ticket)
         {
             try
@@ -6448,7 +6427,7 @@ namespace iPMCloud.Mobile
             {
                 Margin = new Thickness(0, 0, 0, 0),
                 Padding = new Thickness(15),
-                BackgroundColor = Color.FromArgb("#2a2a3a"),
+                //BackgroundColor = Color.FromArgb("#2a2a3a"),
                 Spacing = 5
             };
 
@@ -6485,9 +6464,17 @@ namespace iPMCloud.Mobile
                 int currentUserId = AppModel.Instance?.Person?.id ?? 0;
                 bool isOwnMessage = message.personid == currentUserId;
 
+                // Dekodiere Base64-kodierten Nachrichtentext
+                string decodedText = Ticket.DecodeBase64RichText(message.t);
+                if (string.IsNullOrWhiteSpace(decodedText) || decodedText.Trim() == "<div></div>")
+                {
+                    decodedText = "";
+                    return;
+                }
+
                 // Prüfe ob die Nachricht HTML/Bild enthält
-                bool containsHtml = !string.IsNullOrEmpty(message.t) && 
-                    (message.t.Contains("<img") || message.t.Contains("<html") || message.t.Contains("data:image"));
+                bool containsHtml = !string.IsNullOrEmpty(decodedText) && 
+                    (decodedText.Contains("<img") || decodedText.Contains("<html") || decodedText.Contains("<div") || decodedText.Contains("data:image"));
 
                 // Chat-Bubble Container
                 var messageContainer = new Grid
@@ -6554,6 +6541,7 @@ namespace iPMCloud.Mobile
                         <html>
                         <head>
                             <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'>
+                            <meta charset='UTF-8'>
                             <style>
                                 body {{
                                     margin: 0;
@@ -6580,7 +6568,7 @@ namespace iPMCloud.Mobile
                             </style>
                         </head>
                         <body>
-                            {message.t}
+                            {decodedText}
                         </body>
                         </html>";
 
@@ -6605,10 +6593,10 @@ namespace iPMCloud.Mobile
                 }
                 else
                 {
-                    // Normaler Text als Label
+                    // Normaler Text als Label (dekodiert)
                     messageContent.Children.Add(new Label
                     {
-                        Text = message.t,
+                        Text = decodedText,
                         FontSize = 15,
                         TextColor = Color.FromArgb("#000000"),
                         LineBreakMode = LineBreakMode.WordWrap
@@ -6761,7 +6749,7 @@ namespace iPMCloud.Mobile
                 }
 
                 // Prüfe ob Kamera verfügbar ist
-                if (!MediaPicker.Default.IsCaptureSupported)
+                if (!MediaPicker.IsCaptureSupported)
                 {
                     await DisplayAlertAsync("Nicht verfügbar", "Kamera ist auf diesem Gerät nicht verfügbar", "OK");
                     return;
@@ -6775,6 +6763,7 @@ namespace iPMCloud.Mobile
                     MaximumWidth = 1024,
                     SelectionLimit = 1,
                     PreserveMetaData = true,
+                    RotateImage = true
                 };
 #if !IOS
                 options.RotateImage = true;
@@ -6833,12 +6822,13 @@ namespace iPMCloud.Mobile
                     MaximumWidth = 1024,
                     SelectionLimit = 1,
                     PreserveMetaData = true,
+                    RotateImage = true
                 };
 #if !IOS
                 options.RotateImage = true;
 #endif
                 // Foto aus Galerie auswählen
-                var photos = await MediaPicker.Default.PickPhotosAsync(options);
+                var photos = await MediaPicker.PickPhotosAsync(options);
 
                 if (photos != null && photos.Any())
                 {
@@ -7005,7 +6995,7 @@ namespace iPMCloud.Mobile
                     return;
                 }
 
-                bool confirm = await DisplayAlert("Löschen bestätigen", "Möchten Sie diese Nachricht wirklich löschen?", "Ja", "Nein");
+                bool confirm = await DisplayAlertAsync("Löschen bestätigen", "Möchten Sie diese Nachricht wirklich löschen?", "Ja", "Nein");
                 if (!confirm)
                 {
                     return;
@@ -9332,111 +9322,224 @@ namespace iPMCloud.Mobile
 
         public async void btn_nachbuchen_Tapped(int pos)
         {
-            AppModel.Instance.posAgain = pos;
-            overlay.IsVisible = true;
-            AppModel.Instance.LastSelectedCategoryAgain = null;
-            AppModel.Instance.LastSelectedPositionAgain = null;
-            btn_nachbuchen_Pos.BackgroundColor = pos == 0 ? Color.FromArgb("#042d53") : Color.FromArgb("#999999");
-            btn_nachbuchen_Produkte.BackgroundColor = pos == 0 ? Color.FromArgb("#999999") : Color.FromArgb("#042d53");
-            await Task.Delay(1);
-            await buildingorderlist_category_scroll_Again.ScrollToAsync(0, 0, false);
-            BuildNachbuchenList();
+            try
+            {
+                // WICHTIG: Prüfe ob ein Gebäude ausgewählt ist
+                if (AppModel.Instance?.LastBuilding == null)
+                {
+                    AppModel.Logger?.Warn("btn_nachbuchen_Tapped: Kein Gebäude ausgewählt");
+                    await DisplayAlertAsync("Hinweis", "Bitte wählen Sie zuerst ein Objekt aus, bevor Sie Positionen nachbuchen können.", "OK");
+                    return;
+                }
+
+                if (AppModel.Instance.LastBuilding.ArrayOfAuftrag == null || AppModel.Instance.LastBuilding.ArrayOfAuftrag.Count == 0)
+                {
+                    AppModel.Logger?.Warn("btn_nachbuchen_Tapped: Keine Aufträge im ausgewählten Gebäude");
+                    await DisplayAlertAsync("Hinweis", "Das ausgewählte Objekt hat keine Aufträge.", "OK");
+                    return;
+                }
+
+                AppModel.Instance.posAgain = pos;
+                overlay.IsVisible = true;
+                AppModel.Instance.LastSelectedCategoryAgain = null;
+                AppModel.Instance.LastSelectedPositionAgain = null;
+                btn_nachbuchen_Pos.BackgroundColor = pos == 0 ? Color.FromArgb("#042d53") : Color.FromArgb("#999999");
+                btn_nachbuchen_Produkte.BackgroundColor = pos == 0 ? Color.FromArgb("#999999") : Color.FromArgb("#042d53");
+                //await Task.Delay(1);
+                //await buildingorderlist_category_scroll_Again.ScrollToAsync(0, 0, false);
+                BuildNachbuchenList();
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error($"btn_nachbuchen_Tapped: {ex.Message}");
+                await DisplayAlertAsync("Fehler", $"Fehler beim Öffnen der Nachbuchung: {ex.Message}", "OK");
+                overlay.IsVisible = false;
+            }
         }
 
         public async void BuildNachbuchenList()
         {
-            AppModel.Instance.LastSelectedOrderAgain = null;
-            AppModel.Instance.LastSelectedCategoryAgain = null;
-            AppModel.Instance.LastSelectedPositionAgain = null;
-
-            BuildingOrderPage_category_Container_Again.IsVisible = true;
-            BuildingOrderPage_position_Container_Again.IsVisible = false;
-            inBuildingOrder_position_stack_Again.IsVisible = false;
-
-            LeistungWSO firstLeistungInWork = null;
-            AppModel.Instance.IsOptionalPosAgain = false;
-            var selOrderId = -1;
-            if (AppModel.Instance.allPositionInWork != null && AppModel.Instance.allPositionInWork.leistungen != null && AppModel.Instance.allPositionInWork.leistungen.Count > 0)
+            try
             {
-                AppModel.Instance.allPositionInWork.leistungen.ForEach(liw =>
+                AppModel.Instance.LastSelectedOrderAgain = null;
+                AppModel.Instance.LastSelectedCategoryAgain = null;
+                AppModel.Instance.LastSelectedPositionAgain = null;
+
+                // Prüfe ob LastBuilding nach Customer-Wechsel vorhanden ist
+                if (AppModel.Instance?.LastBuilding == null)
                 {
-                    AppModel.Instance.LastBuilding.ArrayOfAuftrag.ForEach(a =>
+                    AppModel.Logger?.Error("BuildNachbuchenList: LastBuilding is null (möglicherweise nach Customer-Wechsel)");
+                    await DisplayAlertAsync("Fehler", "Keine Objektdaten verfügbar. Bitte wählen Sie ein Objekt aus.", "OK");
+                    overlay.IsVisible = false;
+                    return;
+                }
+
+                if (AppModel.Instance.LastBuilding.ArrayOfAuftrag == null)
+                {
+                    AppModel.Logger?.Error("BuildNachbuchenList: ArrayOfAuftrag is null");
+                    await DisplayAlertAsync("Fehler", "Keine Aufträge verfügbar.", "OK");
+                    overlay.IsVisible = false;
+                    return;
+                }
+
+                BuildingOrderPage_category_Container_Again.IsVisible = true;
+                BuildingOrderPage_position_Container_Again.IsVisible = false;
+                inBuildingOrder_position_stack_Again.IsVisible = false;
+
+                LeistungWSO firstLeistungInWork = null;
+                AppModel.Instance.IsOptionalPosAgain = false;
+                var selOrderId = -1;
+                if (AppModel.Instance.allPositionInWork != null && AppModel.Instance.allPositionInWork.leistungen != null && AppModel.Instance.allPositionInWork.leistungen.Count > 0)
+                {
+                    AppModel.Instance.allPositionInWork.leistungen.ForEach(liw =>
                     {
-                        a.kategorien.ForEach(k =>
+                        AppModel.Instance.LastBuilding.ArrayOfAuftrag.ForEach(a =>
                         {
-                            if (firstLeistungInWork == null)
+                            a.kategorien?.ForEach(k =>
                             {
-                                firstLeistungInWork = k.leistungen.Find(l => l.art == "Leistung" && liw.id == l.id);
-                            }
+                                if (firstLeistungInWork == null)
+                                {
+                                    firstLeistungInWork = k.leistungen?.Find(l => l.art == "Leistung" && liw.id == l.id);
+                                }
+                            });
                         });
                     });
-                });
-                AppModel.Instance.IsOptionalPosAgain = firstLeistungInWork != null && firstLeistungInWork.nichtpauschal == 1;
-                var first = AppModel.Instance.allPositionInWork.leistungen.First();
-                if (first != null) { selOrderId = first.auftragid; } else { selOrderId = -1; }
-            }
-            AppModel.Instance.LastBuilding.ArrayOfAuftrag.ForEach(o =>
-            {
-                if (o.id == selOrderId || selOrderId < 0)
-                {
-                    AppModel.Instance.LastSelectedOrderAgain = o;
-                    lb_inBuildingOrder_categorypos_text_Again.Text = o.GetMobileText();// + " \nNr.: " + o.id + "  Typ: " + o.typ;
-                    lb_inBuildingOrder_position_text_Again.Text = "";
+                    AppModel.Instance.IsOptionalPosAgain = firstLeistungInWork != null && firstLeistungInWork.nichtpauschal == 1;
+                    var first = AppModel.Instance.allPositionInWork.leistungen.First();
+                    if (first != null) { selOrderId = first.auftragid; } else { selOrderId = -1; }
                 }
-            });
+                AppModel.Instance.LastBuilding.ArrayOfAuftrag.ForEach(o =>
+                {
+                    if (o.id == selOrderId || selOrderId < 0)
+                    {
+                        AppModel.Instance.LastSelectedOrderAgain = o;
+                        lb_inBuildingOrder_categorypos_text_Again.Text = o.GetMobileText();// + " \nNr.: " + o.id + "  Typ: " + o.typ;
+                        lb_inBuildingOrder_position_text_Again.Text = "";
+                    }
+                });
 
-            ShowOrderCategoryAgainPage(AppModel.Instance.LastSelectedOrderAgain);
+                ShowOrderCategoryAgainPage(AppModel.Instance.LastSelectedOrderAgain);
 
-            await Task.Delay(1);
-            list_nachbuchen.IsVisible = true;
-            overlay.IsVisible = false;
+                await Task.Delay(1);
+                list_nachbuchen.IsVisible = true;
+                overlay.IsVisible = false;
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error($"BuildNachbuchenList: {ex.Message}");
+                await DisplayAlertAsync("Fehler", $"Fehler beim Laden der Nachbuchungsliste: {ex.Message}", "OK");
+                overlay.IsVisible = false;
+            }
         }
 
         private async void ShowOrderCategoryAgainPage(AuftragWSO order)
         {
-            isInitialize = true;
-            overlay.IsVisible = true;
-            await Task.Delay(1);
+            try
+            {
+                isInitialize = true;
+                overlay.IsVisible = true;
+                await Task.Delay(1);
 
-            BuildingOrderPage_position_Container_Again.IsVisible = false;
-            inBuildingOrder_position_stack_Again.IsVisible = false;
+                // Prüfe ob Order vorhanden ist (wichtig nach Customer-Wechsel)
+                if (order == null)
+                {
+                    AppModel.Logger?.Error("ShowOrderCategoryAgainPage: order is null (möglicherweise nach Customer-Wechsel)");
+                    await DisplayAlertAsync("Fehler", "Kein Auftrag ausgewählt. Bitte laden Sie die Daten neu.", "OK");
+                    overlay.IsVisible = false;
+                    isInitialize = false;
+                    return;
+                }
 
-            buildingorderlist_category_container_Again.Children.Clear();
-            buildingorderlist_category_container_Again.Children.Add(KategorieWSO.GetCategoryAgainListView(AppModel.Instance, new Command<KategorieWSO>(SelectCategoryAgain)));
-            BuildingOrderPage_category_Container_Again.IsVisible = true;
+                // WICHTIG: Zuerst auf null setzen, BEVOR die UI erstellt wird
+                AppModel.Instance.LastSelectedCategoryAgain = null;
+                AppModel.Instance.LastSelectedPositionAgain = null;
 
-            AppModel.Instance.LastSelectedCategoryAgain = null;
-            AppModel.Instance.LastSelectedPositionAgain = null;
+                BuildingOrderPage_position_Container_Again.IsVisible = false;
+                inBuildingOrder_position_stack_Again.IsVisible = false;
 
-            await Task.Delay(1);
-            overlay.IsVisible = false;
-            isInitialize = false;
+                buildingorderlist_category_container_Again.Children.Clear();
+                buildingorderlist_category_container_Again.Children.Add(KategorieWSO.GetCategoryAgainListView(AppModel.Instance, new Command<KategorieWSO>(SelectCategoryAgain)));
+                BuildingOrderPage_category_Container_Again.IsVisible = true;
+
+                await Task.Delay(1);
+                overlay.IsVisible = false;
+                isInitialize = false;
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error($"ShowOrderCategoryAgainPage: {ex.Message}");
+                await DisplayAlertAsync("Fehler", $"Fehler beim Laden der Kategorien: {ex.Message}", "OK");
+                overlay.IsVisible = false;
+                isInitialize = false;
+            }
         }
         public async void SelectCategoryAgain(KategorieWSO category)
         {
-            AppModel.Instance.LastSelectedCategoryAgain = category;
-            BuildingOrderPage_category_Container_Again.IsVisible = false;
-            inBuildingOrder_position_stack_Again.IsVisible = true;
-            lb_inBuildingOrder_categorypos_text_Again.Text = AppModel.Instance.LastSelectedOrderAgain.GetMobileText();// + " \nNr.: " + AppModel.Instance.LastSelectedOrderAgain.id + "  Typ: " + AppModel.Instance.LastSelectedOrderAgain.typ;
-            lb_inBuildingOrder_position_text_Again.Text = category.GetMobileText();
-            ShowOrderPositionPageAgain();
+            try
+            {
+                // Null-Check für übergebene Kategorie
+                if (category == null)
+                {
+                    AppModel.Logger?.Error("SelectCategoryAgain: category parameter is null");
+                    await DisplayAlertAsync("Fehler", "Ungültige Kategorie ausgewählt.", "OK");
+                    return;
+                }
+
+                //// Prüfe ob bereits eine Operation läuft
+                //if (isInitialize)
+                //{
+                //    AppModel.Logger?.Warn("SelectCategoryAgain: Operation already in progress, ignoring click");
+                //    return;
+                //}
+
+                AppModel.Instance.LastSelectedCategoryAgain = category;
+                BuildingOrderPage_category_Container_Again.IsVisible = false;
+                inBuildingOrder_position_stack_Again.IsVisible = true;
+                lb_inBuildingOrder_categorypos_text_Again.Text = AppModel.Instance.LastSelectedOrderAgain.GetMobileText();// + " \nNr.: " + AppModel.Instance.LastSelectedOrderAgain.id + "  Typ: " + AppModel.Instance.LastSelectedOrderAgain.typ;
+                lb_inBuildingOrder_position_text_Again.Text = category.GetMobileText();
+                ShowOrderPositionPageAgain();
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error($"SelectCategoryAgain: {ex.Message}", ex);
+                await DisplayAlertAsync("Fehler", $"Fehler beim Auswählen der Kategorie: {ex.Message}", "OK");
+            }
         }
         private async void ShowOrderPositionPageAgain()
         {
-            isInitialize = true;
-            overlay.IsVisible = true;
-            await Task.Delay(1);
+            try
+            {
+                isInitialize = true;
+                overlay.IsVisible = true;
+                await Task.Delay(1);
 
+                // Null-Check vor dem Zugriff
+                if (AppModel.Instance?.LastSelectedCategoryAgain == null)
+                {
+                    AppModel.Logger?.Error("ShowOrderPositionPageAgain: LastSelectedCategoryAgain is null");
+                    await DisplayAlertAsync("Fehler", "Keine Kategorie ausgewählt.", "OK");
+                    overlay.IsVisible = false;
+                    isInitialize = false;
+                    return;
+                }
 
-            buildingorderlist_position_container_Again.Children.Clear();
-            buildingorderlist_position_container_Again.Children.Add(LeistungWSO.GetPositionAgainListView(AppModel.Instance, new Command<LeistungWSO>(SelectPositionToWorkAgain)));
-            BuildingOrderPage_position_Container_Again.IsVisible = true;
+                buildingorderlist_position_container_Again.Children.Clear();
+                buildingorderlist_position_container_Again.Children.Add(LeistungWSO.GetPositionAgainListView(AppModel.Instance, new Command<LeistungWSO>(SelectPositionToWorkAgain)));
+                BuildingOrderPage_position_Container_Again.IsVisible = true;
 
-            AppModel.Instance.LastSelectedPositionAgain = null;
+                AppModel.Instance.LastSelectedPositionAgain = null;
 
-            await Task.Delay(1);
-            overlay.IsVisible = false;
-            isInitialize = false;
+                await Task.Delay(1);
+                overlay.IsVisible = false;
+                isInitialize = false;
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error($"ShowOrderPositionPageAgain: {ex.Message}", ex);
+                await DisplayAlertAsync("Fehler", $"Fehler beim Laden der Positionen: {ex.Message}", "OK");
+                overlay.IsVisible = false;
+                isInitialize = false;
+            }   
         }
         public async void SelectPositionToWorkAgain(LeistungWSO position)
         {

@@ -53,7 +53,7 @@
                     HorizontalOptions="Fill"
                     HorizontalTextAlignment="Start"
                     LineBreakMode="TailTruncation"
-                    Text="Scann abbrechen"
+                    Text="Scan abbrechen"
                     TextColor="#4fa4ed"
                     VerticalOptions="Center" />
             </HorizontalStackLayout>

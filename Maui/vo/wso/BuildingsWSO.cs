@@ -700,6 +700,7 @@ namespace iPMCloud.Mobile
         /// </summary>
         public static bool Save(AppModel model, BuildingWSO building)
         {
+            string filePath = null;
             try
             {
                 if (model == null || building == null)
@@ -724,7 +725,7 @@ namespace iPMCloud.Mobile
                     Directory.CreateDirectory(directoryPath);
                 }
 
-                string filePath = Path.Combine(directoryPath, $"b_{building.id}.ipm");
+                filePath = Path.Combine(directoryPath, $"b_{building.id}.ipm");
 
                 var jsonSettings = new JsonSerializerSettings
                 {
@@ -735,6 +736,21 @@ namespace iPMCloud.Mobile
                 };
 
                 string jsonString = JsonConvert.SerializeObject(building, jsonSettings);
+
+                // Create backup of existing file before overwriting
+                if (File.Exists(filePath))
+                {
+                    try
+                    {
+                        string backupPath = filePath + ".bak";
+                        File.Copy(filePath, backupPath, true);
+                    }
+                    catch (Exception backupEx)
+                    {
+                        AppModel.Logger?.Warn($"Failed to create backup for building {building.id}: {backupEx.Message}");
+                    }
+                }
+
                 File.WriteAllText(filePath, jsonString);
 
                 return true;
@@ -751,6 +767,7 @@ namespace iPMCloud.Mobile
         /// </summary>
         public static BuildingWSO LoadBuilding(AppModel model, int id)
         {
+            string filePath = null;
             try
             {
                 if (model == null || string.IsNullOrWhiteSpace(model.SettingModel?.SettingDTO?.CustomerNumber))
@@ -758,7 +775,7 @@ namespace iPMCloud.Mobile
                     return null;
                 }
 
-                string filePath = Path.Combine(
+                filePath = Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     "ipm/" + model.SettingModel.SettingDTO.CustomerNumber + "/buildings/b_" + id + ".ipm"
                 );
@@ -768,15 +785,61 @@ namespace iPMCloud.Mobile
                     var jsonSettings = new JsonSerializerSettings
                     {
                         NullValueHandling = NullValueHandling.Include,
-                        MissingMemberHandling = MissingMemberHandling.Ignore
+                        MissingMemberHandling = MissingMemberHandling.Ignore,
+                        Error = (sender, errorArgs) =>
+                        {
+                            // Log JSON deserialization errors but continue
+                            AppModel.Logger?.Warn($"JSON deserialization warning for building {id}: {errorArgs.ErrorContext.Error.Message}");
+                            errorArgs.ErrorContext.Handled = true;
+                        }
                     };
 
                     string jsonString = File.ReadAllText(filePath);
                     if (string.IsNullOrWhiteSpace(jsonString))
+                    {
+                        AppModel.Logger?.Warn($"LoadBuilding: Empty JSON file for building {id}");
                         return null;
+                    }
+
+                    // Validate JSON structure before deserializing
+                    if (!IsValidJson(jsonString))
+                    {
+                        AppModel.Logger?.Error($"LoadBuilding: Invalid/incomplete JSON for building {id}, attempting backup recovery");
+
+                        // Try to load backup if available
+                        var backup = TryLoadBackup(filePath, id);
+                        if (backup != null)
+                            return backup;
+
+                        // Delete corrupted file
+                        File.Delete(filePath);
+                        return null;
+                    }
+
                     return JsonConvert.DeserializeObject<BuildingWSO>(jsonString, jsonSettings);
                 }
 
+                return null;
+            }
+            catch (JsonException jsonEx)
+            {
+                AppModel.Logger?.Error(jsonEx, $"ERROR: LoadBuilding - JSON deserialization failed for building {id}");
+
+                // Try to recover from backup
+                if (filePath != null && File.Exists(filePath))
+                {
+                    var backup = TryLoadBackup(filePath, id);
+                    if (backup != null)
+                        return backup;
+
+                    // Delete corrupted file if backup recovery also failed
+                    try
+                    {
+                        File.Delete(filePath);
+                        AppModel.Logger?.Info($"Deleted corrupted building file: {filePath}");
+                    }
+                    catch { }
+                }
                 return null;
             }
             catch (Exception ex)
@@ -851,6 +914,77 @@ namespace iPMCloud.Mobile
                 AppModel.Logger?.Error(ex, $"ERROR: DeleteBuilding - {id}");
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Validates if a JSON string is well-formed and complete
+        /// </summary>
+        private static bool IsValidJson(string jsonString)
+        {
+            if (string.IsNullOrWhiteSpace(jsonString))
+                return false;
+
+            jsonString = jsonString.Trim();
+
+            // Basic structure validation
+            if (!jsonString.StartsWith("{") || !jsonString.EndsWith("}"))
+                return false;
+
+            try
+            {
+                // Try to parse as JObject to validate structure
+                var token = Newtonsoft.Json.Linq.JToken.Parse(jsonString);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Attempts to load a backup file if the main file is corrupted
+        /// </summary>
+        private static BuildingWSO TryLoadBackup(string originalFilePath, int id)
+        {
+            try
+            {
+                string backupPath = originalFilePath + ".bak";
+
+                if (File.Exists(backupPath))
+                {
+                    AppModel.Logger?.Info($"Attempting to load backup for building {id}");
+
+                    string jsonString = File.ReadAllText(backupPath);
+
+                    if (IsValidJson(jsonString))
+                    {
+                        var jsonSettings = new JsonSerializerSettings
+                        {
+                            NullValueHandling = NullValueHandling.Include,
+                            MissingMemberHandling = MissingMemberHandling.Ignore
+                        };
+
+                        var building = JsonConvert.DeserializeObject<BuildingWSO>(jsonString, jsonSettings);
+
+                        if (building != null)
+                        {
+                            AppModel.Logger?.Info($"Successfully recovered building {id} from backup");
+
+                            // Restore the backup to the main file
+                            File.Copy(backupPath, originalFilePath, true);
+
+                            return building;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Warn($"Failed to load backup for building {id}: {ex.Message}");
+            }
+
+            return null;
         }
 
         /// <summary>

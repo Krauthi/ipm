@@ -87,6 +87,10 @@ namespace iPMCloud.Mobile
                     Log.Warn(TAG, "Google Play Services nicht verfügbar");
                 }
 
+                // Initialize native Flashlight service
+                AndroidFlashlightService.Initialize(this);
+                Log.Info(TAG, $"AndroidFlashlightService initialized, available={AndroidFlashlightService.IsAvailable()}");
+
                 //Log.Info(TAG, "MainActivity erfolgreich initialisiert");
             }
             catch (Exception ex)
@@ -185,6 +189,16 @@ namespace iPMCloud.Mobile
             PushNotificationService.EnsureAndroidNotificationPermissionRequest();
             ApplySystemBarColors();
             ScheduleSystemUiUpdate("OnResume");
+
+            // Log Kamera-Fähigkeiten für QR-Code-Scanning-Debugging
+            try
+            {
+                iPMCloud.Mobile.Platforms.Android.Handlers.CameraOptimizationHandler.LogCameraCapabilities(this);
+            }
+            catch (Exception ex)
+            {
+                Log.Debug(TAG, $"Camera capabilities logging failed (non-critical): {ex.Message}");
+            }
             //Log.Debug(TAG, "OnResume");
         }
 
@@ -227,6 +241,42 @@ namespace iPMCloud.Mobile
             if (hasFocus)
             {
                 ScheduleSystemUiUpdate("OnWindowFocusChanged", force: true);
+            }
+        }
+
+        /// <summary>
+        /// Override DispatchTouchEvent to catch and handle NullPointerException
+        /// that can occur in Android's ViewGroup.resetCancelNextUpFlag when a view
+        /// is null during modal dialog touch event processing.
+        /// This is a workaround for a known MAUI Android bug with ModalNavigationManager.
+        /// </summary>
+        public override bool DispatchTouchEvent(MotionEvent e)
+        {
+            try
+            {
+                // Validate critical preconditions before dispatching
+                if (e == null || Window?.DecorView == null)
+                {
+                    return false;
+                }
+
+                return base.DispatchTouchEvent(e);
+            }
+            catch (Java.Lang.NullPointerException ex)
+            {
+                // Log the NPE but don't crash the app
+                Log.Warn(TAG, $"Caught NullPointerException in DispatchTouchEvent (Android modal bug): {ex.Message}");
+                AppModel.Logger?.Warn($"MainActivity.DispatchTouchEvent NPE suppressed: {ex.Message}");
+
+                // Return false to indicate the event was not handled
+                return false;
+            }
+            catch (Exception ex)
+            {
+                // Catch any other unexpected exceptions
+                Log.Error(TAG, $"Unexpected error in DispatchTouchEvent: {ex}");
+                AppModel.Logger?.Error($"MainActivity.DispatchTouchEvent error: {ex}");
+                return false;
             }
         }
 

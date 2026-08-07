@@ -1018,7 +1018,7 @@
                             <AbsoluteLayout
                                 x:Name="frame_plantabA_badge"
                                 Grid.Column="1"
-                                Margin="-7,-1,-4,0"
+                                Margin="-15,-1,-4,0"
                                 AbsoluteLayout.LayoutBounds="0,0,1,1"
                                 AbsoluteLayout.LayoutFlags="None"
                                 BackgroundColor="Transparent"
@@ -1033,7 +1033,7 @@
                                     VerticalOptions="Start">
                                     <Label
                                         x:Name="frame_plantabA_badge_count"
-                                        Margin="0,-2,0,0"
+                                        Margin="0,-1,0,0"
                                         Padding="0"
                                         FontSize="9"
                                         HorizontalOptions="Center"
@@ -1150,7 +1150,7 @@
                             <AbsoluteLayout
                                 x:Name="frame_plantabCe_badge"
                                 Grid.Column="1"
-                                Margin="-2,-1,-5,0"
+                                Margin="-4,-1,-5,0"
                                 AbsoluteLayout.LayoutBounds="0,0,1,1"
                                 AbsoluteLayout.LayoutFlags="None"
                                 BackgroundColor="Transparent"
@@ -1166,7 +1166,7 @@
                                     VerticalOptions="Start">
                                     <Label
                                         x:Name="frame_plantabCe_badge_count"
-                                        Margin="0,-2,0,0"
+                                        Margin="0,-1,0,0"
                                         Padding="0"
                                         FontSize="9"
                                         HorizontalOptions="Center"
@@ -1195,7 +1195,7 @@
                                     VerticalOptions="Start">
                                     <Label
                                         x:Name="frame_plantabCe_badge_count_g"
-                                        Margin="0,-2,0,0"
+                                        Margin="0,-1,0,0"
                                         Padding="0"
                                         FontSize="9"
                                         HorizontalOptions="Center"
@@ -1254,13 +1254,13 @@
                                     Padding="0"
                                     FontSize="9"
                                     HorizontalTextAlignment="Start"
-                                    Text="Zu Erledigen"
+                                    Text="Erledigen"
                                     TextColor="#ffffff" />
                             </VerticalStackLayout>
                             <AbsoluteLayout
                                 x:Name="frame_plantabC_badge"
                                 Grid.Column="1"
-                                Margin="-5,-1,-4,0"
+                                Margin="-2,-1,-4,0"
                                 AbsoluteLayout.LayoutBounds="0,0,1,1"
                                 AbsoluteLayout.LayoutFlags="None"
                                 BackgroundColor="Transparent"                                
@@ -1277,7 +1277,7 @@
                                     VerticalOptions="Start">
                                     <Label
                                         x:Name="frame_plantabC_badge_count"
-                                        Margin="0,-2,0,0"
+                                        Margin="0,-1,0,0"
                                         Padding="0"
                                         FontSize="9"
                                         HorizontalOptions="Center"
@@ -1297,7 +1297,7 @@
                                     VerticalOptions="Start">
                                     <Label
                                         x:Name="frame_plantabC_badge_count2"
-                                        Margin="0,-2,0,0"
+                                        Margin="0,-1,0,0"
                                         Padding="0"
                                         FontSize="9"
                                         HorizontalOptions="Center"
@@ -2520,7 +2520,7 @@
                             <Border
                                 Grid.Row="1"
                                 Margin="0"
-                                BackgroundColor="#ccc"
+                                BackgroundColor="#999"
                                 HeightRequest="2"
                                 HorizontalOptions="Fill"
                                 VerticalOptions="Start" />
@@ -2675,7 +2675,7 @@
                             <Border
                                 Grid.Row="3"
                                 Margin="0"
-                                BackgroundColor="#ccc"
+                                BackgroundColor="#999"
                                 HeightRequest="2"
                                 HorizontalOptions="Fill"
                                 VerticalOptions="Start" />
@@ -4528,7 +4528,7 @@
                         HorizontalOptions="Fill"
                         HorizontalTextAlignment="Start"
                         LineBreakMode="TailTruncation"
-                        Text="Scann abbrechen"
+                        Text="Scan abbrechen"
                         TextColor="#4fa4ed"
                         VerticalOptions="Center" />
                 </HorizontalStackLayout>
@@ -5672,6 +5672,7 @@
                     <RowDefinition Height="54" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
                 <Grid
@@ -5737,23 +5738,33 @@
                     </VerticalStackLayout>
                 </Grid>
 
-                <Border
-                    Grid.Row="1"
-                    Margin="0,0,0,0"
-                    BackgroundColor="White"
-                    HeightRequest="2"
-                    HorizontalOptions="Fill"
-                    VerticalOptions="Start" />
 
                 <!--  Ticket Info Karte (dynamisch gefüllt)  -->
                 <StackLayout
-                            Grid.Row="1"
+                            Grid.Row="2"
                             x:Name="ticket_info_container"
-                            Padding="5"
+                            Padding="0,0,0,12"
                             Spacing="0" />
                 <!--  Tab Navigation  -->
+
+                <Button
+                        x:Name="ticket_startnow_btn"
+                        Grid.Row="1"
+                        BackgroundColor="#136745"
+                        BorderColor="Transparent"
+                        BorderWidth="2"
+                    MaximumWidthRequest="200"
+                        Clicked="OnTabBeschreibung_Clicked"
+                        CornerRadius="0"
+                        Margin="10,10,0,10"
+                        FontAttributes="Bold"
+                        FontSize="18"
+                    HorizontalOptions="End"
+                        Text="JETZT  STARTEN"
+                        TextColor="White" />
+                
                 <Grid
-                    Grid.Row="2"
+                    Grid.Row="3"
                     Margin="0"
                     Padding="0"
                     BackgroundColor="#1a1a1a"
@@ -5764,12 +5775,12 @@
                         <ColumnDefinition Width="140" />
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
+                    </Grid.ColumnDefinitions>                    
 
                     <Button
                         x:Name="tab_beschreibung_btn"
                         Grid.Column="0"
-                        BackgroundColor="#357"
+                        BackgroundColor="#234567"
                         BorderColor="Transparent"
                         BorderWidth="0"
                         Clicked="OnTabBeschreibung_Clicked"
@@ -5802,14 +5813,14 @@
                         CornerRadius="0"
                         FontAttributes="Bold"
                         FontSize="14"
-                        Text="CHAT VERLAUF"
+                        Text="CHAT"
                         TextColor="#aaa" />
                 </Grid>
 
 
                 <!--  Tab Content Area  -->
                 <Grid
-                    Grid.Row="3"
+                    Grid.Row="4"
                     Margin="0"
                     Padding="0"
                     BackgroundColor="#ccc"
@@ -5818,36 +5829,38 @@
                     VerticalOptions="Fill">
 
                     <!--  Beschreibung Tab  -->
-                    <Grid
+                    <ScrollView
                         x:Name="beschreibung_tab_content"
                         Grid.Row="0"
+                        BackgroundColor="#234567"
                         IsVisible="True"
-                        VerticalOptions="Fill"
-                        RowDefinitions="Auto,*">
-                        <ScrollView 
-                            Grid.Row="1" 
-                            VerticalOptions="Fill">
-                            <!--  Beschreibung WebView  -->
-                            <WebView
-                                x:Name="ticket_beschreibung_webview"                                
-                                VerticalOptions="Start" />
-                        </ScrollView>
-                    </Grid>
+                        Padding="0,5"
+                        VerticalOptions="FillAndExpand"
+                        HorizontalOptions="FillAndExpand">
+                        <!--  WebView - wird im Code-Behind gesetzt  -->
+                        <WebView
+                            x:Name="ticket_beschreibung_webview"
+                            BackgroundColor="#234567"
+                            MinimumHeightRequest="500"
+                            VerticalOptions="Start"
+                            HorizontalOptions="Fill" />
+                    </ScrollView>
 
                     <!--  Objekt/Auftrag Tab  -->
                     <ScrollView
                         x:Name="objekt_tab_content"
-                        BackgroundColor="#345"
+                        BackgroundColor="#234567"
                         IsVisible="False">
                         <StackLayout
                             Margin="0,5,0,0"
                             Padding="0"
-                            BackgroundColor="#345"
+                            BackgroundColor="#234567"
                             Spacing="0">
                             <!--  Details Container (dynamisch gefüllt im Code)  -->
                             <StackLayout
                                 x:Name="objekt_auftrag_content"
-                                Padding="5"
+                            BackgroundColor="#234567"
+                                Padding="0"
                                 Spacing="0">
                                 <!--  Dynamisch gefüllt im Code  -->
                             </StackLayout>
@@ -5872,8 +5885,8 @@
                             x:Name="chatScrollView"
                             Grid.Row="0"
                             Margin="0"
-                            Padding="15"
-                            BackgroundColor="#345"
+                            Padding="8"
+                            BackgroundColor="#234567"
                             HorizontalOptions="Fill"
                             VerticalOptions="Fill">
 
@@ -5882,7 +5895,7 @@
                                 Margin="0"
                                 Padding="0"
                                 HorizontalOptions="Fill"
-                                Spacing="12"
+                                Spacing="5"
                                 VerticalOptions="Start" />
                         </ScrollView>
 
@@ -5890,9 +5903,9 @@
                         <Grid
                             Grid.Row="1"
                             Margin="0"
-                            Padding="10"
-                            BackgroundColor="#a0b0c0"
-                            ColumnSpacing="10"
+                            Padding="0,12,0,4"
+                            BackgroundColor="#000000"
+                            ColumnSpacing="8"
                             HorizontalOptions="Fill"
                             RowSpacing="0">
                             <Grid.RowDefinitions>
@@ -5900,6 +5913,8 @@
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
@@ -5907,7 +5922,7 @@
                             <!--  Editor für neue Nachricht  -->
                             <Border
                                 Grid.Row="0"
-                                Grid.Column="0"
+                                Grid.Column="2"
                                 Padding="0"
                                 BackgroundColor="White"
                                 StrokeThickness="0">
@@ -5916,7 +5931,7 @@
                                 </Border.StrokeShape>
                                 <Editor
                                     x:Name="ticketMessageEditor"
-                                    Margin="15,5"
+                                    Margin="5,5"
                                     AutoSize="TextChanges"
                                     BackgroundColor="White"
                                     FontSize="16"
@@ -5930,77 +5945,67 @@
                             <!--  Senden Button  -->
                             <Border
                                 Grid.Row="0"
-                                Grid.Column="1"
+                                Grid.Column="3"
                                 Padding="0"
-                                BackgroundColor="#25b356"
-                                HeightRequest="45"
+                                BackgroundColor="#159346"
+                                HeightRequest="40"
                                 StrokeThickness="0"
-                                WidthRequest="45">
+                                WidthRequest="40">
                                 <Border.StrokeShape>
                                     <RoundRectangle CornerRadius="12.5" />
                                 </Border.StrokeShape>
                                 <ImageButton
                                     BackgroundColor="Transparent"
                                     Clicked="OnSendTicketMessage_Clicked"
-                                    HeightRequest="40"
+                                    HeightRequest="25"
                                     Source="forward2_img.png"
-                                    WidthRequest="40" />
+                                    WidthRequest="25" />
                             </Border>
 
                             <!--  Bild-Buttons (Kamera und Galerie)  -->
                             <HorizontalStackLayout
-                                Grid.Row="1"
+                                Grid.Row="0"
                                 Grid.Column="0"
-                                Grid.ColumnSpan="2"
-                                Margin="0,10,0,0"
-                                Spacing="10">
+                                Grid.ColumnSpan="0"
+                                Margin="0,0,0,0"
+                                Spacing="5">
 
                                 <!--  Kamera Button  -->
                                 <Border
-                                    Padding="10,8"
+                                    Padding="0"
                                     BackgroundColor="#357"
-                                    StrokeThickness="0">
+                                    StrokeThickness="0"
+                                    HeightRequest="40"
+                                    WidthRequest="40">
                                     <Border.StrokeShape>
                                         <RoundRectangle CornerRadius="8" />
                                     </Border.StrokeShape>
-                                    <HorizontalStackLayout Spacing="8">
-                                        <HorizontalStackLayout.GestureRecognizers>
-                                            <TapGestureRecognizer Tapped="OnCameraButton_Tapped" />
-                                        </HorizontalStackLayout.GestureRecognizers>
-                                        <Label
-                                            FontSize="18"
-                                            Text="📷"
-                                            VerticalOptions="Center" />
-                                        <Label
-                                            FontSize="14"
-                                            Text="Kamera"
-                                            TextColor="White"
-                                            VerticalOptions="Center" />
-                                    </HorizontalStackLayout>
+                                    <ImageButton
+                                        Source="cam.png"
+                                        BackgroundColor="Transparent"
+                                        Clicked="OnCameraButton_Tapped"
+                                        HeightRequest="40"
+                                        WidthRequest="40"
+                                        Padding="8" />
                                 </Border>
 
                                 <!--  Galerie Button  -->
                                 <Border
-                                    Padding="10,8"
+                                    Padding="0"
                                     BackgroundColor="#357"
-                                    StrokeThickness="0">
+                                    StrokeThickness="0"
+                                    HeightRequest="40"
+                                    WidthRequest="40">
                                     <Border.StrokeShape>
                                         <RoundRectangle CornerRadius="8" />
                                     </Border.StrokeShape>
-                                    <HorizontalStackLayout Spacing="8">
-                                        <HorizontalStackLayout.GestureRecognizers>
-                                            <TapGestureRecognizer Tapped="OnGalleryButton_Tapped" />
-                                        </HorizontalStackLayout.GestureRecognizers>
-                                        <Label
-                                            FontSize="18"
-                                            Text="🖼️"
-                                            VerticalOptions="Center" />
-                                        <Label
-                                            FontSize="14"
-                                            Text="Galerie"
-                                            TextColor="White"
-                                            VerticalOptions="Center" />
-                                    </HorizontalStackLayout>
+                                    <ImageButton
+                                        Source="attachment.png"
+                                        BackgroundColor="Transparent"
+                                        Clicked="OnGalleryButton_Tapped"
+                                        HeightRequest="40"
+                                        WidthRequest="40"
+                                        Padding="8" />
                                 </Border>
                             </HorizontalStackLayout>
                         </Grid>
@@ -8471,7 +8476,7 @@
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             AbsoluteLayout.LayoutFlags="All"
             BackgroundColor="#66000000"
-            IsVisible="False">
+            IsVisible="false">
             <AbsoluteLayout.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnOverlayTapped" />
             </AbsoluteLayout.GestureRecognizers>

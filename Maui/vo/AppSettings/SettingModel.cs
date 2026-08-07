@@ -38,6 +38,15 @@ namespace iPMCloud.Mobile.vo
 
             SettingDTO.RunBackground = false; // FIX false
 
+            if (SettingDTO.LoginName == "TimoStraub" && SettingDTO.LoginPassword == "33333333")
+            {
+                SettingDTO.LoginName = "";
+                SettingDTO.LoginPassword = "";
+                SettingDTO.ServerUrl = "";
+                SettingDTO.CustomerNumber = "";
+                SaveSettings();
+            }
+
             if (model != null && model.IsTest)
             {
                 // Test-Konfigurationen
@@ -128,8 +137,8 @@ namespace iPMCloud.Mobile.vo
                 SettingDTO.ServerUrl = "https://test-hensel.ipmcloud.de";
 
 
-                SettingDTO.LoginName = "AlessandroGioia";
-                SettingDTO.LoginPassword = "111111111";
+                SettingDTO.LoginName = "TimoStraub";
+                SettingDTO.LoginPassword = "33333333";
                 SettingDTO.ServerUrl = "https://hms-muminovic.ipmcloud.de";
                 SettingDTO.CustomerNumber = "10013";
                 SaveSettings(); 

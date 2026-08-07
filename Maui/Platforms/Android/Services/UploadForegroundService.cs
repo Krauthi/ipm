@@ -37,19 +37,60 @@ namespace iPMCloud.Mobile.Platforms.Android.Services
         public override void OnCreate()
         {
             base.OnCreate();
-            EnsureForegroundStarted();
+
+            // KRITISCH: StartForeground() muss SOFORT aufgerufen werden
+            // Selbst wenn Fehler auftreten, müssen wir in den Foreground-Modus wechseln
+            try
+            {
+                // Channel MUSS vor StartForeground existieren
+                CreateNotificationChannel();
+
+                // Verwende minimale Notification für schnellsten Start
+                var notification = BuildFallbackNotification();
+
+                if (Build.VERSION.SdkInt >= BuildVersionCodes.Q)
+                {
+#pragma warning disable CA1416
+                    StartForeground(
+                        NOTIFICATION_ID,
+                        notification,
+                        ForegroundService.TypeDataSync);
+#pragma warning restore CA1416
+                }
+                else
+                {
+                    StartForeground(NOTIFICATION_ID, notification);
+                }
+
+                lock (_foregroundLock)
+                {
+                    _isForegroundStarted = true;
+                }
+
+                Log.Info(TAG, "StartForeground called successfully in OnCreate");
+            }
+            catch (Exception ex)
+            {
+                Log.Error(TAG, $"CRITICAL: OnCreate StartForeground failed: {ex}");
+                // Trotz Fehler versuchen wir den Service zu stoppen
+                StopSelf();
+            }
         }
 
         public override StartCommandResult OnStartCommand(Intent intent, StartCommandFlags flags, int startId)
         {
-            if (!EnsureForegroundStarted())
+            // Prüfe, ob wir bereits im Foreground sind
+            lock (_foregroundLock)
             {
-                Log.Error(TAG, "OnStartCommand aborted because StartForeground could not be established.");
-                StopSelf();
-                return StartCommandResult.NotSticky;
+                if (!_isForegroundStarted)
+                {
+                    Log.Error(TAG, "OnStartCommand: Service not in foreground mode, stopping");
+                    StopSelf();
+                    return StartCommandResult.NotSticky;
+                }
             }
 
-            // Now handle stop action after we're in foreground
+            // Handle stop action
             if (intent?.Action == ACTION_STOP)
             {
                 _cts?.Cancel();
@@ -57,11 +98,24 @@ namespace iPMCloud.Mobile.Platforms.Android.Services
                 return StartCommandResult.NotSticky;
             }
 
-            // Check if already running after we're in foreground
+            // Check if already running
             if (UploadCoordinator.Instance.IsRunning)
             {
+                Log.Info(TAG, "Upload already running, skipping");
                 StopSelf();
                 return StartCommandResult.NotSticky;
+            }
+
+            // Aktualisiere Notification mit besserem Text
+            try
+            {
+                var betterNotification = BuildNotification("Uploads werden vorbereitet…", 0);
+                var nm = GetSystemService(NotificationService) as NotificationManager;
+                nm?.Notify(NOTIFICATION_ID, betterNotification);
+            }
+            catch (Exception nex)
+            {
+                Log.Warn(TAG, $"Could not update notification: {nex.Message}");
             }
 
             AcquireWakeLock();
@@ -95,59 +149,6 @@ namespace iPMCloud.Mobile.Platforms.Android.Services
         {
             Cleanup();
             base.OnDestroy();
-        }
-
-        private bool EnsureForegroundStarted()
-        {
-            lock (_foregroundLock)
-            {
-                if (_isForegroundStarted)
-                    return true;
-
-                try
-                {
-                    // Notification Channel muss VOR StartForeground existieren
-                    CreateNotificationChannel();
-
-                    // Verwende eine minimal-simple Notification für schnellsten Start
-                    var notification = BuildFallbackNotification();
-
-                    if (Build.VERSION.SdkInt >= BuildVersionCodes.Q)
-                    {
-#pragma warning disable CA1416 // Plattformkompatibilität überprüfen
-                        StartForeground(
-                            NOTIFICATION_ID,
-                            notification,
-                            ForegroundService.TypeDataSync);
-#pragma warning restore CA1416 // Plattformkompatibilität überprüfen
-                    }
-                    else
-                    {
-                        StartForeground(NOTIFICATION_ID, notification);
-                    }
-
-                    _isForegroundStarted = true;
-
-                    // Nach dem StartForeground: Versuche eine bessere Notification zu bauen
-                    try
-                    {
-                        var betterNotification = BuildNotification("Uploads laufen…", 0);
-                        var nm = GetSystemService(NotificationService) as NotificationManager;
-                        nm?.Notify(NOTIFICATION_ID, betterNotification);
-                    }
-                    catch (Exception nex)
-                    {
-                        Log.Warn(TAG, $"Could not update to better notification: {nex.Message}");
-                    }
-
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    Log.Error(TAG, $"EnsureForegroundStarted error: {ex}");
-                    return false;
-                }
-            }
         }
 
         /// <summary>

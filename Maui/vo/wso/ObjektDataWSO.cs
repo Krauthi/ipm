@@ -874,7 +874,7 @@ namespace iPMCloud.Mobile
                         {
                             VerticalOptions = LayoutOptions.Center,
                             HorizontalOptions = LayoutOptions.Center,
-                            Margin = new Thickness(0),
+                            Margin = new Thickness(0,3,0,0),
                             HeightRequest = 30,
                             WidthRequest = 30,
                             Source = "flashlight.png"
@@ -910,7 +910,7 @@ namespace iPMCloud.Mobile
                         {
                             VerticalOptions = LayoutOptions.Center,
                             HorizontalOptions = LayoutOptions.Center,
-                            Margin = new Thickness(0),
+                            Margin = new Thickness(0,3,0,0),
                             HeightRequest = 30,
                             WidthRequest = 30,
                             Source = "cam.png"

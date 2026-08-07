@@ -304,7 +304,7 @@ namespace iPMCloud.Mobile
 
             try
             {
-                if (!MediaPicker.Default.IsCaptureSupported)
+                if (!MediaPicker.IsCaptureSupported)
                 {
                     await DisplayAlertAsync("Fehler", "Kamera nicht verfügbar", "OK");
                     return;
@@ -320,6 +320,7 @@ namespace iPMCloud.Mobile
                     MaximumWidth = 1024,
                     SelectionLimit = 5 - _selectedBemerkungForNotice.photos.Count,
                     PreserveMetaData = true,
+                    RotateImage = true
                 };
 #if !IOS
                 options.RotateImage = true;

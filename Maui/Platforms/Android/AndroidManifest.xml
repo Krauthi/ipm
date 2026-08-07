@@ -3,8 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.ipmcloud.ipm.mobile"
-    android:versionName="3.0.81"
-    android:versionCode="3000081">
+    android:versionName="3.0.86"
+    android:versionCode="3000086">
 	<uses-sdk android:minSdkVersion="28" android:targetSdkVersion="36" 
         tools:overrideLibrary="androidx.lifecycle.runtime,com.google.android.play.core,com.google.android.gms.base,com.google.android.gms.common,com.google.android.gms.tasks" />
 
@@ -59,6 +59,14 @@
 
 	<uses-permission android:name="android.permission.CAMERA" />
 	<uses-permission android:name="android.permission.FLASHLIGHT" />
+
+	<!-- Camera2 API features für bessere QR-Code-Erkennung auf modernen Geräten wie Samsung S21+ -->
+	<uses-feature android:name="android.hardware.camera" android:required="false" />
+	<uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
+	<uses-feature android:name="android.hardware.camera.any" android:required="false" />
+	<uses-feature android:name="android.hardware.camera.capability.manual_sensor" android:required="false" />
+	<uses-feature android:name="android.hardware.camera.capability.manual_post_processing" android:required="false" />
+
 	<!--<uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
 	<uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />-->
 	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
@@ -69,6 +77,5 @@
 	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
-	<uses-feature android:name="android.hardware.camera" android:required="false" />
-	<uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
+	<!-- Entfernt: Doppelte uses-feature Einträge wurden oben bereits hinzugefügt -->
 </manifest>

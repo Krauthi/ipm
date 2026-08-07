@@ -93,7 +93,7 @@ namespace iPMCloud.Mobile
             {
                 AppModel.Instance.UseExternHardware = true;
 
-                if (!MediaPicker.Default.IsCaptureSupported)
+                if (!MediaPicker.IsCaptureSupported)
                 {
                     await DisplayAlertAsync("Fehler", "Kamera nicht verfügbar", "OK");
                     return;

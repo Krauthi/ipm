@@ -582,11 +582,23 @@ namespace iPMCloud.Mobile
                 HorizontalOptions = LayoutOptions.FillAndExpand,
             };
 
+            // Null-Checks für Customer-Wechsel-Szenario
+            if (model?.LastSelectedOrderAgain == null)
+            {
+                AppModel.Logger?.Error("GetCategoryAgainListView: LastSelectedOrderAgain is null (möglicherweise nach Customer-Wechsel)");
+                return stack;
+            }
 
-            bool isObjektInPlan = AppModel.Instance.Plan_ObjekteThisWeek.Contains(model.LastSelectedOrderAgain.objektid);
+            if (model.LastSelectedOrderAgain.kategorien == null)
+            {
+                AppModel.Logger?.Error("GetCategoryAgainListView: kategorien is null");
+                return stack;
+            }
+
+            bool isObjektInPlan = AppModel.Instance.Plan_ObjekteThisWeek?.Contains(model.LastSelectedOrderAgain.objektid) ?? false;
 
             model._showall_again_OrderCategory_frame.IsVisible = !AppModel.Instance.AppControll.ignoreKategorieFilterByPerson &&
-                art != "Produkt" && (isObjektInPlan || AppModel.Instance.Plan_KatThisWeek.Count > 0);
+                art != "Produkt" && (isObjektInPlan || (AppModel.Instance.Plan_KatThisWeek?.Count ?? 0) > 0);
 
             model.LastSelectedOrderAgain.kategorien.ForEach(c =>
             {
@@ -600,7 +612,7 @@ namespace iPMCloud.Mobile
                 }
                 else
                 {
-                    if ((AppModel.Instance.Plan_KatThisWeek.Count > 0 && AppModel.Instance.Plan_KatThisWeek.Contains(c.id)))
+                    if ((AppModel.Instance.Plan_KatThisWeek?.Count ?? 0) > 0 && AppModel.Instance.Plan_KatThisWeek.Contains(c.id))
                     {
                         stack.Children.Add(GetCategoryCardView(c, model, func));
                     }

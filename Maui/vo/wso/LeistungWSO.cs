@@ -828,6 +828,21 @@ namespace iPMCloud.Mobile
                 Orientation = StackOrientation.Vertical,
                 HorizontalOptions = LayoutOptions.Fill,
             };
+
+            // Null-Checks hinzufügen
+            if (model?.LastSelectedCategoryAgain == null)
+            {
+                AppModel.Logger?.Error("GetPositionAgainListView: model.LastSelectedCategoryAgain is null");
+                return stack;
+            }
+
+            if (model.LastSelectedCategoryAgain.leistungen == null)
+            {
+                AppModel.Logger?.Error("GetPositionAgainListView: model.LastSelectedCategoryAgain.leistungen is null");
+                //model.LastSelectedCategoryAgain.leistungen = new List<LeistungWSO>();
+                return stack;
+            }
+
             model.LastSelectedCategoryAgain.leistungen = model.LastSelectedCategoryAgain.leistungen.OrderBy(s => s.prio.days).ToList();//.ThenBy(s => s.Name);
             bool isOptionalPos = false;
             model.allPositionAgainInShowingListView.Clear();

@@ -6,11 +6,13 @@ using Microsoft.Maui.Hosting;
 using NLog.Extensions.Logging;
 using ZXing.Net.Maui.Controls;
 using iPMCloud.Mobile.Services;
+using iPMCloud.Mobile.Interfaces;
 using MintedTextEditor.Maui;
 using Microsoft.Maui.Handlers;
 
 #if ANDROID
 using iPMCloud.Mobile.Platforms.Android;
+using iPMCloud.Mobile.Platforms.Android.Handlers;
 #elif IOS
 using iPMCloud.Mobile.Platforms.iOS;
 using UIKit;
@@ -56,8 +58,10 @@ namespace iPMCloud.Mobile
             // Platform-specific upload service
 #if ANDROID
             builder.Services.AddSingleton<IUploadService, AndroidUploadService>();
+            builder.Services.AddSingleton<IBaseUrl, BaseUrl_Android>();
 #elif IOS
             builder.Services.AddSingleton<IUploadService, iOSUploadService>();
+            builder.Services.AddSingleton<IBaseUrl, BaseUrl_iOS>();
 #endif
 
             // Platform-specific background sync service
@@ -113,7 +117,7 @@ namespace iPMCloud.Mobile
             {
                 if (handler.PlatformView is WKWebView wkWebView)
                 {
-                    wkWebView.Opaque = false;
+                    wkWebView.Opaque = true;  // ÄNDERUNG: true statt false macht iOS Content sichtbar!
 
                     // Dynamische Farbe basierend auf Theme
                     var isDarkMode = Application.Current?.RequestedTheme == AppTheme.Dark;
@@ -123,6 +127,11 @@ namespace iPMCloud.Mobile
 
                     wkWebView.BackgroundColor = backgroundColor;
                     wkWebView.ScrollView.BackgroundColor = backgroundColor;
+
+                    // iOS-Fix: Scroll aktivieren und Bouncing erlauben
+                    wkWebView.ScrollView.ScrollEnabled = true;
+                    wkWebView.ScrollView.Bounces = true;
+                    wkWebView.ScrollView.AlwaysBounceVertical = true;
                 }
             });
 #endif
@@ -142,6 +151,10 @@ namespace iPMCloud.Mobile
                     androidWebView.SetBackgroundColor(backgroundColor);
                 }
             });
+
+            // Configure safe modal navigation handler to prevent NullPointerException
+            // in ModalNavigationManager.ModalFragment.CustomComponentDialog.DispatchTouchEvent
+            SafeModalNavigationHandler.ConfigureHandler();
 #endif
 
             return builder.Build();

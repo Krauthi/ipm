@@ -89,6 +89,9 @@ namespace iPMCloud.Mobile
         public string info { get; set; } = "";
         public string updateat { get; set; } = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
         public bool intern { get; set; } = true;
+        public string besitzerStatus { get; set; } = "";
+        public string mandantStatus { get; set; } = "";
+        public string erstellerStatus { get; set; } = "";
 
         public TicketChat() { }
 
@@ -194,6 +197,7 @@ namespace iPMCloud.Mobile
         // Status und Flags
         public int status { get; set; } = 1;            // Ticket-Status (1=Neu, 2=Offen, etc.)
         public int besitzerstatus { get; set; } = -1;   // Status beim Besitzer (-1=Noch nicht gesehen)
+        public string mandantStatus { get; set; } = "";
         public int del { get; set; } = 0;               // Löschen-Flag (0=aktiv, 1=gelöscht, 5=vom Kunde gelöscht)
         public bool intern { get; set; } = true;        // Intern/Extern
         public int prio { get; set; } = 1;              // Priorität
@@ -264,37 +268,53 @@ namespace iPMCloud.Mobile
         {
             try
             {
+                //AppModel.Logger?.Info($"DecodeBase64RichText: Input length = {base64Text?.Length ?? 0}");
+
                 if (string.IsNullOrWhiteSpace(base64Text))
+                {
+                    AppModel.Logger?.Warn("DecodeBase64RichText: Input is null or whitespace");
                     return string.Empty;
+                }
 
                 // Versuche Base64-Dekodierung
                 byte[] data = Convert.FromBase64String(base64Text);
                 string decodedText = System.Text.Encoding.UTF8.GetString(data);
 
+                //AppModel.Logger?.Info($"DecodeBase64RichText: Decoded length = {decodedText.Length}");
+
+                // Trim und logge den echten Inhalt
+                string trimmedText = decodedText.Trim();
+                //AppModel.Logger?.Info($"DecodeBase64RichText: After trim length = {trimmedText.Length}");
+                //AppModel.Logger?.Info($"DecodeBase64RichText: Preview (first 200 chars) = {trimmedText.Substring(0, Math.Min(200, trimmedText.Length))}");
+
                 // Prüfe, ob es bereits HTML ist
-                if (decodedText.TrimStart().StartsWith("<"))
+                if (trimmedText.StartsWith("<"))
                 {
-                    return decodedText;
+                    AppModel.Logger?.Info("DecodeBase64RichText: Already HTML format");
+                    return trimmedText;
                 }
 
                 // Wenn es Plain Text ist, konvertiere zu HTML
-                decodedText = System.Security.SecurityElement.Escape(decodedText);
-                decodedText = decodedText.Replace("\r\n", "<br>").Replace("\n", "<br>");
-                return $"<p>{decodedText}</p>";
+                //AppModel.Logger?.Info("DecodeBase64RichText: Plain text, converting to HTML");
+                string escapedText = System.Security.SecurityElement.Escape(trimmedText);
+                escapedText = escapedText.Replace("\r\n", "<br>").Replace("\n", "<br>");
+                return $"<p>{escapedText}</p>";
             }
-            catch (FormatException)
+            catch (FormatException ex)
             {
+                AppModel.Logger?.Warn($"DecodeBase64RichText: Not Base64, treating as plain text: {ex.Message}");
                 // Kein Base64, behandle als normalen Text
                 if (string.IsNullOrWhiteSpace(base64Text))
                     return string.Empty;
 
-                string escapedText = System.Security.SecurityElement.Escape(base64Text);
+                string escapedText = System.Security.SecurityElement.Escape(base64Text.Trim());
                 escapedText = escapedText.Replace("\r\n", "<br>").Replace("\n", "<br>");
                 return $"<p>{escapedText}</p>";
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Fehler beim Dekodieren: {ex.Message}");
+                AppModel.Logger?.Error($"DecodeBase64RichText: Error = {ex.Message}");
                 return $"<p style='color: #ff6b6b;'>Fehler beim Dekodieren der Beschreibung.</p>";
             }
         }

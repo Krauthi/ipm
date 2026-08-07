@@ -480,9 +480,19 @@ namespace iPMCloud.Mobile.vo
             LastSelectedOrder = null;
             LastSelectedCategory = null;
             LastSelectedPosition = null;
+
+            // WICHTIG: Auch "Again"-Variablen zurücksetzen (für Nachbuchung)
+            LastSelectedOrderAgain = null;
+            LastSelectedCategoryAgain = null;
+            LastSelectedPositionAgain = null;
+
             allPositionInShowingListView = new Dictionary<int, Border>();
             allPositionInShowingSmallListView = new Dictionary<int, SwipeView>();
             allSelectedPositionToWork = new List<LeistungWSO>();
+
+            // Auch "Again"-Listen zurücksetzen
+            allPositionAgainInShowingListView = new Dictionary<int, Border>();
+
             // alle selektionen und disabled zurücksetzen 
             if (LastBuilding != null)
             {
@@ -908,6 +918,50 @@ namespace iPMCloud.Mobile.vo
         {
             try
             {
+#if ANDROID
+                // Verwende native Android-Implementierung für bessere Kompatibilität
+                if (AppModel.Instance.isFlashLigthAloneON)
+                {
+                    AppModel.Instance.isFlashLigthAloneON = false;
+                    bool success = iPMCloud.Mobile.Platforms.Android.Services.AndroidFlashlightService.TurnOff();
+                    //Logger?.Info($"Android native Flashlight turned OFF (success={success})");
+
+                    if (!success)
+                    {
+                        // Fallback zu MAUI API
+                        await Flashlight.Default.TurnOffAsync();
+                      //  Logger?.Info("Android fallback: MAUI Flashlight.Default.TurnOffAsync()");
+                    }
+                }
+                else
+                {
+                    AppModel.Instance.isFlashLigthAloneON = true;
+                    bool success = iPMCloud.Mobile.Platforms.Android.Services.AndroidFlashlightService.TurnOn();
+                    //Logger?.Info($"Android native Flashlight turned ON (success={success})");
+
+                    if (!success)
+                    {
+                        // Fallback zu MAUI API
+                        await Flashlight.Default.TurnOnAsync();
+                        //Logger?.Info("Android fallback: MAUI Flashlight.Default.TurnOnAsync()");
+                    }
+                }
+#elif IOS
+                // iOS verwendet MAUI Flashlight API direkt (funktioniert zuverlässig)
+                if (AppModel.Instance.isFlashLigthAloneON)
+                {
+                    AppModel.Instance.isFlashLigthAloneON = false;
+                    await Flashlight.Default.TurnOffAsync();
+                   // Logger?.Info("iOS Flashlight turned OFF");
+                }
+                else
+                {
+                    AppModel.Instance.isFlashLigthAloneON = true;
+                    await Flashlight.Default.TurnOnAsync();
+                    //Logger?.Info("iOS Flashlight turned ON");
+                }
+#else
+                // Andere Plattformen (Windows, etc.)
                 if (AppModel.Instance.isFlashLigthAloneON)
                 {
                     AppModel.Instance.isFlashLigthAloneON = false;
@@ -918,9 +972,22 @@ namespace iPMCloud.Mobile.vo
                     AppModel.Instance.isFlashLigthAloneON = true;
                     await Flashlight.Default.TurnOnAsync();
                 }
+#endif
             }
-            catch (Exception)
+            catch (FeatureNotSupportedException ex)
             {
+                Logger?.Error(ex, "Flashlight not supported on this device");
+                AppModel.Instance.isFlashLigthAloneON = false;
+            }
+            catch (PermissionException ex)
+            {
+                Logger?.Error(ex, "Flashlight permission denied");
+                AppModel.Instance.isFlashLigthAloneON = false;
+            }
+            catch (Exception ex)
+            {
+                Logger?.Error(ex, "Error toggling flashlight");
+                AppModel.Instance.isFlashLigthAloneON = false;
             }
         }
 

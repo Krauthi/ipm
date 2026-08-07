@@ -282,6 +282,7 @@ namespace iPMCloud.Mobile
                     MaximumWidth = 1024,
                     SelectionLimit = 5 - _SelectedBemerkungForNotice.photos.Count,
                     PreserveMetaData = true,
+                    RotateImage = true,
                 };
 #if !IOS
                 options.RotateImage = true;

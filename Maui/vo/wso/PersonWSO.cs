@@ -342,11 +342,11 @@ namespace iPMCloud.Mobile
             }
         }
 
-        public static PersonWSO LoadPerson(AppModel model)
+        public static PersonWSO LoadPerson()
         {
             try
             {
-                if (model == null || string.IsNullOrWhiteSpace(model.SettingModel.SettingDTO.CustomerNumber))
+                if (AppModel.Instance == null || string.IsNullOrWhiteSpace(AppModel.Instance.SettingModel.SettingDTO.CustomerNumber))
                 {
                     AppModel.Logger?.Warn("LoadPerson: model is null or CustomerNumber not set");
                     return null;
@@ -354,7 +354,7 @@ namespace iPMCloud.Mobile
 
                 string directoryPath = Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                    "ipm/" + model.SettingModel.SettingDTO.CustomerNumber + "/user/"
+                    "ipm/" + AppModel.Instance.SettingModel.SettingDTO.CustomerNumber + "/user/"
                 );
 
                 if (!Directory.Exists(directoryPath))

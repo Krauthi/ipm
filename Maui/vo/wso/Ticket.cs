@@ -92,6 +92,7 @@ namespace iPMCloud.Mobile
         public string besitzerStatus { get; set; } = "";
         public string mandantStatus { get; set; } = "";
         public string erstellerStatus { get; set; } = "";
+        public string guid { get; set; } = Guid.NewGuid().ToString();
 
         public TicketChat() { }
 
@@ -145,7 +146,206 @@ namespace iPMCloud.Mobile
             }
             return DateTime.Now;
         }
+
+        #region Upload Stack Management
+
+        private static string GetUploadStackDirectory()
+        {
+            string customerNumber = AppModel.Instance?.SettingModel?.SettingDTO?.CustomerNumber;
+            if (string.IsNullOrWhiteSpace(customerNumber))
+            {
+                return null;
+            }
+
+            return Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "ipm/" + customerNumber + "/ticketchatupload/"
+            );
+        }
+
+        /// <summary>
+        /// Fügt einen TicketChat-Eintrag zum Upload-Stack hinzu (wird später erneut hochgeladen)
+        /// </summary>
+        public static bool ToUploadStack(TicketChat tc)
+        {
+            try
+            {
+                if (tc == null)
+                {
+                    AppModel.Logger?.Error("ToUploadStack TicketChat: tc is null");
+                    return false;
+                }
+
+                string directoryPath = GetUploadStackDirectory();
+                if (directoryPath == null)
+                {
+                    return false;
+                }
+
+                if (!Directory.Exists(directoryPath))
+                {
+                    Directory.CreateDirectory(directoryPath);
+                }
+
+                if (string.IsNullOrWhiteSpace(tc.guid))
+                {
+                    tc.guid = Guid.NewGuid().ToString();
+                }
+
+                string filePath = Path.Combine(directoryPath, $"{tc.guid}.ipm");
+
+                var jsonSettings = new JsonSerializerSettings
+                {
+                    Formatting = Formatting.Indented,
+                    NullValueHandling = NullValueHandling.Include,
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                };
+
+                string jsonString = JsonConvert.SerializeObject(tc, jsonSettings);
+                File.WriteAllText(filePath, jsonString);
+
+                if (AppModel.Instance?.MainPage != null)
+                {
+                    AppModel.Instance.SetAllSyncStateSafe();
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: ToUploadStack TicketChat");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Zählt die Anzahl der TicketChat-Einträge im Upload-Stack
+        /// </summary>
+        public static int CountFromStackFrom(Int32 customerId)
+        {
+            try
+            {
+                string directoryPath = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                    "ipm/" + customerId + "/ticketchatupload/"
+                );
+                if (directoryPath == null || !Directory.Exists(directoryPath))
+                {
+                    return 0;
+                }
+
+                return Directory.GetFiles(directoryPath, "*.ipm").Length;
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: CountFromStackFrom TicketChat");
+                return 0;
+            }
+        }
+
+        /// <summary>
+        /// Zählt die Anzahl der TicketChat-Einträge im Upload-Stack
+        /// </summary>
+        public static int CountFromStack()
+        {
+            try
+            {
+                string directoryPath = GetUploadStackDirectory();
+                if (directoryPath == null || !Directory.Exists(directoryPath))
+                {
+                    return 0;
+                }
+
+                return Directory.GetFiles(directoryPath, "*.ipm").Length;
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: CountFromStack TicketChat");
+                return 0;
+            }
+        }
+
+        /// <summary>
+        /// Lädt alle TicketChat-Einträge aus dem Upload-Stack
+        /// </summary>
+        public static List<TicketChat> LoadAllFromUploadStack()
+        {
+            List<TicketChat> list = new List<TicketChat>();
+
+            try
+            {
+                string directoryPath = GetUploadStackDirectory();
+                if (directoryPath == null || !Directory.Exists(directoryPath))
+                {
+                    return list;
+                }
+
+                var files = Directory.GetFiles(directoryPath, "*.ipm");
+                foreach (var file in files)
+                {
+                    try
+                    {
+                        string jsonString = File.ReadAllText(file);
+                        if (string.IsNullOrWhiteSpace(jsonString))
+                            continue;
+
+                        var tc = JsonConvert.DeserializeObject<TicketChat>(jsonString);
+                        if (tc != null)
+                        {
+                            list.Add(tc);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        AppModel.Logger?.Error(ex, $"ERROR: LoadAllFromUploadStack TicketChat - {file}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: LoadAllFromUploadStack TicketChat");
+            }
+
+            return list;
+        }
+
+        /// <summary>
+        /// Entfernt einen TicketChat-Eintrag aus dem Upload-Stack
+        /// </summary>
+        public static bool DeleteFromUploadStack(TicketChat tc)
+        {
+            try
+            {
+                if (tc == null || string.IsNullOrWhiteSpace(tc.guid))
+                {
+                    return false;
+                }
+
+                string directoryPath = GetUploadStackDirectory();
+                if (directoryPath == null)
+                {
+                    return false;
+                }
+
+                string filePath = Path.Combine(directoryPath, $"{tc.guid}.ipm");
+                if (File.Exists(filePath))
+                {
+                    File.Delete(filePath);
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: DeleteFromUploadStack TicketChat");
+                return false;
+            }
+        }
+
+        #endregion
     }
+
+
 
     /// <summary>
     /// Repräsentiert ein Ticket im System (angepasst an Backend-Struktur)
@@ -290,7 +490,7 @@ namespace iPMCloud.Mobile
                 // Prüfe, ob es bereits HTML ist
                 if (trimmedText.StartsWith("<"))
                 {
-                    AppModel.Logger?.Info("DecodeBase64RichText: Already HTML format");
+                    //AppModel.Logger?.Info("DecodeBase64RichText: Already HTML format");
                     return trimmedText;
                 }
 
@@ -307,7 +507,15 @@ namespace iPMCloud.Mobile
                 if (string.IsNullOrWhiteSpace(base64Text))
                     return string.Empty;
 
-                string escapedText = System.Security.SecurityElement.Escape(base64Text.Trim());
+                string trimmedPlain = base64Text.Trim();
+
+                // Bereits HTML (z.B. lokal erzeugte <div>/<p>/<img>-Nachrichten) - unverändert übernehmen
+                if (trimmedPlain.StartsWith("<"))
+                {
+                    return trimmedPlain;
+                }
+
+                string escapedText = System.Security.SecurityElement.Escape(trimmedPlain);
                 escapedText = escapedText.Replace("\r\n", "<br>").Replace("\n", "<br>");
                 return $"<p>{escapedText}</p>";
             }
@@ -697,7 +905,7 @@ namespace iPMCloud.Mobile
                 ticketid = this.id,
                 personid = personid,
                 personname = personname,
-                t = nachricht,
+                t = WrapAsRichText(nachricht),
                 typ = typ,
                 intern = intern,
                 updateat = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
@@ -705,6 +913,28 @@ namespace iPMCloud.Mobile
 
             chats.Add(chat);
             this.updateat = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+        }
+
+        /// <summary>
+        /// Stellt sicher, dass der Nachrichtentext als RTF/HTML (mindestens von einem &lt;div&gt; umschlossen)
+        /// vorliegt, damit er im FrontendWeb korrekt als Richtext eingesetzt wird
+        /// </summary>
+        private static string WrapAsRichText(string nachricht)
+        {
+            if (string.IsNullOrWhiteSpace(nachricht))
+            {
+                return "<div></div>";
+            }
+
+            string trimmed = nachricht.Trim();
+
+            // Bereits HTML (z.B. <div>, <p>, <img> aus Bild-Upload) - unverändert übernehmen
+            if (trimmed.StartsWith("<"))
+            {
+                return trimmed;
+            }
+
+            return $"<div>{trimmed}</div>";
         }
 
         /// <summary>

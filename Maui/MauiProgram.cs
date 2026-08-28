@@ -67,6 +67,8 @@ namespace iPMCloud.Mobile
             // Platform-specific background sync service
 #if ANDROID
             builder.Services.AddSingleton<IBackgroundSyncService, iPMCloud.Mobile.Platforms.Android.BackgroundSyncService>();
+            builder.Services.AddSingleton<IBackgroundDataInfo, BackgroundDataImplementation>();
+            builder.Services.AddSingleton<IBatteryInfo, BatteryImplementation>();
 #elif IOS
             builder.Services.AddSingleton<IBackgroundSyncService, iPMCloud.Mobile.Platforms.iOS.BackgroundSyncService>();
 #endif

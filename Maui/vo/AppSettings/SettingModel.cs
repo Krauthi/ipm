@@ -10,7 +10,7 @@ namespace iPMCloud.Mobile.vo
         public const string FIX_SERVER_URL_DEV_B = "http://nbkrauthausen/IPMRegistrationService";
         public const string FIX_SERVER_URL_DEV = "http://192.168.2.121:45455";
 
-        public AppModel model { get; set; }
+        //public AppModel model { get; set; }
 
         private SettingDTO _settingDTO = new SettingDTO();
         public SettingDTO SettingDTO { get => _settingDTO; set => _settingDTO = value; }
@@ -47,7 +47,7 @@ namespace iPMCloud.Mobile.vo
                 SaveSettings();
             }
 
-            if (model != null && model.IsTest)
+            if (AppModel.Instance != null && AppModel.Instance.IsTest)
             {
                 // Test-Konfigurationen
                 //SettingDTO.LoginName = "mitarbeiterx";
@@ -180,7 +180,7 @@ namespace iPMCloud.Mobile.vo
                 string jsonString = JsonConvert.SerializeObject(SettingDTO, jsonSettings);
                 File.WriteAllText(filePath, jsonString);
 
-                Company.AddUpdateCompany(model, SettingDTO);
+                Company.AddUpdateCompany(SettingDTO);
 
                 return true;
             }

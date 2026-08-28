@@ -301,7 +301,6 @@ namespace iPMCloud.Mobile.vo
                 Build = AppInfo.Current.BuildString;
 
                 AppSet.Load();
-                SettingModel.model = this;
                 SettingModel.InitializeSettings();
                 Lang = Lang.Load();
                 Companies = Company.LoadCompanies();
@@ -309,7 +308,7 @@ namespace iPMCloud.Mobile.vo
                 State = new State();
                 Connections = new Connections(this);
                 //Scan = new Scanner();
-                Person = PersonWSO.LoadPerson(this);// Wenn keine Person dann "null" !!
+                Person = PersonWSO.LoadPerson();// Wenn keine Person dann "null" !!
 
                 // CRITICAL ANR FIX: Don't block UI thread with Task.WaitAll
                 // Initialize buildings asynchronously in background to prevent ANR on startup
@@ -407,6 +406,33 @@ namespace iPMCloud.Mobile.vo
                 }
             }
         }
+
+
+        public int GetOpenUploadsCountFrom(Int32 customerId)
+        {
+            int allCountFromUpload = 0;
+            allCountFromUpload += CheckClass.CountFromStackFrom(customerId);
+            allCountFromUpload += CheckLeistungAntwortBemImg.CountFromStackFrom(customerId);
+            allCountFromUpload += BemerkungWSO.CountFromStackFrom(customerId);
+            allCountFromUpload += BildWSO.CountFromStackFrom(customerId);
+            allCountFromUpload += LeistungPackWSO.CountFromStackFrom(customerId);
+            // zu ipm intern = allCountFromUpload += AllTransSign.CountFromStackFrom(customerId);
+            allCountFromUpload += DayOverWSO.CountFromStackFrom(customerId);
+            allCountFromUpload += ObjektDataWSO.CountFromStackFrom(customerId);
+            allCountFromUpload += ObjektDatenBildWSO.CountFromStackFrom(customerId);
+            allCountFromUpload += TicketChat.CountFromStackFrom(customerId);
+            //allCountFromUpload += PNWSO.CountFromStackFrom(customerId);
+            return allCountFromUpload;
+        }
+
+
+
+
+
+
+
+
+
 
         public async Task InitBuildingsAsync()
         {
@@ -918,75 +944,57 @@ namespace iPMCloud.Mobile.vo
         {
             try
             {
-#if ANDROID
-                // Verwende native Android-Implementierung für bessere Kompatibilität
-                if (AppModel.Instance.isFlashLigthAloneON)
-                {
-                    AppModel.Instance.isFlashLigthAloneON = false;
-                    bool success = iPMCloud.Mobile.Platforms.Android.Services.AndroidFlashlightService.TurnOff();
-                    //Logger?.Info($"Android native Flashlight turned OFF (success={success})");
+                System.Diagnostics.Debug.WriteLine("=== Btn_FlashlightAloneTapped START ===");
 
-                    if (!success)
+                // Verwende zentrale Taschenlampen-Verwaltung
+                bool targetState = !AppModel.Instance.isFlashLigthAloneON;
+                System.Diagnostics.Debug.WriteLine($"Btn_FlashlightAloneTapped: Current state={AppModel.Instance.isFlashLigthAloneON}, Target state={targetState}");
+
+                bool success = await iPMCloud.Mobile.Services.FlashlightManager.ToggleFlashlightAsync(targetState);
+                System.Diagnostics.Debug.WriteLine($"Btn_FlashlightAloneTapped: ToggleFlashlightAsync returned success={success}");
+
+                if (success)
+                {
+                    AppModel.Instance.isFlashLigthAloneON = targetState;
+
+                    if (iPMCloud.Mobile.Services.FlashlightManager.IsScannerActive)
                     {
-                        // Fallback zu MAUI API
-                        await Flashlight.Default.TurnOffAsync();
-                      //  Logger?.Info("Android fallback: MAUI Flashlight.Default.TurnOffAsync()");
+                        Logger?.Info($"Flashlight toggled via active scanner: {targetState}");
+                        System.Diagnostics.Debug.WriteLine($"Flashlight toggled via active scanner: {targetState}");
+                    }
+                    else
+                    {
+                        Logger?.Info($"Flashlight toggled via native/MAUI API: {targetState}");
+                        System.Diagnostics.Debug.WriteLine($"Flashlight toggled via native/MAUI API: {targetState}");
                     }
                 }
                 else
                 {
-                    AppModel.Instance.isFlashLigthAloneON = true;
-                    bool success = iPMCloud.Mobile.Platforms.Android.Services.AndroidFlashlightService.TurnOn();
-                    //Logger?.Info($"Android native Flashlight turned ON (success={success})");
+                    // Fehler beim Umschalten
+                    Logger?.Warn("Failed to toggle flashlight");
+                    System.Diagnostics.Debug.WriteLine("Btn_FlashlightAloneTapped: FAILED to toggle flashlight");
+                    AppModel.Instance.isFlashLigthAloneON = false;
+                }
 
-                    if (!success)
-                    {
-                        // Fallback zu MAUI API
-                        await Flashlight.Default.TurnOnAsync();
-                        //Logger?.Info("Android fallback: MAUI Flashlight.Default.TurnOnAsync()");
-                    }
-                }
-#elif IOS
-                // iOS verwendet MAUI Flashlight API direkt (funktioniert zuverlässig)
-                if (AppModel.Instance.isFlashLigthAloneON)
-                {
-                    AppModel.Instance.isFlashLigthAloneON = false;
-                    await Flashlight.Default.TurnOffAsync();
-                   // Logger?.Info("iOS Flashlight turned OFF");
-                }
-                else
-                {
-                    AppModel.Instance.isFlashLigthAloneON = true;
-                    await Flashlight.Default.TurnOnAsync();
-                    //Logger?.Info("iOS Flashlight turned ON");
-                }
-#else
-                // Andere Plattformen (Windows, etc.)
-                if (AppModel.Instance.isFlashLigthAloneON)
-                {
-                    AppModel.Instance.isFlashLigthAloneON = false;
-                    await Flashlight.Default.TurnOffAsync();
-                }
-                else
-                {
-                    AppModel.Instance.isFlashLigthAloneON = true;
-                    await Flashlight.Default.TurnOnAsync();
-                }
-#endif
+                System.Diagnostics.Debug.WriteLine("=== Btn_FlashlightAloneTapped END ===");
             }
             catch (FeatureNotSupportedException ex)
             {
                 Logger?.Error(ex, "Flashlight not supported on this device");
+                System.Diagnostics.Debug.WriteLine($"Btn_FlashlightAloneTapped: FeatureNotSupportedException - {ex.Message}");
                 AppModel.Instance.isFlashLigthAloneON = false;
             }
             catch (PermissionException ex)
             {
                 Logger?.Error(ex, "Flashlight permission denied");
+                System.Diagnostics.Debug.WriteLine($"Btn_FlashlightAloneTapped: PermissionException - {ex.Message}");
                 AppModel.Instance.isFlashLigthAloneON = false;
             }
             catch (Exception ex)
             {
                 Logger?.Error(ex, "Error toggling flashlight");
+                System.Diagnostics.Debug.WriteLine($"Btn_FlashlightAloneTapped: Exception - {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"StackTrace: {ex.StackTrace}");
                 AppModel.Instance.isFlashLigthAloneON = false;
             }
         }

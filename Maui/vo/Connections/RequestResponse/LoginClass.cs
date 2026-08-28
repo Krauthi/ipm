@@ -31,7 +31,7 @@ namespace iPMCloud.Mobile
         public string message = "";
         public string sessionkey = "";
         public bool active = true;
-        public PersonWSO person = null;
+        public PersonWSO person { get; set; } = null;
         public VersionCheck versionCheck = new VersionCheck();
 
         public IpmLoginResponse()

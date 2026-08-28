@@ -111,6 +111,33 @@ namespace iPMCloud.Mobile
                 return false;
             }
         }
+        public static int CountFromStackFrom(int customerId)
+        {
+            try
+            {
+                if (customerId <= 0)
+                {
+                    return 0;
+                }
+
+                string directoryPath = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                    "ipm/" + customerId + "/trans/"
+                );
+
+                if (Directory.Exists(directoryPath))
+                {
+                    return Directory.GetFiles(directoryPath, "*.ipm").Length;
+                }
+
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: CountFromStack()");
+                return 0;
+            }
+        }
 
         /// <summary>
         /// Zählt die Anzahl der Elemente im Upload-Stack

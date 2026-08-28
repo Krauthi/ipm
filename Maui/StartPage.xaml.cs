@@ -151,11 +151,12 @@ namespace iPMCloud.Mobile
                             "ipm/" + newScanSettings.CustomerNumber);
 
                         if (!Directory.Exists(directoryPath)) Directory.CreateDirectory(directoryPath);
-
-                        Company.AddUpdateCompany(AppModel.Instance, AppModel.Instance.SettingModel.SettingDTO);
+                        
+                        // Vorherige aktive Company/SettingDTO speichern
+                        Company.AddUpdateCompany(AppModel.Instance.SettingModel.SettingDTO);
 
                         AppModel.Instance.SettingModel.SettingDTO = newScanSettings;
-                        AppModel.Instance.SettingModel.SaveSettings();
+                        AppModel.Instance.SettingModel.SaveSettings();// Hier wird auch neue Company gespeichert
 
                         AppModel.Instance.UseExternHardware = false;
 
@@ -340,7 +341,7 @@ namespace iPMCloud.Mobile
                     !string.IsNullOrWhiteSpace(newScanSettings.CustomerName) &&
                     newScanSettings.CustomerNumber != cn)
                 {
-                    Company.AddUpdateCompany(AppModel.Instance, AppModel.Instance.SettingModel.SettingDTO);
+                    Company.AddUpdateCompany(AppModel.Instance.SettingModel.SettingDTO);
 
                     string directoryPath = Path.Combine(
                         Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
@@ -464,14 +465,23 @@ namespace iPMCloud.Mobile
             {
                 RegManagement_Container.IsVisible = false;
                 await AppModel.Instance.InitGPSTimer();
+                int countUpload = 0;
+                if (AppModel.Instance.SettingModel != null && AppModel.Instance.SettingModel.SettingDTO != null && int.Parse(AppModel.Instance.SettingModel.SettingDTO.CustomerNumber) > 0)
+                {
+
+                    countUpload = AppModel.Instance.GetOpenUploadsCountFrom(int.Parse(AppModel.Instance.SettingModel.SettingDTO.CustomerNumber));
+                }
+
+                btn_regist_info.IsVisible = countUpload > 0;
+
                 if (AppModel.Instance.Companies != null && AppModel.Instance.Companies.Count > 1)
                 {
                     btn_addRegScan_frame.IsVisible = false;
-                    btn_ToRegScanManagement_frame.IsVisible = true;
+                    btn_ToRegScanManagement_frame.IsVisible = countUpload <= 0;
                 }
                 else
                 {
-                    btn_addRegScan_frame.IsVisible = true;
+                    btn_addRegScan_frame.IsVisible = countUpload <= 0;
                     btn_ToRegScanManagement_frame.IsVisible = false;
                 }
 
@@ -534,8 +544,10 @@ namespace iPMCloud.Mobile
                         {
                             AppModel.Logger.Info("INFO: Company wechsel von " + AppModel.Instance.SettingModel.SettingDTO.CustomerName
                                 + " zu " + company.CustomerName);
+                            AppModel.Logger.Info("INFO: CompanyNumber wechsel von " + AppModel.Instance.SettingModel.SettingDTO.CustomerNumber
+                                + " zu " + company.CustomerNumber);
                             // Vorherige aktive Company/SettingDTO speichern
-                            Company.AddUpdateCompany(AppModel.Instance, AppModel.Instance.SettingModel.SettingDTO);
+                            Company.AddUpdateCompany(AppModel.Instance.SettingModel.SettingDTO);
 
                             AppModel.Instance.SettingModel.SettingDTO = Company.ToSettingDTO(company);
                             AppModel.Instance.SettingModel.SaveSettings();
@@ -544,6 +556,9 @@ namespace iPMCloud.Mobile
                                 Environment.SpecialFolder.LocalApplicationData), "ipm/" + AppModel.Instance.SettingModel.SettingDTO.CustomerNumber + "");
                             if (!Directory.Exists(directoryPath)) { Directory.CreateDirectory(directoryPath); }
 
+                            string pStr = "INFO: PersonID wechsel von " + AppModel.Instance.Person?.id + " zu ";                                
+                            AppModel.Instance.Person = PersonWSO.LoadPerson();
+                            AppModel.Logger.Info(pStr + AppModel.Instance.Person?.id);
                             //AppModel.Instance.SettingModel.SettingDTO.LoginToken = "";
                             //AppModel.Instance.SettingModel.SettingDTO.LastTokenDateTimeTicks = "";
                             entry_login_name.Text = AppModel.Instance.SettingModel.SettingDTO.LoginName;

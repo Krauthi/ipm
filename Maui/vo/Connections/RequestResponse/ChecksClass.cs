@@ -582,6 +582,35 @@ namespace iPMCloud.Mobile
             }
         }
 
+
+        /// <summary>
+        /// Zählt die Anzahl der Checks im Upload-Stack
+        /// EXPLIZIT für  Customer
+        /// </summary>
+        public static int CountFromStackFrom(Int32 customerId)
+        {
+            try
+            {
+                string directoryPath = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                    "ipm/" + customerId + "/uploadchecka/"
+                );
+
+                if (Directory.Exists(directoryPath))
+                {
+                    return Directory.GetFiles(directoryPath, "*.ipm").Length;
+                }
+
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: CountFromStack()");
+                return 0;
+            }
+        }
+
+
         /// <summary>
         /// Zählt die Anzahl der Checks im Upload-Stack
         /// </summary>

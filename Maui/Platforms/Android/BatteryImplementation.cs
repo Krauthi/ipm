@@ -27,9 +27,16 @@ namespace iPMCloud.Mobile
 
         public void StartSetting()
         {
+            var context = Android.App.Application.Context;
+
+            // Fordert direkt den System-Dialog "Akkuoptimierung für <App> zulassen?" an,
+            // statt nur die allgemeine Liste aller Apps zu öffnen. Benötigt die Permission
+            // REQUEST_IGNORE_BATTERY_OPTIMIZATIONS (bereits im Manifest vorhanden).
             Intent intent = new Intent();
-            intent.SetAction(Android.Provider.Settings.ActionIgnoreBatteryOptimizationSettings);
-            Android.App.Application.Context.StartActivity(intent);
+            intent.SetAction(Android.Provider.Settings.ActionRequestIgnoreBatteryOptimizations);
+            intent.SetData(Android.Net.Uri.Parse("package:" + context.PackageName));
+            intent.AddFlags(ActivityFlags.NewTask);
+            context.StartActivity(intent);
         }
     }
 }

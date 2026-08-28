@@ -130,7 +130,20 @@
                 </Grid.ColumnDefinitions>
 
                 <!--  Menübutton  -->
-                <Border
+
+                <ImageButton
+                    Grid.Column="0"
+                    Margin="3,2,2,2"
+                    Padding="1"
+                    BackgroundColor="Transparent"
+                    Clicked="btn_MainMenuTapped"
+                    HeightRequest="38"
+                    HorizontalOptions="Start"
+                    Source="menu_image.png"
+                    VerticalOptions="Center"
+                    WidthRequest="38" />
+
+                <!--<Border
                     Grid.Column="0"
                     Margin="3,2,2,2"
                     Padding="1"
@@ -139,7 +152,9 @@
                     Stroke="Transparent"
                     VerticalOptions="Center">
 
-                    <!--  klickbare Fläche  -->
+                -->
+                <!--  klickbare Fläche  -->
+                <!--
                     <Grid
                         x:Name="btn_mainmenu"
                         Margin="0"
@@ -158,7 +173,7 @@
                             VerticalOptions="Center"
                             WidthRequest="30" />
                     </Grid>
-                </Border>
+                </Border>-->
 
                 <!--  Badge/Counter über dem Menübutton (Overlay)  -->
                 <Grid
@@ -1263,48 +1278,48 @@
                                 Margin="-2,-1,-4,0"
                                 AbsoluteLayout.LayoutBounds="0,0,1,1"
                                 AbsoluteLayout.LayoutFlags="None"
-                                BackgroundColor="Transparent"                                
+                                BackgroundColor="Transparent"
                                 IsVisible="True">
                                 <VerticalStackLayout>
-                                <Border
-                                    x:Name="frame_plantabC_badge_col"
-                                    Margin="0"
-                                    Padding="2"
-                                    BackgroundColor="#009900"
-                                    HeightRequest="15"
-                                    HorizontalOptions="Start"
-                                    StrokeShape="RoundRectangle 10"
-                                    VerticalOptions="Start">
-                                    <Label
-                                        x:Name="frame_plantabC_badge_count"
-                                        Margin="0,-1,0,0"
-                                        Padding="0"
-                                        FontSize="9"
-                                        HorizontalOptions="Center"
-                                        HorizontalTextAlignment="Center"
-                                        Text="1"
-                                        TextColor="#ffffff"
-                                        VerticalOptions="Center" />
-                                </Border>
-                                <Border
-                                    x:Name="frame_plantabC_badge_col2"
-                                    Margin="0"
-                                    Padding="2"
-                                    BackgroundColor="#ff0000"
-                                    HeightRequest="15"
-                                    HorizontalOptions="Start"
-                                    StrokeShape="RoundRectangle 10"
-                                    VerticalOptions="Start">
-                                    <Label
-                                        x:Name="frame_plantabC_badge_count2"
-                                        Margin="0,-1,0,0"
-                                        Padding="0"
-                                        FontSize="9"
-                                        HorizontalOptions="Center"
-                                        HorizontalTextAlignment="Center"
-                                        Text="1"
-                                        TextColor="#ffffff"
-                                        VerticalOptions="Center" />
+                                    <Border
+                                        x:Name="frame_plantabC_badge_col"
+                                        Margin="0"
+                                        Padding="2"
+                                        BackgroundColor="#009900"
+                                        HeightRequest="15"
+                                        HorizontalOptions="Start"
+                                        StrokeShape="RoundRectangle 10"
+                                        VerticalOptions="Start">
+                                        <Label
+                                            x:Name="frame_plantabC_badge_count"
+                                            Margin="0,-1,0,0"
+                                            Padding="0"
+                                            FontSize="9"
+                                            HorizontalOptions="Center"
+                                            HorizontalTextAlignment="Center"
+                                            Text="1"
+                                            TextColor="#ffffff"
+                                            VerticalOptions="Center" />
+                                    </Border>
+                                    <Border
+                                        x:Name="frame_plantabC_badge_col2"
+                                        Margin="0"
+                                        Padding="2"
+                                        BackgroundColor="#ff0000"
+                                        HeightRequest="15"
+                                        HorizontalOptions="Start"
+                                        StrokeShape="RoundRectangle 10"
+                                        VerticalOptions="Start">
+                                        <Label
+                                            x:Name="frame_plantabC_badge_count2"
+                                            Margin="0,-1,0,0"
+                                            Padding="0"
+                                            FontSize="9"
+                                            HorizontalOptions="Center"
+                                            HorizontalTextAlignment="Center"
+                                            Text="1"
+                                            TextColor="#ffffff"
+                                            VerticalOptions="Center" />
                                     </Border>
                                 </VerticalStackLayout>
                             </AbsoluteLayout>
@@ -2508,13 +2523,13 @@
 
                                 <Button
                                     Grid.Row="0"
-                                    Text="Neu laden" TextColor="#fff"
-                                    ImageSource="refresh2_img.png"
-                                    ContentLayout="Left,10"                                    
-                                    FontSize="15" 
                                     Clicked="touch_ReloadTickets"
-                                    />
-                                
+                                    ContentLayout="Left,10"
+                                    FontSize="15"
+                                    ImageSource="refresh2_img.png"
+                                    Text="Neu laden"
+                                    TextColor="#fff" />
+
                             </Grid>
 
                             <Border
@@ -5728,11 +5743,11 @@
                             VerticalOptions="Center" />
                         <Label
                             x:Name="editticket_subtitle_label"
-                            FontSize="12" 
+                            FontSize="12"
                             HorizontalOptions="End"
                             LineBreakMode="TailTruncation"
-                            Text=""
                             MaximumWidthRequest="200"
+                            Text=""
                             TextColor="#999"
                             VerticalOptions="Center" />
                     </VerticalStackLayout>
@@ -5741,28 +5756,28 @@
 
                 <!--  Ticket Info Karte (dynamisch gefüllt)  -->
                 <StackLayout
-                            Grid.Row="2"
-                            x:Name="ticket_info_container"
-                            Padding="0,0,0,12"
-                            Spacing="0" />
+                    x:Name="ticket_info_container"
+                    Grid.Row="2"
+                    Padding="0,0,0,12"
+                    Spacing="0" />
                 <!--  Tab Navigation  -->
 
                 <Button
-                        x:Name="ticket_startnow_btn"
-                        Grid.Row="1"
-                        BackgroundColor="#136745"
-                        BorderColor="Transparent"
-                        BorderWidth="2"
-                    MaximumWidthRequest="200"
-                        Clicked="OnTabBeschreibung_Clicked"
-                        CornerRadius="0"
-                        Margin="10,10,0,10"
-                        FontAttributes="Bold"
-                        FontSize="18"
+                    x:Name="ticket_startnow_btn"
+                    Grid.Row="1"
+                    Margin="10,10,0,10"
+                    BackgroundColor="#04732d"
+                    BorderColor="Transparent"
+                    BorderWidth="2"
+                    Clicked="OnTabBeschreibung_Clicked"
+                    CornerRadius="0"
+                    FontAttributes="Bold"
+                    FontSize="18"
                     HorizontalOptions="End"
-                        Text="JETZT  STARTEN"
-                        TextColor="White" />
-                
+                    MaximumWidthRequest="200"
+                    Text="JETZT STARTEN"
+                    TextColor="White" />
+
                 <Grid
                     Grid.Row="3"
                     Margin="0"
@@ -5775,7 +5790,7 @@
                         <ColumnDefinition Width="140" />
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>                    
+                    </Grid.ColumnDefinitions>
 
                     <Button
                         x:Name="tab_beschreibung_btn"
@@ -5832,18 +5847,18 @@
                     <ScrollView
                         x:Name="beschreibung_tab_content"
                         Grid.Row="0"
-                        BackgroundColor="#234567"
-                        IsVisible="True"
                         Padding="0,5"
-                        VerticalOptions="FillAndExpand"
-                        HorizontalOptions="FillAndExpand">
+                        BackgroundColor="#234567"
+                        HorizontalOptions="FillAndExpand"
+                        IsVisible="True"
+                        VerticalOptions="FillAndExpand">
                         <!--  WebView - wird im Code-Behind gesetzt  -->
                         <WebView
                             x:Name="ticket_beschreibung_webview"
                             BackgroundColor="#234567"
+                            HorizontalOptions="Fill"
                             MinimumHeightRequest="500"
-                            VerticalOptions="Start"
-                            HorizontalOptions="Fill" />
+                            VerticalOptions="Start" />
                     </ScrollView>
 
                     <!--  Objekt/Auftrag Tab  -->
@@ -5859,8 +5874,8 @@
                             <!--  Details Container (dynamisch gefüllt im Code)  -->
                             <StackLayout
                                 x:Name="objekt_auftrag_content"
-                            BackgroundColor="#234567"
                                 Padding="0"
+                                BackgroundColor="#234567"
                                 Spacing="0">
                                 <!--  Dynamisch gefüllt im Code  -->
                             </StackLayout>
@@ -5966,7 +5981,6 @@
                             <HorizontalStackLayout
                                 Grid.Row="0"
                                 Grid.Column="0"
-                                Grid.ColumnSpan="0"
                                 Margin="0,0,0,0"
                                 Spacing="5">
 
@@ -5974,38 +5988,38 @@
                                 <Border
                                     Padding="0"
                                     BackgroundColor="#357"
-                                    StrokeThickness="0"
                                     HeightRequest="40"
+                                    StrokeThickness="0"
                                     WidthRequest="40">
                                     <Border.StrokeShape>
                                         <RoundRectangle CornerRadius="8" />
                                     </Border.StrokeShape>
                                     <ImageButton
-                                        Source="cam.png"
+                                        Padding="8"
                                         BackgroundColor="Transparent"
                                         Clicked="OnCameraButton_Tapped"
                                         HeightRequest="40"
-                                        WidthRequest="40"
-                                        Padding="8" />
+                                        Source="cam.png"
+                                        WidthRequest="40" />
                                 </Border>
 
                                 <!--  Galerie Button  -->
                                 <Border
                                     Padding="0"
                                     BackgroundColor="#357"
-                                    StrokeThickness="0"
                                     HeightRequest="40"
+                                    StrokeThickness="0"
                                     WidthRequest="40">
                                     <Border.StrokeShape>
                                         <RoundRectangle CornerRadius="8" />
                                     </Border.StrokeShape>
                                     <ImageButton
-                                        Source="attachment.png"
+                                        Padding="8"
                                         BackgroundColor="Transparent"
                                         Clicked="OnGalleryButton_Tapped"
                                         HeightRequest="40"
-                                        WidthRequest="40"
-                                        Padding="8" />
+                                        Source="attachment.png"
+                                        WidthRequest="40" />
                                 </Border>
                             </HorizontalStackLayout>
                         </Grid>
@@ -6208,6 +6222,7 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
@@ -6743,6 +6758,63 @@
                                             FontSize="11"
                                             HorizontalTextAlignment="Start"
                                             Text="Zur Anmeldung zurück"
+                                            TextColor="#cccccc" />
+                                    </VerticalStackLayout>
+                                </Grid>
+                            </StackLayout>
+                        </Border>
+                        <Border
+                            x:Name="btn_regist_info"
+                            Grid.Row="15"
+                            Margin="0,10,0,0"
+                            Padding="1"
+                            BackgroundColor="Transparent"
+                            HorizontalOptions="Fill"
+                            IsVisible="False">
+                            <StackLayout
+                                Margin="0"
+                                Padding="0"
+                                BackgroundColor="Transparent"
+                                HeightRequest="42"
+                                HorizontalOptions="Fill">
+                                <Grid
+                                    Margin="0,0,0,0"
+                                    Padding="0"
+                                    ColumnSpacing="0"
+                                    HeightRequest="36"
+                                    HorizontalOptions="Fill"
+                                    VerticalOptions="Center">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Image
+                                        Grid.Column="0"
+                                        Margin="0,0,5,0"
+                                        HeightRequest="30"
+                                        Source="warn_triangle_yellow.png"
+                                        VerticalOptions="Center"
+                                        WidthRequest="30" />
+                                    <VerticalStackLayout
+                                        Grid.Column="1"
+                                        Margin="0,-4,0,0"
+                                        Padding="0"
+                                        Spacing="0"
+                                        VerticalOptions="Center">
+                                        <Label
+                                            Margin="0"
+                                            Padding="0"
+                                            FontSize="16"
+                                            HorizontalTextAlignment="Start"
+                                            Text="Es gibt offene Uploads!"
+                                            TextColor="#ffffff" />
+                                        <Label
+                                            Margin="0,-3,0,0"
+                                            Padding="0"
+                                            FontSize="11"
+                                            HorizontalTextAlignment="Start"
+                                            Text="Vor einem Unternehmenwechsel hochladen!"
                                             TextColor="#cccccc" />
                                     </VerticalStackLayout>
                                 </Grid>

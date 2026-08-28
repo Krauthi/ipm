@@ -60,7 +60,16 @@ namespace iPMCloud.Mobile
         {
             try
             {
-                //Log.Info(TAG, $"OnCreate start (savedInstanceState={(savedInstanceState != null ? "available" : "null")})");
+                Log.Info(TAG, $"OnCreate start (savedInstanceState={(savedInstanceState != null ? "available" : "null")})");
+                if (savedInstanceState != null)
+                {
+                    // A non-null savedInstanceState means Android recreated this Activity
+                    // after the previous instance/process was destroyed (e.g. killed under
+                    // memory pressure while an external Activity like the Camera was in the
+                    // foreground). This is the key signal for "silent" crashes that never
+                    // raise a catchable .NET exception.
+                    AppModel.Logger?.Warn("MainActivity.OnCreate: Activity wurde mit savedInstanceState neu erstellt - vorheriger Prozess wurde wahrscheinlich vom OS beendet (z.B. Speichermangel).");
+                }
 
                 base.OnCreate(savedInstanceState);
 
@@ -224,7 +233,7 @@ namespace iPMCloud.Mobile
             {
                 Log.Error(TAG, $"OnDestroy Error: {ex}");
             }
-            
+
             base.OnDestroy();
             //Log.Debug(TAG, "OnDestroy");
         }

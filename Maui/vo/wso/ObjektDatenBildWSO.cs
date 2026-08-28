@@ -97,6 +97,34 @@ namespace iPMCloud.Mobile
         /// <summary>
         /// Zählt die Anzahl der Objektdaten-Bilder im Upload-Stack
         /// </summary>
+        public static int CountFromStackFrom(Int32 customerId)
+        {
+            try
+            {
+                if (customerId <= 0)
+                {
+                    return 0;
+                }
+
+                string directoryPath = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                    "ipm/" + customerId + "/objectvaluebildupload/"
+                );
+
+                if (Directory.Exists(directoryPath))
+                {
+                    return Directory.GetFiles(directoryPath, "*.ipm").Length;
+                }
+
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: CountFromStack ObjektDatenBildWSO");
+                return 0;
+            }
+        }
+
         public static int CountFromStack()
         {
             try

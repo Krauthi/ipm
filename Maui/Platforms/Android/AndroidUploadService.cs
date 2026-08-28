@@ -15,6 +15,15 @@ namespace iPMCloud.Mobile.Platforms.Android
         {
             try
             {
+                // Vermeidet redundante startForegroundService()-Aufrufe, wenn bereits
+                // ein Upload läuft. Wiederholte kurz aufeinanderfolgende Aufrufe
+                // erhöhen das Risiko einer ForegroundServiceDidNotStartInTimeException.
+                if (UploadCoordinator.Instance.IsRunning)
+                {
+                    Log.Info(TAG, "StartUploads skipped, upload already running");
+                    return;
+                }
+
                 var context = global::Android.App.Application.Context;
                 var intent = new Intent(context, typeof(UploadForegroundService));
                 intent.SetAction(UploadForegroundService.ACTION_START);

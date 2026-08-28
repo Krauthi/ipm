@@ -12,18 +12,18 @@ namespace iPMCloud.Mobile.vo
 
         #region Add/Update Company
 
-        public static bool AddUpdateCompany(AppModel model, SettingDTO s)
+        public static bool AddUpdateCompany(SettingDTO s)
         {
-            return AddUpdateCompany(model, ToCompany(s));
+            return AddUpdateCompany(ToCompany(s));
         }
 
-        public static bool AddUpdateCompany(AppModel model, Company company)
+        public static bool AddUpdateCompany(Company company)
         {
             try
             {
-                if (model.Companies == null)
+                if (AppModel.Instance.Companies == null)
                 {
-                    model.Companies = new List<Company>();
+                    AppModel.Instance.Companies = new List<Company>();
                 }
 
                 if (string.IsNullOrWhiteSpace(company.CustomerNumber) ||
@@ -34,14 +34,14 @@ namespace iPMCloud.Mobile.vo
                     return false;
                 }
 
-                var compIndex = model.Companies.FindIndex(c => c.CustomerNumber == company.CustomerNumber);
+                var compIndex = AppModel.Instance.Companies.FindIndex(c => c.CustomerNumber == company.CustomerNumber);
                 if (compIndex > -1)
                 {
-                    model.Companies.RemoveAt(compIndex);
+                    AppModel.Instance.Companies.RemoveAt(compIndex);
                 }
 
-                model.Companies.Add(company);
-                SaveCompanies(model.Companies);
+                AppModel.Instance.Companies.Add(company);
+                SaveCompanies(AppModel.Instance.Companies);
 
                 return true;
             }

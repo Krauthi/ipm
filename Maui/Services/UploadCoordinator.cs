@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using iPMCloud.Mobile.vo;
 using iPMCloud.Mobile.vo.wso;
+using iPMCloud.Mobile;
 
 namespace iPMCloud.Mobile.Services
 {
@@ -37,11 +38,12 @@ namespace iPMCloud.Mobile.Services
             allCount += BemerkungWSO.CountFromStack();
             allCount += BildWSO.CountFromStack();
             allCount += LeistungPackWSO.CountFromStack();
-            allCount += AllTransSign.CountFromStack();
+            //allCount += AllTransSign.CountFromStack();
             allCount += DayOverWSO.CountFromStack();
             allCount += ObjektDataWSO.CountFromStack();
             allCount += ObjektDatenBildWSO.CountFromStack();
-            allCount += PNWSO.CountFromStack();
+            //allCount += PNWSO.CountFromStack();
+            allCount += TicketChat.CountFromStack();
             return allCount;
         }
 
@@ -82,6 +84,7 @@ namespace iPMCloud.Mobile.Services
                 if (!failed && !await ProcessObjectValuesAsync(cancellationToken, total, () => processed, v => processed = v).ConfigureAwait(false)) failed = true;
                 if (!failed && !await ProcessObjectValueBilderAsync(cancellationToken, total, () => processed, v => processed = v).ConfigureAwait(false)) failed = true;
                 if (!failed && !await ProcessPnAsync(cancellationToken, total, () => processed, v => processed = v).ConfigureAwait(false)) failed = true;
+                if (!failed && !await ProcessTicketChatsAsync(cancellationToken, total, () => processed, v => processed = v).ConfigureAwait(false)) failed = true;
 
                 if (failed)
                 {
@@ -120,8 +123,47 @@ namespace iPMCloud.Mobile.Services
             finally
             {
                 _isRunning = false;
+
+                // Nach Upload-Abschluss: Automatische Wiederholung planen wenn noch Uploads pending sind
+                #if ANDROID
+                ScheduleRetryIfNeeded();
+                #endif
             }
         }
+
+        #if ANDROID
+        /// <summary>
+        /// Plant automatische Wiederholungen wenn noch Uploads pending sind.
+        /// Nur auf Android mit WorkManager verfügbar.
+        /// </summary>
+        private void ScheduleRetryIfNeeded()
+        {
+            try
+            {
+                var remainingCount = GetPendingUploadCount();
+
+                if (remainingCount > 0)
+                {
+                    AppModel.Logger?.Info($"UploadCoordinator: {remainingCount} Uploads noch ausstehend, plane automatische Wiederholung");
+
+                    var context = global::Android.App.Application.Context;
+                    Platforms.Android.UploadRetryScheduler.ScheduleUploadRetry(context);
+                }
+                else
+                {
+                    // Alle Uploads erfolgreich - WorkManager-Job kann gestoppt werden
+                    AppModel.Logger?.Info("UploadCoordinator: Alle Uploads erfolgreich, stoppe Wiederholungs-Job");
+
+                    var context = global::Android.App.Application.Context;
+                    Platforms.Android.UploadRetryScheduler.CancelUploadRetry(context);
+                }
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Warn($"UploadCoordinator: Fehler beim Planen der Wiederholung - {ex.Message}");
+            }
+        }
+        #endif
 
         private async Task<bool> ProcessChecksAsync(CancellationToken token, int total, Func<int> getProcessed, Action<int> setProcessed)
         {
@@ -301,6 +343,43 @@ namespace iPMCloud.Mobile.Services
             AppModel.Instance.SettingModel.SaveSettings();
             setProcessed(getProcessed() + 1);
             ReportProgress("UPLOADS: Push-Token", getProcessed(), total);
+            return true;
+        }
+
+        private async Task<bool> ProcessTicketChatsAsync(CancellationToken token, int total, Func<int> getProcessed, Action<int> setProcessed)
+        {
+            token.ThrowIfCancellationRequested();
+            if (TicketChat.CountFromStack() <= 0)
+                return true;
+
+            ReportProgress("UPLOADS: Ticket-Chat", getProcessed(), total);
+
+            var chats = TicketChat.LoadAllFromUploadStack() ?? new List<TicketChat>();
+            chats = await RemoveAlreadyUploadedByGuidAsync(
+                chats,
+                c => c.guid,
+                c => TicketChat.DeleteFromUploadStack(c),
+                token).ConfigureAwait(false);
+
+            foreach (var chat in chats)
+            {
+                token.ThrowIfCancellationRequested();
+
+                var response = await ExecuteWithRetryAsync(
+                    () => AppModel.Instance.Connections.AddTicketChat(chat),
+                    r => r != null && r.succses,
+                    r => null,
+                    "AddTicketChat",
+                    token).ConfigureAwait(false);
+
+                if (response == null || !response.succses)
+                    return false;
+
+                TicketChat.DeleteFromUploadStack(chat);
+                setProcessed(getProcessed() + 1);
+                ReportProgress("UPLOADS: Ticket-Chat", getProcessed(), total);
+            }
+
             return true;
         }
 
@@ -588,29 +667,54 @@ namespace iPMCloud.Mobile.Services
             if (guids.Length == 0)
                 return items;
 
-            var existing = await ExecuteWithRetryAsync(
-                () => AppModel.Instance.Connections.GuidsCheck(guids),
-                r => r != null,
-                _ => null,
-                "GuidsCheck",
-                token).ConfigureAwait(false);
+            string[] existing = null;
+            try
+            {
+                existing = await ExecuteWithRetryAsync(
+                    () => AppModel.Instance.Connections.GuidsCheck(guids),
+                    r => r != null,  // r ist nie null mehr (gibt immer Array zurück)
+                    _ => null,
+                    "GuidsCheck",
+                    token).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Warn($"GuidsCheck fehlgeschlagen in RemoveAlreadyUploadedByGuidAsync: {ex.Message}");
+                // Bei Fehler: Konservativ - behandle alle als "noch nicht hochgeladen"
+                // Das ist sicherer als sie zu löschen
+                existing = Array.Empty<string>();
+            }
 
+            // existing ist nie null (entweder echtes Array oder leeres Array)
             if (existing == null || existing.Length == 0)
+            {
+                AppModel.Logger?.Info($"GuidsCheck: Keine bereits hochgeladenen Items erkannt (von {guids.Length} geprüften)");
                 return items;
+            }
 
             var set = new HashSet<string>(existing);
             var filtered = new List<T>();
+            int removedCount = 0;
+
             foreach (var item in items)
             {
                 var guid = guidSelector(item);
                 if (!string.IsNullOrWhiteSpace(guid) && set.Contains(guid))
                 {
+                    // Item wurde bereits erfolgreich hochgeladen, aus Queue entfernen
                     deleteAction(item);
+                    removedCount++;
                 }
                 else
                 {
+                    // Item noch nicht hochgeladen, behalten für Upload
                     filtered.Add(item);
                 }
+            }
+
+            if (removedCount > 0)
+            {
+                AppModel.Logger?.Info($"GuidsCheck: {removedCount} bereits hochgeladene Items aus Queue entfernt, {filtered.Count} verbleiben");
             }
 
             return filtered;

@@ -59,7 +59,7 @@ namespace iPMCloud.Mobile
         /// Opens the notice page as a fullscreen modal and returns the result when the user
         /// saves or cancels. Returns null if the user cancels without saving.
         /// </summary>
-        public static async Task<NoticeResult?> ShowAsync(
+        public static async Task<NoticeResult> ShowAsync(
             Page callerPage,
             LeistungWSO pos,
             string backTo,
@@ -236,7 +236,7 @@ namespace iPMCloud.Mobile
             }
             catch (FeatureNotSupportedException)
             {
-                await DisplayAlertAsync("Fehler", "Kamera wird nicht unterstützt", "OK");
+                await DisplayAlertAsync("Fehler!", "Kamera wird nicht unterstützt", "OK");
             }
             catch (PermissionException exp)
             {
@@ -288,7 +288,20 @@ namespace iPMCloud.Mobile
                 options.RotateImage = true;
 #endif
 
-                var photos = await MediaPicker.PickPhotosAsync(options);
+                var breadcrumbId = $"NoticePhotoPicker_{_SelectedBemerkungForNotice.guid}";
+                iPMCloud.Mobile.Services.CrashDiagnostics.Begin(
+                    breadcrumbId,
+                    $"BemerkungGuid={_SelectedBemerkungForNotice.guid}; ExistingPhotos={_SelectedBemerkungForNotice.photos.Count}; SelectionLimit={options.SelectionLimit}");
+
+                IList<FileResult> photos;
+                try
+                {
+                    photos = await MediaPicker.PickPhotosAsync(options);
+                }
+                finally
+                {
+                    iPMCloud.Mobile.Services.CrashDiagnostics.End(breadcrumbId);
+                }
 
                 if (photos != null && photos.Count() > 0)
                 {
@@ -355,6 +368,7 @@ namespace iPMCloud.Mobile
             await Task.Delay(1);
             _SelectedBemerkungForNotice.photos.Remove(b);
             CheckNoticeFalid();
+            string ejj = null;
         }
 
         private void OnOverlayTapped(object sender, EventArgs e)

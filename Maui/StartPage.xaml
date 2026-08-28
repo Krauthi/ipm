@@ -443,7 +443,7 @@
                 Grid.Row="2"
                 Margin="0"
                 Padding="8"
-                BackgroundColor="#90144d93"
+                BackgroundColor="#90245da3"
                 HorizontalOptions="Fill"
                 Spacing="0">
                 <Label
@@ -471,13 +471,6 @@
                     Padding="1"
                     BackgroundColor="#041d43"
                     HorizontalOptions="End">
-                    <Border.Shadow>
-                        <Shadow
-                            Brush="Black"
-                            Opacity="0.3"
-                            Radius="5"
-                            Offset="2,2" />
-                    </Border.Shadow>
                     <StackLayout
                         x:Name="btn_addRegScan_container"
                         Margin="0"
@@ -526,13 +519,6 @@
                     BackgroundColor="#041d43"
                     HorizontalOptions="End"
                     IsVisible="False">
-                    <Border.Shadow>
-                        <Shadow
-                            Brush="Black"
-                            Opacity="0.3"
-                            Radius="5"
-                            Offset="2,2" />
-                    </Border.Shadow>
                     <StackLayout
                         x:Name="btn_ToRegScanManagement_container"
                         Margin="0"
@@ -574,6 +560,71 @@
                         </HorizontalStackLayout>
                     </StackLayout>
                 </Border>
+
+                <Border
+                    x:Name="btn_regist_info"
+                    Grid.Row="14"
+                    Margin="0,10,0,0"
+                    Padding="1"
+                    BackgroundColor="Transparent"
+                    HorizontalOptions="Center"
+                    IsVisible="False">
+                    <StackLayout
+                        Margin="0"
+                        Padding="0"
+                        BackgroundColor="Transparent"
+                        HeightRequest="42"
+                        HorizontalOptions="Fill">
+                        <Grid
+                            Margin="0,0,0,0"
+                            Padding="0"
+                            ColumnSpacing="0"
+                            HeightRequest="36"
+                            HorizontalOptions="Fill"
+                            VerticalOptions="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Image
+                                Grid.Column="0"
+                                Margin="0,0,5,0"
+                                HeightRequest="33"
+                                Source="warn_triangle_yellow.png"
+                                VerticalOptions="Center"
+                                WidthRequest="33" />
+                            <VerticalStackLayout
+                                Grid.Column="1"
+                                Margin="0,-4,0,0"
+                                Padding="0"
+                                Spacing="0"
+                                VerticalOptions="Center">
+                                <Label
+                                    Margin="0"
+                                    Padding="0,2,0,0"
+                                    FontSize="18"
+                                    HorizontalTextAlignment="Start"
+                                    Text="Es gibt offene Uploads!"
+                                    TextColor="#ffffff" />
+                                <Label
+                                    Margin="0,0,0,0"
+                                    Padding="0"
+                                    FontSize="12"
+                                    HorizontalTextAlignment="Start"
+                                    Text="Vor einem Wechsel hochladen!"
+                                    TextColor="#dddddd" />
+                            </VerticalStackLayout>
+                            <Image
+                                Grid.Column="2"
+                                Margin="5,0,0,0"
+                                HeightRequest="33"
+                                Source="warn_triangle_yellow.png"
+                                VerticalOptions="Center"
+                                WidthRequest="33" />
+                        </Grid>
+                    </StackLayout>
+                </Border>
             </VerticalStackLayout>
             <Border
                 Grid.Row="3"
@@ -595,13 +646,6 @@
                     Padding="1"
                     BackgroundColor="#043d63"
                     HorizontalOptions="Fill">
-                    <Border.Shadow>
-                        <Shadow
-                            Brush="Black"
-                            Opacity="0.3"
-                            Radius="5"
-                            Offset="2,2" />
-                    </Border.Shadow>
                     <VerticalStackLayout
                         Margin="0"
                         Padding="5"
@@ -633,20 +677,13 @@
                     Padding="1"
                     BackgroundColor="#043d63"
                     HorizontalOptions="Fill">
-                    <Border.Shadow>
-                        <Shadow
-                            Brush="Black"
-                            Opacity="0.3"
-                            Radius="5"
-                            Offset="2,2" />
-                    </Border.Shadow>
                     <Grid
                         Margin="0"
                         Padding="5"
                         BackgroundColor="#ff144d73"
                         HorizontalOptions="Fill"
-                        RowSpacing="0"
-                        RowDefinitions="Auto,Auto">
+                        RowDefinitions="Auto,Auto"
+                        RowSpacing="0">
                         <Label
                             Grid.Row="0"
                             Margin="0"
@@ -662,12 +699,12 @@
                             Grid.Row="1"
                             Margin="0"
                             Padding="0"
-                            ColumnSpacing="0"
                             ColumnDefinitions="*,Auto"
+                            ColumnSpacing="0"
                             HorizontalOptions="Fill">
                             <Entry
-                                Grid.Column="0"
                                 x:Name="entry_login_password"
+                                Grid.Column="0"
                                 Margin="0"
                                 BackgroundColor="Transparent"
                                 FontSize="17"
@@ -676,40 +713,57 @@
                                 TextColor="White"
                                 VerticalOptions="Start" />
 
-                                <Button
-                                    Grid.Column="1"
-                                    x:Name="btn_loginshowpass"
-                                    Margin="10,-14,5,0"
-                                    Padding="10"
-                                    HeightRequest="50"
-                                    WidthRequest="50"
-                                    Opacity="0.8"
-                                    BackgroundColor="Transparent"
-                                    Clicked="btn_loginshowpass_Clicked"
-                                    HorizontalOptions="End" ImageSource="permission_eye.png"
-                                    VerticalOptions="Center">
-                                    
-                                </Button>
+                            <Button
+                                x:Name="btn_loginshowpass"
+                                Grid.Column="1"
+                                Margin="10,-14,5,0"
+                                Padding="10"
+                                BackgroundColor="Transparent"
+                                Clicked="btn_loginshowpass_Clicked"
+                                HeightRequest="50"
+                                HorizontalOptions="End"
+                                ImageSource="permission_eye.png"
+                                Opacity="0.8"
+                                VerticalOptions="Center"
+                                WidthRequest="50" />
                         </Grid>
                     </Grid>
                 </Border>
 
                 <Grid
-                    Margin="10,15,10,50"
+                    Margin="10,35,16,50"
                     Padding="0"
+                    ColumnDefinitions="*,Auto"
                     HorizontalOptions="Fill">
+                    <HorizontalStackLayout
+                        Grid.Column="0"
+                        Margin="0"
+                        Padding="5,0,18,0"
+                        BackgroundColor="Transparent"
+                        HorizontalOptions="Start"
+                        Spacing="0">
+                        <Label
+                            Margin="0,0,20,0"
+                            Padding="0"
+                            FontSize="14"
+                            HorizontalOptions="Start"
+                            LineBreakMode="WordWrap"
+                            Text="Anmeldung merken"
+                            TextColor="#ffffff"
+                            VerticalOptions="Center"
+                            WidthRequest="110" />
+                        <Switch
+                            x:Name="sw_autologin"
+                            HorizontalOptions="Start"
+                            Toggled="Switch_Toggled"
+                            VerticalOptions="Center" />
+                    </HorizontalStackLayout>
                     <Border
+                        Grid.Column="1"
                         Margin="0"
                         Padding="1"
-                        BackgroundColor="#041d43"
+                        BackgroundColor="#042d53"
                         HorizontalOptions="End">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <HorizontalStackLayout
                             x:Name="btn_loginlogin_container"
                             Margin="0"
@@ -737,7 +791,7 @@
                         </HorizontalStackLayout>
                     </Border>
                 </Grid>
-                <Border
+                <!--<Border
                     Margin="0,0,0,0"
                     BackgroundColor="#666"
                     HeightRequest="2"
@@ -759,7 +813,7 @@
                         TextColor="#ffffff"
                         VerticalOptions="Center" />
                     <Switch
-                        x:Name="sw_autologin"
+                        x:Name="sw_autologin2"
                         HorizontalOptions="Start"
                         Toggled="Switch_Toggled"
                         VerticalOptions="Center" />
@@ -769,7 +823,7 @@
                     BackgroundColor="#666"
                     HeightRequest="2"
                     HorizontalOptions="Fill"
-                    VerticalOptions="Start" />
+                    VerticalOptions="Start" />-->
 
             </VerticalStackLayout>
         </Grid>
@@ -881,13 +935,6 @@
                         Padding="1"
                         BackgroundColor="#041d43"
                         HorizontalOptions="End">
-                        <Border.Shadow>
-                            <Shadow
-                                Brush="Black"
-                                Opacity="0.3"
-                                Radius="5"
-                                Offset="2,2" />
-                        </Border.Shadow>
                         <StackLayout
                             x:Name="btn_addRegScan2_container"
                             Margin="0"

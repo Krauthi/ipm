@@ -5,6 +5,7 @@ using Android.OS;
 using Android.Util;
 using AndroidX.Core.App;
 using iPMCloud.Mobile.Services;
+using iPMCloud.Mobile.vo;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -38,42 +39,75 @@ namespace iPMCloud.Mobile.Platforms.Android.Services
         {
             base.OnCreate();
 
-            // KRITISCH: StartForeground() muss SOFORT aufgerufen werden
-            // Selbst wenn Fehler auftreten, müssen wir in den Foreground-Modus wechseln
+            // KRITISCH: StartForeground() muss SOFORT aufgerufen werden.
+            // Android beendet den Prozess mit ForegroundServiceDidNotStartInTimeException,
+            // wenn nach startForegroundService() kein erfolgreicher StartForeground()-Aufruf
+            // erfolgt - unabhängig davon, ob wir die Exception selbst abfangen. Deshalb darf
+            // der Aufruf niemals ganz ausbleiben, auch nicht im Fehlerfall.
             try
             {
-                // Channel MUSS vor StartForeground existieren
-                CreateNotificationChannel();
+                // Channel erstellen BEVOR wir die Notification bauen
+                // Dies ist synchron und muss VOR StartForeground erfolgen
+                EnsureNotificationChannelExists();
 
                 // Verwende minimale Notification für schnellsten Start
                 var notification = BuildFallbackNotification();
 
-                if (Build.VERSION.SdkInt >= BuildVersionCodes.Q)
-                {
-#pragma warning disable CA1416
-                    StartForeground(
-                        NOTIFICATION_ID,
-                        notification,
-                        ForegroundService.TypeDataSync);
-#pragma warning restore CA1416
-                }
-                else
-                {
-                    StartForeground(NOTIFICATION_ID, notification);
-                }
-
-                lock (_foregroundLock)
-                {
-                    _isForegroundStarted = true;
-                }
+                StartForegroundCompat(notification);
 
                 Log.Info(TAG, "StartForeground called successfully in OnCreate");
             }
             catch (Exception ex)
             {
                 Log.Error(TAG, $"CRITICAL: OnCreate StartForeground failed: {ex}");
-                // Trotz Fehler versuchen wir den Service zu stoppen
-                StopSelf();
+                AppModel.Logger?.Error($"UploadForegroundService.OnCreate failed: {ex.Message}");
+
+                // Auch im Fehlerfall MUSS StartForeground() aufgerufen werden, sonst tötet
+                // Android den Prozess mit ForegroundServiceDidNotStartInTimeException.
+                // Letzter Versuch mit der einfachst möglichen, systemeigenen Notification.
+                try
+                {
+                    var lastResortNotification = new NotificationCompat.Builder(this, CHANNEL_ID)
+                        .SetContentTitle("iPM-Cloud Upload")
+                        .SetSmallIcon(global::Android.Resource.Drawable.StatSysUpload)
+                        .SetOngoing(true)
+                        .Build();
+
+                    StartForegroundCompat(lastResortNotification);
+                    Log.Warn(TAG, "StartForeground succeeded on last-resort retry");
+                }
+                catch (Exception ex2)
+                {
+                    Log.Error(TAG, $"CRITICAL: last-resort StartForeground also failed: {ex2}");
+                    AppModel.Logger?.Error($"UploadForegroundService.OnCreate last-resort failed: {ex2.Message}");
+                }
+                finally
+                {
+                    // Trotz Fehler versuchen wir den Service zu stoppen
+                    StopSelf();
+                }
+            }
+        }
+
+        private void StartForegroundCompat(Notification notification)
+        {
+            if (Build.VERSION.SdkInt >= BuildVersionCodes.Q)
+            {
+#pragma warning disable CA1416
+                StartForeground(
+                    NOTIFICATION_ID,
+                    notification,
+                    ForegroundService.TypeDataSync);
+#pragma warning restore CA1416
+            }
+            else
+            {
+                StartForeground(NOTIFICATION_ID, notification);
+            }
+
+            lock (_foregroundLock)
+            {
+                _isForegroundStarted = true;
             }
         }
 
@@ -157,7 +191,7 @@ namespace iPMCloud.Mobile.Platforms.Android.Services
         /// </summary>
         private Notification BuildFallbackNotification()
         {
-            return new NotificationCompat.Builder(this, CHANNEL_ID)
+            var builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .SetContentTitle("iPM-Cloud Upload")
                 .SetContentText("Uploads laufen…")
                 .SetSmallIcon(global::Android.Resource.Drawable.StatSysUpload)
@@ -165,7 +199,15 @@ namespace iPMCloud.Mobile.Platforms.Android.Services
                 .SetOnlyAlertOnce(true)
                 .SetCategory(NotificationCompat.CategoryService)
                 .SetPriority(NotificationCompat.PriorityLow)
-                .Build();
+                .SetVisibility(NotificationCompat.VisibilityPublic);
+
+            // Für Android 8+ (Oreo) muss der Channel gesetzt sein
+            if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
+            {
+                builder.SetChannelId(CHANNEL_ID);
+            }
+
+            return builder.Build();
         }
 
         private void OnUploadProgress(object sender, UploadProgressEventArgs e)
@@ -250,7 +292,12 @@ namespace iPMCloud.Mobile.Platforms.Android.Services
             }
         }
 
-        private void CreateNotificationChannel()
+        /// <summary>
+        /// Stellt sicher, dass der Notification Channel existiert.
+        /// Diese Methode ist idempotent und fail-safe.
+        /// MUSS vor BuildNotification/StartForeground aufgerufen werden.
+        /// </summary>
+        private void EnsureNotificationChannelExists()
         {
             if (Build.VERSION.SdkInt < BuildVersionCodes.O)
                 return;
@@ -258,22 +305,44 @@ namespace iPMCloud.Mobile.Platforms.Android.Services
             try
             {
                 var nm = GetSystemService(NotificationService) as NotificationManager;
-                if (nm?.GetNotificationChannel(CHANNEL_ID) != null)
+                if (nm == null)
+                {
+                    Log.Warn(TAG, "NotificationManager is null, cannot create channel");
                     return;
+                }
 
+                // Channel bereits vorhanden? Dann nichts tun
+                if (nm.GetNotificationChannel(CHANNEL_ID) != null)
+                {
+                    Log.Debug(TAG, "Notification channel already exists");
+                    return;
+                }
+
+                // Channel erstellen
                 var channel = new NotificationChannel(CHANNEL_ID, "iPM Uploads", NotificationImportance.Low)
                 {
-                    Description = "Zeigt den Fortschritt von Uploads an."
+                    Description = "Zeigt den Fortschritt von Uploads an.",
+                    LockscreenVisibility = NotificationVisibility.Public
                 };
 
-                nm?.CreateNotificationChannel(channel);
+                // Kein Sound/Vibration für Upload-Notifications
+                channel.SetSound(null, null);
+                channel.EnableVibration(false);
+
+                nm.CreateNotificationChannel(channel);
+                Log.Info(TAG, "Notification channel created successfully");
             }
             catch (Exception ex)
             {
-                Log.Error(TAG, $"CreateNotificationChannel error (non-fatal): {ex.Message}");
+                Log.Error(TAG, $"EnsureNotificationChannelExists error: {ex.Message}");
                 // Non-fatal: Wenn Channel nicht erstellt werden kann, verwenden wir trotzdem 
                 // die Notification - Android wird dann den Default-Channel verwenden
             }
+        }
+
+        private void CreateNotificationChannel()
+        {
+            EnsureNotificationChannelExists();
         }
 
         private Notification BuildNotification(string text, int progressPercent)

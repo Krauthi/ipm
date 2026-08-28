@@ -1787,7 +1787,7 @@
                                             Padding="0"
                                             FontSize="11"
                                             HorizontalTextAlignment="Start"
-                                            Text="Einstellungen und Sontiges"
+                                            Text="Einstellungen XXX und Sontiges"
                                             TextColor="#aaaaaa" />
                                     </VerticalStackLayout>
                                     <HorizontalStackLayout

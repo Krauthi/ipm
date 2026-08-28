@@ -9,11 +9,11 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ApplicationTitle>iPM-Cloud</ApplicationTitle>
 		<ApplicationIdGuid>201CEFAB-590D-414F-9660-9EFF31FE2078</ApplicationIdGuid>
-		<ApplicationDisplayVersion>3.0.86</ApplicationDisplayVersion>
+		<ApplicationDisplayVersion>3.0.93</ApplicationDisplayVersion>
 		<ApplicationVersion>1</ApplicationVersion>
-		<Version>3000086</Version>
-		<AssemblyVersion>3.0.86.0</AssemblyVersion>
-		<FileVersion>3.0.86.0</FileVersion>
+		<Version>3000093</Version>
+		<AssemblyVersion>3.0.93.0</AssemblyVersion>
+		<FileVersion>3.0.93.0</FileVersion>
 		<NeutralLanguage>de-DE</NeutralLanguage>
 		<Copyright>iPM-Cloud</Copyright> 
 		<Nullable>disable</Nullable>
@@ -26,12 +26,15 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<ApplicationId>com.ipmcloud.ipm.mobile.app</ApplicationId>   
+		<ApplicationId>com.ipmcloud.ipm.mobile</ApplicationId>   
 		<!--<ApplicationId>com.ipmcloud.ipm.mobile</ApplicationId> Android -->
 	</PropertyGroup>
 
-	
-	<PropertyGroup Condition="'$(TargetFramework)'=='net10.0-ios'" />
+	<!--
+	<PropertyGroup Condition="'$(TargetFramework)'=='net10.0-ios'">
+	  <CodesignKey>Apple Development: Created via API (4RDNR6C66G)</CodesignKey>
+	  <CodesignProvision>VS: com.ipmcloud.ipm.mobile.app Development</CodesignProvision>
+	</PropertyGroup>-->
 
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)'=='Debug|net10.0-ios'">
@@ -51,7 +54,7 @@
 	</PropertyGroup>
 	
 	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
-		<SupportedOSPlatformVersion>14.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion>15.0</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
@@ -145,30 +148,30 @@
 	<!-- NuGet Packages - Allgemein (alle Plattformen) -->
 <ItemGroup>
   <PackageReference Include="AdamE.Firebase.iOS.Core" Version="12.10.0" />
-  <PackageReference Include="CommunityToolkit.Maui.Core" Version="15.0.0" />
+  <PackageReference Include="CommunityToolkit.Maui.Core" Version="15.0.1" />
   <PackageReference Include="FFImageLoading.Maui" Version="1.3.2" />
   <PackageReference Include="MetadataExtractor" Version="2.9.3" />
-  <PackageReference Include="Microsoft.Maui.Controls" Version="10.0.90" />
-  <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="10.0.90" />
-  <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.10" />
-  <PackageReference Include="Microsoft.Maui.Graphics" Version="10.0.90" />
-  <PackageReference Include="Microsoft.Maui.Graphics.Skia" Version="10.0.90" />
+  <PackageReference Include="Microsoft.Maui.Controls" Version="10.0.100" />
+  <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="10.0.100" />
+  <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.11" />
+  <PackageReference Include="Microsoft.Maui.Graphics" Version="10.0.100" />
+  <PackageReference Include="Microsoft.Maui.Graphics.Skia" Version="10.0.100" />
   <PackageReference Include="MintedTextEditor.Core" Version="0.1.1" />
   <PackageReference Include="MintedTextEditor.Maui" Version="0.1.1" />
   <PackageReference Include="MintedTextEditor.SkiaSharp" Version="0.1.1" />
   <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-  <PackageReference Include="NLog" Version="6.1.4" />
+  <PackageReference Include="NLog" Version="6.2.0" />
   <PackageReference Include="Google.Cloud.Translation.V2" Version="3.2.0" />
-  <PackageReference Include="CommunityToolkit.Maui" Version="15.0.0" />
-  <PackageReference Include="NLog.Extensions.Logging" Version="6.1.4" />
+  <PackageReference Include="CommunityToolkit.Maui" Version="15.0.1" />
+  <PackageReference Include="NLog.Extensions.Logging" Version="6.2.0" />
   <PackageReference Include="SixLabors.ImageSharp" Version="3.1.12" />
   <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="2.1.7" />
   <PackageReference Include="System.Private.ServiceModel" Version="4.10.3" />
-  <PackageReference Include="System.Security.Cryptography.Xml" Version="10.0.10" />
+  <PackageReference Include="System.Security.Cryptography.Xml" Version="10.0.11" />
   <PackageReference Include="System.ServiceModel.Http" Version="10.0.652802" />
   <PackageReference Include="System.ServiceModel.Primitives" Version="10.0.652802" />
-  <PackageReference Include="ZXing.Net.Maui" Version="0.10.3" />
-  <PackageReference Include="ZXing.Net.Maui.Controls" Version="0.10.3" />
+  <PackageReference Include="ZXing.Net.Maui" Version="0.10.4" />
+  <PackageReference Include="ZXing.Net.Maui.Controls" Version="0.10.4" />
 </ItemGroup>
 
 	<!-- Android-only Packages -->
@@ -188,10 +191,10 @@
 
 
 
-<PropertyGroup Condition="'$(TargetFramework)'=='net10.0-ios'">
+<!--<PropertyGroup Condition="'$(TargetFramework)'=='net10.0-ios'">
   <CodesignKey>Apple Development: Created via API (4RDNR6C66G)</CodesignKey>
   <CodesignProvision>VS: com.ipmcloud.ipm.mobile.app Development</CodesignProvision>
-</PropertyGroup>
+</PropertyGroup>-->
 
 
 
@@ -215,6 +218,11 @@
 	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
 		<GoogleServicesJson Include="Platforms\Android\google-services.json" />
 		<AndroidAsset Include="Platforms\Android\Assets\*.json" />
+	</ItemGroup>
+
+	<!-- Android WorkManager fuer Upload-Retry-Scheduling -->
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+		<PackageReference Include="Xamarin.AndroidX.Work.Runtime" Version="2.11.2.1" />
 	</ItemGroup>
 
 	<!-- iOS spezifische Ressourcen -->

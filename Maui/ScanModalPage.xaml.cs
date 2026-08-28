@@ -1,5 +1,6 @@
 using iPMCloud.Mobile.vo;
 using iPMCloud.Mobile.Helpers;
+using iPMCloud.Mobile.Services;
 using System.Linq;
 using System.Text;
 using System.Windows.Input;
@@ -168,7 +169,10 @@ namespace iPMCloud.Mobile
                     await Task.Delay(300, token);
                     AppModel.Logger.Info("[ScanModalPage] IsDetecting = true");
                     ReaderView.IsDetecting = true;
-                    
+
+                    // Registriere den Scanner für zentrale Taschenlampen-Steuerung
+                    FlashlightManager.RegisterScanner(ReaderView);
+
                 }
                 catch (OperationCanceledException ex)
                 {
@@ -177,6 +181,9 @@ namespace iPMCloud.Mobile
             });
 #else
             ReaderView.IsDetecting = true;
+
+            // Registriere den Scanner für zentrale Taschenlampen-Steuerung
+            FlashlightManager.RegisterScanner(ReaderView);
 #endif
         }
 
@@ -188,6 +195,10 @@ namespace iPMCloud.Mobile
             // Stop the camera feed whenever the page leaves the screen.
             ReaderView.IsTorchOn = false;
             ReaderView.IsDetecting = false;
+
+            // Entferne die Scanner-Registrierung
+            FlashlightManager.UnregisterScanner();
+
             base.OnDisappearing();
         }
 

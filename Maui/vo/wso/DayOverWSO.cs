@@ -333,6 +333,37 @@ namespace iPMCloud.Mobile
         /// <summary>
         /// Zählt die Anzahl der Tagesabschlüsse im Upload-Stack
         /// </summary>
+        public static int CountFromStackFrom(Int32 customerId)
+        {
+            try
+            {
+                if (customerId <= 0)
+                {
+                    return 0;
+                }
+
+                string directoryPath = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                    "ipm/" + customerId + "/dayoverupload/"
+                );
+
+                if (Directory.Exists(directoryPath))
+                {
+                    return Directory.GetFiles(directoryPath, "*.ipm").Length;
+                }
+
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: CountFromStack DayOverWSO");
+                return 0;
+            }
+        }
+
+        /// <summary>
+        /// Zählt die Anzahl der Tagesabschlüsse im Upload-Stack
+        /// </summary>
         public static int CountFromStack()
         {
             try

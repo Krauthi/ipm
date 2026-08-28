@@ -97,6 +97,7 @@ namespace iPMCloud.Mobile
         {
             base.OnLowMemory();
             Log.Warn(TAG, "Low Memory Warning!");
+            AppModel.Logger?.Warn("MainApplication.OnLowMemory: System meldet Speichermangel - Hintergrund-Prozess-Kill ist wahrscheinlich (mogliche Ursache fur naechsten unerwarteten App-Neustart).");
 
             // Speicher freigeben
             GC.Collect();
@@ -107,6 +108,7 @@ namespace iPMCloud.Mobile
         {
             base.OnTrimMemory(level);
             Log.Warn(TAG, $"Trim Memory: {level}");
+            AppModel.Logger?.Warn($"MainApplication.OnTrimMemory: level={level}");
 
             if (level >= TrimMemory.RunningCritical)
             {

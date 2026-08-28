@@ -27,21 +27,19 @@
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/appicon.appiconset</string>
 	<key>CFBundleVersion</key>
-	<string>3000086</string>
+	<string>3000093</string>
 	<key>UILaunchStoryboardName</key>
 	<string>MauiSplash</string>
 	<key>CFBundleName</key>
 	<string>iPMCloud.Mobile</string>
 	<key>CFBundleShortVersionString</key>
-	<string>3.0.86</string>
+	<string>3.0.93</string>
 	<key>UIStatusBarHidden</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>Diese App benoetigt die Kamera um QR-Codes zu scannen und um Bilder bei Bemerkunegn bzw. Notizen hinzuzufuegen. Bitte akzeptieren Sie die Nutzung der Kamera.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Diese App benoetigt den Zugriff auf Ihre Foto-Galerie und Kamera um Bilder bei Bemerkunegn bzw. Notizen hinzuzufuegen. Die Auswahl der Bilder bestimmen Sie selbst. Bitte akzeptieren Sie den Zugriff auf Ihre Galerie und Kamera.</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>This app needs access to microphone.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Diese App benoetigt den Zugriff auf Ihre Foto-Galerie und Kamera um Bilder bei Bemerkunegn bzw. Notizen hinzuzufuegen. Die Auswahl der Bilder bestimmen Sie selbst. Bitte akzeptieren Sie den Zugriff auf Ihre Galerie und Kamera.</string>
 	<key>NSAppleMusicUsageDescription</key>

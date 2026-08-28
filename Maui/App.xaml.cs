@@ -154,6 +154,10 @@ namespace iPMCloud.Mobile
                 AppModel.Logger?.Error($"App.InitApp: failed to reset navigator state: {ex.Message}");
             }
 
+            // Detect and log sessions that were killed by the OS mid-operation
+            // (e.g. process death while the Camera/Gallery was in the foreground).
+            iPMCloud.Mobile.Services.CrashDiagnostics.CheckForUnfinishedOperations();
+
             AppModel.Instance.InitDeviceInformation();
             PushNotificationService.Initialize();
             AppModel.Instance.App = this;
@@ -179,8 +183,49 @@ namespace iPMCloud.Mobile
         protected override void OnStart()
         {
             AppModel.Instance.AppOnStart = DateTime.Now;
+
+            #if ANDROID
+            InitializeUploadRetryScheduler();
+            #endif
+
             base.OnStart();
         }
+
+        #if ANDROID
+        /// <summary>
+        /// Initialisiert den WorkManager Upload-Retry-Scheduler beim App-Start.
+        /// Stellt sicher, dass pending Uploads automatisch wiederholt werden.
+        /// </summary>
+        private void InitializeUploadRetryScheduler()
+        {
+            try
+            {
+                var context = Android.App.Application.Context;
+
+                // Prüfe ob Uploads pending sind
+                var pendingCount = UploadCoordinator.Instance.GetPendingUploadCount();
+
+                if (pendingCount > 0)
+                {
+                    AppModel.Logger?.Info($"App-Start: {pendingCount} pending Uploads erkannt, plane automatische Wiederholung");
+                    Platforms.Android.UploadRetryScheduler.ScheduleUploadRetry(context);
+                }
+                else
+                {
+                    // Keine Uploads pending - stelle sicher, dass kein alter Job läuft
+                    if (Platforms.Android.UploadRetryScheduler.IsUploadRetryScheduled(context))
+                    {
+                        AppModel.Logger?.Info("App-Start: Keine pending Uploads, stoppe Wiederholungs-Job");
+                        Platforms.Android.UploadRetryScheduler.CancelUploadRetry(context);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error($"InitializeUploadRetryScheduler failed: {ex.Message}");
+            }
+        }
+        #endif
 
         protected async override void OnSleep()
         {
@@ -228,6 +273,11 @@ namespace iPMCloud.Mobile
                     InitApp();
                 }
                 AppModel.Instance.UseExternHardware = false;
+
+                // Bei OnResume: Wenn Netzwerk verfügbar und Uploads pending, sofortigen Versuch planen
+                // Android: nutzt WorkManager für zuverlässigen Retry
+                // iOS: startet Upload direkt im Prozess (iOS erlaubt kein zuverlässiges Background-Scheduling)
+                CheckAndScheduleImmediateUploadRetry();
             }
             catch (Exception ex)
             {
@@ -236,6 +286,42 @@ namespace iPMCloud.Mobile
             }
             //}
             base.OnResume();
+        }
+
+        /// <summary>
+        /// Prüft beim App-Resume ob Uploads pending sind und plant ggf. sofortigen Upload-Versuch.
+        /// Android: WorkManager one-time request.
+        /// iOS: direkter In-Process-Upload (iOS hat kein zuverlässiges Background-Scheduling für Apps).
+        /// </summary>
+        private void CheckAndScheduleImmediateUploadRetry()
+        {
+            try
+            {
+                // Nur wenn Internet verfügbar ist
+                if (!AppModel.Instance.IsInternet)
+                    return;
+
+                var pendingCount = UploadCoordinator.Instance.GetPendingUploadCount();
+
+                if (pendingCount > 0)
+                {
+                    AppModel.Logger?.Info($"OnResume: {pendingCount} pending Uploads, plane sofortigen Versuch");
+
+                    #if ANDROID
+                    var context = Android.App.Application.Context;
+                    Platforms.Android.UploadRetryScheduler.ScheduleImmediateUploadRetry(context);
+                    #elif IOS
+                    var uploadService = IPlatformApplication.Current?.Services
+                        ?.GetService<iPMCloud.Mobile.Services.IUploadService>();
+                    uploadService ??= new Platforms.iOS.iOSUploadService();
+                    uploadService.StartUploads();
+                    #endif
+                }
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Warn($"CheckAndScheduleImmediateUploadRetry failed: {ex.Message}");
+            }
         }
 
 

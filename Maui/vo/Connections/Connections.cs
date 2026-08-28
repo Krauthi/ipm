@@ -42,8 +42,13 @@ namespace iPMCloud.Mobile.vo
         internal static Uri uri_GetCheckA = null;
         internal static Uri uri_UpdatePushToken = null;
         internal static Uri uri_GetTickets = null;
+        internal static Uri uri_AddTicketChat = null;
+        internal static Uri uri_DelTicketChat = null;
+        internal static Uri uri_SetTicketBesitzerStatus = null;
 
         internal static HttpClient httpClientInstance;
+        internal static HttpClient httpClientInstanceTicketStatus;
+        internal static HttpClient httpClientInstanceTicketChat;
         internal static HttpClient httpClientInstanceChecks;
         internal static HttpClient httpClientInstanceLogin;
         internal static HttpClient httpClientInstanceSyncGuid;
@@ -88,9 +93,15 @@ namespace iPMCloud.Mobile.vo
             {
                 // Use HttpClientManager instead of ServicePointManager (obsolete)
                 // Certificate validation is now per-handler instead of global
-                
+
                 CookieContainer cookieContainer = new CookieContainer();
                 httpClientInstance = HttpClientManager.CreateClient(cookieContainer, HttpClientManager.TimeoutProfile.Medium);
+
+                CookieContainer cookieContainerTicketStatus = new CookieContainer();
+                httpClientInstanceTicketStatus = HttpClientManager.CreateClient(cookieContainerTicketStatus, HttpClientManager.TimeoutProfile.Medium);
+
+                CookieContainer cookieContainerTicketChat = new CookieContainer();
+                httpClientInstanceTicketChat = HttpClientManager.CreateClient(cookieContainerTicketChat, HttpClientManager.TimeoutProfile.Medium);
 
                 CookieContainer cookieContainerLogin = new CookieContainer();
                 httpClientInstanceLogin = HttpClientManager.CreateClient(cookieContainerLogin, HttpClientManager.TimeoutProfile.Short);
@@ -156,6 +167,9 @@ namespace iPMCloud.Mobile.vo
 
                 // Ticket-API
                 uri_GetTickets = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/GetMobileTickets");
+                uri_AddTicketChat = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/AddTicketChat");
+                uri_DelTicketChat = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/DelTicketChat");
+                uri_SetTicketBesitzerStatus = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/SetTicketBesitzerStatus");
 
                 InitPNConnections();
             }
@@ -632,12 +646,162 @@ namespace iPMCloud.Mobile.vo
             }
         }
 
+        /// <summary>
+        /// Lädt einen neuen TicketChat-Eintrag (Nachricht/Bild) zum Backend hoch
+        /// </summary>
+        public async Task<TicketChatResponse> AddTicketChat(TicketChat tc)
+        {
+            if (uri_AddTicketChat == null) { InitConnections(); }
+            HttpResponseMessage resMsg = null;
+
+            if (!AppModel.Instance.IsInternet)
+            {
+                return new TicketChatResponse { succses = false };
+            }
+
+            string args = JsonConvert.SerializeObject(new TicketChatRequest
+            {
+                token = AppModel.Instance.SettingModel.SettingDTO.LoginToken,
+                tc = tc
+            });
+
+            HttpRequestMessage msg = new HttpRequestMessage(HttpMethod.Post, uri_AddTicketChat);
+            msg.Content = new StringContent(args, Encoding.UTF8, "application/json");
+
+            try
+            {
+                resMsg = await httpClientInstanceTicketChat.SendAsync(msg);
+                if (resMsg != null && resMsg.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    var json = await resMsg.Content.ReadAsStringAsync();
+                    resMsg.Dispose();
+                    var response = JsonConvert.DeserializeObject<TicketChatResponse>(json);
+                    tc.id = response?.ticketchatid ?? 0; // Update the ID of the TicketChat object with the response ID
+                    return response ?? new TicketChatResponse { succses = false };
+                }
+                else
+                {
+                    var m = "Method => AddTicketChat: httpResponseMessage.StatusCode = " + resMsg?.StatusCode + " - " + resMsg?.RequestMessage;
+                    AppModel.Logger.Warn(m);
+                    resMsg?.Dispose();
+                    return new TicketChatResponse { succses = false };
+                }
+            }
+            catch (Exception ex)
+            {
+                resMsg?.Dispose();
+                AppModel.Logger.Error("Method => AddTicketChat(catch): " + ex.Message);
+                return new TicketChatResponse { succses = false };
+            }
+        }
+
+        /// <summary>
+        /// Löscht einen TicketChat-Eintrag im Backend (nur durch den Ersteller möglich)
+        /// </summary>
+        public async Task<TicketChatResponse> DelTicketChat(TicketChat tc, int ticketchatid)
+        {
+            if (uri_DelTicketChat == null) { InitConnections(); }
+            HttpResponseMessage resMsg = null;
+
+            if (!AppModel.Instance.IsInternet)
+            {
+                return new TicketChatResponse { succses = false };
+            }
+
+            string args = JsonConvert.SerializeObject(new TicketChatRequest
+            {
+                token = AppModel.Instance.SettingModel.SettingDTO.LoginToken,
+                ticketchatid = ticketchatid,
+                tc = tc
+            });
+
+            HttpRequestMessage msg = new HttpRequestMessage(HttpMethod.Post, uri_DelTicketChat);
+            msg.Content = new StringContent(args, Encoding.UTF8, "application/json");
+
+            try
+            {
+                resMsg = await httpClientInstanceTicketChat.SendAsync(msg);
+                if (resMsg != null && resMsg.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    var json = await resMsg.Content.ReadAsStringAsync();
+                    resMsg.Dispose();
+                    var response = JsonConvert.DeserializeObject<TicketChatResponse>(json);
+                    return response ?? new TicketChatResponse { succses = false };
+                }
+                else
+                {
+                    var m = "Method => DelTicketChat: httpResponseMessage.StatusCode = " + resMsg?.StatusCode + " - " + resMsg?.RequestMessage;
+                    AppModel.Logger.Warn(m);
+                    resMsg?.Dispose();
+                    return new TicketChatResponse { succses = false };
+                }
+            }
+            catch (Exception ex)
+            {
+                resMsg?.Dispose();
+                AppModel.Logger.Error("Method => DelTicketChat(catch): " + ex.Message);
+                return new TicketChatResponse { succses = false };
+            }
+        }
+        
+        public async Task<TicketStatusResponse> SetTicketBesitzerStatus(Ticket t, int status)
+        {
+            if (uri_SetTicketBesitzerStatus == null) { InitConnections(); }
+            HttpResponseMessage resMsg = null;
+
+            if (!AppModel.Instance.IsInternet)
+            {
+                return new TicketStatusResponse { succses = false };
+            }
+
+            string args = JsonConvert.SerializeObject(new TicketStatusRequest
+            {
+                token = AppModel.Instance.SettingModel.SettingDTO.LoginToken,
+                ticketid = t.id,
+                status = status
+            });
+
+            HttpRequestMessage msg = new HttpRequestMessage(HttpMethod.Post, uri_SetTicketBesitzerStatus);
+            msg.Content = new StringContent(args, Encoding.UTF8, "application/json");
+
+            try
+            {
+                resMsg = await httpClientInstanceTicketStatus.SendAsync(msg);
+                if (resMsg != null && resMsg.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    var json = await resMsg.Content.ReadAsStringAsync();
+                    resMsg.Dispose();
+                    var response = JsonConvert.DeserializeObject<TicketStatusResponse>(json);
+                    return response ?? new TicketStatusResponse { succses = false };
+                }
+                else
+                {
+                    var m = "Method => SetTicketBesitzerStatus: httpResponseMessage.StatusCode = " + resMsg?.StatusCode + " - " + resMsg?.RequestMessage;
+                    AppModel.Logger.Warn(m);
+                    resMsg?.Dispose();
+                    return new TicketStatusResponse { succses = false };
+                }
+            }
+            catch (Exception ex)
+            {
+                resMsg?.Dispose();
+                AppModel.Logger.Error("Method => SetTicketBesitzerStatus(catch): " + ex.Message);
+                return new TicketStatusResponse { succses = false };
+            }
+        }
+
 
 
         public async Task<string[]> GuidsCheck(string[] guidsList)
         {
             if (uri_GuidCheck == null) { InitConnections(); }
             HttpResponseMessage resMsg = null;
+
+            // Früh-Prüfung: Wenn keine GUIDs, dann leeres Array zurückgeben
+            if (guidsList == null || guidsList.Length == 0)
+            {
+                return Array.Empty<string>();
+            }
 
             string args = JsonConvert.SerializeObject(new GuidsCheckRequest
             {
@@ -653,21 +817,47 @@ namespace iPMCloud.Mobile.vo
                 resMsg = await httpClientInstanceSyncGuid.SendAsync(msg);
                 if (resMsg != null && resMsg.StatusCode == HttpStatusCode.OK)
                 {
-                    var json = resMsg.Content.ReadAsStringAsync().Result;
+                    var json = await resMsg.Content.ReadAsStringAsync();
                     resMsg.Dispose();
-                    return JsonConvert.DeserializeObject<GuidsCheckResponse>(json).guids;
+                    var response = JsonConvert.DeserializeObject<GuidsCheckResponse>(json);
+
+                    // Backend kann null zurückgeben wenn keine GUIDs gefunden
+                    var resultGuids = response?.guids ?? Array.Empty<string>();
+                    AppModel.Logger?.Info($"GuidsCheck erfolgreich: {resultGuids.Length}/{guidsList.Length} bereits im Backend vorhanden");
+                    return resultGuids;
                 }
                 else
                 {
+                    var statusCode = resMsg?.StatusCode.ToString() ?? "null";
+                    AppModel.Logger?.Warn($"GuidsCheck: HTTP Status {statusCode} - Backend nicht OK");
                     resMsg?.Dispose();
-                    return null;
+
+                    // Bei HTTP-Fehlern (4xx, 5xx) geben wir leeres Array zurück
+                    // Das bedeutet: Wir wissen nicht, welche GUIDs schon hochgeladen wurden
+                    // Also behandeln wir alle als "noch nicht hochgeladen" (sicherer Fehlerfall)
+                    return Array.Empty<string>();
                 }
             }
-            catch (Exception)
+            catch (TaskCanceledException tex)
             {
-                AppModel.Logger.Error("ERROR: (GuidsCheck) Netzwerk nicht erreichbar!");
+                AppModel.Logger?.Warn($"GuidsCheck: Timeout oder abgebrochen - {tex.Message}");
                 resMsg?.Dispose();
-                return null;
+                // Bei Timeout: Konservativ - wir gehen davon aus dass nichts hochgeladen wurde
+                return Array.Empty<string>();
+            }
+            catch (HttpRequestException hex)
+            {
+                AppModel.Logger?.Error($"ERROR: (GuidsCheck) Netzwerk nicht erreichbar - {hex.Message}");
+                resMsg?.Dispose();
+                // Bei Netzwerkfehler: Konservativ - nichts als hochgeladen behandeln
+                return Array.Empty<string>();
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error($"ERROR: (GuidsCheck) Unerwarteter Fehler - {ex.GetType().Name}: {ex.Message}");
+                resMsg?.Dispose();
+                // Bei unbekanntem Fehler: Konservativ behandeln
+                return Array.Empty<string>();
             }
         }
 

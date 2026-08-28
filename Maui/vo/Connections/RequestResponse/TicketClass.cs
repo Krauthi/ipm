@@ -37,38 +37,45 @@ namespace iPMCloud.Mobile
         public int unreadCount { get; set; } = 0;
     }
 
-    /// <summary>
-    /// Request-Klasse für Ticket-Chat-Operationen
-    /// </summary>
+    [Serializable]
+
+    public class TicketStatusResponse
+    {
+        public bool succses { get; set; } = true;
+        public TicketStatusResponse() { }
+    }
+
+    [Serializable]
+
+    public class TicketStatusRequest
+    {
+        public string token { get; set; } = "";
+        public Int32 ticketid { get; set; } = 0;
+        public int status { get; set; } = 0;
+        public TicketStatusRequest() { }
+    }
+
+    [Serializable]
+
+    public class TicketChatResponse
+    {
+        public Int32 ticketchatid { get; set; } = 0;
+        public bool succses { get; set; } = true;
+        public TicketChatResponse() { }
+    }
+
     [Serializable]
     public class TicketChatRequest
     {
         public string token { get; set; } = "";
-        public Int32 ticketid { get; set; } = 0;
-        public Int32 chatid { get; set; } = 0;
-        public Int32 personid { get; set; } = 0;
-        public string personname { get; set; } = "";
-        public string nachricht { get; set; } = "";
-        public string typ { get; set; } = "info";
-        public bool intern { get; set; } = true;
+        public Int32 gruppeid { get; set; } = 0;
+        public Int32 ticketchatid { get; set; } = 0;
+        public TicketChat tc { get; set; } = null;
 
         public TicketChatRequest()
         {
         }
     }
 
-    /// <summary>
-    /// Response-Klasse für Ticket-Chat-Operationen
-    /// </summary>
-    [Serializable]
-    public class TicketChatResponse
-    {
-        public bool success { get; set; } = false;
-        public string message { get; set; } = "";
-        public List<TicketChat> chats { get; set; } = null;
 
-        public TicketChatResponse()
-        {
-        }
-    }
 }

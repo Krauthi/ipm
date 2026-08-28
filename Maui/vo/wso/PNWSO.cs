@@ -40,7 +40,7 @@ namespace iPMCloud.Mobile
 
                 string directoryPath = Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                    "ipm/pnupload/"
+                    "ipm/" + AppModel.Instance?.SettingModel?.SettingDTO?.CustomerNumber + "/pnupload/"
                 );
 
                 if (!Directory.Exists(directoryPath))
@@ -79,13 +79,39 @@ namespace iPMCloud.Mobile
         /// Zählt die Anzahl der PN-Token im Upload-Stack
         /// Hinweis: Maximal 1 Datei (pn.ipm)
         /// </summary>
+        public static int CountFromStackFrom(Int32 customerId)
+        {
+            try
+            {
+                string directoryPath = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                    "ipm/" + customerId + "/pnupload/"
+                );
+
+                if (Directory.Exists(directoryPath))
+                {
+                    return Directory.GetFiles(directoryPath, "*.ipm").Length;
+                }
+
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: CountFromStack PNWSO");
+                return 0;
+            }
+        }
+        /// <summary>
+        /// Zählt die Anzahl der PN-Token im Upload-Stack
+        /// Hinweis: Maximal 1 Datei (pn.ipm)
+        /// </summary>
         public static int CountFromStack()
         {
             try
             {
                 string directoryPath = Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                    "ipm/pnupload/"
+                    "ipm/" + AppModel.Instance?.SettingModel?.SettingDTO?.CustomerNumber + "/pnupload/"
                 );
 
                 if (Directory.Exists(directoryPath))
@@ -113,7 +139,7 @@ namespace iPMCloud.Mobile
             {
                 string directoryPath = Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                    "ipm/pnupload/"
+                    "ipm/" + AppModel.Instance?.SettingModel?.SettingDTO?.CustomerNumber + "/pnupload/"
                 );
 
                 if (Directory.Exists(directoryPath))
@@ -175,7 +201,7 @@ namespace iPMCloud.Mobile
             {
                 string filePath = Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                    "ipm/pnupload/pn.ipm"
+                    "ipm/" + AppModel.Instance?.SettingModel?.SettingDTO?.CustomerNumber + "/pnupload/pn.ipm"
                 );
 
                 if (File.Exists(filePath))
@@ -198,6 +224,13 @@ namespace iPMCloud.Mobile
             }
         }
 
+        /// <summary>
+        /// Prüft ob ein Token im Upload-Stack vorhanden ist
+        /// </summary>
+        public static bool HasPendingToken(Int32 customerId)
+        {
+            return CountFromStackFrom(customerId) > 0;
+        }
         /// <summary>
         /// Prüft ob ein Token im Upload-Stack vorhanden ist
         /// </summary>

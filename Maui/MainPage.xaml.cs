@@ -4,6 +4,7 @@ using Google.Apis.Translate.v2;
 using Google.Cloud.Translation.V2;
 using iPMCloud.Mobile.Helpers;
 using iPMCloud.Mobile.Interfaces;
+using iPMCloud.Mobile.Services;
 using iPMCloud.Mobile.Views;
 using iPMCloud.Mobile.vo;
 using iPMCloud.Mobile.vo.GlobalObjects;
@@ -29,6 +30,10 @@ using Microsoft.Maui.Devices;
 using Microsoft.Maui.Devices;
 using Microsoft.Maui.Devices;
 using Microsoft.Maui.Devices;
+// TODO: Xamarin.RangeSlider not MAUI-compatible - needs replacement
+// using Xamarin.RangeSlider.Forms;
+
+//using Microsoft.Maui.Storage;
 using Microsoft.Maui.Devices;
 using Microsoft.Maui.Layouts;
 using Microsoft.Maui.Storage;
@@ -174,6 +179,11 @@ namespace iPMCloud.Mobile
                     frame_planConB.IsVisible = false;
                     frame_planConCe.IsVisible = false;
                     frame_planConC.IsVisible = false;
+
+
+                    CheckBackgroundDataUsageAsync();
+                    CheckBatteryOptimizationAsync();
+
                 }
                 else
                 {
@@ -1252,11 +1262,27 @@ namespace iPMCloud.Mobile
 
 
 
+        private static bool _backgroundDataPromptShown;
+        private static bool _batteryOptimizationPromptShown;
+
         protected override void OnAppearing()
         {
             base.OnAppearing();
 
             Task.Run(async () => await Ticket.LoadTicketsFromBackendAsync());
+
+            CheckBackgroundDataUsageAsync();
+            CheckBatteryOptimizationAsync();
+
+            // Der ReaderView haelt auf Android die Kamera-Session dauerhaft (CameraX bindet die
+            // Kamera bereits beim Erstellen des Handlers). Deshalb wird er als Kamera-Besitzer
+            // registriert, damit die Taschenlampe ueber ihn geschaltet werden kann, wenn die
+            // native SetTorchMode-API mit CAMERA_IN_USE fehlschlaegt.
+            if (ReaderView != null)
+            {
+                FlashlightManager.RegisterCameraOwner(ReaderView);
+            }
+
             // Reset camera state when returning to MainPage (e.g., after company change)
             // This ensures the camera is properly reinitialized
             if (ReaderView != null && ReaderView.IsDetecting)
@@ -1284,9 +1310,182 @@ namespace iPMCloud.Mobile
             }
         }
 
+        /// <summary>
+        /// Prüft auf Android, ob die Hintergrunddatennutzung für die App eingeschränkt ist,
+        /// und fordert den Nutzer bei Bedarf einmalig auf, diese in den Systemeinstellungen zu aktivieren.
+        /// </summary>
+        private const string BackgroundDataDontAskAgainKey = "BackgroundDataPrompt_DontAskAgain";
+
+        private async void CheckBackgroundDataUsageAsync()
+        {
+#if ANDROID
+            AppModel.Logger.Info("[MainPage] CheckBackgroundDataUsageAsync - Start. PromptShown(Session)={0}, DontAskAgain={1}", _backgroundDataPromptShown, Preferences.Get(BackgroundDataDontAskAgainKey, false));
+
+            if (_backgroundDataPromptShown || Preferences.Get(BackgroundDataDontAskAgainKey, false))
+            {
+                AppModel.Logger.Info("[MainPage] CheckBackgroundDataUsageAsync - Abbruch: bereits gezeigt oder 'Nicht mehr fragen' aktiv.");
+                return;
+            }
+
+            try
+            {
+                var backgroundDataInfo = ResolveService<IBackgroundDataInfo>();
+                if (backgroundDataInfo == null)
+                {
+                    AppModel.Logger.Warn("[MainPage] CheckBackgroundDataUsageAsync - IBackgroundDataInfo nicht via DependencyService auflösbar.");
+                    return;
+                }
+
+                bool isRestricted = backgroundDataInfo.IsBackgroundDataRestricted();
+                AppModel.Logger.Info($"[MainPage] CheckBackgroundDataUsageAsync - IsBackgroundDataRestricted={isRestricted}");
+
+                if (!isRestricted)
+                {
+                    return;
+                }
+
+                _backgroundDataPromptShown = true;
+
+                bool openSettings = await DisplayAlertAsync(
+                    "Hintergrunddatennutzung",
+                    "Die Hintergrunddatennutzung ist für iPM-Cloud deaktiviert. Damit Synchronisation und Benachrichtigungen zuverlässig funktionieren, aktivieren Sie bitte \"Hintergrunddatennutzung zulassen\" in den App-Einstellungen.",
+                    "Einstellungen öffnen",
+                    "Später");
+
+                if (openSettings)
+                {
+                    backgroundDataInfo.StartSetting();
+                }
+                else
+                {
+                    bool dontAskAgain = await DisplayAlertAsync(
+                        "Hinweis",
+                        "Möchten Sie bei zukünftigen App-Starts nicht mehr auf diese Einstellung hingewiesen werden?",
+                        "Nicht mehr fragen",
+                        "Weiterhin fragen");
+
+                    if (dontAskAgain)
+                    {
+                        Preferences.Set(BackgroundDataDontAskAgainKey, true);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger.Error($"[MainPage] CheckBackgroundDataUsageAsync - Error: {ex.Message}", ex);
+            }
+#endif
+        }
+
+        /// <summary>
+        /// Prüft auf Android, ob die Akkuoptimierung für die App aktiv ist (Einstellung "Optimiert"
+        /// oder "Eingeschränkt" statt "Nicht eingeschränkt"), und fordert den Nutzer bei Bedarf
+        /// einmalig per System-Dialog auf, die App von der Akkuoptimierung auszunehmen.
+        /// </summary>
+        private const string BatteryOptimizationDontAskAgainKey = "BatteryOptimizationPrompt_DontAskAgain";
+
+        private async void CheckBatteryOptimizationAsync()
+        {
+#if ANDROID
+            AppModel.Logger.Info("[MainPage] CheckBatteryOptimizationAsync - Start. PromptShown(Session)={0}, DontAskAgain={1}", _batteryOptimizationPromptShown, Preferences.Get(BatteryOptimizationDontAskAgainKey, false));
+
+            if (_batteryOptimizationPromptShown || Preferences.Get(BatteryOptimizationDontAskAgainKey, false))
+            {
+                AppModel.Logger.Info("[MainPage] CheckBatteryOptimizationAsync - Abbruch: bereits gezeigt oder 'Nicht mehr fragen' aktiv.");
+                return;
+            }
+
+            try
+            {
+                var batteryInfo = ResolveService<IBatteryInfo>();
+                if (batteryInfo == null)
+                {
+                    AppModel.Logger.Warn("[MainPage] CheckBatteryOptimizationAsync - IBatteryInfo nicht via DependencyService auflösbar.");
+                    return;
+                }
+
+                bool isIgnoringOptimizations = batteryInfo.CheckIsEnableBatteryOptimizations();
+                AppModel.Logger.Info($"[MainPage] CheckBatteryOptimizationAsync - CheckIsEnableBatteryOptimizations={isIgnoringOptimizations}, Manufacturer={Android.OS.Build.Manufacturer}");
+
+                if (isIgnoringOptimizations)
+                {
+                    // App ist bereits von der Akkuoptimierung ausgenommen ("Nicht eingeschränkt").
+                    return;
+                }
+
+                _batteryOptimizationPromptShown = true;
+
+                string message = "Die Akkuoptimierung ist für iPM-Cloud aktiv. Damit Synchronisation und Benachrichtigungen im Hintergrund zuverlässig funktionieren, wählen Sie bitte \"Nicht eingeschränkt\" für iPM-Cloud aus.";
+
+                if (IsSamsungDevice())
+                {
+                    message += "\n\nHinweis für Samsung-Geräte: Bitte prüfen Sie zusätzlich unter Einstellungen → Akku → Hintergrundnutzungsgrenzen, dass iPM-Cloud nicht im tiefen Standby (\"Schlafende Apps\") einsortiert ist, sowie unter Einstellungen → Akku → Energiesparmodus, dass dieser den Hintergrundbetrieb nicht zusätzlich einschränkt.";
+                }
+
+                bool allowNow = await DisplayAlertAsync(
+                    "Akkuoptimierung",
+                    message,
+                    "Jetzt zulassen",
+                    "Später");
+
+                if (allowNow)
+                {
+                    batteryInfo.StartSetting();
+                }
+                else
+                {
+                    bool dontAskAgain = await DisplayAlertAsync(
+                        "Hinweis",
+                        "Möchten Sie bei zukünftigen App-Starts nicht mehr auf die Akkuoptimierung hingewiesen werden?",
+                        "Nicht mehr fragen",
+                        "Weiterhin fragen");
+
+                    if (dontAskAgain)
+                    {
+                        Preferences.Set(BatteryOptimizationDontAskAgainKey, true);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger.Error($"[MainPage] CheckBatteryOptimizationAsync - Error: {ex.Message}", ex);
+            }
+#endif
+        }
+
+#if ANDROID
+        /// <summary>
+        /// Löst einen Service aus dem MAUI-Dependency-Injection-Container auf.
+        /// DependencyService (Xamarin.Forms-Kompatibilität) hat sich in diesem Projekt als nicht
+        /// zuverlässig auflösbar erwiesen; die Services werden stattdessen in MauiProgram.cs
+        /// per builder.Services registriert und hierüber abgerufen.
+        /// </summary>
+        private static T ResolveService<T>() where T : class
+        {
+            var services = IPlatformApplication.Current?.Services;
+            if (services == null)
+            {
+                AppModel.Logger.Warn($"[MainPage] ResolveService<{typeof(T).Name}> - IPlatformApplication.Current.Services ist null.");
+                return null;
+            }
+
+            return services.GetService<T>();
+        }
+
+        /// <summary>
+        /// Ermittelt, ob es sich um ein Samsung-Gerät handelt, um zusätzliche Hinweise zu den
+        /// Samsung-eigenen (OneUI-spezifischen) Akku-Einschränkungen ("Hintergrundnutzungsgrenzen",
+        /// "Schlafende Apps") anzuzeigen, die über das öffentliche Android-API nicht steuerbar sind.
+        /// </summary>
+        private static bool IsSamsungDevice()
+        {
+            return string.Equals(Android.OS.Build.Manufacturer, "samsung", StringComparison.OrdinalIgnoreCase);
+        }
+#endif
+
         protected override void OnDisappearing()
         {
-            // Stop camera when leaving MainPage
+
             if (ReaderView != null)
             {
                 System.Diagnostics.Debug.WriteLine("[MainPage] OnDisappearing - Stopping ReaderView");
@@ -1294,6 +1493,9 @@ namespace iPMCloud.Mobile
                 {
                     ReaderView.IsDetecting = false;
                     ReaderView.IsTorchOn = false;
+
+                    // Entferne die Scanner-Registrierung
+                    FlashlightManager.UnregisterScanner();
                 }
                 catch (Exception ex)
                 {
@@ -1851,16 +2053,19 @@ namespace iPMCloud.Mobile
 
                 // Kürzeres Delay für schnellere Kamera-Initialisierung
                 // Samsung braucht etwas Zeit, aber nicht zu viel
-                if (!USE_ULTRA_FAST_MODE)
-                {
-                    await Task.Delay(150);
-                }
+                //if (!USE_ULTRA_FAST_MODE)
+                //{
+                //    //await Task.Delay(150);
+                //}
                 // Ultra-Fast-Mode: kein Delay
 
 #endif
 
                 ReaderView.IsTorchOn = false;
                 ReaderView.IsDetecting = true;
+
+                // Registriere den Scanner für zentrale Taschenlampen-Steuerung
+                FlashlightManager.RegisterScanner(ReaderView);
 
 #if ANDROID
                 System.Diagnostics.Debug.WriteLine("[MainPage] IsDetecting = true - Camera should now be active");
@@ -2049,12 +2254,19 @@ namespace iPMCloud.Mobile
                 ReaderView.IsTorchOn = false;
                 ReaderView.IsDetecting = false;
 
+                // Entferne die Scanner-Registrierung
+                FlashlightManager.UnregisterScanner();
+
 #if ANDROID
                 // On Android, reset visibility and options for clean restart
                 await Task.Delay(100);
                 ReaderView.IsVisible = false;
                 ReaderView.Opacity = 0.0;
                 ReaderView.Options = null;
+                // Hinweis: Der Handler wird bewusst NICHT getrennt. Auf diesem Gerät/dieser
+                // ZXing-Version bleibt die Kamera-Session auch nach IsDetecting=false aktiv.
+                // Solange der Handler verbunden bleibt, kann die Taschenlampe weiterhin über
+                // den ReaderView (Kamera-Besitzer) geschaltet werden (siehe FlashlightManager).
 #endif
             }
             catch (Exception ex)
@@ -6454,6 +6666,41 @@ namespace iPMCloud.Mobile
         }
 
         /// <summary>
+        /// Entfernt HTML-Tags aus einem Richtext-String für die reine Textanzeige im Chat
+        /// (z.B. "&lt;p&gt;hallo&lt;/p&gt;" -> "hallo")
+        /// </summary>
+        private static string StripHtmlTags(string html)
+        {
+            if (string.IsNullOrWhiteSpace(html))
+            {
+                return string.Empty;
+            }
+
+            try
+            {
+                string text = html;
+
+                // Zeilenumbrüche für Block-/Break-Elemente erhalten
+                text = System.Text.RegularExpressions.Regex.Replace(text, "<\\s*br\\s*/?\\s*>", "\n", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+                text = System.Text.RegularExpressions.Regex.Replace(text, "<\\s*/\\s*p\\s*>", "\n", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+                text = System.Text.RegularExpressions.Regex.Replace(text, "<\\s*/\\s*div\\s*>", "\n", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+
+                // Alle übrigen Tags entfernen
+                text = System.Text.RegularExpressions.Regex.Replace(text, "<[^>]+>", string.Empty);
+
+                // Häufige HTML-Entities dekodieren
+                text = System.Net.WebUtility.HtmlDecode(text);
+
+                return text.Trim('\n', '\r', ' ');
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: StripHtmlTags");
+                return html;
+            }
+        }
+
+        /// <summary>
         /// Fügt eine Chat-Nachricht zur UI hinzu
         /// </summary>
         private void AddChatMessageToUI(TicketChat message)
@@ -6472,9 +6719,13 @@ namespace iPMCloud.Mobile
                     return;
                 }
 
-                // Prüfe ob die Nachricht HTML/Bild enthält
-                bool containsHtml = !string.IsNullOrEmpty(decodedText) && 
+                // Prüfe ob die Nachricht Bild/Media-HTML enthält (dann WebView), sonst Richtext als reiner Text
+                bool containsHtml = !string.IsNullOrEmpty(decodedText) &&
                     (decodedText.Contains("<img") || decodedText.Contains("<html") || decodedText.Contains("<div") || decodedText.Contains("data:image"));
+
+                // Reiner Richtext (z.B. "<p>hallo</p>") wird für die Anzeige von HTML-Tags befreit,
+                // damit keine rohen Tags im Chat sichtbar sind
+                string plainDisplayText = containsHtml ? decodedText : StripHtmlTags(decodedText);
 
                 // Chat-Bubble Container
                 var messageContainer = new Grid
@@ -6593,10 +6844,10 @@ namespace iPMCloud.Mobile
                 }
                 else
                 {
-                    // Normaler Text als Label (dekodiert)
+                    // Normaler Text als Label (dekodiert, ohne HTML-Tags)
                     messageContent.Children.Add(new Label
                     {
-                        Text = decodedText,
+                        Text = plainDisplayText,
                         FontSize = 15,
                         TextColor = Color.FromArgb("#000000"),
                         LineBreakMode = LineBreakMode.WordWrap
@@ -6628,17 +6879,18 @@ namespace iPMCloud.Mobile
                     {
                         BackgroundColor = Color.FromArgb("#FF3B30"),
                         StrokeThickness = 0,
-                        Padding = new Thickness(8),
+                        Padding = new Thickness(5),
                         Margin = new Thickness(4, 0, 0, 0),
                         VerticalOptions = LayoutOptions.Center,
                         StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle
                         {
                             CornerRadius = 20
                         },
-                        Content = new Label
+                        Content = new Image
                         {
-                            Text = "🗑️",
-                            FontSize = 18,
+                            Source = "trash.png",
+                            WidthRequest = 18,
+                            HeightRequest = 18,
                             HorizontalOptions = LayoutOptions.Center,
                             VerticalOptions = LayoutOptions.Center
                         }
@@ -6699,6 +6951,9 @@ namespace iPMCloud.Mobile
                 // Füge Nachricht zur UI hinzu
                 var newMessage = currentTicket.chats.Last();
                 AddChatMessageToUI(newMessage);
+
+                // Versuche die Nachricht direkt hochzuladen, ansonsten in den Upload-Stack legen
+                await UploadTicketChatOrQueueAsync(newMessage);
 
                 // Leere Editor
                 if (ticketMessageEditor != null)
@@ -6898,6 +7153,9 @@ namespace iPMCloud.Mobile
                 var newMessage = currentTicket.chats.Last();
                 AddChatMessageToUI(newMessage);
 
+                // Versuche das Bild direkt hochzuladen, ansonsten in den Upload-Stack legen
+                await UploadTicketChatOrQueueAsync(newMessage);
+
                 // Scrolle zum Ende
                 await Task.Delay(100);
                 if (chatScrollView != null)
@@ -6914,6 +7172,41 @@ namespace iPMCloud.Mobile
             {
                 // Verstecke Loader
                 HideChatLoader();
+            }
+        }
+
+        /// <summary>
+        /// Versucht einen TicketChat-Eintrag direkt hochzuladen. Schlägt der Upload wegen fehlender
+        /// Internetverbindung oder eines Verbindungsabbruchs fehl, wird der Eintrag für einen
+        /// späteren, automatischen Wiederholungsversuch auf den Upload-Stack gelegt.
+        /// </summary>
+        private async Task UploadTicketChatOrQueueAsync(TicketChat chat)
+        {
+            try
+            {
+                if (chat == null)
+                {
+                    return;
+                }
+
+                var response = await AppModel.Instance.Connections.AddTicketChat(chat);
+
+                if (response != null && response.succses)
+                {
+                    if (response.ticketchatid > 0)
+                    {
+                        chat.id = response.ticketchatid;
+                    }
+                }
+                else
+                {
+                    TicketChat.ToUploadStack(chat);
+                }
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: UploadTicketChatOrQueueAsync");
+                TicketChat.ToUploadStack(chat);
             }
         }
 
@@ -6998,6 +7291,25 @@ namespace iPMCloud.Mobile
                 bool confirm = await DisplayAlertAsync("Löschen bestätigen", "Möchten Sie diese Nachricht wirklich löschen?", "Ja", "Nein");
                 if (!confirm)
                 {
+                    return;
+                }
+
+                // Löschen erfolgt direkt beim Backend (kein Upload-Stack). Schlägt es fehl,
+                // wird der Benutzer informiert und kann es später erneut versuchen.
+                bool deletedOnServer = false;
+                try
+                {
+                    var response = await AppModel.Instance.Connections.DelTicketChat(message, message.id);
+                    deletedOnServer = response != null && response.succses;
+                }
+                catch (Exception ex)
+                {
+                    AppModel.Logger?.Error(ex, "ERROR: OnDeleteChatMessage - DelTicketChat");
+                }
+
+                if (!deletedOnServer)
+                {
+                    await DisplayAlertAsync("Fehler", "Nachricht konnte nicht gelöscht werden. Bitte versuchen Sie es später noch einmal.", "OK");
                     return;
                 }
 
@@ -7219,6 +7531,8 @@ namespace iPMCloud.Mobile
         {
             ShowDisconnected();
             var countAll = GetAllSyncFromUploadCount();
+            //btn_regist.IsVisible = !(countAll > 0);
+            btn_regist_info.IsVisible = countAll > 0;
             btn_settings_frame_count.IsVisible = countAll > 0;
             btn_StartPage_frame_count.IsVisible = countAll > 0;
             btn_settings_count.Text = "" + countAll;
@@ -9690,14 +10004,12 @@ namespace iPMCloud.Mobile
                 }
 
                 frm_img_LoginUser.IsVisible = false;
-                if (AppModel.Instance.Person.userIcon != null)
+                var userIconBytes = AppModel.Instance.Person?.userIcon;
+                if (userIconBytes != null && userIconBytes.Length > 0)
                 {
-                    if (AppModel.Instance.Person != null && AppModel.Instance.Person.userIcon != null && AppModel.Instance.Person.userIcon.Length > 0)
-                    {
-                        ImageSource userIconImageSource = ImageSource.FromStream(() => new MemoryStream(AppModel.Instance.Person.userIcon));
-                        img_LoginUser.Source = userIconImageSource;
-                        frm_img_LoginUser.IsVisible = true;
-                    }
+                    ImageSource userIconImageSource = ImageSource.FromStream(() => userIconBytes != null && userIconBytes.Length > 0 ? new MemoryStream(userIconBytes) : null);
+                    img_LoginUser.Source = userIconImageSource;
+                    frm_img_LoginUser.IsVisible = true;
                 }
 
                 SetAppControll();
@@ -9894,10 +10206,10 @@ namespace iPMCloud.Mobile
                 popupContainerSyncFaild_btn.GestureRecognizers.Add(tgr_popupContainerSyncFaild_btn);
 
 
-                btn_mainmenu.GestureRecognizers.Clear();
-                var tgr_MainMenu = new TapGestureRecognizer();
-                tgr_MainMenu.Tapped += btn_MainMenuTapped;
-                btn_mainmenu.GestureRecognizers.Add(tgr_MainMenu);
+                //btn_mainmenu.GestureRecognizers.Clear();
+                //var tgr_MainMenu = new TapGestureRecognizer();
+                //tgr_MainMenu.Tapped += btn_MainMenuTapped;
+                //btn_mainmenu.GestureRecognizers.Add(tgr_MainMenu);
 
                 btn_objScan.GestureRecognizers.Clear();
                 var tgr_BuildingScan = new TapGestureRecognizer();
@@ -10213,6 +10525,7 @@ namespace iPMCloud.Mobile
             btn_inwork_container.IsVisible = AppModel.Instance.allPositionInWork != null;
             btn_nachbuchen_container.IsVisible = AppModel.Instance.allPositionInWork != null;
             btn_regist.IsVisible = AppModel.Instance.allPositionInWork == null;
+            btn_regist_info.IsVisible = AppModel.Instance.allPositionInWork != null;
 
             // Plan zeigen/ ausblenden
             if (btn_nachbuchen_container.IsVisible)
@@ -10754,6 +11067,7 @@ namespace iPMCloud.Mobile
         private int _dayovers = 0;
         private int _objectValues = 0;
         private int _objectValueBilds = 0;
+        private int _ticketChats = 0;
         private int _pn = 0;
         private int _allCountFromUpload = 0;
         private bool _allCountFromUploadFalied = false;
@@ -10764,10 +11078,12 @@ namespace iPMCloud.Mobile
             _bemerkungen = BemerkungWSO.CountFromStack();
             _bilder = BildWSO.CountFromStack();
             _packs = LeistungPackWSO.CountFromStack();
-            _trans = AllTransSign.CountFromStack();
+            //_trans = AllTransSign.CountFromStack();
             _dayovers = DayOverWSO.CountFromStack();
             _objectValues = ObjektDataWSO.CountFromStack();
             _objectValueBilds = ObjektDatenBildWSO.CountFromStack();
+            _ticketChats = TicketChat.CountFromStack();
+
             //_pn = PNWSO.CountFromStack();
             int allCountFromUpload = 0;
             allCountFromUpload += _checks;
@@ -10775,10 +11091,11 @@ namespace iPMCloud.Mobile
             allCountFromUpload += _bemerkungen;
             allCountFromUpload += _bilder;
             allCountFromUpload += _packs;
-            allCountFromUpload += _trans;
+            //allCountFromUpload += _trans;
             allCountFromUpload += _dayovers;
             allCountFromUpload += _objectValues;
             allCountFromUpload += _objectValueBilds;
+            allCountFromUpload += _ticketChats;
             //allCountFromUpload += _pn;
             return allCountFromUpload;
         }
@@ -10894,8 +11211,17 @@ namespace iPMCloud.Mobile
                     if (!e.Success && !string.IsNullOrWhiteSpace(e.ErrorMessage))
                     {
                         AppModel.Logger.Warn("Uploads fehlgeschlagen: " + e.ErrorMessage);
+
+                        // WICHTIG: Bei fehlgeschlagenen Uploads NICHT sofort wieder versuchen!
+                        // Der WorkManager kümmert sich um automatische Wiederholungen
+                        // Sofortige Wiederholungen führen zu Endlos-Schleifen bei Netzwerkproblemen
+                        return;
                     }
+
                     await Task.Delay(1);
+
+                    // Nur bei ERFOLGREICHEN Uploads prüfen ob noch mehr vorhanden sind
+                    // Bei Fehlern wartet WorkManager bis Netzwerk wieder verfügbar ist
                     CheckAllSyncFromUpload(__isFirstInit);
                 }
                 catch (Exception ex)
@@ -11407,6 +11733,7 @@ namespace iPMCloud.Mobile
                     else
                     {
                         bemerkungen[i].hasSend = true;
+                        // Wo wird die Bemerkung mit Bilder zusamen gesetzt und auf den Stack gelegT !!!
                         BemerkungWSO.DeleteFromUploadStack(AppModel.Instance, bemerkungen[i]);
                     }
                     //});

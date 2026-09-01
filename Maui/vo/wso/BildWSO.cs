@@ -254,6 +254,59 @@ namespace iPMCloud.Mobile
             return list;
         }
 
+        public static List<BildWSO> DeleteFromGuid(AppModel model, string guid)
+        {
+            List<BildWSO> list = new List<BildWSO>();
+
+            try
+            {
+                if (model == null || string.IsNullOrWhiteSpace(guid))
+                {
+                    return list;
+                }
+
+                if (string.IsNullOrWhiteSpace(model.SettingModel?.SettingDTO?.CustomerNumber))
+                {
+                    return list;
+                }
+
+                string directoryPath = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                    "ipm",
+                    model.SettingModel.SettingDTO.CustomerNumber,
+                    "nbi"
+                );
+
+                if (Directory.Exists(directoryPath))
+                {
+                    var files = Directory.GetFiles(directoryPath, "*.ipm");
+
+                    if (files != null && files.Length > 0)
+                    {
+                        foreach (var file in files)
+                        {
+                            string fileName = Path.GetFileName(file);
+                            if (!string.IsNullOrWhiteSpace(fileName) &&
+                                fileName.Contains(guid, StringComparison.OrdinalIgnoreCase))
+                            {
+                                try
+                                {
+                                    File.Delete(file);
+                                }
+                                catch (Exception) { }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, $"ERROR: LoadFromGuid BildWSO - {guid}");
+            }
+
+            return list;
+        }
+
         /// <summary>
         /// Lädt ein einzelnes Bild
         /// </summary>

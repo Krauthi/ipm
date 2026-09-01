@@ -35,6 +35,9 @@ namespace iPMCloud.Mobile
         public List<PlanPersonMobile> opwm { get; set; } = null;
         public List<LeistungInWorkWSO> leistungen { get; set; }
 
+        public Ticket ticket { get; set; } = null;
+        public LeistungWSO ticketLeistung { get; set; } = null;
+
         public LeistungPackWSO()
         {
             this.guid = Guid.NewGuid().ToString();

@@ -84,39 +84,31 @@ namespace iPMCloud.Mobile
             string lastyp = "";
             model.LastBuilding.ArrayOfObjektdata = model.LastBuilding.ArrayOfObjektdata.OrderBy(s => s.typ).ToList();//.ThenBy(s => s.Name);
 
-           
-            model.LastBuilding.ArrayOfObjektdata.ForEach(od =>
-            {
-                if (od.status == "Aktiv")
-                {
-                    var changed = JavaScriptDateConverter.Convert(long.Parse(od.standdatum)).ToString("ddMMyyyy");
-                    var today = DateTime.Now.ToString("ddMMyyyy");
 
-                    if (isChangedToday)
-                    {
-                        if (changed == today)
-                        {
-                            if (od.typ != lastyp)
-                            {
-                                stack.Children.Add(Elements.GetBoxViewLine());
-                                stack.Children.Add(GetTypInfoElement(od, func, overlay));
-                            }
-                            lastyp = od.typ;
-                        }
-                    }
-                    else
-                    {
-                        if (changed != today)
-                        {
-                            if (od.typ != lastyp)
-                            {
-                                stack.Children.Add(Elements.GetBoxViewLine());
-                                stack.Children.Add(GetTypInfoElement(od, func, overlay));
-                            }
-                            lastyp = od.typ;
-                        }
-                    }
+            List<ObjektDataWSO> data = model.LastBuilding.ArrayOfObjektdata;
+
+            var today = DateTime.Now.ToString("ddMMyyyy");
+            if(isChangedToday)
+            {
+                data = data.Where(_ => _.status == "Aktiv"            
+                && JavaScriptDateConverter.Convert(long.Parse(_.standdatum)).ToString("ddMMyyyy") == today)
+                .OrderBy(s => s.typ).ToList();
+            }
+            else
+            {
+                data = data.Where(_ => _.status == "Aktiv"
+                    && JavaScriptDateConverter.Convert(long.Parse(_.standdatum)).ToString("ddMMyyyy") != today)
+                    .OrderBy(s => s.typ).ToList();
+            }
+
+            data.ForEach(od =>
+            {
+                if (od.typ != lastyp)
+                {
+                    stack.Children.Add(Elements.GetBoxViewLine());
+                    stack.Children.Add(GetTypInfoElement(od, func, overlay,false, data));
                 }
+                lastyp = od.typ;
             });
             return stack;
         }
@@ -1101,10 +1093,10 @@ namespace iPMCloud.Mobile
             }
         }
 
-        public static Grid GetTypInfoElement(ObjektDataWSO od, ICommand func, AbsoluteLayout overlay, bool isVis = false)
+        public static Grid GetTypInfoElement(ObjektDataWSO od, ICommand func, AbsoluteLayout overlay, bool isVis = false, List<ObjektDataWSO> data = null)
         {
 
-            var count = AppModel.Instance.LastBuilding.ArrayOfObjektdata.Count(_ => _.typ == od.typ);
+            var count = data.Count(_ => _.typ == od.typ);
             var gh = new Grid
             {
                 Padding = new Thickness(5, 5, 5, 5),
@@ -1179,7 +1171,7 @@ namespace iPMCloud.Mobile
             {
                 Command = new Command(async () =>
                 {
-                    await OpenOD(od, stack, i, func, overlay);
+                    await OpenOD(od, stack, i, func, overlay, data);
                 })
             });
 
@@ -1189,10 +1181,11 @@ namespace iPMCloud.Mobile
             return gh;
         }
 
-        public async static Task OpenOD(ObjektDataWSO od, VerticalStackLayout stack, Image i, ICommand func, AbsoluteLayout overlay)
+        public async static Task OpenOD(ObjektDataWSO od, VerticalStackLayout stack, Image i, ICommand func, AbsoluteLayout overlay, List<ObjektDataWSO> data)
         {
             overlay.IsVisible = true;
             await Task.Delay(1);
+
 
             if (i.Source.ToString().Contains("back2_img.png"))
             {
@@ -1200,7 +1193,7 @@ namespace iPMCloud.Mobile
                 
                 stack.Children.Clear();
 
-                AppModel.Instance.LastBuilding.ArrayOfObjektdata.ForEach(odl =>
+                data.ForEach(odl =>
                 {
                     if (odl.typ == od.typ)
                     {

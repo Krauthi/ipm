@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Maui.Core.Platform;
+﻿using Android.Gms.Common.Apis;
+using CommunityToolkit.Maui.Core.Platform;
 using Google.Apis.Services;
 using Google.Apis.Translate.v2;
 using Google.Cloud.Translation.V2;
@@ -16,6 +17,10 @@ using Microsoft.Maui.Animations;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls;
+// TODO: Xamarin.RangeSlider not MAUI-compatible - needs replacement
+// using Xamarin.RangeSlider.Forms;
+
+//using Microsoft.Maui.Storage;
 using Microsoft.Maui.Devices;
 using Microsoft.Maui.Devices;
 using Microsoft.Maui.Devices;
@@ -2808,6 +2813,31 @@ namespace iPMCloud.Mobile
 
         }
 
+        private async void ShowRunningWorksViewAfterDeleteBemerkung()
+        {
+            try
+            {
+                isInitialize = true;
+                overlay.IsVisible = true;
+                await Task.Delay(1);
+
+                // Wenn Bemerkung aus Leistung gelöscht wird!
+                LeistungPackWSO.Save(AppModel.Instance, AppModel.Instance.allPositionInWork);
+
+                ClearPageViews();
+                RunningWorksPage_Container.IsVisible = true;
+
+                ShowRunningWorksPage();
+
+                await Task.Delay(1);
+                overlay.IsVisible = false;
+                isInitialize = false;
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger.Error(ex, "ERROR: ShowRunningWorksView(): ");
+            }
+        }
         private async void ShowRunningWorksView()
         {
             try
@@ -2907,7 +2937,9 @@ namespace iPMCloud.Mobile
                     Padding = new Thickness(0, 0, 0, 0)
                 }, 5, 0);
                 runningworks_list.Children.Clear();
-                runningworks_list.Children.Add(LeistungWSO.GetInWorkPositionListView(AppModel.Instance, new Command<LeistungWSO>(TapNoticeFromPosInWork)));
+                runningworks_list.Children.Add(LeistungWSO.GetInWorkPositionListView(AppModel.Instance,
+                    new Command<LeistungWSO>(TapNoticeFromPosInWork),
+                    new Command(ShowRunningWorksViewAfterDeleteBemerkung)));
 
                 await Task.Delay(1);
                 overlay.IsVisible = false;
@@ -5711,18 +5743,37 @@ namespace iPMCloud.Mobile
             return dateTime.ToString("dd.MM.yyyy");
         }
 
-        private void OnTicketCardTapped(Ticket ticket)
+        public Ticket SelectedTicket = null;
+        private async void OnTicketCardTapped(Ticket ticket)
         {
             try
             {
-                // Ticket öffnen und Chat-Ansicht anzeigen
-                Console.WriteLine($"Ticket #{ticket.id} wurde getippt: {ticket.titel}");
+                SelectedTicket = ticket;
 
                 // Editticket_container öffnen und Ticket-Chat laden
                 if (ticket != null)
                 {
                     editticket_container.IsVisible = true;
-                    LoadTicketChat(ticket);
+                    LoadTicketChat(SelectedTicket);
+
+                    // Beim aktiven Öffnen des Tickets den Besitzerstatus auf "Gesehen" setzen,
+                    // sofern das Ticket noch nicht gesehen wurde
+                    if (ticket.besitzerstatus == (int)Ticket.BesitzerStatus.NochNichtGesehen)
+                    {
+                        var bt = new TicketBesitzerStatusUpload(ticket.id, (int)Ticket.BesitzerStatus.Gesehen);
+                        var statusResponse = await AppModel.Instance.Connections.SetTicketBesitzerStatus(SelectedTicket, bt, (int)Ticket.BesitzerStatus.Gesehen);
+                        if (statusResponse != null && statusResponse.succses)
+                        {
+                            SelectedTicket.besitzerstatus = (int)Ticket.BesitzerStatus.Gesehen;
+                        }
+                        else
+                        {
+                            // Kein Internet/Fehler: Statuswechsel für späteren Upload merken
+                            AppModel.Logger.Warn($"OnTicketCardTapped: SetTicketBesitzerStatus failed for ticket {SelectedTicket.id} : {SelectedTicket.titel} --- {statusResponse?.message}");
+                            TicketBesitzerStatusUpload.ToUploadStack(bt);
+                            SelectedTicket.besitzerstatus = (int)Ticket.BesitzerStatus.Gesehen;
+                        }
+                    }
                 }
             }
             catch (Exception ex)
@@ -5737,6 +5788,7 @@ namespace iPMCloud.Mobile
         {
             try
             {
+                SelectedTicket = null;
                 // Editticket_container schließen
                 editticket_container.IsVisible = false;
             }
@@ -5744,6 +5796,306 @@ namespace iPMCloud.Mobile
             {
                 AppModel.Logger?.Error(ex, "ERROR: OnEditTicketCloseContainer_Tapped", ex);
             }
+        }
+
+        // Tab-Wechsel Event Handler
+        private async void OnStartTicket_Clicked(object sender, EventArgs e)
+        {
+            ticket_startnow_btn.IsVisible = false;
+            ticket_closenow_btn.IsVisible = true;
+            if(SelectedTicket != null)
+            {
+                // Ticket hat keine zugehörige AuftragID, daher nur Status auf "In Arbeit" setzen
+                SelectedTicket.status = (int)Ticket.TicketStatus.InArbeit;
+                // Optional: Besitzerstatus auf "Gestartet" setzen
+                SelectedTicket.besitzerstatus = (int)Ticket.BesitzerStatus.Gestartet;
+                // Statusänderung an Backend senden
+                var response = await AppModel.Instance.Connections.SetTicketBesitzerStatus(
+                    SelectedTicket,
+                    new TicketBesitzerStatusUpload(SelectedTicket.id, SelectedTicket.besitzerstatus),
+                    SelectedTicket.besitzerstatus);
+                if(response != null && !response.succses)
+                {
+                    AppModel.Logger.Warn($"OnStartTicket_Clicked: SetTicketBesitzerStatus failed for ticket {SelectedTicket.id} : {SelectedTicket.titel} --- {response?.message}");
+                    TicketBesitzerStatusUpload.ToUploadStack(new TicketBesitzerStatusUpload(SelectedTicket.id, SelectedTicket.besitzerstatus));
+                }
+
+
+                if (SelectedTicket.auftragid == 0)
+                {
+                    StartNonePosFromTicketTapped_Done();
+                }
+                else
+                {
+                    //StartSelectedPosFromTicketTapped_Done();
+                }
+            }
+
+        }
+
+        // Ticket ohnen Auftrag starten
+        public async void StartNonePosFromTicketTapped_Done()
+        {
+            var geo = AppModel.Instance.LocationStr;
+            string geoMessage = "";
+            if (geo != null && geo.Length > 0)
+            {
+                geoMessage = geo.Substring(0, 1) == "#" ? geo.Substring(1) : "GPS OK";
+                geo = geoMessage == "GPS OK" ? geo : null;
+            }
+            else
+            {
+                geo = null;
+                geoMessage = "geo = null";
+            }
+            var latin = geo != null ? geo.Split(';')[0] : "";
+            var lonin = geo != null ? (geo.Split(';').Length > 0 ? geo.Split(';')[1] : "") : "";
+
+            AppModel.Instance.allPositionInWork = new LeistungPackWSO
+            {
+                latin = latin,
+                lonin = lonin,
+                messagein = geoMessage,
+                preview = true,
+                status = 0,   // 0 = in Arbeit , 1 = Ausgesetzt , 2 = Fertig
+                startticks = DateTime.Now.Ticks,
+                endticks = DateTime.Now.Ticks,
+                personid = AppModel.Instance.Person.id,
+                ticket = SelectedTicket.Clone() as Ticket, // Ticket-Informationen kopieren
+            };
+            AppModel.Instance.allPositionInWork.leistungen = null;
+            AppModel.Instance.allPositionInWork.opwm = null;
+            AppModel.Instance.allPositionInWork.ticketLeistung = new LeistungWSO
+            {
+                id = 0,
+                beschreibung = SelectedTicket.text,
+                anzahl = "1",
+                art = "Ticket",
+                auftragid = 0,
+                einheit = "pauschal",
+                gruppeid = AppModel.Instance.Person.gruppeid,
+                produktAnzahl = "1",
+                nichtpauschal = 0,
+                notiz = SelectedTicket.titel,
+                selected = true,
+                timeval = "nach Bedarf",
+                timevaldays = 1,
+                winterservice = 0,
+                type = "0",
+                disabled = false,                           
+            };
+
+            
+            LeistungPackWSO.Save(AppModel.Instance, AppModel.Instance.allPositionInWork);
+            // Bisher ist hier nur das Preview was hochgeladen wird!
+            SyncTicketPosition(AppModel.Instance.allPositionInWork.preview);
+            
+
+            // Zurücksetzten aller States für die Auswahl der Ausführungen
+            AppModel.Instance.LastSelectedOrder = null;
+            AppModel.Instance.LastSelectedCategory = null;
+            AppModel.Instance.LastSelectedPosition = null;
+            AppModel.Instance.allPositionInShowingListView = new Dictionary<int, Border>();
+            AppModel.Instance.allPositionInShowingSmallListView = new Dictionary<int, SwipeView>();
+            AppModel.Instance.allSelectedPositionToWork = new List<LeistungWSO>();
+            // alle selektionen und disabled zurücksetzen 
+            AppModel.Instance.LastBuilding.ArrayOfAuftrag.ForEach(o =>
+            {
+                o.kategorien.ForEach(c =>
+                {
+                    c.leistungen.ForEach(l =>
+                    {
+                        l.selected = false;
+                        l.disabled = false;
+                    });
+                });
+            });
+
+            ShowMainPage();
+        }
+        // Ticket mit Auftrag starten
+        public async void StartSelectedPosFromTicketTapped_Done()
+        {
+            AuswahlAnzeigenTapped_Done(false);
+
+            var isOthersAsProdukte = AppModel.Instance.allSelectedPositionToWork.Find(l => l.art != "Produkt");
+            var onlyProdukte = isOthersAsProdukte == null;
+
+            var geo = AppModel.Instance.LocationStr;
+            string geoMessage = "";
+            if (geo != null && geo.Length > 0)
+            {
+                geoMessage = geo.Substring(0, 1) == "#" ? geo.Substring(1) : "GPS OK";
+                geo = geoMessage == "GPS OK" ? geo : null;
+            }
+            else
+            {
+                geo = null;
+                geoMessage = "geo = null";
+            }
+            //AppModel.Logger.Info("Info: --------------- STARTE ARBEITEN => StartSelectedPosTapped_Done");
+            //AppModel.Logger.Info("Info: Verwendete GPS (" + geoMessage + " - " + AppModel.Instance.LocationStr + ")");
+
+            var latin = geo != null ? geo.Split(';')[0] : "";
+            var lonin = geo != null ? (geo.Split(';').Length > 0 ? geo.Split(';')[1] : "") : "";
+
+            AppModel.Instance.allPositionInWork = new LeistungPackWSO
+            {
+                latin = latin,
+                lonin = lonin,
+                messagein = geoMessage,
+                preview = true,
+                status = 0,   // 0 = in Arbeit , 1 = Ausgesetzt , 2 = Fertig
+                startticks = DateTime.Now.Ticks,
+                endticks = DateTime.Now.Ticks,
+                personid = AppModel.Instance.Person.id,
+            };
+
+            AppModel.Instance.allPositionDirectWork = new LeistungPackWSO
+            {
+                latin = latin,
+                lonin = lonin,
+                messagein = geoMessage,
+                latout = "",
+                lonout = "",
+                messageout = "",
+                preview = false,
+                status = 2,   // 0 = in Arbeit , 1 = Ausgesetzt , 2 = Fertig
+                startticks = DateTime.Now.Ticks,
+                endticks = DateTime.Now.Ticks,
+                personid = AppModel.Instance.Person.id,
+            };
+
+            AppModel.Instance.allPositionDirectWork.endticks = AppModel.Instance.allPositionDirectWork.startticks;
+
+            AppModel.Instance.allSelectedPositionToWork.ForEach(l =>
+            {
+                decimal anzahlValue = 1m;
+                var rawProduktAnzahl = l.produktAnzahl?.Trim();
+
+                if (!string.IsNullOrWhiteSpace(rawProduktAnzahl))
+                {
+                    if (decimal.TryParse(rawProduktAnzahl, NumberStyles.Number, CultureInfo.GetCultureInfo("de-DE"), out var deValue) && deValue > 0)
+                    {
+                        anzahlValue = deValue;
+                    }
+                    else if (decimal.TryParse(rawProduktAnzahl, NumberStyles.Number, CultureInfo.InvariantCulture, out var invariantValue) && invariantValue > 0)
+                    {
+                        anzahlValue = invariantValue;
+                    }
+                }
+
+                var work = new LeistungInWorkWSO
+                {
+                    id = l.id,
+                    gruppeid = l.gruppeid,
+                    objektid = l.objektid,
+                    auftragid = l.auftragid,
+                    kategorieid = l.kategorieid,
+                    anzahl = Utils.formatDEStr(anzahlValue),
+                    bemerkungen = null,
+                    inout = l.inout,
+                };
+
+                if ((l.type == "1" && l.art == "Leistung") || onlyProdukte)
+                {
+                    AppModel.Instance.allPositionDirectWork.leistungen.Add(work);
+                }
+                else
+                {
+                    AppModel.Instance.allPositionInWork.leistungen.Add(work);
+                }
+            });
+
+            //var dummyLeistungInWork = new List<LeistungInWorkWSO>();
+            if (AppModel.Instance.allPositionDirectWork.leistungen.Count > 0)
+            {
+                var lastWorkTicks = "" + JavaScriptDateConverter.Convert(new DateTime(AppModel.Instance.allPositionDirectWork.startticks), -2);
+                AppModel.Instance.LastBuilding.ArrayOfAuftrag.ForEach(o =>
+                {
+                    o.kategorien.ForEach(c =>
+                    {
+                        c.leistungen.ForEach(p =>
+                        {
+                            var foundPos = AppModel.Instance.allPositionDirectWork.leistungen.Find(lei => lei.id == p.id);
+                            if (foundPos != null)
+                            {
+                                foundPos.lastwork = lastWorkTicks;
+                                foundPos.workat = "";
+                                p.lastwork = lastWorkTicks;
+                                p.workat = "";
+                                p.selected = false;
+                                if (p.muell == 1 && p.inout != null)
+                                {
+                                    p.inout.inout = p.inout.inout == 1 ? 0 : 1;
+                                    //dummyLeistungInWork.Add(foundPos);
+                                }
+                            }
+                        });
+                    });
+                });
+
+                List<LeistungInWorkWSO> newleis = new List<LeistungInWorkWSO>();
+                AppModel.Instance.allPositionDirectWork.leistungen.ForEach(l =>
+                {
+                    newleis.Add(SetPlanPersonMobileToLeistungInWork(l));
+                });
+                AppModel.Instance.allPositionDirectWork.leistungen = newleis;
+
+                BuildingWSO.Save(AppModel.Instance, AppModel.Instance.LastBuilding);
+                LeistungPackWSO.ToUploadStack(AppModel.Instance, AppModel.Instance.allPositionDirectWork);
+                CheckAllSyncFromUpload(); //SyncPosition();
+                UpdateObjektPersonPlanMobileAfterUpload(AppModel.Instance.allPositionDirectWork);
+            }
+
+            AppModel.Instance.allPositionDirectWork = null;
+
+            if (AppModel.Instance.allPositionInWork.leistungen.Count > 0)
+            {
+                LeistungPackWSO.Save(AppModel.Instance, AppModel.Instance.allPositionInWork);
+                SyncPosition(AppModel.Instance.allPositionInWork.preview);
+            }
+            else
+            {
+                AppModel.Instance.allPositionInWork = null;
+            }
+
+            // Zurücksetzten aller States für die Auswahl der Ausführungen
+            AppModel.Instance.LastSelectedOrder = null;
+            AppModel.Instance.LastSelectedCategory = null;
+            AppModel.Instance.LastSelectedPosition = null;
+            AppModel.Instance.allPositionInShowingListView = new Dictionary<int, Border>();
+            AppModel.Instance.allPositionInShowingSmallListView = new Dictionary<int, SwipeView>();
+            AppModel.Instance.allSelectedPositionToWork = new List<LeistungWSO>();
+            // alle selektionen und disabled zurücksetzen 
+            AppModel.Instance.LastBuilding.ArrayOfAuftrag.ForEach(o =>
+            {
+                o.kategorien.ForEach(c =>
+                {
+                    c.leistungen.ForEach(l =>
+                    {
+                        l.selected = false;
+                        l.disabled = false;
+                    });
+                });
+            });
+
+            ShowMainPage();
+        }
+
+
+
+
+        private void OnBreakTicket_Clicked(object sender, EventArgs e)
+        {
+            ticket_startnow_btn.IsVisible = true;
+            ticket_closenow_btn.IsVisible = true;
+        }
+
+        private void OnEndTicket_Clicked(object sender, EventArgs e)
+        {
+            ticket_startnow_btn.IsVisible = true;
+            ticket_closenow_btn.IsVisible = false;
         }
 
         // Tab-Wechsel Event Handler
@@ -11068,6 +11420,8 @@ namespace iPMCloud.Mobile
         private int _objectValues = 0;
         private int _objectValueBilds = 0;
         private int _ticketChats = 0;
+        private int _ticketBesitzerStatus = 0;
+        //private int _ticketPos = 0;
         private int _pn = 0;
         private int _allCountFromUpload = 0;
         private bool _allCountFromUploadFalied = false;
@@ -11083,6 +11437,8 @@ namespace iPMCloud.Mobile
             _objectValues = ObjektDataWSO.CountFromStack();
             _objectValueBilds = ObjektDatenBildWSO.CountFromStack();
             _ticketChats = TicketChat.CountFromStack();
+            _ticketBesitzerStatus = TicketBesitzerStatusUpload.CountFromStack();
+            //_ticketPos += TicketPositionUpload.CountFromStack();
 
             //_pn = PNWSO.CountFromStack();
             int allCountFromUpload = 0;
@@ -11096,6 +11452,8 @@ namespace iPMCloud.Mobile
             allCountFromUpload += _objectValues;
             allCountFromUpload += _objectValueBilds;
             allCountFromUpload += _ticketChats;
+            allCountFromUpload += _ticketBesitzerStatus;
+            //allCountFromUpload += _ticketPos;
             //allCountFromUpload += _pn;
             return allCountFromUpload;
         }
@@ -11834,6 +12192,155 @@ namespace iPMCloud.Mobile
 
 
 
+
+
+        /*******************/
+        /* SYNC Ticket POSITION  (auch in Background)
+        /*******************/
+        private async void SyncTicketPosition(bool preview = false)
+        {
+            string[] resGuidsList = null;
+
+            List<LeistungPackWSO> packs = null;
+            if (preview)
+            {
+                // Vorschau - nur die aktuelle Position in Arbeit
+                packs = new List<LeistungPackWSO> { AppModel.Instance.allPositionInWork };
+            }
+            else
+            {
+                // Fertig Upload der Positionen aus dem UploadStack
+                packs = LeistungPackWSO.LoadAllFromUploadStack(AppModel.Instance);
+            }
+            if (!preview)
+            {
+                List<string> guidsList = new List<string>();
+                packs.ForEach(v => { guidsList.Add(v.guid); });
+                resGuidsList = await Task.Run(() => { return AppModel.Instance.Connections.GuidsCheck(guidsList.ToArray()); });
+                if (resGuidsList != null && resGuidsList.Length > 0)
+                {
+                    resGuidsList.ToList().ForEach(guid =>
+                    {
+                        var pa = packs.Find(b => b.guid == guid);
+                        if (pa != null)
+                        {
+                            packs.Remove(pa);
+                            LeistungPackWSO.DeleteFromUploadStack(AppModel.Instance, pa);
+                        }
+                    });
+                }
+            }
+            if ((preview && packs.Count > 0) || (resGuidsList != null && packs.Count > 0))
+            {
+                if (!AppModel.Instance.IsInternet)
+                {
+                    AppModel.Logger.Warn("WARN: Internet/Online -OFF- ... " + (preview ? "VORSCHAU-" : "") + "Ticket Leistungspakete(" + packs.Count + ") => SyncTicketPosition");
+                }
+                for (int i = 0; i < packs.Count; i++)
+                {
+                    var result = await SyncTicketPosition_Done(packs[i]);
+                    if (result != null)
+                    {
+                        if (!preview)
+                        {
+                            //if (result.leistungen != null && result.leistungen.Count > 0)
+                            //{
+                            //    result.leistungen.ForEach(l =>
+                            //    {
+                            //        if (l.bemerkungen != null && l.bemerkungen.Count > 0)
+                            //        {
+                            //            l.bemerkungen.ForEach(b =>
+                            //            {
+                            //                if (b.id > 0)
+                            //                {
+                            //                    b.hasSend = true;
+                            //                    var pics = BildWSO.LoadFromGuid(AppModel.Instance, b.guid);
+                            //                    pics.ForEach(p =>
+                            //                    {
+                            //                        p.bemId = b.id;
+                            //                        if (b.prio < 2)
+                            //                        {
+                            //                            BildWSO.SaveToStack(AppModel.Instance, p);
+                            //                        }
+                            //                        BildWSO.Delete(AppModel.Instance, p);
+                            //                    });
+                            //                }
+                            //            });
+                            //        }
+                            //    });
+                            //}
+                            // workat von result aktuell setzten
+                            var lastWorkTicks = "" + JavaScriptDateConverter.Convert(new DateTime(result.endticks), -2);
+                            BuildingWSO building = null;
+                            if (AppModel.Instance.LastBuilding == null && result.leistungen != null && result.leistungen.Count > 0)
+                            {
+                                building = BuildingWSO.LoadBuilding(AppModel.Instance, result.leistungen[0].objektid);
+                            }
+                            if (AppModel.Instance.LastBuilding != null)
+                            {
+                                building = AppModel.Instance.LastBuilding;
+                            }
+                            if (building != null && result.leistungen != null && result.leistungen.Count > 0)
+                            {
+                                building.ArrayOfAuftrag.ForEach(o =>
+                                {
+                                    o.kategorien.ForEach(c =>
+                                    {
+                                        c.leistungen.ForEach(p =>
+                                        {
+                                            var foundPos = result.leistungen.Find(lei => lei.id == p.id);
+                                            if (foundPos != null)
+                                            {
+                                                p.workat = "";
+                                            }
+                                        });
+                                    });
+                                });
+                                BuildingWSO.Save(AppModel.Instance, building);
+                            }
+                            LeistungPackWSO.DeleteFromUploadStack(AppModel.Instance, packs[i]);
+                        }
+                    }
+
+                }
+
+                SetAllSyncState();
+                await Task.Delay(1);
+            }
+        }
+        private async Task<LeistungPackWSO> SyncTicketPosition_Done(LeistungPackWSO pack)
+        {
+            PositionResponse positionResponse = await Task.Run(() => { return AppModel.Instance.Connections.TicketPositionSync(pack); });
+            if (positionResponse == null)
+            {
+                // FAILED
+                _allCountFromUploadFalied = true;
+                AppModel.Logger.Warn("WARN:  (0): Ticket Leistungspakete FEHLGESCHLAGEN => SyncTicketPosition_Done : positionResponse == null");
+                return null;
+            }
+            else if (positionResponse != null && !positionResponse.success)
+            {
+                // FAILED
+                _allCountFromUploadFalied = true;
+                AppModel.Logger.Warn("WARN:  (0): Ticket Leistungspakete FEHLGESCHLAGEN => SyncTicketPosition_Done : " + positionResponse.message);
+                return null;
+            }
+            else
+            {
+                // Erfolgreich 
+                //AppModel.Logger.Info("Info: Leistungspakete erfolgreich hochgeladen => SyncPosition_Done");
+                //if (AppModel.Instance.AppControll.showObjektPlans)
+                //{
+                //    if (positionResponse.planweek != null && AppModel.Instance.PlanResponse.selectedPerson == null)
+                //    {
+                //        AppModel.Instance.PlanResponse.planweek = positionResponse.planweek;
+                //        ObjektPlanWeekMobile.Save(AppModel.Instance, AppModel.Instance.PlanResponse);
+                //        Update_PlanTabs((int)DateTime.Now.DayOfWeek);
+                //    }
+                //}
+                return positionResponse.pack;
+            }
+        }
 
 
 

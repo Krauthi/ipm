@@ -11,6 +11,7 @@ namespace iPMCloud.Mobile
         private LeistungWSO _SelectedPosForNotice;
         private string _BackToFromNotice;
         private bool _manuelTextChange;
+        private static int bildRestCount = -1;
 
         private NoticeModalPage(LeistungWSO pos, string backTo, bool isPrio, View posCard)
         {
@@ -73,6 +74,7 @@ namespace iPMCloud.Mobile
 
             try
             {
+                bildRestCount = pos.bildRestCount;
                 var page = new NoticeModalPage(pos, backTo, isPrio, posCard);
                 await MainThread.InvokeOnMainThreadAsync(() =>
                     callerPage.Navigation.PushModalAsync(page, animated: false));
@@ -164,9 +166,10 @@ namespace iPMCloud.Mobile
 
         public async Task btn_takePhotos(object sender, TappedEventArgs e)
         {
-            if (_SelectedBemerkungForNotice.photos.Count >= 5)
+            int max = bildRestCount < 0 || bildRestCount > 5 ? 5 : bildRestCount;
+            if (_SelectedBemerkungForNotice.photos.Count >= max)
             {
-                await DisplayAlertAsync("Limit erreicht", "Maximal 5 Fotos erlaubt", "OK");
+                await DisplayAlertAsync("Limit erreicht", $"Maximal {max} Fotos erlaubt", "OK");
                 return;
             }
             notizSave_stack.IsVisible = false;
@@ -227,7 +230,7 @@ namespace iPMCloud.Mobile
                         CommandParameter = bildWSO
                     });
 
-                    BildWSO.Save(AppModel.Instance, bildWSO);
+                    //BildWSO.Save(AppModel.Instance, bildWSO);
                     _SelectedBemerkungForNotice.photos.Add(bildWSO);
                     noticePhotoStack.Children.Add(bildWSO.stack);
 
@@ -261,9 +264,10 @@ namespace iPMCloud.Mobile
 
         public async Task btn_pickPhotosForNotice(object sender, TappedEventArgs e)
         {
-            if (_SelectedBemerkungForNotice.photos.Count >= 5)
+            int max = bildRestCount < 0 || bildRestCount > 5 ? 5 : bildRestCount;
+            if (_SelectedBemerkungForNotice.photos.Count >= max)
             {
-                await DisplayAlertAsync("Limit erreicht", "Maximal 5 Fotos erlaubt", "OK");
+                await DisplayAlertAsync("Limit erreicht", $"Maximal {max} Fotos erlaubt", "OK");
                 return;
             }
 
@@ -328,7 +332,7 @@ namespace iPMCloud.Mobile
                             CommandParameter = bildWSO
                         });
 
-                        BildWSO.Save(AppModel.Instance, bildWSO);
+                        //BildWSO.Save(AppModel.Instance, bildWSO);
                         _SelectedBemerkungForNotice.photos.Add(bildWSO);
                         noticePhotoStack.Children.Add(bildWSO.stack);
                     }

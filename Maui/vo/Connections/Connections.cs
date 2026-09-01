@@ -28,6 +28,7 @@ namespace iPMCloud.Mobile.vo
         internal static Uri uri_AllTransSigns = null;
         internal static Uri uri_DayOver = null;
         internal static Uri uri_Position = null;
+        internal static Uri uri_TicketPosition = null;
         internal static Uri uri_PositionAgain = null;
         internal static Uri uri_ObjectValues = null;
         internal static Uri uri_ObjectValueBild = null;
@@ -49,6 +50,7 @@ namespace iPMCloud.Mobile.vo
         internal static HttpClient httpClientInstance;
         internal static HttpClient httpClientInstanceTicketStatus;
         internal static HttpClient httpClientInstanceTicketChat;
+        internal static HttpClient httpClientInstanceTicketPos;
         internal static HttpClient httpClientInstanceChecks;
         internal static HttpClient httpClientInstanceLogin;
         internal static HttpClient httpClientInstanceSyncGuid;
@@ -102,6 +104,9 @@ namespace iPMCloud.Mobile.vo
 
                 CookieContainer cookieContainerTicketChat = new CookieContainer();
                 httpClientInstanceTicketChat = HttpClientManager.CreateClient(cookieContainerTicketChat, HttpClientManager.TimeoutProfile.Medium);
+
+                CookieContainer cookieContainerTicketPos = new CookieContainer();
+                httpClientInstanceTicketPos = HttpClientManager.CreateClient(cookieContainerTicketPos, HttpClientManager.TimeoutProfile.Medium);
 
                 CookieContainer cookieContainerLogin = new CookieContainer();
                 httpClientInstanceLogin = HttpClientManager.CreateClient(cookieContainerLogin, HttpClientManager.TimeoutProfile.Short);
@@ -157,6 +162,7 @@ namespace iPMCloud.Mobile.vo
 
                 // jeweils eine eigene httpClientInstanceSync
                 uri_Position = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/Position");
+                uri_TicketPosition = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/TicketPosition");
                 uri_PositionAgain = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/PositionAgain");
                 uri_ObjectValues = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/ObjectValues");
                 uri_ObjectValueBild = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/ObjectValueBild");
@@ -744,21 +750,22 @@ namespace iPMCloud.Mobile.vo
             }
         }
         
-        public async Task<TicketStatusResponse> SetTicketBesitzerStatus(Ticket t, int status)
+        public async Task<TicketStatusResponse> SetTicketBesitzerStatus(Ticket t, TicketBesitzerStatusUpload bt, int status)
         {
             if (uri_SetTicketBesitzerStatus == null) { InitConnections(); }
             HttpResponseMessage resMsg = null;
 
             if (!AppModel.Instance.IsInternet)
             {
-                return new TicketStatusResponse { succses = false };
+                return new TicketStatusResponse { succses = false, message = "Kein internet verbunden" };
             }
 
             string args = JsonConvert.SerializeObject(new TicketStatusRequest
             {
                 token = AppModel.Instance.SettingModel.SettingDTO.LoginToken,
                 ticketid = t.id,
-                status = status
+                status = status,
+                guid = bt.guid,
             });
 
             HttpRequestMessage msg = new HttpRequestMessage(HttpMethod.Post, uri_SetTicketBesitzerStatus);
@@ -772,7 +779,7 @@ namespace iPMCloud.Mobile.vo
                     var json = await resMsg.Content.ReadAsStringAsync();
                     resMsg.Dispose();
                     var response = JsonConvert.DeserializeObject<TicketStatusResponse>(json);
-                    return response ?? new TicketStatusResponse { succses = false };
+                    return response ?? new TicketStatusResponse { succses = false , message = "Unbekannt"};
                 }
                 else
                 {
@@ -866,8 +873,11 @@ namespace iPMCloud.Mobile.vo
             if (uri_SingleNotice == null) { InitConnections(); }
             HttpResponseMessage resMsg = null;
 
-            string args = JsonConvert.SerializeObject(
+            string args_ = JsonConvert.SerializeObject(
                 new SingleNoticeRequest(AppModel.Instance.SettingModel.SettingDTO.LoginToken, bem, bem.prio > 1));// photos entfernen wenn nicht störemeldung
+
+            string args = JsonConvert.SerializeObject(
+                new SingleNoticeRequest(AppModel.Instance.SettingModel.SettingDTO.LoginToken, bem, true));// photos entfernen wenn nicht störemeldung
 
             HttpRequestMessage msg = new HttpRequestMessage(HttpMethod.Post, uri_SingleNotice);
             msg.Content = new StringContent(args, Encoding.UTF8, "application/json");
@@ -879,6 +889,8 @@ namespace iPMCloud.Mobile.vo
                 {
                     var json = resMsg.Content.ReadAsStringAsync().Result;
                     resMsg.Dispose();
+                    bem.photos = null;
+                    BildWSO.DeleteFromGuid(AppModel.Instance, bem.guid); 
                     return JsonConvert.DeserializeObject<SingleNoticeResponse>(json);
                 }
                 else
@@ -1015,28 +1027,70 @@ namespace iPMCloud.Mobile.vo
             }
         }
 
+        public async Task<PositionResponse> TicketPositionSync(LeistungPackWSO pack)
+        {
+            if (uri_TicketPosition == null) { InitConnections(); }
+            HttpResponseMessage resMsg = null;
+            if (pack.preview && pack.ticket != null) {
+                pack.ticket.chats = null;// is a clonable Ticket !
+            }
+            string args = JsonConvert.SerializeObject(new PositionRequest
+            {
+                token = AppModel.Instance.SettingModel.SettingDTO.LoginToken,
+                pack = pack
+            });
+
+            HttpRequestMessage msg = new HttpRequestMessage(HttpMethod.Post, uri_TicketPosition);
+            msg.Content = new StringContent(args, Encoding.UTF8, "application/json");
+
+            try
+            {
+                resMsg = await httpClientInstanceTicketPos.SendAsync(msg);
+                if (resMsg != null && resMsg.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    var json = resMsg.Content.ReadAsStringAsync().Result;
+                    resMsg.Dispose();
+                    return JsonConvert.DeserializeObject<PositionResponse>(json);
+                }
+                else
+                {
+                    resMsg?.Dispose();
+                    return new PositionResponse { success = false, message = "Method(TicketPositionSync): resMsg is Null oder Status ist nicht OK!" };
+                }
+            }
+            catch (Exception ex)
+            {
+                resMsg?.Dispose();
+                if (ex.Message.ToLower().IndexOf("canceled") > -1)
+                {
+                    return new PositionResponse { success = false, message = "Method(TicketPositionSync(canceled)): Der Server ist nicht erreichbar oder die Verbindung wurde unterbrochen!\n\nBitte versuchen Sie es später noch einmal.\n\nSollte das Problem weiter bestehen, melden Sie sich bei Ihren Sachbearbeitern.\n\n" + ex.Message };
+                }
+                return new PositionResponse { success = false, message = "Method(TicketPositionSync(catch)): " + ex.Message };
+            }
+        }
+
 
         public async Task<PositionResponse> PositionSync(LeistungPackWSO pack)
         {
             if (uri_Position == null) { InitConnections(); }
             HttpResponseMessage resMsg = null;
 
-            if (pack.leistungen != null && pack.leistungen.Count > 0)
-            {
-                pack.leistungen.ForEach(l =>
-                {
-                    if (l.bemerkungen != null && l.bemerkungen.Count > 0)
-                    {
-                        l.bemerkungen.ForEach(b =>
-                        {
-                            if (b.prio < 2)
-                            {
-                                b.photos = null;
-                            }
-                        });
-                    }
-                });
-            }
+            //if (pack.leistungen != null && pack.leistungen.Count > 0)
+            //{
+            //    pack.leistungen.ForEach(l =>
+            //    {
+            //        if (l.bemerkungen != null && l.bemerkungen.Count > 0)
+            //        {
+            //            l.bemerkungen.ForEach(b =>
+            //            {
+            //                if (b.prio < 2)
+            //                {
+            //                    b.photos = null;
+            //                }
+            //            });
+            //        }
+            //    });
+            //}
 
             string args = JsonConvert.SerializeObject(new PositionRequest
             {

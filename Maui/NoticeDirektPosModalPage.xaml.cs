@@ -261,7 +261,7 @@ namespace iPMCloud.Mobile
                         CommandParameter = bildWSO
                     });
 
-                    BildWSO.Save(AppModel.Instance, bildWSO);
+                    //BildWSO.Save(AppModel.Instance, bildWSO);
                     _selectedBemerkungForNotice.photos.Add(bildWSO);
                     noticePhotoStack.Children.Add(bildWSO.stack);
                     CheckNoticeFalid();
@@ -353,7 +353,7 @@ namespace iPMCloud.Mobile
                             CommandParameter = bildWSO
                         });
 
-                        BildWSO.Save(AppModel.Instance, bildWSO);
+                        //BildWSO.Save(AppModel.Instance, bildWSO);
                         _selectedBemerkungForNotice.photos.Add(bildWSO);
                         noticePhotoStack.Children.Add(bildWSO.stack);
                     }

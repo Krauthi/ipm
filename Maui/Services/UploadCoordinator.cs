@@ -44,6 +44,7 @@ namespace iPMCloud.Mobile.Services
             allCount += ObjektDatenBildWSO.CountFromStack();
             //allCount += PNWSO.CountFromStack();
             allCount += TicketChat.CountFromStack();
+            allCount += TicketBesitzerStatusUpload.CountFromStack();
             return allCount;
         }
 
@@ -85,6 +86,7 @@ namespace iPMCloud.Mobile.Services
                 if (!failed && !await ProcessObjectValueBilderAsync(cancellationToken, total, () => processed, v => processed = v).ConfigureAwait(false)) failed = true;
                 if (!failed && !await ProcessPnAsync(cancellationToken, total, () => processed, v => processed = v).ConfigureAwait(false)) failed = true;
                 if (!failed && !await ProcessTicketChatsAsync(cancellationToken, total, () => processed, v => processed = v).ConfigureAwait(false)) failed = true;
+                if (!failed && !await ProcessTicketBesitzerStatusAsync(cancellationToken, total, () => processed, v => processed = v).ConfigureAwait(false)) failed = true;
 
                 if (failed)
                 {
@@ -383,6 +385,61 @@ namespace iPMCloud.Mobile.Services
             return true;
         }
 
+        private async Task<bool> ProcessTicketBesitzerStatusAsync(CancellationToken token, int total, Func<int> getProcessed, Action<int> setProcessed)
+        {
+            token.ThrowIfCancellationRequested();
+            if (TicketBesitzerStatusUpload.CountFromStack() <= 0)
+                return true;
+
+            ReportProgress("UPLOADS: Besitzerstatus", getProcessed(), total);
+
+            var items = TicketBesitzerStatusUpload.LoadAllFromUploadStack() ?? new List<TicketBesitzerStatusUpload>();
+            items = await RemoveAlreadyUploadedByGuidAsync(
+                items,
+                i => i.guid,
+                i => TicketBesitzerStatusUpload.DeleteFromUploadStack(i),
+                token).ConfigureAwait(false);
+
+            // Priorisierung: Pro TicketId nur den höchsten Status hochladen, kleinere Status verwerfen.
+            items = items
+                .GroupBy(i => i.ticketid)
+                .Select(g =>
+                {
+                    var highest = g.OrderByDescending(i => i.status).First();
+                    foreach (var lower in g.Where(i => i.guid != highest.guid))
+                    {
+                        TicketBesitzerStatusUpload.DeleteFromUploadStack(lower);
+                        setProcessed(getProcessed() + 1);
+                    }
+                    return highest;
+                })
+                .ToList();
+
+            foreach (var item in items)
+            {
+                token.ThrowIfCancellationRequested();
+
+                var response = await ExecuteWithRetryAsync(
+                    () => AppModel.Instance.Connections.SetTicketBesitzerStatus(new Ticket { id = item.ticketid },item, item.status),
+                    r => r != null && r.succses,
+                    r => null,
+                    "SetTicketBesitzerStatus",
+                    token).ConfigureAwait(false);
+
+                if (response == null || !response.succses)
+                {
+                    AppModel.Logger.Error($"UploadCoordinator: SetTicketBesitzerStatus failed for ticket {item.ticketid} with status {item.status} - {response?.message}");
+                    return false;
+                }
+
+                TicketBesitzerStatusUpload.DeleteFromUploadStack(item);
+                setProcessed(getProcessed() + 1);
+                ReportProgress("UPLOADS: Besitzerstatus", getProcessed(), total);
+            }
+
+            return true;
+        }
+
         private async Task<bool> ProcessDayOverAsync(CancellationToken token, int total, Func<int> getProcessed, Action<int> setProcessed)
         {
             token.ThrowIfCancellationRequested();
@@ -483,16 +540,16 @@ namespace iPMCloud.Mobile.Services
                     return false;
 
                 bem.hasSend = true;
-                var pics = BildWSO.LoadFromGuid(AppModel.Instance, bem.guid);
-                pics.ForEach(p =>
-                {
-                    p.bemId = response.bemid;
-                    if (bem.prio < 2)
-                    {
-                        BildWSO.SaveToStack(AppModel.Instance, p);
-                    }
-                    BildWSO.Delete(AppModel.Instance, p);
-                });
+                //var pics = BildWSO.LoadFromGuid(AppModel.Instance, bem.guid);
+                //pics.ForEach(p =>
+                //{
+                //    p.bemId = response.bemid;
+                //    if (bem.prio < 2)
+                //    {
+                //        BildWSO.SaveToStack(AppModel.Instance, p);
+                //    }
+                //    BildWSO.Delete(AppModel.Instance, p);
+                //});
                 BemerkungWSO.DeleteFromUploadStack(AppModel.Instance, bem);
                 setProcessed(getProcessed() + 1);
                 ReportProgress("UPLOADS: Bemerkungen", getProcessed(), total);
@@ -542,22 +599,25 @@ namespace iPMCloud.Mobile.Services
             var packs = LeistungPackWSO.LoadAllFromUploadStack(AppModel.Instance) ?? new List<LeistungPackWSO>();
             packs.ForEach(lp =>
             {
-                if (lp.leistungen == null || lp.leistungen.Count <= 0)
-                    return;
-
-                lp.leistungen.ForEach(l =>
+                if (lp.ticket == null || lp.ticket.id <= 0)
                 {
-                    if (l.bemerkungen != null && l.bemerkungen.Count > 0)
+                    if (lp.leistungen == null || lp.leistungen.Count <= 0)
+                        return;
+
+                    lp.leistungen.ForEach(l =>
                     {
-                        l.bemerkungen = l.bemerkungen
-                            .Where(b => !string.IsNullOrWhiteSpace(b.text?.Trim()) || (b.photos != null && b.photos.Count > 0))
-                            .ToList();
-                    }
-                    if (l.bemerkungen != null && l.bemerkungen.Count == 0)
-                    {
-                        l.bemerkungen = null;
-                    }
-                });
+                        if (l.bemerkungen != null && l.bemerkungen.Count > 0)
+                        {
+                            l.bemerkungen = l.bemerkungen
+                                .Where(b => !string.IsNullOrWhiteSpace(b.text?.Trim()) || (b.photos != null && b.photos.Count > 0))
+                                .ToList();
+                        }
+                        if (l.bemerkungen != null && l.bemerkungen.Count == 0)
+                        {
+                            l.bemerkungen = null;
+                        }
+                    });
+                }
             });
 
             packs = await RemoveAlreadyUploadedByGuidAsync(
@@ -570,39 +630,41 @@ namespace iPMCloud.Mobile.Services
             {
                 token.ThrowIfCancellationRequested();
                 var positionResponse = await ExecuteWithRetryAsync(
-                    () => AppModel.Instance.Connections.PositionSync(pack),
+                    () => pack.ticket == null ? AppModel.Instance.Connections.PositionSync(pack) : AppModel.Instance.Connections.TicketPositionSync(pack),
                     r => r != null && r.success,
                     r => r?.message,
-                    "PositionSync",
+                    pack.ticket == null ? "PositionSync" : "TicketPositionSync",
                     token).ConfigureAwait(false);
 
                 if (positionResponse == null || !positionResponse.success || positionResponse.pack == null)
                     return false;
 
                 var resultPack = positionResponse.pack;
-                resultPack.leistungen?.ForEach(l =>
-                {
-                    if (l.bemerkungen == null || l.bemerkungen.Count <= 0)
-                        return;
-
-                    l.bemerkungen.ForEach(b =>
+                
+                    resultPack.leistungen?.ForEach(l =>
                     {
-                        if (b.id <= 0)
+                        if (l.bemerkungen == null || l.bemerkungen.Count <= 0)
                             return;
 
-                        b.hasSend = true;
-                        var pics = BildWSO.LoadFromGuid(AppModel.Instance, b.guid);
-                        pics.ForEach(p =>
+                        l.bemerkungen.ForEach(b =>
                         {
-                            p.bemId = b.id;
-                            if (b.prio < 2)
-                            {
-                                BildWSO.SaveToStack(AppModel.Instance, p);
-                            }
-                            BildWSO.Delete(AppModel.Instance, p);
+                            if (b.id <= 0)
+                                return;
+
+                            b.hasSend = true;
+                            //var pics = BildWSO.LoadFromGuid(AppModel.Instance, b.guid);
+                            //pics.ForEach(p =>
+                            //{
+                            //    p.bemId = b.id;
+                            //    if (b.prio < 2)
+                            //    {
+                            //        BildWSO.SaveToStack(AppModel.Instance, p);
+                            //    }
+                            //    BildWSO.Delete(AppModel.Instance, p);
+                            //});
                         });
                     });
-                });
+                
 
                 var building = AppModel.Instance.LastBuilding;
                 if (building == null && resultPack.leistungen != null && resultPack.leistungen.Count > 0)

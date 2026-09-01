@@ -345,13 +345,241 @@ namespace iPMCloud.Mobile
         #endregion
     }
 
+    /// <summary>
+    /// Repräsentiert eine ausstehende Besitzerstatus-Änderung eines Tickets im Upload-Stack
+    /// </summary>
+    public class TicketBesitzerStatusUpload
+    {
+        public string guid { get; set; } = Guid.NewGuid().ToString();
+        public Int32 ticketid { get; set; } = 0;
+        public int status { get; set; } = 0;
 
+        public TicketBesitzerStatusUpload() { }
+
+        public TicketBesitzerStatusUpload(Int32 ticketid, int status)
+        {
+            this.ticketid = ticketid;
+            this.status = status;
+            this.guid = Guid.NewGuid().ToString();
+        }
+
+        #region Upload Stack Management
+
+        private static string GetUploadStackDirectory()
+        {
+            string customerNumber = AppModel.Instance?.SettingModel?.SettingDTO?.CustomerNumber;
+            if (string.IsNullOrWhiteSpace(customerNumber))
+            {
+                return null;
+            }
+
+            return Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "ipm/" + customerNumber + "/ticketbesitzerstatusupload/"
+            );
+        }
+
+        /// <summary>
+        /// Fügt eine Besitzerstatus-Änderung zum Upload-Stack hinzu (wird später erneut hochgeladen)
+        /// </summary>
+        public static bool ToUploadStack(TicketBesitzerStatusUpload tbs)
+        {
+            try
+            {
+                if (tbs == null)
+                {
+                    AppModel.Logger?.Error("ToUploadStack TicketBesitzerStatusUpload: tbs is null");
+                    return false;
+                }
+
+                string directoryPath = GetUploadStackDirectory();
+                if (directoryPath == null)
+                {
+                    return false;
+                }
+
+                if (!Directory.Exists(directoryPath))
+                {
+                    Directory.CreateDirectory(directoryPath);
+                }
+
+                // Priorisierung: Pro TicketId darf nur der höchste Status im Stack verbleiben.
+                // Bereits vorhandene Einträge mit gleichem oder höherem Status machen den neuen Eintrag überflüssig.
+                // Vorhandene Einträge mit niedrigerem Status werden entfernt, da sie überholt sind.
+                var files = Directory.GetFiles(directoryPath, "*.ipm");
+                foreach (var file in files)
+                {
+                    try
+                    {
+                        string existingJson = File.ReadAllText(file);
+                        if (string.IsNullOrWhiteSpace(existingJson))
+                            continue;
+
+                        var existing = JsonConvert.DeserializeObject<TicketBesitzerStatusUpload>(existingJson);
+                        if (existing == null || existing.ticketid != tbs.ticketid)
+                            continue;
+
+                        if (existing.status >= tbs.status)
+                        {
+                            // Ein bereits h\u00f6herer oder gleicher Status ist schon im Stack -> neuen Eintrag verwerfen
+                            return true;
+                        }
+                        else
+                        {
+                            // Vorhandener Eintrag hat niedrigeren Status -> entfernen
+                            File.Delete(file);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        AppModel.Logger?.Error(ex, $"ERROR: ToUploadStack TicketBesitzerStatusUpload - Priorisierung von {file}");
+                    }
+                }
+
+                if (string.IsNullOrWhiteSpace(tbs.guid))
+                {
+                    tbs.guid = Guid.NewGuid().ToString();
+                }
+
+                string filePath = Path.Combine(directoryPath, $"{tbs.guid}.ipm");
+
+                var jsonSettings = new JsonSerializerSettings
+                {
+                    Formatting = Formatting.Indented,
+                    NullValueHandling = NullValueHandling.Include,
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                };
+
+                string jsonString = JsonConvert.SerializeObject(tbs, jsonSettings);
+                File.WriteAllText(filePath, jsonString);
+
+                if (AppModel.Instance?.MainPage != null)
+                {
+                    AppModel.Instance.SetAllSyncStateSafe();
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: ToUploadStack TicketBesitzerStatusUpload");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Zählt die Anzahl der Besitzerstatus-Änderungen im Upload-Stack
+        /// </summary>
+        public static int CountFromStack()
+        {
+            try
+            {
+                string directoryPath = GetUploadStackDirectory();
+                if (directoryPath == null || !Directory.Exists(directoryPath))
+                {
+                    return 0;
+                }
+
+                return Directory.GetFiles(directoryPath, "*.ipm").Length;
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: CountFromStack TicketBesitzerStatusUpload");
+                return 0;
+            }
+        }
+
+        /// <summary>
+        /// Lädt alle Besitzerstatus-Änderungen aus dem Upload-Stack
+        /// </summary>
+        public static List<TicketBesitzerStatusUpload> LoadAllFromUploadStack()
+        {
+            List<TicketBesitzerStatusUpload> list = new List<TicketBesitzerStatusUpload>();
+
+            try
+            {
+                string directoryPath = GetUploadStackDirectory();
+                if (directoryPath == null || !Directory.Exists(directoryPath))
+                {
+                    return list;
+                }
+
+                var files = Directory.GetFiles(directoryPath, "*.ipm");
+                foreach (var file in files)
+                {
+                    try
+                    {
+                        string jsonString = File.ReadAllText(file);
+                        if (string.IsNullOrWhiteSpace(jsonString))
+                            continue;
+
+                        var tbs = JsonConvert.DeserializeObject<TicketBesitzerStatusUpload>(jsonString);
+                        if (tbs != null)
+                        {
+                            list.Add(tbs);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        AppModel.Logger?.Error(ex, $"ERROR: LoadAllFromUploadStack TicketBesitzerStatusUpload - {file}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: LoadAllFromUploadStack TicketBesitzerStatusUpload");
+            }
+
+            return list;
+        }
+
+        /// <summary>
+        /// Entfernt eine Besitzerstatus-Änderung aus dem Upload-Stack
+        /// </summary>
+        public static bool DeleteFromUploadStack(TicketBesitzerStatusUpload tbs)
+        {
+            try
+            {
+                if (tbs == null || string.IsNullOrWhiteSpace(tbs.guid))
+                {
+                    return false;
+                }
+
+                string directoryPath = GetUploadStackDirectory();
+                if (directoryPath == null)
+                {
+                    return false;
+                }
+
+                string filePath = Path.Combine(directoryPath, $"{tbs.guid}.ipm");
+                if (File.Exists(filePath))
+                {
+                    File.Delete(filePath);
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: DeleteFromUploadStack TicketBesitzerStatusUpload");
+                return false;
+            }
+        }
+
+        #endregion
+    }
 
     /// <summary>
     /// Repräsentiert ein Ticket im System (angepasst an Backend-Struktur)
     /// </summary>
-    public class Ticket
+    public class Ticket : ICloneable
     {
+
+        public object Clone()
+        {
+            return this.MemberwiseClone();
+        }
+
         public enum TicketStatus
         {
             Neu = 1,            // Neu (noch nicht zugewiesen)
@@ -365,11 +593,11 @@ namespace iPMCloud.Mobile
 
         public enum BesitzerStatus
         {
-            NochNichtGesehen = -1,  // Noch nicht gesehen
-            Gesehen = 0,            // Gesehen/Geöffnet
-            Gestartet = 1,          // Gestartet/In Arbeit
-            Rueckfrage = 2,         // Rückfrage
-            Erledigt = 9            // Erledigt
+            NochNichtGesehen = -1,  
+            Gesehen = 0,            
+            Gestartet = 1,          
+            Rueckfrage = 2,         
+            Abgeschlossen = 8       
         }
 
         // IDs
@@ -643,7 +871,7 @@ namespace iPMCloud.Mobile
                 BesitzerStatus.Gesehen => "Gesehen",
                 BesitzerStatus.Gestartet => "Gestartet",
                 BesitzerStatus.Rueckfrage => "Rückfrage",
-                BesitzerStatus.Erledigt => "Erledigt",
+                BesitzerStatus.Abgeschlossen => "Abgeschlossen",
                 _ => "Unbekannt"
             };
         }

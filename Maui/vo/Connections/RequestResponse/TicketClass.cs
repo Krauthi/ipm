@@ -42,6 +42,7 @@ namespace iPMCloud.Mobile
     public class TicketStatusResponse
     {
         public bool succses { get; set; } = true;
+        public string message { get; set; } = "";
         public TicketStatusResponse() { }
     }
 
@@ -52,6 +53,7 @@ namespace iPMCloud.Mobile
         public string token { get; set; } = "";
         public Int32 ticketid { get; set; } = 0;
         public int status { get; set; } = 0;
+        public string guid { get; set; } = "";
         public TicketStatusRequest() { }
     }
 

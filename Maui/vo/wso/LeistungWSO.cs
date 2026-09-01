@@ -54,6 +54,8 @@ namespace iPMCloud.Mobile
         [NonSerialized]
         public LeistungInWorkWSO leiInWork = null;
 
+        [NonSerialized]
+        public int bildRestCount = -1;
         public LeistungWSO() { }
 
         public string GetMobileText()
@@ -1864,7 +1866,7 @@ namespace iPMCloud.Mobile
             leistung.produktAnzahl = entry.Text;
         }
 
-        public static VerticalStackLayout GetInWorkPositionListView(AppModel model, ICommand func)
+        public static VerticalStackLayout GetInWorkPositionListView(AppModel model, ICommand func, ICommand delBemFunc)
         {
             var stack = new VerticalStackLayout
             {
@@ -1923,7 +1925,7 @@ namespace iPMCloud.Mobile
                         continue;
                     }
 
-                    var stackPos = GetInWorkPositionSmallCardView(o, c, l, lei, model, func);
+                    var stackPos = GetInWorkPositionSmallCardView(o, c, l, lei, model, func, delBemFunc);
                     stack.Children.Add(stackPos);
                 }
 
@@ -1935,46 +1937,47 @@ namespace iPMCloud.Mobile
                 return stack;
             }
         }
-        public static VerticalStackLayout GetInWorkPositionListView_OLD(AppModel model, ICommand func)
-        {
+        //public static VerticalStackLayout GetInWorkPositionListView_OLD(AppModel model, ICommand func)
+        //{
 
-            var stack = new VerticalStackLayout
-            {
-                Padding = new Thickness(0, 0, 0, 0),
-                Margin = new Thickness(0, 0, 0, 3),
-                Spacing = 0,
-                HorizontalOptions = LayoutOptions.Fill,
-            };
-            try
-            {
-                model.allPositionInWork.leistungen.ForEach(lei =>
-                {
-                    BuildingWSO building;
-                    if (model.LastBuilding == null)
-                    {
-                        building = BuildingWSO.LoadBuilding(model, lei.objektid);
-                    }
-                    else
-                    {
-                        building = model.LastBuilding;
-                    }
-                    var o = building.ArrayOfAuftrag.Find(auf => auf.id == lei.auftragid);
-                    var c = o.kategorien.Find(kat => kat.id == lei.kategorieid);
-                    var l = c.leistungen.Find(f => f.id == lei.id);
-                    var stackPos = GetInWorkPositionSmallCardView(o, c, l, lei, model, func);
-                    stack.Children.Add(stackPos);
-                });
-                return stack;
+        //    var stack = new VerticalStackLayout
+        //    {
+        //        Padding = new Thickness(0, 0, 0, 0),
+        //        Margin = new Thickness(0, 0, 0, 3),
+        //        Spacing = 0,
+        //        HorizontalOptions = LayoutOptions.Fill,
+        //    };
+        //    try
+        //    {
+        //        model.allPositionInWork.leistungen.ForEach(lei =>
+        //        {
+        //            BuildingWSO building;
+        //            if (model.LastBuilding == null)
+        //            {
+        //                building = BuildingWSO.LoadBuilding(model, lei.objektid);
+        //            }
+        //            else
+        //            {
+        //                building = model.LastBuilding;
+        //            }
+        //            var o = building.ArrayOfAuftrag.Find(auf => auf.id == lei.auftragid);
+        //            var c = o.kategorien.Find(kat => kat.id == lei.kategorieid);
+        //            var l = c.leistungen.Find(f => f.id == lei.id);
+        //            var stackPos = GetInWorkPositionSmallCardView(o, c, l, lei, model, func, func);
+        //            stack.Children.Add(stackPos);
+        //        });
+        //        return stack;
 
-            }
-            catch (Exception ex)
-            {
-                AppModel.Logger.Error(ex, "ERROR: LeistungWSO - GetInWorkPositionListView(): ");
-                return stack;
-            }
-        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        AppModel.Logger.Error(ex, "ERROR: LeistungWSO - GetInWorkPositionListView(): ");
+        //        return stack;
+        //    }
+        //}
 
-        public static Grid GetInWorkPositionSmallCardView(AuftragWSO o, KategorieWSO c, LeistungWSO leistung, LeistungInWorkWSO leiInWork, AppModel model, ICommand func)
+        public static Grid GetInWorkPositionSmallCardView(AuftragWSO o, KategorieWSO c, LeistungWSO leistung, LeistungInWorkWSO leiInWork,
+            AppModel model, ICommand func, ICommand delbemFunc)
         {
             //var _prio = CalcOverdue(pos);
             var imageL = new Image
@@ -2020,62 +2023,6 @@ namespace iPMCloud.Mobile
                 HorizontalOptions = LayoutOptions.Fill,
             };
 
-            var btnNoticeFrame = new Border()
-            {
-                Padding = new Thickness(1, 1, 1, 1),
-                Margin = new Thickness(3, 0, 3, 0),
-                HorizontalOptions = LayoutOptions.Start,
-                VerticalOptions = LayoutOptions.Center,
-                BackgroundColor = Color.FromArgb("#144d73"),
-                Content = new VerticalStackLayout
-                {
-                    HeightRequest = 40,
-                    WidthRequest = 40,
-                    BackgroundColor = Color.FromArgb("144d73"),
-                    VerticalOptions = LayoutOptions.Center,
-                    HorizontalOptions = LayoutOptions.Center,
-                    Spacing = 0,
-                    Padding = new Thickness(0, 0, 0, 0),
-                    Margin = new Thickness(0, 0, 0, 0),
-                    Children = {new Image
-                        {
-                            Margin = new Thickness(0, 3, 0, 0),
-                            HeightRequest = 30,
-                            WidthRequest = 30,
-                            VerticalOptions = LayoutOptions.Center,
-                            HorizontalOptions = LayoutOptions.Center,
-                            Source = "cam_message_warn.png"
-                        }
-                    }
-                },
-            };
-            if (func != null)
-            {
-                btnNoticeFrame.GestureRecognizers.Clear();
-                btnNoticeFrame.GestureRecognizers.Add(new TapGestureRecognizer() { Command = func, CommandParameter = leistung });
-            }
-
-            var notices = new Label
-            {
-                Text = (leiInWork.bemerkungen != null ? leiInWork.bemerkungen.Count : 0) + " Bemerkung(en)",
-                TextColor = Color.FromArgb("#ffffff"),
-                Margin = new Thickness(12, 0, 0, 0),
-                FontSize = 16,
-                LineBreakMode = LineBreakMode.TailTruncation,
-                HorizontalOptions = LayoutOptions.Fill,
-                VerticalOptions = LayoutOptions.Center,
-            };
-
-            var hNote = new HorizontalStackLayout()
-            {
-                Padding = new Thickness(0, 0, 0, 0),
-                Margin = new Thickness(0, 5, 0, 0),
-                Spacing = 0,                
-                HorizontalOptions = LayoutOptions.Fill,
-                Children = { btnNoticeFrame, notices },
-            };
-
-
 
             var vGrid = new Grid()
             {
@@ -2088,7 +2035,6 @@ namespace iPMCloud.Mobile
                 {
                     new RowDefinition { Height = GridLength.Auto },
                     new RowDefinition { Height = GridLength.Auto },
-                    new RowDefinition { Height = GridLength.Auto },
                     new RowDefinition { Height = GridLength.Auto }
                 }
             };
@@ -2096,9 +2042,175 @@ namespace iPMCloud.Mobile
             vGrid.Add(order, 0, 0);
             vGrid.Add(category, 0, 1);
             vGrid.Add(lb, 0, 2);
-            vGrid.Add(hNote, 0, 3);
 
 
+
+            int bemCount = (leiInWork.bemerkungen != null ? leiInWork.bemerkungen.Count : 0);
+            int vGridAddPosRow = 2;
+            int maxBem = 3;
+            int maxBil = 15;
+            int bildAllCount = 0;
+            int bildRestCount = -1;
+            bool isBildMax = false;
+
+            if (leiInWork.bemerkungen != null && leiInWork.bemerkungen.Count > 0)
+            {
+                foreach (var item in leiInWork.bemerkungen)
+                {
+                    if (item.photos != null && item.photos.Count > 0) { bildAllCount += item.photos.Count; }
+                }
+                isBildMax = bildAllCount >= maxBil;
+                bildRestCount = maxBil - bildAllCount;
+
+                foreach (var item in leiInWork.bemerkungen)
+                    {
+                        int bildCount = 0;
+                        if (item.photos != null && item.photos.Count > 0) { bildCount = item.photos.Count; }
+                        bool bemIsInhalt = !String.IsNullOrEmpty(item.text) || bildCount > 0;
+                        string text = item.text;
+                        string displayText = text?.Length > 12 ? text.Substring(0, 12) + "..." : text;
+
+                        vGridAddPosRow++;
+                        vGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+                        vGrid.Add(
+                            new HorizontalStackLayout()
+                            {
+                                Padding = new Thickness(0, 0, 0, 0),
+                                Margin = new Thickness(0, 5, 0, 0),
+                                Spacing = 0,
+                                HorizontalOptions = LayoutOptions.Fill,
+                                Children = {
+                                    new Border()
+                                    {
+                                        Padding = new Thickness(1, 1, 1, 1),
+                                        Margin = new Thickness(3, 0, 3, 0),
+                                        HorizontalOptions = LayoutOptions.Start,
+                                        VerticalOptions = LayoutOptions.Center,
+                                        BackgroundColor = Color.FromArgb(bemIsInhalt ? "#73042d" : "#144d73"),
+                                        Content = new VerticalStackLayout
+                                        {
+                                            HeightRequest = 40,
+                                            WidthRequest = 40,
+                                            BackgroundColor = Color.FromArgb(bemIsInhalt ? "#73042d" : "#144d73"),
+                                            VerticalOptions = LayoutOptions.Center,
+                                            HorizontalOptions = LayoutOptions.Center,
+                                            Spacing = 0,
+                                            Padding = new Thickness(0, 0, 0, 0),
+                                            Margin = new Thickness(0, 0, 0, 0),
+                                                Children = {
+                                                new Image
+                                                {
+                                                    Margin = new Thickness(0, 3, 0, 0),
+                                                    HeightRequest = 30,
+                                                    WidthRequest = 30,
+                                                    VerticalOptions = LayoutOptions.Center,
+                                                    HorizontalOptions = LayoutOptions.Center,
+                                                    Source = bemIsInhalt ? "Trash.png" : "cam_message_warn.png"
+                                                }
+                                            }
+                                        },
+                                        GestureRecognizers = { new TapGestureRecognizer()
+                                            {
+                                                Command = new Command<LeistungWSO>((l) =>
+                                                {
+                                                    if(bemIsInhalt){
+                                                    leiInWork.bemerkungen.Remove(item);
+                                                    delbemFunc.Execute(null);
+                                                    }
+                                                    else
+                                                    {
+                                                        leistung.bildRestCount = bildRestCount;
+                                                        func.Execute(leistung);
+                                                    }
+                                                }),
+                                                CommandParameter = leistung
+                                            } 
+                                        }
+                                    },
+                                    new Label
+                                    {
+                                        Text = "[" + displayText + "]" +(bildCount > 0 ? (" + " + (bildCount == 1 ? " 1 Bild" : (bildCount + " Bilder"))):""),
+                                        TextColor = Color.FromArgb("#ffffff"),
+                                        Margin = new Thickness(12, 0, 0, 0),
+                                        FontSize = 16,
+                                        LineBreakMode = LineBreakMode.TailTruncation,
+                                        HorizontalOptions = LayoutOptions.Fill,
+                                        VerticalOptions = LayoutOptions.Center,
+                                    }
+                                },
+                            }
+                            , 0, vGridAddPosRow);
+                    }
+
+                
+            }
+            if (!isBildMax)
+            {
+                leistung.bildRestCount = bildRestCount;
+
+                int max = bildRestCount < 0 || bildRestCount > 5 ? 5 : bildRestCount;
+
+                vGridAddPosRow++;
+                vGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+                vGrid.Add(
+                    new HorizontalStackLayout()
+                    {
+                        Padding = new Thickness(0, 0, 0, 0),
+                        Margin = new Thickness(0, 5, 0, 0),
+                        Spacing = 0,
+                        HorizontalOptions = LayoutOptions.Fill,
+                        Children = {
+                                    new Border()
+                                    {
+                                        Padding = new Thickness(1, 1, 1, 1),
+                                        Margin = new Thickness(3, 0, 3, 0),
+                                        HorizontalOptions = LayoutOptions.Start,
+                                        VerticalOptions = LayoutOptions.Center,
+                                        BackgroundColor = Color.FromArgb("#144d73"),
+                                        Content = new VerticalStackLayout
+                                        {
+                                            HeightRequest = 40,
+                                            WidthRequest = 40,
+                                            BackgroundColor = Color.FromArgb("#144d73"),
+                                            VerticalOptions = LayoutOptions.Center,
+                                            HorizontalOptions = LayoutOptions.Center,
+                                            Spacing = 0,
+                                            Padding = new Thickness(0, 0, 0, 0),
+                                            Margin = new Thickness(0, 0, 0, 0),
+                                                Children = {
+                                                new Image
+                                                {
+                                                    Margin = new Thickness(0, 3, 0, 0),
+                                                    HeightRequest = 30,
+                                                    WidthRequest = 30,
+                                                    VerticalOptions = LayoutOptions.Center,
+                                                    HorizontalOptions = LayoutOptions.Center,
+                                                    Source =  "cam_message_warn.png"
+                                                }
+                                            }
+                                        },
+                                        GestureRecognizers = { new TapGestureRecognizer()
+                                            {
+                                                Command = func,
+                                                CommandParameter = leistung
+                                            }
+                                        }
+                                    },
+                                    new Label
+                                    {
+                                        Text = max == 5 ? "Bemerkung hinzufügen" : $"Bemerkung hinzufügen ({max} Fotos erlaubt)",
+                                        TextColor = Color.FromArgb("#ffffff"),
+                                        Margin = new Thickness(12, 0, 0, 0),
+                                        FontSize = 14,
+                                        LineBreakMode = LineBreakMode.WordWrap,
+                                        HorizontalOptions = LayoutOptions.Start,
+                                        VerticalOptions = LayoutOptions.Center,
+                                    }
+                        },
+                    }
+                    , 0, vGridAddPosRow);
+
+            }
 
 
             if (leistung.art == "Produkt")
@@ -2208,7 +2320,7 @@ namespace iPMCloud.Mobile
 
 
                 vGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-                vGrid.Add(ho_anzahl, 0, 4);
+                vGrid.Add(ho_anzahl, 0, vGridAddPosRow);
             }
 
 
@@ -2306,8 +2418,9 @@ namespace iPMCloud.Mobile
                 hmuell.Add(imageMuellSign2, 2, 0);
 
                 //vGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+                vGridAddPosRow++;
                 vGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-                vGrid.Add(hmuell, 0, 4);
+                vGrid.Add(hmuell, 0, vGridAddPosRow);
                 //vGrid.Add(hmuellquest, 1, 3);
             }
 

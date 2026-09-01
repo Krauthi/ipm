@@ -1,6 +1,7 @@
 ﻿//using Plugin.Permissions;
 // TODO: Plugin.Connectivity not MAUI-compatible - use Microsoft.Maui.Networking.Connectivity
 // using Plugin.Connectivity;
+
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Devices;
@@ -421,6 +422,7 @@ namespace iPMCloud.Mobile.vo
             allCountFromUpload += ObjektDataWSO.CountFromStackFrom(customerId);
             allCountFromUpload += ObjektDatenBildWSO.CountFromStackFrom(customerId);
             allCountFromUpload += TicketChat.CountFromStackFrom(customerId);
+            allCountFromUpload += TicketBesitzerStatusUpload.CountFromStack();
             //allCountFromUpload += PNWSO.CountFromStackFrom(customerId);
             return allCountFromUpload;
         }

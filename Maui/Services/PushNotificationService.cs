@@ -1,5 +1,7 @@
 using iPMCloud.Mobile.vo;
 using Microsoft.Maui.ApplicationModel;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 #if ANDROID
 using Android.App;
@@ -7,6 +9,7 @@ using Android.Content;
 using Android.OS;
 using AndroidX.Core.App;
 using Firebase.Messaging;
+using Android.Gms.Extensions;
 using AndroidApp = Android.App.Application;
 #elif IOS
 using Foundation;
@@ -43,7 +46,7 @@ namespace iPMCloud.Mobile.Services
 #if ANDROID
                 EnsureAndroidNotificationChannel();
                 FirebaseMessaging.Instance.AutoInitEnabled = true;
-                FirebaseMessaging.Instance.GetToken().AddOnCompleteListener(new FirebaseTokenCompleteListener());
+                _ = FetchAndroidTokenAsync();
                 AppModel.Logger?.Info("INFO: Firebase Messaging erfolgreich initialisiert.");
 #elif IOS
                 UIApplication.SharedApplication.RegisterForRemoteNotifications();
@@ -56,6 +59,65 @@ namespace iPMCloud.Mobile.Services
             {
                 AppModel.Logger?.Error(ex, "ERROR: Fehler bei Initialize in PushNotificationService");
                 _initialized = false;
+            }
+        }
+
+        /// <summary>
+        /// Wird aufgerufen, wenn der Nutzer auf eine Push-Notification tippt und die App
+        /// dadurch geöffnet/in den Vordergrund geholt wird. Liest die Nutzdaten aus und
+        /// zeigt (sofern der Nutzer bereits angemeldet ist) den Inhalt der Notification an.
+        /// </summary>
+        public static void HandleNotificationOpened(IDictionary<string, string> data)
+        {
+            try
+            {
+                if (data == null)
+                {
+                    AppModel.Logger?.Warn("WARN: HandleNotificationOpened ohne Daten aufgerufen.");
+                    return;
+                }
+
+                data.TryGetValue("title", out var title);
+                data.TryGetValue("body", out var body);
+                data.TryGetValue("dataj", out var dataj);
+
+                AppModel.Logger?.Info($"INFO: Push-Notification angetippt - Titel: '{title}', dataj: '{dataj}'");
+
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    try
+                    {
+                        if (AppModel.Instance?.Person == null)
+                        {
+                            // Nutzer ist (noch) nicht angemeldet - Anzeige erfolgt erst nach dem Login.
+                            AppModel.Logger?.Info("INFO: HandleNotificationOpened - Person noch nicht angemeldet, Anzeige wird übersprungen.");
+                            return;
+                        }
+
+                        var page = Microsoft.Maui.Controls.Application.Current?.Windows?.Count > 0
+                            ? Microsoft.Maui.Controls.Application.Current.Windows[0].Page
+                            : null;
+
+                        if (page == null)
+                        {
+                            AppModel.Logger?.Warn("WARN: HandleNotificationOpened - keine aktive Page gefunden.");
+                            return;
+                        }
+
+                        await page.DisplayAlertAsync(
+                            string.IsNullOrWhiteSpace(title) ? "Benachrichtigung" : title,
+                            string.IsNullOrWhiteSpace(body) ? "" : body,
+                            "OK");
+                    }
+                    catch (Exception ex)
+                    {
+                        AppModel.Logger?.Error(ex, "ERROR: Fehler beim Anzeigen der geöffneten Push-Notification");
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: Fehler in HandleNotificationOpened");
             }
         }
 
@@ -294,33 +356,25 @@ namespace iPMCloud.Mobile.Services
             }
         }
 
-        private sealed class FirebaseTokenCompleteListener : Java.Lang.Object, Android.Gms.Tasks.IOnCompleteListener
+        private static async Task FetchAndroidTokenAsync()
         {
-            public void OnComplete(Android.Gms.Tasks.Task task)
+            try
             {
-                try
+                var result = await FirebaseMessaging.Instance.GetToken();
+                var token = result?.ToString();
+                if (!string.IsNullOrWhiteSpace(token))
                 {
-                    if (!task.IsSuccessful)
-                    {
-                        AppModel.Logger?.Warn($"WARN: Firebase Token Task nicht erfolgreich. Exception: {task.Exception?.Message}");
-                        return;
-                    }
-
-                    var token = task.Result?.ToString();
-                    if (!string.IsNullOrWhiteSpace(token))
-                    {
-                        AppModel.Logger?.Info("INFO: Firebase/FCM Token (Android) erfolgreich empfangen.");
-                        HandleTokenRefresh(token);
-                    }
-                    else
-                    {
-                        AppModel.Logger?.Warn("WARN: Firebase Token ist leer oder null.");
-                    }
+                    AppModel.Logger?.Info("INFO: Firebase/FCM Token (Android) erfolgreich empfangen.");
+                    HandleTokenRefresh(token);
                 }
-                catch (Exception ex)
+                else
                 {
-                    AppModel.Logger?.Error(ex, "ERROR: Fehler in FirebaseTokenCompleteListener.OnComplete");
+                    AppModel.Logger?.Warn("WARN: Firebase Token ist leer oder null.");
                 }
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: Fehler beim Abrufen des Firebase-Tokens (Android)");
             }
         }
 #endif

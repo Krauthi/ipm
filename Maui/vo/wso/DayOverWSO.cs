@@ -73,7 +73,17 @@ namespace iPMCloud.Mobile
                 };
 
                 string jsonString = JsonConvert.SerializeObject(day, jsonSettings);
-                File.WriteAllText(filePath, jsonString);
+
+                // Atomar schreiben (temporäre Datei + verschieben), um korrupte Dateien
+                // durch abgebrochene Schreibvorgänge (z.B. App-Beendigung) zu vermeiden
+                string tempFilePath = filePath + ".tmp";
+                File.WriteAllText(tempFilePath, jsonString);
+
+                if (File.Exists(filePath))
+                {
+                    File.Delete(filePath);
+                }
+                File.Move(tempFilePath, filePath);
 
                 return true;
             }
@@ -181,7 +191,26 @@ namespace iPMCloud.Mobile
                 string jsonString = File.ReadAllText(filename);
                 if (string.IsNullOrWhiteSpace(jsonString))
                     return null;
-                return JsonConvert.DeserializeObject<DayOverWSO>(jsonString, jsonSettings);
+
+                try
+                {
+                    return JsonConvert.DeserializeObject<DayOverWSO>(jsonString, jsonSettings);
+                }
+                catch (JsonException jex)
+                {
+                    // Datei ist beschädigt/unvollständig (z.B. durch abgebrochenen Schreibvorgang).
+                    // Datei löschen, damit sie nicht bei jedem Start erneut einen Fehler verursacht.
+                    AppModel.Logger?.Error(jex, $"ERROR: Load DayOverWSO - Corrupt file, deleting - {filename}");
+                    try
+                    {
+                        File.Delete(filename);
+                    }
+                    catch (Exception delEx)
+                    {
+                        AppModel.Logger?.Error(delEx, $"ERROR: Delete corrupt DayOverWSO file - {filename}");
+                    }
+                    return null;
+                }
             }
             catch (Exception ex)
             {

@@ -43,11 +43,13 @@ namespace iPMCloud.Mobile.vo
         internal static Uri uri_GetCheckA = null;
         internal static Uri uri_UpdatePushToken = null;
         internal static Uri uri_GetTickets = null;
+        internal static Uri uri_GetTicket = null;
         internal static Uri uri_AddTicketChat = null;
         internal static Uri uri_DelTicketChat = null;
         internal static Uri uri_SetTicketBesitzerStatus = null;
 
         internal static HttpClient httpClientInstance;
+        internal static HttpClient httpClientInstanceTicket;
         internal static HttpClient httpClientInstanceTicketStatus;
         internal static HttpClient httpClientInstanceTicketChat;
         internal static HttpClient httpClientInstanceTicketPos;
@@ -104,6 +106,9 @@ namespace iPMCloud.Mobile.vo
 
                 CookieContainer cookieContainerTicketChat = new CookieContainer();
                 httpClientInstanceTicketChat = HttpClientManager.CreateClient(cookieContainerTicketChat, HttpClientManager.TimeoutProfile.Medium);
+
+                CookieContainer cookieContainerTicket = new CookieContainer();
+                httpClientInstanceTicket = HttpClientManager.CreateClient(cookieContainerTicket, HttpClientManager.TimeoutProfile.Medium);
 
                 CookieContainer cookieContainerTicketPos = new CookieContainer();
                 httpClientInstanceTicketPos = HttpClientManager.CreateClient(cookieContainerTicketPos, HttpClientManager.TimeoutProfile.Medium);
@@ -173,6 +178,7 @@ namespace iPMCloud.Mobile.vo
 
                 // Ticket-API
                 uri_GetTickets = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/GetMobileTickets");
+                uri_GetTicket = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/GetMobileTicket");
                 uri_AddTicketChat = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/AddTicketChat");
                 uri_DelTicketChat = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/DelTicketChat");
                 uri_SetTicketBesitzerStatus = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/SetTicketBesitzerStatus");
@@ -618,7 +624,70 @@ namespace iPMCloud.Mobile.vo
 
             try
             {
-                resMsg = await httpClientInstance.SendAsync(msg);
+                resMsg = await httpClientInstanceTicket.SendAsync(msg);
+                if (resMsg != null && resMsg.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    // Tokenzeit neu setzen
+                    AppModel.Instance.SettingModel.SettingDTO.LastTokenDateTimeTicks = "" + DateTime.Now.Ticks;
+                    AppModel.Instance.SettingModel.SaveSettings();
+
+                    var json = await resMsg.Content.ReadAsStringAsync();
+                    resMsg.Dispose();
+                    var response = JsonConvert.DeserializeObject<TicketResponse>(json);
+                    response.success = true;
+                    return response;
+                }
+                else
+                {
+                    var m = "Method => GetTickets: httpResponseMessage.StatusCode = " + resMsg.StatusCode + " - " + resMsg.RequestMessage;
+                    AppModel.Logger.Warn(m);
+                    resMsg?.Dispose();
+                    return new TicketResponse { success = false, message = m };
+                }
+            }
+            catch (Exception ex)
+            {
+                resMsg?.Dispose();
+                var exMessageLower = ex.Message.ToLower();
+                if (exMessageLower.IndexOf("canceled") > -1 || exMessageLower.IndexOf("timed") > -1 || ex is TimeoutException)
+                {
+                    AppModel.Logger.Error("Method => GetTickets(timeout/canceled): Der Server ist nicht erreichbar oder die Verbindung wurde unterbrochen (Timeout)!\n\n" + ex.Message);
+                    return new TicketResponse { success = false, message = "Der Server ist nicht erreichbar oder die Verbindung wurde unterbrochen (Timeout)!\n\n" + ex.Message };
+                }
+                AppModel.Logger.Error("Method => GetTickets(catch): " + ex.Message);
+                return new TicketResponse { success = false, message = "GetTickets(catch): " + ex.Message };
+            }
+        }
+
+        public async Task<TicketResponse> GetTicket(Int32 ticketId)
+        {
+            if (uri_GetTicket == null) { InitConnections(); }
+            HttpResponseMessage resMsg = null;
+
+            if (!AppModel.Instance.IsInternet)
+            {
+                return new TicketResponse
+                {
+                    success = false,
+                    message = "Sie brauchen für diese Aktion eine Onlineverbindung!",
+                };
+            }
+
+            string args = JsonConvert.SerializeObject(new TicketRequest
+            {
+                token = AppModel.Instance.SettingModel.SettingDTO.LoginToken,
+                personid = AppModel.Instance.Person?.id ?? 0,
+                gruppeid = 0, 
+                inclChats = true, 
+                ticketid = ticketId
+            });
+
+            HttpRequestMessage msg = new HttpRequestMessage(HttpMethod.Post, uri_GetTicket);
+            msg.Content = new StringContent(args, Encoding.UTF8, "application/json");
+
+            try
+            {
+                resMsg = await httpClientInstanceTicket.SendAsync(msg);
                 if (resMsg != null && resMsg.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     // Tokenzeit neu setzen
@@ -644,11 +713,11 @@ namespace iPMCloud.Mobile.vo
                 resMsg?.Dispose();
                 if (ex.Message.ToLower().IndexOf("canceled") > -1)
                 {
-                    AppModel.Logger.Error("Method => GetTickets(canceled): Der Server ist nicht erreichbar oder die Verbindung wurde unterbrochen!\n\n" + ex.Message);
-                    return new TicketResponse { success = false, message = "GetTickets(canceled): Der Server ist nicht erreichbar oder die Verbindung wurde unterbrochen!\n\n" + ex.Message };
+                    AppModel.Logger.Error("Method => GetTicket(canceled): Der Server ist nicht erreichbar oder die Verbindung wurde unterbrochen!\n\n" + ex.Message);
+                    return new TicketResponse { success = false, message = "GetTicket(canceled): Der Server ist nicht erreichbar oder die Verbindung wurde unterbrochen!\n\n" + ex.Message };
                 }
-                AppModel.Logger.Error("Method => GetTickets(catch): " + ex.Message);
-                return new TicketResponse { success = false, message = "GetTickets(catch): " + ex.Message };
+                AppModel.Logger.Error("Method => GetTicket(catch): " + ex.Message);
+                return new TicketResponse { success = false, message = "GetTicket(catch): " + ex.Message };
             }
         }
 

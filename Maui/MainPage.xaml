@@ -274,6 +274,7 @@
                 VerticalOptions="Start">
 
                 <Grid
+                    x:Name="lastBuilding_info_Container"
                     Margin="0"
                     Padding="5,0,5,0"
                     ColumnSpacing="0"
@@ -556,7 +557,7 @@
                     x:Name="btn_inwork_container"
                     Margin="10,10,10,15"
                     Padding="1"
-                    BackgroundColor="#04532d"
+                    BackgroundColor="#937d04"
                     HeightRequest="48"
                     HorizontalOptions="Fill"
                     IsVisible="False">
@@ -603,13 +604,13 @@
                                 HorizontalOptions="Fill"
                                 HorizontalTextAlignment="Start"
                                 Text="Hier sind Sie gerade dabei"
-                                TextColor="#aaaaaa" />
+                                TextColor="#dddddd" />
                         </VerticalStackLayout>
                         <Border
                             Grid.Column="2"
                             Margin="0,0,15,0"
                             Padding="5,0,5,1"
-                            BackgroundColor="#008800"
+                            BackgroundColor="#884400"
                             HorizontalOptions="Center"
                             StrokeShape="RoundRectangle 13">
                             <Label
@@ -639,6 +640,104 @@
                                 TextColor="#aaaaaa" />
                             <Label
                                 x:Name="inwork_starttime_text"
+                                Margin="0,-3,0,0"
+                                Padding="0"
+                                FontSize="18"
+                                HorizontalOptions="Fill"
+                                HorizontalTextAlignment="End"
+                                Text="00:00"
+                                TextColor="#ffcc00" />
+                        </VerticalStackLayout>
+                    </Grid>
+                </Border>
+
+                <Border
+                    x:Name="btn_ticketinwork_container"
+                    Margin="10,10,10,15"
+                    Padding="1"
+                    BackgroundColor="#04532d"
+                    HeightRequest="48"
+                    HorizontalOptions="Fill"
+                    IsVisible="False">
+                    <Grid
+                        x:Name="btn_ticketinwork"
+                        Margin="2,0,0,0"
+                        Padding="4"
+                        ColumnSpacing="0"
+                        HeightRequest="44"
+                        HorizontalOptions="Fill"
+                        VerticalOptions="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Image
+                            Grid.Column="0"
+                            Margin="0,0,10,0"
+                            HeightRequest="30"
+                            Source="worker_in_progress_warn.png"
+                            VerticalOptions="Center"
+                            WidthRequest="30" />
+                        <VerticalStackLayout
+                            Grid.Column="1"
+                            Margin="0,-4,0,0"
+                            Padding="0"
+                            HorizontalOptions="Start"
+                            Spacing="0"
+                            VerticalOptions="Center">
+                            <Label
+                                Margin="0"
+                                Padding="0"
+                                FontSize="18"
+                                HorizontalOptions="Fill"
+                                HorizontalTextAlignment="Start"
+                                Text="Aktuelles Ticket"
+                                TextColor="#ffffff" />
+                            <Label
+                                Margin="0,-3,0,0"
+                                Padding="0"
+                                FontSize="13"
+                                HorizontalOptions="Fill"
+                                HorizontalTextAlignment="Start"
+                                Text="Hier sind Sie gerade dabei"
+                                TextColor="#aaaaaa" />
+                        </VerticalStackLayout>
+                        <Border
+                            Grid.Column="2"
+                            Margin="0,0,15,0"
+                            Padding="5,0,5,1"
+                            BackgroundColor="#008800"
+                            HorizontalOptions="Center"
+                            StrokeShape="RoundRectangle 13">
+                            <Label
+                                x:Name="ticketinwork_start_count_text"
+                                Margin="0"
+                                Padding="0"
+                                FontSize="16"
+                                HorizontalOptions="Center"
+                                Text="3"
+                                TextColor="#ffffff"
+                                VerticalOptions="Center" />
+                        </Border>
+                        <VerticalStackLayout
+                            Grid.Column="3"
+                            Margin="0,-4,0,0"
+                            Padding="0"
+                            HorizontalOptions="End"
+                            Spacing="0"
+                            VerticalOptions="Center">
+                            <Label
+                                Margin="0,0,0,0"
+                                Padding="0"
+                                FontSize="12"
+                                HorizontalOptions="Fill"
+                                HorizontalTextAlignment="Start"
+                                Text="Seit"
+                                TextColor="#aaaaaa" />
+                            <Label
+                                x:Name="ticketinwork_starttime_text"
                                 Margin="0,-3,0,0"
                                 Padding="0"
                                 FontSize="18"
@@ -745,10 +844,12 @@
                 VerticalOptions="Start" />
 
             <Grid
+                x:Name="MainView_Container"
                 Grid.Row="4"
                 Margin="0"
                 Padding="0"
                 HorizontalOptions="Fill"
+                IsVisible="True"
                 RowSpacing="0"
                 VerticalOptions="Fill">
                 <Grid.RowDefinitions>
@@ -2499,7 +2600,7 @@
                             Margin="0"
                             Padding="0"
                             HorizontalOptions="Fill"
-                            IsVisible="True"
+                            IsVisible="False"
                             RowSpacing="0"
                             VerticalOptions="Fill">
                             <Grid.RowDefinitions>
@@ -2845,6 +2946,65 @@
                             </Grid>
                         </Grid>
 
+                        <Grid
+                            x:Name="frame_planConCInWork"
+                            Grid.Row="0"
+                            Margin="0"
+                            Padding="0"
+                            HorizontalOptions="Fill"
+                            IsVisible="False"
+                            RowSpacing="0"
+                            VerticalOptions="Fill">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <Border
+                                Grid.Row="0"
+                                Margin="0"
+                                BackgroundColor="#999"
+                                HeightRequest="2"
+                                HorizontalOptions="Fill"
+                                VerticalOptions="Start" />
+
+                            <Grid
+                                Grid.Row="1"
+                                Margin="0"
+                                Padding="0"
+                                HorizontalOptions="Fill"
+                                RowSpacing="0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <ScrollView
+                                    Grid.Row="0"
+                                    Margin="0"
+                                    Padding="0"
+                                    HorizontalOptions="Fill">
+                                    <VerticalStackLayout
+                                        x:Name="frame_planListCoffenInWork"
+                                        Margin="0"
+                                        Padding="0"
+                                        HorizontalOptions="Fill"
+                                        IsVisible="True"
+                                        Spacing="0"
+                                        VerticalOptions="Fill" />
+                                </ScrollView>
+                            </Grid>
+
+                            <Border
+                                Grid.Row="2"
+                                Margin="0"
+                                BackgroundColor="#999"
+                                HeightRequest="2"
+                                HorizontalOptions="Fill"
+                                VerticalOptions="Start" />
+                            <!--  Ticketchat BTNs  -->
+                            
+                        </Grid>
                     </Grid>
                 </Grid>
 
@@ -2889,7 +3049,7 @@
                     VerticalOptions="Fill" />
 
                 <StackLayout
-                    x:Name="box_buildingInformation"
+                    x:Name="box_buildingInformation2"
                     Grid.Row="6"
                     Margin="10,5,10,5"
                     Padding="5,5,5,3"
@@ -2897,6 +3057,12 @@
 
             </Grid>
 
+            <StackLayout
+                x:Name="box_buildingInformation"
+                Grid.Row="5"
+                Margin="10,5,10,5"
+                Padding="5,5,5,3"
+                HorizontalOptions="Fill" />
 
             <!--</ScrollView>-->
 
@@ -4306,7 +4472,8 @@
             AbsoluteLayout.LayoutFlags="All"
             HorizontalOptions="Fill"
             IsVisible="False"
-            RowSpacing="0"
+            RowSpacing="0"         
+            BackgroundColor="Black"
             VerticalOptions="Fill">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
@@ -4325,7 +4492,7 @@
                 RowSpacing="0"
                 VerticalOptions="Fill">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="54" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
@@ -4333,6 +4500,7 @@
                 </Grid.RowDefinitions>
 
                 <Grid
+                    x:Name="RunningWorksPage_head_Container"
                     Grid.Row="0"
                     Margin="0"
                     Padding="10,10,10,10"
@@ -4407,7 +4575,7 @@
                     Grid.Row="2"
                     Margin="0"
                     Padding="5"
-                    BackgroundColor="#90144d73"
+                    BackgroundColor="#244d73"
                     ColumnSpacing="0"
                     HorizontalOptions="Fill">
                     <Grid.ColumnDefinitions>
@@ -4429,7 +4597,7 @@
 
                 <ScrollView
                     Grid.Row="4"
-                    Margin="0"
+                    Margin="0,0,0,5"
                     Padding="0"
                     HorizontalOptions="Fill"
                     VerticalOptions="Fill">
@@ -5670,6 +5838,7 @@
 
         <AbsoluteLayout
             x:Name="editticket_container"
+            Margin="0,112,0,0"
             AbsoluteLayout.LayoutBounds="0,0,1,1"
             AbsoluteLayout.LayoutFlags="All"
             BackgroundColor="Black"
@@ -5684,13 +5853,16 @@
                 RowSpacing="0"
                 VerticalOptions="Fill">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="54" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
+
                 <Grid
+                    x:Name="editticket_nav_container"
                     Grid.Row="0"
                     ColumnSpacing="0"
                     HeightRequest="54"
@@ -5753,61 +5925,21 @@
                     </VerticalStackLayout>
                 </Grid>
 
-
-
-                <Grid
-                    Grid.Row="1"
-                    ColumnDefinitions="Auto,Auto,Auto"
-                    ColumnSpacing="0"
-                    HeightRequest="50"
-                    HorizontalOptions="End">
-                    <Button
-                        x:Name="ticket_startnow_btn"
-                        Grid.Column="0"
-                        Margin="0,5,0,5"
-                        BackgroundColor="#045d93"
-                        BorderWidth="0"
-                        Clicked="OnStartTicket_Clicked"
-                        CornerRadius="0"
-                        FontAttributes="Bold"
-                        FontSize="16"
-                        Text="JETZT STARTEN"
-                        TextColor="White" />
-                    <!--<Button
-                        x:Name="ticket_breaknow_btn"
-                        Grid.Column="1"
-                        Margin="5,5,0,5"
-                        BackgroundColor="#b38d04"
-                        BorderWidth="0"
-                        Clicked="OnBreakTicket_Clicked"
-                        CornerRadius="0"
-                        FontAttributes="Bold"
-                        FontSize="16"
-                        Text="PAUSIEREN"
-                        TextColor="White" />-->
-                    <Button
-                        x:Name="ticket_closenow_btn"
-                        IsVisible="False"
-                        Grid.Column="2"
-                        Margin="5,5,0,5"
-                        BackgroundColor="#04732d"
-                        BorderWidth="0"
-                        Clicked="OnEndTicket_Clicked"
-                        CornerRadius="0"
-                        FontAttributes="Bold"
-                        FontSize="16"
-                        Text="ABSCHLIESSEN"
-                        TextColor="White" />
-                </Grid>
-
                 <!--  Ticket Info Karte (dynamisch gefüllt)  -->
                 <StackLayout
                     x:Name="ticket_info_container"
-                    Grid.Row="2"
-                    Padding="0,0,0,12"
+                    Grid.Row="1"
+                    Padding="0,8,0,12"
                     Spacing="0" />
 
 
+                <!--  Ticket Wichtige Info MAB Karte (dynamisch gefüllt)  -->
+                <StackLayout
+                    x:Name="ticket_wichtigeinfo_container"
+                    Grid.Row="2"
+                    Margin="0,0,0,8"
+                    IsVisible="False"
+                    Spacing="0" />
 
                 <!--  Tab Navigation  -->
                 <Grid
@@ -5816,10 +5948,11 @@
                     Padding="0"
                     BackgroundColor="#1a1a1a"
                     ColumnSpacing="0"
-                    HeightRequest="50"
+                    HeightRequest="42"
                     HorizontalOptions="Fill">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="140" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
@@ -5827,39 +5960,57 @@
                     <Button
                         x:Name="tab_beschreibung_btn"
                         Grid.Column="0"
-                        BackgroundColor="#234567"
-                        BorderColor="Transparent"
-                        BorderWidth="0"
+                        BackgroundColor="Transparent"
+                        BorderColor="Black"
+                        BorderWidth="1"
+                        Padding="10,0,10,0"
                         Clicked="OnTabBeschreibung_Clicked"
                         CornerRadius="0"
                         FontAttributes="Bold"
-                        FontSize="14"
-                        Text="BESCHREIBUNG"
-                        TextColor="White" />
+                        FontSize="11"
+                        Text="TICKET"
+                        TextColor="#ffffff" />
+
+                    <Button
+                        x:Name="tab_auftragsarbeiten_btn"
+                        Grid.Column="1"
+                        BackgroundColor="Transparent"
+                        BorderColor="Black"
+                        BorderWidth="1"
+                        Padding="10,0,10,0"
+                        Clicked="OnTabAuftragsArbeiten_Clicked"
+                        CornerRadius="0"
+                        FontAttributes="Bold"
+                        FontSize="11"
+                        IsVisible="True"
+                        Text="AUFTRAG"
+                        TextColor="#aaa" />
 
                     <Button
                         x:Name="tab_objekt_btn"
-                        Grid.Column="1"
+                        Grid.Column="2"
                         BackgroundColor="Transparent"
-                        BorderColor="Transparent"
-                        BorderWidth="0"
+                        BorderColor="Black"
+                        BorderWidth="1"
                         Clicked="OnTabObjekt_Clicked"
                         CornerRadius="0"
+                        Padding="10,0,10,0"
                         FontAttributes="Bold"
-                        FontSize="14"
+                        FontSize="11"
                         Text="DETAILS"
                         TextColor="#aaa" />
 
                     <Button
                         x:Name="tab_chat_btn"
-                        Grid.Column="2"
+                        Grid.Column="3"
                         BackgroundColor="Transparent"
-                        BorderColor="Transparent"
-                        BorderWidth="0"
+                        BorderColor="Black"
+                        BorderWidth="1"
+                        Padding="10,0,10,0"
                         Clicked="OnTabChat_Clicked"
                         CornerRadius="0"
                         FontAttributes="Bold"
-                        FontSize="14"
+                        FontSize="11"
                         Text="CHAT"
                         TextColor="#aaa" />
                 </Grid>
@@ -5879,15 +6030,15 @@
                     <ScrollView
                         x:Name="beschreibung_tab_content"
                         Grid.Row="0"
-                        Padding="0,5"
-                        BackgroundColor="#234567"
+                        Padding="0,2"
+                        BackgroundColor="#333"
                         HorizontalOptions="FillAndExpand"
                         IsVisible="True"
                         VerticalOptions="FillAndExpand">
                         <!--  WebView - wird im Code-Behind gesetzt  -->
                         <WebView
                             x:Name="ticket_beschreibung_webview"
-                            BackgroundColor="#234567"
+                            BackgroundColor="Transparent"
                             HorizontalOptions="Fill"
                             MinimumHeightRequest="500"
                             VerticalOptions="Start" />
@@ -5896,21 +6047,36 @@
                     <!--  Objekt/Auftrag Tab  -->
                     <ScrollView
                         x:Name="objekt_tab_content"
-                        BackgroundColor="#234567"
+                        BackgroundColor="#333"
                         IsVisible="False">
                         <StackLayout
                             Margin="0,5,0,0"
                             Padding="0"
-                            BackgroundColor="#234567"
+                            BackgroundColor="#333"
                             Spacing="0">
                             <!--  Details Container (dynamisch gefüllt im Code)  -->
                             <StackLayout
                                 x:Name="objekt_auftrag_content"
                                 Padding="0"
-                                BackgroundColor="#234567"
+                                BackgroundColor="#333"
                                 Spacing="0">
                                 <!--  Dynamisch gefüllt im Code  -->
                             </StackLayout>
+                        </StackLayout>
+                    </ScrollView>
+
+                    <!--  Auftrags-Arbeiten Tab  -->
+                    <ScrollView
+                        x:Name="auftragsarbeiten_tab_content"
+                        BackgroundColor="#333"
+                        IsVisible="False">
+                        <StackLayout
+                            x:Name="auftragsarbeiten_content"
+                            Margin="0,5,0,0"
+                            Padding="0"
+                            BackgroundColor="#333"
+                            Spacing="0">
+                            <!--  Dynamisch gefüllt im Code  -->
                         </StackLayout>
                     </ScrollView>
 
@@ -5933,7 +6099,7 @@
                             Grid.Row="0"
                             Margin="0"
                             Padding="8"
-                            BackgroundColor="#234567"
+                            BackgroundColor="#333"
                             HorizontalOptions="Fill"
                             VerticalOptions="Fill">
 
@@ -6060,6 +6226,86 @@
                 </Grid>
 
 
+                <Grid
+                    x:Name="ticket_footer_container"
+                    Grid.Row="5"
+                    Margin="0,2,0,5"
+                    ColumnDefinitions="*,*"
+                    ColumnSpacing="0"
+                    HeightRequest="60"
+                    HorizontalOptions="Fill"
+                    IsVisible="True"
+                    RowDefinitions="Auto,Auto">
+                    <Button
+                        x:Name="ticket_startnow_btn"
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        Margin="10,13,0,5"
+                        BackgroundColor="#04732d"
+                        BorderWidth="0"
+                        Clicked="OnStartTicket_Clicked"
+                        CornerRadius="0"
+                        FontAttributes="Bold"
+                        FontSize="16"
+                        Text="JETZT STARTEN"
+                        TextColor="White" />
+                    <!--<Button
+                        x:Name="ticket_breaknow_btn"
+                        Grid.Column="1"
+                        Margin="5,5,0,5"
+                        BackgroundColor="#b38d04"
+                        BorderWidth="0"
+                        Clicked="OnBreakTicket_Clicked"
+                        CornerRadius="0"
+                        FontAttributes="Bold"
+                        FontSize="16"
+                        Text="PAUSIEREN"
+                        TextColor="White" />-->
+                    <Button
+                        x:Name="ticket_closenow_btn"
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        Margin="10,13,0,5"
+                        BackgroundColor="#04530d"
+                        BorderWidth="0"
+                        Clicked="OnEndTicket_Clicked"
+                        CornerRadius="0"
+                        FontAttributes="Bold"
+                        FontSize="16"
+                        IsVisible="False"
+                        Text="ABSCHLIESSEN"
+                        TextColor="White" />
+                    <Button
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Margin="10,13,10,5"
+                        BackgroundColor="#333"
+                        BorderWidth="0"
+                        Clicked="OnRefreshTicket_Clicked"
+                        CornerRadius="0"
+                        FontAttributes="Bold"
+                        HeightRequest="40"
+                        HorizontalOptions="End"
+                        ImageSource="refresh.png" />
+
+                    <Border
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Margin="0,0,0,0"
+                        BackgroundColor="#ccc"
+                        HeightRequest="2"
+                        HorizontalOptions="Fill"
+                        VerticalOptions="Start" />
+                    <Border
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        Margin="0,0,0,0"
+                        BackgroundColor="#ccc"
+                        HeightRequest="2"
+                        HorizontalOptions="Fill"
+                        VerticalOptions="Start" />
+                </Grid>
+
 
             </Grid>
 
@@ -6071,6 +6317,144 @@
 
 
 
+        <AbsoluteLayout
+            x:Name="panelShowSelectedPosTicket_Container"
+            AbsoluteLayout.LayoutBounds="0,0,1,1"
+            AbsoluteLayout.LayoutFlags="All"
+            BackgroundColor="#99000000"
+            IsVisible="false">
+            <Border
+                x:Name="panelShowSelectedPosTicket_frame"
+                Margin="-2,10,30,15"
+                Padding="1"
+                AbsoluteLayout.LayoutBounds="0,0,1,1"
+                AbsoluteLayout.LayoutFlags="All"
+                BackgroundColor="#444"
+                HorizontalOptions="Fill"
+                VerticalOptions="Fill">
+                <Grid
+                    Margin="0"
+                    Padding="5"
+                    BackgroundColor="#222"
+                    HorizontalOptions="Fill"
+                    RowSpacing="0"
+                    VerticalOptions="Fill">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="54" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid
+                        Grid.Row="0"
+                        Margin="0"
+                        Padding="10"
+                        ColumnSpacing="0"
+                        HeightRequest="54"
+                        HorizontalOptions="Fill">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Image
+                            Grid.Column="0"
+                            Margin="0,0,10,0"
+                            HeightRequest="30"
+                            HorizontalOptions="Start"
+                            Source="pos_list.png"
+                            VerticalOptions="Center"
+                            WidthRequest="30" />
+                        <Label
+                            Grid.Column="1"
+                            Margin="0"
+                            FontSize="18"
+                            HorizontalOptions="Start"
+                            HorizontalTextAlignment="Start"
+                            LineBreakMode="TailTruncation"
+                            Text="IHRE AUSWAHL"
+                            TextColor="#ffffff"
+                            VerticalOptions="Center" />
+                        <ImageButton
+                            Grid.Column="2"
+                            Margin="0"
+                            Padding="1"
+                            BackgroundColor="Transparent"
+                            Clicked="btn_AuswahlAnzeigenTicket"
+                            HeightRequest="32"
+                            HorizontalOptions="End"
+                            Source="x128_2_img.png"
+                            VerticalOptions="Center"
+                            WidthRequest="32" />
+                    </Grid>
+                    <Border
+                        Grid.Row="1"
+                        Margin="0,0,0,0"
+                        BackgroundColor="White"
+                        HeightRequest="2"
+                        HorizontalOptions="Fill"
+                        VerticalOptions="Start" />
+
+                    <ScrollView
+                        Grid.Row="2"
+                        Margin="0"
+                        Padding="0"
+                        HorizontalOptions="Fill"
+                        VerticalOptions="Fill">
+                        <VerticalStackLayout
+                            x:Name="selectedPosListTicket_container"
+                            Margin="0"
+                            Padding="0"
+                            HorizontalOptions="Fill"
+                            Spacing="0"
+                            VerticalOptions="Fill" />
+                    </ScrollView>
+
+                    <Border
+                        Grid.Row="3"
+                        Margin="0"
+                        BackgroundColor="White"
+                        HeightRequest="2"
+                        HorizontalOptions="Fill"
+                        VerticalOptions="Start" />
+                    <Border
+                        x:Name="btn_startselectedTicket_pos_frame"
+                        Grid.Row="4"
+                        Margin="10,10,0,10"
+                        Padding="1"
+                        BackgroundColor="#0f649d"
+                        HorizontalOptions="Start">
+                        <HorizontalStackLayout
+                            x:Name="btn_startselectedTicket_pos"
+                            Margin="0,0,0,0"
+                            Padding="2,2,10,2"
+                            BackgroundColor="#1f74ad"
+                            HeightRequest="40"
+                            HorizontalOptions="Fill"
+                            Spacing="0"
+                            VerticalOptions="Center">
+                            <Image
+                                Margin="0,0,8,0"
+                                HeightRequest="30"
+                                Source="check_white.png"
+                                VerticalOptions="Center"
+                                WidthRequest="30" />
+                            <Label
+                                Margin="0"
+                                Padding="0"
+                                FontSize="16"
+                                Text="JETZT STARTEN"
+                                TextColor="#ffffff"
+                                VerticalOptions="Center" />
+                        </HorizontalStackLayout>
+                    </Border>
+
+
+                </Grid>
+
+            </Border>
+        </AbsoluteLayout>
 
 
 
@@ -6743,7 +7127,7 @@
                             x:Name="btn_regist"
                             Grid.Row="14"
                             Margin="0,10,0,0"
-                            Padding="1"
+                            Padding="1" 
                             BackgroundColor="#04432d"
                             HorizontalOptions="Fill">
                             <StackLayout
@@ -7836,7 +8220,101 @@
             </Grid>
         </AbsoluteLayout>
 
+        <AbsoluteLayout
+            x:Name="popupContainer_quest_ticketabschliessen"
+            AbsoluteLayout.LayoutBounds="0,0,1,1"
+            AbsoluteLayout.LayoutFlags="All"
+            BackgroundColor="#88000000"
+            IsVisible="False">
+            <AbsoluteLayout.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnOverlayTapped" />
+            </AbsoluteLayout.GestureRecognizers>
+            <Grid
+                Margin="20"
+                Padding="10"
+                AbsoluteLayout.LayoutBounds="0,0,1,1"
+                AbsoluteLayout.LayoutFlags="All"
+                BackgroundColor="#144d73"
+                HorizontalOptions="Fill"
+                RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto"
+                RowSpacing="0"
+                VerticalOptions="Start">
+                <Label
+                    Grid.Row="0"
+                    Margin="0"
+                    FontAttributes="Bold"
+                    FontSize="24"
+                    HorizontalOptions="Fill"
+                    HorizontalTextAlignment="Start"
+                    Text="TICKET ABSCHLIESSEN"
+                    TextColor="#ffcc00"
+                    VerticalOptions="Center" />
+                <Border
+                    Grid.Row="1"
+                    Margin="0,3,0,3"
+                    BackgroundColor="#fff"
+                    HeightRequest="2"
+                    HorizontalOptions="Fill"
+                    VerticalOptions="Start" />
+                <Label
+                    Grid.Row="2"
+                    Margin="0,10,0,20"
+                    FontSize="18"
+                    HorizontalOptions="Fill"
+                    HorizontalTextAlignment="Start"
+                    Text="Möchten Sie jetzt wirklich dieses Ticket abschliessen?"
+                    TextColor="#ffffff"
+                    VerticalOptions="Center" />
+                <!--Label
+                    Grid.Row="3"
+                    Margin="0,0,0,20"
+                    FontSize="18"
+                    HorizontalOptions="Fill"
+                    HorizontalTextAlignment="Start"
+                    Text="Wollen Sie die offenen Ausführungen jetzt beenden? "
+                    TextColor="#ffcc00"
+                    VerticalOptions="Center" />-->
+                <Border
+                    Grid.Row="4"
+                    Margin="0,10,0,10"
+                    BackgroundColor="#fff"
+                    HeightRequest="2"
+                    HorizontalOptions="Fill"
+                    VerticalOptions="Start" />
+                <Grid
+                    Grid.Row="5"
+                    Margin="0"
+                    Padding="0"
+                    ColumnSpacing="0"
+                    HorizontalOptions="Fill">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
 
+                    <Button
+                        Grid.Column="0"
+                        Clicked="OnEndTicketNow_Clicked"
+                        ContentLayout="Left,10"
+                        FontSize="15"
+                        Text="JETZT ABSCHLIESSEN"
+                        BackgroundColor="#04732d"
+                        HorizontalOptions="Start"
+                        TextColor="#fff" />
+                    <Button
+                        Grid.Column="1"
+                        Clicked="OnEndTicketCloseDialog_Clicked"
+                        ContentLayout="Left,10"
+                        FontSize="15"
+                        Text="Abbrechen"
+                        BackgroundColor="#73042d"
+                        HorizontalOptions="End"
+                        TextColor="#fff" />
+                </Grid>
+            </Grid>
+
+        </AbsoluteLayout>
+        
         <AbsoluteLayout
             x:Name="popupContainer_quest_removeLastBuilding"
             AbsoluteLayout.LayoutBounds="0,0,1,1"

@@ -99,9 +99,9 @@ namespace iPMCloud.Mobile
             Log.Warn(TAG, "Low Memory Warning!");
             AppModel.Logger?.Warn("MainApplication.OnLowMemory: System meldet Speichermangel - Hintergrund-Prozess-Kill ist wahrscheinlich (mogliche Ursache fur naechsten unerwarteten App-Neustart).");
 
-            // Speicher freigeben
+            // Speicher freigeben. GC.WaitForPendingFinalizers() wird bewusst NICHT aufgerufen,
+            // da dies den Thread blockiert und in Kombination mit Finalizern zu Deadlocks fuehren kann.
             GC.Collect();
-            GC.WaitForPendingFinalizers();
         }
 
         public override void OnTrimMemory([GeneratedEnum] TrimMemory level)
@@ -110,7 +110,13 @@ namespace iPMCloud.Mobile
             Log.Warn(TAG, $"Trim Memory: {level}");
             AppModel.Logger?.Warn($"MainApplication.OnTrimMemory: level={level}");
 
-            if (level >= TrimMemory.RunningCritical)
+            // Hinweis: Die TRIM_MEMORY-Konstanten von Android sind NICHT nach Schweregrad aufsteigend sortiert:
+            // RunningModerate=5, RunningLow=10, RunningCritical=15, UiHidden=20, Background=40, Moderate=60, Complete=80.
+            // Ein Vergleich mit "level >= TrimMemory.RunningCritical" wuerde daher auch bei den haeufigen,
+            // unkritischen Background/UiHidden-Events (die App laeuft nur im Hintergrund) einen vollen GC.Collect()
+            // ausloesen. Das ist unnoetig teuer (CPU/Akku) und kann beim Zurueckkehren in den Vordergrund zu
+            // Rucklern fuehren. Ein GC soll daher nur bei wirklich ernstem Speicherdruck erfolgen.
+            if (level >= TrimMemory.Moderate)
             {
                 GC.Collect();
             }

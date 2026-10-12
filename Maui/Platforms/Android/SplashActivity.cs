@@ -17,8 +17,8 @@ namespace iPMCloud.Mobile
     /// Splash Screen Activity - zeigt Logo beim App-Start
     /// </summary>
     [Activity(
-        Label = "iPM-Cloud", 
-        //Icon = "@drawable/icon", 
+        Label = "iPM-Cloud",
+        //Icon = "@drawable/pnicon26_ss_b", 
         Theme = "@style/Maui.SplashTheme",
         Exported = true,
         MainLauncher = true,

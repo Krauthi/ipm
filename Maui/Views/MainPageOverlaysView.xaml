@@ -215,7 +215,7 @@
                                 Margin="0,0,0,0"
                                 HeightRequest="29"
                                 HorizontalOptions="Center"
-                                Source="Trash.png"
+                                Source="trash.png"
                                 VerticalOptions="Center"
                                 WidthRequest="30" />
                         </HorizontalStackLayout>

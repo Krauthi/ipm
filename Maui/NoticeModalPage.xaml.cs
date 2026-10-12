@@ -74,7 +74,7 @@ namespace iPMCloud.Mobile
 
             try
             {
-                bildRestCount = pos.bildRestCount;
+                bildRestCount = pos != null ? pos.bildRestCount : -1;
                 var page = new NoticeModalPage(pos, backTo, isPrio, posCard);
                 await MainThread.InvokeOnMainThreadAsync(() =>
                     callerPage.Navigation.PushModalAsync(page, animated: false));
@@ -265,6 +265,8 @@ namespace iPMCloud.Mobile
         public async Task btn_pickPhotosForNotice(object sender, TappedEventArgs e)
         {
             int max = bildRestCount < 0 || bildRestCount > 5 ? 5 : bildRestCount;
+            //await DisplayAlertAsync("INFO", $"{bildRestCount} Maximal {max} Fotos erlaubt", "OK");
+
             if (_SelectedBemerkungForNotice.photos.Count >= max)
             {
                 await DisplayAlertAsync("Limit erreicht", $"Maximal {max} Fotos erlaubt", "OK");
@@ -284,23 +286,25 @@ namespace iPMCloud.Mobile
                     CompressionQuality = 75,
                     MaximumHeight = 1024,
                     MaximumWidth = 1024,
-                    SelectionLimit = 5 - _SelectedBemerkungForNotice.photos.Count,
+                    SelectionLimit = max,
                     PreserveMetaData = true,
                     RotateImage = true,
                 };
-#if !IOS
-                options.RotateImage = true;
-#endif
 
                 var breadcrumbId = $"NoticePhotoPicker_{_SelectedBemerkungForNotice.guid}";
                 iPMCloud.Mobile.Services.CrashDiagnostics.Begin(
                     breadcrumbId,
                     $"BemerkungGuid={_SelectedBemerkungForNotice.guid}; ExistingPhotos={_SelectedBemerkungForNotice.photos.Count}; SelectionLimit={options.SelectionLimit}");
 
-                IList<FileResult> photos;
+                IList<FileResult> photos = null;
                 try
                 {
-                    photos = await MediaPicker.PickPhotosAsync(options);
+                    // photos = await MediaPicker.PickPhotosAsync(options);
+                    photos = await iPMCloud.Mobile.Services.MediaPickerCompat.PickPhotosAsync(options);
+                }
+                catch (Exception es)
+                {
+                    await DisplayAlertAsync("INFO", $"{es.Message} :: {es.StackTrace} ", "OK");
                 }
                 finally
                 {
@@ -309,6 +313,7 @@ namespace iPMCloud.Mobile
 
                 if (photos != null && photos.Count() > 0)
                 {
+                    //await DisplayAlertAsync("INFO", $"{photos.Count} Fotos ausgewählt", "OK");
                     foreach (var photo in photos)
                     {
                         var reCo = new Command<BildWSO>(RemoveBildInWork);

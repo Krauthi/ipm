@@ -69,15 +69,11 @@ namespace iPMCloud.Mobile.vo
                 SettingDTO.CustomerName = "iPD Hensel Immobilien Pflege und Dienstleistungen";
                 SettingDTO.CustomerNumber = "1"; // "10074";
 
-                SettingDTO.ServerUrl = "http://localhost:52222";
-                SettingDTO.ServerUrl = "http://nbkrauthausen/mservice";
-                //SettingDTO.ServerUrl = "http://192.168.178.23:52222";
 
                 //SettingDTO.ServerUrl = "https://qsportaltestdecker.ipmcloud.de";
                 SettingDTO.ServerUrl = "https://test-hensel.ipmcloud.de";
 
-                //SettingDTO.ServerUrl = "http://localhost:52255";
-
+                
                 //SettingDTO.ServerUrl = "https://ipd-hensel.ipmcloud.de";
 
                 //SettingDTO.ServerUrl = "http://192.168.178.23:45455";
@@ -130,17 +126,22 @@ namespace iPMCloud.Mobile.vo
                 SettingDTO.ServerUrl = "https://tschoecke.ipmcloud.de";
                 SettingDTO.CustomerNumber = "11037";
 
-                SettingDTO.LoginName = "JoBaum111";
-                SettingDTO.LoginPassword = "16101964";
-                SettingDTO.CustomerName = "iPD Hensel Immobilien Pflege und Dienstleistungen";
-                SettingDTO.CustomerNumber = "1"; // "10074";
-                SettingDTO.ServerUrl = "https://test-hensel.ipmcloud.de";
-
-
                 SettingDTO.LoginName = "TimoStraub";
                 SettingDTO.LoginPassword = "33333333";
                 SettingDTO.ServerUrl = "https://hms-muminovic.ipmcloud.de";
                 SettingDTO.CustomerNumber = "10013";
+
+
+                SettingDTO.LoginName = "JoBaum123";
+                SettingDTO.LoginPassword = "16101968";
+                SettingDTO.CustomerName = "iPD TEST Dev";
+                SettingDTO.CustomerNumber = "1"; // "10074";
+                //SettingDTO.ServerUrl = "https://test-hensel.ipmcloud.de";
+                SettingDTO.ServerUrl = "http://localhost:52222";
+                SettingDTO.ServerUrl = "http://nbkrauthausen:52222";///mservice";
+                //SettingDTO.ServerUrl = "http://192.168.178.23:52222";
+
+
                 SaveSettings(); 
             }
         }

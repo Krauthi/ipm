@@ -12,10 +12,22 @@ namespace iPMCloud.Mobile
         private static readonly SemaphoreSlim _scanSemaphore = new SemaphoreSlim(1, 1);
 
         private TaskCompletionSource<string> _tcs;
+
+        // Completed only once the modal has been popped AND the native camera
+        // session has had time to fully release. ScanAsync awaits this before
+        // releasing _scanSemaphore, so a rapid re-open can never race the
+        // teardown of the previous CameraX session (avoids
+        // "TimeoutException ... not done within 5000 ms" in Camera2CameraImpl).
+        private readonly TaskCompletionSource<bool> _closedTcs = new TaskCompletionSource<bool>();
+
         private bool _completed; 
         private bool _isClosing;
 #if ANDROID
         private CancellationTokenSource _previewCts;
+
+        // Time to let the native CameraX session fully unbind/release after the
+        // modal page has been popped, before another scan is allowed to start.
+        private const int CameraReleaseDelayMs = 500;
 #endif
 
         private ScanObjModalPage()
@@ -86,11 +98,21 @@ namespace iPMCloud.Mobile
 
                     if (IsThisPageTopModal())
                         await Navigation.PopModalAsync(animated: false);
+
+#if ANDROID
+                    // Give CameraX time to fully unbind/release the previous camera
+                    // session before a new scan is allowed to start.
+                    await Task.Delay(CameraReleaseDelayMs);
+#endif
                 }
                 catch (Exception ex)
                 {
                     System.Diagnostics.Debug.WriteLine($"CloseModalSafeAsync error: {ex}");
                     _tcs?.TrySetResult(result);
+                }
+                finally
+                {
+                    _closedTcs.TrySetResult(true);
                 }
             });
         }
@@ -130,7 +152,14 @@ namespace iPMCloud.Mobile
                 await MainThread.InvokeOnMainThreadAsync(() =>
                     callerPage.Navigation.PushModalAsync(page, animated: false));
 
-                return await page._tcs.Task;
+                var scanResult = await page._tcs.Task;
+
+                // Wait until the modal has actually been popped and the native
+                // camera session has been given time to release, so the next
+                // call to ScanAsync cannot race the previous camera teardown.
+                await page._closedTcs.Task;
+
+                return scanResult;
             }
             finally
             {

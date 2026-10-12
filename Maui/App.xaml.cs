@@ -106,15 +106,6 @@ namespace iPMCloud.Mobile
             //    AppModel.Logger.Warn("WARN: AppCache konnte nicht eglöscht werden!");
             //}
 
-            //try
-            //{
-            //    LocalApplicationDataBackupProtection.EnsureExcludedFromBackup();
-            //}
-            //catch (Exception ex)
-            //{
-            //    AppModel.Logger?.Warn($"WARN: LocalApplicationData konnte nicht vom Backup ausgeschlossen werden: {ex.Message}");
-            //}
-
             InitApp();
         }
 
@@ -241,6 +232,7 @@ namespace iPMCloud.Mobile
             try
             {
                 AppModel.Instance.AppOnResume = DateTime.Now;
+                AppModel.Instance.isInBackground = false;
 
                 //if (AppModel.Instance.AppOnResume > AppModel.Instance.AppOnSleep.AddSeconds(10) || AppModel.Instance.UseExternHardware)
                 //{
@@ -278,6 +270,16 @@ namespace iPMCloud.Mobile
                 // Android: nutzt WorkManager für zuverlässigen Retry
                 // iOS: startet Upload direkt im Prozess (iOS erlaubt kein zuverlässiges Background-Scheduling)
                 CheckAndScheduleImmediateUploadRetry();
+                 
+                // Wenn das Ticketsystem aktiviert ist, Tickets beim Wiederaufnehmen der App neu laden
+                if (AppModel.Instance.AppControll.showTickets)
+                {
+                    var mainPage = this.Windows?.FirstOrDefault()?.Page;
+                    if (mainPage is MainPage currentMainPage)
+                    {
+                        currentMainPage.touch_ReloadTickets(null, null);
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -421,7 +423,7 @@ namespace iPMCloud.Mobile
                             },
                             IconLargeName = new Plugin.LocalNotification.AndroidOption.AndroidIcon
                             {
-                                ResourceName = imgL != null ? imgL : "icon",
+                                ResourceName = imgL != null ? imgL : "pnicon26_ss_b",
                             }
                         },
                         iOS = new Plugin.LocalNotification.iOSOption.iOSOptions

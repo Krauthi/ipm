@@ -11,6 +11,7 @@ using iPMCloud.Mobile.vo;
 using iPMCloud.Mobile.Platforms.Android.Services;
 using iPMCloud.Mobile.Services;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Maui;
@@ -19,8 +20,8 @@ using Microsoft.Maui.ApplicationModel;
 namespace iPMCloud.Mobile
 {
     [Activity(
-        Label = "iPM-Cloud", 
-        //Icon = "@drawable/icon",  
+        Label = "iPM-Cloud",
+        //Icon = "@drawable/pnicon26_ss_b",  
         Theme = "@style/Maui.SplashTheme",
         Exported = true,
         MainLauncher = false, 
@@ -100,6 +101,12 @@ namespace iPMCloud.Mobile
                 AndroidFlashlightService.Initialize(this);
                 Log.Info(TAG, $"AndroidFlashlightService initialized, available={AndroidFlashlightService.IsAvailable()}");
 
+                // Initiales Intent auswerten (Cold Start durch Klick auf eine Push-Notification)
+                if (Intent != null)
+                {
+                    HandleNotificationIntent(Intent);
+                }
+
                 //Log.Info(TAG, "MainActivity erfolgreich initialisiert");
             }
             catch (Exception ex)
@@ -172,6 +179,8 @@ namespace iPMCloud.Mobile
                         intent.Extras.KeySet().Select(k => $"{k}={intent.Extras.GetString(k)}"));
                     Log.Debug(TAG, $"OnNewIntent Extras: {extras}");
                     AppModel.Logger?.Info($"Notification tap (OnNewIntent): {extras}");
+
+                    HandleNotificationIntent(intent);
                 }
                 else
                 {
@@ -183,6 +192,40 @@ namespace iPMCloud.Mobile
             {
                 Log.Error(TAG, $"OnNewIntent Error: {ex}");
                 AppModel.Logger?.Error($"OnNewIntent failed: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Liest die Push-Notification-Nutzdaten aus dem Intent aus (Klick auf Notification)
+        /// und leitet sie zur Auswertung an den PushNotificationService weiter.
+        /// </summary>
+        private void HandleNotificationIntent(Intent intent)
+        {
+            try
+            {
+                if (intent?.Extras == null)
+                {
+                    return;
+                }
+
+                var keys = intent.Extras.KeySet();
+                if (keys == null || keys.Count == 0)
+                {
+                    return;
+                }
+
+                var data = new Dictionary<string, string>();
+                foreach (var key in keys)
+                {
+                    data[key] = intent.Extras.GetString(key);
+                }
+
+                PushNotificationService.HandleNotificationOpened(data);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(TAG, $"HandleNotificationIntent Error: {ex}");
+                AppModel.Logger?.Error($"HandleNotificationIntent failed: {ex.Message}");
             }
         }
 

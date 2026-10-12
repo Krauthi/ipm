@@ -251,6 +251,8 @@ namespace iPMCloud.Mobile
             {
                 if (o == null)
                     continue;
+                if (o.bezeichnung.Contains("Ticket #"))
+                    continue;
 
                 if (o.id == selOrderId || selOrderId < 0)
                     stack.Children.Add(GetOrderCardView(o, model, func));

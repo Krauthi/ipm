@@ -326,7 +326,8 @@ namespace iPMCloud.Mobile
                 options.RotateImage = true;
 #endif
 
-                var photos = await MediaPicker.PickPhotosAsync(options);
+                //var photos = await MediaPicker.PickPhotosAsync(options);
+                var photos = await iPMCloud.Mobile.Services.MediaPickerCompat.PickPhotosAsync(options);
 
                 if (photos != null && photos.Count() > 0)
                 {

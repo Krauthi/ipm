@@ -617,7 +617,7 @@ namespace iPMCloud.Mobile
         // Datumsangaben (als Unix-Timestamp-Strings)
         public string start { get; set; } = "0";        // Erstelldatum
         public string end { get; set; } = "0";          // Enddatum
-        public string startab { get; set; } = "0";      // Start ab (Zeitfenster)
+        public string startab { get; set; } = "-1";      // Start ab (Zeitfenster)
         public string endbis { get; set; } = "0";       // Ende bis (Zeitfenster)
         public string updateat { get; set; } = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
         public string lastbesitzerupdate { get; set; } = null;
@@ -626,6 +626,7 @@ namespace iPMCloud.Mobile
         public int status { get; set; } = 1;            // Ticket-Status (1=Neu, 2=Offen, etc.)
         public int besitzerstatus { get; set; } = -1;   // Status beim Besitzer (-1=Noch nicht gesehen)
         public string mandantStatus { get; set; } = "";
+        public string reminder { get; set; } = null ;// null = nicht aktiv sonst day,std,min
         public int del { get; set; } = 0;               // Löschen-Flag (0=aktiv, 1=gelöscht, 5=vom Kunde gelöscht)
         public bool intern { get; set; } = true;        // Intern/Extern
         public int prio { get; set; } = 1;              // Priorität
@@ -635,6 +636,7 @@ namespace iPMCloud.Mobile
         public string kundename { get; set; }
         public TicketPerson besitzer { get; set; }
         public string besitzername { get; set; }
+        public string besitzerinfo { get; set; }
         public TicketPerson ersteller { get; set; }
         public string erstellername { get; set; }
         public TicketPerson asp { get; set; }
@@ -690,17 +692,448 @@ namespace iPMCloud.Mobile
 
 
 
+        /// <summary>
+        /// Gibt die Farbe für einen Ticket-Status zurück
+        /// </summary>
+        public static string GetStatusColor(int status)
+        {
+            return status switch
+            {
+                1 => "#6B7280", // Neue - Grau
+                2 => "#3B82F6", // Offene - Blau
+                4 => "#F59E0B", // In Arbeit - Gelb/Orange
+                5 => "#F97316", // Rückfrage - Orange
+                9 => "#DC2626", // Erledigte - Rot/Weinrot
+                10 => "#4B5563", // Archiv - Dunkelgrau
+                _ => "#ffffff"  // Unbekannt - Weiß
+            };
+        }
+
+        /// <summary>
+        /// Gibt den Text für einen Ticket-Status zurück
+        /// </summary>
+        public static string GetStatusText(int status)
+        {
+            return status switch
+            {
+                1 => "Neue",
+                2 => "Offen",
+                4 => "In Arbeit",
+                5 => "Rückfrage",
+                9 => "Erledigte",
+                10 => "Archiv",
+                _ => "Unbekannt"
+            };
+        }
+
+        public static Border CreateTicketCard(Ticket ticket, double screenWidthDp)
+        {
+            // Statusfarbe aus ticket.status ermitteln
+            string statusColor = GetStatusColor(ticket.status);
+
+            var border = new Border
+            {
+                Margin = new Thickness(0, 2, 0, 2),
+                Padding = new Thickness(0),
+                BackgroundColor = Color.FromArgb("#2a2a2a"),
+                StrokeThickness = 1,
+                Stroke = Color.FromArgb("#444444"),
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(5) }
+            };
+
+            var grid = new Grid
+            {
+                ColumnDefinitions = new ColumnDefinitionCollection
+                {
+                    new ColumnDefinition { Width = GridLength.Auto }, // Status-Indikator
+                    new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }, // Content
+                    new ColumnDefinition { Width = GridLength.Auto } // ID Badge
+                },
+                RowDefinitions = new RowDefinitionCollection
+                {
+                    new RowDefinition { Height = GridLength.Auto }, // Titel
+                    new RowDefinition { Height = GridLength.Auto }, // Beschreibung (optional)
+                    new RowDefinition { Height = GridLength.Auto }, // Info (Zeit, Prio, Chat)
+                    new RowDefinition { Height = GridLength.Auto }  // Status + Start/End
+                }
+            };
+
+            // Status-Indikator (genau am linken Rand, 6px breit, volle Höhe, abgerundete Ecken)
+            var statusIndicator = new Border
+            {
+                BackgroundColor = Color.FromArgb(statusColor),
+                WidthRequest = 6,
+                VerticalOptions = LayoutOptions.Fill,
+                HorizontalOptions = LayoutOptions.Start,
+                Margin = new Thickness(0),
+                StrokeThickness = 0,
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle
+                {
+                    CornerRadius = new CornerRadius(5, 0, 0, 5) // Nur linke Ecken abgerundet
+                }
+            };
+            grid.Add(statusIndicator, 0, 0);
+            Grid.SetRowSpan(statusIndicator, 4); // Über alle 4 Zeilen
+
+            // Titel-Zeile mit ID vorne
+            var titleStack = new HorizontalStackLayout
+            {
+                Margin = new Thickness(12, 8, 8, 2),
+                Spacing = 8,
+                VerticalOptions = LayoutOptions.Center,
+                HorizontalOptions = LayoutOptions.FillAndExpand
+            };
+
+            // Ticket-ID Badge (blauer abgerundeter Hintergrund vor dem Titel)
+            var idBadge = new Border
+            {
+                BackgroundColor = Color.FromArgb("#0078d7"),
+                Padding = new Thickness(6, 3),
+                StrokeThickness = 0,
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(10) },
+                VerticalOptions = LayoutOptions.Center,
+                Content = new Label
+                {
+                    Text = $"#{ticket.id}",
+                    FontSize = 11,
+                    TextColor = Color.FromArgb("#ffffff"),
+                    FontAttributes = FontAttributes.Bold
+                }
+            };
+            titleStack.Children.Add(idBadge);
+
+            // Titel
+            var titleLabel = new Label
+            {
+                Text = ticket.titel ?? "Ohne Titel",
+                FontSize = 14,
+                FontAttributes = FontAttributes.Bold,
+                TextColor = Color.FromArgb("#ffffff"),
+                LineBreakMode = LineBreakMode.TailTruncation,
+                MaxLines = 1,
+                WidthRequest = screenWidthDp - 150,
+                VerticalOptions = LayoutOptions.Center,
+                HorizontalOptions = LayoutOptions.Start
+            };
+            titleStack.Children.Add(titleLabel);
+
+            grid.Add(titleStack, 1, 0);
+
+            // Rechte Spalte: Prio oben, Zeit darunter
+            var rightStack = new VerticalStackLayout
+            {
+                Margin = new Thickness(0, 8, 8, 0),
+                Spacing = 5,
+                HorizontalOptions = LayoutOptions.End,
+                VerticalOptions = LayoutOptions.Start
+            };
+
+            // Priorität als Chip darstellen
+            if (ticket.prio >= 0)
+            {
+                string prioText;
+                string prioBackgroundColor;
+                string prioTextColor;
+
+                if (ticket.prio == 0)
+                {
+                    prioText = "Gering";
+                    prioBackgroundColor = "#4472C4";
+                    prioTextColor = "#FFFFFF";
+                }
+                else if (ticket.prio == 1)
+                {
+                    prioText = "Normal";
+                    prioBackgroundColor = "#009900";
+                    prioTextColor = "#ffffff";
+                }
+                else if (ticket.prio == 2)
+                {
+                    prioText = "Hoch";
+                    prioBackgroundColor = "#aa5500";
+                    prioTextColor = "#FFFFFF";
+                }
+                else
+                {
+                    prioText = "NOTFALL";
+                    prioBackgroundColor = "#990000";
+                    prioTextColor = "#FFFFFF";
+                }
+
+                var prioChip = new Border
+                {
+                    BackgroundColor = Color.FromArgb(prioBackgroundColor),
+                    Padding = new Thickness(8, 4),
+                    StrokeThickness = 0,
+                    StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(4) },
+                    HorizontalOptions = LayoutOptions.End,
+                    Content = new Label
+                    {
+                        Text = prioText,
+                        FontSize = 11,
+                        TextColor = Color.FromArgb(prioTextColor),
+                        FontAttributes = FontAttributes.Bold,
+                        HorizontalOptions = LayoutOptions.Center,
+                        VerticalOptions = LayoutOptions.Center
+                    }
+                };
+                rightStack.Children.Add(prioChip);
+            }
+
+            // Zeitstempel unter der Prio
+            DateTime.TryParse(ticket.updateat, out DateTime updateDate);
+            var timeLabel = new Label
+            {
+                Text = FormatTicketTime(updateDate),
+                FontSize = 10,
+                TextColor = Color.FromArgb("#888888"),
+                HorizontalOptions = LayoutOptions.End
+            };
+            rightStack.Children.Add(timeLabel);
+
+            grid.Add(rightStack, 2, 0);
+            Grid.SetRowSpan(rightStack, 2); // Über 2 Zeilen
+
+            // Beschreibung
+            //if (!string.IsNullOrEmpty(ticket.text))
+            //{
+            //    var descLabel = new Label
+            //    {
+            //        Text = ticket.text,
+            //        FontSize = 12,
+            //        TextColor = Color.FromArgb("#cccccc"),
+            //        Margin = new Thickness(10, 0, 0, 2),
+            //        LineBreakMode = LineBreakMode.TailTruncation,
+            //        MaxLines = 2
+            //    };
+            //    grid.Add(descLabel, 0, 1);
+            //    Grid.SetColumnSpan(descLabel, 2);
+            //}
+
+            // Chat-Badge (wenn neue Nachrichten vorhanden)
+            //int newChatCount = ticket.chats?.Count(c => c.id == ticket.newchat?.id) ?? 0;
+            //if (newChatCount > 0)
+            //{
+            //    var chatBadge = new Border
+            //    {
+            //        BackgroundColor = Color.FromArgb("#ff0000"),
+            //        Padding = new Thickness(6, 2),
+            //        Margin = new Thickness(12, 2, 8, 2),
+            //        HorizontalOptions = LayoutOptions.Start,
+            //        StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(10) },
+            //        Content = new Label
+            //        {
+            //            Text = $"{newChatCount} neu",
+            //            FontSize = 10,
+            //            TextColor = Color.FromArgb("#ffffff"),
+            //            FontAttributes = FontAttributes.Bold
+            //        }
+            //    };
+            //    grid.Add(chatBadge, 1, 2);
+            //}
+
+            // Zeile 3: Status-Chip und Start/End-Zeiten
+            var statusAndDatesStack = new HorizontalStackLayout
+            {
+                Margin = new Thickness(12, 2, 8, 8),
+                Spacing = 10
+            };
+
+            // Status-Chip links
+            var statusChip = new Border
+            {
+                BackgroundColor = Color.FromArgb(statusColor),
+                Padding = new Thickness(8, 4),
+                HorizontalOptions = LayoutOptions.Start,
+                VerticalOptions = LayoutOptions.Start,
+                StrokeThickness = 0,
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(4) },
+                Content = new Label
+                {
+                    Text = GetStatusText(ticket.status),
+                    FontSize = 10,
+                    TextColor = Color.FromArgb("#ffffff"),
+                    FontAttributes = FontAttributes.Bold
+                }
+            };
+            statusAndDatesStack.Children.Add(statusChip);
+
+            // Start/End-Zeiten vertikal
+            var datesStack = new VerticalStackLayout
+            {
+                Spacing = 5
+            };
+
+            // Start-Datum/Status (basierend auf ticket.startab)
+            if (!string.IsNullOrEmpty(ticket.startab))
+            {
+                string startValueText = "";
+                DateTime? startDateTime = null;
+
+                if (ticket.startab == "0")
+                {
+                    startValueText = "Ohne Angaben";
+                }
+                else if (ticket.startab == "-1")
+                {
+                    startValueText = "SOFORT";
+                }
+                else
+                {
+                    // Datum aus ticket.startab verwenden (UTC -> Lokalzeit)
+                    if (long.TryParse(ticket.startab, out long startValue) && startValue > 0)
+                    {
+                        startDateTime = DateTimeOffset.FromUnixTimeMilliseconds(startValue).ToLocalTime().DateTime;
+                        startValueText = $"{startDateTime.Value:dd.MM.yyyy HH:mm}";
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(startValueText))
+                {
+                    var startRowStack = new HorizontalStackLayout
+                    {
+                        Spacing = 8
+                    };
+
+                    var startLabel = new Label
+                    {
+                        FontSize = 10,
+                        FormattedText = new FormattedString
+                        {
+                            Spans =
+                            {
+                                new Span { Text = "START: ", TextColor = Color.FromArgb("#ffffff"), FontAttributes = FontAttributes.Bold },
+                                new Span { Text = startValueText, TextColor = Color.FromArgb("#ffcc00") }
+                            }
+                        }
+                    };
+                    startRowStack.Children.Add(startLabel);
+
+                    // Countdown bis zum Start (wenn in der Zukunft)
+                    if (startDateTime.HasValue && startDateTime.Value > DateTime.Now)
+                    {
+                        var timeSpan = startDateTime.Value - DateTime.Now;
+                        string countdownText = "";
+
+                        if (timeSpan.TotalDays >= 1)
+                        {
+                            countdownText = $"(in {(int)timeSpan.TotalDays} Tag{(timeSpan.TotalDays >= 2 ? "en" : "")})";
+                        }
+                        else if (timeSpan.TotalHours >= 1)
+                        {
+                            countdownText = $"(in {(int)timeSpan.TotalHours} Std.)";
+                        }
+                        else if (timeSpan.TotalMinutes >= 1)
+                        {
+                            countdownText = $"(in {(int)timeSpan.TotalMinutes} Min.)";
+                        }
+
+                        if (!string.IsNullOrEmpty(countdownText))
+                        {
+                            var countdownLabel = new Label
+                            {
+                                Text = countdownText,
+                                FontSize = 9,
+                                TextColor = Color.FromArgb("#88ff88"),
+                                VerticalOptions = LayoutOptions.Center
+                            };
+                            startRowStack.Children.Add(countdownLabel);
+                        }
+                    }
+
+                    datesStack.Children.Add(startRowStack);
+                }
+            }
+
+            // End-Datum/Status (basierend auf ticket.endbis)
+            if (!string.IsNullOrEmpty(ticket.endbis))
+            {
+                string endValueText = "";
+
+                if (ticket.endbis == "0")
+                {
+                    endValueText = "Ohne Angaben";
+                }
+                else if (ticket.endbis == "-1")
+                {
+                    endValueText = "SOFORT";
+                }
+                else
+                {
+                    // Datum aus ticket.endbis verwenden (UTC -> Lokalzeit)
+                    if (long.TryParse(ticket.endbis, out long endValue) && endValue > 0)
+                    {
+                        DateTime endDate = DateTimeOffset.FromUnixTimeMilliseconds(endValue).ToLocalTime().DateTime;
+                        endValueText = $"{endDate:dd.MM.yyyy HH:mm}";
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(endValueText))
+                {
+                    var endLabel = new Label
+                    {
+                        FontSize = 10,
+                        FormattedText = new FormattedString
+                        {
+                            Spans =
+                            {
+                                new Span { Text = "ENDE: ", TextColor = Color.FromArgb("#ffffff"), FontAttributes = FontAttributes.Bold },
+                                new Span { Text = endValueText, TextColor = Color.FromArgb("#ffcc00") }
+                            }
+                        }
+                    };
+                    datesStack.Children.Add(endLabel);
+                }
+            }
+
+            // Nur hinzufügen, wenn mindestens ein Datum vorhanden ist
+            if (datesStack.Children.Count > 0)
+            {
+                statusAndDatesStack.Children.Add(datesStack);
+            }
+
+            // Nur hinzufügen, wenn Status oder Daten vorhanden sind
+            if (statusAndDatesStack.Children.Count > 0)
+            {
+                grid.Add(statusAndDatesStack, 1, 3);
+                Grid.SetColumnSpan(statusAndDatesStack, 2);
+            }
+
+            border.Content = grid;
+
+            // Tap-Handler zum Öffnen des Tickets
+            var tapGesture = new TapGestureRecognizer();
+            tapGesture.Tapped += (s, e) => AppModel.Instance.MainPage.OnTicketCardTapped(ticket);
+            border.GestureRecognizers.Add(tapGesture);
+
+            return border;
+        }
+
+        public static string FormatTicketTime(DateTime dateTime)
+        {
+            var now = DateTime.Now;
+            var diff = now - dateTime;
+
+            if (diff.TotalMinutes < 1)
+                return "Gerade eben";
+            if (diff.TotalMinutes < 60)
+                return $"vor {(int)diff.TotalMinutes} Min";
+            if (diff.TotalHours < 24)
+                return $"vor {(int)diff.TotalHours} Std";
+            if (diff.TotalDays < 7)
+                return $"vor {(int)diff.TotalDays} Tagen";
+
+            return dateTime.ToString("dd.MM.yyyy");
+        }
+
 
 
         public static string DecodeBase64RichText(string base64Text)
         {
             try
             {
-                //AppModel.Logger?.Info($"DecodeBase64RichText: Input length = {base64Text?.Length ?? 0}");
-
                 if (string.IsNullOrWhiteSpace(base64Text))
                 {
-                    AppModel.Logger?.Warn("DecodeBase64RichText: Input is null or whitespace");
                     return string.Empty;
                 }
 
@@ -708,29 +1141,23 @@ namespace iPMCloud.Mobile
                 byte[] data = Convert.FromBase64String(base64Text);
                 string decodedText = System.Text.Encoding.UTF8.GetString(data);
 
-                //AppModel.Logger?.Info($"DecodeBase64RichText: Decoded length = {decodedText.Length}");
-
                 // Trim und logge den echten Inhalt
                 string trimmedText = decodedText.Trim();
-                //AppModel.Logger?.Info($"DecodeBase64RichText: After trim length = {trimmedText.Length}");
-                //AppModel.Logger?.Info($"DecodeBase64RichText: Preview (first 200 chars) = {trimmedText.Substring(0, Math.Min(200, trimmedText.Length))}");
 
                 // Prüfe, ob es bereits HTML ist
                 if (trimmedText.StartsWith("<"))
                 {
-                    //AppModel.Logger?.Info("DecodeBase64RichText: Already HTML format");
                     return trimmedText;
                 }
 
                 // Wenn es Plain Text ist, konvertiere zu HTML
-                //AppModel.Logger?.Info("DecodeBase64RichText: Plain text, converting to HTML");
                 string escapedText = System.Security.SecurityElement.Escape(trimmedText);
                 escapedText = escapedText.Replace("\r\n", "<br>").Replace("\n", "<br>");
                 return $"<p>{escapedText}</p>";
             }
             catch (FormatException ex)
             {
-                AppModel.Logger?.Warn($"DecodeBase64RichText: Not Base64, treating as plain text: {ex.Message}");
+                //AppModel.Logger?.Warn($"DecodeBase64RichText: Not Base64, treating as plain text: {ex.Message}");
                 // Kein Base64, behandle als normalen Text
                 if (string.IsNullOrWhiteSpace(base64Text))
                     return string.Empty;
@@ -1138,6 +1565,11 @@ namespace iPMCloud.Mobile
                 intern = intern,
                 updateat = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
             };
+
+            if (chats == null)
+            {
+                chats = new List<TicketChat>();
+            }
 
             chats.Add(chat);
             this.updateat = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");

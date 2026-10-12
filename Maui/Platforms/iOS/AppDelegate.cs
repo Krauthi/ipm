@@ -3,6 +3,8 @@ using Firebase.Core;
 using Foundation;
 using iPMCloud.Mobile.Services;
 using iPMCloud.Mobile.vo;
+using System;
+using System.Collections.Generic;
 using UIKit;
 using UserNotifications;
 
@@ -124,5 +126,35 @@ public class AppDelegate : MauiUIApplicationDelegate, IUNUserNotificationCenterD
             UNNotificationPresentationOptions.List |
             UNNotificationPresentationOptions.Sound |
             UNNotificationPresentationOptions.Badge);
+    }
+
+    [Export("userNotificationCenter:didReceiveNotificationResponse:withCompletionHandler:")]
+    public void DidReceiveNotificationResponse(
+        UNUserNotificationCenter center,
+        UNNotificationResponse response,
+        Action completionHandler)
+    {
+        try
+        {
+            var userInfo = response.Notification?.Request?.Content?.UserInfo;
+            if (userInfo != null)
+            {
+                var data = new Dictionary<string, string>();
+                foreach (var key in userInfo.Keys)
+                {
+                    data[key.ToString()] = userInfo[key]?.ToString();
+                }
+
+                PushNotificationService.HandleNotificationOpened(data);
+            }
+        }
+        catch (Exception ex)
+        {
+            AppModel.Logger?.Error(ex, "ERROR: Fehler beim Verarbeiten der geöffneten Push-Notification (iOS)");
+        }
+        finally
+        {
+            completionHandler();
+        }
     }
 }

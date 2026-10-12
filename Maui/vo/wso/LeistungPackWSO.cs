@@ -465,46 +465,46 @@ namespace iPMCloud.Mobile
         /// <summary>
         /// Löscht alle Leistungspakete aus dem Upload-Stack
         /// </summary>
-        public static bool ClearUploadStack(AppModel model)
-        {
-            try
-            {
-                if (model == null || string.IsNullOrWhiteSpace(model.SettingModel?.SettingDTO?.CustomerNumber))
-                {
-                    return false;
-                }
+        //public static bool ClearUploadStack(AppModel model)
+        //{
+        //    try
+        //    {
+        //        if (model == null || string.IsNullOrWhiteSpace(model.SettingModel?.SettingDTO?.CustomerNumber))
+        //        {
+        //            return false;
+        //        }
 
-                string directoryPath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                    "ipm/" + model.SettingModel.SettingDTO.CustomerNumber + "/worksupload/"
-                );
+        //        string directoryPath = Path.Combine(
+        //            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+        //            "ipm/" + model.SettingModel.SettingDTO.CustomerNumber + "/worksupload/"
+        //        );
 
-                if (Directory.Exists(directoryPath))
-                {
-                    var files = Directory.GetFiles(directoryPath, "*.ipm");
+        //        if (Directory.Exists(directoryPath))
+        //        {
+        //            var files = Directory.GetFiles(directoryPath, "*.ipm");
 
-                    foreach (var file in files)
-                    {
-                        File.Delete(file);
-                    }
+        //            foreach (var file in files)
+        //            {
+        //                File.Delete(file);
+        //            }
 
-                    // UI Update
-                    if (AppModel.Instance?.MainPage != null)
-                    {
-                        AppModel.Instance.SetAllSyncStateSafe();
-                    }
+        //            // UI Update
+        //            if (AppModel.Instance?.MainPage != null)
+        //            {
+        //                AppModel.Instance.SetAllSyncStateSafe();
+        //            }
 
-                    return true;
-                }
+        //            return true;
+        //        }
 
-                return false;
-            }
-            catch (Exception ex)
-            {
-                AppModel.Logger?.Error(ex, "ERROR: ClearUploadStack LeistungPackWSO");
-                return false;
-            }
-        }
+        //        return false;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        AppModel.Logger?.Error(ex, "ERROR: ClearUploadStack LeistungPackWSO");
+        //        return false;
+        //    }
+        //}
 
         #endregion
 

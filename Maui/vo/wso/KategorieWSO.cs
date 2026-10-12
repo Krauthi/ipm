@@ -384,6 +384,64 @@ namespace iPMCloud.Mobile
         }
 
 
+        public static VerticalStackLayout GetCategoryTodoCardViewTicket(KategorieWSO cat, AppModel model)
+        {
+            var imageL = new Image
+            {
+                Margin = new Thickness(5, 0, 0, 0),
+                HeightRequest = 24,
+                WidthRequest = 24,
+                VerticalOptions = LayoutOptions.Start,
+                HorizontalOptions = LayoutOptions.Start,
+                Source = (cat.art == "Leistung" ? "kl_symbol.png" :
+                            (cat.art == "Produkt" ? "kp_symbol.png" :
+                                (cat.art == "Texte" ? "kt_symbol.png" :
+                                (cat.art == "Check" ? "kc_symbol.png" :
+                                    "quest.png"))))
+            };
+            var lb = new Label()
+            {
+                Text = cat.GetMobileText(),
+                TextColor = Color.FromArgb("#cccccc"),
+                Margin = new Thickness(5, 0, 5, 1),
+                FontSize = 16,
+                HorizontalOptions = LayoutOptions.Fill,
+                LineBreakMode = LineBreakMode.WordWrap,
+            };
+            var h = new HorizontalStackLayout()
+            {
+                Padding = new Thickness(5, 5, 5, 5),
+                Margin = new Thickness(0, 0, 0, 0),
+                Spacing = 0,
+                HorizontalOptions = LayoutOptions.Fill,
+                BackgroundColor = Color.FromArgb("#cc042d53"),
+            };
+
+            h.Children.Add(imageL);
+            h.Children.Add(lb);
+
+            var mainFrame = new Border()
+            {
+                Padding = new Thickness(0),
+                Margin = new Thickness(5, 1, 0, 1),
+                HorizontalOptions = LayoutOptions.Fill,
+                BackgroundColor = Colors.Transparent,
+                Content = h,
+                ClassId = "" + cat.id,
+            };
+
+            var wrapper = new VerticalStackLayout
+            {
+                Padding = new Thickness(0),
+                Margin = new Thickness(0),
+                Spacing = 0,
+                HorizontalOptions = LayoutOptions.Fill,
+                Children = { mainFrame }
+            };
+
+            return wrapper;
+        }
+
         public static VerticalStackLayout GetCategoryTodoCardView(KategorieWSO cat, AppModel model, double prio, bool onlyText)
         {
             var imageL = new Image

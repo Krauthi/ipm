@@ -102,22 +102,46 @@ namespace iPMCloud.Mobile.vo
         }
 
         /// <summary>
+        /// Maps timeout profile to the actual HttpClient.Timeout that should be applied
+        /// to the request. Without this, HttpClient falls back to its default of 100 seconds,
+        /// regardless of the configured profile.
+        /// </summary>
+        private static TimeSpan GetRequestTimeout(TimeoutProfile profile)
+        {
+            return profile switch
+            {
+                TimeoutProfile.Short => TimeSpan.FromSeconds(20),
+                TimeoutProfile.Medium => TimeSpan.FromSeconds(90),
+                TimeoutProfile.Long => TimeSpan.FromSeconds(180),
+                TimeoutProfile.VeryLong => TimeSpan.FromSeconds(300),
+                _ => TimeSpan.FromSeconds(90)
+            };
+        }
+
+        /// <summary>
         /// Creates a configured HttpClient instance.
         /// </summary>
         /// <param name="handler">Pre-configured HttpMessageHandler (SocketsHttpHandler or HttpClientHandler)</param>
         /// <returns>Configured HttpClient</returns>
-        public static HttpClient CreateClient(HttpMessageHandler handler)
+        public static HttpClient CreateClient(HttpMessageHandler handler, TimeSpan? timeout = null)
         {
             var client = new HttpClient(handler);
-            
+
             // Configure default headers
             client.DefaultRequestHeaders.Clear();
             client.DefaultRequestHeaders.Accept.Add(
                 new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-            
+
             // Keep connections alive (persistent connections)
             client.DefaultRequestHeaders.ConnectionClose = false;
-            
+
+            // Explicitly set the request timeout; otherwise HttpClient falls back to its
+            // default of 100 seconds regardless of the intended profile.
+            if (timeout.HasValue)
+            {
+                client.Timeout = timeout.Value;
+            }
+
             return client;
         }
 
@@ -130,7 +154,7 @@ namespace iPMCloud.Mobile.vo
         public static HttpClient CreateClient(CookieContainer cookieContainer, TimeoutProfile profile = TimeoutProfile.Medium)
         {
             var handler = CreateHandler(cookieContainer, profile);
-            return CreateClient(handler);
+            return CreateClient(handler, GetRequestTimeout(profile));
         }
     }
 }

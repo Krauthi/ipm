@@ -819,7 +819,7 @@ namespace iPMCloud.Mobile.vo
             }
         }
         
-        public async Task<TicketStatusResponse> SetTicketBesitzerStatus(Ticket t, TicketBesitzerStatusUpload bt, int status)
+        public async Task<TicketStatusResponse> SetTicketBesitzerStatus(Ticket t, TicketBesitzerStatusUpload bt)
         {
             if (uri_SetTicketBesitzerStatus == null) { InitConnections(); }
             HttpResponseMessage resMsg = null;
@@ -833,7 +833,8 @@ namespace iPMCloud.Mobile.vo
             {
                 token = AppModel.Instance.SettingModel.SettingDTO.LoginToken,
                 ticketid = t.id,
-                status = status,
+                status = bt.status,
+                besitzerstatus = bt.besitzerstatus,
                 guid = bt.guid,
             });
 
@@ -1020,41 +1021,41 @@ namespace iPMCloud.Mobile.vo
             }
         }
 
-        public async Task<AllTransSignResponse> AllTransSignSync(AllTransSignRequest signs)
-        {
-            if (uri_AllTransSigns == null) { InitConnections(); }
-            HttpResponseMessage resMsg = null;
+        //public async Task<AllTransSignResponse> AllTransSignSync(AllTransSignRequest signs)
+        //{
+        //    if (uri_AllTransSigns == null) { InitConnections(); }
+        //    HttpResponseMessage resMsg = null;
 
-            string args = JsonConvert.SerializeObject(signs);
+        //    string args = JsonConvert.SerializeObject(signs);
 
-            HttpRequestMessage msg = new HttpRequestMessage(HttpMethod.Post, uri_AllTransSigns);
-            msg.Content = new StringContent(args, Encoding.UTF8, "application/json");
+        //    HttpRequestMessage msg = new HttpRequestMessage(HttpMethod.Post, uri_AllTransSigns);
+        //    msg.Content = new StringContent(args, Encoding.UTF8, "application/json");
 
-            try
-            {
-                resMsg = await httpClientInstance.SendAsync(msg);
-                if (resMsg != null && resMsg.StatusCode == System.Net.HttpStatusCode.OK)
-                {
-                    var json = resMsg.Content.ReadAsStringAsync().Result;
-                    resMsg.Dispose();
-                    return JsonConvert.DeserializeObject<AllTransSignResponse>(json);
-                }
-                else
-                {
-                    resMsg?.Dispose();
-                    return new AllTransSignResponse { success = false, message = "Method(AllTransSignSync): resMsg is Null oder Status ist nicht OK!" };
-                }
-            }
-            catch (Exception ex)
-            {
-                resMsg?.Dispose();
-                if (ex.Message.ToLower().IndexOf("canceled") > -1)
-                {
-                    return new AllTransSignResponse { success = false, message = "Method(AllTransSignSync(canceled)): Der Server ist nicht erreichbar oder die Verbindung wurde unterbrochen!\n\nBitte versuchen Sie es später noch einmal.\n\nSollte das Problem weiter bestehen, melden Sie sich bei Ihren Sachbearbeitern.\n\n" + ex.Message };
-                }
-                return new AllTransSignResponse { success = false, message = "Method(AllTransSignSync(catch)): " + ex.Message };
-            }
-        }
+        //    try
+        //    {
+        //        resMsg = await httpClientInstance.SendAsync(msg);
+        //        if (resMsg != null && resMsg.StatusCode == System.Net.HttpStatusCode.OK)
+        //        {
+        //            var json = resMsg.Content.ReadAsStringAsync().Result;
+        //            resMsg.Dispose();
+        //            return JsonConvert.DeserializeObject<AllTransSignResponse>(json);
+        //        }
+        //        else
+        //        {
+        //            resMsg?.Dispose();
+        //            return new AllTransSignResponse { success = false, message = "Method(AllTransSignSync): resMsg is Null oder Status ist nicht OK!" };
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        resMsg?.Dispose();
+        //        if (ex.Message.ToLower().IndexOf("canceled") > -1)
+        //        {
+        //            return new AllTransSignResponse { success = false, message = "Method(AllTransSignSync(canceled)): Der Server ist nicht erreichbar oder die Verbindung wurde unterbrochen!\n\nBitte versuchen Sie es später noch einmal.\n\nSollte das Problem weiter bestehen, melden Sie sich bei Ihren Sachbearbeitern.\n\n" + ex.Message };
+        //        }
+        //        return new AllTransSignResponse { success = false, message = "Method(AllTransSignSync(catch)): " + ex.Message };
+        //    }
+        //}
 
         public async Task<DayOverResponse> DayOverSync(List<DayOverWSO> dayOvers)
         {

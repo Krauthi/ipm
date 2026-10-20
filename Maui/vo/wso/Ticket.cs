@@ -353,13 +353,15 @@ namespace iPMCloud.Mobile
         public string guid { get; set; } = Guid.NewGuid().ToString();
         public Int32 ticketid { get; set; } = 0;
         public int status { get; set; } = 0;
+        public int besitzerstatus { get; set; } = 0;
 
         public TicketBesitzerStatusUpload() { }
 
-        public TicketBesitzerStatusUpload(Int32 ticketid, int status)
+        public TicketBesitzerStatusUpload(Int32 ticketid, int status, int besitzerstatus)
         {
             this.ticketid = ticketid;
             this.status = status;
+            this.besitzerstatus = besitzerstatus;
             this.guid = Guid.NewGuid().ToString();
         }
 
@@ -587,6 +589,7 @@ namespace iPMCloud.Mobile
             Wartend = 3,        // Wartend
             InArbeit = 4,       // In Arbeit
             Rueckfrage = 5,     // Rückfrage
+            Abschliessen = 8,       // Erledigt / Rechnung freigeben
             Erledigt = 9,       // Erledigt / Rechnung freigeben
             Geschlossen = 10    // Geschlossen
         }
@@ -596,8 +599,8 @@ namespace iPMCloud.Mobile
             NochNichtGesehen = -1,  
             Gesehen = 0,            
             Gestartet = 1,          
-            Rueckfrage = 2,         
-            Abgeschlossen = 8       
+            Pausiert = 2,         
+            Erledigt = 9       
         }
 
         // IDs
@@ -695,15 +698,16 @@ namespace iPMCloud.Mobile
         /// <summary>
         /// Gibt die Farbe für einen Ticket-Status zurück
         /// </summary>
-        public static string GetStatusColor(int status)
+        public static string GetStatusColor(Ticket t)
         {
-            return status switch
+            return t.status switch
             {
                 1 => "#6B7280", // Neue - Grau
                 2 => "#3B82F6", // Offene - Blau
-                4 => "#F59E0B", // In Arbeit - Gelb/Orange
-                5 => "#F97316", // Rückfrage - Orange
-                9 => "#DC2626", // Erledigte - Rot/Weinrot
+                4 => t.besitzerstatus == 2 ? "#cc7700" : "#d5ba00", // In Arbeit - Gelb/Orange
+                5 => "#Ff8816", // Rückfrage - Orange
+                8 => "#269926", // Abgeschlossen - Rot/Weinrot
+                9 => "#269926", // Erledigte - Rot/Weinrot
                 10 => "#4B5563", // Archiv - Dunkelgrau
                 _ => "#ffffff"  // Unbekannt - Weiß
             };
@@ -712,14 +716,15 @@ namespace iPMCloud.Mobile
         /// <summary>
         /// Gibt den Text für einen Ticket-Status zurück
         /// </summary>
-        public static string GetStatusText(int status)
+        public static string GetStatusText(Ticket t)
         {
-            return status switch
+            return t.status switch
             {
                 1 => "Neue",
                 2 => "Offen",
-                4 => "In Arbeit",
+                4 => t.besitzerstatus == 2 ? "Pausiert" : "In Arbeit", 
                 5 => "Rückfrage",
+                8 => "Abgeschlossen",
                 9 => "Erledigte",
                 10 => "Archiv",
                 _ => "Unbekannt"
@@ -729,7 +734,7 @@ namespace iPMCloud.Mobile
         public static Border CreateTicketCard(Ticket ticket, double screenWidthDp)
         {
             // Statusfarbe aus ticket.status ermitteln
-            string statusColor = GetStatusColor(ticket.status);
+            string statusColor = GetStatusColor(ticket);
 
             var border = new Border
             {
@@ -950,7 +955,7 @@ namespace iPMCloud.Mobile
                 StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(4) },
                 Content = new Label
                 {
-                    Text = GetStatusText(ticket.status),
+                    Text = GetStatusText(ticket),
                     FontSize = 10,
                     TextColor = Color.FromArgb("#ffffff"),
                     FontAttributes = FontAttributes.Bold
@@ -1099,6 +1104,21 @@ namespace iPMCloud.Mobile
                 Grid.SetColumnSpan(statusAndDatesStack, 2);
             }
 
+            // Auftrag-Symbol unten rechts, wenn das Ticket mit einem Auftrag verknüpft ist
+            if (ticket.auftragid > 0)
+            {
+                var auftragIcon = new Image
+                {
+                    Source = "order_folder_tools.png",
+                    HeightRequest = 18,
+                    WidthRequest = 18,
+                    Margin = new Thickness(0, 0, 8, 8),
+                    VerticalOptions = LayoutOptions.End,
+                    HorizontalOptions = LayoutOptions.End
+                };
+                grid.Add(auftragIcon, 2, 3);
+            }
+
             border.Content = grid;
 
             // Tap-Handler zum Öffnen des Tickets
@@ -1190,17 +1210,12 @@ namespace iPMCloud.Mobile
                 AppModel.Instance.TicketResponse
                     = await AppModel.Instance.Connections.GetTickets();
 
-                if (AppModel.Instance.TicketResponse.success && AppModel.Instance.TicketResponse.tickets != null)
+                if (AppModel.Instance.TicketResponse.success)
                 {
                     // Badge-Count vom Backend verwenden, falls verfügbar
-                    if (AppModel.Instance.TicketResponse.counts != null && AppModel.Instance.TicketResponse.counts.Count > 0)
-                    {
-                        int totalCount = AppModel.Instance.TicketResponse.counts.Sum();
-                        await MainThread.InvokeOnMainThreadAsync(() =>
-                        {
-                            AppModel.Instance.MainPage.UpdateTicketBadgeCount(totalCount);
-                        });
-                    }
+                   await MainThread.InvokeOnMainThreadAsync(() => {
+                        AppModel.Instance.MainPage.UpdateTicketBadgeCount();
+                    });
 
                     return AppModel.Instance.TicketResponse;
                 }
@@ -1297,8 +1312,8 @@ namespace iPMCloud.Mobile
                 BesitzerStatus.NochNichtGesehen => "Noch nicht gesehen",
                 BesitzerStatus.Gesehen => "Gesehen",
                 BesitzerStatus.Gestartet => "Gestartet",
-                BesitzerStatus.Rueckfrage => "Rückfrage",
-                BesitzerStatus.Abgeschlossen => "Abgeschlossen",
+                BesitzerStatus.Pausiert => "Pausiert",
+                BesitzerStatus.Erledigt => "Erledigt",
                 _ => "Unbekannt"
             };
         }

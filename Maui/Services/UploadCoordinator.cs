@@ -42,7 +42,7 @@ namespace iPMCloud.Mobile.Services
             allCount += DayOverWSO.CountFromStack();
             allCount += ObjektDataWSO.CountFromStack();
             allCount += ObjektDatenBildWSO.CountFromStack();
-            //allCount += PNWSO.CountFromStack();
+            allCount += PNWSO.CountFromStack();
             allCount += TicketChat.CountFromStack();
             allCount += TicketBesitzerStatusUpload.CountFromStack();
             return allCount;
@@ -81,7 +81,7 @@ namespace iPMCloud.Mobile.Services
                 if (!failed && !await ProcessBemerkungenAsync(cancellationToken, total, () => processed, v => processed = v).ConfigureAwait(false)) failed = true;
                 if (!failed && !await ProcessNoticeBilderAsync(cancellationToken, total, () => processed, v => processed = v).ConfigureAwait(false)) failed = true;
                 if (!failed && !await ProcessPositionenAsync(cancellationToken, total, () => processed, v => processed = v).ConfigureAwait(false)) failed = true;
-                if (!failed && !await ProcessTransSignsAsync(cancellationToken, total, () => processed, v => processed = v).ConfigureAwait(false)) failed = true;
+                //if (!failed && !await ProcessTransSignsAsync(cancellationToken, total, () => processed, v => processed = v).ConfigureAwait(false)) failed = true;
                 if (!failed && !await ProcessObjectValuesAsync(cancellationToken, total, () => processed, v => processed = v).ConfigureAwait(false)) failed = true;
                 if (!failed && !await ProcessObjectValueBilderAsync(cancellationToken, total, () => processed, v => processed = v).ConfigureAwait(false)) failed = true;
                 if (!failed && !await ProcessPnAsync(cancellationToken, total, () => processed, v => processed = v).ConfigureAwait(false)) failed = true;
@@ -420,7 +420,7 @@ namespace iPMCloud.Mobile.Services
                 token.ThrowIfCancellationRequested();
 
                 var response = await ExecuteWithRetryAsync(
-                    () => AppModel.Instance.Connections.SetTicketBesitzerStatus(new Ticket { id = item.ticketid },item, item.status),
+                    () => AppModel.Instance.Connections.SetTicketBesitzerStatus(new Ticket { id = item.ticketid },item),
                     r => r != null && r.succses,
                     r => null,
                     "SetTicketBesitzerStatus",
@@ -428,7 +428,7 @@ namespace iPMCloud.Mobile.Services
 
                 if (response == null || !response.succses)
                 {
-                    AppModel.Logger.Error($"UploadCoordinator: SetTicketBesitzerStatus failed for ticket {item.ticketid} with status {item.status} - {response?.message}");
+                    AppModel.Logger.Error($"UploadCoordinator: SetTicketBesitzerStatus failed for ticket {item.ticketid} with besitzerstatus/status {item.besitzerstatus}/{item.status} - {response?.message}");
                     return false;
                 }
 
@@ -471,38 +471,38 @@ namespace iPMCloud.Mobile.Services
             return true;
         }
 
-        private async Task<bool> ProcessTransSignsAsync(CancellationToken token, int total, Func<int> getProcessed, Action<int> setProcessed)
-        {
-            token.ThrowIfCancellationRequested();
-            ReportProgress("UPLOADS: Unterschriften", getProcessed(), total);
+        //private async Task<bool> ProcessTransSignsAsync(CancellationToken token, int total, Func<int> getProcessed, Action<int> setProcessed)
+        //{
+        //    token.ThrowIfCancellationRequested();
+        //    ReportProgress("UPLOADS: Unterschriften", getProcessed(), total);
 
-            var transSigns = AllTransSign.LoadAllFromUploadStack() ?? new List<AllTransSignRequest>();
-            transSigns = await RemoveAlreadyUploadedByGuidAsync(
-                transSigns,
-                s => s.guid,
-                s => AllTransSign.DeleteFromUploadStack(s),
-                token).ConfigureAwait(false);
+        //    var transSigns = AllTransSign.LoadAllFromUploadStack() ?? new List<AllTransSignRequest>();
+        //    transSigns = await RemoveAlreadyUploadedByGuidAsync(
+        //        transSigns,
+        //        s => s.guid,
+        //        s => AllTransSign.DeleteFromUploadStack(s),
+        //        token).ConfigureAwait(false);
 
-            foreach (var sign in transSigns)
-            {
-                token.ThrowIfCancellationRequested();
-                var response = await ExecuteWithRetryAsync(
-                    () => AppModel.Instance.Connections.AllTransSignSync(sign),
-                    r => r != null && r.success,
-                    r => r?.message,
-                    "AllTransSignSync",
-                    token).ConfigureAwait(false);
+        //    foreach (var sign in transSigns)
+        //    {
+        //        token.ThrowIfCancellationRequested();
+        //        var response = await ExecuteWithRetryAsync(
+        //            () => AppModel.Instance.Connections.AllTransSignSync(sign),
+        //            r => r != null && r.success,
+        //            r => r?.message,
+        //            "AllTransSignSync",
+        //            token).ConfigureAwait(false);
 
-                if (response == null || !response.success)
-                    return false;
+        //        if (response == null || !response.success)
+        //            return false;
 
-                AllTransSign.DeleteFromUploadStack(sign);
-                setProcessed(getProcessed() + 1);
-                ReportProgress("UPLOADS: Unterschriften", getProcessed(), total);
-            }
+        //        AllTransSign.DeleteFromUploadStack(sign);
+        //        setProcessed(getProcessed() + 1);
+        //        ReportProgress("UPLOADS: Unterschriften", getProcessed(), total);
+        //    }
 
-            return true;
-        }
+        //    return true;
+        //}
 
         private async Task<bool> ProcessBemerkungenAsync(CancellationToken token, int total, Func<int> getProcessed, Action<int> setProcessed)
         {

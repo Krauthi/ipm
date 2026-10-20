@@ -196,6 +196,8 @@ namespace iPMCloud.Mobile
                     frame_planConCe.IsVisible = false;
                     frame_planConC.IsVisible = false;
                     frame_planConCInWork.IsVisible = false;
+                    ObjektPlanWeekMobil_Stack_ABC.IsVisible = true;
+                    box_buildingInformation2.IsVisible = true;
 
                     CheckBackgroundDataUsageAsync();
                     CheckBatteryOptimizationAsync();
@@ -428,10 +430,11 @@ namespace iPMCloud.Mobile
                 }
                 else
                 {
-                    if (AppModel.Instance.allPositionInWork != null && AppModel.Instance.allPositionInWork.leistungen.Count > 0)
+                    if (AppModel.Instance.allPositionInWork != null 
+                        && (AppModel.Instance.allPositionInWork.ticket != null))
                     {
                         await DisplayAlertAsync("OFFENE ARBEITEN",
-                            "Die Checkliste kann nicht bearbeitet werden! Es sind noch offene Arbeiten in einem anderen Objekt aktiv. Diese müssen Sie zuerst beenden.",
+                            "Die Checkliste kann nicht bearbeitet werden! Es sind noch offene Arbeiten aktiv. Diese müssen Sie zuerst beenden.",
                             "OK");
                     }
                     else
@@ -2305,11 +2308,79 @@ namespace iPMCloud.Mobile
 
         private void ShowBuildingOutScanPage()
         {
+            if(AppModel.Instance.allPositionInWork != null && 
+                AppModel.Instance.allPositionInWork.ticket != null)
+            {
+                ShowBuildingOutScanPageTicket();
+                return;
+            }
 #if ANDROID
             ShowBuildingOutScanPageAndroid();
 #else
             ShowBuildingOutScanPageIOS();
 #endif
+        }
+
+        private async void ShowBuildingOutScanPageTicket()
+        {
+            try
+            {
+                overlay.IsVisible = true;
+                await Task.Delay(1);
+
+                SavesRunningWorksOverTicket(false);
+
+                await Task.Delay(1);
+                overlay.IsVisible = false;
+            }
+            catch (Exception ex)
+            {
+                await Task.Delay(1);
+                overlay.IsVisible = false;
+                AppModel.Logger?.Error($"ShowBuildingOutScanPageTicket error: {ex}");
+                await DisplayAlertAsync("Fehler beim beenden des Tickets!", ex.Message, "OK");
+            }
+
+        }
+
+        public bool OverTicketAuftragInWork()
+        {
+            //if (AppModel.Instance.AppControll.direktBuchenPos)
+            //{
+            //    try
+            //    {
+            //        string b = "";
+            //        if (AppModel.Instance.LastBuilding != null && !String.IsNullOrWhiteSpace(AppModel.Instance.LastBuilding.hsnr))
+            //        {
+            //            b = ": " + AppModel.Instance.LastBuilding.strasse + " " + AppModel.Instance.LastBuilding.hsnr + AppModel.Instance.LastBuilding.plz + " " + AppModel.Instance.LastBuilding.ort;
+            //        }
+            //        AppModel.Logger.Info("INFO: TICKET CHECK-OUT (OHNE QR-SCAN) " + b);
+            //    }
+            //    catch (Exception) { }
+            //    SavesRunningWorksOver(false);
+            //    ShowMainPage();
+            //    return true;
+            //}
+            //else
+            //{
+                AppModel.Instance.UseExternHardware = false;
+                //lay_buildingoutscan.Children.Clear();
+                if (AppModel.Instance.OutScanBuilding != null)
+                {
+                    if (AppModel.Instance.OutScanBuilding.id == AppModel.Instance.LastBuilding.id)
+                    {
+                        SavesRunningWorksOverTicket(false);
+                        ShowMainPage();
+                        return true;
+                    }
+                    else
+                    {
+                        popupContainer_quest_overtootherBuilding.IsVisible = true;
+                        SavesRunningWorksOver(true);
+                    }
+                }
+            //}
+            return false;
         }
 
         private async void ShowBuildingOutScanPageAndroid()
@@ -2825,6 +2896,86 @@ namespace iPMCloud.Mobile
 
         }
 
+
+
+        public async void TapNoticeFromPosInWorkTicketLeistung(LeistungWSO position)
+        {
+            await ShowNoticeViewTicketLeistung(false, position, "inwork");
+        }
+
+        private async Task ShowNoticeViewTicketLeistung(bool prio, LeistungWSO pos = null, string backTo = null)
+        {
+            overlay.IsVisible = true;
+            await Task.Delay(1);
+
+            View posCard = null;
+            if (pos != null)
+            {
+                posCard = LeistungWSO.GetInWorkPositionSmallCardView(null, null, pos, null, AppModel.Instance);
+            }
+
+            await Task.Delay(1);
+            overlay.IsVisible = false;
+            if (pos == null) { return; }
+
+            var result = await NoticeModalPage.ShowAsync(this, pos, backTo, prio, posCard);
+
+            if (result != null)
+            {
+                overlay.IsVisible = true;
+                await Task.Delay(1);
+
+                result.Bemerkung.gruppeid = AppModel.Instance.LastBuilding?.gruppeid ?? 0;
+                result.Bemerkung.personid = AppModel.Instance.Person.id;
+                //result.Bemerkung.objektid = AppModel.Instance.LastBuilding?.id ?? 0;
+                result.Bemerkung.leistungid = 0;
+                result.Bemerkung.datum = DateTime.Now.Ticks;
+
+                if (result.Pos != null)
+                {
+                    //var posInWork = AppModel.Instance.allPositionInWork.leistungen.Find(p => p.id == result.Pos.id);
+                    pos.bemerkungen ??= new List<BemerkungWSO>();
+                    result.Bemerkung.leistungid = -1;
+                    pos.bemerkungen.Add(result.Bemerkung);
+                    LeistungPackWSO.Save(AppModel.Instance, AppModel.Instance.allPositionInWork);
+                }
+
+                await Task.Delay(1);
+                overlay.IsVisible = false;
+            }
+
+            ShowRunningWorksView();
+        }
+
+
+        private async void ShowRunningWorksViewAfterDeleteBemerkungInTicketLeistung()
+        {
+            try
+            {
+                isInitialize = true;
+                overlay.IsVisible = true;
+                await Task.Delay(1);
+
+                // Wenn Bemerkung aus Leistung gelöscht wird!
+                LeistungPackWSO.Save(AppModel.Instance, AppModel.Instance.allPositionInWork);
+
+                ClearPageViews();
+                RunningWorksPage_Container.Margin = new Thickness(0, 0, 0, 0);
+                RunningWorksPage_Container.IsVisible = true;
+                RunningWorksPage_head_Container.IsVisible = true;
+
+                ShowRunningWorksPage();
+
+                await Task.Delay(1);
+                overlay.IsVisible = false;
+                isInitialize = false;
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger.Error(ex, "ERROR: ShowRunningWorksView(): ");
+            }
+        }
+
         private async void ShowRunningWorksViewAfterDeleteBemerkung()
         {
             try
@@ -2852,6 +3003,8 @@ namespace iPMCloud.Mobile
                 AppModel.Logger.Error(ex, "ERROR: ShowRunningWorksView(): ");
             }
         }
+        
+        
         public async void ShowRunningTicketWorksView(object obj, EventArgs e)
         {
             try
@@ -2907,15 +3060,20 @@ namespace iPMCloud.Mobile
                 AppModel.Logger.Error(ex, "ERROR: ShowRunningWorksView(): ");
             }
         }
+
         private async void ShowRunningWorksPage()
         {
             try
-            {
+            { 
                 isInitialize = true;
                 overlay.IsVisible = true;
                 await Task.Delay(1);
 
-                var isTicket = AppModel.Instance.allPositionInWork.ticket != null;
+                var isTicket = AppModel.Instance.allPositionInWork != null 
+                    && AppModel.Instance.allPositionInWork.ticket != null;
+                var isTicketWithAuftrag = AppModel.Instance.allPositionInWork != null
+                    && AppModel.Instance.allPositionInWork.ticket != null 
+                    && AppModel.Instance.allPositionInWork.ticket.auftragid > 0;
 
                 var startDT = new DateTime(AppModel.Instance.allPositionInWork.startticks);
                 var endDT = DateTime.Now;
@@ -2989,8 +3147,8 @@ namespace iPMCloud.Mobile
                 if (isTicket)
                 {
                     runningworks_list.Children.Add(LeistungWSO.GetTicketInWorkPositionListView(AppModel.Instance,
-                        new Command<LeistungWSO>(TapNoticeFromPosInWork),
-                        new Command(ShowRunningWorksViewAfterDeleteBemerkung)));
+                        new Command<LeistungWSO>(TapNoticeFromPosInWorkTicketLeistung),
+                        new Command(ShowRunningWorksViewAfterDeleteBemerkungInTicketLeistung)));
                 }
                 else
                 {
@@ -3505,18 +3663,23 @@ namespace iPMCloud.Mobile
 
             frame_planConC_offenbtn.GestureRecognizers.Clear();
             var t_frame_planConC_offentxt = new TapGestureRecognizer();
-            t_frame_planConC_offentxt.Tapped -= async (object o, TappedEventArgs ev) => { tourScrollerCaa.IsVisible = true; tourScrollerCbb.IsVisible = false; tourScrollerCcc.IsVisible = false; };
-            t_frame_planConC_offentxt.Tapped += async (object o, TappedEventArgs ev) => { tourScrollerCaa.IsVisible = true; tourScrollerCbb.IsVisible = false; tourScrollerCcc.IsVisible = false; };
+            t_frame_planConC_offentxt.Tapped -= async (object o, TappedEventArgs ev) => { tourScrollerCaa.IsVisible = true; tourScrollerCbb.IsVisible = false; tourScrollerCbb2.IsVisible = false; tourScrollerCcc.IsVisible = false; };
+            t_frame_planConC_offentxt.Tapped += async (object o, TappedEventArgs ev) => { tourScrollerCaa.IsVisible = true; tourScrollerCbb.IsVisible = false; tourScrollerCbb2.IsVisible = false; tourScrollerCcc.IsVisible = false; };
             frame_planConC_offenbtn.GestureRecognizers.Add(t_frame_planConC_offentxt);
             frame_planConC_workbtn.GestureRecognizers.Clear();
             var t_frame_planConC_worktxt = new TapGestureRecognizer();
-            t_frame_planConC_worktxt.Tapped -= async (object o, TappedEventArgs ev) => { tourScrollerCaa.IsVisible = false; tourScrollerCbb.IsVisible = true; tourScrollerCcc.IsVisible = false; };
-            t_frame_planConC_worktxt.Tapped += async (object o, TappedEventArgs ev) => { tourScrollerCaa.IsVisible = false; tourScrollerCbb.IsVisible = true; tourScrollerCcc.IsVisible = false; };
+            t_frame_planConC_worktxt.Tapped -= async (object o, TappedEventArgs ev) => { tourScrollerCaa.IsVisible = false; tourScrollerCbb.IsVisible = true; tourScrollerCbb2.IsVisible = false; tourScrollerCcc.IsVisible = false; };
+            t_frame_planConC_worktxt.Tapped += async (object o, TappedEventArgs ev) => { tourScrollerCaa.IsVisible = false; tourScrollerCbb.IsVisible = true; tourScrollerCbb2.IsVisible = false; tourScrollerCcc.IsVisible = false; };
             frame_planConC_workbtn.GestureRecognizers.Add(t_frame_planConC_worktxt);
+            frame_planConC_workbtn2.GestureRecognizers.Clear();
+            var t_frame_planConC_worktxt2 = new TapGestureRecognizer();
+            t_frame_planConC_worktxt2.Tapped -= async (object o, TappedEventArgs ev) => { tourScrollerCaa.IsVisible = false; tourScrollerCbb.IsVisible = false; tourScrollerCbb2.IsVisible = true; tourScrollerCcc.IsVisible = false; };
+            t_frame_planConC_worktxt2.Tapped += async (object o, TappedEventArgs ev) => { tourScrollerCaa.IsVisible = false; tourScrollerCbb.IsVisible = false; tourScrollerCbb2.IsVisible = true; tourScrollerCcc.IsVisible = false; };
+            frame_planConC_workbtn2.GestureRecognizers.Add(t_frame_planConC_worktxt2);
             frame_planConC_erlbtn.GestureRecognizers.Clear();
             var t_frame_planConC_erltxt = new TapGestureRecognizer();
-            t_frame_planConC_erltxt.Tapped -= async (object o, TappedEventArgs ev) => { tourScrollerCaa.IsVisible = false; tourScrollerCbb.IsVisible = false; tourScrollerCcc.IsVisible = true; };
-            t_frame_planConC_erltxt.Tapped += async (object o, TappedEventArgs ev) => { tourScrollerCaa.IsVisible = false; tourScrollerCbb.IsVisible = false; tourScrollerCcc.IsVisible = true; };
+            t_frame_planConC_erltxt.Tapped -= async (object o, TappedEventArgs ev) => { tourScrollerCaa.IsVisible = false; tourScrollerCbb.IsVisible = false; tourScrollerCbb2.IsVisible = false; tourScrollerCcc.IsVisible = true; };
+            t_frame_planConC_erltxt.Tapped += async (object o, TappedEventArgs ev) => { tourScrollerCaa.IsVisible = false; tourScrollerCbb.IsVisible = false; tourScrollerCbb2.IsVisible = false; tourScrollerCcc.IsVisible = true; };
             frame_planConC_erlbtn.GestureRecognizers.Add(t_frame_planConC_erltxt);
 
             Init_PlanTabs();
@@ -3774,7 +3937,10 @@ namespace iPMCloud.Mobile
         }
         public async void ClearPlanDataView()
         {
-            btn_PlanTabATapped(null, null);
+            if (AppModel.Instance.allPositionInWork == null)
+            {
+                btn_PlanTabATapped(null, null);
+            }
             //if (tab == 0) { btn_PlanTabATapped(null, null); }
             //if (tab == 1) { btn_PlanTabBTapped(null, null); }
 
@@ -3934,6 +4100,9 @@ namespace iPMCloud.Mobile
             frame_planConC_work.Text = "";//Badge Counter
             frame_planConC_worktxt.Text = "In Arbeit";
             frame_planConC_work_count_con.IsVisible = false;
+            frame_planConC_work2.Text = "";//Badge Counter
+            frame_planConC_worktxt2.Text = "Pausiert";
+            frame_planConC_work_count_con2.IsVisible = false;
 
 
             //await Task.Delay(1);
@@ -5175,6 +5344,8 @@ namespace iPMCloud.Mobile
             frame_planConCe.IsVisible = false;
             frame_planConC.IsVisible = false;
             frame_planConCInWork.IsVisible = false;
+            ObjektPlanWeekMobil_Stack_ABC.IsVisible = true;
+            box_buildingInformation2.IsVisible = true;
             if (sender != null)
             {
                 //Load_PlanTabs((int)DateTime.Now.DayOfWeek);
@@ -5191,12 +5362,16 @@ namespace iPMCloud.Mobile
             frame_planConCe.IsVisible = false;
             frame_planConC.IsVisible = false;
             frame_planConCInWork.IsVisible = false;
+            ObjektPlanWeekMobil_Stack_ABC.IsVisible = true;
+            box_buildingInformation2.IsVisible = true;
         }
         public async void btn_PlanTabCTapped(object sender, EventArgs e)
         {
-            if(AppModel.Instance.allPositionInWork != null && 
-               AppModel.Instance.allPositionInWork.ticket != null &&
-               AppModel.Instance.allPositionInWork.ticket.auftragid > 0)
+            ObjektPlanWeekMobil_Stack_ABC.IsVisible = false;
+            box_buildingInformation2.IsVisible = false;
+
+            if (AppModel.Instance.allPositionInWork != null && 
+               AppModel.Instance.allPositionInWork.ticket != null)
             {
                 frame_plantabC.Margin = new Thickness(0, -8, 2, 0);
                 frame_plantabA.Margin = new Thickness(0, 0, 2, 0);
@@ -5208,11 +5383,17 @@ namespace iPMCloud.Mobile
                 frame_planConC.IsVisible = false;
                 frame_planConCInWork.IsVisible = true;
 
-                // Tickets laden und anzeigen
+                // Ticket laden und anzeigen
                 overlay.IsVisible = true;
                 await Task.Delay(1);
-                await Ticket.LoadTicketsFromBackendAsync();
-                await LoadAndDisplayTicketsAsync();
+
+                if (AppModel.Instance.allPositionInWork.ticket != null)
+                {
+                    LoadTicketChat(AppModel.Instance.allPositionInWork.ticket, frame_planConInWork_TicketChat);
+                }
+
+                //await Ticket.LoadTicketsFromBackendAsync();
+                //await LoadAndDisplayTicketsAsync();
 
                 await Task.Delay(1);
                 overlay.IsVisible = false;
@@ -5238,6 +5419,25 @@ namespace iPMCloud.Mobile
             overlay.IsVisible = false;
         }
 
+
+
+        public void btn_PlanTabCeTapped(object sender, EventArgs e)
+        {
+            frame_plantabCe.Margin = new Thickness(0, -8, 2, 0);
+            frame_plantabA.Margin = new Thickness(0, 0, 2, 0);
+            frame_plantabB.Margin = new Thickness(0, 0, 2, 0);
+            frame_plantabC.Margin = new Thickness(0, 0, 2, 0);
+            frame_planConA.IsVisible = false;
+            frame_planConB.IsVisible = false;
+            frame_planConCe.IsVisible = true;
+            frame_planConC.IsVisible = false;
+            frame_planConCInWork.IsVisible = false;
+            ObjektPlanWeekMobil_Stack_ABC.IsVisible = true;
+            box_buildingInformation2.IsVisible = true;
+
+            GetChecksInfo(7);
+        }
+
         public async void touch_ReloadTickets(object o, EventArgs e)
         {
             overlay.IsVisible = true;
@@ -5248,11 +5448,36 @@ namespace iPMCloud.Mobile
             await Task.Delay(1);
             overlay.IsVisible = false;
         }
+        public async void touch_TicketChats(object o, EventArgs e)
+        {
+            overlay.IsVisible = true;
+            await Task.Delay(1);
+
+            frame_planConInWork_TicketBeschreibung.IsVisible = false;
+            frame_planConInWork_TicketChat.IsVisible = true;
+
+            await Task.Delay(1);
+            overlay.IsVisible = false;
+        }
+        public async void touch_TicketDesc(object o, EventArgs e)
+        {
+            overlay.IsVisible = true;
+            await Task.Delay(1);
+            frame_planConInWork_TicketBeschreibung.IsVisible = true;
+            frame_planConInWork_TicketChat.IsVisible = false;
+
+            await Task.Delay(1);
+            overlay.IsVisible = false;
+        }
 
         private async Task LoadAndDisplayTicketsAsync()
         {
             try
             {
+                frame_planConC_offen_count_con.IsVisible = false;
+                frame_planConC_erl_count_con.IsVisible = false;
+                frame_planConC_work_count_con.IsVisible = false;
+                frame_planConC_work_count_con2.IsVisible = false;
                 // Zeige Ladeindikator
                 overlay.IsVisible = true;
                 if (AppModel.Instance.TicketResponse != null)
@@ -5267,6 +5492,7 @@ namespace iPMCloud.Mobile
                         {
                             RenderTicketsInFrame(frame_planListCoffen, new List<Ticket>());
                             RenderTicketsInFrame(frame_planListCwork, new List<Ticket>());
+                            RenderTicketsInFrame(frame_planListCbreak, new List<Ticket>());
                             RenderTicketsInFrame(frame_planListCerl, new List<Ticket>());
                         });
                         return;
@@ -5274,22 +5500,30 @@ namespace iPMCloud.Mobile
 
                     // Nach Status gruppieren
                     var offeneTickets = AppModel.Instance.TicketResponse.tickets.Where(t =>
-                        t.status == (int)Ticket.TicketStatus.Neu ||
-                        t.status == (int)Ticket.TicketStatus.Offen ||
-                        t.status == (int)Ticket.TicketStatus.Wartend
+                        t.status == (int)Ticket.TicketStatus.Offen 
                     ).ToList();
+                    frame_planConC_offen_count_con.IsVisible = offeneTickets.Count > 0;
+                    frame_planConC_offen.Text = offeneTickets.Count.ToString();
 
                     var inArbeitTickets = AppModel.Instance.TicketResponse.tickets.Where(t =>
-                        t.status == (int)Ticket.TicketStatus.InArbeit ||
-                        (t.status == (int)Ticket.TicketStatus.Rueckfrage &&
-                         t.besitzerstatus == (int)Ticket.BesitzerStatus.Gestartet)
+                        t.status == (int)Ticket.TicketStatus.InArbeit &&
+                        t.besitzerstatus == (int)Ticket.BesitzerStatus.Gestartet
                     ).ToList();
+                    frame_planConC_work_count_con.IsVisible = inArbeitTickets.Count > 0;
+                    frame_planConC_work.Text = inArbeitTickets.Count.ToString();
+
+                    var pausierteTickets = AppModel.Instance.TicketResponse.tickets.Where(t =>
+                        t.status == (int)Ticket.TicketStatus.InArbeit &&
+                        t.besitzerstatus == (int)Ticket.BesitzerStatus.Pausiert
+                    ).ToList();
+                    frame_planConC_work_count_con2.IsVisible = pausierteTickets.Count > 0;
+                    frame_planConC_work2.Text = pausierteTickets.Count.ToString();
 
                     // Erledigte der letzten Woche
                     var oneWeekAgo = DateTime.Now.AddDays(-7);
                     var erledigteTickets = AppModel.Instance.TicketResponse.tickets.Where(t =>
                     {
-                        if (t.status != (int)Ticket.TicketStatus.Erledigt)
+                        if (t.status < (int)Ticket.TicketStatus.Abschliessen)
                             return false;
 
                         // updateat ist string im Format "yyyy-MM-dd HH:mm:ss"
@@ -5299,12 +5533,15 @@ namespace iPMCloud.Mobile
                         }
                         return false;
                     }).ToList();
+                    frame_planConC_erl_count_con.IsVisible = erledigteTickets.Count > 0;
+                    frame_planConC_erl.Text = erledigteTickets.Count.ToString();
 
                     // UI aktualisieren
                     await MainThread.InvokeOnMainThreadAsync(() =>
                     {
                         RenderTicketsInFrame(frame_planListCoffen, offeneTickets);
                         RenderTicketsInFrame(frame_planListCwork, inArbeitTickets);
+                        RenderTicketsInFrame(frame_planListCbreak, pausierteTickets);
                         RenderTicketsInFrame(frame_planListCerl, erledigteTickets);
 
                         // Badge-Count als Fallback nur aktualisieren, wenn er noch nicht vom Backend gesetzt wurde
@@ -5312,17 +5549,14 @@ namespace iPMCloud.Mobile
                         // In der Regel wird der Badge-Count bereits in LoadTicketsFromBackendAsync gesetzt
                     });
                 }
+                await MainThread.InvokeOnMainThreadAsync(() =>
+                {
+                    UpdateTicketBadgeCount();
+                });
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Fehler beim Laden der Tickets: {ex.Message}");
-                AppModel.Logger.Error($"LoadAndDisplayTicketsAsync: {ex.Message}");
-
-                // Bei Fehler: Badge auf 0 setzen
-                await MainThread.InvokeOnMainThreadAsync(() =>
-                {
-                    UpdateTicketBadgeCount(0);
-                });
+                AppModel.Logger.Error($"LoadAndDisplayTicketsAsync: {ex.Message}");                
             }
             finally
             {
@@ -5333,63 +5567,16 @@ namespace iPMCloud.Mobile
         /// <summary>
         /// Aktualisiert die Badge-Anzahl für den Ticket-Tab
         /// </summary>
-        /// <param name="count">Anzahl der aktiven Tickets (offen + in Arbeit)</param>
-        public void UpdateTicketBadgeCount(int count)
+        public void UpdateTicketBadgeCount()
         {
             try
             {
-                // Badge 1: Offene Tickets mit Prio Gering (0) und Normal (1)
-                int normalCount = AppModel.Instance.TicketResponse?.tickets?
-                    .Where(t => t.status == 2 && (t.prio == 0 || t.prio == 1))
-                    .Count() ?? 0;
-
-                // Badge 2: Offene mit Prio Hoch (2) und Notfall (3+) sowie In Arbeit (Status 4)
-                int urgentCount = AppModel.Instance.TicketResponse?.tickets?
-                    .Where(t => (t.status == 2 && (t.prio == 2 || t.prio >= 3)) || t.status == 4)
-                    .Count() ?? 0;
-
-                // Badge 1 (Normal-Prio) aktualisieren
-                if (normalCount > 0)
-                {
-                    frame_plantabC_badge_count.Text = normalCount > 99 ? "99+" : normalCount.ToString();
-                    if (frame_plantabC_badge_count.Parent is VisualElement badgeContainer)
-                    {
-                        badgeContainer.IsVisible = true;
-                    }
-                }
-                else
-                {
-                    frame_plantabC_badge_count.Text = "0";
-                    if (frame_plantabC_badge_count.Parent is VisualElement badgeContainer)
-                    {
-                        badgeContainer.IsVisible = false;
-                    }
-                }
-
-                // Badge 2 (Dringend) aktualisieren
-                if (frame_plantabC_badge_count2 != null)
-                {
-                    if (urgentCount > 0)
-                    {
-                        frame_plantabC_badge_count2.Text = urgentCount > 99 ? "99+" : urgentCount.ToString();
-                        if (frame_plantabC_badge_count2.Parent is VisualElement badgeContainer2)
-                        {
-                            badgeContainer2.IsVisible = true;
-                        }
-                    }
-                    else
-                    {
-                        frame_plantabC_badge_count2.Text = "0";
-                        if (frame_plantabC_badge_count2.Parent is VisualElement badgeContainer2)
-                        {
-                            badgeContainer2.IsVisible = false;
-                        }
-                    }
-                }
+                int count = AppModel.Instance.TicketResponse?.tickets?.Count() ?? 0;
+                frame_plantabC_badge.IsVisible = count > 0;
+                frame_plantabC_badge_count2.Text = count > 99 ? "99+" : count.ToString();
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Fehler beim Aktualisieren des Ticket-Badges: {ex.Message}");
                 AppModel.Logger.Error($"UpdateTicketBadgeCount: {ex.Message}");
             }
         }
@@ -5455,17 +5642,19 @@ namespace iPMCloud.Mobile
                     // sofern das Ticket noch nicht gesehen wurde
                     if (ticket.besitzerstatus == (int)Ticket.BesitzerStatus.NochNichtGesehen)
                     {
-                        var bt = new TicketBesitzerStatusUpload(ticket.id, (int)Ticket.BesitzerStatus.Gesehen);
-                        var statusResponse = await AppModel.Instance.Connections.SetTicketBesitzerStatus(SelectedTicket, bt, (int)Ticket.BesitzerStatus.Gesehen);
+                        var bt = new TicketBesitzerStatusUpload(ticket.id, (int)Ticket.TicketStatus.Offen, (int)Ticket.BesitzerStatus.Gesehen);
+                        var statusResponse = await AppModel.Instance.Connections.SetTicketBesitzerStatus(SelectedTicket, bt);
                         if (statusResponse != null && statusResponse.succses)
                         {
+                            SelectedTicket.status = (int)Ticket.TicketStatus.Offen;
                             SelectedTicket.besitzerstatus = (int)Ticket.BesitzerStatus.Gesehen;
                         }
                         else
                         {
                             // Kein Internet/Fehler: Statuswechsel für späteren Upload merken
                             AppModel.Logger.Warn($"OnTicketCardTapped: SetTicketBesitzerStatus failed for ticket {SelectedTicket.id} : {SelectedTicket.titel} --- {statusResponse?.message}");
-                            TicketBesitzerStatusUpload.ToUploadStack(bt);
+                            TicketBesitzerStatusUpload.ToUploadStack(bt); 
+                            SelectedTicket.status = (int)Ticket.TicketStatus.Offen;
                             SelectedTicket.besitzerstatus = (int)Ticket.BesitzerStatus.Gesehen;
                         }
                     }
@@ -5564,13 +5753,29 @@ namespace iPMCloud.Mobile
 
         }
 
+        public async void SetTicketStatusToPausiert(Ticket ticket)
+        {
+            if (ticket == null) return;
+            ticket.status = (int)Ticket.TicketStatus.InArbeit;
+            ticket.besitzerstatus = (int)Ticket.BesitzerStatus.Pausiert;
+            var bt = new TicketBesitzerStatusUpload(ticket.id, (int)Ticket.TicketStatus.InArbeit, (int)Ticket.BesitzerStatus.Pausiert);
+            var statusResponse = await AppModel.Instance.Connections.SetTicketBesitzerStatus(ticket, bt);
+            if (statusResponse != null && !statusResponse.succses)
+            {
+                // Kein Internet/Fehler: Statuswechsel für späteren Upload merken
+                AppModel.Logger.Warn($"SetTicketStatusToStarted: SetTicketBesitzerStatus failed for ticket {ticket.id} : {ticket.titel} --- {statusResponse?.message}");
+                TicketBesitzerStatusUpload.ToUploadStack(bt);
+            }
+        }
+
         public async void SetTicketStatusToStarted(Ticket ticket)
         {
             if (ticket == null) return;
-            var bt = new TicketBesitzerStatusUpload(ticket.id, (int)Ticket.BesitzerStatus.Gestartet);
-            var statusResponse = await AppModel.Instance.Connections.SetTicketBesitzerStatus(ticket, bt, (int)Ticket.BesitzerStatus.Gestartet);
+            var bt = new TicketBesitzerStatusUpload(ticket.id, (int)Ticket.TicketStatus.InArbeit, (int)Ticket.BesitzerStatus.Gestartet);
+            var statusResponse = await AppModel.Instance.Connections.SetTicketBesitzerStatus(ticket, bt);
             if (statusResponse != null && statusResponse.succses)
             {
+                ticket.status = (int)Ticket.TicketStatus.InArbeit;
                 ticket.besitzerstatus = (int)Ticket.BesitzerStatus.Gestartet;
             }
             else
@@ -5578,6 +5783,7 @@ namespace iPMCloud.Mobile
                 // Kein Internet/Fehler: Statuswechsel für späteren Upload merken
                 AppModel.Logger.Warn($"SetTicketStatusToStarted: SetTicketBesitzerStatus failed for ticket {ticket.id} : {ticket.titel} --- {statusResponse?.message}");
                 TicketBesitzerStatusUpload.ToUploadStack(bt);
+                ticket.status = (int)Ticket.TicketStatus.InArbeit;
                 ticket.besitzerstatus = (int)Ticket.BesitzerStatus.Gestartet;
             }
         }
@@ -5585,6 +5791,18 @@ namespace iPMCloud.Mobile
         // Ticket ohnen Auftrag starten
         public async void StartNonePosFrom_TicketTapped_Done()
         {
+            if (SelectedTicket == null)
+            {
+                AppModel.Logger?.Warn("WARN: StartNonePosFrom_TicketTapped_Done aborted - SelectedTicket is null.");
+                return;
+            }
+
+            if (AppModel.Instance?.Person == null)
+            {
+                AppModel.Logger?.Warn("WARN: StartNonePosFrom_TicketTapped_Done aborted - AppModel.Instance.Person is null.");
+                return;
+            }
+
             var geo = AppModel.Instance.LocationStr;
             string geoMessage = "";
             if (geo != null && geo.Length > 0)
@@ -5631,14 +5849,14 @@ namespace iPMCloud.Mobile
                 timevaldays = 1,
                 winterservice = 0,
                 type = "0",
-                disabled = false,                           
+                disabled = false                           
             };
 
             
             LeistungPackWSO.Save(AppModel.Instance, AppModel.Instance.allPositionInWork);
             // Bisher ist hier nur das Preview was hochgeladen wird!
             SyncTicketPosition(AppModel.Instance.allPositionInWork.preview);
-            
+
 
             // Zurücksetzten aller States für die Auswahl der Ausführungen
             AppModel.Instance.LastSelectedOrder = null;
@@ -5648,11 +5866,11 @@ namespace iPMCloud.Mobile
             AppModel.Instance.allPositionInShowingSmallListView = new Dictionary<int, SwipeView>();
             AppModel.Instance.allSelectedPositionToWork = new List<LeistungWSO>();
             // alle selektionen und disabled zurücksetzen 
-            AppModel.Instance.LastBuilding.ArrayOfAuftrag.ForEach(o =>
+            AppModel.Instance.LastBuilding?.ArrayOfAuftrag?.ForEach(o =>
             {
-                o.kategorien.ForEach(c =>
+                o.kategorien?.ForEach(c =>
                 {
-                    c.leistungen.ForEach(l =>
+                    c.leistungen?.ForEach(l =>
                     {
                         l.selected = false;
                         l.disabled = false;
@@ -5935,9 +6153,6 @@ namespace iPMCloud.Mobile
 
         public async void SavesRunningWorksOverTicket(bool isDiffObjekt)
         {
-            bool isTicket = AppModel.Instance.allPositionInWork.leistungen == null && AppModel.Instance.allPositionInWork.ticket != null;
-            bool isTicketWithLeistungen = AppModel.Instance.allPositionInWork.leistungen != null && AppModel.Instance.allPositionInWork.ticket != null;
-
             overlay.IsVisible = true;
             await Task.Delay(1);
 
@@ -5963,18 +6178,25 @@ namespace iPMCloud.Mobile
             var latout = geo != null ? geo.Split(';')[0] : "";
             var lonout = geo != null ? (geo.Split(';').Length > 0 ? geo.Split(';')[1] : "") : "";
 
+            //bool isTicket = AppModel.Instance.allPositionInWork.ticket != null;
+            //bool isTicketWithLeistungen = AppModel.Instance.allPositionInWork.leistungen != null && AppModel.Instance.allPositionInWork.ticket != null;
+            
+            bool isTicketWithOUTAuftragInWork = AppModel.Instance.allPositionInWork != null 
+                && AppModel.Instance.allPositionInWork.ticket != null 
+                && AppModel.Instance.allPositionInWork.ticketLeistung != null;
+            bool isTicketWithAuftragInWork = AppModel.Instance.allPositionInWork != null 
+                && AppModel.Instance.allPositionInWork.ticket != null 
+                && AppModel.Instance.allPositionInWork.ticket.auftragid > 0;
+
 
             if (AppModel.Instance.allPositionInWork == null)
             {
                 popupContainer_quest_endwork.IsVisible = false;
-                //await Task.Delay(1);
-                //overlay.IsVisible = false;
-                if(isTicket)
-                    SetTicketStatusToReady(AppModel.Instance.allPositionInWork.ticket);
                 ShowMainPage();
             }
             else
             {
+                
                 AppModel.Instance.allPositionInWork.endticks = DateTime.Now.Ticks;
                 AppModel.Instance.allPositionInWork.latout = latout;
                 AppModel.Instance.allPositionInWork.lonout = lonout;
@@ -6006,24 +6228,38 @@ namespace iPMCloud.Mobile
                         });
                     });
 
+                    BuildingWSO.Save(AppModel.Instance, AppModel.Instance.LastBuilding);
                 }
 
-                BuildingWSO.Save(AppModel.Instance, AppModel.Instance.LastBuilding);
                 LeistungPackWSO.ToUploadStack(AppModel.Instance, AppModel.Instance.allPositionInWork); // Beendete Arbeiten in Stacklist für Upload
+                Task.Delay(1000).Wait();
                 LeistungPackWSO.Delete(AppModel.Instance);// Aktive Arbeiten im customer aus Datenspeicher löschen
                 
-                touch_ReloadTickets(null, null);// Läd die Tickets neu, damit die Anzeige der Arbeiten aktualisiert wird
-                
+
+                if (AppModel.Instance.allPositionInWork != null
+                && AppModel.Instance.allPositionInWork.ticket != null && !isBreakWorks)
+                {
+                    SetTicketStatusToReady(AppModel.Instance.allPositionInWork.ticket);
+                }
+                else if (AppModel.Instance.allPositionInWork != null
+                && AppModel.Instance.allPositionInWork.ticket != null && isBreakWorks)
+                {
+                    SetTicketStatusToPausiert(AppModel.Instance.allPositionInWork.ticket);
+                    isBreakWorks = false;
+                }
+
+                // touch_ReloadTickets(null, null);// Läd die Tickets neu, damit die Anzeige der Arbeiten aktualisiert wird
+
                 AppModel.Instance.allPositionInWork = null;
 
                 // Versuche direkt zu senden sonst von Stack!
                 CheckAllSyncFromUpload(); //SyncPosition();
 
+                // TicketInWork wieder zurück in TicketListview
+                btn_PlanTabCTapped(null,null);
+
                 // Dialog schliessen
                 popupContainer_quest_endwork.IsVisible = false;
-
-                if (isTicket)
-                    SetTicketStatusToReady(AppModel.Instance.allPositionInWork.ticket);
 
                 ShowMainPage();
             }
@@ -6035,18 +6271,20 @@ namespace iPMCloud.Mobile
         public async void SetTicketStatusToReady(Ticket ticket)
         {
             if (ticket == null) return;
-            var bt = new TicketBesitzerStatusUpload(ticket.id, (int)Ticket.BesitzerStatus.Abgeschlossen);
-            var statusResponse = await AppModel.Instance.Connections.SetTicketBesitzerStatus(ticket, bt, (int)Ticket.BesitzerStatus.Abgeschlossen);
+            var bt = new TicketBesitzerStatusUpload(ticket.id, (int)Ticket.TicketStatus.Abschliessen, (int)Ticket.BesitzerStatus.Erledigt);
+            var statusResponse = await AppModel.Instance.Connections.SetTicketBesitzerStatus(ticket, bt);
             if (statusResponse != null && statusResponse.succses)
             {
-                ticket.besitzerstatus = (int)Ticket.BesitzerStatus.Abgeschlossen;
+                ticket.status = (int)Ticket.TicketStatus.Abschliessen;
+                ticket.besitzerstatus = (int)Ticket.BesitzerStatus.Erledigt;
             }
             else
             {
                 // Kein Internet/Fehler: Statuswechsel für späteren Upload merken
                 AppModel.Logger.Warn($"SetTicketStatusToReady: SetTicketBesitzerStatus failed for ticket {ticket.id} : {ticket.titel} --- {statusResponse?.message}");
                 TicketBesitzerStatusUpload.ToUploadStack(bt);
-                ticket.besitzerstatus = (int)Ticket.BesitzerStatus.Abgeschlossen;
+                ticket.status = (int)Ticket.TicketStatus.Abschliessen;
+                ticket.besitzerstatus = (int)Ticket.BesitzerStatus.Erledigt;
             }
         }
 
@@ -6136,15 +6374,251 @@ namespace iPMCloud.Mobile
 
         private Ticket currentTicket = null;
 
+        // Zur Laufzeit erzeugte Chat-Ansicht (wird je nach Kontext zwischen
+        // chat_tab_content und frame_planConInWork_TicketChat umgehängt).
+        private Grid ticketChatRootView;
+        private ScrollView chatScrollView;
+        private VerticalStackLayout editticket_vscroll;
+        private Editor ticketMessageEditor;
+
+        /// <summary>
+        /// Erzeugt die Ticket-Chat-Ansicht (Verlauf + Eingabebereich) einmalig per Code
+        /// und liefert die Wurzel-View. Bei mehrfachem Aufruf wird die bestehende Instanz
+        /// zurückgegeben, damit sie zwischen Containern umgehängt werden kann.
+        /// </summary>
+        private Grid BuildTicketChatView()
+        {
+            if (ticketChatRootView != null)
+            {
+                return ticketChatRootView;
+            }
+
+            var root = new Grid
+            {
+                Margin = new Thickness(0),
+                Padding = new Thickness(0),
+                HorizontalOptions = LayoutOptions.Fill,
+                VerticalOptions = LayoutOptions.Fill,
+                RowDefinitions =
+                {
+                    new RowDefinition { Height = GridLength.Star },
+                    new RowDefinition { Height = GridLength.Auto }
+                }
+            };
+
+            // Chat-Verlauf
+            editticket_vscroll = new VerticalStackLayout
+            {
+                Margin = new Thickness(0),
+                Padding = new Thickness(0),
+                HorizontalOptions = LayoutOptions.Fill,
+                Spacing = 5,
+                VerticalOptions = LayoutOptions.Start
+            };
+
+            chatScrollView = new ScrollView
+            {
+                Margin = new Thickness(0),
+                Padding = new Thickness(8),
+                BackgroundColor = Color.FromArgb("#333"),
+                HorizontalOptions = LayoutOptions.Fill,
+                VerticalOptions = LayoutOptions.Fill,
+                Content = editticket_vscroll
+            };
+            Grid.SetRow(chatScrollView, 0);
+            root.Children.Add(chatScrollView);
+
+            // Eingabebereich
+            var inputGrid = new Grid
+            {
+                Margin = new Thickness(0),
+                Padding = new Thickness(0, 12, 0, 4),
+                BackgroundColor = Color.FromArgb("#000000"),
+                ColumnSpacing = 8,
+                HorizontalOptions = LayoutOptions.Fill,
+                RowSpacing = 0,
+                RowDefinitions =
+                {
+                    new RowDefinition { Height = GridLength.Auto },
+                    new RowDefinition { Height = GridLength.Auto }
+                },
+                ColumnDefinitions =
+                {
+                    new ColumnDefinition { Width = GridLength.Auto },
+                    new ColumnDefinition { Width = GridLength.Auto },
+                    new ColumnDefinition { Width = GridLength.Star },
+                    new ColumnDefinition { Width = GridLength.Auto }
+                }
+            };
+            Grid.SetRow(inputGrid, 1);
+
+            // Editor für neue Nachricht
+            ticketMessageEditor = new Editor
+            {
+                Margin = new Thickness(5, 5),
+                AutoSize = EditorAutoSizeOption.TextChanges,
+                BackgroundColor = Colors.White,
+                FontSize = 16,
+                MaximumHeightRequest = 120,
+                Placeholder = "Nachricht eingeben...",
+                PlaceholderColor = Color.FromArgb("#999"),
+                TextColor = Color.FromArgb("#000"),
+                VerticalOptions = LayoutOptions.Center
+            };
+            var editorBorder = new Border
+            {
+                Padding = new Thickness(0),
+                BackgroundColor = Colors.White,
+                StrokeThickness = 0,
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(20) },
+                Content = ticketMessageEditor
+            };
+            Grid.SetRow(editorBorder, 0);
+            Grid.SetColumn(editorBorder, 2);
+            inputGrid.Children.Add(editorBorder);
+
+            // Senden Button
+            var sendButton = new ImageButton
+            {
+                BackgroundColor = Colors.Transparent,
+                HeightRequest = 25,
+                Source = "forward2_img.png",
+                WidthRequest = 25
+            };
+            sendButton.Clicked += OnSendTicketMessage_Clicked;
+            var sendBorder = new Border
+            {
+                Padding = new Thickness(0),
+                BackgroundColor = Color.FromArgb("#159346"),
+                HeightRequest = 40,
+                StrokeThickness = 0,
+                WidthRequest = 40,
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(12.5) },
+                Content = sendButton
+            };
+            Grid.SetRow(sendBorder, 0);
+            Grid.SetColumn(sendBorder, 3);
+            inputGrid.Children.Add(sendBorder);
+
+            // Kamera Button
+            var cameraButton = new ImageButton
+            {
+                Padding = new Thickness(8),
+                BackgroundColor = Colors.Transparent,
+                HeightRequest = 40,
+                Source = "cam.png",
+                WidthRequest = 40
+            };
+            cameraButton.Clicked += OnCameraButton_Tapped;
+            var cameraBorder = new Border
+            {
+                Padding = new Thickness(0),
+                BackgroundColor = Color.FromArgb("#357"),
+                HeightRequest = 40,
+                StrokeThickness = 0,
+                WidthRequest = 40,
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(8) },
+                Content = cameraButton
+            };
+
+            // Galerie Button
+            var galleryButton = new ImageButton
+            {
+                Padding = new Thickness(8),
+                BackgroundColor = Colors.Transparent,
+                HeightRequest = 40,
+                Source = "attachment.png",
+                WidthRequest = 40
+            };
+            galleryButton.Clicked += OnGalleryButton_Tapped;
+            var galleryBorder = new Border
+            {
+                Padding = new Thickness(0),
+                BackgroundColor = Color.FromArgb("#357"),
+                HeightRequest = 40,
+                StrokeThickness = 0,
+                WidthRequest = 40,
+                StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(8) },
+                Content = galleryButton
+            };
+
+            var imageButtonsStack = new HorizontalStackLayout
+            {
+                Margin = new Thickness(0, 0, 0, 0),
+                Spacing = 5,
+                Children = { cameraBorder, galleryBorder }
+            };
+            Grid.SetRow(imageButtonsStack, 0);
+            Grid.SetColumn(imageButtonsStack, 0);
+            inputGrid.Children.Add(imageButtonsStack);
+
+            root.Children.Add(inputGrid);
+
+            ticketChatRootView = root;
+            return ticketChatRootView;
+        }
+
+        /// <summary>
+        /// Hängt die (einmalig erzeugte) Ticket-Chat-Ansicht in den gewünschten Container ein
+        /// und entfernt sie zuvor aus einem eventuellen anderen Container.
+        /// </summary>
+        private void AttachTicketChatView(Grid targetContainer)
+        {
+            var view = BuildTicketChatView();
+
+            if (view.Parent is Grid currentParent && currentParent != targetContainer)
+            {
+                currentParent.Children.Remove(view);
+            }
+
+            if (!targetContainer.Children.Contains(view))
+            {
+                Grid.SetRow(view, 0);
+                targetContainer.Children.Add(view);
+            }
+        }
 
         /// <summary>
         /// Lädt und zeigt den Ticket-Verlauf (Chat)
         /// </summary>
-        public void LoadTicketChat(Ticket ticket)
+        /// <param name="ticket">Das anzuzeigende Ticket.</param>
+        /// <param name="targetContainer">Container, in den die Chat-Ansicht eingehängt werden soll (Standard: chat_tab_content).</param>
+        public async void LoadTicketChat(Ticket ticket, Grid targetContainer = null)
         {
             try
             {
+                // Versuche den Ticket-Chat live vom Backend zu laden.
+                // Ohne Netzverbindung (oder bei Fehler) wird einfach mit dem
+                // übergebenen (lokal vorhandenen) Ticket weitergearbeitet.
+                if (ticket != null && AppModel.Instance.IsInternet)
+                {
+                    try
+                    {
+                        TicketResponse liveResponse = await AppModel.Instance.Connections.GetTicket(ticket.id);
+                        if (liveResponse != null && liveResponse.success && liveResponse.ticket != null)
+                        {
+                            // Falls es sich um das aktuell in Arbeit befindliche Ticket handelt,
+                            // AppModel.Instance.AllPositionInWork aktualisieren und speichern.
+                            if (AppModel.Instance.allPositionInWork != null
+                                && AppModel.Instance.allPositionInWork.ticket != null
+                                && AppModel.Instance.allPositionInWork.ticket.id == ticket.id)
+                            {
+                                ticket.chats = liveResponse.ticket.chats;
+                                AppModel.Instance.allPositionInWork.ticket.chats = liveResponse.ticket.chats;
+                                LeistungPackWSO.Save(AppModel.Instance, AppModel.Instance.allPositionInWork);
+                            }
+                        }
+                    }
+                    catch (Exception loadEx)
+                    {
+                        // KEIN NETZ oder Backend-Fehler: Mit vorhandenem Ticket weiterarbeiten.
+                        AppModel.Logger?.Warn($"LoadTicketChat: Live-Laden fehlgeschlagen, verwende vorhandenes Ticket. {loadEx.Message}");
+                    }
+                }
+
                 currentTicket = ticket;
+
+                AttachTicketChatView(targetContainer ?? chat_tab_content);
                 editticket_vscroll.Children.Clear();
 
                 if (ticket == null)
@@ -6160,16 +6634,26 @@ namespace iPMCloud.Mobile
                 SetThemeColors();
 
                 // Tab 1: Beschreibung laden
-                LoadTicketBeschreibung(ticket);
-
+                if (targetContainer != null)
+                {
+                    LoadTicketBeschreibungInWork(ticket);
+                }
+                else
+                {
+                    LoadTicketBeschreibung(ticket);
+                }
                 // Tab 2: Objekt/Auftrag laden
                 LoadTicketObjektAuftrag(ticket);
 
                 // Tab 4: Auftrags-Arbeiten (nur sichtbar, wenn ein Auftrag mit dem Ticket verkn\u00fcpft ist)
-                tab_auftragsarbeiten_btn.IsVisible = ticket.auftragid > 0;
+                tab_auftragsarbeiten_btn.IsVisible = true;// ticket.auftragid > 0;
                 if (ticket.auftragid > 0)
                 {
                     LoadTicketAuftragsArbeiten(ticket);
+                }
+                else
+                {
+                    LoadTicketOHNEAuftragsArbeiten(ticket);
                 }
 
                 // Tab 3: Chat-Verlauf laden
@@ -6363,6 +6847,135 @@ namespace iPMCloud.Mobile
             }
         }
 
+        private async void LoadTicketBeschreibungInWork(Ticket ticket)
+        {
+            bool isDarkMode = Application.Current?.RequestedTheme == AppTheme.Dark;
+            string backgroundColor = isDarkMode ? "#333333" : "#f5f5f5";
+            try
+            {
+                if (ticket == null)
+                {
+                    AppModel.Logger?.Warn("LoadTicketBeschreibung: ticket is null");
+                    return;
+                }
+
+
+                // WICHTIG: Prüfe ob WebView überhaupt existiert
+                if (ticket_beschreibung_webview == null)
+                {
+                    AppModel.Logger?.Error("LoadTicketBeschreibung: ticket_beschreibung_webview is NULL!");
+                    return;
+                }
+
+
+                // Lade Beschreibung (Base64 -> HTML/Text)
+                string decodedText = Ticket.DecodeBase64RichText(ticket.text);
+
+
+                if (string.IsNullOrWhiteSpace(decodedText))
+                {
+                    decodedText = "<p>Keine Beschreibung vorhanden.</p>";
+                }
+
+                // Prüfe ob es vollständiges HTML ist
+                bool isFullHtml = decodedText.TrimStart().StartsWith("<!DOCTYPE", StringComparison.OrdinalIgnoreCase) ||
+                                  decodedText.TrimStart().StartsWith("<html", StringComparison.OrdinalIgnoreCase);
+
+
+
+                string finalHtml;
+                if (isFullHtml)
+                {
+                    // Bereits vollständiges HTML - verwende es direkt
+                    finalHtml = decodedText;
+                }
+                else
+                {
+                    // Falls es HTML-Tags enthält, behalte sie; sonst wrap in <p>
+                    string bodyContent = decodedText.Contains("<") ? decodedText : $"<p>{System.Net.WebUtility.HtmlEncode(decodedText)}</p>";
+                    finalHtml = $@"<!DOCTYPE html>
+<html>
+<head>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <meta charset='UTF-8'>
+    <style>
+        * {{
+            -webkit-text-size-adjust: 100%;
+        }}
+        body {{ 
+            background-color: {backgroundColor} !important; 
+            color: #ffffff !important; 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; 
+            padding: 15px;
+            font-size: 15px;
+            line-height: 1.6;
+            margin: 0;
+        }}
+        p {{ 
+            margin: 8px 0; 
+        }}
+        strong, b {{ 
+            font-weight: bold; 
+            color: #ffffff;
+        }}
+        em, i {{ 
+            font-style: italic; 
+        }}
+        ul, ol {{ 
+            margin: 10px 0; 
+            padding-left: 25px; 
+        }}
+        li {{ 
+            margin: 5px 0; 
+        }}
+        a {{ 
+            color: #4da6ff; 
+            pointer-events: none;
+            text-decoration: none; 
+        }}
+        img {{ 
+            max-width: 100%; 
+            height: auto; 
+        }}
+    </style>
+</head>
+<body>
+    {bodyContent}
+</body>
+</html>";
+                }
+
+
+                // Setze HTML direkt (OHNE BaseUrl - das war das iOS-Problem!)
+                ticket_beschreibung_webview_inwork.Source = new HtmlWebViewSource { Html = finalHtml };
+
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: LoadTicketBeschreibung");
+                Console.WriteLine($"Fehler: {ex.Message}");
+
+                // Fallback bei Fehler
+                if (ticket_beschreibung_webview_inwork != null)
+                {
+                    string errorHtml = $@"<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <style>
+        body {{ background-color: {backgroundColor}; color: #ff6b6b; padding: 15px; font-family: sans-serif; }}
+    </style>
+</head>
+<body>
+    <p><strong>Fehler beim Laden:</strong></p>
+    <p>{System.Net.WebUtility.HtmlEncode(ex.Message)}</p>
+</body>
+</html>";
+                    ticket_beschreibung_webview_inwork.Source = new HtmlWebViewSource { Html = errorHtml };
+                }
+            }
+        }
+
         private ScrollView wichtigeInfoScrollView = null;
         private Label wichtigeInfoChevronLabel = null;
 
@@ -6514,7 +7127,7 @@ namespace iPMCloud.Mobile
                 ticket_info_container.Children.Clear();
 
                 // Status-Farbe bestimmen
-                string statusColor = Ticket.GetStatusColor(ticket.status);
+                string statusColor = Ticket.GetStatusColor(ticket);
 
                 // Haupt-Border
                 var border = new Border
@@ -6697,7 +7310,7 @@ namespace iPMCloud.Mobile
                     StrokeShape = new Microsoft.Maui.Controls.Shapes.RoundRectangle { CornerRadius = new CornerRadius(4) },
                     Content = new Label
                     {
-                        Text = Ticket.GetStatusText(ticket.status),
+                        Text = Ticket.GetStatusText(ticket),
                         FontSize = 10,
                         TextColor = Color.FromArgb("#ffffff"),
                         FontAttributes = FontAttributes.Bold
@@ -7144,10 +7757,29 @@ namespace iPMCloud.Mobile
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Fehler beim Laden der Auftrags-Arbeiten: {ex.Message}");
                 AppModel.Logger?.Error(ex, "ERROR: LoadTicketAuftragsArbeiten");
             }
         }
+
+        private void LoadTicketOHNEAuftragsArbeiten(Ticket ticket)
+        {
+            try
+            {
+                auftragsarbeiten_content.Children.Clear();
+
+                if (ticket == null || AppModel.Instance.allPositionInWork == null)
+                    return;
+                               
+                auftragsarbeiten_content.Children.Add(
+                    LeistungWSO.GetPositionTodoCardViewTicket(AppModel.Instance.allPositionInWork.ticketLeistung, AppModel.Instance, true)
+                );
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: LoadTicketOHNEAuftragsArbeiten");
+            }
+        }
+
 
         private StackLayout CreateDetailSection(string title, string titleColor)
         {
@@ -8032,20 +8664,6 @@ namespace iPMCloud.Mobile
 
 
 
-        public void btn_PlanTabCeTapped(object sender, EventArgs e)
-        {
-            frame_plantabCe.Margin = new Thickness(0, -8, 2, 0);
-            frame_plantabA.Margin = new Thickness(0, 0, 2, 0);
-            frame_plantabB.Margin = new Thickness(0, 0, 2, 0);
-            frame_plantabC.Margin = new Thickness(0, 0, 2, 0);
-            frame_planConA.IsVisible = false;
-            frame_planConB.IsVisible = false;
-            frame_planConCe.IsVisible = true;
-            frame_planConC.IsVisible = false;
-
-            GetChecksInfo(7);
-        }
-
 
 
 
@@ -8649,10 +9267,25 @@ namespace iPMCloud.Mobile
         public void btn_RunningWorksOverTapped(object sender, EventArgs e)
         {
             // Dialog öffnen
+            popupContainer_quest_endwork_titel.Text = "Arbeit beenden";
+            popupContainer_quest_endwork_quest.Text = "Möchten Sie die laufende Arbeit wirklich beenden?";
+            popupContainer_quest_endwork_btn_endselectedwork.Text = "JETZT BEENDEN";
             popupContainer_quest_endwork.IsVisible = true;
         }
+        public void btn_RunningWorksOverPTapped(object sender, EventArgs e)
+        {
+            // Dialog öffnen PAUSIEREN
+            popupContainer_quest_endwork_titel.Text = "Arbeit pausieren";
+            popupContainer_quest_endwork_quest.Text = "Möchten Sie die laufende Arbeit wirklich pausieren?";
+            popupContainer_quest_endwork_btn_endselectedwork.Text = "JETZT PAUSIEREN";
+            popupContainer_quest_endwork.IsVisible = true;
+        }
+
+        public bool isBreakWorks = false;
         public async void ScanRunningWorksOver(object sender, EventArgs e)
         {
+            isBreakWorks = popupContainer_quest_endwork_titel.Text == "Arbeit pausieren";
+            
             if (AppModel.Instance.AppControll.direktBuchenPos)
             {
                 popupContainer_quest_endwork.IsVisible = false;
@@ -9569,20 +10202,20 @@ namespace iPMCloud.Mobile
                     }
                 });
 
-                if (allSigns > 0)
-                {
-                    // fertig
-                    var allTransSignsItem = new AllTransSignRequest
-                    {
-                        allTransSign = allSigns,
-                        ticks = DateTime.Now.Ticks,
-                        personid = AppModel.Instance.Person.id,
-                        guid = Guid.NewGuid().ToString(),
-                        token = AppModel.Instance.SettingModel.SettingDTO.LoginToken
-                    };
-                    AllTransSign.ToUploadStack(allTransSignsItem);
-                    CheckAllSyncFromUpload(); //SyncTransSigns();
-                }
+                //if (allSigns > 0)
+                //{
+                //    // fertig
+                //    var allTransSignsItem = new AllTransSignRequest
+                //    {
+                //        allTransSign = allSigns,
+                //        ticks = DateTime.Now.Ticks,
+                //        personid = AppModel.Instance.Person.id,
+                //        guid = Guid.NewGuid().ToString(),
+                //        token = AppModel.Instance.SettingModel.SettingDTO.LoginToken
+                //    };
+                //    AllTransSign.ToUploadStack(allTransSignsItem);
+                //    CheckAllSyncFromUpload(); //SyncTransSigns();
+                //}
 
                 //popupContainer_container_changelang_status.Text = "" + countReady + " von " + countFrom;
                 //popupContainer_quest_changelang.IsVisible = false;
@@ -11031,10 +11664,6 @@ namespace iPMCloud.Mobile
                 var tgr_back_runningworks = new TapGestureRecognizer();
                 tgr_back_runningworks.Tapped += btn_RunningWorksBackTapped;
                 btn_back_runningworks.GestureRecognizers.Add(tgr_back_runningworks);
-                btn_runningworks_over.GestureRecognizers.Clear();
-                var tgr_runningworks_over = new TapGestureRecognizer();
-                tgr_runningworks_over.Tapped += btn_RunningWorksOverTapped;
-                btn_runningworks_over.GestureRecognizers.Add(tgr_runningworks_over);
 
                 // Bemerkung
                 btn_alertmessage_container.GestureRecognizers.Clear();
@@ -11131,11 +11760,22 @@ namespace iPMCloud.Mobile
         {
             lastBuilding_Container.IsVisible = (AppModel.Instance.LastBuilding != null);
             lastBuilding_ContainerBottom.IsVisible = (AppModel.Instance.LastBuilding != null);
+
+            lastBuilding_info_Container.IsVisible = true;
+            last_building_addressZipCity.IsVisible = true;
+            btn_buildingorder_container.IsVisible = true;
+            btn_inwork_container.IsVisible = true;
+
             btn_objektinfo_container.IsVisible = (AppModel.Instance.LastBuilding != null && !String.IsNullOrWhiteSpace(AppModel.Instance.LastBuilding.notiz));
 
-            bool isTicketInWork = AppModel.Instance.allPositionInWork != null && AppModel.Instance.allPositionInWork.ticket != null && AppModel.Instance.allPositionInWork.ticketLeistung != null;
-            bool isTicketWithAuftragInWork = AppModel.Instance.allPositionInWork != null && AppModel.Instance.allPositionInWork.ticket != null && AppModel.Instance.allPositionInWork.ticket.auftragid > 0;
-            if(AppModel.Instance.allPositionInWork != null && AppModel.Instance.allPositionInWork.ticket != null)
+            // bool isTicketInWork = AppModel.Instance.allPositionInWork != null && AppModel.Instance.allPositionInWork.ticket != null && AppModel.Instance.allPositionInWork.ticketLeistung != null;
+            bool isTicketWithOUTAuftragInWork = AppModel.Instance.allPositionInWork != null 
+                && AppModel.Instance.allPositionInWork.ticket != null 
+                && AppModel.Instance.allPositionInWork.ticketLeistung != null;
+            bool isTicketWithAuftragInWork = AppModel.Instance.allPositionInWork != null 
+                && AppModel.Instance.allPositionInWork.ticket != null 
+                && AppModel.Instance.allPositionInWork.ticket.auftragid > 0;
+            if(isTicketWithAuftragInWork || isTicketWithOUTAuftragInWork)
             {
                 SelectedTicket = AppModel.Instance.allPositionInWork.ticket;
             }
@@ -11152,8 +11792,10 @@ namespace iPMCloud.Mobile
             RunningWorksPage_head_Container.IsVisible = true;
             RunningWorksPage_Container.Margin = new Thickness(0, 0, 0, 0);
 
-            if (isTicketInWork && !isTicketWithAuftragInWork)
+            if (false && isTicketWithOUTAuftragInWork && !isTicketWithAuftragInWork)
             {
+                // Tickets OHNE Auftrag
+
                 editticket_container.IsVisible = true;
                 editticket_container.Margin = new Thickness(0, 112, 0, 0);
                 ShowRunningTicketWorksView(null, null);// Eingeschränke View zeigen!
@@ -11198,9 +11840,13 @@ namespace iPMCloud.Mobile
                     }
                 }
 
+                btn_PlanTabCTapped(null, null);
             }
-            else if (!isTicketInWork && isTicketWithAuftragInWork)
+            //else if (!isTicketWithOUTAuftragInWork && isTicketWithAuftragInWork)
+            else if (isTicketWithOUTAuftragInWork || isTicketWithAuftragInWork)
             {
+                // Ticket MIT Auftrag
+
                 //editticket_container.IsVisible = true;
                 //editticket_container.Margin = new Thickness(0, 112, 0, 0);
                 //xShowRunningTicketWorksView(null, null);// Eingeschränke View zeigen!
@@ -11211,14 +11857,15 @@ namespace iPMCloud.Mobile
                 // Plan zeigen/ ausblenden
                 ObjektPlanWeekMobil_Stack_Spacer.IsVisible = true;
 
-                lastBuilding_info_Container.IsVisible = true;
-                last_building_addressZipCity.IsVisible = true;
+                lastBuilding_Container.IsVisible = true;
+                lastBuilding_info_Container.IsVisible = isTicketWithAuftragInWork;
+                last_building_addressZipCity.IsVisible = isTicketWithAuftragInWork;
                 MainView_Container.IsVisible = true;
 
                 // BTN Aktuelle Leistung in Arbeit (Ticket) zeigen
                 btn_ticketinwork_container.IsVisible = true;
                 btn_inwork_container.IsVisible = false;
-                btn_nachbuchen_container.IsVisible = true; 
+                btn_nachbuchen_container.IsVisible = isTicketWithAuftragInWork; 
 
                 // Anzeige im Menu - false noch Arbeiten Offen
                 btn_regist.IsVisible = AppModel.Instance.allPositionInWork == null;
@@ -11258,12 +11905,23 @@ namespace iPMCloud.Mobile
                 lastBuilding_info_Container.IsVisible = true;
                 last_building_addressZipCity.IsVisible = true;
 
+                ticket_startnow_btn.IsVisible = true;
+                ticket_closenow_btn.IsVisible = false;
+
                 btn_ticketinwork_container.IsVisible = false;
                 btn_inwork_container.IsVisible = AppModel.Instance.allPositionInWork != null;
                 btn_nachbuchen_container.IsVisible = AppModel.Instance.allPositionInWork != null;
                 btn_regist.IsVisible = AppModel.Instance.allPositionInWork == null;
                 btn_regist_info.IsVisible = AppModel.Instance.allPositionInWork != null;
 
+                // zurücksetzen von TicketInWork zu TickteListe
+                //if (frame_planConCInWork.IsVisible)
+                //{
+                //    ObjektPlanWeekMobil_Stack_ABC.IsVisible = true;
+                //    box_buildingInformation2.IsVisible = true;
+                //    frame_planConC.IsVisible = true;
+                //    frame_planConCInWork.IsVisible = false;
+                //}
 
                 // Trennlinie zeigen
                 if (AppModel.Instance.AppControll.direktBuchenPos)
@@ -11812,7 +12470,7 @@ namespace iPMCloud.Mobile
         private int _bemerkungen = 0;
         private int _bilder = 0;
         private int _packs = 0;
-        private int _trans = 0;
+        //private int _trans = 0;
         private int _dayovers = 0;
         private int _objectValues = 0;
         private int _objectValueBilds = 0;
@@ -11837,7 +12495,7 @@ namespace iPMCloud.Mobile
             _ticketBesitzerStatus = TicketBesitzerStatusUpload.CountFromStack();
             //_ticketPos += TicketPositionUpload.CountFromStack();
 
-            //_pn = PNWSO.CountFromStack();
+            _pn = PNWSO.CountFromStack();
             int allCountFromUpload = 0;
             allCountFromUpload += _checks;
             allCountFromUpload += _checksBemImg;
@@ -11851,7 +12509,7 @@ namespace iPMCloud.Mobile
             allCountFromUpload += _ticketChats;
             allCountFromUpload += _ticketBesitzerStatus;
             //allCountFromUpload += _ticketPos;
-            //allCountFromUpload += _pn;
+            allCountFromUpload += _pn;
             return allCountFromUpload;
         }
 
@@ -12371,64 +13029,64 @@ namespace iPMCloud.Mobile
         /*******************/
         /* SYNC TransSigns (auch in Background)
         /*******************/
-        private async void SyncTransSigns()
-        {
-            var transSigns = AllTransSign.LoadAllFromUploadStack();
-            List<string> guidsList = new List<string>();
-            transSigns.ForEach(v => { guidsList.Add(v.guid); });
-            var resGuidsList = await Task.Run(() => { return AppModel.Instance.Connections.GuidsCheck(guidsList.ToArray()); });
-            if (resGuidsList != null && resGuidsList.Length > 0)
-            {
-                resGuidsList.ToList().ForEach(guid =>
-                {
-                    var da = transSigns.Find(b => b.guid == guid);
-                    if (da != null)
-                    {
-                        transSigns.Remove(da);
-                        AllTransSign.DeleteFromUploadStack(da);
-                    }
-                });
-            }
+        //private async void SyncTransSigns()
+        //{
+        //    var transSigns = AllTransSign.LoadAllFromUploadStack();
+        //    List<string> guidsList = new List<string>();
+        //    transSigns.ForEach(v => { guidsList.Add(v.guid); });
+        //    var resGuidsList = await Task.Run(() => { return AppModel.Instance.Connections.GuidsCheck(guidsList.ToArray()); });
+        //    if (resGuidsList != null && resGuidsList.Length > 0)
+        //    {
+        //        resGuidsList.ToList().ForEach(guid =>
+        //        {
+        //            var da = transSigns.Find(b => b.guid == guid);
+        //            if (da != null)
+        //            {
+        //                transSigns.Remove(da);
+        //                AllTransSign.DeleteFromUploadStack(da);
+        //            }
+        //        });
+        //    }
 
-            if (resGuidsList != null && transSigns.Count > 0)
-            {
-                if (!AppModel.Instance.IsInternet)
-                {
-                    AppModel.Logger.Warn("Warn: Internet/Online -OFF- ... Feierabend hochladen => SyncDayOver");
-                }
-                transSigns.ForEach(async transS =>
-                {
-                    var result = await SyncTransSigns_Done(transS);
-                    if (result != null && result.success)
-                    {
-                        transSigns.ForEach(d =>
-                        {
-                            AllTransSign.DeleteFromUploadStack(d);
-                        });
-                    }
-                });
-            }
-            ;
-        }
-        private async Task<AllTransSignResponse> SyncTransSigns_Done(AllTransSignRequest transSign)
-        {
-            AllTransSignResponse res = (await Task.Run(() => { return AppModel.Instance.Connections.AllTransSignSync(transSign); }));
-            if (res == null)
-            {
-                // FAILED
-                _allCountFromUploadFalied = true;
-                AppModel.Logger.Warn("WARN:  (0): AllTransSignSync FEHLGESCHLAGEN => SyncTransSigns_Done : response == null ");
-                return null;
-            }
-            if (res != null && !res.success)
-            {
-                // FAILED
-                _allCountFromUploadFalied = true;
-                AppModel.Logger.Warn("WARN:  (0): AllTransSignSync FEHLGESCHLAGEN => SyncTransSigns_Done : " + res.message);
-                return null;
-            }
-            return res;
-        }
+        //    if (resGuidsList != null && transSigns.Count > 0)
+        //    {
+        //        if (!AppModel.Instance.IsInternet)
+        //        {
+        //            AppModel.Logger.Warn("Warn: Internet/Online -OFF- ... Feierabend hochladen => SyncDayOver");
+        //        }
+        //        transSigns.ForEach(async transS =>
+        //        {
+        //            var result = await SyncTransSigns_Done(transS);
+        //            if (result != null && result.success)
+        //            {
+        //                transSigns.ForEach(d =>
+        //                {
+        //                    AllTransSign.DeleteFromUploadStack(d);
+        //                });
+        //            }
+        //        });
+        //    }
+        //    ;
+        //}
+        //private async Task<AllTransSignResponse> SyncTransSigns_Done(AllTransSignRequest transSign)
+        //{
+        //    AllTransSignResponse res = (await Task.Run(() => { return AppModel.Instance.Connections.AllTransSignSync(transSign); }));
+        //    if (res == null)
+        //    {
+        //        // FAILED
+        //        _allCountFromUploadFalied = true;
+        //        AppModel.Logger.Warn("WARN:  (0): AllTransSignSync FEHLGESCHLAGEN => SyncTransSigns_Done : response == null ");
+        //        return null;
+        //    }
+        //    if (res != null && !res.success)
+        //    {
+        //        // FAILED
+        //        _allCountFromUploadFalied = true;
+        //        AppModel.Logger.Warn("WARN:  (0): AllTransSignSync FEHLGESCHLAGEN => SyncTransSigns_Done : " + res.message);
+        //        return null;
+        //    }
+        //    return res;
+        //}
 
 
 

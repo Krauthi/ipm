@@ -53,6 +53,7 @@ namespace iPMCloud.Mobile
         public string token { get; set; } = "";
         public Int32 ticketid { get; set; } = 0;
         public int status { get; set; } = 0;
+        public int besitzerstatus { get; set; } = 0;
         public string guid { get; set; } = "";
         public TicketStatusRequest() { }
     }

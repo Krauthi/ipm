@@ -9,11 +9,11 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<ApplicationTitle>iPM-Cloud</ApplicationTitle>
 		<ApplicationIdGuid>201CEFAB-590D-414F-9660-9EFF31FE2078</ApplicationIdGuid>
-		<ApplicationDisplayVersion>3.0.100</ApplicationDisplayVersion>
+		<ApplicationDisplayVersion>3.0.107</ApplicationDisplayVersion>
 		<ApplicationVersion>1</ApplicationVersion>
-		<Version>3000100</Version>
-		<AssemblyVersion>3.0.100.0</AssemblyVersion>
-		<FileVersion>3.0.100.0</FileVersion>
+		<Version>3000107</Version>
+		<AssemblyVersion>3.0.107.0</AssemblyVersion>
+		<FileVersion>3.0.107.0</FileVersion>
 		<NeutralLanguage>de-DE</NeutralLanguage>
 		<Copyright>iPM-Cloud</Copyright> 
 		<Nullable>disable</Nullable>

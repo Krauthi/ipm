@@ -326,8 +326,30 @@ namespace iPMCloud.Mobile
                 options.RotateImage = true;
 #endif
 
+
+
+                var breadcrumbId = $"PhotoPicker_{_selectedBemerkungForNotice.guid}";
+                iPMCloud.Mobile.Services.CrashDiagnostics.Begin(
+                    breadcrumbId,
+                    $"Guid={_selectedBemerkungForNotice.guid}; ExistingPhotos={_selectedBemerkungForNotice.photos.Count}; SelectionLimit={options.SelectionLimit}");
+
+                IList<FileResult> photos = null;
+                try
+                {
+                    photos = await MediaPicker.PickPhotosAsync(options);
+                    //photos = await iPMCloud.Mobile.Services.MediaPickerCompat.PickPhotosAsync(options);
+                }
+                catch (Exception es)
+                {
+                    await DisplayAlertAsync("INFO", $"{es.Message} :: {es.StackTrace} ", "OK");
+                }
+                finally
+                {
+                    iPMCloud.Mobile.Services.CrashDiagnostics.End(breadcrumbId);
+                }
+
                 //var photos = await MediaPicker.PickPhotosAsync(options);
-                var photos = await iPMCloud.Mobile.Services.MediaPickerCompat.PickPhotosAsync(options);
+                ////var photos = await iPMCloud.Mobile.Services.MediaPickerCompat.PickPhotosAsync(options);
 
                 if (photos != null && photos.Count() > 0)
                 {

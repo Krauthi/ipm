@@ -22,6 +22,7 @@ namespace iPMCloud.Mobile.vo
         internal static Uri uri_NewSync = null;
         internal static Uri uri_NewSyncAuftrag = null;
         internal static Uri uri_FastSync = null;
+        internal static Uri uri_FastSyncTicket = null;
         internal static Uri uri_GuidCheck = null;
         internal static Uri uri_SingleNotice = null;
         internal static Uri uri_NoticeBild = null;
@@ -49,6 +50,7 @@ namespace iPMCloud.Mobile.vo
         internal static Uri uri_SetTicketBesitzerStatus = null;
 
         internal static HttpClient httpClientInstance;
+        internal static HttpClient httpClientInstanceTicketSync;
         internal static HttpClient httpClientInstanceTicket;
         internal static HttpClient httpClientInstanceTicketStatus;
         internal static HttpClient httpClientInstanceTicketChat;
@@ -110,6 +112,9 @@ namespace iPMCloud.Mobile.vo
                 CookieContainer cookieContainerTicket = new CookieContainer();
                 httpClientInstanceTicket = HttpClientManager.CreateClient(cookieContainerTicket, HttpClientManager.TimeoutProfile.Medium);
 
+                CookieContainer cookieContainerTicketSync = new CookieContainer();
+                httpClientInstanceTicketSync = HttpClientManager.CreateClient(cookieContainerTicketSync, HttpClientManager.TimeoutProfile.Medium);
+
                 CookieContainer cookieContainerTicketPos = new CookieContainer();
                 httpClientInstanceTicketPos = HttpClientManager.CreateClient(cookieContainerTicketPos, HttpClientManager.TimeoutProfile.Medium);
 
@@ -150,6 +155,7 @@ namespace iPMCloud.Mobile.vo
                 uri_NewSyncAuftrag = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/NewSyncAuftrag");
                 uri_Building = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/Building");
                 uri_FastSync = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/FastSync");
+                uri_FastSyncTicket = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/FastSyncTicket");
                 uri_AllTransSigns = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/AllTransSigns");
                 uri_DayOver = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/DayOver");
                 uri_Log = new Uri(AppModel.Instance.SettingModel.SettingDTO.ServerUrl + "/api/Log");
@@ -575,7 +581,7 @@ namespace iPMCloud.Mobile.vo
                 }
                 else
                 {
-                    var m = "Method => IpmBuildingSync: httpResponseMessage.StatusCode = " + resMsg.StatusCode + " - " + resMsg.RequestMessage;
+                    var m = "Method => IpmFastSync: httpResponseMessage.StatusCode = " + resMsg.StatusCode + " - " + resMsg.RequestMessage;
                     AppModel.Logger.Warn(m);
                     resMsg?.Dispose();
                     return new IpmBuildingResponse { success = false, message = m };
@@ -586,11 +592,70 @@ namespace iPMCloud.Mobile.vo
                 resMsg?.Dispose();
                 if (ex.Message.ToLower().IndexOf("canceled") > -1)
                 {
-                    AppModel.Logger.Error("Method => IpmBuildingSync(canceled): Der Server ist nicht erreichbar oder die Verbindung wurde unterbrochen!\n\nBitte versuchen Sie es später noch einmal.\n\nSollte das Problem weiter bestehen, melden Sie sich bei Ihren Sachbearbeitern.\n\n" + ex.Message);
-                    return new IpmBuildingResponse { success = false, message = "Method(IpmBuildingSync(canceled)): Der Server ist nicht erreichbar oder die Verbindung wurde unterbrochen!\n\nBitte versuchen Sie es später noch einmal.\n\nSollte das Problem weiter bestehen, melden Sie sich bei Ihren Sachbearbeitern.\n\n" + ex.Message };
+                    AppModel.Logger.Error("Method => IpmFastSync(canceled): Der Server ist nicht erreichbar oder die Verbindung wurde unterbrochen!\n\nBitte versuchen Sie es später noch einmal.\n\nSollte das Problem weiter bestehen, melden Sie sich bei Ihren Sachbearbeitern.\n\n" + ex.Message);
+                    return new IpmBuildingResponse { success = false, message = "Method(IpmFastSync(canceled)): Der Server ist nicht erreichbar oder die Verbindung wurde unterbrochen!\n\nBitte versuchen Sie es später noch einmal.\n\nSollte das Problem weiter bestehen, melden Sie sich bei Ihren Sachbearbeitern.\n\n" + ex.Message };
                 }
-                AppModel.Logger.Error("Method => IpmBuildingSync(catch): " + ex.Message);
-                return new IpmBuildingResponse { success = false, message = "Method(IpmLIpmBuildingSyncogin(catch)): " + ex.Message };
+                AppModel.Logger.Error("Method => IpmFastSync(catch): " + ex.Message);
+                return new IpmBuildingResponse { success = false, message = "Method(IpmFastSync(catch)): " + ex.Message };
+            }
+        }
+
+        public async Task<IpmBuildingResponse> IpmFastSyncTicket(List<Int32> auftragids)
+        {
+            if (uri_FastSyncTicket == null) { InitConnections(); }
+            HttpResponseMessage resMsg = null;
+
+            if (!AppModel.Instance.IsInternet)
+            {
+                return new IpmBuildingResponse
+                {
+                    success = false,
+                    message = "Sie brauchen für diese Aktion eine Onlineverbindung!",
+                };
+            }
+
+            string args = JsonConvert.SerializeObject(new IpmBuildingRequest
+            {
+                token = AppModel.Instance.SettingModel.SettingDTO.LoginToken,
+                objids = "",
+                auftragids = auftragids,
+                lastsync = String.IsNullOrWhiteSpace(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks) ? 0 : long.Parse(AppModel.Instance.SettingModel.SettingDTO.LastBuildingSyncedDateTimeTicks)
+            });
+
+            HttpRequestMessage msg = new HttpRequestMessage(HttpMethod.Post, uri_FastSyncTicket);
+            msg.Content = new StringContent(args, Encoding.UTF8, "application/json");
+
+            try
+            {
+                resMsg = await httpClientInstanceTicketSync.SendAsync(msg);
+                if (resMsg != null && resMsg.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    // Tokenzeit neu setzten
+                    AppModel.Instance.SettingModel.SettingDTO.LastTokenDateTimeTicks = "" + DateTime.Now.Ticks;
+                    AppModel.Instance.SettingModel.SaveSettings();
+
+                    var json = resMsg.Content.ReadAsStringAsync().Result;
+                    resMsg.Dispose();
+                    return JsonConvert.DeserializeObject<IpmBuildingResponse>(json);
+                }
+                else
+                {
+                    var m = "Method => IpmFastSyncTicket: httpResponseMessage.StatusCode = " + resMsg.StatusCode + " - " + resMsg.RequestMessage;
+                    AppModel.Logger.Warn(m);
+                    resMsg?.Dispose();
+                    return new IpmBuildingResponse { success = false, message = m };
+                }
+            }
+            catch (Exception ex)
+            {
+                resMsg?.Dispose();
+                if (ex.Message.ToLower().IndexOf("canceled") > -1)
+                {
+                    AppModel.Logger.Error("Method => IpmFastSyncTicket(canceled): Der Server ist nicht erreichbar oder die Verbindung wurde unterbrochen!\n\nBitte versuchen Sie es später noch einmal.\n\nSollte das Problem weiter bestehen, melden Sie sich bei Ihren Sachbearbeitern.\n\n" + ex.Message);
+                    return new IpmBuildingResponse { success = false, message = "Method(IpmFastSyncTicket(canceled)): Der Server ist nicht erreichbar oder die Verbindung wurde unterbrochen!\n\nBitte versuchen Sie es später noch einmal.\n\nSollte das Problem weiter bestehen, melden Sie sich bei Ihren Sachbearbeitern.\n\n" + ex.Message };
+                }
+                AppModel.Logger.Error("Method => IpmFastSyncTicket(catch): " + ex.Message);
+                return new IpmBuildingResponse { success = false, message = "Method(IpmFastSyncTicket(catch)): " + ex.Message };
             }
         }
 

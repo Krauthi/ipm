@@ -644,6 +644,7 @@ namespace iPMCloud.Mobile
         public string erstellername { get; set; }
         public TicketPerson asp { get; set; }
         public TicketObjekt objekt { get; set; }
+        public AuftragWSO auftrag { get; set; } = null;
         public string objektname { get; set; }
 
         // Chat und Aufträge
@@ -1104,19 +1105,49 @@ namespace iPMCloud.Mobile
                 Grid.SetColumnSpan(statusAndDatesStack, 2);
             }
 
-            // Auftrag-Symbol unten rechts, wenn das Ticket mit einem Auftrag verknüpft ist
-            if (ticket.auftragid > 0)
+            // Info- und Auftrag-Symbol unten rechts
+            if (!string.IsNullOrWhiteSpace(ticket.besitzerinfo) || ticket.auftragid > 0)
             {
-                var auftragIcon = new Image
+                var bottomRightIcons = new HorizontalStackLayout
                 {
-                    Source = "order_folder_tools.png",
-                    HeightRequest = 18,
-                    WidthRequest = 18,
+                    Spacing = 6,
                     Margin = new Thickness(0, 0, 8, 8),
                     VerticalOptions = LayoutOptions.End,
                     HorizontalOptions = LayoutOptions.End
                 };
-                grid.Add(auftragIcon, 2, 3);
+
+                // Info-Symbol, wenn eine wichtige Info hinterlegt ist
+                if (!string.IsNullOrWhiteSpace(ticket.besitzerinfo))
+                {
+                    var infoIcon = new Image
+                    {
+                        Source = "ic_info_b.png",
+                        HeightRequest = 18,
+                        WidthRequest = 18,
+                        VerticalOptions = LayoutOptions.End,
+                        HorizontalOptions = LayoutOptions.End
+                    };
+                    var infoTapGesture = new TapGestureRecognizer();
+                    infoTapGesture.Tapped += (s, e) => AppModel.Instance.MainPage.ShowTicketBesitzerInfo(ticket);
+                    infoIcon.GestureRecognizers.Add(infoTapGesture);
+                    bottomRightIcons.Children.Add(infoIcon);
+                }
+
+                // Auftrag-Symbol, wenn das Ticket mit einem Auftrag verknüpft ist
+                if (ticket.auftragid > 0)
+                {
+                    var auftragIcon = new Image
+                    {
+                        Source = "order_folder_tools.png",
+                        HeightRequest = 18,
+                        WidthRequest = 18,
+                        VerticalOptions = LayoutOptions.End,
+                        HorizontalOptions = LayoutOptions.End
+                    };
+                    bottomRightIcons.Children.Add(auftragIcon);
+                }
+
+                grid.Add(bottomRightIcons, 2, 3);
             }
 
             border.Content = grid;
@@ -1217,6 +1248,35 @@ namespace iPMCloud.Mobile
                         AppModel.Instance.MainPage.UpdateTicketBadgeCount();
                     });
 
+                    List<Int32> aufIds = new List<Int32>();
+                    foreach ( var t in AppModel.Instance.TicketResponse.tickets)
+                    {
+                        if(AppModel.Instance.AllBuildings != null && AppModel.Instance.AllBuildings.Count > 0 
+                            && t.auftragid > 0)
+                        {
+                            var obj = AppModel.Instance.AllBuildings.Find(o => o.id == t.objektid);
+                            if(obj == null)
+                            {
+                                aufIds.Add(t.auftragid);
+                                continue;
+                            }
+                            if(obj != null && obj.ArrayOfAuftrag != null && obj.ArrayOfAuftrag.Count > 0)
+                            {
+                                var auf = obj.ArrayOfAuftrag.Find(a => a.id == t.auftragid);
+                                if(auf == null)
+                                {
+                                    aufIds.Add(t.auftragid);
+                                    continue;
+                                }
+                            }
+                        }
+                    }
+                    if (aufIds.Count > 0)
+                    {
+                        await MainThread.InvokeOnMainThreadAsync(() => {
+                           AppModel.Instance.MainPage.FastSyncAfterTicketReload(aufIds);
+                        });
+                    }
                     return AppModel.Instance.TicketResponse;
                 }
                 else

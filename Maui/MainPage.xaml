@@ -2759,7 +2759,7 @@
                                         Grid.Row="0"
                                         Margin="0"
                                         Padding="3"
-                                        BackgroundColor="#33ffcc00"
+                                        BackgroundColor="#33cc7700"
                                         HorizontalOptions="Fill"
                                         Spacing="0"
                                         VerticalOptions="Start">
@@ -2787,7 +2787,7 @@
                                             Spacing="0" />
                                     </ScrollView>
                                 </Grid>
-                                <Grid
+                                <!--<Grid
                                     x:Name="tourScrollerCcc"
                                     Grid.Row="0"
                                     Margin="0"
@@ -2831,7 +2831,7 @@
                                             IsVisible="True"
                                             Spacing="0" />
                                     </ScrollView>
-                                </Grid>
+                                </Grid>-->
                             </Grid>
 
                             <Border
@@ -2853,7 +2853,7 @@
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
+                                    <!--<ColumnDefinition Width="*" />-->
                                 </Grid.ColumnDefinitions>
                                 <Grid
                                     x:Name="frame_planConC_offenbtn"
@@ -2990,14 +2990,15 @@
                                             VerticalOptions="Center" />
                                     </Border>
                                 </Grid>
-                                <Grid
+                                <!--<Grid
                                     x:Name="frame_planConC_erlbtn"
                                     Grid.Column="3"
                                     Margin="0"
                                     Padding="3,7,3,7"
                                     BackgroundColor="#4400ff00"
                                     ColumnSpacing="0"
-                                    HorizontalOptions="Fill">
+                                    HorizontalOptions="Fill"
+                                    IsVisible="True">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="Auto" />
@@ -3034,7 +3035,7 @@
                                             TextColor="#ffffff"
                                             VerticalOptions="Center" />
                                     </Border>
-                                </Grid>
+                                </Grid>-->
                             </Grid>
                         </Grid>
 
@@ -4775,7 +4776,7 @@
                     Spacing="0"
                     VerticalOptions="Center">
                     <Button
-                        Margin="10,5"
+                        Margin="0,5,20,5"
                         Padding="8"
                         BackgroundColor="#04532d"
                         Clicked="btn_RunningWorksOverTapped"
@@ -4787,7 +4788,8 @@
                         Text="JETZT BEENDEN"
                         TextColor="#ffffff" />
                     <Button
-                        Margin="10,5"
+                        x:Name="btn_RunningWorksOverP_Name"
+                        Margin="0,5,0,5"
                         Padding="8"
                         BackgroundColor="#cc7700"
                         Clicked="btn_RunningWorksOverPTapped"

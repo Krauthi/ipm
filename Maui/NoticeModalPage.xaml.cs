@@ -299,8 +299,8 @@ namespace iPMCloud.Mobile
                 IList<FileResult> photos = null;
                 try
                 {
-                    // photos = await MediaPicker.PickPhotosAsync(options);
-                    photos = await iPMCloud.Mobile.Services.MediaPickerCompat.PickPhotosAsync(options);
+                    photos = await MediaPicker.PickPhotosAsync(options);
+                    //photos = await iPMCloud.Mobile.Services.MediaPickerCompat.PickPhotosAsync(options);
                 }
                 catch (Exception es)
                 {

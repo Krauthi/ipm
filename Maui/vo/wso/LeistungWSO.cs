@@ -4,7 +4,6 @@ using System;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Input;
-using System.Globalization;
 
 namespace iPMCloud.Mobile
 {
@@ -1250,7 +1249,7 @@ namespace iPMCloud.Mobile
                 var lbMuell = new Label()
                 {
                     Text = "Nach Bedarf!",
-                    TextColor = Color.FromArgb("#dd0000"),
+                    TextColor = Color.FromArgb("#dd9900"),
                     Margin = new Thickness(0, 0, 0, 0),
                     Padding = new Thickness(5, 0, 0, 0),
                     FontSize = 16,
@@ -2402,9 +2401,9 @@ namespace iPMCloud.Mobile
 
             vGrid.Add(order, 0, 0);
             vGrid.Add(lb, 0, 1);
-
+/*
             if(leistung.bemerkungen == null) { leistung.bemerkungen = new List<BemerkungWSO>(); }
-
+            
             int bemCount = (leistung.bemerkungen != null ? leistung.bemerkungen.Count : 0);
             int vGridAddPosRow = 1;
             int maxBem = 3;
@@ -2571,7 +2570,7 @@ namespace iPMCloud.Mobile
                     , 0, vGridAddPosRow);
 
             }
-
+            */
 
             var hGrid = new Grid()
             {
@@ -2596,6 +2595,7 @@ namespace iPMCloud.Mobile
         public static Grid GetInWorkPositionSmallCardView(AuftragWSO o, KategorieWSO c, LeistungWSO leistung, LeistungInWorkWSO leiInWork,
             AppModel model, ICommand func, ICommand delbemFunc)
         {
+            bool isTicket = o.bezeichnung.Contains("Ticket #");
             //var _prio = CalcOverdue(pos);
             var imageL = new Image
             {
@@ -2849,6 +2849,11 @@ namespace iPMCloud.Mobile
                     HorizontalOptions = LayoutOptions.Fill,
                     VerticalOptions = LayoutOptions.Start,
                 };
+
+                decimal initAnzahl = decimal.Parse(leiInWork.anzahl, CultureInfo.GetCultureInfo("de-DE")) > 0 ? 
+                    decimal.Parse(leiInWork.anzahl, CultureInfo.GetCultureInfo("de-DE")) : 1;
+                decimal defaultAnzahl = isTicket && leistung.nichtpauschal == 1 ? 0 : initAnzahl;
+
                 var InWorkPosSmallCardEntryAnzahl = new CustomEntry()
                 {
                     Margin = new Thickness(0, -7, 0, -5),
@@ -2858,7 +2863,7 @@ namespace iPMCloud.Mobile
                     FontSize = 16,
                     Keyboard = Keyboard.Numeric,
                     HeightRequest = 40,
-                    Text = Utils.formatDEStr(decimal.Parse(leiInWork.anzahl, CultureInfo.GetCultureInfo("de-DE")) > 0 ? decimal.Parse(leiInWork.anzahl, CultureInfo.GetCultureInfo("de-DE")) : 1),
+                    Text = Utils.formatDEStr(defaultAnzahl),
                     MinimumWidthRequest = 100,
                     HorizontalTextAlignment = TextAlignment.End,
                     BackgroundColor = Colors.Transparent
@@ -2934,6 +2939,22 @@ namespace iPMCloud.Mobile
                 ho_anzahl.Children.Add(vanzahl);
                 ho_anzahl.Children.Add(addBtn);
                 ho_anzahl.Children.Add(subBtn);
+
+                if (isTicket)
+                {
+                    var imageAnzahlByTicket = new Image
+                    {
+                        StyleId = "imageAnzahlByTicket",
+                        Margin = new Thickness(20, 0, 0, 0),
+                        HeightRequest = 48,
+                        WidthRequest = 48,
+                        VerticalOptions = LayoutOptions.Center,
+                        HorizontalOptions = LayoutOptions.End,
+                        Source = "w0.png",
+                        IsVisible = decimal.Parse(InWorkPosSmallCardEntryAnzahl.Text, CultureInfo.GetCultureInfo("de-DE")) == 0,
+                    };
+                    ho_anzahl.Children.Add(imageAnzahlByTicket);
+                }
 
                 vGridAddPosRow++;
                 vGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
@@ -3155,6 +3176,7 @@ namespace iPMCloud.Mobile
                     entry.Text = formatted;
 
                 leiInWork.anzahl = entry.Text;
+                UpdateAnzahlByTicketImageVisibility(entry, value);
             }
             finally
             {
@@ -3168,7 +3190,37 @@ namespace iPMCloud.Mobile
                 if (dec < 0) { dec = 0; }
                 entry.Text = Utils.formatDEStr(dec);
                 l.anzahl = entry.Text;
+                UpdateAnzahlByTicketImageVisibility(entry, dec);
             }
+
+        /// <summary>
+        /// Blendet das "w0.png"-Symbol (Anzahl per Ticket noch nicht erfasst) nur ein,
+        /// solange die Anzahl 0 ist. Sobald per +/- oder Texteingabe ein Wert &gt; 0
+        /// gesetzt wird, wird das Symbol ausgeblendet (und umgekehrt).
+        /// </summary>
+        private static void UpdateAnzahlByTicketImageVisibility(CustomEntry entry, decimal anzahl)
+        {
+            try
+            {
+                // ho_anzahl ist das gemeinsame Elternelement von vanzahl (enthält entry), addBtn, subBtn und dem Bild
+                var ho_anzahl = entry?.Parent?.Parent as Layout;
+                if (ho_anzahl == null)
+                    return;
+
+                foreach (var child in ho_anzahl.Children)
+                {
+                    if (child is Image img && img.StyleId == "imageAnzahlByTicket")
+                    {
+                        img.IsVisible = anzahl == 0;
+                        break;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // Sichtbarkeits-Update ist rein kosmetisch, Fehler hier dürfen den Ablauf nicht stören
+            }
+        }
 
 
         public static Border GetInWorkPositionSmallCardView_DirektPos(AuftragWSO o, KategorieWSO c, LeistungWSO pos, LeistungWSO lei)
@@ -3901,7 +3953,7 @@ namespace iPMCloud.Mobile
             var typ = new Label
             {
                 Text = pos.nichtpauschal == 1 ? "Nach Bedarf" : pos.timeval,
-                TextColor = Color.FromArgb(pos.nichtpauschal == 1 ? "#dd0000":"#ffcc00"),
+                TextColor = Color.FromArgb("#ffcc00"),
                 Margin = new Thickness(5, 0, 0, 0),
                 FontSize = 12,
                 FontAttributes = pos.nichtpauschal == 1 ? FontAttributes.Bold : FontAttributes.None,
@@ -3928,25 +3980,25 @@ namespace iPMCloud.Mobile
             contentGrid.Add(direkt, 0, currentRow++);
             contentGrid.Add(typ, 0, currentRow++);
 
-            if (double.Parse(pos.lastwork) == 0 && pos.timevaldays > 0)
-            {
-                contentGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-                contentGrid.Add(GetWarningLineText(pos.prio.warnText, pos.prio.barColor), 0, currentRow++);
-            }                        
+            //if (double.Parse(pos.lastwork) == 0 && pos.timevaldays > 0)
+            //{
+            //    contentGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            //    contentGrid.Add(GetWarningLineText(pos.prio.warnText, pos.prio.barColor), 0, currentRow++);
+            //}                        
 
             var h = new Grid
             {
                 Padding = new Thickness(5),
                 Margin = new Thickness(0),
                 HorizontalOptions = LayoutOptions.Fill,
-                BackgroundColor = Color.FromArgb(pos.nichtpauschal == 1 ? "#044320" : "#042d53"),
+                BackgroundColor = Color.FromArgb("#042d53"),
                 ColumnSpacing = 0,
                 ColumnDefinitions =
-        {
-            new ColumnDefinition { Width = GridLength.Auto },
-            new ColumnDefinition { Width = GridLength.Auto },
-            new ColumnDefinition { Width = GridLength.Star }
-        }
+                {
+                    new ColumnDefinition { Width = GridLength.Auto },
+                    new ColumnDefinition { Width = GridLength.Auto },
+                    new ColumnDefinition { Width = GridLength.Star }
+                }
             };
 
 

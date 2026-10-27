@@ -181,7 +181,7 @@ namespace iPMCloud.Mobile.vo
         //! use Test Login and Server Data
 
 #if DEBUG
-        public bool IsTest { get; set; } = false;
+        public bool IsTest { get; set; } = true;
         public bool RefreshPNToken { get; set; } = false;
 #else
         public bool IsTest { get; set; } = false;
@@ -498,6 +498,33 @@ namespace iPMCloud.Mobile.vo
             else
             {
                 LastBuilding = null;
+            }
+        }
+        public void UpdateAddTicketAuftragToObjekt(AuftragWSO auftrag)
+        {
+            var b = AllBuildings.Find(f => f.id == auftrag.objektid);
+            if (b != null)
+            {
+                if (b.ArrayOfAuftrag == null)
+                {
+                    b.ArrayOfAuftrag = new List<AuftragWSO>();
+                }
+                int index = b.ArrayOfAuftrag.FindIndex(x => x.id == auftrag.id);
+                if (index >= 0)
+                    b.ArrayOfAuftrag[index] = auftrag; // Überschreiben
+                else
+                    b.ArrayOfAuftrag.Add(auftrag);     // Hinzufügen
+
+                BuildingWSO.Save(AppModel.Instance, b);
+
+                //AllBuildings.Sort((a, b) => a.id.CompareTo(b.id));
+                //InitBuildingsAgain();
+                //MainPage.SetLastBuilding();
+            }
+            else
+            {
+                Logger.Error($"ERROR: UpdateAddTicketAuftragToObjekt - Objekt nicht gefunden für Auftrag {auftrag.id} ObjektId {auftrag.objektid}");
+                MainPage.ShowAlertMessage("Fehler", $"Objekt nicht gefunden für Auftrag {auftrag.id} ObjektId {auftrag.objektid}");
             }
         }
 
@@ -944,6 +971,37 @@ namespace iPMCloud.Mobile.vo
 
         public async void Btn_FlashlightAloneTapped(object sender, EventArgs e)
         {
+//#if !IOS            
+//            try
+//            {
+//                if (!AppModel.Instance.isFlashLigthAloneON)
+//                {
+//                    await Flashlight.Default.TurnOnAsync();
+//                    AppModel.Instance.isFlashLigthAloneON = true;
+//                }
+//                else
+//                {
+//                    await Flashlight.Default.TurnOffAsync();
+//                    AppModel.Instance.isFlashLigthAloneON = false;
+//                }
+//            }
+//            catch (FeatureNotSupportedException ex)
+//            {
+//                // Handle not supported on device exception
+//            }
+//            catch (PermissionException ex)
+//            {
+//                // Handle permission exception
+//            }
+//            catch (Exception ex)
+//            {
+//                // Unable to turn on/off flashlight
+//            }
+
+//#else
+
+
+
             try
             {
                 System.Diagnostics.Debug.WriteLine("=== Btn_FlashlightAloneTapped START ===");
@@ -999,6 +1057,8 @@ namespace iPMCloud.Mobile.vo
                 System.Diagnostics.Debug.WriteLine($"StackTrace: {ex.StackTrace}");
                 AppModel.Instance.isFlashLigthAloneON = false;
             }
+
+//#endif
         }
 
 

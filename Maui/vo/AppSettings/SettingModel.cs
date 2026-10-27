@@ -50,6 +50,7 @@ namespace iPMCloud.Mobile.vo
             if (AppModel.Instance != null && AppModel.Instance.IsTest)
             {
                 // Test-Konfigurationen
+                /*
                 //SettingDTO.LoginName = "mitarbeiterx";
                 //SettingDTO.LoginPassword = "mitarbeiter";
 
@@ -130,16 +131,17 @@ namespace iPMCloud.Mobile.vo
                 SettingDTO.LoginPassword = "33333333";
                 SettingDTO.ServerUrl = "https://hms-muminovic.ipmcloud.de";
                 SettingDTO.CustomerNumber = "10013";
-
+                */
 
                 SettingDTO.LoginName = "JoBaum123";
                 SettingDTO.LoginPassword = "16101968";
                 SettingDTO.CustomerName = "iPD TEST Dev";
                 SettingDTO.CustomerNumber = "1"; // "10074";
                 //SettingDTO.ServerUrl = "https://test-hensel.ipmcloud.de";
-                SettingDTO.ServerUrl = "http://localhost:52222";
                 SettingDTO.ServerUrl = "http://nbkrauthausen:52222";///mservice";
-                //SettingDTO.ServerUrl = "http://192.168.178.23:52222";
+
+                ////SettingDTO.ServerUrl = "http://192.168.178.23:52222";
+                ////SettingDTO.ServerUrl = "http://localhost:52222";
 
 
                 SaveSettings(); 

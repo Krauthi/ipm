@@ -9,6 +9,8 @@ namespace iPMCloud.Mobile
         public string token { get; set; } = "";
         public string objids { get; set; } = "";
         public long lastsync { get; set; } = 0;
+        public Int32 auftragid { get; set; } = 0;
+        public List<Int32> auftragids { get; set; } = null;
 
         public IpmBuildingRequest()
         {

@@ -1,5 +1,6 @@
 using iPMCloud.Mobile.vo;
 using Microsoft.Maui.ApplicationModel;
+using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -79,9 +80,9 @@ namespace iPMCloud.Mobile.Services
 
                 data.TryGetValue("title", out var title);
                 data.TryGetValue("body", out var body);
-                data.TryGetValue("dataj", out var dataj);
+                data.TryGetValue("json", out var dataj);
 
-                AppModel.Logger?.Info($"INFO: Push-Notification angetippt - Titel: '{title}', dataj: '{dataj}'");
+                //AppModel.Logger?.Info($"INFO: Push-Notification angetippt - Titel: '{title}', dataj: '{dataj}'");
 
                 MainThread.BeginInvokeOnMainThread(async () =>
                 {
@@ -106,8 +107,20 @@ namespace iPMCloud.Mobile.Services
 
                         await page.DisplayAlertAsync(
                             string.IsNullOrWhiteSpace(title) ? "Benachrichtigung" : title,
-                            string.IsNullOrWhiteSpace(body) ? "" : body,
+                            "",
                             "OK");
+
+                        // Wenn die Push-Nachricht eine ticketid enthält und das Ticketsystem
+                        // aktiviert ist, Tickets neu laden damit die Anzeige aktuell ist.
+                        if (HasTicketId(dataj) && AppModel.Instance.AppControll.showTickets
+                            && page is MainPage mainPage)
+                        {
+                            if (!mainPage.IsPlanTabTicketOpen())
+                            {
+                                mainPage.btn_PlanTabCTapped_OnlyView();
+                            }
+                            mainPage.touch_ReloadTickets(null, null);
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -118,6 +131,28 @@ namespace iPMCloud.Mobile.Services
             catch (Exception ex)
             {
                 AppModel.Logger?.Error(ex, "ERROR: Fehler in HandleNotificationOpened");
+            }
+        }
+
+        /// <summary>
+        /// Prüft, ob die übergebene "dataj"-JSON-Nutzlast einer Push-Notification
+        /// ein Feld "ticketid" enthält.
+        /// </summary>
+        private static bool HasTicketId(string dataj)
+        {
+            if (string.IsNullOrWhiteSpace(dataj))
+                return false;
+
+            try
+            {
+                var jo = JObject.Parse(dataj);
+                return jo.TryGetValue("ticketid", System.StringComparison.OrdinalIgnoreCase, out var token)
+                    && token != null && token.Type != Newtonsoft.Json.Linq.JTokenType.Null;
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Warn($"WARN: HasTicketId - dataj konnte nicht geparst werden: {ex.Message}");
+                return false;
             }
         }
 

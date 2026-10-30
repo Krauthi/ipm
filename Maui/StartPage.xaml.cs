@@ -219,7 +219,7 @@ namespace iPMCloud.Mobile
                         if (showAlert)
                         {
                             checkPermissionGPSMessage = checkPermissionGPSMessage.Replace(";", "\n\n");
-                            await DisplayAlertAsync("Berechtigungsproblem!", checkPermissionGPSMessage, "OK");
+                            //await DisplayAlertAsync("Berechtigungsproblem!", checkPermissionGPSMessage, "OK");
                             //model.PageNavigator.NavigateTo(TFPageNavigator.PAGE_CLOSEAPP);
                         }
                         return false;

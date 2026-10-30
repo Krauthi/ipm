@@ -152,61 +152,60 @@ namespace iPMCloud.Mobile
 
                 ShowDisconnected();
 
+                // GPS/Standort ist optional: Ein ausgeschaltetes GPS oder eine verweigerte
+                // Standort-Berechtigung darf die App nicht blockieren. Die restliche
+                // Initialisierung läuft deshalb immer weiter, unabhängig vom GPS-Status.
                 var checkPerm = await CheckLocationPermissionsAndInitGps();
-                if (checkPerm)
+                if (!checkPerm)
                 {
-                    //if(AppModel.Instance.AllBuildings == null || AppModel.Instance.AllBuildings.Count == 0)
-                    //{
-                    //   AppModel.Instance.InitBuildingsAsync();
-                    //}
-
-                    CheckAllSyncFromUpload(true);
-                    InitStartPageHandlers();
-
-                    //ObjektPlanWeekMobile.Delete(AppModel.Instance);
-                    // Objekte sycnen erforderlich nach 4 Stunden
-                    SyncBuilding();
-
-                    // ***  Wird mit BuildSync ausgeführt !!! ***
-                    // ***  Init_PlanTabs(((int)DateTime.Now.DayOfWeek));
-                    // Gespeichert PlanPerson KW vom Mobile Laden wenn vorhanden.
-                    if (AppModel.Instance.AppControll.showObjektPlans)
-                    {
-                        //var PlanResponse = ObjektPlanWeekMobile.Load(AppModel.Instance);
-                        //if (PlanResponse != null) { AppModel.Instance.PlanResponse = PlanResponse; }
-                        Fill_DayPicker();
-                    }
-
-                    GetChecksInfo(checkInfoLastView);
-
-                    // Load position data on a background thread to avoid blocking the UI thread.
-                    // LeistungPackWSO.Load only reads AppModel data and performs I/O; the result
-                    // is assigned back on the UI thread after the await completes.
-                    AppModel.Instance.allPositionInWork = await Task.Run(() => LeistungPackWSO.Load(AppModel.Instance));
-
-                    ShowMainPage();
-
-
-                    frame_plantabA.Margin = new Thickness(0, -8, 2, 0);
-                    frame_plantabB.Margin = new Thickness(0, 0, 2, 0);
-                    frame_plantabCe.Margin = new Thickness(0, 0, 2, 0);
-                    frame_plantabC.Margin = new Thickness(0, 0, 2, 0);
-                    frame_planConA.IsVisible = true;
-                    frame_planConB.IsVisible = false;
-                    frame_planConCe.IsVisible = false;
-                    frame_planConC.IsVisible = false;
-                    frame_planConCInWork.IsVisible = false;
-                    ObjektPlanWeekMobil_Stack_ABC.IsVisible = true;
-                    box_buildingInformation2.IsVisible = true;
-
-                    CheckBackgroundDataUsageAsync();
-
+                    AppModel.Logger.Warn("WARN: GPS/Standort nicht verfügbar oder Berechtigung verweigert - App wird ohne GPS fortgesetzt.");
                 }
-                else
+
+                //if(AppModel.Instance.AllBuildings == null || AppModel.Instance.AllBuildings.Count == 0)
+                //{
+                //   AppModel.Instance.InitBuildingsAsync();
+                //}
+
+                CheckAllSyncFromUpload(true);
+                InitStartPageHandlers();
+
+                //ObjektPlanWeekMobile.Delete(AppModel.Instance);
+                // Objekte sycnen erforderlich nach 4 Stunden
+                SyncBuilding();
+
+                // ***  Wird mit BuildSync ausgeführt !!! ***
+                // ***  Init_PlanTabs(((int)DateTime.Now.DayOfWeek));
+                // Gespeichert PlanPerson KW vom Mobile Laden wenn vorhanden.
+                if (AppModel.Instance.AppControll.showObjektPlans)
                 {
-                    overlay.IsVisible = false;
-                    await DisplayAlertAsync("Fehlende Berechtigungen!", "Bitte beenden Sie die App und starten diese neu!\n\nAktivieren Sie nach dem neustart die benötigten Berechtigungen!", "OK");
+                    //var PlanResponse = ObjektPlanWeekMobile.Load(AppModel.Instance);
+                    //if (PlanResponse != null) { AppModel.Instance.PlanResponse = PlanResponse; }
+                    Fill_DayPicker();
                 }
+
+                GetChecksInfo(checkInfoLastView);
+
+                // Load position data on a background thread to avoid blocking the UI thread.
+                // LeistungPackWSO.Load only reads AppModel data and performs I/O; the result
+                // is assigned back on the UI thread after the await completes.
+                AppModel.Instance.allPositionInWork = await Task.Run(() => LeistungPackWSO.Load(AppModel.Instance));
+
+                ShowMainPage();
+
+
+                frame_plantabA.Margin = new Thickness(0, -8, 2, 0);
+                frame_plantabB.Margin = new Thickness(0, 0, 2, 0);
+                frame_plantabCe.Margin = new Thickness(0, 0, 2, 0);
+                frame_plantabC.Margin = new Thickness(0, 0, 2, 0);
+                frame_planConA.IsVisible = true;
+                frame_planConB.IsVisible = false;
+                frame_planConCe.IsVisible = false;
+                frame_planConC.IsVisible = false;
+                frame_planConCInWork.IsVisible = false;
+                ObjektPlanWeekMobil_Stack_ABC.IsVisible = true;
+                box_buildingInformation2.IsVisible = true;
+
+                CheckBackgroundDataUsageAsync();
             }
             catch (Exception ex)
             {
@@ -1445,7 +1444,7 @@ namespace iPMCloud.Mobile
             if (!String.IsNullOrWhiteSpace(checkPermissionGPSMessage))
             {
                 checkPermissionGPSMessage = checkPermissionGPSMessage.Replace(";", "\n\n");
-                await DisplayAlertAsync("Berechtigungsproblem!", checkPermissionGPSMessage, "OK");
+                //await DisplayAlertAsync("Berechtigungsproblem!", checkPermissionGPSMessage, "OK");
                 //AppModel.Instance.PageNavigator.NavigateTo(TFPageNavigator.PAGE_CLOSEAPP);
                 return false;
             }
@@ -2941,8 +2940,14 @@ namespace iPMCloud.Mobile
                 overlay.IsVisible = true;
                 await Task.Delay(1);
 
+                var isTicket = AppModel.Instance.allPositionInWork != null
+                    && AppModel.Instance.allPositionInWork.ticket != null;
+                var isTicketWithAuftrag = AppModel.Instance.allPositionInWork != null
+                    && AppModel.Instance.allPositionInWork.ticket != null
+                    && AppModel.Instance.allPositionInWork.ticket.auftragid > 0;
+
                 ClearPageViews();
-                btn_RunningWorksOverP_Name.IsVisible = false;
+                btn_RunningWorksOverP_Name.IsVisible = isTicket;
                 RunningWorksPage_Container.Margin = new Thickness(0, 0, 0, 0);
                 RunningWorksPage_Container.IsVisible = true; 
                 RunningWorksPage_head_Container.IsVisible = true;
@@ -5316,7 +5321,7 @@ namespace iPMCloud.Mobile
 
             // Tickets laden und anzeigen
             overlay.IsVisible = true;
-            await Task.Delay(1);
+            await Task.Delay(100);
             await Ticket.LoadTicketsFromBackendAsync();
             await LoadAndDisplayTicketsAsync();
 
@@ -7802,14 +7807,15 @@ namespace iPMCloud.Mobile
             {
                 auftragsarbeiten_content.Children.Clear();
 
-                if (ticket == null || AppModel.Instance.allPositionInWork == null)
-                    return;
 
                 var auftragSection = CreateDetailSection("AUFTRAG", "#2f94ed");
                 auftragSection.Children.Add(CreateDetailLabel("Zu diesem Ticket gibt es keinen Auftrag.", "#aaaaaa"));
                 auftragsarbeiten_content.Children.Add(auftragSection);
 
-                var section = CreateDetailSection("AUFGABEN", "#2f94ed");
+                if (ticket == null || AppModel.Instance.allPositionInWork == null)
+                    return;
+
+                var section = CreateDetailSection("AUFGABE", "#2f94ed");
                 auftragsarbeiten_content.Children.Add(section);
 
                 auftragsarbeiten_content.Children.Add(
@@ -8836,6 +8842,13 @@ namespace iPMCloud.Mobile
         {
             overlay.IsVisible = true;
             await Task.Delay(1);
+            if (panelShowSelectedPosTicket_Container.IsVisible)
+            {
+                if(AppModel.Instance.allSelectedPositionToWork != null && AppModel.Instance.allSelectedPositionToWork.Count > 0){
+                    AppModel.Instance.allSelectedPositionToWork = new List<LeistungWSO>();
+                }
+                btn_showselected_pos_container2.IsVisible = false;
+            }
             AuswahlAnzeigenTicketTapped_Done(!panelShowSelectedPosTicket_Container.IsVisible);
 
         }

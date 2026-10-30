@@ -7,7 +7,7 @@ using NLog.Extensions.Logging;
 using ZXing.Net.Maui.Controls;
 using iPMCloud.Mobile.Services;
 using iPMCloud.Mobile.Interfaces;
-using MintedTextEditor.Maui;
+//using MintedTextEditor.Maui;
 using Microsoft.Maui.Handlers;
 
 #if ANDROID
@@ -41,7 +41,7 @@ namespace iPMCloud.Mobile
                 .UseMauiApp<App>()
                 .UseBarcodeReader()
                 .UseMauiCommunityToolkit()
-                .UseMintedTextEditor()
+                //.UseMintedTextEditor()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");

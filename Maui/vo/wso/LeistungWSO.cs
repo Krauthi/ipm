@@ -943,7 +943,7 @@ namespace iPMCloud.Mobile
                             {
                                 if (pos.selected)
                                 {
-                                    var stackPos = GetSelectedPositionSmallCardViewTicket(pos, model, func);
+                                    var stackPos = GetSelectedPositionSmallCardViewTicket(o,pos, model, func);
                                     model.allPositionInShowingSmallListView.Add(pos.id, stackPos);
                                     stack.Children.Add(stackPos);
                                 }
@@ -1024,8 +1024,10 @@ namespace iPMCloud.Mobile
             return stack;
         }
 
-        public static SwipeView GetSelectedPositionSmallCardViewTicket(LeistungWSO leistung, AppModel model, ICommand func)
+        public static SwipeView GetSelectedPositionSmallCardViewTicket(AuftragWSO o,LeistungWSO leistung, AppModel model, ICommand func)
         {
+            bool isTicket = o.bezeichnung.Contains("Ticket #");
+
             var item = new SwipeItem
             {
                 Text = "Entfernen",
@@ -1139,6 +1141,23 @@ namespace iPMCloud.Mobile
                     HorizontalOptions = LayoutOptions.Fill,
                     VerticalOptions = LayoutOptions.Start,
                 };
+                var lbanzahl2 = new Label()
+                {
+                    Text = "Die Anzahl geben Sie beim Beenden an!",
+                    TextColor = Color.FromArgb("#ffcc00"),
+                    Margin = new Thickness(0, 0, 0, 0),
+                    Padding = new Thickness(5, 0, 0, 0),
+                    FontSize = 14, 
+                    LineBreakMode = LineBreakMode.WordWrap,
+                    HorizontalOptions = LayoutOptions.Fill,
+                    VerticalOptions = LayoutOptions.Start,
+                    IsVisible = isTicket && leistung.nichtpauschal == 1,
+                };
+
+                decimal initAnzahl = decimal.Parse(leistung.anzahl, CultureInfo.GetCultureInfo("de-DE")) > 0 ?
+                    decimal.Parse(leistung.anzahl, CultureInfo.GetCultureInfo("de-DE")) : 1;
+                decimal defaultAnzahl = isTicket && leistung.nichtpauschal == 1 ? 0 : initAnzahl;
+
                 var SelectedPositionSmallCardViewEntry = new CustomEntry()
                 {
                     Margin = new Thickness(0, -17, 0, -5),
@@ -1148,7 +1167,7 @@ namespace iPMCloud.Mobile
                     FontSize = 16,
                     Keyboard = Keyboard.Numeric,
                     HeightRequest = 40,
-                    Text = Utils.formatDEStr(decimal.Parse(leistung.anzahl, CultureInfo.GetCultureInfo("de-DE")) > 0 ? decimal.Parse(leistung.anzahl, CultureInfo.GetCultureInfo("de-DE")) : 1),
+                    Text = Utils.formatDEStr(defaultAnzahl),
                     MinimumWidthRequest = 100,
                     HorizontalTextAlignment = TextAlignment.End,
                     BackgroundColor = Colors.Transparent
@@ -1161,7 +1180,12 @@ namespace iPMCloud.Mobile
                 SelectedPositionSmallCardViewEntry.TextChanged -= SelectedPositionSmallCardViewEntryChanged;
                 SelectedPositionSmallCardViewEntry.TextChanged += SelectedPositionSmallCardViewEntryChanged;
                 vAnzahlGrid.Add(lbanzahl, 0, 0);
-                vAnzahlGrid.Add(SelectedPositionSmallCardViewEntry, 0, 1);
+                if (isTicket && leistung.nichtpauschal == 1) {
+                    vAnzahlGrid.Add(lbanzahl2, 0, 1);
+                }
+                else {
+                    vAnzahlGrid.Add(SelectedPositionSmallCardViewEntry, 0, 1); 
+                }
 
                 var addBtn = new VerticalStackLayout()
                 {
@@ -1227,8 +1251,12 @@ namespace iPMCloud.Mobile
                 },
                 };
                 ho_anzahlGrid.Add(vAnzahlGrid, 0, 0);
-                ho_anzahlGrid.Add(addBtn, 1, 0);
-                ho_anzahlGrid.Add(subBtn, 2, 0);
+
+                if (!(isTicket && leistung.nichtpauschal == 1))
+                {
+                    ho_anzahlGrid.Add(addBtn, 1, 0);
+                    ho_anzahlGrid.Add(subBtn, 2, 0);
+                }
 
                 vGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
                 vGrid.Add(ho_anzahlGrid,0,2);

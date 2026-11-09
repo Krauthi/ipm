@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Maui.Core.Platform;
+using CommunityToolkit.Maui.Core.Platform;
 using Google.Apis.Services;
 using Google.Apis.Translate.v2;
 using Google.Cloud.Translation.V2;
@@ -231,7 +231,7 @@ namespace iPMCloud.Mobile
                     checkInfoLastView = view;
                 }
 
-                var result = Task.Run(() => { return AppModel.Instance.Connections.GetChecksInfo(AppModel.Instance.Person.id, checkInfoLastView); }).Result;
+                var result = await AppModel.Instance.Connections.GetChecksInfo(AppModel.Instance.Person.id, checkInfoLastView);
                 if (result != null && result.checks != null)
                 {
                     AppModel.Instance.ChecksInfoResponse = result;
@@ -566,7 +566,7 @@ namespace iPMCloud.Mobile
                 else
                 {
                     // Offen Befragung wurde noch nicht gespeichert!   Hole Offene Befragung
-                    var result = await Task.Run(() => { return AppModel.Instance.Connections.GetCheckA(AppModel.Instance.selectedCheckInfo.checkA_id).Result; });
+                    var result = await AppModel.Instance.Connections.GetCheckA(AppModel.Instance.selectedCheckInfo.checkA_id);
                     if (result != null)
                     {
                         result.start = JavaScriptDateConverter.Convert(DateTime.Now);
@@ -675,7 +675,7 @@ namespace iPMCloud.Mobile
         {
             popupContainer_quest_delcheckquest.IsVisible = false;
 
-            var result = await Task.Run(() => { return AppModel.Instance.Connections.DelCheckA(AppModel.Instance.selectedCheckA.id).Result; });
+            var result = await AppModel.Instance.Connections.DelCheckA(AppModel.Instance.selectedCheckA.id);
             if (result)
             {
                 CheckClass.DeleteCheckA(AppModel.Instance.selectedCheckA.id);
@@ -5293,20 +5293,23 @@ namespace iPMCloud.Mobile
                 frame_planConC.IsVisible = false;
                 frame_planConCInWork.IsVisible = true;
 
-                // Ticket laden und anzeigen
-                overlay.IsVisible = true;
-                await Task.Delay(1);
 
-                if (AppModel.Instance.allPositionInWork.ticket != null)
+                if (AppModel.Instance.allPositionInWork != null
+                    && AppModel.Instance.allPositionInWork.ticket != null)
                 {
+                    // Ticket laden und anzeigen
+                    overlay.IsVisible = true;
+                    await Task.Delay(1);
+
                     LoadTicketChat(AppModel.Instance.allPositionInWork.ticket, frame_planConInWork_TicketChat);
+                    
+                    await Task.Delay(1);
+                    overlay.IsVisible = false;
                 }
 
                 //await Ticket.LoadTicketsFromBackendAsync();
                 //await LoadAndDisplayTicketsAsync();
 
-                await Task.Delay(1);
-                overlay.IsVisible = false;
                 return;
             }
             frame_plantabC.Margin = new Thickness(0, -8, 2, 0);
@@ -5611,6 +5614,13 @@ namespace iPMCloud.Mobile
                 if (ticket != null)
                 {
                     editticket_container.IsVisible = true;
+
+                    // WICHTIG (Android): Der Container war bis eben unsichtbar/ungemessen.
+                    // Dem nativen Layout-System kurz Zeit geben, bevor die WebView befüllt
+                    // wird - sonst bleibt die WebView-Darstellung leer, bis man die Tabs wechselt.
+                    await Task.Yield();
+                    await Task.Delay(50);
+
                     LoadTicketChat(SelectedTicket);
 
                     // Beim aktiven Öffnen des Tickets den Besitzerstatus auf "Gesehen" setzen,
@@ -5689,7 +5699,6 @@ namespace iPMCloud.Mobile
                 wichtigeInfoChevronLabel = null;
 
                 beschreibung_tab_content.IsVisible = false;
-                objekt_tab_content.IsVisible = false;
                 chat_tab_content.IsVisible = false;
                 auftragsarbeiten_tab_content.IsVisible = false;
             }
@@ -6256,18 +6265,25 @@ namespace iPMCloud.Mobile
                 }
 
                 LeistungPackWSO.ToUploadStack(AppModel.Instance, AppModel.Instance.allPositionInWork); // Beendete Arbeiten in Stacklist für Upload
-                Task.Delay(1000).Wait();
+                // WICHTIG: Kein synchrones .Wait() mehr - blockiert den UI-Thread und kann dazu führen,
+                // dass Android den nachfolgenden StartForeground()-Aufruf (Upload) nicht mehr rechtzeitig
+                // registriert -> ForegroundServiceDidNotStartInTimeException.
+                await Task.Delay(500);
                 LeistungPackWSO.Delete(AppModel.Instance);// Aktive Arbeiten im customer aus Datenspeicher löschen
                 
 
                 if (AppModel.Instance.allPositionInWork != null
                 && AppModel.Instance.allPositionInWork.ticket != null && !isBreakWorks)
                 {
+                    AppModel.Instance.allPositionInWork.ticket.status = 8;//In Arbeit
+                    AppModel.Instance.allPositionInWork.ticket.besitzerstatus = 9;//pausiert
                     SetTicketStatusToReady(AppModel.Instance.allPositionInWork.ticket);
                 }
                 else if (AppModel.Instance.allPositionInWork != null
                 && AppModel.Instance.allPositionInWork.ticket != null && isBreakWorks)
                 {
+                    AppModel.Instance.allPositionInWork.ticket.status = 4;//In Arbeit
+                    AppModel.Instance.allPositionInWork.ticket.besitzerstatus = 2;//pausiert
                     SetTicketStatusToPausiert(AppModel.Instance.allPositionInWork.ticket);
                     isBreakWorks = false;
                 }
@@ -6323,13 +6339,6 @@ namespace iPMCloud.Mobile
             SwitchToTab("beschreibung");
         }
 
-        private void OnTabObjekt_Clicked(object sender, EventArgs e)
-        {
-            ticket_footer_container.IsVisible = true;
-            CollapseWichtigeInfo();
-            SwitchToTab("objekt");
-        }
-
         private void OnTabChat_Clicked(object sender, EventArgs e)
         {
             ticket_footer_container.IsVisible = false;
@@ -6350,15 +6359,12 @@ namespace iPMCloud.Mobile
             {
                 // Alle Tabs ausblenden
                 beschreibung_tab_content.IsVisible = false;
-                objekt_tab_content.IsVisible = false;
                 chat_tab_content.IsVisible = false;
                 auftragsarbeiten_tab_content.IsVisible = false;
 
                 // Button-Styles zurücksetzen
                 tab_beschreibung_btn.BackgroundColor = Color.FromArgb("#122446");
                 tab_beschreibung_btn.TextColor = Color.FromArgb("#aaaaaa");
-                tab_objekt_btn.BackgroundColor = Color.FromArgb("#122446");
-                tab_objekt_btn.TextColor = Color.FromArgb("#aaaaaa");
                 tab_chat_btn.BackgroundColor = Color.FromArgb("#122446");
                 tab_chat_btn.TextColor = Color.FromArgb("#aaaaaa");
                 tab_auftragsarbeiten_btn.BackgroundColor = Color.FromArgb("#122446");
@@ -6371,11 +6377,6 @@ namespace iPMCloud.Mobile
                         beschreibung_tab_content.IsVisible = true;
                         tab_beschreibung_btn.BackgroundColor = Color.FromArgb("#234567");
                         tab_beschreibung_btn.TextColor = Colors.White;
-                        break;
-                    case "objekt":
-                        objekt_tab_content.IsVisible = true;
-                        tab_objekt_btn.BackgroundColor = Color.FromArgb("#234567");
-                        tab_objekt_btn.TextColor = Colors.White;
                         break;
                     case "chat":
                         chat_tab_content.IsVisible = true;
@@ -6730,9 +6731,6 @@ namespace iPMCloud.Mobile
 
                 if (ticket_beschreibung_webview != null)
                     ticket_beschreibung_webview.BackgroundColor = backgroundColor;
-
-                if (objekt_tab_content != null)
-                    objekt_tab_content.BackgroundColor = backgroundColor;
             }
             catch (Exception ex)
             {
@@ -6743,6 +6741,169 @@ namespace iPMCloud.Mobile
         /// <summary>
         /// Lädt die Ticket-Beschreibung in den ersten Tab
         /// </summary>
+        /// <summary>
+        /// Baut den Objekt-/Auftrags-/Ticket-Details-Bereich als HTML, damit er direkt
+        /// unterhalb der Ticketbeschreibung in derselben WebView dargestellt werden kann
+        /// (statt als separate MAUI-Elemente, was zu viel ungenutztem Leerraum führte).
+        /// </summary>
+        private string BuildTicketDetailsHtml(Ticket ticket)
+        {
+            if (ticket == null)
+                return string.Empty;
+
+            var sb = new System.Text.StringBuilder();
+            sb.Append("<hr style='border:none;border-top:1px solid #555;margin:16px 0;'/>");
+
+            static string Esc(string s) => System.Net.WebUtility.HtmlEncode(s ?? string.Empty);
+
+            void AppendSectionStart(string title, string titleColor)
+            {
+                sb.Append($"<div style='margin:0 0 14px 0;'>");
+                sb.Append($"<div style='font-weight:bold;font-size:16px;color:{titleColor};margin-bottom:4px;'>{Esc(title)}</div>");
+            }
+            void AppendLine(string text, string color = "#ffffff", double size = 14)
+            {
+                sb.Append($"<div style='font-size:{size.ToString(System.Globalization.CultureInfo.InvariantCulture)}px;color:{color};margin:0 0 0 0;'>{Esc(text)}</div>");
+            }
+            void AppendSectionEnd() => sb.Append("</div>");
+
+            // Objekt-Informationen
+            if (ticket.objektid > 0)
+            {
+                AppendSectionStart("OBJEKT", "#2f94ed");
+                //AppendLine($"Objekt-ID: {ticket.objektid}");
+
+                if (ticket.objekt != null)
+                {
+                    //if (!string.IsNullOrWhiteSpace(ticket.objekt.objektnr))
+                    //    AppendLine($"Objekt-Nr: {ticket.objekt.objektnr}");
+                    if (!string.IsNullOrWhiteSpace(ticket.objekt.objektname))
+                        AppendLine($"Objektname: {ticket.objekt.objektname}");
+                    if (!string.IsNullOrWhiteSpace(ticket.objekt.adresse))
+                        AppendLine(ticket.objekt.adresse);
+                    if (!string.IsNullOrWhiteSpace(ticket.objekt.plz) || !string.IsNullOrWhiteSpace(ticket.objekt.ort))
+                        AppendLine($"{ticket.objekt.plz} {ticket.objekt.ort}".Trim());
+                }
+                AppendSectionEnd();
+            }
+
+            // Auftrag-Informationen
+            AppendSectionStart("AUFTRAG", "#2f94ed");
+            if (ticket.auftragid > 0)
+                AppendLine($"Auftrags-Nr.: {ticket.auftragid}");
+            else
+                AppendLine("Zu diesem Ticket gibt es keinen Auftrag.", "#aaaaaa");
+            AppendSectionEnd();
+
+            // Ticket-Details (Start, Ende, Priorität, Status, etc.)
+            AppendSectionStart("TICKET-DETAILS", "#2f94ed");
+
+            //if (long.TryParse(ticket.start, out long startTimestamp) && startTimestamp > 0)
+            //{
+            //    var startDate = DateTimeOffset.FromUnixTimeMilliseconds(startTimestamp).DateTime;
+            //    AppendLine($"📅 Starten ab: {startDate:dd.MM.yyyy HH:mm}", "#ffffff", 14);
+            //}
+            //else
+            //{
+            //    AppendLine("📅 Starten ab: Ohne Zeitvorgabe", "#ff6b6b", 14);
+            //}
+
+            //if (long.TryParse(ticket.end, out long endTimestamp) && endTimestamp > 0)
+            //{
+            //    var endDate = DateTimeOffset.FromUnixTimeMilliseconds(endTimestamp).DateTime;
+            //    AppendLine($"🏁 Fertig bis: {endDate:dd.MM.yyyy HH:mm}", "#ffffff", 14);
+            //}
+            //else
+            //{
+            //    AppendLine("🏁 Fertig bis: Ohne Zeitvorgabe", "#ff6b6b", 14);
+            //}
+
+            //string prioText = ticket.prio switch
+            //{
+            //    3 => "🔴 NOTFALL",
+            //    2 => "🟠 HOCH",
+            //    1 => "🟡 NORMAL",
+            //    0 => "🟢 GERING",
+            //    _ => "UNBEKANNT"
+            //};
+            //AppendLine($"Wichtigkeit: {prioText}");
+
+            //string statusText = ticket.status switch
+            //{
+            //    1 => "Neu",
+            //    2 => "Offen",
+            //    4 => "In Arbeit",
+            //    8 => "Abgeschlossen",
+            //    9 => "Erledigt",
+            //    _ => "Unbekannt"
+            //};
+            //AppendLine($"Status: {statusText}");
+
+            //if (ticket.besitzer != null || !string.IsNullOrWhiteSpace(ticket.besitzername))
+            //{
+            //    string besitzerName = ticket.besitzername ?? ticket.besitzer?.name ?? "Nicht zugewiesen";
+            //    AppendLine($"👤 Zugewiesener: {besitzerName}");
+
+            //    if (ticket.besitzerstatus == -1)
+            //        AppendLine("⚠️ Noch nicht geöffnet/gesehen", "#ff9800");
+            //}
+            //else
+            //{
+            //    AppendLine("Zugewiesener: Nicht zugewiesen");
+            //}
+
+            if (ticket.ersteller != null || !string.IsNullOrWhiteSpace(ticket.erstellername))
+            {
+                string erstellerName = ticket.erstellername ?? ticket.ersteller?.name ?? "Unbekannt";
+                DateTime? createDate = null;
+                if (long.TryParse(ticket.start, out long createTimestamp) && createTimestamp > 0)
+                {
+                    createDate = DateTimeOffset.FromUnixTimeMilliseconds(createTimestamp).DateTime;
+                }
+                string dateStr = createDate.HasValue ? $" ({createDate.Value:dd.MM.yyyy})" : "";
+                AppendLine($"Ersteller: {erstellerName}{dateStr}");
+            }
+
+            AppendLine($"Typ: {(ticket.intern ? "Intern" : "Extern")}");
+
+            AppendSectionEnd();
+
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// Workaround für ein Android-WebView-Rendering-Problem: Wenn eine WebView
+        /// befüllt wird, während ihr Eltern-Container gerade erst sichtbar geworden
+        /// (und daher noch nicht vollständig gemessen/layoutet) ist, bleibt die
+        /// Darstellung leer, bis ein weiterer Layout-Durchlauf stattfindet (z.B. durch
+        /// Tab-Wechsel ausgelöst). Diese Methode erzwingt mehrfach einen solchen
+        /// Layout-/Sichtbarkeits-Durchlauf, sowohl auf der WebView selbst als auch auf
+        /// dem umgebenden Tab-Container.
+        /// </summary>
+        private static async Task ForceWebViewRerenderAsync(WebView webView, VisualElement container)
+        {
+            if (webView == null)
+                return;
+
+            int[] delaysMs = { 30, 120, 300 };
+            foreach (var delay in delaysMs)
+            {
+                await Task.Delay(delay);
+
+                if (container != null && container.IsVisible)
+                {
+                    container.IsVisible = false;
+                    container.IsVisible = true;
+                }
+
+                if (webView.IsVisible)
+                {
+                    webView.IsVisible = false;
+                    webView.IsVisible = true;
+                }
+            }
+        }
+
         private async void LoadTicketBeschreibung(Ticket ticket)
         {
             bool isDarkMode = Application.Current?.RequestedTheme == AppTheme.Dark;
@@ -6782,13 +6943,18 @@ namespace iPMCloud.Mobile
                 string finalHtml;
                 if (isFullHtml)
                 {
-                    // Bereits vollständiges HTML - verwende es direkt
-                    finalHtml = decodedText;
+                    // Bereits vollständiges HTML - Details vor </body> einfügen (bzw. anhängen, falls kein </body> gefunden wird)
+                    string detailsHtmlFull = BuildTicketDetailsHtml(ticket);
+                    int bodyCloseIndex = decodedText.LastIndexOf("</body>", StringComparison.OrdinalIgnoreCase);
+                    finalHtml = bodyCloseIndex >= 0
+                        ? decodedText.Insert(bodyCloseIndex, detailsHtmlFull)
+                        : decodedText + detailsHtmlFull;
                 }
                 else
                 {
                     // Falls es HTML-Tags enthält, behalte sie; sonst wrap in <p>
                     string bodyContent = decodedText.Contains("<") ? decodedText : $"<p>{System.Net.WebUtility.HtmlEncode(decodedText)}</p>";
+                    bodyContent += BuildTicketDetailsHtml(ticket);
                     finalHtml = $@"<!DOCTYPE html>
 <html>
 <head>
@@ -6844,6 +7010,13 @@ namespace iPMCloud.Mobile
 
                 // Setze HTML direkt (OHNE BaseUrl - das war das iOS-Problem!)
                 ticket_beschreibung_webview.Source = new HtmlWebViewSource { Html = finalHtml };
+
+                // WORKAROUND: Beim allerersten Anzeigen rendert das WebView den Inhalt
+                // manchmal nicht, solange noch kein Layout-Durchlauf mit sichtbarem Tab
+                // stattgefunden hat (erst ein Tab-Wechsel löste bisher das Rendering aus).
+                // Erzwinge daher mehrfach einen erneuten Layout-/Sichtbarkeits-Durchlauf,
+                // sowohl auf der WebView selbst als auch auf dem umgebenden Tab-Container.
+                await ForceWebViewRerenderAsync(ticket_beschreibung_webview, beschreibung_tab_content);
 
             }
             catch (Exception ex)
@@ -6911,13 +7084,18 @@ namespace iPMCloud.Mobile
                 string finalHtml;
                 if (isFullHtml)
                 {
-                    // Bereits vollständiges HTML - verwende es direkt
-                    finalHtml = decodedText;
+                    // Bereits vollständiges HTML - Details vor </body> einfügen (bzw. anhängen, falls kein </body> gefunden wird)
+                    string detailsHtmlFull = BuildTicketDetailsHtml(ticket);
+                    int bodyCloseIndex = decodedText.LastIndexOf("</body>", StringComparison.OrdinalIgnoreCase);
+                    finalHtml = bodyCloseIndex >= 0
+                        ? decodedText.Insert(bodyCloseIndex, detailsHtmlFull)
+                        : decodedText + detailsHtmlFull;
                 }
                 else
                 {
                     // Falls es HTML-Tags enthält, behalte sie; sonst wrap in <p>
                     string bodyContent = decodedText.Contains("<") ? decodedText : $"<p>{System.Net.WebUtility.HtmlEncode(decodedText)}</p>";
+                    bodyContent += BuildTicketDetailsHtml(ticket);
                     finalHtml = $@"<!DOCTYPE html>
 <html>
 <head>
@@ -6973,6 +7151,9 @@ namespace iPMCloud.Mobile
 
                 // Setze HTML direkt (OHNE BaseUrl - das war das iOS-Problem!)
                 ticket_beschreibung_webview_inwork.Source = new HtmlWebViewSource { Html = finalHtml };
+
+                // Gleicher Rendering-Workaround wie bei ticket_beschreibung_webview.
+                await ForceWebViewRerenderAsync(ticket_beschreibung_webview_inwork, null);
 
             }
             catch (Exception ex)
@@ -7327,8 +7508,8 @@ namespace iPMCloud.Mobile
                 // Zeile 2: Status-Chip und Start/End-Zeiten
                 var statusAndDatesStack = new HorizontalStackLayout
                 {
-                    Margin = new Thickness(12, 0, 8, 8),
-                    Spacing = 10
+                    Margin = new Thickness(12, 2, 8, 10),
+                    Spacing = 12
                 };
 
                 // Status-Chip links
@@ -7353,7 +7534,7 @@ namespace iPMCloud.Mobile
                 // Start/End-Zeiten vertikal
                 var datesStack = new VerticalStackLayout
                 {
-                    Spacing = 5
+                    Spacing = 6
                 };
 
                 // Start-Datum/Status (basierend auf ticket.startab)
@@ -7389,13 +7570,13 @@ namespace iPMCloud.Mobile
 
                         var startLabel = new Label
                         {
-                            FontSize = 11,
+                            FontSize = 14,
                             FormattedText = new FormattedString
                             {
                                 Spans =
                                 {
                                     new Span { Text = "START: ", TextColor = Color.FromArgb("#ffffff"), FontAttributes = FontAttributes.Bold },
-                                    new Span { Text = startValueText, TextColor = Color.FromArgb("#ffcc00") }
+                                    new Span { Text = startValueText, TextColor = Color.FromArgb("#ffcc00"), FontAttributes = FontAttributes.Bold }
                                 }
                             }
                         };
@@ -7425,7 +7606,8 @@ namespace iPMCloud.Mobile
                                 var countdownLabel = new Label
                                 {
                                     Text = countdownText,
-                                    FontSize = 10,
+                                    FontSize = 12,
+                                    FontAttributes = FontAttributes.Bold,
                                     TextColor = Color.FromArgb("#88ff88"),
                                     VerticalOptions = LayoutOptions.Center
                                 };
@@ -7464,13 +7646,13 @@ namespace iPMCloud.Mobile
                     {
                         var endLabel = new Label
                         {
-                            FontSize = 11,
+                            FontSize = 15,
                             FormattedText = new FormattedString
                             {
                                 Spans =
                                 {
                                     new Span { Text = "ENDE: ", TextColor = Color.FromArgb("#ffffff"), FontAttributes = FontAttributes.Bold },
-                                    new Span { Text = endValueText, TextColor = Color.FromArgb("#ffcc00") }
+                                    new Span { Text = endValueText, TextColor = Color.FromArgb("#ffcc00"), FontAttributes = FontAttributes.Bold }
                                 }
                             }
                         };
@@ -7505,8 +7687,6 @@ namespace iPMCloud.Mobile
         {
             try
             {
-                objekt_auftrag_content.Children.Clear();
-
                 if (ticket == null)
                     return;
 
@@ -7516,211 +7696,9 @@ namespace iPMCloud.Mobile
                 // Zeige wichtige Besitzer-Info (max. 3 Zeilen, sonst scrollbar)
                 CreateTicketWichtigeInfoCard(ticket);
 
-                // Kunde-Informationen
-                //if (ticket.kunde != null || !string.IsNullOrWhiteSpace(ticket.kundename))
-                //{
-                //    var kundeSection = CreateDetailSection("KUNDE", "#2f94ed");
-
-                //    if (!string.IsNullOrWhiteSpace(ticket.kundename))
-                //    {
-                //        kundeSection.Children.Add(CreateDetailLabel($"Firma: {ticket.kundename}"));
-                //    }
-
-                //    if (ticket.kunde != null)
-                //    {
-                //        if (!string.IsNullOrWhiteSpace(ticket.kunde.name))
-                //        {
-                //            kundeSection.Children.Add(CreateDetailLabel($"Kontakt: {ticket.kunde.name}"));
-                //        }
-                //        if (!string.IsNullOrWhiteSpace(ticket.kunde.mail))
-                //        {
-                //            kundeSection.Children.Add(CreateDetailLabel($"E-Mail: {ticket.kunde.mail}"));
-                //        }
-                //    }
-
-                //    objekt_auftrag_content.Children.Add(kundeSection);
-                //}
-
-                // Ansprechpartner (ASP)
-                //if (ticket.asp != null)
-                //{
-                //    var aspSection = CreateDetailSection("ANSPRECHPARTNER", "#2f94ed");
-
-                //    if (!string.IsNullOrWhiteSpace(ticket.asp.firma))
-                //    {
-                //        aspSection.Children.Add(CreateDetailLabel($"Firma: {ticket.asp.firma}"));
-                //    }
-
-                //    string aspName = ticket.asp.GetFullName();
-                //    if (!string.IsNullOrWhiteSpace(aspName))
-                //    {
-                //        aspSection.Children.Add(CreateDetailLabel($"Name: {aspName}"));
-                //    }
-
-                //    if (!string.IsNullOrWhiteSpace(ticket.asp.mail))
-                //    {
-                //        aspSection.Children.Add(CreateDetailLabel($"E-Mail: {ticket.asp.mail}"));
-                //    }
-
-                //    if (!string.IsNullOrWhiteSpace(ticket.asp.telefon))
-                //    {
-                //        aspSection.Children.Add(CreateDetailLabel($"Telefon: {ticket.asp.telefon}"));
-                //    }
-
-                //    if (!string.IsNullOrWhiteSpace(ticket.asp.mobile))
-                //    {
-                //        aspSection.Children.Add(CreateDetailLabel($"Mobil: {ticket.asp.mobile}"));
-                //    }
-
-                //    objekt_auftrag_content.Children.Add(aspSection);
-                //}
-
-                // Objekt-Informationen
-                if (ticket.objektid > 0)
-                {
-                    var objektSection = CreateDetailSection("OBJEKT", "#2f94ed");
-
-                    objektSection.Children.Add(CreateDetailLabel($"Objekt-ID: {ticket.objektid}"));
-
-                    //if (!string.IsNullOrWhiteSpace(ticket.objektname))
-                    //{
-                    //    objektSection.Children.Add(CreateDetailLabel($"{ticket.objektname}"));
-                    //}
-
-                    if (ticket.objekt != null)
-                    {
-                        if (!string.IsNullOrWhiteSpace(ticket.objekt.objektnr))
-                        {
-                            objektSection.Children.Add(CreateDetailLabel($"Objekt-Nr: {ticket.objekt.objektnr}"));
-                        }
-                        if (!string.IsNullOrWhiteSpace(ticket.objekt.objektname))
-                        {
-                            objektSection.Children.Add(CreateDetailLabel($"Objektname: {ticket.objekt.objektname}"));
-                        }
-
-
-                        if (!string.IsNullOrWhiteSpace(ticket.objekt.adresse))
-                        {
-                            objektSection.Children.Add(CreateDetailLabel($"{ticket.objekt.adresse}"));
-                        }
-
-                        if (!string.IsNullOrWhiteSpace(ticket.objekt.plz) || !string.IsNullOrWhiteSpace(ticket.objekt.ort))
-                        {
-                            objektSection.Children.Add(CreateDetailLabel($"{ticket.objekt.plz} {ticket.objekt.ort}"));
-                        }
-                    }
-
-                    objekt_auftrag_content.Children.Add(objektSection);
-                }
-
-                // Auftrag-Informationen
-                if (ticket.auftragid > 0)
-                {
-                    var auftragSection = CreateDetailSection("AUFTRAG", "#2f94ed");
-                    auftragSection.Children.Add(CreateDetailLabel($"Auftrags-ID: {ticket.auftragid}"));
-                    objekt_auftrag_content.Children.Add(auftragSection);
-                }
-                else
-                {
-                    var auftragSection = CreateDetailSection("AUFTRAG", "#2f94ed");
-                    auftragSection.Children.Add(CreateDetailLabel("Zu diesem Ticket gibt es keinen Auftrag.", "#aaaaaa"));
-                    objekt_auftrag_content.Children.Add(auftragSection);
-                }
-
-                // Ticket-Details (Start, Ende, Priorität, Status, etc.)
-                var detailsSection = CreateDetailSection("TICKET-DETAILS", "#2f94ed");
-
-                // Starten ab
-                if (long.TryParse(ticket.start, out long startTimestamp) && startTimestamp > 0)
-                {
-                    // JavaScript Timestamps sind in Millisekunden
-                    var startDate = DateTimeOffset.FromUnixTimeMilliseconds(startTimestamp).DateTime;
-                    detailsSection.Children.Add(CreateDetailLabel($"📅 Starten ab: {startDate:dd.MM.yyyy HH:mm}","#ffffff" ,18));
-                }
-                else
-                {
-                    detailsSection.Children.Add(CreateDetailLabel($"📅 Starten ab: Ohne Zeitvorgabe", "#ff6b6b", 18));
-                }
-
-                // Fertig bis
-                if (long.TryParse(ticket.end, out long endTimestamp) && endTimestamp > 0)
-                {
-                    // JavaScript Timestamps sind in Millisekunden
-                    var endDate = DateTimeOffset.FromUnixTimeMilliseconds(endTimestamp).DateTime;
-                    detailsSection.Children.Add(CreateDetailLabel($"🏁 Fertig bis: {endDate:dd.MM.yyyy HH:mm}", "#ffffff",18));
-                }
-                else
-                {
-                    detailsSection.Children.Add(CreateDetailLabel($"🏁 Fertig bis: Ohne Zeitvorgabe", "#ff6b6b",18));
-                }
-
-                // Priorität
-                string prioText = ticket.prio switch
-                {
-                    3 => "🔴 NOTFALL",
-                    2 => "🟠 HOCH",
-                    1 => "🟡 NORMAL",
-                    0 => "🟢 GERING",
-                    _ => "UNBEKANNT"
-                };
-                detailsSection.Children.Add(CreateDetailLabel($"Wichtigkeit: {prioText}"));
-
-                // Status
-                string statusText = ticket.status switch
-                {
-                    1 => "Neu",
-                    2 => "Offen",
-                    4 => "In Arbeit",                    
-                    8 => "Abgeschlossen",
-                    9 => "Erledigt",
-                    _ => "Unbekannt"
-                };
-                detailsSection.Children.Add(CreateDetailLabel($"Status: {statusText}"));
-
-                // Zugewiesener (Besitzer)
-                if (ticket.besitzer != null || !string.IsNullOrWhiteSpace(ticket.besitzername))
-                {
-                    string besitzerName = ticket.besitzername ?? ticket.besitzer?.name ?? "Nicht zugewiesen";
-                    detailsSection.Children.Add(CreateDetailLabel($"👤 Zugewiesener: {besitzerName}"));
-
-                    // Besitzerstatus
-                    if (ticket.besitzerstatus == -1)
-                    {
-                        detailsSection.Children.Add(CreateDetailLabel($"⚠️ Noch nicht geöffnet/gesehen", "#ff9800"));
-                    }
-                }
-                else
-                {
-                    detailsSection.Children.Add(CreateDetailLabel($"Zugewiesener: Nicht zugewiesen"));
-                }
-
-                // Ersteller
-                if (ticket.ersteller != null || !string.IsNullOrWhiteSpace(ticket.erstellername))
-                {
-                    string erstellerName = ticket.erstellername ?? ticket.ersteller?.name ?? "Unbekannt";
-                    DateTime? createDate = null;
-                    if (long.TryParse(ticket.start, out long createTimestamp) && createTimestamp > 0)
-                    {
-                        // JavaScript Timestamps sind in Millisekunden
-                        createDate = DateTimeOffset.FromUnixTimeMilliseconds(createTimestamp).DateTime;
-                    }
-
-                    string dateStr = createDate.HasValue ? $" ({createDate.Value:dd.MM.yyyy})" : "";
-                    detailsSection.Children.Add(CreateDetailLabel($"Ersteller: {erstellerName}{dateStr}"));
-                }
-
-                // Intern/Extern
-                detailsSection.Children.Add(CreateDetailLabel($"Typ: {(ticket.intern ? "Intern" : "Extern")}"));
-
-                objekt_auftrag_content.Children.Add(detailsSection);
-
-                // Wenn gar keine Informationen vorhanden
-                if (objekt_auftrag_content.Children.Count == 0)
-                {
-                    var noDataSection = CreateDetailSection("KEINE DATEN", "#999999");
-                    noDataSection.Children.Add(CreateDetailLabel("Keine zusätzlichen Informationen vorhanden."));
-                    objekt_auftrag_content.Children.Add(noDataSection);
-                }
+                // HINWEIS: Objekt-/Auftrags-/Ticket-Details werden nicht mehr als separate
+                // MAUI-Elemente dargestellt, sondern direkt als HTML unterhalb der
+                // Ticketbeschreibung in der WebView eingebettet (siehe BuildTicketDetailsHtml).
             }
             catch (Exception ex)
             {
@@ -7728,6 +7706,7 @@ namespace iPMCloud.Mobile
                 AppModel.Logger?.Error(ex, "ERROR: LoadTicketObjektAuftrag");
             }
         }
+
 
         /// <summary>
         /// L\u00e4dt und zeigt die Kategorien/Leistungen (Arbeiten) des zum Ticket geh\u00f6renden Auftrags
@@ -9403,8 +9382,12 @@ namespace iPMCloud.Mobile
         }
         public async void SavesRunningWorksOver(bool isDiffObjekt)
         {
-            bool isTicket = AppModel.Instance.allPositionInWork.leistungen == null && AppModel.Instance.allPositionInWork.ticket != null;                
-            bool isTicketWithLeistungen = AppModel.Instance.allPositionInWork.leistungen != null && AppModel.Instance.allPositionInWork.ticket != null;
+            bool isTicket = AppModel.Instance.allPositionInWork != null
+                && AppModel.Instance.allPositionInWork.leistungen == null
+                && AppModel.Instance.allPositionInWork.ticket != null;
+            bool isTicketWithLeistungen = AppModel.Instance.allPositionInWork != null
+                && AppModel.Instance.allPositionInWork.leistungen != null
+                && AppModel.Instance.allPositionInWork.ticket != null;
 
             overlay.IsVisible = true;
             await Task.Delay(1);

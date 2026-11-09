@@ -138,7 +138,7 @@ namespace iPMCloud.Mobile.vo
                 SettingDTO.CustomerName = "iPD TEST Dev";
                 SettingDTO.CustomerNumber = "1"; // "10074";
                 SettingDTO.ServerUrl = "https://test-hensel.ipmcloud.de";
-                //SettingDTO.ServerUrl = "http://nbkrauthausen:52222";///mservice";
+                SettingDTO.ServerUrl = "http://nbkrauthausen:52222";///mservice";
 
                 ////SettingDTO.ServerUrl = "http://192.168.178.23:52222";
                 ////SettingDTO.ServerUrl = "http://localhost:52222";

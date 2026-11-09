@@ -179,7 +179,28 @@
                                 Text="JETZT HOCHLADEN"
                                 TextColor="#ffffff" />
                         </Border>
+                        <!--<Border
+                            x:Name="btn_settings_count_positionen_list"
+                            Grid.Column="0"
+                            Margin="0"
+                            Padding="28,10,28,10"
+                            BackgroundColor="#73042d"
+                            HorizontalOptions="End">
+                            <Label
+                                Margin="0"
+                                Padding="0"
+                                FontSize="16"
+                                Text="ANSEHEN"
+                                TextColor="#ffffff" />
+                        </Border>-->
                     </Grid>
+                    <!--<VerticalStackLayout
+                        x:Name="settings_positionen_list"
+                        Margin="0"
+                        Padding="0"
+                        HorizontalOptions="Fill"
+                        Spacing="0">
+                    </VerticalStackLayout>-->
                 </VerticalStackLayout>
 
 

@@ -1003,7 +1003,7 @@ namespace iPMCloud.Mobile
 
                     var startLabel = new Label
                     {
-                        FontSize = 10,
+                        FontSize = 13,
                         FormattedText = new FormattedString
                         {
                             Spans =
@@ -1039,7 +1039,7 @@ namespace iPMCloud.Mobile
                             var countdownLabel = new Label
                             {
                                 Text = countdownText,
-                                FontSize = 9,
+                                FontSize = 10,
                                 TextColor = Color.FromArgb("#88ff88"),
                                 VerticalOptions = LayoutOptions.Center
                             };
@@ -1078,7 +1078,7 @@ namespace iPMCloud.Mobile
                 {
                     var endLabel = new Label
                     {
-                        FontSize = 10,
+                        FontSize = 13,
                         FormattedText = new FormattedString
                         {
                             Spans =
@@ -1089,6 +1089,32 @@ namespace iPMCloud.Mobile
                         }
                     };
                     datesStack.Children.Add(endLabel);
+                }
+            }
+
+            // Objektadresse (wenn eine Objekt-ID im Ticket vorhanden ist) - unter ENDE
+            if (ticket.objektid > 0 && ticket.objekt != null)
+            {
+                string adresseText = string.Join(", ", new[] { ticket.objekt.adresse, $"{ticket.objekt.plz} {ticket.objekt.ort}".Trim() }
+                    .Where(s => !string.IsNullOrWhiteSpace(s)));
+
+                if (!string.IsNullOrWhiteSpace(adresseText))
+                {
+                    var objektAdresseLabel = new Label
+                    {
+                        FontSize = 11,
+                        LineBreakMode = LineBreakMode.WordWrap,
+                        WidthRequest = screenWidthDp - 120,
+                        FormattedText = new FormattedString
+                        {
+                            Spans =
+                            {
+                                new Span { Text = "OBJEKT: ", TextColor = Color.FromArgb("#ffffff"), FontAttributes = FontAttributes.Bold },
+                                new Span { Text = adresseText, TextColor = Color.FromArgb("#dddddd") }
+                            }
+                        }
+                    };
+                    datesStack.Children.Add(objektAdresseLabel);
                 }
             }
 

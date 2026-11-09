@@ -3083,7 +3083,7 @@
                                     ContentLayout="Left,10"
                                     FontSize="15"
                                     ImageSource="permission_edit.png"
-                                    Text="CHAT"
+                                    Text="Dokumentieren"
                                     TextColor="#fff" />
                                 <Button
                                     Grid.Column="0"
@@ -4797,7 +4797,7 @@
                         FontSize="18"
                         HeightRequest="42"
                         HorizontalOptions="End"
-                        ImageSource="time128_3.png"
+                        ImageSource="time128.png"
                         Text="PAUSIEREN"
                         TextColor="#ffffff" />
                 </HorizontalStackLayout>
@@ -6097,7 +6097,6 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
 
                     <Button
@@ -6130,22 +6129,8 @@
                         TextColor="#aaa" />
 
                     <Button
-                        x:Name="tab_objekt_btn"
-                        Grid.Column="2"
-                        Padding="10,0,10,0"
-                        BackgroundColor="Transparent"
-                        BorderColor="Black"
-                        BorderWidth="1"
-                        Clicked="OnTabObjekt_Clicked"
-                        CornerRadius="0"
-                        FontAttributes="Bold"
-                        FontSize="11"
-                        Text="DETAILS"
-                        TextColor="#aaa" />
-
-                    <Button
                         x:Name="tab_chat_btn"
-                        Grid.Column="3"
+                        Grid.Column="2"
                         Padding="10,0,10,0"
                         BackgroundColor="Transparent"
                         BorderColor="Black"
@@ -6154,7 +6139,7 @@
                         CornerRadius="0"
                         FontAttributes="Bold"
                         FontSize="11"
-                        Text="CHAT"
+                        Text="Dokumentieren"
                         TextColor="#aaa" />
                 </Grid>
 
@@ -6178,33 +6163,25 @@
                         HorizontalOptions="FillAndExpand"
                         IsVisible="True"
                         VerticalOptions="FillAndExpand">
-                        <!--  WebView - wird im Code-Behind gesetzt  -->
-                        <WebView
-                            x:Name="ticket_beschreibung_webview"
-                            BackgroundColor="Transparent"
-                            HorizontalOptions="Fill"
-                            MinimumHeightRequest="500"
-                            VerticalOptions="Start" />
-                    </ScrollView>
-
-                    <!--  Objekt/Auftrag Tab  -->
-                    <ScrollView
-                        x:Name="objekt_tab_content"
-                        BackgroundColor="#333"
-                        IsVisible="False">
                         <StackLayout
-                            Margin="0,5,0,0"
+                            Margin="0"
                             Padding="0"
                             BackgroundColor="#333"
                             Spacing="0">
-                            <!--  Details Container (dynamisch gefüllt im Code)  -->
+                            <!--  WebView - wird im Code-Behind gesetzt  -->
+                            <WebView
+                                x:Name="ticket_beschreibung_webview"
+                                BackgroundColor="Transparent"
+                                HorizontalOptions="Fill"
+                                MinimumHeightRequest="500"
+                                VerticalOptions="Start" />
+
+                            <!--  Objekt/Auftrag Details (vormals eigener Tab, jetzt direkt unter der Ticketbeschreibung)  -->
                             <StackLayout
                                 x:Name="objekt_auftrag_content"
                                 Padding="0"
                                 BackgroundColor="#333"
-                                Spacing="0">
-                                <!--  Dynamisch gefüllt im Code  -->
-                            </StackLayout>
+                                Spacing="0" />
                         </StackLayout>
                     </ScrollView>
 

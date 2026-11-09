@@ -1157,6 +1157,7 @@ namespace iPMCloud.Mobile
                 decimal initAnzahl = decimal.Parse(leistung.anzahl, CultureInfo.GetCultureInfo("de-DE")) > 0 ?
                     decimal.Parse(leistung.anzahl, CultureInfo.GetCultureInfo("de-DE")) : 1;
                 decimal defaultAnzahl = isTicket && leistung.nichtpauschal == 1 ? 0 : initAnzahl;
+                if(isTicket && leistung.nichtpauschal == 1) { leistung.anzahl = "0,00"; leistung.produktAnzahl = "0,00"; }
 
                 var SelectedPositionSmallCardViewEntry = new CustomEntry()
                 {
@@ -3218,6 +3219,18 @@ namespace iPMCloud.Mobile
                 if (dec < 0) { dec = 0; }
                 entry.Text = Utils.formatDEStr(dec);
                 l.anzahl = entry.Text;
+                //if (AppModel.Instance.allPositionInWork != null && AppModel.Instance.allPositionInWork.leistungen != null
+                //    && AppModel.Instance.allPositionInWork.leistungen.Count > 0)
+                //{
+                //    foreach (var lei in AppModel.Instance.allPositionInWork.leistungen)
+                //    {
+                //        if(lei.id == l.id)
+                //        {
+                //            lei.anzahl = l.anzahl;
+                //        }
+                //    }
+                //    LeistungPackWSO.Save(AppModel.Instance, AppModel.Instance.allPositionInWork);
+                //}
                 UpdateAnzahlByTicketImageVisibility(entry, dec);
             }
 

@@ -21,7 +21,11 @@ namespace iPMCloud.Mobile.Views
             var tgr_btn_settings_count_positionen = new TapGestureRecognizer();
             tgr_btn_settings_count_positionen.Tapped += btn_SettingsSyncUploadTapped;
             btn_settings_count_positionen.GestureRecognizers.Add(tgr_btn_settings_count_positionen);
-            
+
+            //btn_settings_count_positionen_list.GestureRecognizers.Clear();
+            //var tgr_btn_settings_count_positionen_list = new TapGestureRecognizer();
+            //tgr_btn_settings_count_positionen_list.Tapped += btn_SettingsShowListTapped;
+            //btn_settings_count_positionen_list.GestureRecognizers.Add(tgr_btn_settings_count_positionen_list);
             
             btn_settings_synctimesub.GestureRecognizers.Clear();
             var tgr_synctimesub = new TapGestureRecognizer();
@@ -80,6 +84,7 @@ namespace iPMCloud.Mobile.Views
             int countAll = mainPage?.GetAllSyncFromUploadCount() ?? 0;
             settings_count_positionen.Text = (countAll > 0 ? "" + countAll : "Keine Daten vorhanden");
             btn_settings_count_positionen.IsVisible = countAll > 0;
+            //btn_settings_count_positionen_list.IsVisible = countAll > 0;
 
             string lang = AppModel.Instance.Langs.Find(l => l.lang == AppModel.Instance.AppControll.lang)?.text;
             lb_settings_sel_trans.Text = lang != null ? lang : "Deutsch";
@@ -144,5 +149,22 @@ namespace iPMCloud.Mobile.Views
             btn_settings_count_positionen.IsVisible = false;
         }
 
+        //public async void btn_SettingsShowListTapped(object sender, EventArgs e)
+        //{
+        //    var mainPage = _mainPage ?? AppModel.Instance.MainPage;
+        //    settings_positionen_list.IsVisible = true;            
+        //}
+
+        //public async void SettingsShowListDown()
+        //{
+        //    var mainPage = _mainPage ?? AppModel.Instance.MainPage;
+        //    settings_positionen_list.IsVisible = true;
+        //}
+
+        //public async void btn_SettingsSyncUploadListClose(object sender, EventArgs e)
+        //{
+        //    settings_positionen_list.IsVisible = false;
+        //    btn_settings_count_positionen_list.IsVisible = false;
+        //}
     }
 }

@@ -48,7 +48,7 @@ namespace iPMCloud.Mobile.Platforms.Android.Workers
                 }
 
                 // Prüfe ob Uploads pending sind
-                var pendingCount = UploadCoordinator.Instance.GetPendingUploadCount();
+                var pendingCount = AppModel.Instance.GetOpenUploadsCount();
 
                 if (pendingCount <= 0)
                 {
@@ -73,7 +73,7 @@ namespace iPMCloud.Mobile.Platforms.Android.Workers
                 {
                     UploadCoordinator.Instance.RunAsync().GetAwaiter().GetResult();
 
-                    var remainingCount = UploadCoordinator.Instance.GetPendingUploadCount();
+                    var remainingCount = AppModel.Instance.GetOpenUploadsCount();
                     if (remainingCount > 0)
                     {
                         Log.Warn(TAG, $"Upload run finished with {remainingCount} pending uploads remaining");

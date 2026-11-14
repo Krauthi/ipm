@@ -486,7 +486,7 @@ namespace iPMCloud.Mobile
         /// <summary>
         /// Lädt alle Bilder aus dem Upload-Stack
         /// </summary>
-        public static List<BildWSO> LoadAllFromStack()
+        public static List<BildWSO> xLoadAllFromStack()
         {
             List<BildWSO> list = new List<BildWSO>();
 

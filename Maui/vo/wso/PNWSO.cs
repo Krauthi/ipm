@@ -6,9 +6,6 @@ using System.Linq;
 
 namespace iPMCloud.Mobile
 {
-    /// <summary>
-    /// Repräsentiert Push-Notification Token für Web Service
-    /// </summary>
     public class PNWSO
     {
         public int personid { get; set; } = 0;
@@ -76,59 +73,6 @@ namespace iPMCloud.Mobile
         }
 
         /// <summary>
-        /// Zählt die Anzahl der PN-Token im Upload-Stack
-        /// Hinweis: Maximal 1 Datei (pn.ipm)
-        /// </summary>
-        public static int CountFromStackFrom(Int32 customerId)
-        {
-            try
-            {
-                string directoryPath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                    "ipm/" + customerId + "/pnupload/"
-                );
-
-                if (Directory.Exists(directoryPath))
-                {
-                    return Directory.GetFiles(directoryPath, "*.ipm").Length;
-                }
-
-                return 0;
-            }
-            catch (Exception ex)
-            {
-                AppModel.Logger?.Error(ex, "ERROR: CountFromStack PNWSO");
-                return 0;
-            }
-        }
-        /// <summary>
-        /// Zählt die Anzahl der PN-Token im Upload-Stack
-        /// Hinweis: Maximal 1 Datei (pn.ipm)
-        /// </summary>
-        public static int CountFromStack()
-        {
-            try
-            {
-                string directoryPath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                    "ipm/" + AppModel.Instance?.SettingModel?.SettingDTO?.CustomerNumber + "/pnupload/"
-                );
-
-                if (Directory.Exists(directoryPath))
-                {
-                    return Directory.GetFiles(directoryPath, "*.ipm").Length;
-                }
-
-                return 0;
-            }
-            catch (Exception ex)
-            {
-                AppModel.Logger?.Error(ex, "ERROR: CountFromStack PNWSO");
-                return 0;
-            }
-        }
-
-        /// <summary>
         /// Lädt den Push-Notification Token aus dem Upload-Stack
         /// </summary>
         public static PNWSO LoadFromUploadStack()
@@ -148,7 +92,6 @@ namespace iPMCloud.Mobile
 
                     if (files != null && files.Length > 0)
                     {
-                        // Nimmt die erste Datei (sollte nur pn.ipm sein)
                         pn = LoadFromFile(files[0]);
                     }
                 }
@@ -224,23 +167,9 @@ namespace iPMCloud.Mobile
             }
         }
 
-        /// <summary>
-        /// Prüft ob ein Token im Upload-Stack vorhanden ist
-        /// </summary>
-        public static bool HasPendingToken(Int32 customerId)
-        {
-            return CountFromStackFrom(customerId) > 0;
-        }
-        /// <summary>
-        /// Prüft ob ein Token im Upload-Stack vorhanden ist
-        /// </summary>
-        public static bool HasPendingToken()
-        {
-            return CountFromStack() > 0;
-        }
 
         #endregion
-
+/*
         #region Helper Methods
 
         /// <summary>
@@ -354,5 +283,6 @@ namespace iPMCloud.Mobile
         }
 
         #endregion
+*/
     }
 }

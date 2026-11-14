@@ -466,10 +466,10 @@ namespace iPMCloud.Mobile
                 RegManagement_Container.IsVisible = false;
                 await AppModel.Instance.InitGPSTimer();
                 int countUpload = 0;
-                if (AppModel.Instance.SettingModel != null && AppModel.Instance.SettingModel.SettingDTO != null && int.Parse(AppModel.Instance.SettingModel.SettingDTO.CustomerNumber) > 0)
+                if (AppModel.Instance.SettingModel != null && AppModel.Instance.SettingModel.SettingDTO != null 
+                    && int.Parse(AppModel.Instance.SettingModel.SettingDTO.CustomerNumber) > 0)
                 {
-
-                    countUpload = AppModel.Instance.GetOpenUploadsCountFrom(int.Parse(AppModel.Instance.SettingModel.SettingDTO.CustomerNumber));
+                    countUpload = AppModel.Instance.GetOpenUploadsCount();
                 }
 
                 btn_regist_info.IsVisible = countUpload > 0;

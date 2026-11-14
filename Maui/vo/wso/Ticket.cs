@@ -1273,35 +1273,38 @@ namespace iPMCloud.Mobile
                    await MainThread.InvokeOnMainThreadAsync(() => {
                         AppModel.Instance.MainPage.UpdateTicketBadgeCount();
                     });
-
-                    List<Int32> aufIds = new List<Int32>();
-                    foreach ( var t in AppModel.Instance.TicketResponse.tickets)
+                    if (AppModel.Instance.TicketResponse.tickets != null)
                     {
-                        if(AppModel.Instance.AllBuildings != null && AppModel.Instance.AllBuildings.Count > 0 
-                            && t.auftragid > 0)
+                        List<Int32> aufIds = new List<Int32>();
+                        foreach (var t in AppModel.Instance.TicketResponse.tickets)
                         {
-                            var obj = AppModel.Instance.AllBuildings.Find(o => o.id == t.objektid);
-                            if(obj == null)
+                            if (AppModel.Instance.AllBuildings != null && AppModel.Instance.AllBuildings.Count > 0
+                                && t.auftragid > 0)
                             {
-                                aufIds.Add(t.auftragid);
-                                continue;
-                            }
-                            if(obj != null && obj.ArrayOfAuftrag != null && obj.ArrayOfAuftrag.Count > 0)
-                            {
-                                var auf = obj.ArrayOfAuftrag.Find(a => a.id == t.auftragid);
-                                if(auf == null)
+                                var obj = AppModel.Instance.AllBuildings.Find(o => o.id == t.objektid);
+                                if (obj == null)
                                 {
                                     aufIds.Add(t.auftragid);
                                     continue;
                                 }
+                                if (obj != null && obj.ArrayOfAuftrag != null && obj.ArrayOfAuftrag.Count > 0)
+                                {
+                                    var auf = obj.ArrayOfAuftrag.Find(a => a.id == t.auftragid);
+                                    if (auf == null)
+                                    {
+                                        aufIds.Add(t.auftragid);
+                                        continue;
+                                    }
+                                }
                             }
                         }
-                    }
-                    if (aufIds.Count > 0)
-                    {
-                        await MainThread.InvokeOnMainThreadAsync(() => {
-                           AppModel.Instance.MainPage.FastSyncAfterTicketReload(aufIds);
-                        });
+                        if (aufIds.Count > 0)
+                        {
+                            await MainThread.InvokeOnMainThreadAsync(() =>
+                            {
+                                AppModel.Instance.MainPage.FastSyncAfterTicketReload(aufIds);
+                            });
+                        }
                     }
                     return AppModel.Instance.TicketResponse;
                 }

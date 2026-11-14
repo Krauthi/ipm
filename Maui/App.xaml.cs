@@ -194,7 +194,7 @@ namespace iPMCloud.Mobile
                 var context = Android.App.Application.Context;
 
                 // Prüfe ob Uploads pending sind
-                var pendingCount = UploadCoordinator.Instance.GetPendingUploadCount();
+                var pendingCount = AppModel.Instance.GetOpenUploadsCount();
 
                 if (pendingCount > 0)
                 {
@@ -303,7 +303,7 @@ namespace iPMCloud.Mobile
                 if (!AppModel.Instance.IsInternet)
                     return;
 
-                var pendingCount = UploadCoordinator.Instance.GetPendingUploadCount();
+                var pendingCount = AppModel.Instance.GetOpenUploadsCount();
 
                 if (pendingCount > 0)
                 {

@@ -1008,11 +1008,8 @@ namespace iPMCloud.Mobile.vo
             if (uri_SingleNotice == null) { InitConnections(); }
             HttpResponseMessage resMsg = null;
 
-            string args_ = JsonConvert.SerializeObject(
-                new SingleNoticeRequest(AppModel.Instance.SettingModel.SettingDTO.LoginToken, bem, bem.prio > 1));// photos entfernen wenn nicht störemeldung
-
             string args = JsonConvert.SerializeObject(
-                new SingleNoticeRequest(AppModel.Instance.SettingModel.SettingDTO.LoginToken, bem, true));// photos entfernen wenn nicht störemeldung
+                new SingleNoticeRequest(AppModel.Instance.SettingModel.SettingDTO.LoginToken, bem));
 
             HttpRequestMessage msg = new HttpRequestMessage(HttpMethod.Post, uri_SingleNotice);
             msg.Content = new StringContent(args, Encoding.UTF8, "application/json");
@@ -1210,22 +1207,7 @@ namespace iPMCloud.Mobile.vo
             if (uri_Position == null) { InitConnections(); }
             HttpResponseMessage resMsg = null;
 
-            //if (pack.leistungen != null && pack.leistungen.Count > 0)
-            //{
-            //    pack.leistungen.ForEach(l =>
-            //    {
-            //        if (l.bemerkungen != null && l.bemerkungen.Count > 0)
-            //        {
-            //            l.bemerkungen.ForEach(b =>
-            //            {
-            //                if (b.prio < 2)
-            //                {
-            //                    b.photos = null;
-            //                }
-            //            });
-            //        }
-            //    });
-            //}
+            // incl. Bilder
 
             string args = JsonConvert.SerializeObject(new PositionRequest
             {

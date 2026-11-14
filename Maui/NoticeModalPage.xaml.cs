@@ -252,7 +252,8 @@ namespace iPMCloud.Mobile
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Fehler beim Foto aufnehmen: {ex.Message}");
+                AppModel.Logger.Error("Fehler beim Foto aufnehmen: " + ex.Message + " :: " + ex.StackTrace );
+                await DisplayAlertAsync("Fehler", "Fehler beim Foto aufnehmen: " + ex.Message, "OK");
             }
             finally
             {
@@ -291,10 +292,10 @@ namespace iPMCloud.Mobile
                     RotateImage = true,
                 };
 
-                var breadcrumbId = $"NoticePhotoPicker_{_SelectedBemerkungForNotice.guid}";
-                iPMCloud.Mobile.Services.CrashDiagnostics.Begin(
-                    breadcrumbId,
-                    $"BemerkungGuid={_SelectedBemerkungForNotice.guid}; ExistingPhotos={_SelectedBemerkungForNotice.photos.Count}; SelectionLimit={options.SelectionLimit}");
+                //var breadcrumbId = $"NoticePhotoPicker_{_SelectedBemerkungForNotice.guid}";
+                //iPMCloud.Mobile.Services.CrashDiagnostics.Begin(
+                //    breadcrumbId,
+                //    $"BemerkungGuid={_SelectedBemerkungForNotice.guid}; ExistingPhotos={_SelectedBemerkungForNotice.photos.Count}; SelectionLimit={options.SelectionLimit}");
 
                 IList<FileResult> photos = null;
                 try
@@ -306,10 +307,10 @@ namespace iPMCloud.Mobile
                 {
                     await DisplayAlertAsync("INFO", $"{es.Message} :: {es.StackTrace} ", "OK");
                 }
-                finally
-                {
-                    iPMCloud.Mobile.Services.CrashDiagnostics.End(breadcrumbId);
-                }
+                //finally
+                //{
+                //    iPMCloud.Mobile.Services.CrashDiagnostics.End(breadcrumbId);
+                //}
 
                 if (photos != null && photos.Count() > 0)
                 {

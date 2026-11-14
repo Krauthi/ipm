@@ -35,7 +35,7 @@ namespace iPMCloud.Mobile
         public string token = "";
         public BemerkungWSO bemerkung;
 
-        public SingleNoticeRequest(string t, BemerkungWSO bem, bool inclphotos)
+        public SingleNoticeRequest(string t, BemerkungWSO bem)
         {
             var b = new BemerkungWSO
             {
@@ -49,11 +49,10 @@ namespace iPMCloud.Mobile
                 datum = bem.datum,
                 hasSend = bem.hasSend,
                 guid = bem.guid,
-                photos = inclphotos ? bem.photos : null
+                photos = bem.photos
             };
 
             token = t;
-            // b.photos = null;
             bemerkung = b;
         }
     }

@@ -35,6 +35,22 @@ namespace iPMCloud.Mobile
             }
         }
 
+        /// <summary>
+        /// Completes once the synchronous startup work normally performed by AppStart()/InitApp()
+        /// has finished. SplashOverlayPage awaits this before navigating away from the splash screen.
+        ///
+        /// IMPORTANT (iOS black-screen fix): This work used to run synchronously inside the App()
+        /// constructor, i.e. *before* CreateWindow() was ever invoked. On iOS, with
+        /// UIApplicationSceneManifest enabled, window creation happens via MauiSceneDelegate's
+        /// scene(_:willConnectTo:) callback, which blocks on this same construction path. Long
+        /// synchronous I/O here (AppSet.Load, SettingModel, Lang.Load, Company.LoadCompanies,
+        /// PersonWSO.LoadPerson, AppControll.Load, ...) could therefore delay or starve the scene
+        /// connection long enough that iOS never calls CreateWindow(), leaving the app permanently
+        /// black after the splash flashes briefly (or doesn't show at all). Running it in the
+        /// background and letting CreateWindow()/SplashOverlayPage proceed immediately avoids this.
+        /// </summary>
+        public static Task InitializationTask { get; private set; } = Task.CompletedTask;
+
         public App()
         {
             InitializeComponent();
@@ -45,7 +61,20 @@ namespace iPMCloud.Mobile
             // Register handler for unobserved async Task exceptions (critical for iOS stability)
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
 
-            AppStart(); 
+            // Run the (potentially slow, I/O-bound) startup sequence on a background thread so that
+            // CreateWindow() can return immediately and iOS can complete the scene-connection /
+            // window-creation handshake without being blocked. See InitializationTask summary above.
+            InitializationTask = Task.Run(() =>
+            {
+                try
+                {
+                    AppStart();
+                }
+                catch (Exception ex)
+                {
+                    AppModel.Logger?.Error($"App: background AppStart() failed: {ex.Message} | StackTrace: {ex.StackTrace}");
+                }
+            });
         }
 
         /// <summary>
@@ -166,10 +195,36 @@ namespace iPMCloud.Mobile
         }
 
 
-        protected override Window CreateWindow(IActivationState activationState)
+        protected override Window CreateWindow(
+            IActivationState? activationState)
         {
-            return new Window(new SplashOverlayPage());
+
+            System.Diagnostics.Debug.WriteLine(">>> CreateWindow START");
+
+            var page = new SplashOverlayPage();
+
+            System.Diagnostics.Debug.WriteLine(">>> SplashOverlayPage erstellt");
+
+            var window = new Window(page);
+
+            window.Created += (sender, args) =>
+            {
+                System.Diagnostics.Debug.WriteLine(">>> WINDOW CREATED");
+            };
+
+            window.Activated += (sender, args) =>
+            {
+                System.Diagnostics.Debug.WriteLine(">>> WINDOW ACTIVATED");
+            };
+
+            return window;
         }
+
+
+        //protected override Window CreateWindow(IActivationState activationState)
+        //{
+        //    return new Window(new SplashOverlayPage());
+        //}
 
         protected override void OnStart()
         {

@@ -27,13 +27,13 @@
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/appicon.appiconset</string>
 	<key>CFBundleVersion</key>
-	<string>3000120</string>
+	<string>3000125</string>
 	<key>UILaunchStoryboardName</key>
 	<string>MauiSplash</string>
 	<key>CFBundleName</key>
 	<string>iPMCloud.Mobile</string>
 	<key>CFBundleShortVersionString</key>
-	<string>3.0.120</string>
+	<string>3.0.125</string>
 	<key>UIStatusBarHidden</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
@@ -75,13 +75,14 @@
 			<array>
 				<dict>
 					<key>UISceneConfigurationName</key>
-					<string>Default Configuration</string>
+					<string>__MAUI_DEFAULT_SCENE_CONFIGURATION__</string>
 					<key>UISceneDelegateClassName</key>
-					<string>$(MauiSceneDelegate)</string>
+					<string>SceneDelegate</string>
 				</dict>
 			</array>
 		</dict>
 	</dict>
+
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -93,5 +94,6 @@
 			</array>
 		</dict>
 	</array>
+
 </dict>
 </plist>

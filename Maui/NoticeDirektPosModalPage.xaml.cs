@@ -412,8 +412,8 @@ namespace iPMCloud.Mobile
             await Task.Delay(1);
 
             noticePhotoStack.Children.Remove(b.stack);
-            await Task.Delay(1);
-            BildWSO.Delete(AppModel.Instance, b);
+            //await Task.Delay(1);
+            //BildWSO.Delete(AppModel.Instance, b);
             await Task.Delay(1);
             _selectedBemerkungForNotice.photos.Remove(b);
             CheckNoticeFalid();

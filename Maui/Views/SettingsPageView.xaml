@@ -171,7 +171,7 @@
                             Margin="0"
                             Padding="28,10,28,10"
                             BackgroundColor="#04732d"
-                            HorizontalOptions="End">
+                            HorizontalOptions="Start">
                             <Label
                                 Margin="0"
                                 Padding="0"
@@ -179,28 +179,27 @@
                                 Text="JETZT HOCHLADEN"
                                 TextColor="#ffffff" />
                         </Border>
-                        <!--<Border
-                            x:Name="btn_settings_count_positionen_list"
+
+                        <Button
+                            x:Name="btn_settings_count_positionen_list2"
                             Grid.Column="0"
-                            Margin="0"
-                            Padding="28,10,28,10"
-                            BackgroundColor="#73042d"
-                            HorizontalOptions="End">
-                            <Label
-                                Margin="0"
-                                Padding="0"
-                                FontSize="16"
-                                Text="ANSEHEN"
-                                TextColor="#ffffff" />
-                        </Border>-->
+                            Margin="0,0,0,0"
+                    Padding="5"
+                    BackgroundColor="Transparent"
+                    Clicked="btn_SettingsShowListTapped"
+                    CornerRadius="0"
+                    HeightRequest="40"
+                    HorizontalOptions="End"
+                    ImageSource="check_white.png"
+                    WidthRequest="40" />
                     </Grid>
-                    <!--<VerticalStackLayout
+                    <VerticalStackLayout
                         x:Name="settings_positionen_list"
+                        IsVisible="False"
                         Margin="0"
                         Padding="0"
                         HorizontalOptions="Fill"
-                        Spacing="0">
-                    </VerticalStackLayout>-->
+                        Spacing="0" />
                 </VerticalStackLayout>
 
 
@@ -407,6 +406,7 @@
                     VerticalOptions="Start" />
 
                 <Label
+                    x:Name="btn_settings_sendlogB"
                     Margin="10,30,10,10"
                     Padding="0"
                     FontSize="24"
@@ -450,6 +450,7 @@
                             Margin="0"
                             Padding="28,10,28,10"
                             BackgroundColor="#04732d"
+                            IsVisible="False"
                             HorizontalOptions="End">
                             <Label
                                 Margin="0"
@@ -460,7 +461,9 @@
                         </Border>
                     </Grid>
                     <Grid
+                            x:Name="grid_settings_sendlog"
                         Margin="0,20,0,15"
+                        IsVisible="False"
                         Padding="0"
                         ColumnSpacing="0"
                         HorizontalOptions="Fill">

@@ -1148,8 +1148,8 @@ namespace iPMCloud.Mobile
                     var infoIcon = new Image
                     {
                         Source = "ic_info_b.png",
-                        HeightRequest = 18,
-                        WidthRequest = 18,
+                        HeightRequest = 24,
+                        WidthRequest = 24,
                         VerticalOptions = LayoutOptions.End,
                         HorizontalOptions = LayoutOptions.End
                     };
@@ -1165,8 +1165,8 @@ namespace iPMCloud.Mobile
                     var auftragIcon = new Image
                     {
                         Source = "order_folder_tools.png",
-                        HeightRequest = 18,
-                        WidthRequest = 18,
+                        HeightRequest = 24,
+                        WidthRequest = 24,
                         VerticalOptions = LayoutOptions.End,
                         HorizontalOptions = LayoutOptions.End
                     };

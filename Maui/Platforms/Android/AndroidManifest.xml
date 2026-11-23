@@ -3,8 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.ipmcloud.ipm.mobile"
-    android:versionName="3.0.119"
-    android:versionCode="3000119">
+    android:versionName="3.0.125"
+    android:versionCode="3000125">
 	<uses-sdk android:minSdkVersion="28" android:targetSdkVersion="36" 
         tools:overrideLibrary="androidx.lifecycle.runtime,com.google.android.play.core,com.google.android.gms.base,com.google.android.gms.common,com.google.android.gms.tasks" />
 
@@ -91,4 +91,9 @@
 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
 	<!-- Entfernt: Doppelte uses-feature Einträge wurden oben bereits hinzugefügt -->
+
+	<!-- Diese Features werden durch ScreenOrientation.Portrait (Activities) bzw. ACCESS_WIFI_STATE implizit als "required" markiert.
+		 Explizit als optional kennzeichnen, damit Geräte ohne diese Hardware-Features die App weiterhin installieren können. -->
+	<uses-feature android:name="android.hardware.screen.portrait" android:required="false" />
+	<uses-feature android:name="android.hardware.wifi" android:required="false" />
 </manifest>

@@ -196,7 +196,7 @@ namespace iPMCloud.Mobile.Helpers
             return memoryStream.ToArray();
         }
 
-
+        /*
         public static async Task<bool> PickAndProcessPhotosAsync(
                 int maxPhotos,
                 List<BildWSO> photoList,
@@ -267,7 +267,7 @@ namespace iPMCloud.Mobile.Helpers
                 LogError("Fehler in PickAndProcessPhotosAsync.", ex);
                 return false;
             }
-        }
+        }*/
         /// <summary>
         /// Nimmt ein Foto auf und verarbeitet es komplett
         /// </summary>

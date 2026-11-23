@@ -30,23 +30,6 @@ namespace iPMCloud.Mobile.Services
 
         private UploadCoordinator() { }
 
-        public int GetPendingUploadCount()
-        {
-            int allCount = 0;
-            allCount += CheckClass.CountFromStack();
-            allCount += CheckLeistungAntwortBemImg.CountFromStack();
-            allCount += BemerkungWSO.CountFromStack();
-            allCount += BildWSO.CountFromStack();
-            allCount += LeistungPackWSO.CountFromStack();
-            //allCount += AllTransSign.CountFromStack();
-            allCount += DayOverWSO.CountFromStack();
-            allCount += ObjektDataWSO.CountFromStack();
-            allCount += ObjektDatenBildWSO.CountFromStack();
-            allCount += PNWSO.CountFromStack();
-            allCount += TicketChat.CountFromStack();
-            allCount += TicketBesitzerStatusUpload.CountFromStack();
-            return allCount;
-        }
 
         public async Task RunAsync(CancellationToken cancellationToken = default)
         {
@@ -61,7 +44,7 @@ namespace iPMCloud.Mobile.Services
 
             try
             {
-                total = GetPendingUploadCount();
+                total = AppModel.Instance.GetOpenUploadsCount();
                 ReportProgress("UPLOADS werden vorbereitet…", processed, total);
 
                 if (total == 0)
@@ -79,12 +62,12 @@ namespace iPMCloud.Mobile.Services
                 if (!failed && !await ProcessChecksAsync(cancellationToken, total, () => processed, v => processed = v).ConfigureAwait(false)) failed = true;
                 if (!failed && !await ProcessChecksBemImgAsync(cancellationToken, total, () => processed, v => processed = v).ConfigureAwait(false)) failed = true;
                 if (!failed && !await ProcessBemerkungenAsync(cancellationToken, total, () => processed, v => processed = v).ConfigureAwait(false)) failed = true;
-                if (!failed && !await ProcessNoticeBilderAsync(cancellationToken, total, () => processed, v => processed = v).ConfigureAwait(false)) failed = true;
+
                 if (!failed && !await ProcessPositionenAsync(cancellationToken, total, () => processed, v => processed = v).ConfigureAwait(false)) failed = true;
-                //if (!failed && !await ProcessTransSignsAsync(cancellationToken, total, () => processed, v => processed = v).ConfigureAwait(false)) failed = true;
+
+                //if (!failed && !await ProcessNoticeBilderAsync(cancellationToken, total, () => processed, v => processed = v).ConfigureAwait(false)) failed = true;
                 if (!failed && !await ProcessObjectValuesAsync(cancellationToken, total, () => processed, v => processed = v).ConfigureAwait(false)) failed = true;
                 if (!failed && !await ProcessObjectValueBilderAsync(cancellationToken, total, () => processed, v => processed = v).ConfigureAwait(false)) failed = true;
-                if (!failed && !await ProcessPnAsync(cancellationToken, total, () => processed, v => processed = v).ConfigureAwait(false)) failed = true;
                 if (!failed && !await ProcessTicketChatsAsync(cancellationToken, total, () => processed, v => processed = v).ConfigureAwait(false)) failed = true;
                 if (!failed && !await ProcessTicketBesitzerStatusAsync(cancellationToken, total, () => processed, v => processed = v).ConfigureAwait(false)) failed = true;
 
@@ -101,12 +84,12 @@ namespace iPMCloud.Mobile.Services
                     TotalJobs = total
                 });
             }
-            catch (OperationCanceledException)
+            catch (OperationCanceledException oce)
             {
                 OnUploadCompleted(new UploadCompletedEventArgs
                 {
                     Success = false,
-                    ErrorMessage = "Upload abgebrochen.",
+                    ErrorMessage = "Upload abgebrochen. GRUND: " + oce.Message + " - - - " + oce.StackTrace,
                     ProcessedJobs = processed,
                     TotalJobs = total
                 });
@@ -117,7 +100,7 @@ namespace iPMCloud.Mobile.Services
                 OnUploadCompleted(new UploadCompletedEventArgs
                 {
                     Success = false,
-                    ErrorMessage = ex.Message,
+                    ErrorMessage = "ERROR Upload. GRUND: " + ex.Message + " - - - " + ex.StackTrace,
                     ProcessedJobs = processed,
                     TotalJobs = total
                 });
@@ -142,7 +125,7 @@ namespace iPMCloud.Mobile.Services
         {
             try
             {
-                var remainingCount = GetPendingUploadCount();
+                var remainingCount = AppModel.Instance.GetOpenUploadsCount();
 
                 if (remainingCount > 0)
                 {
@@ -193,7 +176,11 @@ namespace iPMCloud.Mobile.Services
                     token).ConfigureAwait(false);
 
                 if (result == null || !result.success)
+                {
+                    AppModel.Logger.Error("ERROR ?? siehe WARN:");
+                    AppModel.Logger.Warn($"UploadCoordinator: SetCheckANonePic failed for check {check.guid} - {result?.message}");
                     return false;
+                }
 
                 result.checkA?.antworten?.ForEach(ant =>
                 {
@@ -243,7 +230,11 @@ namespace iPMCloud.Mobile.Services
                     token).ConfigureAwait(false);
 
                 if (response == null || !response.success)
+                {
+                    AppModel.Logger.Error("ERROR ?? siehe WARN:");
+                    AppModel.Logger.Warn($"UploadCoordinator: SetCheckABemImg failed for pic {pic.guid} - {response?.message}");
                     return false;
+                }
 
                 CheckLeistungAntwortBemImg.DeleteFromStack(pic);
                 setProcessed(getProcessed() + 1);
@@ -276,7 +267,11 @@ namespace iPMCloud.Mobile.Services
                 token).ConfigureAwait(false);
 
             if (result == null || !result.success)
+            {
+                AppModel.Logger.Error("ERROR ?? siehe WARN:");
+                AppModel.Logger.Warn($"UploadCoordinator: ObjectValuesSync failed for object values {string.Join(", ", objectValues.Select(v => v.guid))} - {result?.message}");
                 return false;
+            }
 
             objectValues.ForEach(v => ObjektDataWSO.DeleteFromUploadStack(AppModel.Instance, v));
             setProcessed(getProcessed() + objectValues.Count);
@@ -307,7 +302,11 @@ namespace iPMCloud.Mobile.Services
                     token).ConfigureAwait(false);
 
                 if (response == null || !response.success)
+                {
+                    AppModel.Logger.Error("ERROR ?? siehe WARN:");
+                    AppModel.Logger.Warn($"UploadCoordinator: ObjectValueBildSync failed for pic {value.guid} - {response?.message}");
                     return false;
+                }
 
                 ObjektDatenBildWSO.DeleteFromUploadStack(AppModel.Instance, value);
                 setProcessed(getProcessed() + 1);
@@ -317,37 +316,7 @@ namespace iPMCloud.Mobile.Services
             return true;
         }
 
-        private async Task<bool> ProcessPnAsync(CancellationToken token, int total, Func<int> getProcessed, Action<int> setProcessed)
-        {
-            token.ThrowIfCancellationRequested();
-            if (PNWSO.CountFromStack() <= 0)
-                return true;
-
-            ReportProgress("UPLOADS: Push-Token", getProcessed(), total);
-
-            var pn = PNWSO.LoadFromUploadStack();
-            if (pn == null)
-                return true;
-
-            pn.personid = AppModel.Instance.Person.id;
-            var response = await ExecuteWithRetryAsync(
-                () => AppModel.Instance.Connections.PNSync(pn),
-                r => r != null && r.success,
-                r => r?.message,
-                "PNSync",
-                token).ConfigureAwait(false);
-
-            if (response == null || !response.success)
-                return false;
-
-            PNWSO.DeleteFromUploadStack();
-            AppModel.Instance.SettingModel.SettingDTO.PNToken = pn.token;
-            AppModel.Instance.SettingModel.SaveSettings();
-            setProcessed(getProcessed() + 1);
-            ReportProgress("UPLOADS: Push-Token", getProcessed(), total);
-            return true;
-        }
-
+        
         private async Task<bool> ProcessTicketChatsAsync(CancellationToken token, int total, Func<int> getProcessed, Action<int> setProcessed)
         {
             token.ThrowIfCancellationRequested();
@@ -369,13 +338,17 @@ namespace iPMCloud.Mobile.Services
 
                 var response = await ExecuteWithRetryAsync(
                     () => AppModel.Instance.Connections.AddTicketChat(chat),
-                    r => r != null && r.succses,
+                    r => r != null && r.success,
                     r => null,
                     "AddTicketChat",
                     token).ConfigureAwait(false);
 
-                if (response == null || !response.succses)
+                if (response == null || !response.success)
+                {
+                    AppModel.Logger.Error("ERROR ?? siehe WARN:");
+                    AppModel.Logger.Warn($"UploadCoordinator: AddTicketChat failed for chat {chat.guid} - {response?.message}");
                     return false;
+                }   
 
                 TicketChat.DeleteFromUploadStack(chat);
                 setProcessed(getProcessed() + 1);
@@ -420,15 +393,16 @@ namespace iPMCloud.Mobile.Services
                 token.ThrowIfCancellationRequested();
 
                 var response = await ExecuteWithRetryAsync(
-                    () => AppModel.Instance.Connections.SetTicketBesitzerStatus(new Ticket { id = item.ticketid },item),
-                    r => r != null && r.succses,
+                    () => AppModel.Instance.Connections.SetTicketBesitzerStatus(item),
+                    r => r != null && r.success,
                     r => null,
                     "SetTicketBesitzerStatus",
                     token).ConfigureAwait(false);
 
-                if (response == null || !response.succses)
+                if (response == null || !response.success)
                 {
-                    AppModel.Logger.Error($"UploadCoordinator: SetTicketBesitzerStatus failed for ticket {item.ticketid} with besitzerstatus/status {item.besitzerstatus}/{item.status} - {response?.message}");
+                    AppModel.Logger.Error("ERROR ?? siehe WARN:");
+                    AppModel.Logger.Warn($"UploadCoordinator: SetTicketBesitzerStatus failed for ticket {item.ticketid} with besitzerstatus/status {item.besitzerstatus}/{item.status} - {response?.message}");
                     return false;
                 }
 
@@ -463,7 +437,11 @@ namespace iPMCloud.Mobile.Services
                 token).ConfigureAwait(false);
 
             if (response == null || !response.success)
+            {
+                AppModel.Logger.Error("ERROR ?? siehe WARN:");
+                AppModel.Logger.Warn($"UploadCoordinator: DayOverSync failed for day overs {string.Join(", ", dayOvers.Select(d => d.guid))} - {response?.message}");
                 return false;
+            }
 
             dayOvers.ForEach(d => DayOverWSO.DeleteFromUploadStack(AppModel.Instance, d));
             setProcessed(getProcessed() + dayOvers.Count);
@@ -537,19 +515,13 @@ namespace iPMCloud.Mobile.Services
                     token).ConfigureAwait(false);
 
                 if (response == null || !response.success)
+                {
+                    AppModel.Logger.Error("ERROR ?? siehe WARN:");
+                    AppModel.Logger.Warn($"UploadCoordinator: SingleNoticeSync failed for bem {bem.guid} - {response?.message}");
                     return false;
+                }
 
                 bem.hasSend = true;
-                //var pics = BildWSO.LoadFromGuid(AppModel.Instance, bem.guid);
-                //pics.ForEach(p =>
-                //{
-                //    p.bemId = response.bemid;
-                //    if (bem.prio < 2)
-                //    {
-                //        BildWSO.SaveToStack(AppModel.Instance, p);
-                //    }
-                //    BildWSO.Delete(AppModel.Instance, p);
-                //});
                 BemerkungWSO.DeleteFromUploadStack(AppModel.Instance, bem);
                 setProcessed(getProcessed() + 1);
                 ReportProgress("UPLOADS: Bemerkungen", getProcessed(), total);
@@ -557,7 +529,8 @@ namespace iPMCloud.Mobile.Services
 
             return true;
         }
-
+        
+        /*
         private async Task<bool> ProcessNoticeBilderAsync(CancellationToken token, int total, Func<int> getProcessed, Action<int> setProcessed)
         {
             token.ThrowIfCancellationRequested();
@@ -590,7 +563,8 @@ namespace iPMCloud.Mobile.Services
 
             return true;
         }
-
+        */
+        
         private async Task<bool> ProcessPositionenAsync(CancellationToken token, int total, Func<int> getProcessed, Action<int> setProcessed)
         {
             token.ThrowIfCancellationRequested();
@@ -637,7 +611,11 @@ namespace iPMCloud.Mobile.Services
                     token).ConfigureAwait(false);
 
                 if (positionResponse == null || !positionResponse.success || positionResponse.pack == null)
+                {
+                    AppModel.Logger.Error("ERROR ?? siehe WARN:");
+                    AppModel.Logger.Warn($"UploadCoordinator: PositionSync failed for pack {pack.guid} - {positionResponse?.message}");
                     return false;
+                }
 
                 var resultPack = positionResponse.pack;
                 

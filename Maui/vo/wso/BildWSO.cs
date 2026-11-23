@@ -34,8 +34,7 @@ namespace iPMCloud.Mobile
             this.mainguid = mainguid;
             this.guid = Guid.NewGuid().ToString();
         }
-
-        #region UI Helper Methods
+        
 
         /// <summary>
         /// Erstellt ein UI-Element für ein Attachment
@@ -140,8 +139,8 @@ namespace iPMCloud.Mobile
             };
         }
 
-        #endregion
 
+        /*
         #region Save/Load/Delete Methods (Temporary Storage)
 
         /// <summary>
@@ -486,7 +485,7 @@ namespace iPMCloud.Mobile
         /// <summary>
         /// Lädt alle Bilder aus dem Upload-Stack
         /// </summary>
-        public static List<BildWSO> xLoadAllFromStack()
+        public static List<BildWSO> LoadAllFromStack()
         {
             List<BildWSO> list = new List<BildWSO>();
 
@@ -762,5 +761,6 @@ namespace iPMCloud.Mobile
         }
 
         #endregion
+        */
     }
 }

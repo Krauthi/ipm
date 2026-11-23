@@ -25,7 +25,7 @@ namespace iPMCloud.Mobile.vo
 
         //public async Task<bool> StartJob()
         //{
-        //    if (!AppModel.Instance.isInBackground && !AppModel.Instance.GpsIsRunning
+        //    if (!AppModel.Instance.isInBa ckground && !AppModel.Instance.GpsIsRunning
         //        && AppModel.Instance.SettingModel.SettingDTO.GPSInfoHasShow)
         //    {
         //        try

@@ -796,7 +796,7 @@ namespace iPMCloud.Mobile.vo
 
             if (!AppModel.Instance.IsInternet)
             {
-                return new TicketChatResponse { succses = false };
+                return new TicketChatResponse { success = false };
             }
 
             string args = JsonConvert.SerializeObject(new TicketChatRequest
@@ -817,21 +817,21 @@ namespace iPMCloud.Mobile.vo
                     resMsg.Dispose();
                     var response = JsonConvert.DeserializeObject<TicketChatResponse>(json);
                     tc.id = response?.ticketchatid ?? 0; // Update the ID of the TicketChat object with the response ID
-                    return response ?? new TicketChatResponse { succses = false };
+                    return response ?? new TicketChatResponse { success = false, message = "AddTicketChat: response is null" };
                 }
                 else
                 {
                     var m = "Method => AddTicketChat: httpResponseMessage.StatusCode = " + resMsg?.StatusCode + " - " + resMsg?.RequestMessage;
                     AppModel.Logger.Warn(m);
                     resMsg?.Dispose();
-                    return new TicketChatResponse { succses = false };
+                    return new TicketChatResponse { success = false, message = m };
                 }
             }
             catch (Exception ex)
             {
                 resMsg?.Dispose();
                 AppModel.Logger.Error("Method => AddTicketChat(catch): " + ex.Message);
-                return new TicketChatResponse { succses = false };
+                return new TicketChatResponse { success = false, message = ex.Message };
             }
         }
 
@@ -845,7 +845,7 @@ namespace iPMCloud.Mobile.vo
 
             if (!AppModel.Instance.IsInternet)
             {
-                return new TicketChatResponse { succses = false };
+                return new TicketChatResponse { success = false };
             }
 
             string args = JsonConvert.SerializeObject(new TicketChatRequest
@@ -866,38 +866,38 @@ namespace iPMCloud.Mobile.vo
                     var json = await resMsg.Content.ReadAsStringAsync();
                     resMsg.Dispose();
                     var response = JsonConvert.DeserializeObject<TicketChatResponse>(json);
-                    return response ?? new TicketChatResponse { succses = false };
+                    return response ?? new TicketChatResponse { success = false };
                 }
                 else
                 {
                     var m = "Method => DelTicketChat: httpResponseMessage.StatusCode = " + resMsg?.StatusCode + " - " + resMsg?.RequestMessage;
                     AppModel.Logger.Warn(m);
                     resMsg?.Dispose();
-                    return new TicketChatResponse { succses = false };
+                    return new TicketChatResponse { success = false };
                 }
             }
             catch (Exception ex)
             {
                 resMsg?.Dispose();
                 AppModel.Logger.Error("Method => DelTicketChat(catch): " + ex.Message);
-                return new TicketChatResponse { succses = false };
+                return new TicketChatResponse { success = false };
             }
         }
         
-        public async Task<TicketStatusResponse> SetTicketBesitzerStatus(Ticket t, TicketBesitzerStatusUpload bt)
+        public async Task<TicketStatusResponse> SetTicketBesitzerStatus(TicketBesitzerStatusUpload bt)
         {
             if (uri_SetTicketBesitzerStatus == null) { InitConnections(); }
             HttpResponseMessage resMsg = null;
 
             if (!AppModel.Instance.IsInternet)
             {
-                return new TicketStatusResponse { succses = false, message = "Kein internet verbunden" };
+                return new TicketStatusResponse { success = false, message = "Kein internet verbunden" };
             }
 
             string args = JsonConvert.SerializeObject(new TicketStatusRequest
             {
                 token = AppModel.Instance.SettingModel.SettingDTO.LoginToken,
-                ticketid = t.id,
+                ticketid = bt.ticketid,
                 status = bt.status,
                 besitzerstatus = bt.besitzerstatus,
                 guid = bt.guid,
@@ -914,21 +914,21 @@ namespace iPMCloud.Mobile.vo
                     var json = await resMsg.Content.ReadAsStringAsync();
                     resMsg.Dispose();
                     var response = JsonConvert.DeserializeObject<TicketStatusResponse>(json);
-                    return response ?? new TicketStatusResponse { succses = false , message = "Unbekannt"};
+                    return response ?? new TicketStatusResponse { success = false , message = "Unbekannt"};
                 }
                 else
                 {
                     var m = "Method => SetTicketBesitzerStatus: httpResponseMessage.StatusCode = " + resMsg?.StatusCode + " - " + resMsg?.RequestMessage;
                     AppModel.Logger.Warn(m);
                     resMsg?.Dispose();
-                    return new TicketStatusResponse { succses = false };
+                    return new TicketStatusResponse { success = false, message = m };
                 }
             }
             catch (Exception ex)
             {
                 resMsg?.Dispose();
                 AppModel.Logger.Error("Method => SetTicketBesitzerStatus(catch): " + ex.Message);
-                return new TicketStatusResponse { succses = false };
+                return new TicketStatusResponse { success = false, message = ex.Message };
             }
         }
 
@@ -1021,8 +1021,6 @@ namespace iPMCloud.Mobile.vo
                 {
                     var json = resMsg.Content.ReadAsStringAsync().Result;
                     resMsg.Dispose();
-                    bem.photos = null;
-                    BildWSO.DeleteFromGuid(AppModel.Instance, bem.guid); 
                     return JsonConvert.DeserializeObject<SingleNoticeResponse>(json);
                 }
                 else
@@ -1042,7 +1040,8 @@ namespace iPMCloud.Mobile.vo
             }
         }
 
-        public async Task<NoticeBildResponse> NoticeBildSync(BildWSO bild)
+        /*
+        public async Task<NoticeBildResponse> _kannweg_NoticeBildSync(BildWSO bild)
         {
             if (uri_NoticeBild == null) { InitConnections(); }
             HttpResponseMessage resMsg = null;
@@ -1082,7 +1081,8 @@ namespace iPMCloud.Mobile.vo
                 return new NoticeBildResponse { success = false, message = "Method(NoticeBildSync(catch)): " + ex.Message };
             }
         }
-
+        */
+      
         //public async Task<AllTransSignResponse> AllTransSignSync(AllTransSignRequest signs)
         //{
         //    if (uri_AllTransSigns == null) { InitConnections(); }

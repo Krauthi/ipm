@@ -373,8 +373,8 @@ namespace iPMCloud.Mobile
         public async void RemoveBildInWork(BildWSO b)
         {
             noticePhotoStack.Children.Remove(b.stack);
-            await Task.Delay(1);
-            BildWSO.Delete(AppModel.Instance, b);
+            //await Task.Delay(1);
+            //BildWSO.Delete(AppModel.Instance, b);
             await Task.Delay(1);
             _SelectedBemerkungForNotice.photos.Remove(b);
             CheckNoticeFalid();

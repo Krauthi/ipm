@@ -95,6 +95,7 @@ namespace iPMCloud.Mobile
                 eurD = p.eurD,
                 stdW = p.stdW,
                 eurW = p.eurW,
+                winterservice = p.winterservice
             };
         }
     }

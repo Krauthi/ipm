@@ -107,8 +107,15 @@ namespace iPMCloud.Mobile
         public override void OnTrimMemory([GeneratedEnum] TrimMemory level)
         {
             base.OnTrimMemory(level);
-            Log.Warn(TAG, $"Trim Memory: {level}");
-            AppModel.Logger?.Warn($"MainApplication.OnTrimMemory: level={level}");
+
+            // Nur bei ernsthaftem Speicherdruck loggen. UiHidden/Background/RunningModerate/RunningLow
+            // treten sehr haeufig und unkritisch auf (z.B. beim simplen In-den-Hintergrund-Wechsel)
+            // und wuerden das Log unnoetig fuellen.
+            if (level >= TrimMemory.RunningCritical)
+            {
+                Log.Warn(TAG, $"Trim Memory: {level}");
+                AppModel.Logger?.Warn($"MainApplication.OnTrimMemory: level={level}");
+            }
 
             // Hinweis: Die TRIM_MEMORY-Konstanten von Android sind NICHT nach Schweregrad aufsteigend sortiert:
             // RunningModerate=5, RunningLow=10, RunningCritical=15, UiHidden=20, Background=40, Moderate=60, Complete=80.

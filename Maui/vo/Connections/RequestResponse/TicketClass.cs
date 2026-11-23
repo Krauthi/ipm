@@ -41,7 +41,7 @@ namespace iPMCloud.Mobile
 
     public class TicketStatusResponse
     {
-        public bool succses { get; set; } = true;
+        public bool success { get; set; } = true;
         public string message { get; set; } = "";
         public TicketStatusResponse() { }
     }
@@ -62,8 +62,9 @@ namespace iPMCloud.Mobile
 
     public class TicketChatResponse
     {
+        public bool success { get; set; } = true;
+        public string message { get; set; } = "";
         public Int32 ticketchatid { get; set; } = 0;
-        public bool succses { get; set; } = true;
         public TicketChatResponse() { }
     }
 

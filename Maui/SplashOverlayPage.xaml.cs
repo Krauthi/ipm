@@ -42,6 +42,11 @@ namespace iPMCloud.Mobile
 
             try
             {
+                // Wait for the background App.AppStart()/InitApp() sequence (moved off the App()
+                // constructor to avoid blocking iOS scene/window creation - see App.InitializationTask)
+                // to finish before touching AppModel.Instance state such as CheckLoginAsync().
+                await App.InitializationTask;
+
                 // Run the login check and the minimum splash delay concurrently so the
                 // total wait is max(loginCheckTime, MinimumSplashDisplayTimeMs).
                 var splashDelayTask = Task.Delay(MinimumSplashDisplayTimeMs, cts.Token);

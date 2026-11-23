@@ -51,6 +51,7 @@ namespace iPMCloud.Mobile
                 anzahl = Utils.formatDEStr(decimal.Parse(l.produktAnzahl, CultureInfo.GetCultureInfo("de-DE")) > 0 ? decimal.Parse(l.produktAnzahl, CultureInfo.GetCultureInfo("de-DE")) : 1),
                 bemerkungen = null,
                 inout = l.inout,
+                winterservice = l.winterservice
             };
         }
 

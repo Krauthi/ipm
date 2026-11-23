@@ -165,7 +165,9 @@ namespace iPMCloud.Mobile
                 //{
                 //   AppModel.Instance.InitBuildingsAsync();
                 //}
-
+                
+                SyncPN();
+                
                 CheckAllSyncFromUpload(true);
                 InitStartPageHandlers();
 
@@ -1264,8 +1266,8 @@ namespace iPMCloud.Mobile
             await Task.Delay(1);
 
             noticePhotoStack_check_bem.Children.Remove(b.stack);
-            await Task.Delay(1);
-            BildWSO.Delete(AppModel.Instance, b);
+            //await Task.Delay(1);
+            //BildWSO.Delete(AppModel.Instance, b);
             await Task.Delay(1);
             _SelectedPosForNotice_check_bem.bemWSO.photos.Remove(b);
             btn_takePhoto_frame_check_bem.IsVisible = (_SelectedPosForNotice_check_bem.bemWSO.photos.Count < 3);
@@ -4016,6 +4018,8 @@ namespace iPMCloud.Mobile
 
             frame_planListBoffen.WidthRequest = w;
             frame_planListBerl.WidthRequest = w;
+            frame_planListBoffen.IsVisible = false;
+            frame_planListBerl.IsVisible = false;
 
             frame_planListCeoffen.WidthRequest = w;
             frame_planListCefaellig.WidthRequest = w;
@@ -4452,6 +4456,9 @@ namespace iPMCloud.Mobile
                             kz++;
                         });
 
+
+                        frame_planListBoffen.IsVisible = true;
+                        frame_planListBerl.IsVisible = true;
                         frame_planConB_offen.Text = frame_planListBoffen.Children.Count.ToString();
                         frame_planConB_offen_count_con.IsVisible = frame_planListBoffen.Children.Count > 0;
                         frame_planConB_erl.Text = frame_planListBerl.Children.Count.ToString();
@@ -4460,17 +4467,8 @@ namespace iPMCloud.Mobile
                     }
 
 
-                    //await Task.Delay(1);
-                    //frame_planListAb.WidthRequest = tabContentWidth;
-                    //frame_planListAc.WidthRequest = tabContentWidth;
-                    //frame_planListA.WidthRequest = tabContentWidth;
                 }
 
-                ////frame_planListA.IsVisible = true;
-                //frame_planListAb.WidthRequest = tabContentWidth;
-                //frame_planListAc.WidthRequest = tabContentWidth;
-                //frame_planListA.WidthRequest = tabContentWidth;
-                //await Task.Delay(1);
                 overlay.IsVisible = false;
 
             }
@@ -4629,10 +4627,11 @@ namespace iPMCloud.Mobile
                 Update_PlanTabs(today);
             }
 
-            //await Task.Delay(1);
+            await Task.Delay(1);
             overlay.IsVisible = false;
 
             CloseDirektbuchenWinterAusPlanliste();
+            await Task.Delay(1);
             CheckAllSyncFromUpload(); //SyncPosition();
         }
         private long addTicksWinter = 0;
@@ -4728,9 +4727,10 @@ namespace iPMCloud.Mobile
             BuildingWSO.Save(AppModel.Instance, building);
 
             LeistungPackWSO.ToUploadStack(AppModel.Instance, AppModel.Instance.allPositionDirectWork);
-
-            AppModel.Instance.allPositionDirectWork = null;
             await Task.Delay(1);
+            AppModel.Instance.allPositionDirectWork = null;
+            //...Wird danach aufgerufen - nicht hier !!! CheckAllSyncFromUpload(); //await SyncPosition();
+            
         }
 
 
@@ -4854,6 +4854,7 @@ namespace iPMCloud.Mobile
             List<PlanPersonMobile> ppms = new List<PlanPersonMobile>();
             List<LeistungInWorkWSO> leisIW = new List<LeistungInWorkWSO>();
             List<LeistungWSO> leiss = new List<LeistungWSO>();
+            bool hasSaved = false; 
 
             if (selectedDirektbuchenObj != null && selectedDirektbuchenObj.more != null && selectedDirektbuchenObj.more.Count > 0)
             {
@@ -4876,10 +4877,18 @@ namespace iPMCloud.Mobile
                             ppms.Add(pp);
                         }
                     });
-                    SaveDirektbuchenAusPlanlisteNow(leiss, leisIW);
+                    hasSaved = await SaveDirektbuchenAusPlanlisteNow(leiss, leisIW);
                 }
-                catch (Exception) { ok = false; }
-                if (ok)
+                catch (Exception ex) 
+                {
+                    ok = false;
+                    AppModel.Logger.Error("ERROR: (SaveDirektbuchenAusPlanliste) : ",ex);
+                }
+                
+                CheckAllSyncFromUpload(); //SyncPosition();
+                await Task.Delay(1);
+
+                if (ok || hasSaved)
                 {
                     AppModel.Instance.PlanResponse.planweek.days = CleanPlanweekList(AppModel.Instance.PlanResponse.planweek.days);
                     ObjektPlanWeekMobile.Save(AppModel.Instance, AppModel.Instance.PlanResponse);
@@ -4892,7 +4901,6 @@ namespace iPMCloud.Mobile
                         var today = (int)DateTime.Now.DayOfWeek;
                         Update_PlanTabs(today);
                     }
-                    CheckAllSyncFromUpload(); //SyncPosition();
                 }
             }
 
@@ -4905,7 +4913,7 @@ namespace iPMCloud.Mobile
         private long addTicks = 0;
 
         //public async void SaveDirektbuchenAusPlanlisteNow(List<LeistungInWorkWSO> leis)
-        public async void SaveDirektbuchenAusPlanlisteNow(List<LeistungWSO> leiss, List<LeistungInWorkWSO> leisIW)
+        public async Task<bool> SaveDirektbuchenAusPlanlisteNow(List<LeistungWSO> leiss, List<LeistungInWorkWSO> leisIW)
         {
             try
             {
@@ -4913,19 +4921,19 @@ namespace iPMCloud.Mobile
                 if (leiss == null || leiss.Count == 0)
                 {
                     AppModel.Logger?.Warn("SaveDirektbuchenAusPlanlisteNow: leiss is null or empty");
-                    return;
+                    return false;
                 }
 
                 if (leisIW == null || leisIW.Count == 0)
                 {
                     AppModel.Logger?.Warn("SaveDirektbuchenAusPlanlisteNow: leisIW is null or empty");
-                    return;
+                    return false;
                 }
 
                 if (AppModel.Instance == null)
                 {
                     AppModel.Logger?.Error("SaveDirektbuchenAusPlanlisteNow: AppModel.Instance is null");
-                    return;
+                    return false;
                 }
 
                 var geo = AppModel.Instance.LocationStr;
@@ -4950,12 +4958,12 @@ namespace iPMCloud.Mobile
 
                 long maxEndMin = 0;
                 List<LeistungInWorkWSO> leisInWork = new List<LeistungInWorkWSO>();
-                leiss.ForEach(lei =>
+                foreach (var lei in leiss)
                 {
                     if (lei == null)
                     {
                         AppModel.Logger?.Warn("SaveDirektbuchenAusPlanlisteNow: Skipping null lei in leiss");
-                        return;
+                        continue;
                     }
 
                     var leiIW = leisIW.FindAll(_ => _ != null && _.ppm != null && _.ppm.leiid == lei.id).FirstOrDefault();
@@ -4963,7 +4971,7 @@ namespace iPMCloud.Mobile
                     if (leiIW == null)
                     {
                         AppModel.Logger?.Warn($"SaveDirektbuchenAusPlanlisteNow: No matching leisIW found for lei.id={lei.id}");
-                        return;
+                        continue;
                     }
 
                     lei.leiInWork = leiIW;
@@ -4977,21 +4985,22 @@ namespace iPMCloud.Mobile
                         {
                             if (item != null && item.id == lei.id && item.bem != null)
                             {
-                                if (lei.leiInWork.bemerkungen == null) 
-                                { 
-                                    lei.leiInWork.bemerkungen = new List<BemerkungWSO>(); 
+                                if (lei.leiInWork.bemerkungen == null)
+                                {
+                                    lei.leiInWork.bemerkungen = new List<BemerkungWSO>();
                                 }
                                 lei.leiInWork.bemerkungen.Add(item.bem);
                             }
                         }
                     }
                     leisInWork.Add(lei.leiInWork);
-                });
+                }
+                ;
 
                 if (leisInWork.Count == 0)
                 {
                     AppModel.Logger?.Warn("SaveDirektbuchenAusPlanlisteNow: No valid leisInWork items created");
-                    return;
+                    return false;
                 }
 
                 var start = DateTime.Now.AddTicks(addTicksWinter);
@@ -5017,14 +5026,15 @@ namespace iPMCloud.Mobile
                                 item.bem.leistungid = 0;
                                 item.bem.text = "LEISTUNG: " + item.lei.beschreibung + " \r\nBEMERKUNG: " + item.bem.text;
                                 BemerkungWSO.ToUploadStack(AppModel.Instance, item.bem);
+                                //await SyncSingleNotice();
                                 //btn_NoticeSaveForOnlyObjektOnlyMuellPosThatNotSelected(ppm, item);
                             }
                         }
                     }
                 }
-                catch (Exception ex) 
-                { 
-                    AppModel.Logger?.Warn($"SaveDirektbuchenAusPlanlisteNow: Error processing bemerkungen: {ex.Message}");
+                catch (Exception ex)
+                {
+                    AppModel.Logger?.Warn($"ERROR: SaveDirektbuchenAusPlanlisteNow: Error processing bemerkungen: {ex.Message}");
                 }
 
 
@@ -5044,97 +5054,103 @@ namespace iPMCloud.Mobile
                     diffObjekt = 2,// Direktbuchung
                     leistungen = leisInWork // leisIW
                 };
-            AppModel.Instance.allPositionDirectWork.endticks = AppModel.Instance.allPositionDirectWork.startticks;
-            addTicks++;
+                AppModel.Instance.allPositionDirectWork.endticks = AppModel.Instance.allPositionDirectWork.startticks;
+                addTicks++;
 
-            var lastWorkTicks = "" + JavaScriptDateConverter.Convert(new DateTime(AppModel.Instance.allPositionDirectWork.startticks), -2);
-            var building = BuildingWSO.LoadBuilding(AppModel.Instance, leisIW[0].objektid);
+                var lastWorkTicks = "" + JavaScriptDateConverter.Convert(new DateTime(AppModel.Instance.allPositionDirectWork.startticks), -2);
+                var building = BuildingWSO.LoadBuilding(AppModel.Instance, leisIW[0].objektid);
 
-            if (building == null)
-            {
-                AppModel.Logger?.Error($"SaveDirektbuchenAusPlanlisteNow: Failed to load building for objektid={leisIW[0].objektid}");
-                // Still upload the work package even if building load failed
-                LeistungPackWSO.ToUploadStack(AppModel.Instance, AppModel.Instance.allPositionDirectWork);
-            }
-            else
-            {
-                building.ArrayOfAuftrag?.ForEach(o =>
+                if (building == null)
                 {
-                    o?.kategorien?.ForEach(c =>
-                    {
-                        c?.leistungen?.ForEach(le =>
-                        {
-                            if (le == null) return;
+                    AppModel.Logger?.Error($"SaveDirektbuchenAusPlanlisteNow: Failed to load building for objektid={leisIW[0].objektid}");
+                    // Still upload the work package even if building load failed
+                    LeistungPackWSO.ToUploadStack(AppModel.Instance, AppModel.Instance.allPositionDirectWork);
 
-                            var foundPos = AppModel.Instance.allPositionDirectWork.leistungen.Find(lei => lei != null && lei.id == le.id);
-                            if (foundPos != null)
+                    //CheckAllSyncFromUpload(); //await SyncPosition();
+                }
+                else
+                {
+                    building.ArrayOfAuftrag?.ForEach(o =>
+                    {
+                        o?.kategorien?.ForEach(c =>
+                        {
+                            c?.leistungen?.ForEach(le =>
                             {
-                                foundPos.lastwork = lastWorkTicks;
-                                foundPos.workat = "";
-                                le.lastwork = lastWorkTicks;
-                                le.workat = "";
-                                le.selected = false;
-                                if (le.muell == 1 && le.inout != null)
+                                if (le == null) return;
+
+                                var foundPos = AppModel.Instance.allPositionDirectWork.leistungen.Find(lei => lei != null && lei.id == le.id);
+                                if (foundPos != null)
                                 {
-                                    le.inout.inout = le.inout.inout == 1 ? 0 : 1;   // 1 = rausgestellt / 0 = drinne
+                                    foundPos.lastwork = lastWorkTicks;
+                                    foundPos.workat = "";
+                                    le.lastwork = lastWorkTicks;
+                                    le.workat = "";
+                                    le.selected = false;
+                                    if (le.muell == 1 && le.inout != null)
+                                    {
+                                        le.inout.inout = le.inout.inout == 1 ? 0 : 1;   // 1 = rausgestellt / 0 = drinne
+                                    }
                                 }
-                            }
+                            });
                         });
                     });
-                });
-                BuildingWSO.Save(AppModel.Instance, building);
-                //AppModel.Instance.allPositionDirectWork.leistungen = null;
-                LeistungPackWSO.ToUploadStack(AppModel.Instance, AppModel.Instance.allPositionDirectWork);
-            }
+                    BuildingWSO.Save(AppModel.Instance, building);
+                    //AppModel.Instance.allPositionDirectWork.leistungen = null;
+                    LeistungPackWSO.ToUploadStack(AppModel.Instance, AppModel.Instance.allPositionDirectWork);
 
-            leisIW.ForEach(l =>
-            {
-                if (l == null) return;
+                    //CheckAllSyncFromUpload(); //await SyncPosition();
+                }
 
-                int haswork = 1;
-                if (l.ppm != null && !String.IsNullOrWhiteSpace(l.ppm.info))
+                foreach (var l in leisIW)
                 {
-                    string[] all = l.ppm.info.Split('#');
-                    if (all.Length >= 4)
+                    if (l == null) continue;
+
+                    int haswork = 1;
+                    if (l.ppm != null && !String.IsNullOrWhiteSpace(l.ppm.info))
                     {
-                        string name = all[0];
-                        string col = all[1];
-                        string statem = all[2];
-                        string leiid = all[3];
-                        if (statem == "3")
+                        string[] all = l.ppm.info.Split('#');
+                        if (all.Length >= 4)
                         {
-                            statem = "2";
-                            haswork = 0;
-                            l.ppm.info = name + "#" + col + "#2#" + leiid;
+                            string name = all[0];
+                            string col = all[1];
+                            string statem = all[2];
+                            string leiid = all[3];
+                            if (statem == "3")
+                            {
+                                statem = "2";
+                                haswork = 0;
+                                l.ppm.info = name + "#" + col + "#2#" + leiid;
+                            }
+                        }
+                    }
+
+                    if (AppModel.Instance?.Person != null)
+                    {
+                        var lastworker = AppModel.Instance.Person.name + " " + (AppModel.Instance.Person.vorname.Length > 1 ? (AppModel.Instance.Person.vorname.Substring(0, 1) + ".") : AppModel.Instance.Person.vorname);
+                        if (l.ppm != null)
+                        {
+                            l.ppm.haswork = haswork;
+                            l.ppm.lastwork = new DateTime(AppModel.Instance.allPositionDirectWork.endticks).ToString("dd.MM.yyyy - HH:mm");
+                            l.ppm.lastworker = lastworker;
                         }
                     }
                 }
-
-                if (AppModel.Instance?.Person != null)
-                {
-                    var lastworker = AppModel.Instance.Person.name + " " + (AppModel.Instance.Person.vorname.Length > 1 ? (AppModel.Instance.Person.vorname.Substring(0, 1) + ".") : AppModel.Instance.Person.vorname);
-                    if (l.ppm != null)
-                    {
-                        l.ppm.haswork = haswork;
-                        l.ppm.lastwork = new DateTime(AppModel.Instance.allPositionDirectWork.endticks).ToString("dd.MM.yyyy - HH:mm");
-                        l.ppm.lastworker = lastworker;
-                    }
-                }
-            });
-            AppModel.Instance.allPositionDirectWork = null;
-            await Task.Delay(1);
-        }
-        catch (Exception ex)
-        {
-            AppModel.Logger?.Error(ex, "ERROR: SaveDirektbuchenAusPlanlisteNow - Unexpected error");
-
-            // Clean up in case of error
-            if (AppModel.Instance != null)
-            {
                 AppModel.Instance.allPositionDirectWork = null;
+                await Task.Delay(1);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: SaveDirektbuchenAusPlanlisteNow - Unexpected error");
+
+                // Clean up in case of error
+                if (AppModel.Instance != null)
+                {
+                    AppModel.Instance.allPositionDirectWork = null;
+                }
+                return false;
             }
         }
-    }
 
         public async void btn_NoticeSaveForOnlyObjektOnlyMuellPosThatNotSelected(PlanPersonMobile ppm, IntBemerkungWSOPair ibwp)
         {
@@ -5211,24 +5227,34 @@ namespace iPMCloud.Mobile
             weekDays.ForEach(day =>
             {
                 var newday = new List<PlanPersonMobile>();
-                day.ForEach(items =>
+                day.ForEach(ppm =>
                 {
-                    items.more.ForEach(item =>
+                    if (ppm.winterservice == 1 || ppm.day == -1)
                     {
-                        var fItem = newday.Find(f => f.objektid == item.objektid && f.haswork == 0 && f.more.Count > 0);
-                        if (fItem != null && item.haswork == 0)
+                        newday.Add(ppm);
+                    }
+                    else
+                    {
+                        if (ppm.more != null && ppm.more.Count > 0)
                         {
-                            fItem.more.Add(PlanPersonMobile.ToNewPlanPersonMobile(item));
-                        }
-                        else
-                        {
-                            if (item.haswork >= 0)
+                            ppm.more.ForEach(item =>
                             {
-                                item.more.Add(PlanPersonMobile.ToNewPlanPersonMobile(item));
-                            }
-                            newday.Add(item);
+                                var fItem = newday.Find(f => f.objektid == item.objektid && f.haswork == 0 && f.more.Count > 0);
+                                if (fItem != null && item.haswork == 0)
+                                {
+                                    fItem.more.Add(PlanPersonMobile.ToNewPlanPersonMobile(item));
+                                }
+                                else
+                                {
+                                    if (item.haswork >= 0)
+                                    {
+                                        item.more.Add(PlanPersonMobile.ToNewPlanPersonMobile(item));
+                                    }
+                                    newday.Add(item);
+                                }
+                            });
                         }
-                    });
+                    }
                 });
                 days[i] = newday;
                 i++;
@@ -5271,18 +5297,55 @@ namespace iPMCloud.Mobile
         }
         public async void btn_PlanTabCTapped(object sender, EventArgs e)
         {
-            ObjektPlanWeekMobil_Stack_ABC.IsVisible = false;
-            box_buildingInformation2.IsVisible = false;
-            
-            // wieder auf Offene anzeigen stellen
-            tourScrollerCaa.IsVisible = true; 
-            tourScrollerCbb.IsVisible = false; 
-            tourScrollerCbb2.IsVisible = false; 
-            //tourScrollerCcc.IsVisible = false; 
-
-            if (AppModel.Instance.allPositionInWork != null && 
-               AppModel.Instance.allPositionInWork.ticket != null)
+            try
             {
+                if (Handler == null) return;
+
+                ObjektPlanWeekMobil_Stack_ABC.IsVisible = false;
+                box_buildingInformation2.IsVisible = false;
+
+                // wieder auf Offene anzeigen stellen
+                tourScrollerCaa.IsVisible = true;
+                tourScrollerCbb.IsVisible = false;
+                tourScrollerCbb2.IsVisible = false;
+                //tourScrollerCcc.IsVisible = false; 
+
+                if (AppModel.Instance.allPositionInWork != null &&
+                   AppModel.Instance.allPositionInWork.ticket != null)
+                {
+                    frame_plantabC.Margin = new Thickness(0, -8, 2, 0);
+                    frame_plantabA.Margin = new Thickness(0, 0, 2, 0);
+                    frame_plantabB.Margin = new Thickness(0, 0, 2, 0);
+                    frame_plantabCe.Margin = new Thickness(0, 0, 2, 0);
+                    frame_planConA.IsVisible = false;
+                    frame_planConB.IsVisible = false;
+                    frame_planConCe.IsVisible = false;
+                    frame_planConC.IsVisible = false;
+                    frame_planConCInWork.IsVisible = true;
+
+
+                    if (AppModel.Instance.allPositionInWork != null
+                        && AppModel.Instance.allPositionInWork.ticket != null)
+                    {
+                        // Ticket laden und anzeigen
+                        overlay.IsVisible = true;
+                        await Task.Delay(1);
+
+                        //if (Handler == null) return;
+
+                        LoadTicketChat(AppModel.Instance.allPositionInWork.ticket, frame_planConInWork_TicketChat);
+
+                        await Task.Delay(1);
+
+                        //if (Handler == null) return;
+                        overlay.IsVisible = false;
+                    }
+
+                    //await Ticket.LoadTicketsFromBackendAsync();
+                    //await LoadAndDisplayTicketsAsync();
+
+                    return;
+                }
                 frame_plantabC.Margin = new Thickness(0, -8, 2, 0);
                 frame_plantabA.Margin = new Thickness(0, 0, 2, 0);
                 frame_plantabB.Margin = new Thickness(0, 0, 2, 0);
@@ -5290,46 +5353,28 @@ namespace iPMCloud.Mobile
                 frame_planConA.IsVisible = false;
                 frame_planConB.IsVisible = false;
                 frame_planConCe.IsVisible = false;
-                frame_planConC.IsVisible = false;
-                frame_planConCInWork.IsVisible = true;
+                frame_planConC.IsVisible = true;
+                frame_planConCInWork.IsVisible = false;
 
+                // Tickets laden und anzeigen
+                overlay.IsVisible = true;
+                await Task.Delay(100);
 
-                if (AppModel.Instance.allPositionInWork != null
-                    && AppModel.Instance.allPositionInWork.ticket != null)
-                {
-                    // Ticket laden und anzeigen
-                    overlay.IsVisible = true;
-                    await Task.Delay(1);
+                //if (Handler == null) return;
+                await Ticket.LoadTicketsFromBackendAsync();
 
-                    LoadTicketChat(AppModel.Instance.allPositionInWork.ticket, frame_planConInWork_TicketChat);
-                    
-                    await Task.Delay(1);
-                    overlay.IsVisible = false;
-                }
+                //if (Handler == null) return;
+                await LoadAndDisplayTicketsAsync();
 
-                //await Ticket.LoadTicketsFromBackendAsync();
-                //await LoadAndDisplayTicketsAsync();
+                await Task.Delay(1);
 
-                return;
+                //if (Handler == null) return;
+                overlay.IsVisible = false;
             }
-            frame_plantabC.Margin = new Thickness(0, -8, 2, 0);
-            frame_plantabA.Margin = new Thickness(0, 0, 2, 0);
-            frame_plantabB.Margin = new Thickness(0, 0, 2, 0);
-            frame_plantabCe.Margin = new Thickness(0, 0, 2, 0);
-            frame_planConA.IsVisible = false;
-            frame_planConB.IsVisible = false;
-            frame_planConCe.IsVisible = false;
-            frame_planConC.IsVisible = true;
-            frame_planConCInWork.IsVisible = false;
-
-            // Tickets laden und anzeigen
-            overlay.IsVisible = true;
-            await Task.Delay(100);
-            await Ticket.LoadTicketsFromBackendAsync();
-            await LoadAndDisplayTicketsAsync();
-
-            await Task.Delay(1);
-            overlay.IsVisible = false;
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: btn_PlanTabCTapped");
+            }
         }
 
         public bool IsPlanTabTicketOpen()
@@ -5628,8 +5673,8 @@ namespace iPMCloud.Mobile
                     if (ticket.besitzerstatus == (int)Ticket.BesitzerStatus.NochNichtGesehen)
                     {
                         var bt = new TicketBesitzerStatusUpload(ticket.id, (int)Ticket.TicketStatus.Offen, (int)Ticket.BesitzerStatus.Gesehen);
-                        var statusResponse = await AppModel.Instance.Connections.SetTicketBesitzerStatus(SelectedTicket, bt);
-                        if (statusResponse != null && statusResponse.succses)
+                        var statusResponse = await AppModel.Instance.Connections.SetTicketBesitzerStatus(bt);
+                        if (statusResponse != null && statusResponse.success)
                         {
                             SelectedTicket.status = (int)Ticket.TicketStatus.Offen;
                             SelectedTicket.besitzerstatus = (int)Ticket.BesitzerStatus.Gesehen;
@@ -5785,8 +5830,8 @@ namespace iPMCloud.Mobile
             ticket.status = (int)Ticket.TicketStatus.InArbeit;
             ticket.besitzerstatus = (int)Ticket.BesitzerStatus.Pausiert;
             var bt = new TicketBesitzerStatusUpload(ticket.id, (int)Ticket.TicketStatus.InArbeit, (int)Ticket.BesitzerStatus.Pausiert);
-            var statusResponse = await AppModel.Instance.Connections.SetTicketBesitzerStatus(ticket, bt);
-            if (statusResponse != null && !statusResponse.succses)
+            var statusResponse = await AppModel.Instance.Connections.SetTicketBesitzerStatus(bt);
+            if (statusResponse != null && !statusResponse.success)
             {
                 // Kein Internet/Fehler: Statuswechsel für späteren Upload merken
                 AppModel.Logger.Warn($"SetTicketStatusToStarted: SetTicketBesitzerStatus failed for ticket {ticket.id} : {ticket.titel} --- {statusResponse?.message}");
@@ -5798,8 +5843,8 @@ namespace iPMCloud.Mobile
         {
             if (ticket == null) return;
             var bt = new TicketBesitzerStatusUpload(ticket.id, (int)Ticket.TicketStatus.InArbeit, (int)Ticket.BesitzerStatus.Gestartet);
-            var statusResponse = await AppModel.Instance.Connections.SetTicketBesitzerStatus(ticket, bt);
-            if (statusResponse != null && statusResponse.succses)
+            var statusResponse = await AppModel.Instance.Connections.SetTicketBesitzerStatus(bt);
+            if (statusResponse != null && statusResponse.success)
             {
                 ticket.status = (int)Ticket.TicketStatus.InArbeit;
                 ticket.besitzerstatus = (int)Ticket.BesitzerStatus.Gestartet;
@@ -5881,7 +5926,7 @@ namespace iPMCloud.Mobile
             
             LeistungPackWSO.Save(AppModel.Instance, AppModel.Instance.allPositionInWork);
             // Bisher ist hier nur das Preview was hochgeladen wird!
-            SyncTicketPosition(AppModel.Instance.allPositionInWork.preview);
+            await SyncTicketPosition(AppModel.Instance.allPositionInWork.preview);
 
 
             // Zurücksetzten aller States für die Auswahl der Ausführungen
@@ -6039,7 +6084,7 @@ namespace iPMCloud.Mobile
 
                 BuildingWSO.Save(AppModel.Instance, AppModel.Instance.LastBuilding);
                 LeistungPackWSO.ToUploadStack(AppModel.Instance, AppModel.Instance.allPositionDirectWork);
-                CheckAllSyncFromUpload(); //SyncPosition();
+                CheckAllSyncFromUpload(); //await SyncTicketPosition();
                 //UpdateObjektPersonPlanMobileAfterUpload(AppModel.Instance.allPositionDirectWork);
             }
 
@@ -6048,7 +6093,8 @@ namespace iPMCloud.Mobile
             if (AppModel.Instance.allPositionInWork.leistungen.Count > 0)
             {
                 LeistungPackWSO.Save(AppModel.Instance, AppModel.Instance.allPositionInWork);
-                SyncTicketPosition(AppModel.Instance.allPositionInWork.preview);
+                // als preview hochladen, damit die Arbeiten im Backend sichtbar werden
+                await SyncTicketPosition(AppModel.Instance.allPositionInWork.preview);
             }
             else
             {
@@ -6101,6 +6147,9 @@ namespace iPMCloud.Mobile
                     if (t.ticket.auftrag != null)
                     {
                         AppModel.Instance.UpdateAddTicketAuftragToObjekt(t.ticket.auftrag);
+
+                        ticket_noorderinfo_container.Children.Clear();
+                        ticket_noorderinfo_container.IsVisible = false;  // Sync-Button wieder ausblenden
                     }
                 }
                 else
@@ -6293,8 +6342,7 @@ namespace iPMCloud.Mobile
                 AppModel.Instance.allPositionInWork = null;
 
                 // Versuche direkt zu senden sonst von Stack!
-                //CheckAllSyncFromUpload(); 
-                SyncTicketPosition(false);
+                CheckAllSyncFromUpload(); //await SyncTicketPosition();
 
                 // TicketInWork wieder zurück in TicketListview
                 btn_PlanTabCTapped(null,null);
@@ -6313,8 +6361,8 @@ namespace iPMCloud.Mobile
         {
             if (ticket == null) return;
             var bt = new TicketBesitzerStatusUpload(ticket.id, (int)Ticket.TicketStatus.Abschliessen, (int)Ticket.BesitzerStatus.Erledigt);
-            var statusResponse = await AppModel.Instance.Connections.SetTicketBesitzerStatus(ticket, bt);
-            if (statusResponse != null && statusResponse.succses)
+            var statusResponse = await AppModel.Instance.Connections.SetTicketBesitzerStatus(bt);
+            if (statusResponse != null && statusResponse.success)
             {
                 ticket.status = (int)Ticket.TicketStatus.Abschliessen;
                 ticket.besitzerstatus = (int)Ticket.BesitzerStatus.Erledigt;
@@ -7729,13 +7777,35 @@ namespace iPMCloud.Mobile
                     if (auftrag != null)
                         break;
                 }
-
+                
                 if (auftrag == null)
                 {
                     var noDataSection = CreateDetailSection("KEINE DATEN", "#999999");
                     noDataSection.Children.Add(CreateDetailLabel($"Auftrag #{ticket.auftragid} konnte nicht gefunden werden. Bitte synchronisieren."));
                     auftragsarbeiten_content.Children.Add(noDataSection);
+                    ticket_noorderinfo_container.Children.Clear();
+                    //Button btnRefreshTicket = new Button
+                    //{
+                    //    Margin = new Thickness(10, 10, 10, 10),
+                    //    BackgroundColor = Color.FromArgb("#96242f"),
+                    //    BorderWidth = 0,
+                    //    CornerRadius = 0,
+                    //    FontAttributes = FontAttributes.Bold,
+                    //    HeightRequest = 40,
+                    //    HorizontalOptions = LayoutOptions.Center,
+                    //    ImageSource = "refresh.png",
+                    //    Text = "Jetzt Auftrag Synchronisieren",
+                    //    TextColor = Color.FromArgb("#fff")
+                    //};
+                    //btnRefreshTicket.Clicked += OnRefreshTicket_Clicked;
+                    //ticket_noorderinfo_container.Children.Add(btnRefreshTicket);
+                    //ticket_noorderinfo_container.IsVisible = true;
                     return;
+                }
+                else
+                {
+                    ticket_noorderinfo_container.Children.Clear();
+                    ticket_noorderinfo_container.IsVisible = false;  // Sync-Button wieder ausblenden
                 }
 
                 var auftragSection = CreateDetailSection("AUFTRAG", "#2f94ed");
@@ -8144,7 +8214,7 @@ namespace iPMCloud.Mobile
                         CornerRadius = 9,
                         ImageSource = "trash.png",
                         HeightRequest = 28,
-                        WidthRequest = 28                        
+                        WidthRequest = 28                       
                     };
                     deleteButton.Clicked += async (s, e) => await OnDeleteChatMessage(message);
 
@@ -8440,7 +8510,7 @@ namespace iPMCloud.Mobile
 
                 var response = await AppModel.Instance.Connections.AddTicketChat(chat);
 
-                if (response != null && response.succses)
+                if (response != null && response.success)
                 {
                     if (response.ticketchatid > 0)
                     {
@@ -8549,7 +8619,7 @@ namespace iPMCloud.Mobile
                 try
                 {
                     var response = await AppModel.Instance.Connections.DelTicketChat(message, message.id);
-                    deletedOnServer = response != null && response.succses;
+                    deletedOnServer = response != null && response.success;
                 }
                 catch (Exception ex)
                 {
@@ -8758,14 +8828,14 @@ namespace iPMCloud.Mobile
             else
             {
                 panelContainer.IsVisible = visible;
-                SetAllSyncState();
+                SetAllSyncInViewState();
             }
         }
 
-        public int SetAllSyncState()
+        public int SetAllSyncInViewState()
         {
             ShowDisconnected();
-            var countAll = GetAllSyncFromUploadCount();
+            var countAll = AppModel.Instance.GetOpenUploadsCount();
             //btn_regist.IsVisible = !(countAll > 0);
             btn_regist_info.IsVisible = countAll > 0;
             btn_settings_frame_count.IsVisible = countAll > 0;
@@ -9107,16 +9177,19 @@ namespace iPMCloud.Mobile
 
                 BuildingWSO.Save(AppModel.Instance, AppModel.Instance.LastBuilding);
                 LeistungPackWSO.ToUploadStack(AppModel.Instance, AppModel.Instance.allPositionDirectWork);
-                CheckAllSyncFromUpload(); //SyncPosition();
+
+                CheckAllSyncFromUpload(); //await SyncPosition();
                 UpdateObjektPersonPlanMobileAfterUpload(AppModel.Instance.allPositionDirectWork);
             }
-
+            // An dieser Stelle soll gewartet werden, bis alle Prozesse abgeschlossen sind, bevor die Seite zurückgesetzt wird.
+            
             AppModel.Instance.allPositionDirectWork = null;
 
             if (AppModel.Instance.allPositionInWork.leistungen.Count > 0)
             {
                 LeistungPackWSO.Save(AppModel.Instance, AppModel.Instance.allPositionInWork);
-                SyncPosition(AppModel.Instance.allPositionInWork.preview);
+                // Bei Start nur Previews!
+                await SyncPosition(AppModel.Instance.allPositionInWork.preview);
             }
             else
             {
@@ -9157,6 +9230,8 @@ namespace iPMCloud.Mobile
             popupContainer_quest_startwork.IsVisible = false;
             StartSelectedPosAgainTapped_Done();
         }
+       
+        /*
         public async void StartSelectedPosAgainTapped_Done_old(object sender = null, EventArgs e = null)
         {
             AuswahlAnzeigenTapped_Done(false);
@@ -9183,7 +9258,7 @@ namespace iPMCloud.Mobile
             if (AppModel.Instance.allPositionInWork.leistungen.Count > 0)
             {
                 LeistungPackWSO.Save(AppModel.Instance, AppModel.Instance.allPositionInWork);
-                CheckAllSyncFromUpload(); //SyncPositionAgain();
+                //CheckAllSyncFromUpload(); //SyncPositionAgain();
             }
             else
             {
@@ -9221,7 +9296,7 @@ namespace iPMCloud.Mobile
 
             ShowMainPage();
         }
-
+        */
 
         public async void StartSelectedPosAgainTapped_Done(object sender = null, EventArgs e = null)
         {
@@ -9265,7 +9340,7 @@ namespace iPMCloud.Mobile
             if (AppModel.Instance.allPositionInWork.leistungen.Count > 0)
             {
                 LeistungPackWSO.Save(AppModel.Instance, AppModel.Instance.allPositionInWork);
-                CheckAllSyncFromUpload(); //SyncPositionAgain();
+                //CheckAllSyncFromUpload(); //SyncPositionAgain();
             }
             else
             {
@@ -9584,82 +9659,6 @@ namespace iPMCloud.Mobile
                 Update_PlanTabs((int)DateTime.Now.DayOfWeek);
             }
             return;
-            /*
-            
-            if (pack.leistungen != null && pack.leistungen.Count > 0)
-            {
-                List<string> katNames = new List<string>();
-
-                var today = (int)DateTime.Now.DayOfWeek;
-
-                pack.leistungen.ForEach(l =>
-                {
-                    AppModel.Instance.LastBuilding.ArrayOfAuftrag.ForEach(b =>
-                    {
-                        b.kategorien.ForEach(k =>
-                        {
-                            if (k.id == l.kategorieid)
-                            {
-                                katNames.Add(k.titel);
-                            }
-                        });
-                    });
-                });
-
-                // Geleistete Arbeiten abhacken von PlanListe Today
-                // gib alle Plans die von Heute oder vorher die nch nicht bearbeitet wurden von diesem Objekt zurück incl. Kategorie(NachBedarf)
-                List<PlanPersonMobile> plans = new List<PlanPersonMobile>();
-                List<PlanPersonMobile> sendplans = new List<PlanPersonMobile>();
-                if (AppModel.Instance.PlanResponse.planweek != null)
-                {
-                    //if (today == 0)// Sonntag 
-                    //{
-                    //    plans = AppModel.Instance.PlanResponse.week.FindAll(p => p.objektid == AppModel.Instance.LastBuilding.id && p.haswork == 0 && p.muelltoid == 0);
-                    //}
-                    //else
-                    //{
-                    //    plans = AppModel.Instance.PlanResponse.week.FindAll(p => p.objektid == AppModel.Instance.LastBuilding.id && p.day != 0 && p.day <= today && p.haswork == 0 && p.muelltoid == 0);
-                    //}
-                }
-                else { plans = null; }
-
-                if (plans != null && plans.Count > 0)
-                {
-                    plans.ForEach(p =>
-                    {
-                        int haswork = 1;
-                        string newkatname = "";
-                        if (p.day > -1)
-                        {
-                            p.haswork = haswork;
-                            p.lastwork = DateTime.Now.ToString("dd.MM.yyyy - HH:mm");
-                            p.lastworker = AppModel.Instance.Person.vorname + " " + AppModel.Instance.Person.name;
-                        }
-                        else
-                        {
-                            // Kategorien nach Bedarf prüfen ob hier gearbeitet wurde
-                            if (katNames.IndexOf(p.katname) > -1)
-                            {
-                                p.haswork = haswork;
-                                p.lastwork = DateTime.Now.ToString("dd.MM.yyyy - HH:mm");
-                                p.lastworker = AppModel.Instance.Person.vorname + " " + AppModel.Instance.Person.name;
-                            }
-                        }
-                    });
-                }
-
-                ObjektPlanWeekMobile.Save(AppModel.Instance, AppModel.Instance.PlanResponse);
-
-                if (AppModel.Instance.PlanResponse.selectedPerson != null)
-                {
-                    ReloadPlanData();
-                }
-                else
-                {
-                    Update_PlanTabs(today);
-                }
-            }
-            */
         }
 
 
@@ -12669,61 +12668,12 @@ namespace iPMCloud.Mobile
 
 
 
-        /*******************/
-        /* CHACK ALL SYNCS */
-        /*******************/
-        private int _checks = 0;
-        private int _checksBemImg = 0;
-        private int _bemerkungen = 0;
-        private int _bilder = 0;
-        private int _packs = 0;
-        //private int _trans = 0;
-        private int _dayovers = 0;
-        private int _objectValues = 0;
-        private int _objectValueBilds = 0;
-        private int _ticketChats = 0;
-        private int _ticketBesitzerStatus = 0;
-        //private int _ticketPos = 0;
-        private int _pn = 0;
-        private int _allCountFromUpload = 0;
-        private bool _allCountFromUploadFalied = false;
-        public int GetAllSyncFromUploadCount()
-        {
-            _checks = CheckClass.CountFromStack();
-            _checksBemImg = CheckLeistungAntwortBemImg.CountFromStack();
-            _bemerkungen = BemerkungWSO.CountFromStack();
-            _bilder = BildWSO.CountFromStack();
-            _packs = LeistungPackWSO.CountFromStack(); //... auch Tickets
-            //_trans = AllTransSign.CountFromStack();
-            _dayovers = DayOverWSO.CountFromStack();
-            _objectValues = ObjektDataWSO.CountFromStack();
-            _objectValueBilds = ObjektDatenBildWSO.CountFromStack();
-            _ticketChats = TicketChat.CountFromStack();
-            _ticketBesitzerStatus = TicketBesitzerStatusUpload.CountFromStack();
-            _pn = PNWSO.CountFromStack();
-            
-            int allCountFromUpload = 0;
-            allCountFromUpload += _checks;
-            allCountFromUpload += _checksBemImg;
-            allCountFromUpload += _bemerkungen;
-            allCountFromUpload += _bilder;
-            allCountFromUpload += _packs;
-            //allCountFromUpload += _trans;
-            allCountFromUpload += _dayovers;
-            allCountFromUpload += _objectValues;
-            allCountFromUpload += _objectValueBilds;
-            allCountFromUpload += _ticketChats;
-            allCountFromUpload += _ticketBesitzerStatus;
-            allCountFromUpload += _pn;
-            return allCountFromUpload;
-        }
 
         private bool __isFirstInit = false;
         public async void CheckAllSyncFromUpload(bool isFirstInit = false)
         {
-            //popupContainer_quest_countfromupload.IsVisible = false;
             __isFirstInit = isFirstInit;
-            var pendingUploads = iPMCloud.Mobile.Services.UploadCoordinator.Instance.GetPendingUploadCount();
+            var pendingUploads = AppModel.Instance.GetOpenUploadsCount();
             if (pendingUploads <= 0 && !__isFirstInit)
             {
                 ReloadPlanData(0);
@@ -12824,7 +12774,7 @@ namespace iPMCloud.Mobile
                 try
                 {
                     overlay.IsVisible = false;
-                    int c = SetAllSyncState();
+                    int c = SetAllSyncInViewState();
 
                     if (!e.Success && !string.IsNullOrWhiteSpace(e.ErrorMessage))
                     {
@@ -12860,10 +12810,8 @@ namespace iPMCloud.Mobile
 
 
 
-        /*******************/
-        /* SYNC CHECKLIST (auch in Background)
-        /*******************/
-        private async void SyncChecks()
+        // SYNC CHECKLIST (auch in Background)
+        /*private async void SyncChecks()
         {
             var checklist = CheckClass.LoadAllFromUploadStack();
             List<string> guidsList = new List<string>();
@@ -12904,12 +12852,12 @@ namespace iPMCloud.Mobile
                     }
                 }
 
-                SetAllSyncState();
+                SetAllSyncInViewState();
                 await Task.Delay(100);
                 BuildChecksInfoList();
                 await Task.Delay(100);
 
-                if (_checksBemImg > 0)
+                if (CheckLeistungAntwortBemImg.CountFromStack() > 0)
                 {
                     SyncChecksBemImg();
                     await Task.Delay(100);
@@ -12944,23 +12892,19 @@ namespace iPMCloud.Mobile
             if (checkResponse == null)
             {
                 // FAILED
-                _allCountFromUploadFalied = true;
                 AppModel.Logger.Warn("WARN:  (0): Checkliste hochladen FEHLGESCHLAGEN => SyncChecks_Done : CheckResponse == null ");
                 return null;
             }
             if (checkResponse != null && !checkResponse.success)
             {
                 // FAILED
-                _allCountFromUploadFalied = true;
                 AppModel.Logger.Warn("WARN:  (0): Checkliste hochladen FEHLGESCHLAGEN => SyncChecks_Done : " + checkResponse.message);
                 return null;
             }
             return checkResponse;
         }
 
-        /*******************/
-        /* SYNC Check BemImg
-        /*******************/
+        // SYNC Check BemImg
         private async void SyncChecksBemImg()
         {
             var pics = CheckLeistungAntwortBemImg.LoadAllFromStack();
@@ -13001,14 +12945,12 @@ namespace iPMCloud.Mobile
             if (response == null)
             {
                 // FAILED
-                _allCountFromUploadFalied = true;
                 AppModel.Logger.Warn("WARN:  (0): Checkliste Bild(er) FEHLGESCHLAGEN => SyncChecksBemImg_Done : response == null ");
                 return null;
             }
             if (response != null && !response.success)
             {
                 // FAILED
-                _allCountFromUploadFalied = true;
                 AppModel.Logger.Warn("WARN:  (0): Checkliste Bild(er) FEHLGESCHLAGEN => SyncChecksBemImg_Done : " + response.message);
                 return null;
             }
@@ -13016,15 +12958,12 @@ namespace iPMCloud.Mobile
             //AppModel.Logger.Info("Info: Bild(er) erfolgreich hochgeladen => SyncChecksBemImg_Done");
             return response;
         }
+        */
 
 
 
-
-
-        /*******************/
-        /* SYNC ObjectValues (auch in Background)
-        /*******************/
-        private async void SyncObjectValues()
+        // SYNC ObjectValues (auch in Background)
+        /*private async void SyncObjectValues()
         {
             var objectValues = ObjektDataWSO.LoadAllFromUploadStack(AppModel.Instance);
             List<string> guidsList = new List<string>();
@@ -13066,26 +13005,24 @@ namespace iPMCloud.Mobile
             if (objectValuesResponse == null)
             {
                 // FAILED
-                _allCountFromUploadFalied = true;
                 AppModel.Logger.Warn("WARN:  (0): Zaehlerstaende FEHLGESCHLAGEN => SyncObjectValues_Done : objectValuesResponse == null");
                 return null;
             }
             if (objectValuesResponse != null && !objectValuesResponse.success)
             {
                 // FAILED
-                _allCountFromUploadFalied = true;
                 AppModel.Logger.Warn("WARN:  (0): Zaehlerstaende FEHLGESCHLAGEN => SyncObjectValues_Done : " + objectValuesResponse.message);
                 return null;
             }
             //AppModel.Logger.Info("Info: Zaehlerstaende erfolgreich hochgeladen => SyncObjectValues_Done");
             return objectValuesResponse;
         }
+        */
 
 
 
-        /*******************/
-        /* SYNC ObjectValueBild (auch in Background)
-        /*******************/
+        // SYNC ObjectValueBild (auch in Background)
+        /*
         private async void SyncObjectValueBild()
         {
             var objectValueBilds = ObjektDatenBildWSO.LoadAllFromUploadStack(AppModel.Instance);
@@ -13128,48 +13065,25 @@ namespace iPMCloud.Mobile
             if (response == null)
             {
                 // FAILED
-                _allCountFromUploadFalied = true;
                 AppModel.Logger.Warn("WARN:  (0): Zaehlerbilder FEHLGESCHLAGEN => SyncObjectValueBild_Done : response == null");
                 return null;
             }
             if (response != null && !response.success)
             {
                 // FAILED
-                _allCountFromUploadFalied = true;
                 AppModel.Logger.Warn("WARN:  (0): Zaehlerbilder FEHLGESCHLAGEN => SyncObjectValueBild_Done : " + response.message);
                 return null;
             }
             //AppModel.Logger.Info("Info: Zaehlerbilder erfolgreich hochgeladen => SyncObjectValueBild_Done");
             return response;
         }
-
-
-        /*******************/
-        /* SYNC PN (auch in Background)
-        /*******************/
-        private async void SyncPN()
-        {
-            var pn = PNWSO.LoadFromUploadStack();
-            pn.personid = AppModel.Instance.Person.id;
-            var resPN = await Task.Run(() => { return AppModel.Instance.Connections.PNSync(pn); });
-            if (resPN.success)
-            {
-                PNWSO.DeleteFromUploadStack();
-                AppModel.Instance.SettingModel.SettingDTO.PNToken = pn.token;
-                AppModel.Instance.SettingModel.SaveSettings();
-            }
-            else
-            {
-                // FAILED
-                _allCountFromUploadFalied = true;
-            }
-        }
+        */
 
 
 
-        /*******************/
-        /* SYNC DAYOVER (auch in Background)
-        /*******************/
+
+        // SYNC DAYOVER (auch in Background)
+        /*
         public async void SyncDayOver()
         {
             var dayOvers = DayOverWSO.LoadAllFromUploadStack(AppModel.Instance);
@@ -13212,93 +13126,87 @@ namespace iPMCloud.Mobile
             if (dayOverResponse == null)
             {
                 // FAILED
-                _allCountFromUploadFalied = true;
                 AppModel.Logger.Warn("WARN:  (0): Feierabend FEHLGESCHLAGEN => SyncDayOver_Done : dayOverResponse == null ");
                 return null;
             }
             if (dayOverResponse != null && !dayOverResponse.success)
             {
                 // FAILED
-                _allCountFromUploadFalied = true;
                 AppModel.Logger.Warn("WARN:  (0): Feierabend FEHLGESCHLAGEN => SyncDayOver_Done : " + dayOverResponse.message);
                 return null;
             }
             //AppModel.Logger.Info("Info: Feierabend erfolgreich hochgeladen => SyncDayOver_Done");
             return dayOverResponse;
         }
+        */
+
+
+        // SYNC TransSigns (auch in Background)
+        /*
+        private async void SyncTransSigns()
+        {
+            var transSigns = AllTransSign.LoadAllFromUploadStack();
+            List<string> guidsList = new List<string>();
+            transSigns.ForEach(v => { guidsList.Add(v.guid); });
+            var resGuidsList = await Task.Run(() => { return AppModel.Instance.Connections.GuidsCheck(guidsList.ToArray()); });
+            if (resGuidsList != null && resGuidsList.Length > 0)
+            {
+                resGuidsList.ToList().ForEach(guid =>
+                {
+                    var da = transSigns.Find(b => b.guid == guid);
+                    if (da != null)
+                    {
+                        transSigns.Remove(da);
+                        AllTransSign.DeleteFromUploadStack(da);
+                    }
+                });
+            }
+
+            if (resGuidsList != null && transSigns.Count > 0)
+            {
+                if (!AppModel.Instance.IsInternet)
+                {
+                    AppModel.Logger.Warn("Warn: Internet/Online -OFF- ... Feierabend hochladen => SyncDayOver");
+                }
+                transSigns.ForEach(async transS =>
+                {
+                    var result = await SyncTransSigns_Done(transS);
+                    if (result != null && result.success)
+                    {
+                        transSigns.ForEach(d =>
+                        {
+                            AllTransSign.DeleteFromUploadStack(d);
+                        });
+                    }
+                });
+            }
+            ;
+        }
+        private async Task<AllTransSignResponse> SyncTransSigns_Done(AllTransSignRequest transSign)
+        {
+            AllTransSignResponse res = (await Task.Run(() => { return AppModel.Instance.Connections.AllTransSignSync(transSign); }));
+            if (res == null)
+            {
+                // FAILED
+                _allCountFromUploadFalied = true;
+                AppModel.Logger.Warn("WARN:  (0): AllTransSignSync FEHLGESCHLAGEN => SyncTransSigns_Done : response == null ");
+                return null;
+            }
+            if (res != null && !res.success)
+            {
+                // FAILED
+                _allCountFromUploadFalied = true;
+                AppModel.Logger.Warn("WARN:  (0): AllTransSignSync FEHLGESCHLAGEN => SyncTransSigns_Done : " + res.message);
+                return null;
+            }
+            return res;
+        }*/
 
 
 
-
-
-        /*******************/
-        /* SYNC TransSigns (auch in Background)
-        /*******************/
-        //private async void SyncTransSigns()
-        //{
-        //    var transSigns = AllTransSign.LoadAllFromUploadStack();
-        //    List<string> guidsList = new List<string>();
-        //    transSigns.ForEach(v => { guidsList.Add(v.guid); });
-        //    var resGuidsList = await Task.Run(() => { return AppModel.Instance.Connections.GuidsCheck(guidsList.ToArray()); });
-        //    if (resGuidsList != null && resGuidsList.Length > 0)
-        //    {
-        //        resGuidsList.ToList().ForEach(guid =>
-        //        {
-        //            var da = transSigns.Find(b => b.guid == guid);
-        //            if (da != null)
-        //            {
-        //                transSigns.Remove(da);
-        //                AllTransSign.DeleteFromUploadStack(da);
-        //            }
-        //        });
-        //    }
-
-        //    if (resGuidsList != null && transSigns.Count > 0)
-        //    {
-        //        if (!AppModel.Instance.IsInternet)
-        //        {
-        //            AppModel.Logger.Warn("Warn: Internet/Online -OFF- ... Feierabend hochladen => SyncDayOver");
-        //        }
-        //        transSigns.ForEach(async transS =>
-        //        {
-        //            var result = await SyncTransSigns_Done(transS);
-        //            if (result != null && result.success)
-        //            {
-        //                transSigns.ForEach(d =>
-        //                {
-        //                    AllTransSign.DeleteFromUploadStack(d);
-        //                });
-        //            }
-        //        });
-        //    }
-        //    ;
-        //}
-        //private async Task<AllTransSignResponse> SyncTransSigns_Done(AllTransSignRequest transSign)
-        //{
-        //    AllTransSignResponse res = (await Task.Run(() => { return AppModel.Instance.Connections.AllTransSignSync(transSign); }));
-        //    if (res == null)
-        //    {
-        //        // FAILED
-        //        _allCountFromUploadFalied = true;
-        //        AppModel.Logger.Warn("WARN:  (0): AllTransSignSync FEHLGESCHLAGEN => SyncTransSigns_Done : response == null ");
-        //        return null;
-        //    }
-        //    if (res != null && !res.success)
-        //    {
-        //        // FAILED
-        //        _allCountFromUploadFalied = true;
-        //        AppModel.Logger.Warn("WARN:  (0): AllTransSignSync FEHLGESCHLAGEN => SyncTransSigns_Done : " + res.message);
-        //        return null;
-        //    }
-        //    return res;
-        //}
-
-
-
-        /*******************/
-        /* SYNC NOTICE (auch in Background)
-        /*******************/
-        private async void SyncSingleNotice()
+        // SYNC NOTICE (auch in Background)
+        /*
+        private async Task SyncSingleNotice()
         {
             var bemerkungen = BemerkungWSO.LoadAllFromUploadStack(AppModel.Instance);
             List<string> guidsList = new List<string>();
@@ -13324,76 +13232,49 @@ namespace iPMCloud.Mobile
                 }
                 for (int i = 0; i < bemerkungen.Count; i++)
                 {
-                    //bemerkungen.ForEach(async bem =>
-                    //{
                     if (!String.IsNullOrWhiteSpace(bemerkungen[i].text.Trim()) || (bemerkungen[i].photos != null && bemerkungen[i].photos.Count > 0))
                     {
-                        var resultBemId = await SyncSingleNotice_Done(bemerkungen[i]);
-                        if (resultBemId > 0)
+                        var result = await SyncSingleNotice_Done(bemerkungen[i]);
+                        if (result != null && result.success)
                         {
-                            bemerkungen[i].hasSend = true;
-                            var pics = BildWSO.LoadFromGuid(AppModel.Instance, bemerkungen[i].guid);
-                            pics.ForEach(p =>
-                            {
-                                p.bemId = resultBemId;
-                                if (bemerkungen[i].prio < 2) //wenn keine Störmeldung dann seperat hochladen
-                                {
-                                    BildWSO.SaveToStack(AppModel.Instance, p);
-                                }
-                                BildWSO.Delete(AppModel.Instance, p);
-                            });
-                            await Task.Delay(1);
-                            // Bilder abgelegt unter BemId - dann bemerkung löschen, weil erfolgreich hochgeladen
-                            // Bilder im nächsten stepp hochladen 
+                            bemerkungen[i].hasSend = true;    
                             BemerkungWSO.DeleteFromUploadStack(AppModel.Instance, bemerkungen[i]);
                         }
                     }
                     else
                     {
                         bemerkungen[i].hasSend = true;
-                        // Wo wird die Bemerkung mit Bilder zusamen gesetzt und auf den Stack gelegT !!!
                         BemerkungWSO.DeleteFromUploadStack(AppModel.Instance, bemerkungen[i]);
                     }
-                    //});
                 }
-                //var _bilderStack = BildWSO.CountFromStack();
 
-                SetAllSyncState();
+                SetAllSyncInViewState();
                 await Task.Delay(100);
 
-                if (_bilder > 0)
-                {
-                    SyncNoticeBild();
-                    await Task.Delay(100);
-                }
             }
         }
-        private async Task<Int32> SyncSingleNotice_Done(BemerkungWSO bem)
+        
+        private async Task<SingleNoticeResponse> SyncSingleNotice_Done(BemerkungWSO bem)
         {
             SingleNoticeResponse noticeResponse = (await Task.Run(() => { return AppModel.Instance.Connections.SingleNoticeSync(bem); }));
             if (noticeResponse == null)
             {
-                // FAILED
-                _allCountFromUploadFalied = true;
                 AppModel.Logger.Warn("WARN:  (0): Bemerkungen FEHLGESCHLAGEN => SyncNotice_Done : noticeResponse == null ");
-                return -1;
+                return null;
             }
             if (noticeResponse != null && !noticeResponse.success)
             {
-                // FAILED
-                _allCountFromUploadFalied = true;
                 AppModel.Logger.Warn("WARN:  (0): Bemerkungen FEHLGESCHLAGEN => SyncNotice_Done : " + noticeResponse.message);
-                return -1;
+                return null;
             }
-            // Erfolgreich 
-            //AppModel.Logger.Info("Info: Bemerkungen erfolgreich hochgeladen => SyncNotice_Done");
-            return noticeResponse.bemid;
-        }
+            return noticeResponse;
+        }*/
 
 
-        /*******************/
-        /* SYNC NOTICE (auch in Background)
-        /*******************/
+
+
+        // SYNC NOTICE (auch in Background)
+        /*
         private async void SyncNoticeBild()
         {
             var pics = BildWSO.LoadAllFromStack();
@@ -13434,30 +13315,54 @@ namespace iPMCloud.Mobile
             if (response == null)
             {
                 // FAILED
-                _allCountFromUploadFalied = true;
                 AppModel.Logger.Warn("WARN:  (0): Bild(er) FEHLGESCHLAGEN => SyncNoticeBild_Done : response == null ");
                 return null;
             }
             if (response != null && !response.success)
             {
                 // FAILED
-                _allCountFromUploadFalied = true;
                 AppModel.Logger.Warn("WARN:  (0): Bild(er) FEHLGESCHLAGEN => SyncNoticeBild_Done : " + response.message);
                 return null;
             }
             // Erfolgreich 
             //AppModel.Logger.Info("Info: Bild(er) erfolgreich hochgeladen => SyncNoticeBild_Done");
             return response;
+        }*/
+
+
+        // SYNC PN (auch in Background)
+        private void SyncPN()
+        {
+            var pn = PNWSO.LoadFromUploadStack();
+            if (pn == null)
+            {
+                return;
+            }
+
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    pn.personid = AppModel.Instance.Person.id;
+                    var resPN = await AppModel.Instance.Connections.PNSync(pn);
+                    if (resPN.success)
+                    {
+                        PNWSO.DeleteFromUploadStack();
+                        AppModel.Instance.SettingModel.SettingDTO.PNToken = pn.token;
+                        AppModel.Instance.SettingModel.SaveSettings();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    AppModel.Logger.Warn($"SyncPN failed: {ex.Message}");
+                }
+            });
         }
 
 
 
-
-
-        /*******************/
-        /* SYNC Ticket POSITION  (auch in Background)
-        /*******************/
-        private async void SyncTicketPosition(bool preview = false)
+        // SYNC Ticket POSITION  (auch in Background)
+        private async Task SyncTicketPosition(bool preview = false)
         {
             string[] resGuidsList = null;
 
@@ -13467,12 +13372,16 @@ namespace iPMCloud.Mobile
                 // Vorschau - nur die aktuelle Position in Arbeit
                 packs = new List<LeistungPackWSO> { AppModel.Instance.allPositionInWork };
             }
-            else
+            /*else
             {
                 // Fertig Upload der Positionen aus dem UploadStack
                 packs = LeistungPackWSO.LoadAllFromUploadStack(AppModel.Instance);
+            }*/
+            if (!AppModel.Instance.IsInternet)
+            {
+                AppModel.Logger.Warn("WARN: Internet/Online -OFF- ... " + (preview ? "VORSCHAU-" : "") + "Ticket Leistungspakete(" + packs.Count + ") => SyncTicketPosition");
             }
-            if (!preview)
+            /*if (!preview)
             {
                 List<string> guidsList = new List<string>();
                 packs.ForEach(v => { guidsList.Add(v.guid); });
@@ -13489,16 +13398,13 @@ namespace iPMCloud.Mobile
                         }
                     });
                 }
-            }
+            }*/
             if ((preview && packs.Count > 0) || (resGuidsList != null && packs.Count > 0))
             {
-                if (!AppModel.Instance.IsInternet)
-                {
-                    AppModel.Logger.Warn("WARN: Internet/Online -OFF- ... " + (preview ? "VORSCHAU-" : "") + "Ticket Leistungspakete(" + packs.Count + ") => SyncTicketPosition");
-                }
                 for (int i = 0; i < packs.Count; i++)
                 {
-                    var result = await SyncTicketPosition_Done(packs[i]);
+                    SyncTicketPosition_Done(packs[i]);
+                    /*var result = await SyncTicketPosition_Done(packs[i]);
                     if (result != null)
                     {
                         if (!preview)
@@ -13533,52 +13439,51 @@ namespace iPMCloud.Mobile
                             }
                             LeistungPackWSO.DeleteFromUploadStack(AppModel.Instance, packs[i]);
                         }
-                    }
+                    }*/
 
                 }
-
-                SetAllSyncState();
+                // Gui Updaten
+                SetAllSyncInViewState();
                 await Task.Delay(1);
             }
         }
-        private async Task<LeistungPackWSO> SyncTicketPosition_Done(LeistungPackWSO pack)
+        private void SyncTicketPosition_Done(LeistungPackWSO pack)
         {
-            PositionResponse positionResponse = await Task.Run(() => { return AppModel.Instance.Connections.TicketPositionSync(pack); });
-            if (positionResponse == null)
+            _ = Task.Run(async () =>
             {
-                // FAILED
-                _allCountFromUploadFalied = true;
-                AppModel.Logger.Warn("WARN:  (0): Ticket Leistungspakete FEHLGESCHLAGEN => SyncTicketPosition_Done : positionResponse == null");
-                return null;
-            }
-            else if (positionResponse != null && !positionResponse.success)
-            {
-                // FAILED
-                _allCountFromUploadFalied = true;
-                AppModel.Logger.Warn("WARN:  (0): Ticket Leistungspakete FEHLGESCHLAGEN => SyncTicketPosition_Done : " + positionResponse.message);
-                return null;
-            }
-            else
-            {               
-                return positionResponse.pack;
-            }
+                try
+                {
+                    PositionResponse positionResponse = await AppModel.Instance.Connections.TicketPositionSync(pack); 
+                    if (positionResponse == null)
+                    {
+                        AppModel.Logger.Warn("WARN:  (0): Ticket Leistungspakete FEHLGESCHLAGEN => SyncTicketPosition_Done AS PREVIEW : positionResponse == null");
+                    }
+                    else if (positionResponse != null && !positionResponse.success)
+                    {
+                        AppModel.Logger.Warn("WARN:  (0): Ticket Leistungspakete FEHLGESCHLAGEN => SyncTicketPosition_Done AS PREVIEW : " + positionResponse.message);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    AppModel.Logger.Warn($"SyncTicketPosition_Done failed: {ex.Message}");
+                }
+            });
         }
 
 
 
-        /*******************/
-        /* SYNC POSITION  (auch in Background)
-        /*******************/
-        private async void SyncPosition(bool preview = false)
+        // SYNC POSITION  (auch in Background)
+        private async Task SyncPosition(bool preview = false)
         {
             string[] resGuidsList = null;
+
 
             List<LeistungPackWSO> packs = null;
             if (preview)
             {
                 packs = new List<LeistungPackWSO> { AppModel.Instance.allPositionInWork };
             }
-            else
+            /*else
             {
                 packs = LeistungPackWSO.LoadAllFromUploadStack(AppModel.Instance);
                 packs.ForEach(lp =>
@@ -13599,7 +13504,12 @@ namespace iPMCloud.Mobile
                         });
                     }
                 });
+            }*/
+            if (!AppModel.Instance.IsInternet)
+            {
+                AppModel.Logger.Warn("WARN: Internet/Online -OFF- ... " + (preview ? "VORSCHAU-" : "") + "Leistungspakete(" + packs.Count + ") => SyncPosition");
             }
+            /*
             if (!preview)
             {
                 List<string> guidsList = new List<string>();
@@ -13618,45 +13528,18 @@ namespace iPMCloud.Mobile
                     });
                 }
             }
+            */
             if ((preview && packs.Count > 0) || (resGuidsList != null && packs.Count > 0))
             {
-                if (!AppModel.Instance.IsInternet)
-                {
-                    AppModel.Logger.Warn("WARN: Internet/Online -OFF- ... " + (preview ? "VORSCHAU-" : "") + "Leistungspakete(" + packs.Count + ") => SyncPosition");
-                }
                 for (int i = 0; i < packs.Count; i++)
                 {
+                    SyncPosition_Done(packs[i]);
+                    /*
                     var result = await SyncPosition_Done(packs[i]);
                     if (result != null)
                     {
                         if (!preview)
                         {
-                            if (result.leistungen != null && result.leistungen.Count > 0)
-                            {
-                                result.leistungen.ForEach(l =>
-                                {
-                                    if (l.bemerkungen != null && l.bemerkungen.Count > 0)
-                                    {
-                                        l.bemerkungen.ForEach(b =>
-                                        {
-                                            if (b.id > 0)
-                                            {
-                                                b.hasSend = true;
-                                                var pics = BildWSO.LoadFromGuid(AppModel.Instance, b.guid);
-                                                pics.ForEach(p =>
-                                                {
-                                                    p.bemId = b.id;
-                                                    if (b.prio < 2)
-                                                    {
-                                                        BildWSO.SaveToStack(AppModel.Instance, p);
-                                                    }
-                                                    BildWSO.Delete(AppModel.Instance, p);
-                                                });
-                                            }
-                                        });
-                                    }
-                                });
-                            }
                             // workat von result aktuell setzten
                             var lastWorkTicks = "" + JavaScriptDateConverter.Convert(new DateTime(result.endticks), -2);
                             BuildingWSO building = null;
@@ -13696,59 +13579,52 @@ namespace iPMCloud.Mobile
                             LeistungPackWSO.DeleteFromUploadStack(AppModel.Instance, packs[i]);
                         }
                     }
-
+                    */
                 }
 
-                SetAllSyncState();
+                SetAllSyncInViewState();
                 await Task.Delay(100);
-
-                if (_bilder > 0)
-                {
-                    SyncNoticeBild();
-                    await Task.Delay(1);
-                }
-
             }
         }
-        private async Task<LeistungPackWSO> SyncPosition_Done(LeistungPackWSO pack)
+        private async void SyncPosition_Done(LeistungPackWSO pack)
         {
-            PositionResponse positionResponse = await Task.Run(() => { return AppModel.Instance.Connections.PositionSync(pack); });
-            if (positionResponse == null)
+            _ = Task.Run(async () =>
             {
-                // FAILED
-                _allCountFromUploadFalied = true;
-                AppModel.Logger.Warn("WARN:  (0): Leistungspakete FEHLGESCHLAGEN => SyncPosition_Done : positionResponse == null");
-                return null;
-            }
-            else if (positionResponse != null && !positionResponse.success)
-            {
-                // FAILED
-                _allCountFromUploadFalied = true;
-                AppModel.Logger.Warn("WARN:  (0): Leistungspakete FEHLGESCHLAGEN => SyncPosition_Done : " + positionResponse.message);
-                return null;
-            }
-            else
-            {
-                // Erfolgreich 
-                //AppModel.Logger.Info("Info: Leistungspakete erfolgreich hochgeladen => SyncPosition_Done");
-
-                if (AppModel.Instance.AppControll.showObjektPlans)
+                try
                 {
-                    if (positionResponse.planweek != null && AppModel.Instance.PlanResponse.selectedPerson == null)
+                    PositionResponse positionResponse = await AppModel.Instance.Connections.PositionSync(pack);
+                    if (positionResponse == null)
                     {
-                        AppModel.Instance.PlanResponse.planweek = positionResponse.planweek;
-                        ObjektPlanWeekMobile.Save(AppModel.Instance, AppModel.Instance.PlanResponse);
-                        Update_PlanTabs((int)DateTime.Now.DayOfWeek);
-
+                        AppModel.Logger.Warn("WARN:  (0): Leistungspakete FEHLGESCHLAGEN => SyncPosition_Done AS PREVIEW : positionResponse == null");
+                    }
+                    else if (positionResponse != null && !positionResponse.success)
+                    {
+                        AppModel.Logger.Warn("WARN:  (0): Leistungspakete FEHLGESCHLAGEN => SyncPosition_Done AS PREVIEW : " + positionResponse.message);
+                    }
+                    else
+                    {
+                        if (AppModel.Instance.AppControll.showObjektPlans)
+                        {
+                            if (positionResponse.planweek != null && AppModel.Instance.PlanResponse.selectedPerson == null)
+                            {
+                                AppModel.Instance.PlanResponse.planweek = positionResponse.planweek;
+                                ObjektPlanWeekMobile.Save(AppModel.Instance, AppModel.Instance.PlanResponse);
+                                Update_PlanTabs((int)DateTime.Now.DayOfWeek);
+                            }
+                        }
                     }
                 }
-                return positionResponse.pack;
-            }
+                catch (Exception ex)
+                {
+                    AppModel.Logger.Warn($"SyncPosition_Done AS PREVIEW failed: {ex.Message}");
+                }
+            });
         }
 
-        /******************************/
-        /* SYNC POSITION AGAIN AS Preview
-        /**********************/
+
+        
+        // SYNC POSITION AGAIN AS Preview
+        /*
         private async void SyncPositionAgain()
         {
             var packs = new List<LeistungPackWSO> { AppModel.Instance.allPositionInWork };
@@ -13767,14 +13643,12 @@ namespace iPMCloud.Mobile
             if (positionResponse == null)
             {
                 // FAILED
-                _allCountFromUploadFalied = true;
                 AppModel.Logger.Warn("WARN:  (0): Leistungspakete(Nachbuchen) FEHLGESCHLAGEN => SyncPositionAgain_Done : positionResponse == null");
                 return null;
             }
             if (positionResponse != null && !positionResponse.success)
             {
                 // FAILED
-                _allCountFromUploadFalied = true;
                 AppModel.Logger.Warn("WARN:  (0): Leistungspakete(Nachbuchen) FEHLGESCHLAGEN => SyncPositionAgain_Done : " + positionResponse.message);
                 return null;
             }
@@ -13782,7 +13656,7 @@ namespace iPMCloud.Mobile
             //AppModel.Logger.Info("Info: Leistungspakete(Nachbuchen) erfolgreich hochgeladen => SyncPositionAgain_Done");
             return positionResponse.pack;
         }
-
+        */
 
 
         public async void SetAppControll()

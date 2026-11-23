@@ -265,11 +265,11 @@ namespace iPMCloud.Mobile.vo
                 {
                     try
                     {
-                        MainPage?.SetAllSyncState();
+                        MainPage?.SetAllSyncInViewState();
                     }
                     catch (Exception ex)
                     {
-                        Logger?.Error(ex, "ERROR: SetAllSyncStateSafe (SetAllSyncState)");
+                        Logger?.Error(ex, "ERROR: SetAllSyncStateSafe (SetAllSyncInViewState)");
                     }
                 };
 
@@ -408,22 +408,23 @@ namespace iPMCloud.Mobile.vo
             }
         }
 
+        /*******************/
+        /* CHACK ALL SYNCS */
+        /*******************/
 
-        public int GetOpenUploadsCountFrom(Int32 customerId)
-        {
+        public int GetOpenUploadsCount(){
+            Int32 customerId = int.Parse(SettingModel.SettingDTO.CustomerNumber);            
             int allCountFromUpload = 0;
-            allCountFromUpload += CheckClass.CountFromStackFrom(customerId);
-            allCountFromUpload += CheckLeistungAntwortBemImg.CountFromStackFrom(customerId);
-            allCountFromUpload += BemerkungWSO.CountFromStackFrom(customerId);
-            allCountFromUpload += BildWSO.CountFromStackFrom(customerId);
-            allCountFromUpload += LeistungPackWSO.CountFromStackFrom(customerId);
-            // zu ipm intern = allCountFromUpload += AllTransSign.CountFromStackFrom(customerId);
             allCountFromUpload += DayOverWSO.CountFromStackFrom(customerId);
+            allCountFromUpload += CheckClass.CountFromStackFrom(customerId);//
+            allCountFromUpload += CheckLeistungAntwortBemImg.CountFromStackFrom(customerId);
+            allCountFromUpload += BemerkungWSO.CountFromStackFrom(customerId);//
+            allCountFromUpload += LeistungPackWSO.CountFromStackFrom(customerId);
+            //allCountFromUpload += BildWSO.CountFromStackFrom(customerId);//
             allCountFromUpload += ObjektDataWSO.CountFromStackFrom(customerId);
             allCountFromUpload += ObjektDatenBildWSO.CountFromStackFrom(customerId);
             allCountFromUpload += TicketChat.CountFromStackFrom(customerId);
             allCountFromUpload += TicketBesitzerStatusUpload.CountFromStack();
-            //allCountFromUpload += PNWSO.CountFromStackFrom(customerId);
             return allCountFromUpload;
         }
 

@@ -1,9 +1,11 @@
+using Android.App;
 using Android.Content;
 using Android.OS;
 using Android.Util;
 using iPMCloud.Mobile.Platforms.Android.Services;
 using iPMCloud.Mobile.Services;
 using iPMCloud.Mobile.vo;
+using System.Linq;
 
 namespace iPMCloud.Mobile.Platforms.Android
 {
@@ -24,29 +26,19 @@ namespace iPMCloud.Mobile.Platforms.Android
                     return;
                 }
 
-                // Android 12+ verbietet in der Regel das Starten eines Foreground-Service,
-                // wenn die App im Hintergrund ist. In diesem Fall wird trotzdem eine
-                // ServiceRecord angelegt, aber startForeground() kommt nie rechtzeitig an,
-                // was zu einer ForegroundServiceDidNotStartInTimeException und einem
-                // App-Absturz führt. Deshalb weichen wir im Hintergrund auf den
-                // WorkManager-Pfad aus, der für Hintergrund-Ausführung ausgelegt ist.
-                if (AppModel.Instance.isInBackground)
-                {
-                    Log.Info(TAG, "App is in background, routing upload via WorkManager instead of direct foreground service start");
-                    UploadRetryScheduler.ScheduleImmediateUploadRetry(context: global::Android.App.Application.Context);
-                    return;
-                }
-
+                // Direkter context.StartForegroundService()-Aufruf auf UploadForegroundService wurde
+                // entfernt: Zwischen der obigen Vordergrund-Prüfung und der tatsächlichen Verarbeitung
+                // von OnCreate/StartForeground durch das Android-System kann die App in den
+                // Hintergrund wechseln oder eingefroren werden. Trifft StartForeground() dann nicht
+                // rechtzeitig (5s) ein, tötet Android den Prozess mit
+                // ForegroundServiceDidNotStartInTimeException - unabhängig von Try/Catch hier.
+                // Der WorkManager-Pfad (UploadRetryWorker) ruft SetForegroundAsync() erst innerhalb
+                // von DoWork() auf und fängt Fehler dort kontrolliert ab (Result.InvokeRetry()),
+                // wodurch dieses Race vollständig vermieden wird - egal ob die App im Vorder-
+                // oder Hintergrund ist.
                 var context = global::Android.App.Application.Context;
-                var intent = new Intent(context, typeof(UploadForegroundService));
-                intent.SetAction(UploadForegroundService.ACTION_START);
-
-                if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
-                    context.StartForegroundService(intent);
-                else
-                    context.StartService(intent);
-
-                Log.Info(TAG, "UploadForegroundService started");
+                UploadRetryScheduler.ScheduleImmediateUploadRetry(context: context);
+                Log.Info(TAG, "Upload scheduled via WorkManager (UploadRetryWorker)");
             }
             catch (System.Exception ex)
             {

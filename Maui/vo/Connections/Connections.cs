@@ -698,7 +698,9 @@ namespace iPMCloud.Mobile.vo
 
                     var json = await resMsg.Content.ReadAsStringAsync();
                     resMsg.Dispose();
-                    var response = JsonConvert.DeserializeObject<TicketResponse>(json);
+                    var response = JsonConvert.DeserializeObject<TicketResponse>(json); 
+                    response.tickets = Ticket.Translate(response.tickets);
+                    response.ticket = Ticket.Translate(response.ticket);
                     response.success = true;
                     return response;
                 }
@@ -762,6 +764,8 @@ namespace iPMCloud.Mobile.vo
                     var json = await resMsg.Content.ReadAsStringAsync();
                     resMsg.Dispose();
                     var response = JsonConvert.DeserializeObject<TicketResponse>(json);
+                    response.tickets = Ticket.Translate(response.tickets);
+                    response.ticket = Ticket.Translate(response.ticket);
                     response.success = true;
                     return response;
                 }
@@ -1208,18 +1212,18 @@ namespace iPMCloud.Mobile.vo
             HttpResponseMessage resMsg = null;
 
             // incl. Bilder
-
-            string args = JsonConvert.SerializeObject(new PositionRequest
-            {
-                token = AppModel.Instance.SettingModel.SettingDTO.LoginToken,
-                pack = pack
-            });
-
-            HttpRequestMessage msg = new HttpRequestMessage(HttpMethod.Post, uri_Position);
-            msg.Content = new StringContent(args, Encoding.UTF8, "application/json");
-
             try
             {
+                string args = JsonConvert.SerializeObject(new PositionRequest
+                {
+                    token = AppModel.Instance.SettingModel.SettingDTO.LoginToken,
+                    pack = pack
+                });
+
+                HttpRequestMessage msg = new HttpRequestMessage(HttpMethod.Post, uri_Position);
+                msg.Content = new StringContent(args, Encoding.UTF8, "application/json");
+
+            
                 resMsg = await httpClientInstanceSync.SendAsync(msg);
                 if (resMsg != null && resMsg.StatusCode == System.Net.HttpStatusCode.OK)
                 {

@@ -1,4 +1,8 @@
-﻿using iPMCloud.Mobile.vo;
+﻿using Google.Apis.Services;
+using Google.Apis.Translate.v2;
+using Google.Cloud.Translation.V2;
+using iPMCloud.Mobile.vo;
+using iPMCloud.Mobile.vo.GlobalObjects;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -617,6 +621,10 @@ namespace iPMCloud.Mobile
         public string text { get; set; } = "";          // Beschreibung (im Backend als BLOB)
         public string titel { get; set; } = "";
 
+        // Texte
+        public string textLang { get; set; } = "";          // Beschreibung (im Backend als BLOB)
+        public string titelLang { get; set; } = "";
+
         // Datumsangaben (als Unix-Timestamp-Strings)
         public string start { get; set; } = "0";        // Erstelldatum
         public string end { get; set; } = "0";          // Enddatum
@@ -695,6 +703,60 @@ namespace iPMCloud.Mobile
         }
 
 
+        public string GetMobileText()
+        {
+            if (this != null)
+            {
+                if (!String.IsNullOrWhiteSpace(this.text))
+                {
+                    // Anweisung gefüllt
+                    if (!String.IsNullOrWhiteSpace(this.textLang) && AppModel.Instance.AppControll.translation)
+                    {
+                        // Übersetzter Text gefüllt
+                        return AppModel.Instance.Lang.lang == "de" ? this.text : this.textLang;
+                    }
+                    else
+                    {
+                        return this.text;
+                    }
+                }
+                else
+                {
+                    return "NO TEXT";
+                }
+            }
+            return "NO TEXT";
+        }
+
+
+
+        public string GetMobileTitel()
+        {
+            if (this != null)
+            {
+                if (!String.IsNullOrWhiteSpace(this.titel))
+                {
+                    // Anweisung gefüllt
+                    if (!String.IsNullOrWhiteSpace(this.titelLang) && AppModel.Instance.AppControll.translation)
+                    {
+                        // Übersetzter Text gefüllt
+                        return AppModel.Instance.Lang.lang == "de" ? this.titel : this.titelLang;
+                    }
+                    else
+                    {
+                        return this.titel;
+                    }
+                }
+                else
+                {
+                    return "NO TEXT";
+                }
+            }
+            return "NO TEXT";
+        }
+
+
+
 
         /// <summary>
         /// Gibt die Farbe für einen Ticket-Status zurück
@@ -731,6 +793,7 @@ namespace iPMCloud.Mobile
                 _ => "Unbekannt"
             };
         }
+
 
         public static Border CreateTicketCard(Ticket ticket, double screenWidthDp)
         {
@@ -1320,6 +1383,329 @@ namespace iPMCloud.Mobile
                 return new TicketResponse();
             }
         }
+
+
+
+
+
+
+
+
+        public static List<Ticket> Translate(List<Ticket> tickets)
+        {
+            if (tickets == null || tickets.Count == 0)
+                return tickets;
+            foreach (var ticket in tickets)
+            {
+                //ticket.titelLang = AppModel.Instance.AppControll.TranslateText(ticket.titel, "de", AppModel.Instance.Lang.lang);
+                //ticket.textLang = AppModel.Instance.AppControll.TranslateText(ticket.text, "de", AppModel.Instance.Lang.lang);
+            }
+            return tickets;
+        }
+
+        public static Ticket Translate(Ticket ticket)
+        {
+            if (ticket == null)
+                return ticket;
+            return Translate(new List<Ticket> { ticket })[0];
+        }
+
+        /*
+        public async Task<List<Ticket>> TranslateTickets(string lang, List<Ticket> tickets, bool isChangeLang = false)
+        {
+            long allSigns = 0;
+            try
+            {
+                if ((!isChangeLang && lang == "de") || !AppModel.Instance.AppControll.translation || tickets == null || tickets.Count == 0)
+                {
+                    return tickets;
+                }
+                //overlay.IsVisible = true;
+                //await Task.Delay(1);
+                int countFrom = 0;
+                int countReady = 0;
+                List<AuftragWSO> al = new List<AuftragWSO>();
+                List<LeistungWSO> ll = new List<LeistungWSO>();
+                List<KategorieWSO> kl = new List<KategorieWSO>();
+                List<string> als = new List<string>();
+                List<string> lls = new List<string>();
+                List<string> kls = new List<string>();
+
+                var req = new TransRequest { list = new List<TransListItem>(), to = AppModel.Instance.Lang.lang };
+                tickets.ForEach(b =>
+                {
+                    var lb = BuildingWSO.LoadBuilding(AppModel.Instance, b.id);
+                    //Vergleiche firsches Objekt vom Backend mit gespeichertem Objekt wenn vorhanden
+                    if (b.del == 0)
+                    {
+                        if (b.ArrayOfAuftrag != null && b.ArrayOfAuftrag.Count > 0)
+                        {
+                            b.ArrayOfAuftrag.ForEach(a =>
+                            {
+                                AuftragWSO lba = null;
+                                KategorieWSO lbk = null;
+                                LeistungWSO lbl = null;
+                                if (lb != null) { lba = lb.ArrayOfAuftrag.Find(f => f.id == a.id); }
+                                if (a.del == 0)
+                                {
+                                    // übersetzen wenn Sprache sich ändert oder Objekt nicht existiert oder der Auftrag noch garnicht existiert
+                                    if (isChangeLang || lb == null || lba == null)
+                                    {
+                                        countFrom++;
+                                        als.Add(a.bezeichnung);
+                                    }
+                                    // übersetzen wenn Auf.Bez. noch gar nicht übersetzt
+                                    else if (!isChangeLang && String.IsNullOrWhiteSpace(lba.bezeichnungLang))
+                                    {
+                                        countFrom++;
+                                        als.Add(a.bezeichnung);
+                                    }
+                                    // übersetzen wenn AufBez sich geändert hat
+                                    else if (!isChangeLang && !String.IsNullOrWhiteSpace(lba.bezeichnungLang) && a.bezeichnung != lba.bezeichnung)
+                                    {
+                                        countFrom++;
+                                        als.Add(a.bezeichnung);
+                                    }
+                                    // Einfach übernehmen aus voeherigen Datensatz , so das die vorherige Übersetzung übernommen wird
+                                    else if (!isChangeLang && !String.IsNullOrWhiteSpace(lba.bezeichnungLang) && a.bezeichnung == lba.bezeichnung)
+                                    {
+                                        a.bezeichnung = lba.bezeichnung;
+                                    }
+                                    if (a.kategorien != null && a.kategorien.Count > 0)
+                                    {
+                                        a.kategorien.ForEach(k =>
+                                        {
+                                            if (lb != null && lba != null) { lbk = lba.kategorien.Find(f => f.id == k.id); }
+                                            if (k.del == 0 && (k.art == "Leistung" || k.art == "Produkt"))
+                                            {
+                                                // übersetzen wenn Sprache sich ändert oder Objekt nicht existiert oder der Auftrag noch garnicht existiert
+                                                // oder die Kategorie nicht existiert
+                                                if (isChangeLang || lb == null || lba == null || lbk == null)
+                                                {
+                                                    countFrom++;
+                                                    kls.Add(k.titel);
+                                                }
+                                                // übersetzen wenn Auf.Bez. noch gar nicht übersetzt
+                                                else if (!isChangeLang && String.IsNullOrWhiteSpace(lbk.titelLang))
+                                                {
+                                                    countFrom++;
+                                                    kls.Add(k.titel);
+                                                }
+                                                // übersetzen wenn KatTit sich geändert hat
+                                                else if (!isChangeLang && !String.IsNullOrWhiteSpace(lbk.titelLang) && k.titel != lbk.titel)
+                                                {
+                                                    countFrom++;
+                                                    kls.Add(k.titel);
+                                                }
+                                                // Einfach übernehmen aus voeherigen Datensatz , so das die vorherige Übersetzung übernommen wird
+                                                else if (!isChangeLang && !String.IsNullOrWhiteSpace(lbk.titelLang) && k.titel == lbk.titel)
+                                                {
+                                                    k.titelLang = lbk.titelLang;
+                                                }
+                                                if (k.leistungen != null && k.leistungen.Count > 0)
+                                                {
+                                                    k.leistungen.ForEach(l =>
+                                                    {
+                                                        if (lb != null && lba != null && lbk != null) { lbl = lbk.leistungen.Find(f => f.id == l.id); }
+                                                        if (l.del == 0 && (l.art == "Leistung" || l.art == "Produkt"))
+                                                        {
+                                                            if (l.ext == null) { l.ext = new LeistungExtWSO(); }
+                                                            // übersetzen wenn Sprache sich ändert oder Objekt nicht existiert oder der Auftrag noch garnicht existiert
+                                                            // oder die Kategorie nicht existiert oder die Leistung noch nicht existiert
+                                                            if (isChangeLang || lb == null || lba == null || lbk == null || lbl == null)
+                                                            {
+                                                                countFrom++;
+                                                                lls.Add(l.GetMobileOriginalText());
+                                                            }
+                                                            // übersetzen wenn Leistungstext noch gar nicht übersetzt
+                                                            else if (!isChangeLang && String.IsNullOrWhiteSpace(lbl.GetMobileLangText()))
+                                                            {
+                                                                countFrom++;
+                                                                lls.Add(l.GetMobileOriginalText());
+                                                            }
+                                                            //AnweisungsText ist Leer
+                                                            else if (!isChangeLang && !String.IsNullOrWhiteSpace(lbl.GetMobileLangText()) && String.IsNullOrWhiteSpace(l.ext.anweisung))
+                                                            {
+                                                                // BESCHREIBUNG verwenden -  übersetzen wenn Leistungstext sich geändert hat
+                                                                if (l.beschreibung != lbl.beschreibung)
+                                                                {
+                                                                    countFrom++;
+                                                                    lls.Add(l.beschreibung);
+                                                                }
+                                                                // BESCHREIBUNG verwenden - Einfach übernehmen aus voeherigen Datensatz , so das die vorherige Übersetzung übernommen wird.
+                                                                else
+                                                                {
+                                                                    l.ext.anweisungLang = lbl.ext.anweisungLang;
+                                                                }
+                                                            }
+                                                            //AnweisungsText ist gefüllt
+                                                            else if (!isChangeLang && !String.IsNullOrWhiteSpace(lbl.GetMobileLangText()) && !String.IsNullOrWhiteSpace(l.ext.anweisung))
+                                                            {
+                                                                // BESCHREIBUNG verwenden -  übersetzen wenn Leistungstext sich geändert hat
+                                                                if (l.ext.anweisung != lbl.ext.anweisung)
+                                                                {
+                                                                    countFrom++;
+                                                                    lls.Add(l.ext.anweisung);
+                                                                }
+                                                                // BESCHREIBUNG verwenden - Einfach übernehmen aus voeherigen Datensatz , so das die vorherige Übersetzung übernommen wird.
+                                                                else
+                                                                {
+                                                                    l.ext.anweisungLang = lbl.ext.anweisungLang;
+                                                                }
+                                                            }
+                                                        }
+                                                    });
+                                                }
+                                            }
+                                        });
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+
+                var alist = ListExtensions.ChunkBy(als.Distinct().ToList(), 100);
+                var klist = ListExtensions.ChunkBy(kls.Distinct().ToList(), 100);
+                var llist = ListExtensions.ChunkBy(lls.Distinct().ToList(), 100);
+                ////countFrom = klist.Count + llist.Count;
+                //popupContainer_container_changelang_status.Text = "" + countReady + " von " + countFrom;
+                await Task.Delay(1);
+                var atr = new List<TranslationResult>();
+                var ktr = new List<TranslationResult>();
+                var ltr = new List<TranslationResult>();
+                var service = new TranslateService(new BaseClientService.Initializer { ApiKey = AppModel.Google_Translation_ApiKey });
+                var client = new TranslationClientImpl(service, TranslationModel.ServiceDefault);
+                //var la = JsonConvert.SerializeObject(client.ListLanguages("de"));
+                alist.ForEach(sa =>
+                {
+                    if (!AppModel.Instance.IsTest)
+                    {
+                        atr.AddRange(client.TranslateText(sa, lang, "de"));
+                    }
+                });
+                atr.ForEach(tr => { allSigns = allSigns + long.Parse("" + tr.OriginalText.Length); });
+                klist.ForEach(sk =>
+                {
+                    ktr.AddRange(client.TranslateText(sk, lang, "de"));
+                });
+                ktr.ForEach(tr => { allSigns = allSigns + long.Parse("" + tr.OriginalText.Length); });
+                llist.ForEach(sl =>
+                {
+                    if (!AppModel.Instance.IsTest)
+                    {
+                        ltr.AddRange(client.TranslateText(sl, lang, "de"));
+                    }
+                });
+                ltr.ForEach(tr => { allSigns = allSigns + long.Parse("" + tr.OriginalText.Length); });
+
+                buildings.ForEach(b =>
+                {
+                    if (b.del == 0)
+                    {
+                        if (b.ArrayOfAuftrag != null && b.ArrayOfAuftrag.Count > 0)
+                        {
+                            b.ArrayOfAuftrag.ForEach(a =>
+                            {
+                                if (a.del == 0)
+                                {
+                                    var fa = atr.Find(f => f.OriginalText == a.bezeichnung);
+                                    if (fa != null)
+                                    {
+                                        countReady++;
+                                        a.bezeichnungLang = fa.TranslatedText;
+                                    }
+                                    if (a.kategorien != null && a.kategorien.Count > 0)
+                                    {
+                                        a.kategorien.ForEach(k =>
+                                        {
+                                            if (k.del == 0 && (k.art == "Leistung" || k.art == "Produkt"))
+                                            {
+                                                var fk = ktr.Find(f => f.OriginalText == k.titel);
+                                                if (fk != null)
+                                                {
+                                                    countReady++;
+                                                    k.titelLang = fk.TranslatedText;
+                                                    AppModel.Instance.AddKategorieNames(k);
+                                                }
+                                                if (k.leistungen != null && k.leistungen.Count > 0)
+                                                {
+                                                    k.leistungen.ForEach(l =>
+                                                    {
+                                                        if (l.del == 0 && (l.art == "Leistung" || l.art == "Produkt") && l.ext != null)
+                                                        {
+                                                            var fl = ltr.Find(f => f.OriginalText == l.GetMobileOriginalText());
+                                                            if (fl != null)
+                                                            {
+                                                                countReady++;
+                                                                l.ext.anweisungLang = fl.TranslatedText;
+                                                            }
+                                                        }
+                                                    });
+                                                }
+                                            }
+                                        });
+                                    }
+                                }
+                            });
+                            BuildingWSO.Save(AppModel.Instance, b);
+                            // popupContainer_container_changelang_status.Text = "" + countReady + " von " + countFrom;
+                        }
+                    }
+                });
+
+                //if (allSigns > 0)
+                //{
+                //    // fertig
+                //    var allTransSignsItem = new AllTransSignRequest
+                //    {
+                //        allTransSign = allSigns,
+                //        ticks = DateTime.Now.Ticks,
+                //        personid = AppModel.Instance.Person.id,
+                //        guid = Guid.NewGuid().ToString(),
+                //        token = AppModel.Instance.SettingModel.SettingDTO.LoginToken
+                //    };
+                //    AllTransSign.ToUploadStack(allTransSignsItem);
+                //    CheckAllSyncFromUpload(); //SyncTransSigns();
+                //}
+
+                //popupContainer_container_changelang_status.Text = "" + countReady + " von " + countFrom;
+                //popupContainer_quest_changelang.IsVisible = false;
+
+                //Lang.Save(AppModel.Instance.Lang);
+                //lb_settings_sel_trans.Text = lang; // AppModel.Instance.Lang.text.Replace("(Standard)", "");
+
+                //await Task.Delay(1000);
+                //overlay.IsVisible = false;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                //popupContainer_quest_changelang.IsVisible = false;
+                AppModel.Logger.Error("Error: (translateBuildings) - " + ex.Message + "");
+                //await Task.Delay(1);
+                //overlay.IsVisible = false;
+                //await DisplayAlertAsync("Fehler", "Fehler beim Übersetzen: " + ex.Message, "OK");
+                //ShowTranslate_fail();
+                return false;
+            }
+        }
+
+        */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

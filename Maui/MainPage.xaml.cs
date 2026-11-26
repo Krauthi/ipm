@@ -5481,6 +5481,34 @@ namespace iPMCloud.Mobile
             overlay.IsVisible = false;
         }
 
+        /// <summary>
+        /// Zeigt unter der Ticketliste an, ob die Daten LIVE vom Server geholt wurden
+        /// oder aus dem Offline-Cache stammen (inkl. Zeitpunkt der letzten Live-Aktualisierung).
+        /// </summary>
+        private void UpdateTicketCacheStatusLabel(TicketResponse response)
+        {
+            if (ticketCacheStatusLabel == null || ticketCacheStatusLabelP == null)
+            {
+                return;
+            }
+
+            if (response?.lastUpdated == null)
+            {
+                ticketCacheStatusLabel.Text = "";
+                ticketCacheStatusLabelP.Text = "";
+                return;
+            }
+
+            string zeitpunkt = response.lastUpdated.Value.ToString("dd.MM.yyyy HH:mm");
+            ticketCacheStatusLabel.Text = response.fromCache
+                ? $"Offline (Stand: {zeitpunkt})"
+                : $"Aktualisiert: {zeitpunkt}";
+
+            ticketCacheStatusLabelP.Text = response.fromCache
+                ? $"Offline (Stand: {zeitpunkt})"
+                : $"Aktualisiert: {zeitpunkt}";
+        }
+
         private async Task LoadAndDisplayTicketsAsync()
         {
             try
@@ -5495,6 +5523,8 @@ namespace iPMCloud.Mobile
                 {
                     // Versuche Tickets zu laden (Implementierung kann später erfolgen)
                     //await Ticket.LoadTicketsFromBackendAsync();
+
+                    UpdateTicketCacheStatusLabel(AppModel.Instance.TicketResponse);
 
                     // Falls keine Tickets vorhanden, zeige leere Listen und Badge = 0
                     if (AppModel.Instance.TicketResponse.tickets == null || AppModel.Instance.TicketResponse.tickets.Count == 0)

@@ -669,6 +669,11 @@ namespace iPMCloud.Mobile.vo
 
             if (!AppModel.Instance.IsInternet)
             {
+                var cached = Ticket.LoadTicketsCache();
+                if (cached != null)
+                {
+                    return cached;
+                }
                 return new TicketResponse
                 {
                     success = false,
@@ -702,6 +707,7 @@ namespace iPMCloud.Mobile.vo
                     response.tickets = Ticket.Translate(response.tickets);
                     response.ticket = Ticket.Translate(response.ticket);
                     response.success = true;
+                    Ticket.SaveTicketsCache(response);
                     return response;
                 }
                 else
@@ -709,6 +715,11 @@ namespace iPMCloud.Mobile.vo
                     var m = "Method => GetTickets: httpResponseMessage.StatusCode = " + resMsg.StatusCode + " - " + resMsg.RequestMessage;
                     AppModel.Logger.Warn(m);
                     resMsg?.Dispose();
+                    var cached = Ticket.LoadTicketsCache();
+                    if (cached != null)
+                    {
+                        return cached;
+                    }
                     return new TicketResponse { success = false, message = m };
                 }
             }
@@ -716,6 +727,11 @@ namespace iPMCloud.Mobile.vo
             {
                 resMsg?.Dispose();
                 var exMessageLower = ex.Message.ToLower();
+                var cached = Ticket.LoadTicketsCache();
+                if (cached != null)
+                {
+                    return cached;
+                }
                 if (exMessageLower.IndexOf("canceled") > -1 || exMessageLower.IndexOf("timed") > -1 || ex is TimeoutException)
                 {
                     AppModel.Logger.Error("Method => GetTickets(timeout/canceled): Der Server ist nicht erreichbar oder die Verbindung wurde unterbrochen (Timeout)!\n\n" + ex.Message);
@@ -733,6 +749,11 @@ namespace iPMCloud.Mobile.vo
 
             if (!AppModel.Instance.IsInternet)
             {
+                var cached = Ticket.LoadTicketCache(ticketId);
+                if (cached != null)
+                {
+                    return cached;
+                }
                 return new TicketResponse
                 {
                     success = false,
@@ -767,6 +788,7 @@ namespace iPMCloud.Mobile.vo
                     response.tickets = Ticket.Translate(response.tickets);
                     response.ticket = Ticket.Translate(response.ticket);
                     response.success = true;
+                    Ticket.SaveTicketCache(ticketId, response);
                     return response;
                 }
                 else
@@ -774,12 +796,22 @@ namespace iPMCloud.Mobile.vo
                     var m = "Method => GetTickets: httpResponseMessage.StatusCode = " + resMsg.StatusCode + " - " + resMsg.RequestMessage;
                     AppModel.Logger.Warn(m);
                     resMsg?.Dispose();
+                    var cached = Ticket.LoadTicketCache(ticketId);
+                    if (cached != null)
+                    {
+                        return cached;
+                    }
                     return new TicketResponse { success = false, message = m };
                 }
             }
             catch (Exception ex)
             {
                 resMsg?.Dispose();
+                var cached = Ticket.LoadTicketCache(ticketId);
+                if (cached != null)
+                {
+                    return cached;
+                }
                 if (ex.Message.ToLower().IndexOf("canceled") > -1)
                 {
                     AppModel.Logger.Error("Method => GetTicket(canceled): Der Server ist nicht erreichbar oder die Verbindung wurde unterbrochen!\n\n" + ex.Message);

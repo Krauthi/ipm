@@ -1410,6 +1410,127 @@ namespace iPMCloud.Mobile
             return Translate(new List<Ticket> { ticket })[0];
         }
 
+        #region Offline-Cache (Tickets/Chats)
+
+        private static string GetTicketCacheDirectory()
+        {
+            string customerNumber = AppModel.Instance?.SettingModel?.SettingDTO?.CustomerNumber;
+            if (string.IsNullOrWhiteSpace(customerNumber))
+            {
+                return null;
+            }
+
+            return Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "ipm/" + customerNumber + "/ticketcache/"
+            );
+        }
+
+        private static string GetTicketsCacheFilePath()
+        {
+            string directoryPath = GetTicketCacheDirectory();
+            return directoryPath == null ? null : Path.Combine(directoryPath, "tickets_all.json");
+        }
+
+        private static string GetTicketCacheFilePath(Int32 ticketId)
+        {
+            string directoryPath = GetTicketCacheDirectory();
+            return directoryPath == null ? null : Path.Combine(directoryPath, $"ticket_{ticketId}.json");
+        }
+
+        private static readonly JsonSerializerSettings CacheJsonSettings = new JsonSerializerSettings
+        {
+            Formatting = Formatting.Indented,
+            NullValueHandling = NullValueHandling.Include,
+            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+        };
+
+        private static void SaveResponseToCache(string filePath, TicketResponse response)
+        {
+            try
+            {
+                if (filePath == null || response == null)
+                {
+                    return;
+                }
+
+                string directoryPath = Path.GetDirectoryName(filePath);
+                if (!string.IsNullOrEmpty(directoryPath) && !Directory.Exists(directoryPath))
+                {
+                    Directory.CreateDirectory(directoryPath);
+                }
+
+                response.fromCache = false;
+                response.lastUpdated = DateTime.Now;
+
+                string jsonString = JsonConvert.SerializeObject(response, CacheJsonSettings);
+                File.WriteAllText(filePath, jsonString);
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: SaveResponseToCache Ticket");
+            }
+        }
+
+        private static TicketResponse LoadResponseFromCache(string filePath)
+        {
+            try
+            {
+                if (filePath == null || !File.Exists(filePath))
+                {
+                    return null;
+                }
+
+                string jsonString = File.ReadAllText(filePath);
+                var response = JsonConvert.DeserializeObject<TicketResponse>(jsonString);
+                if (response != null)
+                {
+                    response.success = true;
+                    response.fromCache = true;
+                }
+                return response;
+            }
+            catch (Exception ex)
+            {
+                AppModel.Logger?.Error(ex, "ERROR: LoadResponseFromCache Ticket");
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Speichert die zuletzt LIVE geholte Ticketliste (inkl. Chats) als Offline-Cache.
+        /// </summary>
+        public static void SaveTicketsCache(TicketResponse response)
+        {
+            SaveResponseToCache(GetTicketsCacheFilePath(), response);
+        }
+
+        /// <summary>
+        /// Lädt die zuletzt LIVE geholte Ticketliste (inkl. Chats) aus dem Offline-Cache.
+        /// </summary>
+        public static TicketResponse LoadTicketsCache()
+        {
+            return LoadResponseFromCache(GetTicketsCacheFilePath());
+        }
+
+        /// <summary>
+        /// Speichert das zuletzt LIVE geholte Einzelticket (inkl. Chats) als Offline-Cache.
+        /// </summary>
+        public static void SaveTicketCache(Int32 ticketId, TicketResponse response)
+        {
+            SaveResponseToCache(GetTicketCacheFilePath(ticketId), response);
+        }
+
+        /// <summary>
+        /// Lädt das zuletzt LIVE geholte Einzelticket (inkl. Chats) aus dem Offline-Cache.
+        /// </summary>
+        public static TicketResponse LoadTicketCache(Int32 ticketId)
+        {
+            return LoadResponseFromCache(GetTicketCacheFilePath(ticketId));
+        }
+
+        #endregion
+
         /*
         public async Task<List<Ticket>> TranslateTickets(string lang, List<Ticket> tickets, bool isChangeLang = false)
         {

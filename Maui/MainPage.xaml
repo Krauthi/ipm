@@ -2681,6 +2681,16 @@
                                             Text="Offen"
                                             TextColor="#ffffff"
                                             VerticalOptions="Start" />
+                                        <Label
+                                            x:Name="ticketCacheStatusLabel"
+                                            Margin="10,0,0,1"
+                                            Padding="0"
+                                            FontAttributes="Italic"
+                                            FontSize="12"
+                                            HorizontalOptions="Start"
+                                            Text=""
+                                            TextColor="#ffffff"
+                                            VerticalOptions="Center" />
                                     </HorizontalStackLayout>
                                     <ScrollView
                                         Grid.Row="1"
@@ -2772,6 +2782,16 @@
                                             Text="Pausiert"
                                             TextColor="#ffffff"
                                             VerticalOptions="Start" />
+                                        <Label
+                                            x:Name="ticketCacheStatusLabelP"
+                                            Margin="10,0,0,1"
+                                            Padding="0"
+                                            FontAttributes="Italic"
+                                            FontSize="12"
+                                            HorizontalOptions="Start"
+                                            Text=""
+                                            TextColor="#ffffff"
+                                            VerticalOptions="Center" />
                                     </HorizontalStackLayout>
                                     <ScrollView
                                         Grid.Row="1"

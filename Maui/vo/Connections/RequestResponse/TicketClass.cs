@@ -35,6 +35,16 @@ namespace iPMCloud.Mobile
         public List<Ticket> tickets { get; set; } = null;
         public List<int> counts { get; set; } = null;
         public int unreadCount { get; set; } = 0;
+
+        /// <summary>
+        /// True, wenn diese Response aus dem lokalen Offline-Cache stammt und nicht live vom Server geholt wurde.
+        /// </summary>
+        public bool fromCache { get; set; } = false;
+
+        /// <summary>
+        /// Zeitpunkt, zu dem die Daten zuletzt erfolgreich LIVE vom Server geholt wurden.
+        /// </summary>
+        public DateTime? lastUpdated { get; set; } = null;
     }
 
     [Serializable]
